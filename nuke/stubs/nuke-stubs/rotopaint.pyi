@@ -1,5 +1,5 @@
 from .curveknob import *
-from _nuke import Hash as Hash
+from ._nuke import Hash as Hash
 
 def convertToNuke6(fromScript, toScript, overwrite: bool = ...) -> None: ...
 def convertToNuke7(fromScript, toScript, overwrite: bool = ...) -> None: ...

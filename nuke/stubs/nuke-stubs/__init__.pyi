@@ -1,4 +1,4 @@
-from _nuke import *
+from ._nuke import *
 from .utils import *
 from .callbacks import *
 from .colorspaces import *

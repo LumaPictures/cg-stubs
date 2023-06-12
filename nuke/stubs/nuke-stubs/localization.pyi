@@ -1,4 +1,4 @@
-from _localization import *
+from ._localization import *
 
 class FileEvent:
     LOCALIZED: int

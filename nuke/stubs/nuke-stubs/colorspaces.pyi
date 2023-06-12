@@ -1,4 +1,4 @@
-from _nuke_color import *
+from ._nuke_color import *
 from . import callbacks as callbacks
 from typing import Any
 
