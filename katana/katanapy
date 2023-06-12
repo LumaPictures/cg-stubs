@@ -1,0 +1,72 @@
+#!/usr/bin/env python
+"""
+Wrapper for Katana --script that behaves more like a normal python binary.
+
+ - adds support for -c flag to pass a string of python code to execute
+ - can be used as the interpreter in executable python scripts (e.g. #!/usr/bin/env katanapy)
+"""
+from __future__ import print_function, with_statement
+
+import errno
+import os
+import subprocess
+import sys
+import tempfile
+
+next_is_pycmd = False
+temp_filename = None
+
+cmd = ['katana', '--script']
+cmd_args = []
+
+
+def getTempDir():
+    """
+    Return the temp directory that will hold any temporary scripts that need to
+    be passed to katana --script.
+
+    We do this because Python automatically adds the parent directory of a
+    script argument to `sys.path`, but we don't want the system's temp.
+    directory ending up on there.
+    """
+    tempdir = os.path.join(tempfile.gettempdir(), 'katanapy-tmp')
+    if not os.path.isdir(tempdir):
+        try:
+            os.mkdir(tempdir)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
+    return tempdir
+
+
+try:
+    if not sys.argv[1:]:
+        cmd[1] = '--shell'
+    for argindex, arg in enumerate(sys.argv[1:]):
+        if arg == '-c':
+            if temp_filename is not None:
+                raise Exception('-c argument may only be given once')
+            next_is_pycmd = True
+        elif next_is_pycmd:
+            next_is_pycmd = False
+            fd, temp_filename = tempfile.mkstemp(suffix='.py',
+                                                 prefix='katanapyCommand',
+                                                 dir=getTempDir(), text=True)
+            with os.fdopen(fd, 'w') as tempfile:
+                tempfile.write(arg)
+            cmd_args.append(temp_filename)
+        else:
+            cmd_args.append(arg)
+
+    cmd.extend(cmd_args)
+    sys.exit(subprocess.call(cmd, universal_newlines=True))
+except OSError as err:
+    if err.errno == errno.ENOENT:
+        print("Could not find Katana executable: ensure that it is on the "
+              "system PATH")
+        sys.exit(1)
+    else:
+        raise
+finally:
+    if temp_filename:
+        os.remove(temp_filename)

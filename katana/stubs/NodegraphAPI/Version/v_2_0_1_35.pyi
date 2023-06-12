@@ -1,0 +1,19 @@
+# mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
+
+import PyXmlIO
+import NodegraphAPI.Xio as Xio
+from NodegraphAPI.Version.Updater import Updater as Updater
+from NodegraphAPI.Version.v_2_0_1_33 import Updater2_0_1_33 as Updater2_0_1_33
+from typing import ClassVar
+
+__version: tuple
+
+class Updater2_0_1_35(Updater):
+    VERSION: ClassVar[tuple] = ...
+    _NewScriptSource: ClassVar[str] = ...
+    _OldScriptSource: ClassVar[str] = ...
+    @classmethod
+    def _Updater2_0_1_35__iterChildrenRecursive(cls, node: PyXmlIO.Element): ...
+    def upgrade_GafferThree(self, node: PyXmlIO.Element, document: PyXmlIO.Element): ...
+
+def _GetNewScriptSource(oldScriptSource: str) -> str: ...

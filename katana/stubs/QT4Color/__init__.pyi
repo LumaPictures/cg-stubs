@@ -1,0 +1,35 @@
+# mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
+
+import QT4Color.ASCColorCorrector as ASCColorCorrector
+import QT4Color.ColorPolicy as ColorPolicy
+import QT4Color.ColorTransforms as ColorTransforms
+import QT4Color.Degenerate as Degenerate
+import QT4Color.DropType as DropType
+import QT4Color.Globals as Globals
+import QT4Color.Gradient1D as Gradient1D
+import QT4Color.Gradient2D as Gradient2D
+import QT4Color.ScreenScraper as ScreenScraper
+import QT4Color.Swatches as Swatches
+import QT4Color.WidgetUtils as WidgetUtils
+from QT4Color.ASCColorCorrector import ColorGradeWidget as ColorGradeWidget, MonitorGammaWidget as MonitorGammaWidget
+from QT4Color.ColorDropWidget import ColorDropWidget as ColorDropWidget
+from QT4Color.ColorFormWidget import ColorComponentTabGroup as ColorComponentTabGroup, ColorFormWidget as ColorFormWidget, UpdateThrottler as UpdateThrottler
+from QT4Color.ColorPicker import ColorPicker as ColorPicker, ModalColorPicker as ModalColorPicker
+from QT4Color.ColorPolicy import CreateColorPolicy as CreateColorPolicy, DoesColorPolicyEnableFilmlook as DoesColorPolicyEnableFilmlook, DoesColorPolicyEnableNoFilmlookColorSpace as DoesColorPolicyEnableNoFilmlookColorSpace, DoesColorPolicyHaveAlpha as DoesColorPolicyHaveAlpha, DoesColorPolicyRestrictComponents as DoesColorPolicyRestrictComponents, GetColorPolicyChildren as GetColorPolicyChildren, GetColorPolicyRGBA as GetColorPolicyRGBA, GetDefaultColorComponentTab as GetDefaultColorComponentTab, SetColorPolicyEnableFilmlook as SetColorPolicyEnableFilmlook, SetColorPolicyEnableFilmlookDefault as SetColorPolicyEnableFilmlookDefault, SetColorPolicyEnableNoFilmlookColorSpaceDefault as SetColorPolicyEnableNoFilmlookColorSpaceDefault, SetColorPolicyRGBA as SetColorPolicyRGBA, SetColorPolicyRestrictComponents as SetColorPolicyRestrictComponents, SetColorPolicyRestrictComponentsDefault as SetColorPolicyRestrictComponentsDefault
+from QT4Color.ColorTextWidget import ColorFromText as ColorFromText, ColorTextValidator as ColorTextValidator, ColorTextWidget as ColorTextWidget, ColorToText as ColorToText
+from QT4Color.ColorTransforms import ClampRGBA as ClampRGBA, ConvertColorToUnits as ConvertColorToUnits, ConvertUnitsToColor as ConvertUnitsToColor
+from QT4Color.Degenerate import IsComponentDegenerate as IsComponentDegenerate, UnDegenerator as UnDegenerator
+from QT4Color.DropType import BuildDragDataFromInfo as BuildDragDataFromInfo, BuildDragPixmapFromColor as BuildDragPixmapFromColor, GetColorDragType as GetColorDragType, GetColorInfoFromDragObject as GetColorInfoFromDragObject, GetColorPolicyDragDict as GetColorPolicyDragDict
+from QT4Color.GammaWidget import GammaWidget as GammaWidget
+from QT4Color.Globals import ApplyFilmlook as ApplyFilmlook, GetErrorMessageForColor as GetErrorMessageForColor, GetGlobalColorPolicy as GetGlobalColorPolicy, GetGlobalDisplay as GetGlobalDisplay, Get_UseFixedSatHSV as Get_UseFixedSatHSV, Get_UseSingleComponentRGB as Get_UseSingleComponentRGB, SetGlobalDisplay as SetGlobalDisplay, Set_UseFixedSatHSV as Set_UseFixedSatHSV, Set_UseSingleComponentRGB as Set_UseSingleComponentRGB
+from QT4Color.Gradient1D import LinearGradientWidget as LinearGradientWidget
+from QT4Color.Gradient2D import Gradient2DWidget as Gradient2DWidget
+from QT4Color.Histogram import Histogram as Histogram, HistogramChannel as HistogramChannel, HistogramWidget as HistogramWidget
+from QT4Color.HueColorWidget import HueColorWidget as HueColorWidget
+from QT4Color.LumaSliderWidget import LumaSliderWidget as LumaSliderWidget
+from QT4Color.ScreenScraper import ScreenScraperPushButton as ScreenScraperPushButton, ScreenScraperToolButton as ScreenScraperToolButton
+from QT4Color.Swatches import BuildSwatchPixmap as BuildSwatchPixmap, BuildSwatchPixmapForPolicy as BuildSwatchPixmapForPolicy, GetSwatchColors as GetSwatchColors, PaintColorSwatch as PaintColorSwatch
+from QT4Color.TempColorWidget import TempColorWidget as TempColorWidget, TempColorWidgetBase as TempColorWidgetBase
+from QT4Color.WidgetUtils import MiniLabelButton as MiniLabelButton, SetCompactWidgetWidth as SetCompactWidgetWidth, StripedFrame as StripedFrame
+
+SMALL: float

@@ -1,0 +1,19 @@
+# mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
+
+import ConfigurationAPI_cmodule as Configuration
+import PyFnAttribute as FnAttribute
+import Nodes3DAPI.Node3D as Node3D
+import NodegraphAPI as NodegraphAPI
+from Nodes3DAPI.GenericAssign import GenericAssign as GenericAssign
+from typing import ClassVar
+
+_ParamHints: dict
+_Parameter_XML: str
+_baseXML: None
+
+class CameraImagePlaneCreate(GenericAssign):
+    _CameraImagePlaneCreate__parsedArgTree: ClassVar[None] = ...
+    def __init__(self): ...
+    def _filterAttrList(self, graphState, attrList): ...
+    def _getIncomingSceneOpAndLocation(self, port, graphState, transaction): ...
+    def addParameterHints(self, attrName, inputDict): ...

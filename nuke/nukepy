@@ -1,0 +1,218 @@
+#!/usr/bin/env python
+"""
+Wrapper for Nuke -t that behaves more like a normal python binary.
+
+ - adds support for -c flag to pass a string of python code to execute
+ - adds support for -m flag to pass a string of python module name to execute
+ - expands symbolic links
+ - can be used as the interpreter in executable python scripts (e.g. #!/usr/bin/env nukepy)
+
+
+ Examples
+ --------
+    1) nukepy /path/to/foo.py arg1 --arg2 --cache=10G
+        - result: Nuke -t -c 10G -- /path/to/foo.py arg1 --arg2
+
+    2) nukepy -m foo arg1 --arg2 --cache=10G --threads 8
+        - result: Nuke -t -c 10G -m 8 -- /path/to/foo.py arg1 --arg2
+
+    3) nukepy -c "import blarg" --cache=10G
+        - result: Nuke -t -c 10G -- /path/to/temp.py
+
+    4) nukepy
+        - result: Nuke -t
+"""
+from __future__ import print_function, with_statement
+
+import argparse
+import errno
+import os
+import subprocess
+import sys
+import tempfile
+
+# Flags that will passed along to Nuke
+NUKE_FLAGS = frozenset(('-i', '--safe', '--tg'))
+
+
+# The temp script file that is created to hold the commands passed in from "-c",
+#  or the content of files that are not ending with .py
+temp_filename = None
+
+
+def getTempDir():
+    # type: () -> str
+    """
+    Return the temp directory that will hold any temporary scripts that need to
+    be passed to Nuke -t.
+
+    We do this because Python automatically adds the parent directory of a
+    script argument to `sys.path`, but we don't want the system's temp.
+    directory ending up on there.
+
+    Returns
+    -------
+    str
+    """
+    tempdir = os.path.join(tempfile.gettempdir(), 'nukepy-tmp')
+    if not os.path.isdir(tempdir):
+        try:
+            os.mkdir(tempdir)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
+    return tempdir
+
+
+def getParser():
+    # type: () -> argparse.ArgumentParser
+    """
+    Setup the arg parser.
+
+    Returns
+    -------
+    argparse.ArgumentParser
+    """
+    parser = argparse.ArgumentParser()
+
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-c', dest='pycommand',
+                       help='The python command to run.')
+    group.add_argument('-m', dest='pymodule', help='The python module to run.')
+
+    parser.add_argument('--cache', help='Cache memory usage limit.',
+                        default='16G')
+    parser.add_argument('--threads', help='Number of threads.')
+    for f in NUKE_FLAGS:
+        parser.add_argument(f)
+
+    return parser
+
+
+def createTempScript(content):
+    # type: (str) -> str
+    """
+    Creates a temp python script that holds the given content.
+
+    Parameters
+    ----------
+    content : str
+
+    Returns
+    -------
+    str
+    """
+    global temp_filename
+
+    assert not temp_filename, 'Temp script has already been created, ' \
+                              'something is wrong with the passed in args.'
+
+    fd, temp_filename = tempfile.mkstemp(suffix='.py',
+                                         prefix='nukepyCommand',
+                                         dir=getTempDir(), text=True)
+
+    with os.fdopen(fd, 'w') as tmp:
+        tmp.write(content)
+
+    return temp_filename
+
+
+def resolveModulePath(module_name):
+    # type: (str) -> str
+    """
+    Find the script path to the given module. Will raise ImportError if the
+    root package of the module cannot be located.
+
+    Parameters
+    ----------
+    module_name : str
+
+    Returns
+    -------
+    str
+    """
+    import imp
+
+    # imp only finds root packages, so we need to manually split the module name
+    # and reconstruct the file path
+    root_pkg, _, sub_pkgs = module_name.partition('.')
+    _, root_path, _ = imp.find_module(root_pkg)
+
+    result = root_path
+    if sub_pkgs:
+        result += '/{}.py'.format(sub_pkgs.replace('.', '/'))
+    return result
+
+
+try:
+    parser = getParser()
+
+    known_args, other_args = parser.parse_known_args(sys.argv[1:])
+
+    # get the python script to run
+    # if "-c" is used, save the command to a temp file as the script to run
+    if known_args.pycommand:
+        if other_args:
+            print('ERROR: Only one argument allowed when using nukepy -c')
+            sys.exit(1)
+        script = createTempScript(known_args.pycommand)
+    # if "-m" is used, try to resolve the module path
+    elif known_args.pymodule:
+        # FIXME: This currently won't work if the module is not available until
+        #  nuke is loaded, and won't work reliable with namespace packages;
+        #  --
+        #  if we need to handle that, we need to come up with something else
+        #  (e.g. Create a proxy script that resolves the module path, and
+        #  takes the argument and start a new process; there's problem with this
+        #  approach that it will run Nuke twice;
+        #    Alternative solution that has been tried is to use `execfile`, but
+        #  the module's __dict__ has to be modified so __name__ is __main__,
+        #  and sys.argv needs to be modified.)
+        script = resolveModulePath(known_args.pymodule)
+    # otherwise we think that the first unknown argument is the positional arg
+    # for the script path
+    elif other_args:
+        script = other_args.pop(0)
+        if not script.endswith('.py'):
+            # Nuke uses the extension of an input file (.nk or .py) to
+            # decide what to do with it. We assume a file without an
+            # extension is a Python script and save it as a temp .py file.
+            with open(script, 'r') as src:
+                script = createTempScript(src.read())
+    # run as interactive, no script needed
+    else:
+        script = None
+
+    cmd = ['Nuke', '-t']
+
+    # fill in known Nuke command line flags first
+    for flag in NUKE_FLAGS:
+        val = getattr(known_args, flag.lstrip('-'))
+        if val:
+            cmd.extend((flag, val))
+
+    # fill in overloaded flags
+    if known_args.cache:
+        cmd.extend(('-c', known_args.cache))
+    if known_args.threads:
+        cmd.extend(('-m', known_args.threads))
+
+    # "--" ends switches, allows script to start with a adsh or be just - to
+    # read from stdin, starting from here should be the script to run and the
+    # arguments for the script
+    cmd.append('--')
+
+    # add python script and script arguments
+    if script:
+        cmd.append(script)
+    cmd.extend(other_args)
+    sys.exit(subprocess.call(cmd, universal_newlines=True))
+except OSError as err:
+    if err.errno == errno.ENOENT:
+        print("Could not find Nuke executable: ensure that it is on the system PATH")
+        sys.exit(1)
+    else:
+        raise
+finally:
+    if temp_filename:
+        os.remove(temp_filename)

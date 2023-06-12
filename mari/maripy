@@ -1,0 +1,91 @@
+#!/usr/bin/env python
+"""
+Wrapper for mari -x that behaves more like a normal python binary.
+
+ - adds support for -c flag to pass a string of python code to execute
+ - expands symbolic links
+ - can be used as the interpreter in executable python scripts
+    (e.g. #!/usr/bin/env maripy)
+"""
+from __future__ import print_function, with_statement
+
+import errno
+import os
+import subprocess
+import sys
+import tempfile
+
+next_is_pycmd = next_is_cache = False
+temp_filename = None
+executable = False
+
+cmd = ['mari', '-x']
+cmd_args = []
+
+
+def getTempDir():
+    """
+    Return the temp directory that will hold any temporary scripts that need
+    to be passed to mari -x.
+
+    We do this because Python automatically adds the parent directory of a
+    script argument to `sys.path`, but we don't want the system's temp.
+    directory ending up on there.
+    """
+    tempdir = os.path.join(tempfile.gettempdir(), 'maripy-tmp')
+    if not os.path.isdir(tempdir):
+        try:
+            os.mkdir(tempdir)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
+    return tempdir
+
+
+try:
+    for argindex, arg in enumerate(sys.argv[1:]):
+        if argindex == 0 and not arg.endswith('.py'):
+            if os.path.isfile(arg):
+                # Mari accepts an input python file. We assume a file
+                # without an extension is a Python script and save it as a
+                # temp .py file.
+                fd, temp_filename = tempfile.mkstemp(suffix='.py',
+                                                     prefix='maripyCommand', dir=getTempDir(), text=True)
+                with open(arg, 'r') as src:
+                    with os.fdopen(fd, 'w') as tempfile:
+                        tempfile.write(src.read())
+                cmd_args.append(temp_filename)
+                # Tells the arg parser that all the rest of the arguments
+                # should passed along
+                executable = True
+                continue
+        if next_is_pycmd:
+            next_is_pycmd = False
+            cwd = os.getcwd()
+            # mari -x sets the cwd to ~/Mari/Logs.  fix it.
+            prefix = "import os;os.chdir(%r);" % cwd
+            fd, temp_filename = tempfile.mkstemp(suffix='.py',
+                                                 prefix='maripyCommand', dir=getTempDir(), text=True)
+            with os.fdopen(fd, 'w') as tempfile:
+                tempfile.write(prefix + arg)
+            cmd_args.append(temp_filename)
+        elif arg == '-c' and not executable:
+            if temp_filename is not None:
+                raise Exception('-c argument may only be given once')
+            next_is_pycmd = True
+        elif os.path.islink(arg):
+            cmd_args.append(os.path.realpath(arg))
+        else:
+            cmd_args.append(arg)
+    cmd.extend(cmd_args)
+    sys.exit(subprocess.call(cmd, universal_newlines=True))
+except OSError as err:
+    if err.errno == errno.ENOENT:
+        print("Could not find mari executable: ensure that it is on the "
+              "system PATH")
+        sys.exit(1)
+    else:
+        raise
+finally:
+    if temp_filename:
+        os.remove(temp_filename)

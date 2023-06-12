@@ -1,0 +1,6 @@
+# mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
+
+import PyFnAttribute
+
+def GetRegisteredFunctionNames(omitInternal: bool = ...) -> list: ...
+def Run(name: str, args: PyFnAttribute.Attribute) -> PyFnAttribute.Attribute: ...
