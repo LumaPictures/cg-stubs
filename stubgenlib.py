@@ -92,14 +92,41 @@ class DocstringSignatureGenerator(SignatureGenerator, BaseSigFixer):
 
 
 class BoostDocstringSignatureGenerator(SignatureGenerator):
+    @staticmethod
+    def standardize_docstring(docstr):
+        # convert the boost-provided signature into a proper python signature.
+        
+        # example signature:
+        # Process( (BatchNamespaceEdit)arg1 [, (object)canEdit=Gf.Range1f(1.0, 1000000.0) [, (bool)fixBackpointers=True]]) -> tuple
+        
+        # replace complex defaults with ... so that they dont break the mypy stubdoc parser
+        # note that boost can inculde defaults like foo=[]
+        # regex notes:
+        #  ?=  positive lookahead.  we're looking for `[,`  or  `])`
+        #  +?  non-greedy capture, so that . does not match across multiple args, due to the .
+        docstr = re.sub(r"=(?:.|\n)+?(?=\s\[,|\]+\))", " = ...", docstr)
+        docstr = docstr.replace('[', '')
+        docstr = docstr.replace(']', '')
+        docstr = re.sub(r"\((?P<type>[^(]+)\)(?P<arg>[a-zA-Z_][a-zA-Z0-9_]*)", r"\g<arg>: \g<type>", docstr)
+        return docstr
+        
     def get_function_sig(
         self, default_sig: FunctionSig, ctx: FunctionContext
     ) -> list[FunctionSig] | None:
         
         if ctx.docstr:
-            # convert the boost-provided signature into a proper python signature
-            docstr = ctx.docstr.replace('[', '')
-            docstr = docstr.replace(']', '')
-            docstr = re.sub(r"\(([^(]+)\)([a-zA-Z_][a-zA-Z0-9_]*)", lambda m: '{}: {}'.format(m.group(2), m.group(1)), docstr)
+            docstr = self.standardize_docstring(ctx.docstr)
             return infer_sig_from_docstring(docstr, ctx.name)
-        
+
+
+def test():
+    docstr = """
+__init__( (object)arg1) -> None
+
+__init__( (object)arg1, (Camera)arg2) -> None
+
+__init__( (object)arg1 [, (Matrix4d)transform=Gf.Matrix4d(1.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 1.0) [, (object)projection=Gf.Camera.Perspective [, (float)horizontalAperture=20.955 [, (float)verticalAperture=15.290799999999999 [, (float)horizontalApertureOffset=0.0 [, (float)verticalApertureOffset=0.0 [, (float)focalLength=50.0 [, (Range1f)clippingRange=Gf.Range1f(1.0, 1000000.0) [, (object)clippingPlanes=[] [, (float)fStop=0.0 [, (float)focusDistance=0.0]]]]]]]]]]]) -> None
+    """
+    print(BoostDocstringSignatureGenerator.standardize_docstring(docstr))
+    

@@ -317,7 +317,7 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
         self, default_sig: FunctionSig, ctx: FunctionContext
     ) -> list[FunctionSig] | None:
         sigs = super().get_function_sig(default_sig, ctx)
-        if sigs is None:
+        if not sigs:
             return None
 
         def cpp_arg_names(cpp_sig: DocElement) -> tuple[int, list[str]]:
