@@ -1,15 +1,19 @@
 from __future__ import absolute_import, annotations, division, print_function
 
+import importlib
+import pkgutil
 import os
 import re
+import pydoc
+import types
+from collections import defaultdict
 from dataclasses import dataclass
 
 import mypy.stubgen
 import mypy.stubgenc
 import mypy.stubutil
 from mypy.fastparse import parse_type_comment
-from mypy.stubdoc import infer_sig_from_docstring
-from mypy.stubgen import main
+from mypy.stubgen import main as stubgen_main
 from mypy.stubgenc import ArgSig
 from mypy.stubgenc import \
     DocstringSignatureGenerator as CDocstringSignatureGenerator
@@ -21,6 +25,9 @@ from doxygenlib.cdParser import Parser
 from doxygenlib.cdWriterDocstring import Writer
 from doxygenlib.cdUtils import SetDebugMode
 
+from stubgenlib import BaseSigFixer, BoostDocstringSignatureGenerator
+
+
 SetDebugMode(False)
 
 def get_submodules(pacakge_paths: list[str]) -> list[str]:
@@ -31,14 +38,14 @@ def get_submodules(pacakge_paths: list[str]) -> list[str]:
     return [loader.name for loader in pkgutil.iter_modules(pacakge_paths)]
 
 
-def get_fullpath(obj: object) -> str | None:
-    name = getattr(obj, "__qualname__", getattr(obj, "__name__", None))
-    if name is None:
-        return None
-    module_name = getattr(obj, "__module__", None)
-    if module_name:
-        name = "{}.{}".format(module_name, name)
-    return name
+# def get_fullpath(obj: object) -> str | None:
+#     name = getattr(obj, "__qualname__", getattr(obj, "__name__", None))
+#     if name is None:
+#         return None
+#     module_name = getattr(obj, "__module__", None)
+#     if module_name:
+#         name = "{}.{}".format(module_name, name)
+#     return name
 
 
 class DummyWriter:
@@ -53,52 +60,59 @@ class DummyWriter:
         raise NotImplementedError
 
 
-class StubHelper(Writer, DummyWriter):
+# class StubHelper(Writer, DummyWriter):
 
-    def populate_map(self, sig_map, docElemPath: list[DocElement]) -> list[str]:
-        """
-        docElem : list of DocElements from the root to the documented item
-        """
-        docElem = docElemPath[-1]
+#     def populate_map(self, sig_map, docElemPath: list[DocElement]) -> list[str]:
+#         """
+#         docElem : list of DocElements from the root to the documented item
+#         """
+#         docElem = docElemPath[-1]
 
-        for childName, childObjectList in docElem.children.items():
-            if self.module.__name__ == 'pxr.Sdf' and docElem.name == "Sdf":
-                print(childObjectList)
+#         for childName, childObjectList in docElem.children.items():
+#             if self.module.__name__ == 'pxr.Sdf' and docElem.name == "Sdf":
+#                 print(childObjectList)
 
-            # Alteranately. don't bother trying to find the python object
-            # (pypath, ppypath1, ppypath2) = self.__pathGenerator(parentPath, overloads)
+#             # Alteranately. don't bother trying to find the python object
+#             # (pypath, ppypath1, ppypath2) = self.__pathGenerator(parentPath, overloads)
 
-            # Work out the possible Python name(s) for this C++ object
-            # Note that some C++ names have both potential corresponding
-            # python method and property names.
-            (pyobj, pypath, proppyobj, proppypath, jumped) \
-                = self._getPythonObjectAndPath(docElemPath, childObjectList)
-            if self.module.__name__ == 'pxr.Sdf' and \
-                    "SdfPathFindLongestPrefix" in [child.name for child in childObjectList]:
-                print("HERE", docElem, childName, pyobj, pypath, [child.location for child in childObjectList])
+#             # Work out the possible Python name(s) for this C++ object
+#             # Note that some C++ names have both potential corresponding
+#             # python method and property names.
+#             (pyobj, pypath, proppyobj, proppypath, jumped) \
+#                 = self._getPythonObjectAndPath(docElemPath, childObjectList)
+#             if self.module.__name__ == 'pxr.Sdf' and \
+#                     "SdfPathFindLongestPrefix" in [child.name for child in childObjectList]:
+#                 print("HERE", docElem, childName, pyobj, pypath, [child.location for child in childObjectList])
 
-            if self.module.__name__ == 'pxr.Sdf' and \
-                    "VT_TYPE_IS_CHEAP_TO_COPY" in [child.name for child in childObjectList]:
-                print("GARBAGE", docElem, childName, pyobj, pypath, [child.location for child in childObjectList])
+#             if self.module.__name__ == 'pxr.Sdf' and \
+#                     "VT_TYPE_IS_CHEAP_TO_COPY" in [child.name for child in childObjectList]:
+#                 print("GARBAGE", docElem, childName, pyobj, pypath, [child.location for child in childObjectList])
 
-            # if docElem.name == "SdfPathFindLongestPrefix":
-            #     print("NAME", pyobj, pypath, proppypath)
-            # pyobj will be None if the object does not exist in self.module
-            if pyobj is not None:
-                info = {
-                    'parent': docElem,
-                    'definitions': childObjectList,
-                }
-                fullPyPath = "{}.{}".format(self.module.__name__, pypath)
-                sig_map[pypath] = info
-                sig_map[fullPyPath] = info
+#             # if docElem.name == "SdfPathFindLongestPrefix":
+#             #     print("NAME", pyobj, pypath, proppypath)
+#             # pyobj will be None if the object does not exist in self.module
+#             if pyobj is not None:
+#                 info = {
+#                     'parent': docElem,
+#                     'definitions': childObjectList,
+#                 }
+#                 fullPyPath = "{}.{}".format(self.module.__name__, pypath)
+#                 sig_map[pypath] = info
+#                 sig_map[fullPyPath] = info
 
-            # recurse through all of this element's children too
-            for child in childObjectList:
-                if self.module.__name__ == 'pxr.Sdf' and child.name == "SdfPathFindLongestPrefix":
-                    print("CHILD", child)
-                self.populate_map(sig_map, docElemPath + [child])
+#             # recurse through all of this element's children too
+#             for child in childObjectList:
+#                 if self.module.__name__ == 'pxr.Sdf' and child.name == "SdfPathFindLongestPrefix":
+#                     print("CHILD", child)
+#                 self.populate_map(sig_map, docElemPath + [child])
 
+# parser = Parser()
+# parser.parseDoxygenIndexFile(self.xml_index_file)
+# docElements = parser.traverse(DummyWriter())
+# for module_name in modules:
+#     writer = StubHelper("pxr", module_name)
+#     for docElement in docElements:
+#         writer.populate_map(cpp_sigs, [docElement])
 
 @dataclass
 class SigInfo:
@@ -106,16 +120,56 @@ class SigInfo:
     overloads: list[DocElement]
 
 
+class Notifier:
+    def __init__(self) -> None:
+        self._seen_msgs = defaultdict(int)
+        self._seen_keys = defaultdict(int)
+
+    def warn(self, key, msg):
+        #if (key, msg) not in self._seen_msgs:
+        print(f"{key}: {msg}")
+        self._seen_msgs[(key, msg)] += 1
+        self._seen_keys[key] += 1
+
+    def print_summary(self):
+        print()
+        print("Warning Summary:")
+        for key in sorted(self._seen_keys):
+            count = self._seen_keys[key]
+            print(f"  {key}: {count}")
+
+
 class DocInfo:
-    def __init__(self, xml_index_file):
+    def __init__(self, xml_index_file: str, pxr_modules):
         self.xml_index_file = xml_index_file
+        self.pxr_modules_names = sorted(pxr_modules, key=len, reverse=True)
         self.cpp_sigs: dict[str: SigInfo] = {}
+        # mapping of short names to full python paths
+        self.py_types = defaultdict(list)
+
+    def _get_py_type_name(self, cpp_type_name: str) -> str | None:
+        for mod in self.pxr_modules_names:
+            if cpp_type_name.startswith(mod):
+                short_py_type = cpp_type_name[len(mod):]
+                short_py_type = short_py_type.replace("::", ".")
+                long_py_type = f"pxr.{mod}.{short_py_type}"
+                return (short_py_type, long_py_type)
+        return None
 
     def _populate_map(self, docElemPath: list[DocElement]) -> None:
         """
-        docElem : list of DocElements from the root to the documented item
+        docElemPath : list of DocElements from the root to the documented item
         """
         docElem = docElemPath[-1]
+
+        if docElem.isClass():
+            py_type = self._get_py_type_name(docElem.name)
+            if py_type is not None:
+                # short to long
+                short_name, full_name = py_type
+                if pydoc.locate(full_name):
+                    print("Found type", full_name)
+                    self.py_types[short_name].append(full_name)
 
         for childName, childObjectList in docElem.children.items():
             childElem = childObjectList[0]
@@ -128,7 +182,7 @@ class DocInfo:
                 parents = docElemPath[1:]
                 cppPath = '::'.join(x.name for x in parents + [childElem])
                 self.cpp_sigs[cppPath] = info
-                
+ 
             # recurse through all of this element's children too
             for child in childObjectList:
                 self._populate_map(docElemPath + [child])
@@ -162,7 +216,7 @@ class DocInfo:
                 "{module}{func}".format(module=module, func=remainder[0])),
             ]
         else:
-            print ("Unexpected number of parts: %s" % pypath)
+            notifier.warn("Unexpected number of parts", "%s" % pypath)
             results = []
         return results
 
@@ -176,21 +230,47 @@ class DocInfo:
                 return data
         return None
     
+    def format_cpp_sig(self, doc_elem: DocElement):
+        params = ", ".join([f"{p[1]}: {p[0]}" for p in doc_elem.params])
+        return f"def {doc_elem.name}({params}) -> {doc_elem.returnType}: ..."
+
     def lookup_sig_info(self, pypath: str) -> SigInfo | None:
+        "Get cpp signature info from a full python object path"
         return self._lookup_sig_info(self.get_cpp_func_paths(pypath))
 
+    def lookup_py_path(self, short_type_name: str, current_module: str) -> str | None:
+        """Get a full python object path from a short type name
+        
+        Returns None if the type was not found.
+        """
+        full_type_names = doc_info.py_types.get(short_type_name)
+        if not full_type_names:
+            # Note: bool, int, list, etc end up here.
+            # print(f"No type found for {short_type_name!r} (in {current_module})")
+            return None
+        if len(full_type_names) > 1:
+            # FIXME: this would be best resolved by looking at the ccp sig info
+            # favor the type in the current module
+            for full_type in full_type_names:
+                if full_type.startswith(current_module + "."):
+                    return short_type_name
+            notifier.warn("Ambiguous type loookup",  
+                          f"{short_type_name!r} (in {current_module}) -> {full_type_names}")
+            return None
+        full_type_name = full_type_names[0]
+        if full_type_name.startswith(current_module + "."):
+            # the found type is in the current module.  use the short name
+            return short_type_name
+        else:
+            return full_type_name
 
-# import pxr
-# modules = get_submodules(pxr.__path__)
-# parser = Parser()
-# parser.parseDoxygenIndexFile(self.xml_index_file)
-# docElements = parser.traverse(DummyWriter())
-# for module_name in modules:
-#     writer = StubHelper("pxr", module_name)
-#     for docElement in docElements:
-#         writer.populate_map(cpp_sigs, [docElement])
 
-doc_info = DocInfo(os.environ["USD_XML_INDEX"])
+import pxr
+modules = get_submodules(pxr.__path__)
+
+notifier = Notifier()
+
+doc_info = DocInfo(os.environ["USD_XML_INDEX"], modules)
 doc_info.populate()
 
 # Notes
@@ -206,24 +286,13 @@ doc_info.populate()
 # - only a few methods seem to properly handle std::string
 # - it seems that free functions are not collected by the pixar parser. some of these are added as static
 #   methods to python classes: e.g. SdfPathFindLongestPrefix -> Path.FindLongestPrefix
-
-
-class BoostDocstringSignatureGenerator(SignatureGenerator):
-    def get_function_sig(
-        self, default_sig: FunctionSig, ctx: FunctionContext
-    ) -> list[FunctionSig] | None:
-        
-        if ctx.docstr:
-            # convert the boost-provided signature into a proper python signature
-            docstr = ctx.docstr.replace('[', '')
-            docstr = docstr.replace(']', '')
-            docstr = re.sub(r"\(([^(]+)\)([a-zA-Z_][a-zA-Z0-9_]*)", lambda m: '{}: {}'.format(m.group(2), m.group(1)), docstr)
-            return infer_sig_from_docstring(docstr, ctx.name)
+# - it's apparent that the order of overloads differs between boost and doxygen for at least some functions: 
+#   pxr.Sdf.CopySpec, pxr.Usd.TraverseInstanceProxies
         
 
-class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator):
+class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, BaseSigFixer):
 
-    def _fix_self_arg(self, sig: FunctionSig, ctx: FunctionContext) -> FunctionSig:
+    def fix_self_arg(self, sig: FunctionSig, ctx: FunctionContext) -> FunctionSig:
         "boost erroneously adds a self arg to some methods: remove it"
         if (len(sig.args) >= 1 and ctx.class_info and 
                 sig.args[0].name == "arg1" and not sig.args[0].default and
@@ -232,66 +301,77 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator):
         else:
             return sig
 
+    def fix_self_args(self, sigs: list[FunctionSig], ctx: FunctionContext) -> list[FunctionSig]:
+        return [self.fix_self_arg(sig, ctx) for sig in sigs]
+
+    def cleanup_type(self, type_name: str, ctx: FunctionContext, is_result: bool) -> str:
+        if is_result and type_name == "object":
+            return "Any"
+        new_type_name = doc_info.lookup_py_path(type_name, ctx.module_name)
+        if new_type_name is None:
+            # FIXME: type_name not found. this will likely require correction
+            new_type_name = type_name
+        return new_type_name
+
     def get_function_sig(
         self, default_sig: FunctionSig, ctx: FunctionContext
     ) -> list[FunctionSig] | None:
         sigs = super().get_function_sig(default_sig, ctx)
         if sigs is None:
             return None
-        
+
         cpp_info = doc_info.lookup_sig_info(ctx.fullname)
         if cpp_info is None:
-            # print(f"No cpp info found {ctx.fullname}")
-
-            for overload_num, sig in enumerate(sigs):
-                # if we have no doc info, assume it's not a static/classmethod
-                sig = self._fix_self_arg(sig, ctx)
-                sigs[overload_num] = sig
+            sigs = self.fix_self_args(sigs, ctx)
+        elif len(sigs) != len(cpp_info.overloads):
+            notifier.warn(
+                "Number of overloads do not match",
+                "(py {} != cpp {}): {}".format(len(sigs), len(cpp_info.overloads), ctx.fullname))
+            sigs = self.fix_self_args(sigs, ctx)
         else:
             cpp_sigs = cpp_info.overloads
-            if len(sigs) == len(cpp_sigs):
-                for overload_num, (sig, cpp_sig) in enumerate(zip(sigs, cpp_sigs)):
-                    # boost erroneously adds a self arg to some methods: remove it
-                    if not cpp_sig.isStatic():
-                        sig = self._fix_self_arg(sig, ctx)
-                        sigs[overload_num] = sig
+            for overload_num, (py_sig, cpp_sig) in enumerate(zip(sigs, cpp_sigs)):
+                # boost erroneously adds a self arg to some methods: remove it
+                if not cpp_sig.isStatic():
+                    py_sig = self.fix_self_arg(py_sig, ctx)
+                    sigs[overload_num] = py_sig
+                
+                # Fix pointer return types
+                if len(py_sig.args) != len(cpp_sig.params):
+                    cpp_params = []
+                    ptr_results = []
+                    for arg_type, arg_name in cpp_sig.params:
+                        if "*" in arg_type:
+                            # a pointer result
+                            ptr_results.append((arg_type, arg_name))
+                        else:
+                            cpp_params.append((arg_type, arg_name))
+                    if cpp_sig.returnType == "void" and py_sig.ret_type in ("object", "Any"):
+                        # TODO: use ptr param as return type
+                        pass
+                    elif py_sig.ret_type == "tuple":
+                        # TODO: add ptr params to the tuple return type
+                        pass                                
+                else:
+                    cpp_params = cpp_sig.params
                     
-                    if len(sig.args) != len(cpp_sig.params) and (sig.ret_type in ("tuple", "object") or cpp_sig.returnType == "void"):
-                        cpp_params = []
-                        ptr_results = []
-                        for arg_type, arg_name in cpp_sig.params:
-                            if "*" in arg_type:
-                                # a pointer result
-                                ptr_results.append((arg_type, arg_name))
-                            else:
-                                cpp_params.append((arg_type, arg_name))
-                        if cpp_sig.returnType == "void" and sig.ret_type == "object":
-                            # TODO: use ptr param as return type
-                            pass
-                        elif sig.ret_type == "tuple":
-                            # TODO: add ptr params to the tuple return type
-                            pass                                
-                    else:
-                        cpp_params = cpp_sig.params
-                        
-                    py_names = [arg.name for arg in sig.args]
-                    cpp_names = [cpp_arg[1] for cpp_arg in cpp_params]
-                    # if py_names != cpp_names:
-                    if len(py_names) != len(cpp_names):
-                        print("No match (%d of %d) %s" % (overload_num + 1, len(sigs), ctx.fullname))
-                        print("   ", sig.args)
-                        print("   ", cpp_sig.params)
+                py_names = [arg.name for arg in py_sig.args]
+                cpp_names = [cpp_arg[1] for cpp_arg in cpp_params]
+                # if py_names != cpp_names:
+                if len(py_names) != len(cpp_names):
+                    notifier.warn("Sigs differ", "(%d of %d): %s" % (overload_num + 1, len(sigs), ctx.fullname))
+                    print("   ", [(arg.name, arg.type) for arg in py_sig.args])
+                    print("   ", [(arg[1], arg[0]) for arg in cpp_sig.params])
 
-                    # if len(sig.args) == len(cpp_sig.params):
-                        # for arg, cpp_arg in zip(sig.args, cpp_sig.params):
-                        #     if arg.type == 'object':
-                        #         print(ctx.fullname)
-                        #         print(sigs)
-                        #         print(cpp_sigs)
-                        #         raise RuntimeError
-                                # cpp_sigs
-            else:
-                print("Number of overloads do not match (py %d != cpp %d): %s" % (len(sigs), len(cpp_sigs), ctx.fullname))
+                # if len(sig.args) == len(cpp_sig.params):
+                    # for arg, cpp_arg in zip(sig.args, cpp_sig.params):
+                    #     if arg.type == 'object':
+                    #         print(ctx.fullname)
+                    #         print(sigs)
+                    #         print(cpp_sigs)
+                    #         raise RuntimeError
+                            # cpp_sigs
+        sigs = [self.cleanup_sig_types(sig, ctx) for sig in sigs]
         return sigs
 
 
@@ -345,17 +425,6 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
 
     def get_sig_generators(self) -> list[SignatureGenerator]:
         return [UsdBoostDocstringSignatureGenerator()]
-
-    # @staticmethod
-    # def is_classmethod(obj: object) -> bool:
-    #     # in boost python, it is impossible to distinguish between classmethod and instance method
-    #     # so we consult the docs
-    #     fullpath = get_fullpath(obj)
-    #     try:
-    #         data = cpp_sigs[fullpath]
-    #     except KeyError:
-    #         return False
-    #     return any([d.isStatic() for d in data["definitions"]])
     
     def is_classmethod(self, class_info: ClassInfo, name: str, obj: object) -> bool:
         # in boost python, it is impossible to distinguish between classmethod and instance method
@@ -408,3 +477,7 @@ mypy.stubgenc.NoParseStubGenerator = CStubGenerator
 
 # mypy.stubgen.NoParseStubGenerator = NoParseStubGenerator
 # mypy.stubgenc.NoParseStubGenerator = NoParseStubGenerator
+
+def main(outdir):
+    stubgen_main(['-p', 'pxr', '--verbose', '--no-parse', f'-o={outdir}'])
+    notifier.print_summary()

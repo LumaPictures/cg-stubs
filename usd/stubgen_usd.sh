@@ -22,7 +22,7 @@ outdir=$REPO_PATH/usd/stubs/
 
 # USD is a mixture of pure python (e.g. pxr.Sdf.__init__) and extension modules (pxr.Sdf._sdf), and 
 # the __init__ modules do runtime injection, so parsing these modules produces bad results..
-python3 -c "import stubgen_usd;stubgen_usd.main(['-p', 'pxr.Sdf', '-p', 'pxr.Usd', '--verbose', '--no-parse', '-o=$outdir'])"
+python3 -c "import stubgen_usd;stubgen_usd.main('$outdir')"
 
 rm $outdir/pxr/*/_[a-z]*.pyi
 rm $outdir/pxr/*/__DOC.pyi

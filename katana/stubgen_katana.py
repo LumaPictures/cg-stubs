@@ -26,15 +26,6 @@ NUMERIC_TUPLE_REG = re.compile(r"\b(int|float)\[(\d+)\]")
 DISABLED_CODES = '# mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"\n\n'
 
 
-def is_valid(type_name: str) -> bool:
-    try:
-        parse_type_comment(type_name, 0, 0, None)
-    except Exception:
-        return False
-    else:
-        return True
-
-
 def cleanup_type(type_name: str) -> str:
     type_name = type_name.replace('\n', ' ')
     type_name = type_name.rstrip('.')
@@ -124,26 +115,8 @@ def cleanup_type(type_name: str) -> str:
 
 
 class KatanaDocstringSignatureGenerator(DocstringSignatureGenerator):
-    def cleanup_sig(self, sig: FunctionSig) -> tuple[FunctionSig, list[str]]:
-        args = []
-        return_type = None
-        invalid = []
-        for arg in sig.args:
-            type_name = None
-            if arg.type:
-                type_name = cleanup_type(arg.type)
-                if not is_valid(type_name):
-                    invalid.append("  Invalid arg {}: {} {}".format(
-                        arg.name, repr(arg.type), repr(type_name)))
-                    type_name = None
-            args.append(ArgSig(arg.name, type_name, arg.default))
-        if sig.ret_type:
-            return_type = cleanup_type(sig.ret_type)
-            if not is_valid(return_type):
-                invalid.append("  Invalid ret: {} {}".format(
-                    repr(sig.ret_type), repr(return_type)))
-                return_type = None
-        return FunctionSig(sig.name, args, return_type), invalid
+    def cleanup_type(self, type_name: str) -> str:
+        return cleanup_type(type_name)
 
 
 class KatanaCSignatureGenerator(CDocstringSignatureGenerator):
