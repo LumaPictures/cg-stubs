@@ -2,12 +2,28 @@
 
 Python stubs for VFX and Animation
 
+Supported applications
+- houdini
+- katana
+- mari
+- nuke
+- substance_painter
+
+See also:
+- pymel
+- pyside2
+
+## Installing
+
+```
+pip install types-houdini types-katana types-mari types-nuke types-substance_painter
+```
 
 ## Developing
 
-When developing the stubs it's useful to create an editable install.
+When developing the stubs it is convenient to create an editable install, so that you can edit the files in place.  This is confirmed to work with `mypy`.
 
-Below are two ways to do this. 
+Below are two ways to create an editable install.
 
 ### Manual install
 
@@ -19,7 +35,7 @@ cd nuke
 poetry install
 ```
 
-### Instlal using `nox`
+### Install using `nox`
 
 `nox` is a powerful build tool inspired by `tox`.
 
