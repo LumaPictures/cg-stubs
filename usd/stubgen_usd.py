@@ -320,6 +320,12 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
         if sigs is None:
             return None
 
+        def cpp_arg_names(cpp_sig: DocElement) -> tuple[int, list[str]]:
+            return (len(cpp_sig.params), [p[1] for p in cpp_sig.params])
+    
+        def py_arg_names(py_sig: FunctionSig) -> tuple[int, list[str]]:
+            return (len(py_sig.args), [arg.name for arg in py_sig.args])
+    
         cpp_info = doc_info.lookup_sig_info(ctx.fullname)
         if cpp_info is None:
             sigs = self.fix_self_args(sigs, ctx)
@@ -329,7 +335,11 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
                 "(py {} != cpp {}): {}".format(len(sigs), len(cpp_info.overloads), ctx.fullname))
             sigs = self.fix_self_args(sigs, ctx)
         else:
-            cpp_sigs = cpp_info.overloads
+            # the order of overloads between boost and doxygen do not match. sort based on
+            # the list of arg
+            sigs = sorted(sigs, key=py_arg_names)
+            cpp_sigs = sorted(cpp_info.overloads, key=cpp_arg_names)
+
             for overload_num, (py_sig, cpp_sig) in enumerate(zip(sigs, cpp_sigs)):
                 # boost erroneously adds a self arg to some methods: remove it
                 if not cpp_sig.isStatic():
@@ -355,10 +365,7 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
                 else:
                     cpp_params = cpp_sig.params
                     
-                py_names = [arg.name for arg in py_sig.args]
-                cpp_names = [cpp_arg[1] for cpp_arg in cpp_params]
-                # if py_names != cpp_names:
-                if len(py_names) != len(cpp_names):
+                if len(py_sig.args) != len(cpp_params):
                     notifier.warn("Sigs differ", "(%d of %d): %s" % (overload_num + 1, len(sigs), ctx.fullname))
                     print("   ", [(arg.name, arg.type) for arg in py_sig.args])
                     print("   ", [(arg[1], arg[0]) for arg in cpp_sig.params])
