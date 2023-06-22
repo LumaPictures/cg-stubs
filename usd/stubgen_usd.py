@@ -40,13 +40,14 @@ TYPE_MAP = [
     (r'\bstring\b', 'str'),
     (r'\bsize_t\b', 'int'),
     (r'\bchar\b', 'str'),
-    (r'\bstd::function<(.+)\((.*)\)>', r'Callable[[\2],\1]'),
+    (r'\bstd::function<(.+)\((.*)\)>', r'typing.Callable[[\2],\1]'),
     (r'\bstd::vector\b', 'list'),
     (r'\bstd::pair\b', 'tuple'),
     (r'\bstd::set\b', 'list'),
     (r'\bdouble\b', 'float'),
     (r'\bboost::python::', ''),
     (r'\bvoid\b', 'None'),
+    (r'\bVtValue\b', 'Any'),
     (r'\b' + IDENTIFIER + r'Vector\b', r'list[\1]'),
     (r'\bTfToken\b', 'str'),
     (r'\bVtDictionary\b', 'dict'),
@@ -179,11 +180,16 @@ class Notifier:
     def __init__(self) -> None:
         self._seen_msgs = defaultdict(int)
         self._seen_keys = defaultdict(int)
+        self._modules = []
 
-    def warn(self, key, msg):
-        #if (key, msg) not in self._seen_msgs:
-        print(f"{key}: {msg}")
-        self._seen_msgs[(key, msg)] += 1
+    def set_modules(self, modules: list[str]):
+        self._modules = modules
+
+    def warn(self, key: str, module: str, msg: str):
+        if (key, module, msg) not in self._seen_msgs:
+            if not self._modules or module in self._modules:
+                print(f"({module}) {key}: {msg}")
+        self._seen_msgs[(key, module, msg)] += 1
         self._seen_keys[key] += 1
 
     def print_summary(self):
@@ -430,15 +436,15 @@ class DocInfo:
                 return  ".".join(parts)
         return None
 
-    def to_python_id(self, typestr: str) -> str:
-        typestr = strip_pxr_namespace(typestr)
-        parts = self.split_module(typestr)
-        if len(parts) == 1:
-            return parts[0]
-        else:
-            mod = parts[0]
-            name = parts[1]
-            return 'pxr.' + mod + '.' + name
+    # def to_python_id(self, typestr: str) -> str:
+    #     typestr = strip_pxr_namespace(typestr)
+    #     parts = self.split_module(typestr)
+    #     if len(parts) == 1:
+    #         return parts[0]
+    #     else:
+    #         mod = parts[0]
+    #         name = parts[1]
+    #         return 'pxr.' + mod + '.' + name
     
     @staticmethod
     def py_to_cpp_func_paths(pypath: str) -> list[tuple[str, str]]:
@@ -486,7 +492,7 @@ class DocInfo:
         "Get cpp signature info from a full python object path"
         return self._lookup_sig_info(self.py_to_cpp_func_paths(pypath))
 
-    def get_full_py_type(self, short_type_name: str, current_module: str, fallback = None) -> str | None:
+    def get_full_py_type(self, short_type_name: str, current_module: str, fallback: str | None = None, current_func: str | None = None) -> str | None:
         """Get a full python object path from a short type name
         
         Returns None if the type was not found.
@@ -494,18 +500,19 @@ class DocInfo:
         full_type_names = self.py_types.get(short_type_name)
         if not full_type_names:
             # Note: bool, int, list, etc end up here.
-            return fallback if fallback is not None else None
+            return None  # fallback if fallback is not None else None
         if len(full_type_names) > 1:
-            # FIXME: this would be best resolved by looking at the ccp sig info
-            # favor the type in the current module
             for full_type in full_type_names:
                 if full_type.startswith(current_module + "."):
-                    return short_type_name
+                    return full_type
             if fallback is not None and fallback in full_type_names:
                 return fallback
             else:
-                notifier.warn("Ambiguous type loookup",  
-                            f"{short_type_name!r} (in {current_module}) -> {full_type_names}")
+                if current_func is None:
+                    current_func = "<unknown_func>"
+                notifier.warn("Ambiguous type loookup",
+                              current_module,  
+                              f"{current_func}: {short_type_name!r} -> {full_type_names} (fallback={fallback!r})")
                 return None
         return full_type_names[0]
 
@@ -535,7 +542,7 @@ src_info = SourceInfo()
 # - it's apparent that the order of overloads differs between boost and doxygen for at least some functions: 
 #   pxr.Sdf.CopySpec, pxr.Usd.TraverseInstanceProxies.  FIXED (mostly)
 # - Matrix3dArray and other math types in Vt don't seem to be in the docs 
-#     
+# - some wrapped c++ functions don't turn pointers into return types, such as UsdSkelExpandConstantInfluencesToVarying
 
 class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, BaseSigFixer):
 
@@ -551,22 +558,37 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
     def fix_self_args(self, sigs: list[FunctionSig], ctx: FunctionContext) -> list[FunctionSig]:
         return [self.fix_self_arg(sig, ctx) for sig in sigs]
 
-    def cleanup_type(self, type_name: str, ctx: FunctionContext, is_result: bool) -> str:
+    def cleanup_type(self, type_name: str, ctx: FunctionContext, is_result: bool, fallback = None) -> str:
         """
-        called by cleanup_sig_types.
-        
-        This is only used when no cpp sig info is available
+        Called by cleanup_sig_types.
+
+        Apply fixes for known types/functions.
         """
+        if ctx.name == "_GetStaticTfType" and is_result:
+            return "pxr.Tf.Type"
+
         if is_result and type_name == "object":
             return "Any"
-        return doc_info.get_full_py_type(type_name, ctx.module_name) or type_name
+        
+        full_type = doc_info.get_full_py_type(type_name, ctx.module_name, fallback=fallback, current_func=ctx.fullname)
+        if full_type is None and re.match("(Int|Bool|Vec|Short|Doublt|Half|Quat|Range|Rect|Char|Float|Token|Matrix).*Array$", type_name):
+            return f"pxr.Vt.{type_name}"
+
+        return full_type or type_name
 
     def infer_type(self, py_type: str | None, cpp_type: str, ctx: FunctionContext, is_result: bool = False) -> str | None:
+        """
+        Use multiple approaches to create a best guess at a python type name.
+
+        py_type : python type inferred by boost
+        cpp_type : c++ type scraped from the docs
+        """
+        converted_py_type = src_info.cpp_arg_to_py_type(cpp_type, is_arg=not is_result)[0]
         if py_type in ("object", "list"):
             # boost is reliable with most other types, such as int, bool, dict, tuple
-            py_type = src_info.cpp_arg_to_py_type(cpp_type, is_arg=not is_result)[0]
+            py_type = converted_py_type
         elif py_type is not None:
-            py_type = doc_info.get_full_py_type(py_type, ctx.module_name) or py_type           
+            py_type = self.cleanup_type(py_type, ctx, is_result, fallback=converted_py_type) or py_type           
         return py_type
 
     def get_function_sig(
@@ -577,7 +599,7 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
             return None
 
         if ctx.class_info is not None and ctx.name.startswith("__") and ctx.name.endswith("__"):
-            # correct special methods which may have bogus args or values
+            # correct special methods which boost may have given bogus args or values
             args = infer_method_args(ctx.name, ctx.class_info.self_var)
             if all(arg.type is not None for arg in args[1:]):
                 sigs = [sig._replace(args=args) for sig in sigs]
@@ -585,60 +607,88 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
             if ret_type is not None:
                 sigs = [sig._replace(ret_type=ret_type) for sig in sigs]
 
-        def cpp_arg_names(cpp_sig: DocElement) -> tuple[int, list[str]]:
-            return (len(cpp_sig.params), [p[1] for p in cpp_sig.params])
+        # def cpp_arg_names(cpp_sig: DocElement) -> tuple[int, list[str]]:
+        #     return (len(cpp_sig.params), [p[1] for p in cpp_sig.params])
     
-        def py_arg_names(py_sig: FunctionSig) -> tuple[int, list[str]]:
-            return (len(py_sig.args), [arg.name for arg in py_sig.args])
+        def sig_sort_key(py_sig: FunctionSig) -> tuple[int, tuple[str, ...]]:
+            return (len(py_sig.args), tuple([arg.name for arg in py_sig.args]))
     
         cpp_info = doc_info.lookup_sig_info(ctx.fullname)
         if cpp_info is None or len(sigs) != len(cpp_info.overloads):
-            if cpp_info is not None:
+            if cpp_info is None:
+                notifier.warn("No c++ info found", ctx.module_name, ctx.fullname)
+            else:
                 notifier.warn(
                     "Number of overloads do not match",
+                    ctx.module_name,
                     "(py {} != cpp {}): {}".format(len(sigs), len(cpp_info.overloads), ctx.fullname))
             sigs = self.fix_self_args(sigs, ctx)
             sigs = [self.cleanup_sig_types(sig, ctx) for sig in sigs]
         else:
+            if not cpp_info.overloads[0].isStatic():
+                sigs = self.fix_self_args(sigs, ctx)
+
+            cpp_sigs_with_ptr: list[FunctionSig] = []
+            for cpp_sig in cpp_info.overloads:
+                cpp_sigs_with_ptr.append(
+                    FunctionSig(ctx.name, 
+                                [ArgSig(arg_name, arg_type) for arg_type, arg_name in cpp_sig.params],
+                                cpp_sig.returnType))
+
+            cpp_sigs_without_ptr: list[FunctionSig] = []
+            for cpp_sig in cpp_info.overloads:
+                # Fix pointer return types
+                cpp_args: list[ArgSig] = []
+                ptr_results = []
+                for arg_type, arg_name in cpp_sig.params:
+                    if "*" in arg_type:
+                        # a pointer result
+                        ptr_results.append((arg_type, arg_name))
+                    else:
+                        cpp_args.append(ArgSig(arg_name, arg_type))
+                cpp_sigs_without_ptr.append(FunctionSig(ctx.name, cpp_args, cpp_sig.returnType))
+
+            def matches(sigs1, sigs2):
+                return sum(len(sig1.args) == len(sig2.args) for (sig1, sig2) in zip(sigs1, sigs2))
+
             # the order of overloads between boost and doxygen do not match. sort based on
             # the list of arg.
-            # FIXME: should we remove ptr args first?
-            sigs = sorted(sigs, key=py_arg_names)
-            cpp_sigs = sorted(cpp_info.overloads, key=cpp_arg_names)
+            sigs = sorted(sigs, key=sig_sort_key)
+            cpp_sigs_without_ptr = sorted(cpp_sigs_without_ptr, key=sig_sort_key)
+            cpp_sigs_with_ptr = sorted(cpp_sigs_with_ptr, key=sig_sort_key)
+
+            without_ptr_matches = matches(sigs, cpp_sigs_without_ptr)
+            with_ptr_matches = matches(sigs, cpp_sigs_with_ptr)
+
+            if without_ptr_matches > with_ptr_matches:
+                cpp_sigs = cpp_sigs_without_ptr
+            else:
+                cpp_sigs = cpp_sigs_with_ptr
+
+            def format_args(sig):
+                return ', '.join(f"{arg.name}: {arg.type}" for arg in sig.args)
 
             for overload_num, (py_sig, cpp_sig) in enumerate(zip(sigs, cpp_sigs)):
-                # boost erroneously adds a self arg to some methods: remove it
-                if not cpp_sig.isStatic():
-                    py_sig = self.fix_self_arg(py_sig, ctx)
-                    sigs[overload_num] = py_sig
-                
-                # Fix pointer return types
-                if len(py_sig.args) != len(cpp_sig.params):
-                    cpp_params = []
-                    ptr_results = []
-                    for arg_type, arg_name in cpp_sig.params:
-                        if "*" in arg_type:
-                            # a pointer result
-                            ptr_results.append((arg_type, arg_name))
-                        else:
-                            cpp_params.append((arg_type, arg_name))                             
-                else:
-                    cpp_params = cpp_sig.params
-                    
-                if len(py_sig.args) != len(cpp_params):
-                    notifier.warn("Sigs differ", "(%d of %d): %s" % (overload_num + 1, len(sigs), ctx.fullname))
-                    print("   ", [(arg.name, arg.type) for arg in py_sig.args])
-                    print("   ", [(arg[1], arg[0]) for arg in cpp_sig.params])
+                if len(py_sig.args) != len(cpp_sig.args):
+                    py_summary = "   py   ({})".format(format_args(py_sig))
+                    cpp_summary = "   cpp  ({})".format(format_args(cpp_sig))
+                    cpp_summary1 = " {} cpp! ({})".format(without_ptr_matches, format_args(cpp_sigs_without_ptr[overload_num]))
+                    cpp_summary2 = " {} cpp* ({})".format(with_ptr_matches, format_args(cpp_sigs_with_ptr[overload_num]))
+                    num_sigs = len(sigs)
+                    curr_overload = overload_num + 1
+                    notifier.warn("Sigs differ", 
+                                  ctx.module_name,
+                                  f"({curr_overload} of {num_sigs}): {ctx.fullname}\n{py_summary}\n{cpp_summary}\n{cpp_summary1}\n{cpp_summary2}")
                     sigs[overload_num] = self.cleanup_sig_types(py_sig, ctx)
                 else:
                     args = []
-                    for py_arg, cpp_arg in zip(py_sig.args, cpp_sig.params):
-                        py_type = self.infer_type(py_arg.type, cpp_arg[0], ctx)
+                    for py_arg, cpp_arg in zip(py_sig.args, cpp_sig.args):
+                        py_type = self.infer_type(py_arg.type, cpp_arg.type, ctx)
                         args.append(ArgSig(py_arg.name, py_type, py_arg.default))
 
-                    return_type = self.infer_type(py_sig.ret_type, cpp_sig.returnType, ctx, is_result=True)
+                    return_type = self.infer_type(py_sig.ret_type, cpp_sig.ret_type, ctx, is_result=True)
                     if py_sig.ret_type == "list" and not return_type.startswith('list['):
-                        # trust boost over the cpp docs in this case. it's probably a ptr result.
+                        # trust boost over the c++ docs in this case. it's probably a ptr result.
                         return_type = py_sig.ret_type
                         
                     sigs[overload_num] = FunctionSig(py_sig.name, args, return_type)
@@ -682,8 +732,7 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
             full_type_name = doc_info.get_full_py_type(type_name.split(".")[-1], self.module_name)
             if full_type_name is not None:
                 return full_type_name
-        # if 'VersionPolicy' in type_name:
-        #     raise ValueError(type_name, doc_info.get_full_py_type(type_name, self.module_name))
+
         return type_name
 
     #     typename = getattr(typ, "__qualname__", typ.__name__)
@@ -772,7 +821,8 @@ def main(outdir):
     # test()
     # return
     doc_info.populate()
-    # raise ValueError(doc_info.py_types["Stage"], doc_info.get_full_py_type("Stage", "pxr.UsdGeom"))
+    notifier.set_modules(["pxr.Usd"])
+    # raise ValueError(doc_info.py_types["PathArray"], doc_info.get_full_py_type("PathArray", "pxr.UsdGeom"))
     # raise ValueError(doc_info.py_types["VersionPolicy"], doc_info.get_full_py_type("VersionPolicy", "pxr.Usd"))
     # raise ValueError(doc_info.py_types["Matrix3dArray"], doc_info.get_full_py_type("Matrix3dArray", "pxr.Usd"))
     # raise ValueError(doc_info.py_types["Type"], doc_info.get_full_py_type("Type", "pxr.Usd"))
