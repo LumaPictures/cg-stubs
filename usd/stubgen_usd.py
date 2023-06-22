@@ -570,8 +570,9 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
         if is_result and type_name == "object":
             return "Any"
         
+        # FIXME: we need to handle generics, like 'list[Attribute]'
         full_type = doc_info.get_full_py_type(type_name, ctx.module_name, fallback=fallback, current_func=ctx.fullname)
-        if full_type is None and re.match("(Int|Bool|Vec|Short|Doublt|Half|Quat|Range|Rect|Char|Float|Token|Matrix).*Array$", type_name):
+        if full_type is None and re.match("(Int|UInt|Bool|Vec|Short|Doublt|Half|Quat|Range|Rect|Char|Float|Token|Matrix).*Array$", type_name):
             return f"pxr.Vt.{type_name}"
 
         return full_type or type_name
