@@ -13,6 +13,7 @@ import mypy.stubgen
 import mypy.stubgenc
 import mypy.stubutil
 from mypy.fastparse import parse_type_comment
+from mypy.stubdoc import ArgSig
 from mypy.stubgen import main as stubgen_main
 from mypy.stubgenc import \
     DocstringSignatureGenerator as FunctionContext, FunctionSig, SignatureGenerator, infer_method_args
@@ -29,7 +30,55 @@ from stubgenlib import BaseSigFixer, BoostDocstringSignatureGenerator
 
 SetDebugMode(False)
 
-def py_obj_exists(pypath: str) -> bool:
+# FIXME: there's a python func for this
+# a python identifier
+IDENTIFIER = r'([a-zA-Z_][a-zA-Z0-9_]*)'
+STRIP = r'\b(?:const|friend|constexpr)\b'
+TYPE_MAP = [
+    (r'\bVtArray<\s*SdfAssetPath\s*>', 'SdfAssetPathArray'),
+    (r'\bstd::string\b', 'str'),
+    (r'\bstring\b', 'str'),
+    (r'\bsize_t\b', 'int'),
+    (r'\bchar\b', 'str'),
+    (r'\bstd::function<(.+)\((.*)\)>', r'Callable[[\2],\1]'),
+    (r'\bstd::vector\b', 'list'),
+    (r'\bstd::pair\b', 'tuple'),
+    (r'\bstd::set\b', 'list'),
+    (r'\bdouble\b', 'float'),
+    (r'\bboost::python::', ''),
+    (r'\bvoid\b', 'None'),
+    (r'\b' + IDENTIFIER + r'Vector\b', r'list[\1]'),
+    (r'\bTfToken\b', 'str'),
+    (r'\bVtDictionary\b', 'dict'),
+    (r'\bUsdMetadataValueMap\b', 'dict'),
+    # strip suffixes
+    (r'RefPtr\b', ''),
+    (r'Ptr\b', ''),
+    (r'ConstHandle\b', ''),
+    (r'Const\b', ''),
+    (r'Handle\b', ''),
+]
+
+RENAMES =[
+    # simple renames:
+    (r'\bSdfBatchNamespaceEdit\b', 'pxr.Sdf.NamespaceEdit'),
+    # Sdf mapping types:
+    (r'\bSdfLayerHandleSet\b', 'list[pxr.Sdf.Layer]'),
+    (r'\bSdfDictionaryProxy\b', 'pxr.Sdf.MapEditProxy_VtDictionary'),
+    (r'\bSdfReferencesProxy\b', 'pxr.Sdf.ReferenceTypePolicy'),
+    (r'\bSdfSubLayerProxy\b', 'pxr.Sdf.ListProxy_SdfSubLayerTypePolicy'),
+    # pathKey
+    (r'\bSdfInheritsProxy\b', 'pxr.Sdf.ListEditorProxy_SdfPathKeyPolicy'),
+    (r'\bSdfSpecializesProxy\b', 'pxr.Sdf.ListEditorProxy_SdfPathKeyPolicy'),
+    # nameTokenKey
+    (r'\bSdfNameOrderProxy\b', 'pxr.Sdf.ListProxy_SdfNameTokenKeyPolicy'),
+    (r'\bSdfNameChildrenOrderProxy\b', 'pxr.Sdf.ListProxy_SdfNameTokenKeyPolicy'),
+    (r'\bSdfPropertyOrderProxy\b', 'pxr.Sdf.ListProxy_SdfNameTokenKeyPolicy'),
+    # nameKey
+    (r'\bSdfVariantSetNamesProxy\b', 'pxr.Sdf.ListEditorProxy_SdfNameKeyPolicy'),
+]
+
+def is_existing_obj(pypath: str) -> bool:
     try:
         return pydoc.locate(pypath) is not None
     except AttributeError:
@@ -145,11 +194,183 @@ class Notifier:
             print(f"  {key}: {count}")
 
 
+def maybe_result(parts: list[str]) -> bool:
+    """
+    return if the argument looks like a c++ result
+    """
+    return 'const' not in parts and ('*' in parts or '&' in parts)
+
+
+def should_strip_part(x: str) -> bool:
+    """
+    whether the part looks like a c++ keyword
+    """
+    return x.endswith('_API') or not x
+
+
+class SourceInfo:
+    """
+    Helper for converting c++ data to python data, using info parsed from the
+    source
+    """
+    def __init__(self, srcdir: str | None = None, verbose=False):
+        self.srcdir = srcdir
+        self._valid_modules = None
+        self._implicitly_convertible_types = None
+        self.verbose = verbose
+
+    # def get_valid_modules(self):
+    #     """
+    #     get a cached list of modules from the source
+    #     """
+    #     if self._valid_modules is None:
+    #         import pkgutil
+    #         macro_dir = os.path.join(self.srcdir, 'cmake/macros')
+    #         if not os.path.exists(macro_dir):
+    #             raise RuntimeError("Cannot find cmake macro directory: %s" % macro_dir)
+    #         sys.path.append(macro_dir)
+    #         import pxr
+    #         self._valid_modules = sorted(
+    #             get_submodules(pxr.__path__),
+    #             reverse=True)
+    #     return self._valid_modules
+
+    def get_implicitly_convertible_types(self) -> dict[str, set[str]]:
+        """
+        inspect the boost-python code to parse the rules for implicitly
+        convertible types
+        """
+        if self.srcdir is None:
+            return {}
+        # FIXME: add module prefixes to all types (Output, Input, Parameter, etc are not prefixed)
+        # FIXME: parse other conversions defined using TfPyContainerConversions
+        if self._implicitly_convertible_types is None:
+            output = subprocess.check_output(
+                ['grep', 'implicitly_convertible', '-r',
+                 os.path.join(self.srcdir, 'pxr'),
+                 '--include=wrap*.cpp'], text=True)
+            code_reg = re.compile(r'\s+implicitly_convertible<\s*(?P<from>(%s|:)+),\s*(?P<to>(%s|:)+)\s*>\(\)' %
+                                  (IDENTIFIER, IDENTIFIER))
+            result = defaultdict(set)
+            for line in output.split('\n'):
+                line = line.strip()
+                if line:
+                    path, code = line.split(':', 1)
+                    if '.template.' in path:
+                        # skip jinja templates
+                        continue
+                    # each line looks like:
+                    # 'src/pxr/base/lib/gf/wrapQuatd.cpp:    implicitly_convertible<GfQuatf, GfQuatd>();'
+                    m = code_reg.search(code)
+                    if m:
+                        match = m.groupdict()
+                        from_type = match['from']
+                        to_type = match['to']
+                        if to_type == 'This':
+                            parts = path.split(os.path.sep)
+                            name = os.path.splitext(parts[-1])[0]
+                            assert name.startswith('wrap')
+                            to_type = self.to_python_id(capitalize(parts[-2]) + name[4:])
+                        to_type = self.convert_typestr(to_type, is_arg=None)[0]
+                        from_type = self.convert_typestr(from_type, is_arg=None)[0]
+                        result[to_type].add(from_type)
+                    elif self.verbose:
+                        print("no match", line)
+            self._implicitly_convertible_types = dict(result)
+            # print(list(self._implicitly_convertible_types.keys()))
+        return self._implicitly_convertible_types
+
+    # def split_module(self, typestr: str) -> list[str]:
+    #     """
+    #     split the c++ type into module name and object name
+    #     """
+    #     for mod in self.get_valid_modules():
+    #         if typestr.startswith(mod):
+    #             s = typestr[len(mod):]
+    #             if s and (s[0].isupper() or s[0] == '_'):
+    #                 return [mod, s]
+    #     # if typestr.startswith('_'):
+    #     #     result = split_module(typestr[1:])
+    #     #     if len(result) == 2:
+    #     #         return result
+    #     return [typestr]
+
+    # def to_python_id(self, typestr: str) -> str:
+    #     parts = self.split_module(typestr)
+    #     if len(parts) == 1:
+    #         return parts[0]
+    #     else:
+    #         mod = parts[0]
+    #         name = parts[1]
+    #         return 'pxr.' + mod + '.' + name
+
+    def add_implicit_unions(self, typestr: str) -> str:
+        """
+        wrap the type string in a Union[] if it is in the list of types with known
+        implicit conversions.
+
+        Parameters
+        ----------
+        typestr : str
+            fully qualified python type identifier
+        """
+        others = self.get_implicitly_convertible_types().get(typestr)
+        if others is not None:
+            return 'Union[%s]' % ', '.join([typestr] + sorted(others))
+        else:
+            return typestr
+
+    def cpp_arg_to_py_type(self, typestr: str, is_arg: bool | None = True) -> tuple[str, bool]:
+        """
+        Convert a c++ type string to a python type string
+
+        Returns the new typestring and whether the type appears to be a return value
+        """
+        orig = typestr
+        parts = typestr.split()
+        is_result = maybe_result(parts)
+
+        # remove extraneous bits
+        parts = [re.sub(STRIP, '', x) .replace('*', '').replace('&', '').strip() for x in parts]
+        parts = [x for x in parts if not should_strip_part(x)]
+        typestr = ''.join(parts)
+
+        for pattern, replace in RENAMES:
+            new_typestr = re.sub(pattern, replace, typestr)
+            if new_typestr != typestr:
+                return new_typestr, is_result
+
+        for pattern, replace in TYPE_MAP:
+            typestr = re.sub(pattern, replace, typestr)
+
+        # swap container syntax
+        typestr = typestr.replace('<', '[')
+        typestr = typestr.replace('>', ']')
+        # convert to python identifers
+        parts = [(doc_info.cpp_to_py_type(x) or x) for x in re.split(IDENTIFIER, typestr)]
+
+        # note: None is a valid value for is_arg
+        if is_arg is True and not is_result:
+            parts = [self.add_implicit_unions(x) for x in parts]
+
+        typestr = ''.join(parts)
+        typestr = typestr.replace(',', ', ')
+        typestr = typestr.replace('::', '.')
+        return typestr, is_result
+
+    # def convert_default(self, valuestr: str ) -> str | None:
+    #     for pattern, replace in DEFAULT_VAL_MAP:
+    #         valuestr = re.sub(pattern, replace, valuestr)
+    #     return self.convert_typestr(valuestr, is_arg=False)[0]
+
+
 class DocInfo:
+    """Get info from parsed doxygen docs"""
+
     def __init__(self, xml_index_file: str, pxr_modules):
         self.xml_index_file = xml_index_file
         self.pxr_modules_names = sorted(pxr_modules, key=len, reverse=True)
-        self.cpp_sigs: dict[str: SigInfo] = {}
+        self.cpp_sigs: dict[str, SigInfo] = {}
         # mapping of short names to full python paths
         self.py_types = defaultdict(list)
 
@@ -161,13 +382,13 @@ class DocInfo:
 
         if docElem.isClass() or docElem.isEnum():
             cpp_path = "::".join(d.name for d in docElemPath[1:])
-            py_type = self.cpp_to_py_type_name(cpp_path)
+            py_type = self.cpp_to_py_type(cpp_path)
             if py_type is not None:
                 # short to long
-                short_name, full_name = py_type
-                if py_obj_exists(full_name):
-                    print(f"Found type {full_name} ({short_name})")
-                    self.py_types[short_name].append(full_name)
+                short_name = py_type.split(".")[-1]
+                if is_existing_obj(py_type):
+                    print(f"Found type {py_type} ({short_name})")
+                    self.py_types[short_name].append(py_type)
 
         for childName, childObjectList in docElem.children.items():
             childElem = childObjectList[0]
@@ -193,20 +414,32 @@ class DocInfo:
         for docElement in docElements:
             self._populate_map([docElement])
 
-    def cpp_to_py_type_name(self, cpp_type_name: str) -> str | None:
+    def cpp_to_py_type(self, cpp_type_name: str) -> str | None:
         """
         Convert from cpp object path to python object path.
-        
-        Returns a tuple of (short_name, long_name).
+
+        pxr::SdfPath -> pxr.Sdf.Path
+        SdfPath      -> pxr.Sdf.Path
         """
+        if cpp_type_name.startswith('pxr::'):
+            cpp_type_name = cpp_type_name[len('pxr::'):]
         for mod in self.pxr_modules_names:
             if cpp_type_name.startswith(mod):
-                py_type = cpp_type_name[len(mod):]
-                parts = py_type.split("::")
+                parts = cpp_type_name[len(mod):].split("::")
                 parts = ["pxr", mod] + parts
-                return (parts[-1], ".".join(parts))
+                return  ".".join(parts)
         return None
 
+    def to_python_id(self, typestr: str) -> str:
+        typestr = strip_pxr_namespace(typestr)
+        parts = self.split_module(typestr)
+        if len(parts) == 1:
+            return parts[0]
+        else:
+            mod = parts[0]
+            name = parts[1]
+            return 'pxr.' + mod + '.' + name
+    
     @staticmethod
     def py_to_cpp_func_paths(pypath: str) -> list[tuple[str, str]]:
         """
@@ -231,9 +464,13 @@ class DocInfo:
                 "{module}{func}".format(module=module, func=remainder[0])),
             ]
         else:
-            notifier.warn("Unexpected number of parts", "%s" % pypath)
+            # notifier.warn("Unexpected number of parts", "%s" % pypath)
             results = []
         return results
+
+    def format_cpp_sig(self, doc_elem: DocElement):
+        params = ", ".join([f"{p[1]}: {p[0]}" for p in doc_elem.params])
+        return f"def {doc_elem.name}({params}) -> {doc_elem.returnType}: ..."
 
     def _lookup_sig_info(self, cpp_paths: list[tuple[str, str]]) -> SigInfo | None:
         for _, cpp_path in cpp_paths:
@@ -245,33 +482,31 @@ class DocInfo:
                 return data
         return None
     
-    def format_cpp_sig(self, doc_elem: DocElement):
-        params = ", ".join([f"{p[1]}: {p[0]}" for p in doc_elem.params])
-        return f"def {doc_elem.name}({params}) -> {doc_elem.returnType}: ..."
-
     def lookup_sig_info(self, pypath: str) -> SigInfo | None:
         "Get cpp signature info from a full python object path"
         return self._lookup_sig_info(self.py_to_cpp_func_paths(pypath))
 
-    def lookup_py_path(self, short_type_name: str, current_module: str) -> str | None:
+    def get_full_py_type(self, short_type_name: str, current_module: str, fallback = None) -> str | None:
         """Get a full python object path from a short type name
         
         Returns None if the type was not found.
         """
-        full_type_names = doc_info.py_types.get(short_type_name)
+        full_type_names = self.py_types.get(short_type_name)
         if not full_type_names:
             # Note: bool, int, list, etc end up here.
-            # print(f"No type found for {short_type_name!r} (in {current_module})")
-            return None
+            return fallback if fallback is not None else None
         if len(full_type_names) > 1:
             # FIXME: this would be best resolved by looking at the ccp sig info
             # favor the type in the current module
             for full_type in full_type_names:
                 if full_type.startswith(current_module + "."):
                     return short_type_name
-            notifier.warn("Ambiguous type loookup",  
-                          f"{short_type_name!r} (in {current_module}) -> {full_type_names}")
-            return None
+            if fallback is not None and fallback in full_type_names:
+                return fallback
+            else:
+                notifier.warn("Ambiguous type loookup",  
+                            f"{short_type_name!r} (in {current_module}) -> {full_type_names}")
+                return None
         return full_type_names[0]
 
 
@@ -281,12 +516,8 @@ modules = get_submodules(pxr.__path__)
 notifier = Notifier()
 
 doc_info = DocInfo(os.environ["USD_XML_INDEX"], modules)
-doc_info.populate()
 
-
-# raise ValueError(doc_info.py_types["VersionPolicy"], doc_info.lookup_py_path("VersionPolicy", "pxr.Usd"))
-# raise ValueError(doc_info.py_types["Matrix3dArray"], doc_info.lookup_py_path("Matrix3dArray", "pxr.Usd"))
-# raise ValueError(doc_info.py_types["Type"], doc_info.lookup_py_path("Type", "pxr.Usd"))
+src_info = SourceInfo()
 
 # Notes
 # - python args do not always match cpp args
@@ -304,7 +535,7 @@ doc_info.populate()
 # - it's apparent that the order of overloads differs between boost and doxygen for at least some functions: 
 #   pxr.Sdf.CopySpec, pxr.Usd.TraverseInstanceProxies.  FIXED (mostly)
 # - Matrix3dArray and other math types in Vt don't seem to be in the docs 
-        
+#     
 
 class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, BaseSigFixer):
 
@@ -321,10 +552,22 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
         return [self.fix_self_arg(sig, ctx) for sig in sigs]
 
     def cleanup_type(self, type_name: str, ctx: FunctionContext, is_result: bool) -> str:
+        """
+        called by cleanup_sig_types.
+        
+        This is only used when no cpp sig info is available
+        """
         if is_result and type_name == "object":
             return "Any"
-        # FIXME: type_name not found. this will likely require correction
-        return doc_info.lookup_py_path(type_name, ctx.module_name) or type_name
+        return doc_info.get_full_py_type(type_name, ctx.module_name) or type_name
+
+    def infer_type(self, py_type: str | None, cpp_type: str, ctx: FunctionContext, is_result: bool = False) -> str | None:
+        if py_type in ("object", "list"):
+            # boost is reliable with most other types, such as int, bool, dict, tuple
+            py_type = src_info.cpp_arg_to_py_type(cpp_type, is_arg=not is_result)[0]
+        elif py_type is not None:
+            py_type = doc_info.get_full_py_type(py_type, ctx.module_name) or py_type           
+        return py_type
 
     def get_function_sig(
         self, default_sig: FunctionSig, ctx: FunctionContext
@@ -349,13 +592,13 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
             return (len(py_sig.args), [arg.name for arg in py_sig.args])
     
         cpp_info = doc_info.lookup_sig_info(ctx.fullname)
-        if cpp_info is None:
+        if cpp_info is None or len(sigs) != len(cpp_info.overloads):
+            if cpp_info is not None:
+                notifier.warn(
+                    "Number of overloads do not match",
+                    "(py {} != cpp {}): {}".format(len(sigs), len(cpp_info.overloads), ctx.fullname))
             sigs = self.fix_self_args(sigs, ctx)
-        elif len(sigs) != len(cpp_info.overloads):
-            notifier.warn(
-                "Number of overloads do not match",
-                "(py {} != cpp {}): {}".format(len(sigs), len(cpp_info.overloads), ctx.fullname))
-            sigs = self.fix_self_args(sigs, ctx)
+            sigs = [self.cleanup_sig_types(sig, ctx) for sig in sigs]
         else:
             # the order of overloads between boost and doxygen do not match. sort based on
             # the list of arg.
@@ -378,13 +621,7 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
                             # a pointer result
                             ptr_results.append((arg_type, arg_name))
                         else:
-                            cpp_params.append((arg_type, arg_name))
-                    if cpp_sig.returnType == "void" and py_sig.ret_type in ("object", "Any"):
-                        # TODO: use ptr param as return type
-                        pass
-                    elif py_sig.ret_type == "tuple":
-                        # TODO: add ptr params to the tuple return type
-                        pass                                
+                            cpp_params.append((arg_type, arg_name))                             
                 else:
                     cpp_params = cpp_sig.params
                     
@@ -392,16 +629,20 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
                     notifier.warn("Sigs differ", "(%d of %d): %s" % (overload_num + 1, len(sigs), ctx.fullname))
                     print("   ", [(arg.name, arg.type) for arg in py_sig.args])
                     print("   ", [(arg[1], arg[0]) for arg in cpp_sig.params])
+                    sigs[overload_num] = self.cleanup_sig_types(py_sig, ctx)
+                else:
+                    args = []
+                    for py_arg, cpp_arg in zip(py_sig.args, cpp_sig.params):
+                        py_type = self.infer_type(py_arg.type, cpp_arg[0], ctx)
+                        args.append(ArgSig(py_arg.name, py_type, py_arg.default))
 
-                # if len(sig.args) == len(cpp_sig.params):
-                    # for arg, cpp_arg in zip(sig.args, cpp_sig.params):
-                    #     if arg.type == 'object':
-                    #         print(ctx.fullname)
-                    #         print(sigs)
-                    #         print(cpp_sigs)
-                    #         raise RuntimeError
-                            # cpp_sigs
-        sigs = [self.cleanup_sig_types(sig, ctx) for sig in sigs]
+                    return_type = self.infer_type(py_sig.ret_type, cpp_sig.returnType, ctx, is_result=True)
+                    if py_sig.ret_type == "list" and not return_type.startswith('list['):
+                        # trust boost over the cpp docs in this case. it's probably a ptr result.
+                        return_type = py_sig.ret_type
+                        
+                    sigs[overload_num] = FunctionSig(py_sig.name, args, return_type)
+
         # FIXME: remove dupes
         return sigs
 
@@ -419,6 +660,8 @@ def remove_redundant_submodule(module_name: str) -> str:
 class CStubGenerator(mypy.stubgenc.CStubGenerator):
     """
     Make objects in pxr.Sdf._sdf appear to be defined in pxr.Sdf.
+
+    The downside of this is that both pxr.Sdf._sdf and pxr.Sdf.__init__ are processed 
     """
 
     def __init__(self, *args, **kwargs):
@@ -435,12 +678,12 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
     def get_type_fullname(self, typ: type) -> str:
         type_name = super().get_type_fullname(typ)
         # enums may leave out their parent class.  e.g. pxr.Usd.VersionPolicy should be pxr.Usd.SchemaRegistry.VersionPolicy
-        if type_name.startswith("pxr.") and not py_obj_exists(type_name):
-            full_type_name = doc_info.lookup_py_path(type_name.split(".")[-1], self.module_name)
+        if type_name.startswith("pxr.") and not is_existing_obj(type_name):
+            full_type_name = doc_info.get_full_py_type(type_name.split(".")[-1], self.module_name)
             if full_type_name is not None:
                 return full_type_name
         # if 'VersionPolicy' in type_name:
-        #     raise ValueError(type_name, doc_info.lookup_py_path(type_name, self.module_name))
+        #     raise ValueError(type_name, doc_info.get_full_py_type(type_name, self.module_name))
         return type_name
 
     #     typename = getattr(typ, "__qualname__", typ.__name__)
@@ -491,6 +734,8 @@ mypy.stubgenc.NoParseStubGenerator = CStubGenerator
 # class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
 #     """
 #     Make objects in pxr.Sdf appear to be defined in pxr.Sdf._sdf.
+#
+#     The downside of this approach is that types in the stubs are idenfified as pxr.Sdf._sdf.Foo
 #     """
 
 #     def get_obj_module(self, obj: object) -> str | None:
@@ -519,7 +764,19 @@ mypy.stubgenc.NoParseStubGenerator = CStubGenerator
 # mypy.stubgen.NoParseStubGenerator = NoParseStubGenerator
 # mypy.stubgenc.NoParseStubGenerator = NoParseStubGenerator
 
+def test():
+    assert src_info.cpp_arg_to_py_type('PCP_API SdfLayerHandleSet')[0] == 'list[pxr.Sdf.Layer]'
+    assert src_info.cpp_arg_to_py_type('std::function<bool( UsdAttribute const&)>const&')[0] == "Callable[[pxr.Usd.Attribute], bool]"
+
 def main(outdir):
+    # test()
+    # return
+    doc_info.populate()
+    # raise ValueError(doc_info.py_types["Stage"], doc_info.get_full_py_type("Stage", "pxr.UsdGeom"))
+    # raise ValueError(doc_info.py_types["VersionPolicy"], doc_info.get_full_py_type("VersionPolicy", "pxr.Usd"))
+    # raise ValueError(doc_info.py_types["Matrix3dArray"], doc_info.get_full_py_type("Matrix3dArray", "pxr.Usd"))
+    # raise ValueError(doc_info.py_types["Type"], doc_info.get_full_py_type("Type", "pxr.Usd"))
+
     stubgen_main(['-p', 'pxr', '--verbose', '--no-parse', f'-o={outdir}'])
     notifier.print_summary()
 
