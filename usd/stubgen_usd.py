@@ -14,10 +14,9 @@ import mypy.stubgenc
 import mypy.stubutil
 from mypy.fastparse import parse_type_comment
 from mypy.stubgen import main as stubgen_main
-from mypy.stubgenc import ArgSig
 from mypy.stubgenc import \
-    DocstringSignatureGenerator as CDocstringSignatureGenerator
-from mypy.stubgenc import FunctionContext, FunctionSig, SignatureGenerator
+    DocstringSignatureGenerator as FunctionContext, FunctionSig, SignatureGenerator, infer_method_args
+from mypy.stubutil import infer_method_ret_type
 
 mypy.stubutil.NOT_IMPORTABLE_MODULES = ('pxr.Tf.testenv', 'pxr.Tf.testenv.testTfScriptModuleLoader_AAA_RaisesError')
 
@@ -320,6 +319,15 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
         if not sigs:
             return None
 
+        if ctx.class_info is not None and ctx.name.startswith("__") and ctx.name.endswith("__"):
+            # correct special methods which may have bogus args or values
+            args = infer_method_args(ctx.name, ctx.class_info.self_var)
+            if all(arg.type is not None for arg in args[1:]):
+                sigs = [sig._replace(args=args) for sig in sigs]
+            ret_type = infer_method_ret_type(ctx.name)
+            if ret_type is not None:
+                sigs = [sig._replace(ret_type=ret_type) for sig in sigs]
+
         def cpp_arg_names(cpp_sig: DocElement) -> tuple[int, list[str]]:
             return (len(cpp_sig.params), [p[1] for p in cpp_sig.params])
     
@@ -379,6 +387,7 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
                     #         raise RuntimeError
                             # cpp_sigs
         sigs = [self.cleanup_sig_types(sig, ctx) for sig in sigs]
+        # FIXME: remove dupes
         return sigs
 
 
@@ -488,3 +497,7 @@ mypy.stubgenc.NoParseStubGenerator = CStubGenerator
 def main(outdir):
     stubgen_main(['-p', 'pxr', '--verbose', '--no-parse', f'-o={outdir}'])
     notifier.print_summary()
+
+# real    2m10.416s
+# user    4m9.176s
+# sys     0m13.360s
