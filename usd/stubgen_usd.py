@@ -29,6 +29,13 @@ from stubgenlib import BaseSigFixer, BoostDocstringSignatureGenerator
 
 SetDebugMode(False)
 
+def py_obj_exists(pypath: str) -> bool:
+    try:
+        return pydoc.locate(pypath) is not None
+    except AttributeError:
+        return False
+
+
 def get_submodules(pacakge_paths: list[str]) -> list[str]:
     """
     Given the name of a python mdoule, get a list of names of its child modules
@@ -146,28 +153,20 @@ class DocInfo:
         # mapping of short names to full python paths
         self.py_types = defaultdict(list)
 
-    def _get_py_type_name(self, cpp_type_name: str) -> str | None:
-        for mod in self.pxr_modules_names:
-            if cpp_type_name.startswith(mod):
-                short_py_type = cpp_type_name[len(mod):]
-                short_py_type = short_py_type.replace("::", ".")
-                long_py_type = f"pxr.{mod}.{short_py_type}"
-                return (short_py_type, long_py_type)
-        return None
-
     def _populate_map(self, docElemPath: list[DocElement]) -> None:
         """
         docElemPath : list of DocElements from the root to the documented item
         """
         docElem = docElemPath[-1]
 
-        if docElem.isClass():
-            py_type = self._get_py_type_name(docElem.name)
+        if docElem.isClass() or docElem.isEnum():
+            cpp_path = "::".join(d.name for d in docElemPath[1:])
+            py_type = self.cpp_to_py_type_name(cpp_path)
             if py_type is not None:
                 # short to long
                 short_name, full_name = py_type
-                if pydoc.locate(full_name):
-                    print("Found type", full_name)
+                if py_obj_exists(full_name):
+                    print(f"Found type {full_name} ({short_name})")
                     self.py_types[short_name].append(full_name)
 
         for childName, childObjectList in docElem.children.items():
@@ -182,7 +181,7 @@ class DocInfo:
                 cppPath = '::'.join(x.name for x in parents + [childElem])
                 self.cpp_sigs[cppPath] = info
  
-            # recurse through all of this element's children too
+            # recurse through all of this element's children
             for child in childObjectList:
                 self._populate_map(docElemPath + [child])
 
@@ -194,8 +193,25 @@ class DocInfo:
         for docElement in docElements:
             self._populate_map([docElement])
 
+    def cpp_to_py_type_name(self, cpp_type_name: str) -> str | None:
+        """
+        Convert from cpp object path to python object path.
+        
+        Returns a tuple of (short_name, long_name).
+        """
+        for mod in self.pxr_modules_names:
+            if cpp_type_name.startswith(mod):
+                py_type = cpp_type_name[len(mod):]
+                parts = py_type.split("::")
+                parts = ["pxr", mod] + parts
+                return (parts[-1], ".".join(parts))
+        return None
+
     @staticmethod
-    def get_cpp_func_paths(pypath: str) -> list[tuple[str, str]]:
+    def py_to_cpp_func_paths(pypath: str) -> list[tuple[str, str]]:
+        """
+        Convert from python object path to cpp object path
+        """
         parts = pypath.split(".")
         module = parts[1]
         # pxr.Sdf.Path.FindLongestPrefix -> 
@@ -235,7 +251,7 @@ class DocInfo:
 
     def lookup_sig_info(self, pypath: str) -> SigInfo | None:
         "Get cpp signature info from a full python object path"
-        return self._lookup_sig_info(self.get_cpp_func_paths(pypath))
+        return self._lookup_sig_info(self.py_to_cpp_func_paths(pypath))
 
     def lookup_py_path(self, short_type_name: str, current_module: str) -> str | None:
         """Get a full python object path from a short type name
@@ -256,12 +272,7 @@ class DocInfo:
             notifier.warn("Ambiguous type loookup",  
                           f"{short_type_name!r} (in {current_module}) -> {full_type_names}")
             return None
-        full_type_name = full_type_names[0]
-        if full_type_name.startswith(current_module + "."):
-            # the found type is in the current module.  use the short name
-            return short_type_name
-        else:
-            return full_type_name
+        return full_type_names[0]
 
 
 import pxr
@@ -271,6 +282,11 @@ notifier = Notifier()
 
 doc_info = DocInfo(os.environ["USD_XML_INDEX"], modules)
 doc_info.populate()
+
+
+# raise ValueError(doc_info.py_types["VersionPolicy"], doc_info.lookup_py_path("VersionPolicy", "pxr.Usd"))
+# raise ValueError(doc_info.py_types["Matrix3dArray"], doc_info.lookup_py_path("Matrix3dArray", "pxr.Usd"))
+# raise ValueError(doc_info.py_types["Type"], doc_info.lookup_py_path("Type", "pxr.Usd"))
 
 # Notes
 # - python args do not always match cpp args
@@ -286,7 +302,8 @@ doc_info.populate()
 # - it seems that free functions are not collected by the pixar parser. some of these are added as static
 #   methods to python classes: e.g. SdfPathFindLongestPrefix -> Path.FindLongestPrefix
 # - it's apparent that the order of overloads differs between boost and doxygen for at least some functions: 
-#   pxr.Sdf.CopySpec, pxr.Usd.TraverseInstanceProxies
+#   pxr.Sdf.CopySpec, pxr.Usd.TraverseInstanceProxies.  FIXED (mostly)
+# - Matrix3dArray and other math types in Vt don't seem to be in the docs 
         
 
 class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, BaseSigFixer):
@@ -306,11 +323,8 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
     def cleanup_type(self, type_name: str, ctx: FunctionContext, is_result: bool) -> str:
         if is_result and type_name == "object":
             return "Any"
-        new_type_name = doc_info.lookup_py_path(type_name, ctx.module_name)
-        if new_type_name is None:
-            # FIXME: type_name not found. this will likely require correction
-            new_type_name = type_name
-        return new_type_name
+        # FIXME: type_name not found. this will likely require correction
+        return doc_info.lookup_py_path(type_name, ctx.module_name) or type_name
 
     def get_function_sig(
         self, default_sig: FunctionSig, ctx: FunctionContext
@@ -344,7 +358,8 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
             sigs = self.fix_self_args(sigs, ctx)
         else:
             # the order of overloads between boost and doxygen do not match. sort based on
-            # the list of arg
+            # the list of arg.
+            # FIXME: should we remove ptr args first?
             sigs = sorted(sigs, key=py_arg_names)
             cpp_sigs = sorted(cpp_info.overloads, key=cpp_arg_names)
 
@@ -417,7 +432,17 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
             return remove_redundant_submodule(module_name)
         return None
 
-    # def get_type_fullname(self, typ: type) -> str:
+    def get_type_fullname(self, typ: type) -> str:
+        type_name = super().get_type_fullname(typ)
+        # enums may leave out their parent class.  e.g. pxr.Usd.VersionPolicy should be pxr.Usd.SchemaRegistry.VersionPolicy
+        if type_name.startswith("pxr.") and not py_obj_exists(type_name):
+            full_type_name = doc_info.lookup_py_path(type_name.split(".")[-1], self.module_name)
+            if full_type_name is not None:
+                return full_type_name
+        # if 'VersionPolicy' in type_name:
+        #     raise ValueError(type_name, doc_info.lookup_py_path(type_name, self.module_name))
+        return type_name
+
     #     typename = getattr(typ, "__qualname__", typ.__name__)
     #     module_name = self.get_obj_module(typ)
     #     # FIXME: if the module is missing it's not guaranteed to be the current module
@@ -443,7 +468,7 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
         return [UsdBoostDocstringSignatureGenerator()]
     
     def is_classmethod(self, class_info: ClassInfo, name: str, obj: object) -> bool:
-        # in boost python, it is impossible to distinguish between classmethod and instance method
+        # in boost python it is impossible to distinguish between classmethod and instance method
         # so we consult the docs
         sig_info = doc_info.lookup_sig_info(f"{self.module_name}.{class_info.name}.{name}")
         if sig_info:
