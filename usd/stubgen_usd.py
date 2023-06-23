@@ -33,6 +33,7 @@ SetDebugMode(False)
 # FIXME: there's a python func for this
 # a python identifier
 IDENTIFIER = r'([a-zA-Z_][a-zA-Z0-9_]*)'
+PYPATH = r'((?:[a-zA-Z_][a-zA-Z0-9_]*)(?:[.][a-zA-Z_][a-zA-Z0-9_]*)*)'
 STRIP = r'\b(?:const|friend|constexpr)\b'
 TYPE_MAP = [
     (r'\bVtArray<\s*SdfAssetPath\s*>', 'SdfAssetPathArray'),
@@ -251,6 +252,10 @@ class SourceInfo:
         assert name.startswith('wrap')
         return doc_info.to_python_id(capitalize(parts[-2]) + name[4:])
 
+    @staticmethod
+    def is_array_py_type(py_type: str):
+        return bool(re.match(r"(Int|UInt|Bool|Vec|Short|Doublt|Half|Quat|Range|Rect|Char|Float|Token|Matrix).*Array$", py_type))
+
     def get_implicitly_convertible_types(self) -> dict[str, set[str]]:
         """
         inspect the boost-python code to parse the rules for implicitly
@@ -338,8 +343,10 @@ class SourceInfo:
         # swap container syntax
         typestr = typestr.replace('<', '[')
         typestr = typestr.replace('>', ']')
+
         # convert to python identifers
-        parts = [(doc_info.to_python_id(x) or x) for x in re.split(IDENTIFIER, typestr)]
+        parts = [x for x in re.split(IDENTIFIER, typestr) if x]
+        parts = [(doc_info.to_python_id(x) or x) for x in parts]
 
         # note: None is a valid value for is_arg
         if is_arg is True and not is_result:
@@ -427,21 +434,21 @@ class DocInfo:
                 return  ".".join(parts)
         return None
 
-    def split_module(self, typestr: str) -> list[str]:
+    def split_module(self, cpp_type: str) -> list[str]:
         """
         split the c++ type into module name and object name
         """
         for mod in self.pxr_modules_names:
-            if typestr.startswith(mod):
-                s = typestr[len(mod):]
+            if cpp_type.startswith(mod):
+                s = cpp_type[len(mod):]
                 if s and (s[0].isupper() or s[0] == '_'):
                     return [mod, s]
-        return [typestr]
+        return [cpp_type]
 
     # FIXME: reconcile this with the method above
-    def to_python_id(self, cpp_type_name: str) -> str:
-        cpp_type_name = self.strip_pxr_namespace(cpp_type_name)
-        parts = self.split_module(cpp_type_name)
+    def to_python_id(self, cpp_type: str) -> str:
+        cpp_type = self.strip_pxr_namespace(cpp_type)
+        parts = self.split_module(cpp_type)
         if len(parts) == 1:
             return parts[0]
         else:
@@ -481,7 +488,7 @@ class DocInfo:
         params = ", ".join([f"{p[1]}: {p[0]}" for p in doc_elem.params])
         return f"def {doc_elem.name}({params}) -> {doc_elem.returnType}: ..."
 
-    def _lookup_sig_info(self, cpp_paths: list[tuple[str, str]]) -> SigInfo | None:
+    def _get_cpp_sig_info(self, cpp_paths: list[tuple[str, str]]) -> SigInfo | None:
         for _, cpp_path in cpp_paths:
             try:
                 data = self.cpp_sigs[cpp_path]
@@ -491,9 +498,9 @@ class DocInfo:
                 return data
         return None
     
-    def lookup_sig_info(self, pypath: str) -> SigInfo | None:
+    def get_cpp_sig_info(self, pypath: str) -> SigInfo | None:
         "Get cpp signature info from a full python object path"
-        return self._lookup_sig_info(self.py_to_cpp_func_paths(pypath))
+        return self._get_cpp_sig_info(self.py_to_cpp_func_paths(pypath))
 
     def get_full_py_type(self, short_type_name: str, current_module: str, fallback: str | None = None, current_func: str | None = None) -> str | None:
         """Get a full python object path from a short type name
@@ -562,38 +569,60 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
     def fix_self_args(self, sigs: list[FunctionSig], ctx: FunctionContext) -> list[FunctionSig]:
         return [self.fix_self_arg(sig, ctx) for sig in sigs]
 
-    def cleanup_type(self, type_name: str, ctx: FunctionContext, is_result: bool, fallback = None) -> str:
+    def cleanup_type(self, boost_py_type: str, ctx: FunctionContext, is_result: bool, fallback = None) -> str:
         """
         Called by cleanup_sig_types.
 
-        Apply fixes for known types/functions.
+        - Apply fixes for known types/functions.
+        - Use the docs to try to determine a full name.
         """
         if ctx.name == "_GetStaticTfType" and is_result:
             return "pxr.Tf.Type"
 
-        if is_result and type_name == "object":
+        if is_result and boost_py_type == "object":
             return "Any"
         
-        # FIXME: we need to handle generics, like 'list[Attribute]'
-        full_type = doc_info.get_full_py_type(type_name, ctx.module_name, fallback=fallback, current_func=ctx.fullname)
-        if full_type is None and re.match("(Int|UInt|Bool|Vec|Short|Doublt|Half|Quat|Range|Rect|Char|Float|Token|Matrix).*Array$", type_name):
-            return f"pxr.Vt.{type_name}"
+        # handle generics, like 'list[Attribute]'
+        parts = [x for x in re.split(PYPATH, boost_py_type) if x]
 
-        return full_type or type_name
+        if len(parts) > 1:
+            notifier.warn("Ignoring fallback for compound type",
+                          ctx.module_name,
+                          f"{boost_py_type} -> {parts}")
+            fallback = None
 
-    def infer_type(self, py_type: str | None, cpp_type: str, ctx: FunctionContext, is_result: bool = False) -> str | None:
+        new_parts = []
+        for sub_py_type in parts:
+            full_type = doc_info.get_full_py_type(sub_py_type, ctx.module_name, fallback=fallback, current_func=ctx.fullname)
+            if full_type is None and src_info.is_array_py_type(sub_py_type):
+                sub_py_type = f"pxr.Vt.{sub_py_type}"
+            elif full_type:
+                sub_py_type = full_type
+            if not is_result:
+                sub_py_type = src_info.add_implicit_unions(sub_py_type)
+            new_parts.append(sub_py_type)
+        py_type = ''.join(new_parts)
+        return py_type
+
+    def infer_type(self, boost_py_type: str | None, cpp_type: str, ctx: FunctionContext, is_result: bool = False) -> str | None:
         """
         Use multiple approaches to create a best guess at a python type name.
+
+        - Try to convert the c++ type to a python 
+        - Apply fixes for known types/functions.
+        - Use the docs to try to determine a full name.
 
         py_type : python type inferred by boost
         cpp_type : c++ type scraped from the docs
         """
         converted_py_type = src_info.cpp_arg_to_py_type(cpp_type, is_arg=not is_result)[0]
-        if py_type in ("object", "list"):
+        if boost_py_type in ("object", "list"):
             # boost is reliable with most other types, such as int, bool, dict, tuple
             py_type = converted_py_type
-        elif py_type is not None:
-            py_type = self.cleanup_type(py_type, ctx, is_result, fallback=converted_py_type) or py_type           
+        elif boost_py_type is not None:
+            py_type = self.cleanup_type(boost_py_type, ctx, is_result, fallback=converted_py_type) or boost_py_type
+        else:
+            py_type = None        
         return py_type
 
     def get_function_sig(
@@ -614,14 +643,11 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
             ret_type = infer_method_ret_type(ctx.name)
             if ret_type is not None:
                 sigs = [sig._replace(ret_type=ret_type) for sig in sigs]
-
-        # def cpp_arg_names(cpp_sig: DocElement) -> tuple[int, list[str]]:
-        #     return (len(cpp_sig.params), [p[1] for p in cpp_sig.params])
     
         def sig_sort_key(py_sig: FunctionSig) -> tuple[int, tuple[str, ...]]:
             return (len(py_sig.args), tuple([arg.name for arg in py_sig.args]))
     
-        cpp_info = doc_info.lookup_sig_info(ctx.fullname)
+        cpp_info = doc_info.get_cpp_sig_info(ctx.fullname)
         if cpp_info is None or len(sigs) != len(cpp_info.overloads):
             sigs = self.fix_self_args(sigs, ctx)
             sigs = [self.cleanup_sig_types(sig, ctx) for sig in sigs]
@@ -773,7 +799,7 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
     def is_classmethod(self, class_info: ClassInfo, name: str, obj: object) -> bool:
         # in boost python it is impossible to distinguish between classmethod and instance method
         # so we consult the docs
-        sig_info = doc_info.lookup_sig_info(f"{self.module_name}.{class_info.name}.{name}")
+        sig_info = doc_info.get_cpp_sig_info(f"{self.module_name}.{class_info.name}.{name}")
         if sig_info:
             parent = sig_info.parent
             if parent.isClass():
@@ -837,7 +863,7 @@ def main(outdir):
     # return
 
     doc_info.populate()
-    notifier.set_modules(["pxr.UsdUtils"])
+    notifier.set_modules(["pxr.Sdf"])
     # raise ValueError(doc_info.py_types["PathArray"], doc_info.get_full_py_type("PathArray", "pxr.UsdGeom"))
     # raise ValueError(doc_info.py_types["VersionPolicy"], doc_info.get_full_py_type("VersionPolicy", "pxr.Usd"))
     # raise ValueError(doc_info.py_types["Matrix3dArray"], doc_info.get_full_py_type("Matrix3dArray", "pxr.Usd"))
