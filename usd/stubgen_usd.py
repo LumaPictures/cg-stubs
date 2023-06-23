@@ -1,6 +1,6 @@
 from __future__ import absolute_import, annotations, division, print_function
 
-import importlib
+import subprocess
 import pkgutil
 import os
 import re
@@ -92,6 +92,10 @@ def get_submodules(pacakge_paths: list[str]) -> list[str]:
     """
     import pkgutil
     return [loader.name for loader in pkgutil.iter_modules(pacakge_paths)]
+
+
+def capitalize(s: str) -> str:
+    return s[0].upper() + s[1:]
 
 
 # def get_fullpath(obj: object) -> str | None:
@@ -241,6 +245,12 @@ class SourceInfo:
     #             reverse=True)
     #     return self._valid_modules
 
+    def get_type_from_path(self, path):
+        parts = path.split(os.path.sep)
+        name = os.path.splitext(parts[-1])[0]
+        assert name.startswith('wrap')
+        return doc_info.to_python_id(capitalize(parts[-2]) + name[4:])
+
     def get_implicitly_convertible_types(self) -> dict[str, set[str]]:
         """
         inspect the boost-python code to parse the rules for implicitly
@@ -248,6 +258,7 @@ class SourceInfo:
         """
         if self.srcdir is None:
             return {}
+
         # FIXME: add module prefixes to all types (Output, Input, Parameter, etc are not prefixed)
         # FIXME: parse other conversions defined using TfPyContainerConversions
         if self._implicitly_convertible_types is None:
@@ -273,42 +284,17 @@ class SourceInfo:
                         from_type = match['from']
                         to_type = match['to']
                         if to_type == 'This':
-                            parts = path.split(os.path.sep)
-                            name = os.path.splitext(parts[-1])[0]
-                            assert name.startswith('wrap')
-                            to_type = self.to_python_id(capitalize(parts[-2]) + name[4:])
-                        to_type = self.convert_typestr(to_type, is_arg=None)[0]
-                        from_type = self.convert_typestr(from_type, is_arg=None)[0]
+                            to_type = self.get_type_from_path(path)
+                        if from_type == 'This':
+                            from_type = self.get_type_from_path(path)
+                        to_type = self.cpp_arg_to_py_type(to_type, is_arg=None)[0]
+                        from_type = self.cpp_arg_to_py_type(from_type, is_arg=None)[0]
                         result[to_type].add(from_type)
                     elif self.verbose:
                         print("no match", line)
             self._implicitly_convertible_types = dict(result)
             # print(list(self._implicitly_convertible_types.keys()))
         return self._implicitly_convertible_types
-
-    # def split_module(self, typestr: str) -> list[str]:
-    #     """
-    #     split the c++ type into module name and object name
-    #     """
-    #     for mod in self.get_valid_modules():
-    #         if typestr.startswith(mod):
-    #             s = typestr[len(mod):]
-    #             if s and (s[0].isupper() or s[0] == '_'):
-    #                 return [mod, s]
-    #     # if typestr.startswith('_'):
-    #     #     result = split_module(typestr[1:])
-    #     #     if len(result) == 2:
-    #     #         return result
-    #     return [typestr]
-
-    # def to_python_id(self, typestr: str) -> str:
-    #     parts = self.split_module(typestr)
-    #     if len(parts) == 1:
-    #         return parts[0]
-    #     else:
-    #         mod = parts[0]
-    #         name = parts[1]
-    #         return 'pxr.' + mod + '.' + name
 
     def add_implicit_unions(self, typestr: str) -> str:
         """
@@ -322,7 +308,7 @@ class SourceInfo:
         """
         others = self.get_implicitly_convertible_types().get(typestr)
         if others is not None:
-            return 'Union[%s]' % ', '.join([typestr] + sorted(others))
+            return ' | '.join([typestr] + sorted(others))
         else:
             return typestr
 
@@ -353,7 +339,7 @@ class SourceInfo:
         typestr = typestr.replace('<', '[')
         typestr = typestr.replace('>', ']')
         # convert to python identifers
-        parts = [(doc_info.cpp_to_py_type(x) or x) for x in re.split(IDENTIFIER, typestr)]
+        parts = [(doc_info.to_python_id(x) or x) for x in re.split(IDENTIFIER, typestr)]
 
         # note: None is a valid value for is_arg
         if is_arg is True and not is_result:
@@ -420,6 +406,12 @@ class DocInfo:
         for docElement in docElements:
             self._populate_map([docElement])
 
+    @staticmethod
+    def strip_pxr_namespace(cpp_type_name):
+        if cpp_type_name.startswith('pxr::'):
+            cpp_type_name = cpp_type_name[len('pxr::'):]
+        return cpp_type_name
+
     def cpp_to_py_type(self, cpp_type_name: str) -> str | None:
         """
         Convert from cpp object path to python object path.
@@ -427,8 +419,7 @@ class DocInfo:
         pxr::SdfPath -> pxr.Sdf.Path
         SdfPath      -> pxr.Sdf.Path
         """
-        if cpp_type_name.startswith('pxr::'):
-            cpp_type_name = cpp_type_name[len('pxr::'):]
+        cpp_type_name = self.strip_pxr_namespace(cpp_type_name)
         for mod in self.pxr_modules_names:
             if cpp_type_name.startswith(mod):
                 parts = cpp_type_name[len(mod):].split("::")
@@ -436,15 +427,27 @@ class DocInfo:
                 return  ".".join(parts)
         return None
 
-    # def to_python_id(self, typestr: str) -> str:
-    #     typestr = strip_pxr_namespace(typestr)
-    #     parts = self.split_module(typestr)
-    #     if len(parts) == 1:
-    #         return parts[0]
-    #     else:
-    #         mod = parts[0]
-    #         name = parts[1]
-    #         return 'pxr.' + mod + '.' + name
+    def split_module(self, typestr: str) -> list[str]:
+        """
+        split the c++ type into module name and object name
+        """
+        for mod in self.pxr_modules_names:
+            if typestr.startswith(mod):
+                s = typestr[len(mod):]
+                if s and (s[0].isupper() or s[0] == '_'):
+                    return [mod, s]
+        return [typestr]
+
+    # FIXME: reconcile this with the method above
+    def to_python_id(self, cpp_type_name: str) -> str:
+        cpp_type_name = self.strip_pxr_namespace(cpp_type_name)
+        parts = self.split_module(cpp_type_name)
+        if len(parts) == 1:
+            return parts[0]
+        else:
+            mod = parts[0]
+            name = parts[1]
+            return f'pxr.{mod}.{name}'
     
     @staticmethod
     def py_to_cpp_func_paths(pypath: str) -> list[tuple[str, str]]:
@@ -524,7 +527,7 @@ notifier = Notifier()
 
 doc_info = DocInfo(os.environ["USD_XML_INDEX"], modules)
 
-src_info = SourceInfo()
+src_info = SourceInfo(srcdir=os.environ["USD_SOURCE_ROOT"])
 
 # Notes
 # - python args do not always match cpp args
@@ -828,6 +831,11 @@ def test():
 def main(outdir):
     # test()
     # return
+    # import pprint
+    # assert src_info.srcdir is not None
+    # pprint.pprint(src_info.get_implicitly_convertible_types())
+    # return
+
     doc_info.populate()
     notifier.set_modules(["pxr.UsdUtils"])
     # raise ValueError(doc_info.py_types["PathArray"], doc_info.get_full_py_type("PathArray", "pxr.UsdGeom"))
