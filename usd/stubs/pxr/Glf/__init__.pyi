@@ -33,49 +33,49 @@ class GLQueryObject(Boost.Python.instance):
 
 class SimpleLight(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    ambient: type
-    attenuation: type
-    diffuse: type
-    hasShadow: type
+    ambient: pxr.Gf.Vec4f
+    attenuation: pxr.Gf.Vec3f
+    diffuse: pxr.Gf.Vec4f
+    hasShadow: Any
     id: Any
-    isCameraSpaceLight: type
-    isDomeLight: type
-    position: type
-    shadowBias: type
-    shadowBlur: type
-    shadowIndexEnd: type
-    shadowIndexStart: type
-    shadowMatrices: type
-    shadowResolution: type
-    specular: type
-    spotCutoff: type
-    spotDirection: type
-    spotFalloff: type
-    transform: type
+    isCameraSpaceLight: bool
+    isDomeLight: bool
+    position: pxr.Gf.Vec4f
+    shadowBias: float
+    shadowBlur: float
+    shadowIndexEnd: int
+    shadowIndexStart: int
+    shadowMatrices: list[pxr.Gf.Matrix4d]
+    shadowResolution: int
+    specular: pxr.Gf.Vec4f
+    spotCutoff: float
+    spotDirection: pxr.Gf.Vec3f
+    spotFalloff: float
+    transform: pxr.Gf.Matrix4d
     def __init__(self) -> None: ...
     def __reduce__(self) -> Any: ...
 
 class SimpleMaterial(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    ambient: type
-    diffuse: type
-    emission: type
-    shininess: type
-    specular: type
+    ambient: pxr.Gf.Vec4f
+    diffuse: pxr.Gf.Vec4f
+    emission: pxr.Gf.Vec4f
+    shininess: float
+    specular: pxr.Gf.Vec4f
     def __init__(self) -> None: ...
     def __reduce__(self) -> Any: ...
 
 class Texture(Boost.Python.instance):
-    memoryRequested: type
+    memoryRequested: int
     def __init__(self, *args, **kwargs) -> None: ...
     @classmethod
     def GetTextureMemoryAllocated(cls) -> int: ...
     def __reduce__(self) -> Any: ...
     @property
-    def magFilterSupported(self) -> type: ...
+    def magFilterSupported(self) -> Any: ...
     @property
-    def memoryUsed(self) -> type: ...
+    def memoryUsed(self) -> int: ...
     @property
-    def minFilterSupported(self) -> type: ...
+    def minFilterSupported(self) -> Any: ...
 
 def RegisterDefaultDebugOutputMessageCallback() -> None: ...

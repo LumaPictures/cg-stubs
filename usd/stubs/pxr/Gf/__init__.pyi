@@ -4,9 +4,9 @@ from typing import Any, ClassVar, overload
 
 class BBox3d(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    box: Any
+    box: Range3d
     hasZeroAreaPrimitives: Any
-    matrix: Any
+    matrix: Matrix4d
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -61,17 +61,17 @@ class Camera(Boost.Python.instance):
     Orthographic: ClassVar[Camera.Projection] = ...
     Perspective: ClassVar[Camera.Projection] = ...
     __instance_size__: ClassVar[int] = ...
-    clippingPlanes: type
-    clippingRange: type
-    fStop: type
-    focalLength: type
-    focusDistance: type
-    horizontalAperture: type
-    horizontalApertureOffset: type
-    projection: type
-    transform: type
-    verticalAperture: type
-    verticalApertureOffset: type
+    clippingPlanes: list[Vec4f]
+    clippingRange: Range1f
+    fStop: float
+    focalLength: float
+    focusDistance: float
+    horizontalAperture: float
+    horizontalApertureOffset: float
+    projection: Projection
+    transform: Matrix4d
+    verticalAperture: float
+    verticalApertureOffset: float
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -86,17 +86,17 @@ class Camera(Boost.Python.instance):
     def __ne__(self, other: object) -> bool: ...
     def __reduce__(self) -> Any: ...
     @property
-    def aspectRatio(self) -> type: ...
+    def aspectRatio(self) -> float: ...
     @property
-    def frustum(self) -> type: ...
+    def frustum(self) -> Frustum: ...
     @property
     def horizontalFieldOfView(self) -> Any: ...
     @property
     def verticalFieldOfView(self) -> Any: ...
 
 class DualQuatd(Boost.Python.instance):
-    dual: Any
-    real: Any
+    dual: Quatd
+    real: Quatd
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -147,8 +147,8 @@ class DualQuatd(Boost.Python.instance):
     def __truediv__(self, arg2: float) -> Any: ...
 
 class DualQuatf(Boost.Python.instance):
-    dual: Any
-    real: Any
+    dual: Quatf
+    real: Quatf
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -201,8 +201,8 @@ class DualQuatf(Boost.Python.instance):
     def __truediv__(self, arg2: float) -> Any: ...
 
 class DualQuath(Boost.Python.instance):
-    dual: Any
-    real: Any
+    dual: Quath
+    real: Quath
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -266,12 +266,12 @@ class Frustum(Boost.Python.instance):
     Orthographic: ClassVar[Frustum.ProjectionType] = ...
     Perspective: ClassVar[Frustum.ProjectionType] = ...
     __instance_size__: ClassVar[int] = ...
-    nearFar: Any
-    position: Any
-    projectionType: Any
-    rotation: Any
-    viewDistance: Any
-    window: Any
+    nearFar: Range1d
+    position: Vec3d
+    projectionType: Frustum.ProjectionType
+    rotation: Rotation
+    viewDistance: float
+    window: Range2d
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -384,9 +384,9 @@ class Interval(Boost.Python.instance):
     @property
     def finite(self) -> Any: ...
     @property
-    def isEmpty(self) -> Any: ...
+    def isEmpty(self) -> bool: ...
     @property
-    def max(self) -> Any: ...
+    def max(self) -> float: ...
     @property
     def maxClosed(self) -> Any: ...
     @property
@@ -394,7 +394,7 @@ class Interval(Boost.Python.instance):
     @property
     def maxOpen(self) -> Any: ...
     @property
-    def min(self) -> Any: ...
+    def min(self) -> float: ...
     @property
     def minClosed(self) -> Any: ...
     @property
@@ -402,11 +402,11 @@ class Interval(Boost.Python.instance):
     @property
     def minOpen(self) -> Any: ...
     @property
-    def size(self) -> Any: ...
+    def size(self) -> float: ...
 
 class Line(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    direction: Any
+    direction: Vec3d
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -433,9 +433,9 @@ class LineSeg(Boost.Python.instance):
     def __ne__(self, other: object) -> bool: ...
     def __reduce__(self) -> Any: ...
     @property
-    def direction(self) -> Any: ...
+    def direction(self) -> Vec3d: ...
     @property
-    def length(self) -> Any: ...
+    def length(self) -> float: ...
 
 class Matrix2d(Boost.Python.instance):
     dimension: ClassVar[Any] = ...  # read-only
@@ -1110,11 +1110,11 @@ class MultiInterval(Boost.Python.instance):
     def __ne__(self, other: object) -> bool: ...
     def __reduce__(self) -> Any: ...
     @property
-    def bounds(self) -> Any: ...
+    def bounds(self) -> Interval: ...
     @property
-    def isEmpty(self) -> Any: ...
+    def isEmpty(self) -> bool: ...
     @property
-    def size(self) -> Any: ...
+    def size(self) -> int: ...
 
 class Plane(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
@@ -1151,13 +1151,13 @@ class Plane(Boost.Python.instance):
     def __ne__(self, other: object) -> bool: ...
     def __reduce__(self) -> Any: ...
     @property
-    def distanceFromOrigin(self) -> Any: ...
+    def distanceFromOrigin(self) -> float: ...
     @property
-    def normal(self) -> Any: ...
+    def normal(self) -> Vec3d: ...
 
 class Quatd(Boost.Python.instance):
-    imaginary: Any
-    real: Any
+    imaginary: Vec3d
+    real: float
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -1209,8 +1209,8 @@ class Quatd(Boost.Python.instance):
 
 class Quaternion(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    imaginary: Any
-    real: Any
+    imaginary: Vec3d
+    real: float
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -1251,8 +1251,8 @@ class Quaternion(Boost.Python.instance):
     def __truediv__(self, arg2: float) -> Any: ...
 
 class Quatf(Boost.Python.instance):
-    imaginary: Any
-    real: Any
+    imaginary: Vec3f
+    real: float
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -1305,8 +1305,8 @@ class Quatf(Boost.Python.instance):
     def __truediv__(self, arg2: float) -> Any: ...
 
 class Quath(Boost.Python.instance):
-    imaginary: Any
-    real: Any
+    imaginary: Vec3h
+    real: Half
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -1363,8 +1363,8 @@ class Quath(Boost.Python.instance):
 class Range1d(Boost.Python.instance):
     dimension: ClassVar[Any] = ...  # read-only
     __instance_size__: ClassVar[int] = ...
-    max: Any
-    min: Any
+    max: float
+    min: float
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -1419,8 +1419,8 @@ class Range1d(Boost.Python.instance):
 class Range1f(Boost.Python.instance):
     dimension: ClassVar[Any] = ...  # read-only
     __instance_size__: ClassVar[int] = ...
-    max: Any
-    min: Any
+    max: float
+    min: float
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -1476,8 +1476,8 @@ class Range2d(Boost.Python.instance):
     dimension: ClassVar[Any] = ...  # read-only
     unitSquare: ClassVar[Any] = ...  # read-only
     __instance_size__: ClassVar[int] = ...
-    max: Any
-    min: Any
+    max: Vec2d
+    min: Vec2d
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -1535,8 +1535,8 @@ class Range2f(Boost.Python.instance):
     dimension: ClassVar[Any] = ...  # read-only
     unitSquare: ClassVar[Any] = ...  # read-only
     __instance_size__: ClassVar[int] = ...
-    max: Any
-    min: Any
+    max: Vec2f
+    min: Vec2f
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -1594,8 +1594,8 @@ class Range3d(Boost.Python.instance):
     dimension: ClassVar[Any] = ...  # read-only
     unitCube: ClassVar[Any] = ...  # read-only
     __instance_size__: ClassVar[int] = ...
-    max: Any
-    min: Any
+    max: Vec3d
+    min: Vec3d
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -1653,8 +1653,8 @@ class Range3f(Boost.Python.instance):
     dimension: ClassVar[Any] = ...  # read-only
     unitCube: ClassVar[Any] = ...  # read-only
     __instance_size__: ClassVar[int] = ...
-    max: Any
-    min: Any
+    max: Vec3f
+    min: Vec3f
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -1710,8 +1710,8 @@ class Range3f(Boost.Python.instance):
 
 class Ray(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    direction: type
-    startPoint: type
+    direction: Vec3d
+    startPoint: Vec3d
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -1728,12 +1728,12 @@ class Ray(Boost.Python.instance):
 
 class Rect2i(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    max: Any
-    maxX: Any
-    maxY: Any
-    min: Any
-    minX: Any
-    minY: Any
+    max: Vec2i
+    maxX: int
+    maxY: int
+    min: Vec2i
+    minX: int
+    minY: int
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -1776,8 +1776,8 @@ class Rect2i(Boost.Python.instance):
 
 class Rotation(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    angle: Any
-    axis: Any
+    angle: float
+    axis: Vec3d
     @overload
     def __init__(self) -> None: ...
     @overload
@@ -1896,11 +1896,11 @@ class Size3(Boost.Python.instance):
 
 class Transform(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    pivotOrientation: Any
-    pivotPosition: Any
-    rotation: Any
-    scale: Any
-    translation: Any
+    pivotOrientation: Rotation
+    pivotPosition: Vec3d
+    rotation: Rotation
+    scale: Vec3d
+    translation: Vec3d
     @overload
     def __init__(self) -> None: ...
     @overload

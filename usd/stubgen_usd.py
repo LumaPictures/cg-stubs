@@ -468,16 +468,30 @@ class DocInfo:
         #   SdfPathFindLongestPrefix
         remainder = parts[2:]
         if len(remainder) == 2:
-            results = [
-                ("method", 
-                "{module}{cls}::{func}".format(module=module, cls=remainder[0], func=remainder[1])),
-                ("func", 
-                "{module}{cls}{func}".format(module=module, cls=remainder[0], func=remainder[1])),
-            ]
+            cls, func = remainder                            
+            if func[0].islower():
+                # special cases:
+                #   cpp -> CPP
+                #   String -> Token
+                if func.startswith("is"):
+                    func = capitalize(func)
+                else:
+                    func = "Get" + capitalize(func)
+                results = [
+                    # cpp->py
+                    ("method->property", f"{module}{cls}::{func}"),
+                ]
+            else:
+                results = [
+                    # cpp->py
+                    ("method->method", f"{module}{cls}::{func}"),
+                    ("func->staticmethod", f"{module}{cls}{func}"),
+                ]
         elif len(remainder) == 1:
+            func=remainder[0]
             results = [
-                ("func", 
-                "{module}{func}".format(module=module, func=remainder[0])),
+                # py-cpp
+                ("func->func",  f"{module}{func}"),
             ]
         else:
             # notifier.warn("Unexpected number of parts", "%s" % pypath)
@@ -557,7 +571,7 @@ src_info = SourceInfo(srcdir=os.environ["USD_SOURCE_ROOT"])
 
 class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, BaseSigFixer):
 
-    def fix_self_arg(self, sig: FunctionSig, ctx: FunctionContext) -> FunctionSig:
+    def _fix_self_arg(self, sig: FunctionSig, ctx: FunctionContext) -> FunctionSig:
         "boost erroneously adds a self arg to some methods: remove it"
         if (len(sig.args) >= 1 and ctx.class_info and 
                 sig.args[0].name == "arg1" and not sig.args[0].default and
@@ -566,8 +580,8 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
         else:
             return sig
 
-    def fix_self_args(self, sigs: list[FunctionSig], ctx: FunctionContext) -> list[FunctionSig]:
-        return [self.fix_self_arg(sig, ctx) for sig in sigs]
+    def _fix_self_args(self, sigs: list[FunctionSig], ctx: FunctionContext) -> list[FunctionSig]:
+        return [self._fix_self_arg(sig, ctx) for sig in sigs]
 
     def cleanup_type(self, boost_py_type: str, ctx: FunctionContext, is_result: bool, fallback = None) -> str:
         """
@@ -598,25 +612,25 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
                 sub_py_type = f"pxr.Vt.{sub_py_type}"
             elif full_type:
                 sub_py_type = full_type
-            if not is_result:
+            if not is_result and sub_py_type:
                 sub_py_type = src_info.add_implicit_unions(sub_py_type)
             new_parts.append(sub_py_type)
         py_type = ''.join(new_parts)
         return py_type
 
-    def infer_type(self, boost_py_type: str | None, cpp_type: str, ctx: FunctionContext, is_result: bool = False) -> str | None:
+    def _infer_type(self, boost_py_type: str | None, cpp_type: str, ctx: FunctionContext, is_result: bool = False) -> str | None:
         """
         Use multiple approaches to create a best guess at a python type name.
 
-        - Try to convert the c++ type to a python 
+        - Try to convert the c++ type to a python type.
         - Apply fixes for known types/functions.
         - Use the docs to try to determine a full name.
 
-        py_type : python type inferred by boost
+        boost_py_type : python type inferred by boost
         cpp_type : c++ type scraped from the docs
         """
         converted_py_type = src_info.cpp_arg_to_py_type(cpp_type, is_arg=not is_result)[0]
-        if boost_py_type in ("object", "list"):
+        if boost_py_type in (None, "object", "list"):
             # boost is reliable with most other types, such as int, bool, dict, tuple
             py_type = converted_py_type
         elif boost_py_type is not None:
@@ -625,31 +639,20 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
             py_type = None        
         return py_type
 
-    def get_function_sig(
-        self, default_sig: FunctionSig, ctx: FunctionContext
-    ) -> list[FunctionSig] | None:
-        sigs = super().get_function_sig(default_sig, ctx)
-        if not sigs:
-            return None
+    def _processs_sigs(
+        self, sigs: list[FunctionSig], ctx: FunctionContext
+    ) -> list[FunctionSig]:
+
+        def sig_sort_key(py_sig: FunctionSig) -> tuple[int, tuple[str, ...]]:
+            return (len(py_sig.args), tuple([arg.name for arg in py_sig.args]))
 
         def format_args(sig):
             return ', '.join(f"{arg.name}: {arg.type}" for arg in sig.args)
 
-        if ctx.class_info is not None and ctx.name.startswith("__") and ctx.name.endswith("__"):
-            # correct special methods which boost may have given bogus args or values
-            args = infer_method_args(ctx.name, ctx.class_info.self_var)
-            if all(arg.type is not None for arg in args[1:]):
-                sigs = [sig._replace(args=args) for sig in sigs]
-            ret_type = infer_method_ret_type(ctx.name)
-            if ret_type is not None:
-                sigs = [sig._replace(ret_type=ret_type) for sig in sigs]
-    
-        def sig_sort_key(py_sig: FunctionSig) -> tuple[int, tuple[str, ...]]:
-            return (len(py_sig.args), tuple([arg.name for arg in py_sig.args]))
-    
         cpp_info = doc_info.get_cpp_sig_info(ctx.fullname)
         if cpp_info is None or len(sigs) != len(cpp_info.overloads):
-            sigs = self.fix_self_args(sigs, ctx)
+            sigs = self._fix_self_args(sigs, ctx)
+            # apply fixes that don't rely on c++ docs:
             sigs = [self.cleanup_sig_types(sig, ctx) for sig in sigs]
             if cpp_info is None:
                 notifier.warn("No c++ info found", ctx.module_name, ctx.fullname)
@@ -666,7 +669,7 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
                     "(py {} != cpp {}): {}\n{}".format(len(sigs), len(cpp_info.overloads), ctx.fullname, summary))
         else:
             if not cpp_info.overloads[0].isStatic():
-                sigs = self.fix_self_args(sigs, ctx)
+                sigs = self._fix_self_args(sigs, ctx)
 
             cpp_sigs_with_ptr: list[FunctionSig] = []
             for cpp_sig in cpp_info.overloads:
@@ -692,8 +695,11 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
                 return sum(len(sig1.args) == len(sig2.args) for (sig1, sig2) in zip(sigs1, sigs2))
 
             # the order of overloads between boost and doxygen do not match. sort based on
-            # the list of arg.
+            # the list of args.
             sigs = sorted(sigs, key=sig_sort_key)
+
+            # determine whether to move return-by-ptr args to results or not. USD code is not consistent about
+            # one approach over the other. 
             cpp_sigs_without_ptr = sorted(cpp_sigs_without_ptr, key=sig_sort_key)
             cpp_sigs_with_ptr = sorted(cpp_sigs_with_ptr, key=sig_sort_key)
 
@@ -718,20 +724,49 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
                                   f"({curr_overload} of {num_sigs}): {ctx.fullname}\n{py_summary}\n{cpp_summary}\n{cpp_summary1}\n{cpp_summary2}")
                     sigs[overload_num] = self.cleanup_sig_types(py_sig, ctx)
                 else:
+                    # created best guesses for python types.
                     args = []
                     for py_arg, cpp_arg in zip(py_sig.args, cpp_sig.args):
-                        py_type = self.infer_type(py_arg.type, cpp_arg.type, ctx)
+                        py_type = self._infer_type(py_arg.type, cpp_arg.type, ctx)
                         args.append(ArgSig(py_arg.name, py_type, py_arg.default))
 
-                    return_type = self.infer_type(py_sig.ret_type, cpp_sig.ret_type, ctx, is_result=True)
+                    return_type = self._infer_type(py_sig.ret_type, cpp_sig.ret_type, ctx, is_result=True)
                     if py_sig.ret_type == "list" and not return_type.startswith('list['):
-                        # trust boost over the c++ docs in this case. it's probably a ptr result.
+                        # c++ info attempted to change the result type. trust boost over the c++ docs in 
+                        # this case. It's probably a ptr result.
                         return_type = py_sig.ret_type
                         
                     sigs[overload_num] = FunctionSig(py_sig.name, args, return_type)
 
         # FIXME: remove dupes
         return sigs
+
+    def get_function_sig(
+        self, default_sig: FunctionSig, ctx: FunctionContext
+    ) -> list[FunctionSig] | None:
+        sigs = super().get_function_sig(default_sig, ctx)
+        if not sigs:
+            return None
+
+        if ctx.class_info is not None and ctx.name.startswith("__") and ctx.name.endswith("__"):
+            # correct special methods which boost may have given bogus args or values
+            args = infer_method_args(ctx.name, ctx.class_info.self_var)
+            if all(arg.type is not None for arg in args[1:]):
+                sigs = [sig._replace(args=args) for sig in sigs]
+            ret_type = infer_method_ret_type(ctx.name)
+            if ret_type is not None:
+                sigs = [sig._replace(ret_type=ret_type) for sig in sigs]
+        
+        return self._processs_sigs(sigs, ctx)
+
+    def get_property_type(
+        self, default_type: str, ctx: FunctionContext
+    ) -> str | None:
+        sigs = [FunctionSig(ctx.name, [],  None)]
+        sigs = self._processs_sigs(sigs, ctx)
+        ret_type = sigs[0].ret_type
+        return ret_type or "Any"
+
 
 
 def remove_redundant_submodule(module_name: str) -> str:
