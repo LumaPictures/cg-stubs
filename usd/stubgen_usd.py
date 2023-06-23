@@ -675,7 +675,7 @@ class UsdBoostDocstringSignatureGenerator(
     def _infer_type(
         self,
         boost_py_type: str | None,
-        cpp_type: str,
+        converted_py_type: str,
         ctx: FunctionContext,
         is_result: bool = False,
     ) -> str | None:
@@ -687,11 +687,8 @@ class UsdBoostDocstringSignatureGenerator(
         - Use the docs to try to determine a full name.
 
         boost_py_type : python type inferred by boost
-        cpp_type : c++ type scraped from the docs
+        converted_py_type : python type converted from c++ type scraped from the docs
         """
-        converted_py_type = src_info.cpp_arg_to_py_type(cpp_type, is_arg=not is_result)[
-            0
-        ]
         if boost_py_type in (None, "object", "list"):
             # boost is reliable with most other types, such as int, bool, dict, tuple
             py_type = converted_py_type
@@ -743,31 +740,40 @@ class UsdBoostDocstringSignatureGenerator(
                 sigs = self._fix_self_args(sigs, ctx)
 
             cpp_sigs_with_ptr: list[FunctionSig] = []
-            for cpp_sig in cpp_info.overloads:
-                cpp_sigs_with_ptr.append(
-                    FunctionSig(
-                        ctx.name,
-                        [
-                            ArgSig(arg_name, arg_type)
-                            for arg_type, arg_name in cpp_sig.params
-                        ],
-                        cpp_sig.returnType,
-                    )
-                )
-
             cpp_sigs_without_ptr: list[FunctionSig] = []
             for cpp_sig in cpp_info.overloads:
-                # Fix pointer return types
-                cpp_args: list[ArgSig] = []
+                args_with_ptr: list[ArgSig] = []
+                args_without_ptr: list[ArgSig] = []
                 ptr_results = []
                 for arg_type, arg_name in cpp_sig.params:
+                    py_arg_type = src_info.cpp_arg_to_py_type(arg_type, is_arg=True)[0]
                     if "*" in arg_type:
                         # a pointer result
-                        ptr_results.append((arg_type, arg_name))
+                        ptr_results.append(py_arg_type)
                     else:
-                        cpp_args.append(ArgSig(arg_name, arg_type))
+                        args_without_ptr.append(ArgSig(arg_name, py_arg_type))
+                    args_with_ptr.append(ArgSig(arg_name, py_arg_type))
+
+                py_ret_type = src_info.cpp_arg_to_py_type(
+                    cpp_sig.returnType, is_arg=False
+                )[0]
+                cpp_sigs_with_ptr.append(
+                    FunctionSig(ctx.name, args_with_ptr, py_ret_type)
+                )
+
+                if ptr_results:
+                    # if ctx.name in ("GetKind", "GetConnectedSource"):
+                    if py_ret_type == "bool":
+                        # as a general rule skip primary bool return value
+                        results = ptr_results
+                    else:
+                        results = [py_ret_type] + ptr_results
+                    if len(results) > 1:
+                        py_ret_type = 'tuple[{}]'.format(', '.join(results))
+                    else:
+                        py_ret_type = results[0]
                 cpp_sigs_without_ptr.append(
-                    FunctionSig(ctx.name, cpp_args, cpp_sig.returnType)
+                    FunctionSig(ctx.name, args_without_ptr, py_ret_type)
                 )
 
             def matches(sigs1, sigs2):
@@ -860,6 +866,7 @@ class UsdBoostDocstringSignatureGenerator(
         sigs = [FunctionSig(ctx.name, [], None)]
         sigs = self._processs_sigs(sigs, ctx)
         ret_type = sigs[0].ret_type
+        # FIXME: fix mypy to also check the evaluated descriptor type
         return ret_type or "Any"
 
 
