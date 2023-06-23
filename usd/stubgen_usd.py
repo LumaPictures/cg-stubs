@@ -543,6 +543,7 @@ src_info = SourceInfo()
 #   pxr.Sdf.CopySpec, pxr.Usd.TraverseInstanceProxies.  FIXED (mostly)
 # - Matrix3dArray and other math types in Vt don't seem to be in the docs 
 # - some wrapped c++ functions don't turn pointers into return types, such as UsdSkelExpandConstantInfluencesToVarying
+# - the stubs for Sdf.ValueTypeNames can be improved with some more work on stubgen
 
 class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, BaseSigFixer):
 
@@ -599,6 +600,9 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
         if not sigs:
             return None
 
+        def format_args(sig):
+            return ', '.join(f"{arg.name}: {arg.type}" for arg in sig.args)
+
         if ctx.class_info is not None and ctx.name.startswith("__") and ctx.name.endswith("__"):
             # correct special methods which boost may have given bogus args or values
             args = infer_method_args(ctx.name, ctx.class_info.self_var)
@@ -616,15 +620,21 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
     
         cpp_info = doc_info.lookup_sig_info(ctx.fullname)
         if cpp_info is None or len(sigs) != len(cpp_info.overloads):
+            sigs = self.fix_self_args(sigs, ctx)
+            sigs = [self.cleanup_sig_types(sig, ctx) for sig in sigs]
             if cpp_info is None:
                 notifier.warn("No c++ info found", ctx.module_name, ctx.fullname)
             else:
+                summary = ""
+                for overload_num, sig in enumerate(sigs):
+                    summary += "   py   ({})\n".format(format_args(sig))
+                for overload_num, sig in enumerate(cpp_info.overloads):
+                    summary += "   cpp  ({})\n".format(", ".join(f"{arg}: {type}" for type, arg in sig.params))
+
                 notifier.warn(
                     "Number of overloads do not match",
                     ctx.module_name,
-                    "(py {} != cpp {}): {}".format(len(sigs), len(cpp_info.overloads), ctx.fullname))
-            sigs = self.fix_self_args(sigs, ctx)
-            sigs = [self.cleanup_sig_types(sig, ctx) for sig in sigs]
+                    "(py {} != cpp {}): {}\n{}".format(len(sigs), len(cpp_info.overloads), ctx.fullname, summary))
         else:
             if not cpp_info.overloads[0].isStatic():
                 sigs = self.fix_self_args(sigs, ctx)
@@ -665,9 +675,6 @@ class UsdBoostDocstringSignatureGenerator(BoostDocstringSignatureGenerator, Base
                 cpp_sigs = cpp_sigs_without_ptr
             else:
                 cpp_sigs = cpp_sigs_with_ptr
-
-            def format_args(sig):
-                return ', '.join(f"{arg.name}: {arg.type}" for arg in sig.args)
 
             for overload_num, (py_sig, cpp_sig) in enumerate(zip(sigs, cpp_sigs)):
                 if len(py_sig.args) != len(cpp_sig.args):
@@ -822,7 +829,7 @@ def main(outdir):
     # test()
     # return
     doc_info.populate()
-    notifier.set_modules(["pxr.Usd"])
+    notifier.set_modules(["pxr.UsdUtils"])
     # raise ValueError(doc_info.py_types["PathArray"], doc_info.get_full_py_type("PathArray", "pxr.UsdGeom"))
     # raise ValueError(doc_info.py_types["VersionPolicy"], doc_info.get_full_py_type("VersionPolicy", "pxr.Usd"))
     # raise ValueError(doc_info.py_types["Matrix3dArray"], doc_info.get_full_py_type("Matrix3dArray", "pxr.Usd"))

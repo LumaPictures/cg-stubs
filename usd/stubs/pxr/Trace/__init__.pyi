@@ -1,5 +1,5 @@
 import Boost.Python
-from typing import Any, Callable, overload
+from typing import Any, Callable, ClassVar, overload
 
 TraceFunction: Callable
 TraceMethod: Callable
@@ -49,6 +49,7 @@ class Collector(Boost.Python.instance):
     def expired(self) -> Any: ...
 
 class Reporter(Boost.Python.instance):
+    globalReporter: ClassVar[Any] = ...  # read-only
     foldRecursiveCalls: type
     groupByFunction: type
     shouldAdjustForOverheadAndNoise: type
@@ -72,8 +73,6 @@ class Reporter(Boost.Python.instance):
     def aggregateTreeRoot(self) -> type: ...
     @property
     def expired(self) -> Any: ...
-    @property
-    def globalReporter(self) -> Any: ...
 
 def GetElapsedSeconds(arg1: int, arg2: int) -> float: ...
 def GetTestEventName() -> str: ...
