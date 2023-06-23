@@ -9,12 +9,11 @@ APPS = [
     "nuke",
     "substance_painter",
 ]
-PARAMS = [
-    nox.param(x, id=x) for x in APPS
-]
+PARAMS = [nox.param(x, id=x) for x in APPS]
 
 
 # TODO: generate pyproject.toml from a jinja template
+
 
 def add_stubs_suffix(path: pathlib.Path):
     for child in path.iterdir():

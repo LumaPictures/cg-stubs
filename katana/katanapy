@@ -49,9 +49,9 @@ try:
             next_is_pycmd = True
         elif next_is_pycmd:
             next_is_pycmd = False
-            fd, temp_filename = tempfile.mkstemp(suffix='.py',
-                                                 prefix='katanapyCommand',
-                                                 dir=getTempDir(), text=True)
+            fd, temp_filename = tempfile.mkstemp(
+                suffix='.py', prefix='katanapyCommand', dir=getTempDir(), text=True
+            )
             with os.fdopen(fd, 'w') as tempfile:
                 tempfile.write(arg)
             cmd_args.append(temp_filename)
@@ -62,8 +62,9 @@ try:
     sys.exit(subprocess.call(cmd, universal_newlines=True))
 except OSError as err:
     if err.errno == errno.ENOENT:
-        print("Could not find Katana executable: ensure that it is on the "
-              "system PATH")
+        print(
+            "Could not find Katana executable: ensure that it is on the " "system PATH"
+        )
         sys.exit(1)
     else:
         raise

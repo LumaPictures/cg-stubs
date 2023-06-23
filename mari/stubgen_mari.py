@@ -7,8 +7,7 @@ import mypy.stubgenc
 from mypy.fastparse import parse_type_comment
 from mypy.stubgen import main
 from mypy.stubgenc import ArgSig
-from mypy.stubgenc import \
-    DocstringSignatureGenerator as CDocstringSignatureGenerator
+from mypy.stubgenc import DocstringSignatureGenerator as CDocstringSignatureGenerator
 from mypy.stubgenc import FunctionContext, FunctionSig, SignatureGenerator
 
 import mari
@@ -21,9 +20,10 @@ mari.__path__ = []
 
 
 class CStubGenerator(mypy.stubgenc.CStubGenerator):
-
     def is_defined_in_module(self, obj: object) -> bool:
-        if self.module_name == 'mari' and getattr(obj, '__module__', '').startswith('mari.Mari'):
+        if self.module_name == 'mari' and getattr(obj, '__module__', '').startswith(
+            'mari.Mari'
+        ):
             return True
         return super().is_defined_in_module(obj)
 

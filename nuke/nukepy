@@ -76,12 +76,10 @@ def getParser():
     parser = argparse.ArgumentParser()
 
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('-c', dest='pycommand',
-                       help='The python command to run.')
+    group.add_argument('-c', dest='pycommand', help='The python command to run.')
     group.add_argument('-m', dest='pymodule', help='The python module to run.')
 
-    parser.add_argument('--cache', help='Cache memory usage limit.',
-                        default='16G')
+    parser.add_argument('--cache', help='Cache memory usage limit.', default='16G')
     parser.add_argument('--threads', help='Number of threads.')
     for f in NUKE_FLAGS:
         parser.add_argument(f)
@@ -104,12 +102,14 @@ def createTempScript(content):
     """
     global temp_filename
 
-    assert not temp_filename, 'Temp script has already been created, ' \
-                              'something is wrong with the passed in args.'
+    assert not temp_filename, (
+        'Temp script has already been created, '
+        'something is wrong with the passed in args.'
+    )
 
-    fd, temp_filename = tempfile.mkstemp(suffix='.py',
-                                         prefix='nukepyCommand',
-                                         dir=getTempDir(), text=True)
+    fd, temp_filename = tempfile.mkstemp(
+        suffix='.py', prefix='nukepyCommand', dir=getTempDir(), text=True
+    )
 
     with os.fdopen(fd, 'w') as tmp:
         tmp.write(content)

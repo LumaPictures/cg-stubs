@@ -14,8 +14,16 @@ import textwrap
 from builtins import filter, next, range
 from collections import OrderedDict
 from typing import (
-    TYPE_CHECKING, Any, Dict, Generic, Iterable, Iterator, List, Optional,
-    Tuple, TypeVar
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generic,
+    Iterable,
+    Iterator,
+    List,
+    Optional,
+    Tuple,
+    TypeVar,
 )
 
 import attr
@@ -44,11 +52,13 @@ else:
 HOUPYI = '/tmp/hou.pyi'
 HOUPYI_OUT = os.path.expandvars('$REPO_PATH/houdini/python/hou.pyi')
 
-PYI_RECORD_FMT = ("## Created stubs from HFS: %s\n"
-                  "# standard mypy stub can be created by running:\n"
-                  "# setpkg houdini\n"
-                  "# $(dirname $(which mypy))/../bin/stubgen "
-                  "--no-import $HH/python3.7libs/hou.py -o $REPO_PATH/houdini/python/")
+PYI_RECORD_FMT = (
+    "## Created stubs from HFS: %s\n"
+    "# standard mypy stub can be created by running:\n"
+    "# setpkg houdini\n"
+    "# $(dirname $(which mypy))/../bin/stubgen "
+    "--no-import $HH/python3.7libs/hou.py -o $REPO_PATH/houdini/python/"
+)
 PYI_RECORD_ADDED_COMMENT = "  ## Added by typing stub update"
 PYI_RECORD_UPDATED_COMMENT = "  ## Updated by typing stub update"
 MODULE_LEVEL_IMPORTS = (
@@ -129,14 +139,12 @@ ARG_TYPE_PATCHES = {
     'positionType.WorldSpace': 'hou.positionType.WorldSpace',
     'promptMessageType.Prompt': 'hou.promptMessageType.Prompt',
     'BoundingBox()': 'hou.BoundingBox()',
-
     # Nested Houdini types which are difficult to parse.
     'ik_Skeleton': '_ik_Skeleton',
     'ik_Target': '_ik_Target',
     'ik_Joint': '_ik_Joint',
     'ik.targetType.Position': 'EnumValue',
     'logging_LogEntry': '_logging_LogEntry',
-
     # English language conversions
     'true': 'True',
     'false': 'False',
@@ -144,7 +152,6 @@ ARG_TYPE_PATCHES = {
     'string': 'str',
     'callback': 'Callable',
     'callbacks': 'Callable',
-
     # Simple C types
     'void': 'None',
     'int64': 'int',
@@ -158,7 +165,6 @@ ARG_TYPE_PATCHES = {
     'BinaryString': 'str',
     'PyObject': 'Any',
     'obj': 'Any',
-
     # More complicated C types
     'hboost::any': 'Any',
     'AdvancedDrawable::DrawH': 'Any',
@@ -167,7 +173,6 @@ ARG_TYPE_PATCHES = {
     'Qt.QtWidgets.QWidget subclass': 'QtWidgets.QWidget',
     'swig::SwigPyIterator': 'SwigPyIterator',
     'ptrdiff_t': 'int',
-
     # Random typos in types
     'bool`': 'bool',
     'dictionary': 'dict',
@@ -182,7 +187,6 @@ ARG_TYPE_PATCHES = {
     '`hou.Matrix4': 'Matrix4',
     '`Matrix4`': 'Matrix4',
     'Color`': 'Color',
-
     # Explicit conversions for complex descriptions (possibly including typos).
     'dictionary of (, tuple of hou.BaseKeyframe) pairs': 'Dict[Parm, Tuple[BaseKeyFrame, ...]]',
     'dict of (str, int) to str': 'Dict[Tuple[str, int], str]',
@@ -272,7 +276,7 @@ ADDITIONAL_ENUM_VALUES = {
         'Yes',
         'No',
         'NoOpinion',
-    ]
+    ],
 }
 
 ITERABLE_TYPES_BY_CHAR = {
@@ -313,14 +317,24 @@ FUNCTIONS_SKIP_TYPE_HINTS = (
 NO_DEFAULT = "NO_DEFAULT"
 SKIP_LINE_WRITE = "SKIP_LINE_WRITE"
 
-reClass = re.compile(r'(?P<indentsize>[ \t]*)class (?P<name>[_\w]+)(?::|\((?P<superclass>[_\w\[\], ]+)\))?')
+reClass = re.compile(
+    r'(?P<indentsize>[ \t]*)class (?P<name>[_\w]+)(?::|\((?P<superclass>[_\w\[\], ]+)\))?'
+)
 reClassNoSuperClass = re.compile(r'(?P<indentsize>[ \t]*)class (?P<name>[_\w]+):')
 reFakeNamespaceClassName = re.compile(r'(?P<name>[a-z]\w+)')
 reTopLevelFunc = re.compile(r'(?P<name>[a-z][a-zA-Z]+): Any$')
-reFunction = re.compile(r'(?P<indentsize>[ \t]*)def (?P<name>[_a-zA-Z]\w*)\((?P<args>.*)\):\W*$')
-reFunctionReturn = re.compile(r'(?P<indentsize>[ \t]*)def (?P<name>[_a-zA-Z]\w*)\((?P<args>.*)\)( -> (?P<returnType>.+)):')
-reFunctionArgs = re.compile(r'(?:USAGE)?(?P<indentsize>[ \t]*)(?P<name>[_a-zA-Z]\w*)\((?P<args>.*)\)')
-reFunctionReturnArgs = re.compile(r'(?:USAGE)?(?P<indentsize>[ \t]*)(?P<name>[_a-zA-Z]\w*)\((?P<args>.*)\)( -> (?P<returnType>.+))')
+reFunction = re.compile(
+    r'(?P<indentsize>[ \t]*)def (?P<name>[_a-zA-Z]\w*)\((?P<args>.*)\):\W*$'
+)
+reFunctionReturn = re.compile(
+    r'(?P<indentsize>[ \t]*)def (?P<name>[_a-zA-Z]\w*)\((?P<args>.*)\)( -> (?P<returnType>.+)):'
+)
+reFunctionArgs = re.compile(
+    r'(?:USAGE)?(?P<indentsize>[ \t]*)(?P<name>[_a-zA-Z]\w*)\((?P<args>.*)\)'
+)
+reFunctionReturnArgs = re.compile(
+    r'(?:USAGE)?(?P<indentsize>[ \t]*)(?P<name>[_a-zA-Z]\w*)\((?P<args>.*)\)( -> (?P<returnType>.+))'
+)
 reClassMember = re.compile(r'(?P<indentsize>[ \t]*)(?P<name>[a-z_][a-zA-Z0-9_]+):.*')
 reIndents = re.compile(r'(?P<indentsize>[ \t]*)[\w_]')
 reEmptyLine = re.compile(r'(?P<indentsize>[ \t]*)$')
@@ -331,12 +345,16 @@ reFuncCall = re.compile(r'(?P<name>[a-z]\w*)\((?P<args>.*)\)')
 
 reOrSplit = re.compile(r'(?<!,) or ')
 reCommaSeparatedList = re.compile(r',(?: or)?')
-reTupleOrListArg = re.compile(r'(?P<char>[(\[])(?P<arg>[[$.\w*"' + r"'" + r']+)[,;]?.*[)\]]')
+reTupleOrListArg = re.compile(
+    r'(?P<char>[(\[])(?P<arg>[[$.\w*"' + r"'" + r']+)[,;]?.*[)\]]'
+)
 reTupleSimple = re.compile(r'\(.*?\)')
 reTupleWithWordSimplePrefix = re.compile(r'tuple +of +')
 reTupleWithNumber = re.compile(r'tuple +of +(?P<count>[\d+]) +(?P<type>.*)')
 reTupleWithNumberPrefix = re.compile(r'(?P<count>[\d+])-tuple +of +(?P<type>.*)')
-reTupleWithTwoTypes = re.compile(r'tuple +of +(?P<type1>.*) +and +(?P<type2>.*) +tuples')
+reTupleWithTwoTypes = re.compile(
+    r'tuple +of +(?P<type1>.*) +and +(?P<type2>.*) +tuples'
+)
 reTupleTypeExtraction = re.compile(r'(?P<prefix>.*\[)(?P<type>.*)')
 reListSimple = re.compile(r'\[.*?\]')
 reListType = re.compile(r'list +of +(?P<type>.+)')
@@ -355,7 +373,9 @@ reHOUArgumentFormat = re.compile(r'hou\.(?P<type>.*?)')
 reExtraSpaces = re.compile(r' +')
 reLowercasePluralWord = re.compile(r'^[a-z]\w*s$')
 
-reHouSOArgument = re.compile(r"in method '(?P<name>.*?)', argument (?P<num>\d+) of type '(?P<type>.*?)'")
+reHouSOArgument = re.compile(
+    r"in method '(?P<name>.*?)', argument (?P<num>\d+) of type '(?P<type>.*?)'"
+)
 reHouSOHOM = re.compile(r"HOM_")
 reHouSOConst = re.compile(r" const")
 reHouSOTail = re.compile(r" [*&]")
@@ -434,11 +454,7 @@ class HouFunc(object):
             elif not name:
                 name = 'arg%d' % i
 
-            data = {
-                "name": name,
-                "type": arg.type,
-                "default": arg.default
-            }
+            data = {"name": name, "type": arg.type, "default": arg.default}
             if arg.type and arg.type != 'Any':
                 if arg.default != NO_DEFAULT:
                     args.append('%(name)s: %(type)s=%(default)s' % data)
@@ -536,7 +552,9 @@ MISSING_FUNCTION_DEFINITIONS = {
             name='startHoudiniEngineDebugger',
             comment='Redefine.',
             args=[
-                Arg(name='portOrPipeName', type='Union[int, str]', default='NO_DEFAULT'),
+                Arg(
+                    name='portOrPipeName', type='Union[int, str]', default='NO_DEFAULT'
+                ),
             ],
             returnType='None',
             className=None,
@@ -610,7 +628,11 @@ MISSING_FUNCTION_DEFINITIONS = {
             comment='Redefine',
             args=[
                 Arg(name='self', type='NetworkMovableItem', default='NO_DEFAULT'),
-                Arg(name='vector2', type='Union[Sequence[float], Vector2]', default='NO_DEFAULT'),
+                Arg(
+                    name='vector2',
+                    type='Union[Sequence[float], Vector2]',
+                    default='NO_DEFAULT',
+                ),
             ],
             returnType='None',
             className='NetworkMovableItem',
@@ -620,8 +642,8 @@ MISSING_FUNCTION_DEFINITIONS = {
         'simulation': HouFunc(
             name='simulation',
             comment='Elevating the DopNode.simulation() definition, '
-                    'since Node.simulation() exists, but has no '
-                    'information, which causes typing errors.',
+            'since Node.simulation() exists, but has no '
+            'information, which causes typing errors.',
             args=[
                 Arg(name='self', type='Node', default='NO_DEFAULT'),
             ],
@@ -634,8 +656,12 @@ MISSING_FUNCTION_DEFINITIONS = {
             args=[
                 Arg(name='self', type='Node', default='NO_DEFAULT'),
                 Arg(name='input_index', type='int', default='NO_DEFAULT'),
-                Arg(name='item_to_become_input', type='Optional[NetworkMovableItem]', default='NO_DEFAULT'),
-                Arg(name='output_index', type='int', default='0')
+                Arg(
+                    name='item_to_become_input',
+                    type='Optional[NetworkMovableItem]',
+                    default='NO_DEFAULT',
+                ),
+                Arg(name='output_index', type='int', default='0'),
             ],
             returnType='None',
             className='Node',
@@ -645,8 +671,12 @@ MISSING_FUNCTION_DEFINITIONS = {
             comment='Redefine',
             args=[
                 Arg(name='self', type='Node', default='NO_DEFAULT'),
-                Arg(name='item_to_become_input', type='Optional[NetworkMovableItem]', default='NO_DEFAULT'),
-                Arg(name='output_index', type='int', default='0')
+                Arg(
+                    name='item_to_become_input',
+                    type='Optional[NetworkMovableItem]',
+                    default='NO_DEFAULT',
+                ),
+                Arg(name='output_index', type='int', default='0'),
             ],
             returnType='None',
             className='Node',
@@ -823,7 +853,11 @@ MISSING_FUNCTION_DEFINITIONS = {
             comment='Redefine',
             args=[
                 Arg(name='self', type='Geometry', default='NO_DEFAULT'),
-                Arg(name='name_or_attrib', type='Union[str, Attrib]', default='NO_DEFAULT'),
+                Arg(
+                    name='name_or_attrib',
+                    type='Union[str, Attrib]',
+                    default='NO_DEFAULT',
+                ),
                 Arg(name='attrib_value', type='Any', default='NO_DEFAULT'),
             ],
             returnType='None',
@@ -836,7 +870,11 @@ MISSING_FUNCTION_DEFINITIONS = {
             comment='Redefine',
             args=[
                 Arg(name='self', type='StickyNote', default='NO_DEFAULT'),
-                Arg(name='size', type='Union[Sequence[float], Vector2]', default='NO_DEFAULT'),
+                Arg(
+                    name='size',
+                    type='Union[Sequence[float], Vector2]',
+                    default='NO_DEFAULT',
+                ),
             ],
             returnType='None',
             className='StickyNote',
@@ -848,7 +886,11 @@ MISSING_FUNCTION_DEFINITIONS = {
             comment='Missing!',
             args=[
                 Arg(name='self', type='Parm', default='NO_DEFAULT'),
-                Arg(name='value', type='Union[int, float, str, Parm, Ramp]', default='NO_DEFAULT'),
+                Arg(
+                    name='value',
+                    type='Union[int, float, str, Parm, Ramp]',
+                    default='NO_DEFAULT',
+                ),
                 Arg(name='language', type='Optional[EnumValue]', default='None'),
                 Arg(name='follow_parm_reference', type='bool', default='True'),
             ],
@@ -871,7 +913,11 @@ MISSING_FUNCTION_DEFINITIONS = {
             comment='Missing!',
             args=[
                 Arg(name='self', type='ParmTuple', default='NO_DEFAULT'),
-                Arg(name='value', type='Union[Iterable[int], Iterable[float], Iterable[str], Iterable[Parm], ParmTuple]', default='NO_DEFAULT'),
+                Arg(
+                    name='value',
+                    type='Union[Iterable[int], Iterable[float], Iterable[str], Iterable[Parm], ParmTuple]',
+                    default='NO_DEFAULT',
+                ),
                 Arg(name='language', type='Optional[EnumValue]', default='None'),
                 Arg(name='follow_parm_reference', type='bool', default='True'),
             ],
@@ -904,15 +950,19 @@ MISSING_FUNCTION_DEFINITIONS = {
         '__init__': HouFunc(
             name='__init__',
             comment='Init takes more arguments than is described in the '
-                    'docstring and is difficult to divine.  We redefine here to '
-                    'forcibly add them in the location we believe them to exist.',
+            'docstring and is difficult to divine.  We redefine here to '
+            'forcibly add them in the location we believe them to exist.',
             args=[
                 Arg(name='self', type='DataParmTemplate', default='NO_DEFAULT'),
                 Arg(name='name', type='', default='NO_DEFAULT'),
                 Arg(name='label', type='', default='NO_DEFAULT'),
                 Arg(name='num_components', type='int', default='NO_DEFAULT'),
                 Arg(name='look', type='EnumValue', default='parmLook.Regular'),
-                Arg(name='naming_scheme', type='EnumValue', default='parmNamingScheme.XYZW'),
+                Arg(
+                    name='naming_scheme',
+                    type='EnumValue',
+                    default='parmNamingScheme.XYZW',
+                ),
                 Arg(name='unknown_str', type='Optional[str]', default='None'),
                 Arg(name='disable_when', type='Optional[str]', default='None'),
                 Arg(name='is_hidden', type='bool', default='False'),
@@ -920,11 +970,19 @@ MISSING_FUNCTION_DEFINITIONS = {
                 Arg(name='join_with_next', type='bool', default='False'),
                 Arg(name='help', type='Optional[str]', default='None'),
                 Arg(name='script_callback', type='Optional[str]', default='None'),
-                Arg(name='script_callback_language', type='EnumValue', default='scriptLanguage.Hscript'),
+                Arg(
+                    name='script_callback_language',
+                    type='EnumValue',
+                    default='scriptLanguage.Hscript',
+                ),
                 Arg(name='tags', type='Dict[str, str]', default='{}'),
                 Arg(name='unknown_dict', type='Dict[EnumValue, str]', default='{}'),
                 Arg(name='default_expression', type='Sequence[str]', default='()'),
-                Arg(name='default_expression_language', type='Sequence[EnumValue]', default='()'),
+                Arg(
+                    name='default_expression_language',
+                    type='Sequence[EnumValue]',
+                    default='()',
+                ),
             ],
             returnType='DataParmTemplate',
             className='DataParmTemplate',
@@ -957,7 +1015,11 @@ MISSING_FUNCTION_DEFINITIONS = {
             comment='Redefine',
             args=[
                 Arg(name='self', type='MenuParmTemplate', default='NO_DEFAULT'),
-                Arg(name='default_expression_language', type='EnumValue', default='NO_DEFAULT'),
+                Arg(
+                    name='default_expression_language',
+                    type='EnumValue',
+                    default='NO_DEFAULT',
+                ),
             ],
             returnType='None',
             className='MenuParmTemplate',
@@ -1002,7 +1064,11 @@ MISSING_FUNCTION_DEFINITIONS = {
             comment='Init takes more types than we can derive automatically',
             args=[
                 Arg(name='self', type='Matrix2', default='NO_DEFAULT'),
-                Arg(name='values', type='Union[int, float, Iterable[Union[int, float]], Iterable[Iterable[Union[int, float]]]]', default='0'),
+                Arg(
+                    name='values',
+                    type='Union[int, float, Iterable[Union[int, float]], Iterable[Iterable[Union[int, float]]]]',
+                    default='0',
+                ),
             ],
             returnType='Matrix2',
             className='Matrix2',
@@ -1014,7 +1080,11 @@ MISSING_FUNCTION_DEFINITIONS = {
             comment='Init takes more types than we can derive automatically',
             args=[
                 Arg(name='self', type='Matrix3', default='NO_DEFAULT'),
-                Arg(name='values', type='Union[int, float, Iterable[Union[int, float]], Iterable[Iterable[Union[int, float]]]]', default='0'),
+                Arg(
+                    name='values',
+                    type='Union[int, float, Iterable[Union[int, float]], Iterable[Iterable[Union[int, float]]]]',
+                    default='0',
+                ),
             ],
             returnType='Matrix3',
             className='Matrix3',
@@ -1026,7 +1096,11 @@ MISSING_FUNCTION_DEFINITIONS = {
             comment='Init takes more types than we can derive automatically',
             args=[
                 Arg(name='self', type='Matrix4', default='NO_DEFAULT'),
-                Arg(name='values', type='Union[int, float, Sequence[Union[int, float]], Sequence[Sequence[Union[int, float]]]]', default='0'),
+                Arg(
+                    name='values',
+                    type='Union[int, float, Sequence[Union[int, float]], Sequence[Sequence[Union[int, float]]]]',
+                    default='0',
+                ),
             ],
             returnType='Matrix4',
             className='Matrix4',
@@ -1050,7 +1124,11 @@ MISSING_FUNCTION_DEFINITIONS = {
             args=[
                 Arg(name='self', type='Prim', default='NO_DEFAULT'),
                 Arg(name='intrinsic_name', type='str', default='NO_DEFAULT'),
-                Arg(name='value', type='Union[int, float, str, Iterable[int], Iterable[float], Iterable[str]]', default='NO_DEFAULT')
+                Arg(
+                    name='value',
+                    type='Union[int, float, str, Iterable[int], Iterable[float], Iterable[str]]',
+                    default='NO_DEFAULT',
+                ),
             ],
             returnType='None',
             className='Prim',
@@ -1129,7 +1207,11 @@ MISSING_FUNCTION_DEFINITIONS = {
                 Arg(name='self', type='StringKeyframe', default='NO_DEFAULT'),
                 Arg(name='expression', type='Optional[str]', default='None'),
                 Arg(name='time', type='Optional[float]', default='None'),
-                Arg(name='language', type='Optional[EnumValue]', default='exprLanguage.Python'),
+                Arg(
+                    name='language',
+                    type='Optional[EnumValue]',
+                    default='exprLanguage.Python',
+                ),
             ],
             returnType='None',
             className='Keyframe',
@@ -1165,7 +1247,11 @@ MISSING_FUNCTION_DEFINITIONS = {
                 Arg(name='quick_select', type='bool', default='False'),
                 Arg(name='use_existing_selection', type='bool', default='True'),
                 Arg(name='initial_selection', type='Optional[str]', default='None'),
-                Arg(name='initial_selection_type', type='Optional[EnumValue]', default='None'),
+                Arg(
+                    name='initial_selection_type',
+                    type='Optional[EnumValue]',
+                    default='None',
+                ),
                 Arg(name='ordered', type='bool', default='False'),
                 Arg(name='geometry_types', type='Sequence[EnumValue]', default='()'),
                 Arg(name='primitive_types', type='Sequence[EnumValue]', default='()'),
@@ -1400,9 +1486,13 @@ MISSING_FUNCTION_DEFINITIONS = {
             comment='Redefine',
             args=[
                 Arg(name='self', type='hmath', default='NO_DEFAULT'),
-                Arg(name='values_dict', type='Dict[str, Union[Vector3, Sequence[float]]]', default='NO_DEFAULT'),
+                Arg(
+                    name='values_dict',
+                    type='Dict[str, Union[Vector3, Sequence[float]]]',
+                    default='NO_DEFAULT',
+                ),
                 Arg(name='transform_order', type='str', default='"srt"'),
-                Arg(name='rotate_order', type='str', default='"xyz"')
+                Arg(name='rotate_order', type='str', default='"xyz"'),
             ],
             returnType='Matrix4',
             className='hmath',
@@ -1444,8 +1534,8 @@ MISSING_FUNCTION_DEFINITIONS = {
         'Icon': HouFunc(
             name='Icon',
             comment='Missing.  This is actually a class, but a simple enough '
-                    'one that we can pretend it is a function to avoid the '
-                    'complication of defining a wholly missing class from hou.py',
+            'one that we can pretend it is a function to avoid the '
+            'complication of defining a wholly missing class from hou.py',
             args=[
                 Arg(name='self', type='qt', default='NO_DEFAULT'),
                 Arg(name='icon_name', type='str', default='NO_DEFAULT'),
@@ -1496,7 +1586,11 @@ MISSING_FUNCTION_DEFINITIONS = {
                 Arg(name='default_value', type='Optional[str]', default='None'),
                 Arg(name='multiple_select', type='bool', default='False'),
                 Arg(name='image_chooser', type='bool', default='False'),
-                Arg(name='chooser_mode', type='EnumValue', default='fileChooserMode.ReadAndWrite'),
+                Arg(
+                    name='chooser_mode',
+                    type='EnumValue',
+                    default='fileChooserMode.ReadAndWrite',
+                ),
                 Arg(name='width', type='int', default='0'),
                 Arg(name='height', type='int', default='0'),
             ],
@@ -1535,7 +1629,11 @@ OVERLOAD_FUNCTION_DEFINITIONS = {
                 name='nodeType',
                 comment='Overloaded!',
                 args=[
-                    Arg(name='internal_name_with_category', type='str', default='NO_DEFAULT'),
+                    Arg(
+                        name='internal_name_with_category',
+                        type='str',
+                        default='NO_DEFAULT',
+                    ),
                 ],
                 returnType='Optional[NodeType]',
             ),
@@ -1560,7 +1658,11 @@ OVERLOAD_FUNCTION_DEFINITIONS = {
                 comment='Overloaded!',
                 args=[
                     Arg(name='self', type='hmath', default='NO_DEFAULT'),
-                    Arg(name='components', type='Union[Sequence[float], Vector3]', default='NO_DEFAULT'),
+                    Arg(
+                        name='components',
+                        type='Union[Sequence[float], Vector3]',
+                        default='NO_DEFAULT',
+                    ),
                 ],
                 returnType='Matrix4',
                 className='hmath',
@@ -1584,7 +1686,11 @@ OVERLOAD_FUNCTION_DEFINITIONS = {
                 comment='Overloaded!',
                 args=[
                     Arg(name='self', type='hmath', default='NO_DEFAULT'),
-                    Arg(name='components', type='Union[Sequence[float], Vector3]', default='NO_DEFAULT'),
+                    Arg(
+                        name='components',
+                        type='Union[Sequence[float], Vector3]',
+                        default='NO_DEFAULT',
+                    ),
                 ],
                 returnType='Matrix4',
                 className='hmath',
@@ -1608,7 +1714,11 @@ OVERLOAD_FUNCTION_DEFINITIONS = {
                 comment='Overloaded!',
                 args=[
                     Arg(name='self', type='hmath', default='NO_DEFAULT'),
-                    Arg(name='components', type='Union[Sequence[float], Vector3]', default='NO_DEFAULT'),
+                    Arg(
+                        name='components',
+                        type='Union[Sequence[float], Vector3]',
+                        default='NO_DEFAULT',
+                    ),
                 ],
                 returnType='Matrix4',
                 className='hmath',
@@ -1633,7 +1743,11 @@ OVERLOAD_FUNCTION_DEFINITIONS = {
                 comment='Overloaded!',
                 args=[
                     Arg(name='self', type='hmath', default='NO_DEFAULT'),
-                    Arg(name='components', type='Union[Sequence[float], Vector3]', default='NO_DEFAULT'),
+                    Arg(
+                        name='components',
+                        type='Union[Sequence[float], Vector3]',
+                        default='NO_DEFAULT',
+                    ),
                     Arg(name='order', type='str', default='"xyz"'),
                 ],
                 returnType='Matrix4',
@@ -1648,7 +1762,11 @@ OVERLOAD_FUNCTION_DEFINITIONS = {
                 comment='Overloaded!',
                 args=[
                     Arg(name='self', type='Color', default='NO_DEFAULT'),
-                    Arg(name='rgb_tuple', type='Sequence[float]', default='(0.0, 0.0, 0.0)'),
+                    Arg(
+                        name='rgb_tuple',
+                        type='Sequence[float]',
+                        default='(0.0, 0.0, 0.0)',
+                    ),
                 ],
                 returnType='None',
                 className='Color',
@@ -1699,7 +1817,9 @@ OVERLOAD_FUNCTION_DEFINITIONS = {
                 comment='Overloaded!',
                 args=[
                     Arg(name='self', type='Vector3', default='NO_DEFAULT'),
-                    Arg(name='values', type='Sequence[float]', default='(0.0, 0.0, 0.0)'),
+                    Arg(
+                        name='values', type='Sequence[float]', default='(0.0, 0.0, 0.0)'
+                    ),
                 ],
                 returnType='None',
                 className='Vector3',
@@ -1725,7 +1845,11 @@ OVERLOAD_FUNCTION_DEFINITIONS = {
                 comment='Overloaded!',
                 args=[
                     Arg(name='self', type='Vector4', default='NO_DEFAULT'),
-                    Arg(name='values', type='Sequence[float]', default='(0.0, 0.0, 0.0, 0.0)'),
+                    Arg(
+                        name='values',
+                        type='Sequence[float]',
+                        default='(0.0, 0.0, 0.0, 0.0)',
+                    ),
                 ],
                 returnType='None',
                 className='Vector4',
@@ -1780,7 +1904,11 @@ OVERLOAD_FUNCTION_DEFINITIONS = {
                 comment='Overloaded!',
                 args=[
                     Arg(name='self', type='Prim', default='NO_DEFAULT'),
-                    Arg(name='intrinsic_name', type='Literal["transform"]', default='NO_DEFAULT'),
+                    Arg(
+                        name='intrinsic_name',
+                        type='Literal["transform"]',
+                        default='NO_DEFAULT',
+                    ),
                 ],
                 returnType='Tuple[float, ...]',
                 className='Prim',
@@ -1822,13 +1950,11 @@ for method, argType in [
     ('depthOfFieldFromCamera', 'bool'),
     ('useSheetSize', 'bool'),
     ('fromAudioPanel', 'bool'),
-
     ('output', 'str'),
     ('LUT', 'str'),
     ('sessionLabel', 'str'),
     ('audioFilename', 'str'),
     ('backgroundImage', 'str'),
-
     ('gamma', 'float'),
     ('audioFrameStart', 'float'),
     ('audioTimeOffset', 'float'),
@@ -1837,14 +1963,11 @@ for method, argType in [
     ('focusDistance', 'float'),
     ('aperture', 'float'),
     ('fStop', 'float'),
-
     ('outputZoom', 'int'),
     ('motionBlurSegments', 'int'),
-
     ('visibleTypes', 'EnumValue'),
     ('antialias', 'EnumValue'),
     ('motionBlurFrameRange', 'EnumValue'),
-
     ('visibleObjects', 'str'),
     ('frameRange', 'Tuple[float, float]'),
     ('frameIncrement', 'int'),
@@ -1866,7 +1989,7 @@ for method, argType in [
             comment='Overloaded!',
             args=[
                 Arg(name='self', type='FlipbookSettings', default='NO_DEFAULT'),
-                Arg(name='value', type=argType, default='NO_DEFAULT')
+                Arg(name='value', type=argType, default='NO_DEFAULT'),
             ],
             returnType='None',
             className='FlipbookSettings',
@@ -1945,9 +2068,10 @@ class HouClass(object):
         """
         for name, func in self.functions.items():  # type: str, HouFunc
             if (
-                    func.namespacedName in SKIP_FUNCS or
-                    func.namespacedName in OVERLOADED_FUNCTIONS or
-                    '*.%s' % name in SKIP_FUNCS):
+                func.namespacedName in SKIP_FUNCS
+                or func.namespacedName in OVERLOADED_FUNCTIONS
+                or '*.%s' % name in SKIP_FUNCS
+            ):
                 continue
 
             if not func.written:
@@ -2282,15 +2406,12 @@ def parseArgs(namespacedName, argstr, typeHints, className=None):
     # This will not handle nested default tuples,
     # but AFAIK, there are none in hou.
     for tupleDefault in reTupleSimple.findall(argstr):
-        argstr = argstr.replace(
-            tupleDefault, tupleDefault.replace(',', ';'))
+        argstr = argstr.replace(tupleDefault, tupleDefault.replace(',', ';'))
     for listDefault in reListSimple.findall(argstr):
-        argstr = argstr.replace(
-            listDefault, listDefault.replace(',', ';'))
+        argstr = argstr.replace(listDefault, listDefault.replace(',', ';'))
 
     rawArgsSplit = argstr.split(",")
-    if (className is not None and
-            not (rawArgsSplit and rawArgsSplit[0] == 'self')):
+    if className is not None and not (rawArgsSplit and rawArgsSplit[0] == 'self'):
         # Ensure the first argument is self for class methods, since
         # the docstrings are inconsistent with whether or not they
         # provide the class argument.
@@ -2305,7 +2426,8 @@ def parseArgs(namespacedName, argstr, typeHints, className=None):
             argName = argName.strip().split(':')[0]
             argValue = argValue.strip().replace('\\"', '"').replace("\\'", "'")
             argType, argValue = determineArgType(
-                argName, argValue, typeHint, namespacedName)
+                argName, argValue, typeHint, namespacedName
+            )
         else:
             argName = rawArg.strip()
             argType = ''
@@ -2314,11 +2436,13 @@ def parseArgs(namespacedName, argstr, typeHints, className=None):
             # an EnumValue though.
             if reHOMArgumentFormat.match(argName):
                 argName = pylib.strings.toSnakeCase(
-                    reHOMArgumentFormat.sub(r'\g<type>', argName))
+                    reHOMArgumentFormat.sub(r'\g<type>', argName)
+                )
                 argType = 'EnumValue'
             elif reHOUArgumentFormat.match(argName):
                 argName = pylib.strings.toSnakeCase(
-                    reHOUArgumentFormat.sub(r'\g<type>', argName))
+                    reHOUArgumentFormat.sub(r'\g<type>', argName)
+                )
                 argType = 'EnumValue'
 
             argName = argName.split(':')[0]
@@ -2328,9 +2452,12 @@ def parseArgs(namespacedName, argstr, typeHints, className=None):
                 argType = ARG_TYPES_FROM_NAME.get(argName, 'Any')
 
         argValue = argValue.replace(";", ",")
-        if (typeHint and typeHint not in ('None', argType) and
-                argType in ('Any', 'tuple') and
-                namespacedName not in FUNCTIONS_SKIP_TYPE_HINTS):
+        if (
+            typeHint
+            and typeHint not in ('None', argType)
+            and argType in ('Any', 'tuple')
+            and namespacedName not in FUNCTIONS_SKIP_TYPE_HINTS
+        ):
             # See if we have a better option.
             # Note that we do not use this for the primary method of
             #  obtaining typing information since the docstrings aren't
@@ -2408,7 +2535,8 @@ def parseFunction(funcMatch, lines, typeHints, className=None):
         if funcArgsMatch:
             # First see if we can match with the return type
             returnType = determineReturnType(
-                funcArgsMatch.group('returnType'), namespacedName)
+                funcArgsMatch.group('returnType'), namespacedName
+            )
         else:
             # We could not match with the return type, so see if it's a
             # function without a return.
@@ -2425,13 +2553,7 @@ def parseFunction(funcMatch, lines, typeHints, className=None):
         # typing to provide.
         return buildCleanFunction(namespacedName, funcMatch, typeHints, className)
 
-    return HouFunc(
-        name,
-        comment,
-        args,
-        returnType,
-        className
-    )
+    return HouFunc(name, comment, args, returnType, className)
 
 
 def determineArgType(name, value, typeHint, funcName):
@@ -2492,7 +2614,8 @@ def determineArgType(name, value, typeHint, funcName):
         if tupleOrListMatch:
             iterableType = ITERABLE_TYPES_BY_CHAR[tupleOrListMatch.group('char')]
             nestedArgType, _ = determineArgType(
-                name, tupleOrListMatch.group('arg'), typeHint, funcName)
+                name, tupleOrListMatch.group('arg'), typeHint, funcName
+            )
             # NOTE: argument types are generally more permissive for what they
             #  take, so here we generalize the tuple or list arg to Sequence.
             argType = 'Sequence[%s]' % nestedArgType
@@ -2536,9 +2659,11 @@ def determineReturnType(arg, funcName):
     # to allow us to split nicely.
     arg = reEnumValues.sub("", arg)
     arg = reOrNone.sub(
-        lambda x: 'Optional[' + ARG_TYPE_PATCHES.get(
-            x.group('type'), x.group('type')) + ']',
-        arg)
+        lambda x: 'Optional['
+        + ARG_TYPE_PATCHES.get(x.group('type'), x.group('type'))
+        + ']',
+        arg,
+    )
     for typeString in reOrSplit.split(arg):
         # Clear off any typing or namespace cruft.
         typeString = ARG_TYPE_PATCHES.get(typeString, typeString)
@@ -2618,12 +2743,20 @@ def determineReturnType(arg, funcName):
                 if endsWithTuplesMatch:
                     typeString = reEndsWithTuples.sub(r'\g<prefix>', typeString)
                     # Each type needs to be a tuple of its defined type
-                    types = ', '.join([t.rstrip('s').strip() for
-                                       t in typeString.strip('()').split(',')])
+                    types = ', '.join(
+                        [
+                            t.rstrip('s').strip()
+                            for t in typeString.strip('()').split(',')
+                        ]
+                    )
                     typed = 'Tuple[Tuple[' + types + '], ...]'
                 else:
-                    types = ', '.join([t.rstrip('s').strip() for
-                                       t in typeString.strip('()').split(',')])
+                    types = ', '.join(
+                        [
+                            t.rstrip('s').strip()
+                            for t in typeString.strip('()').split(',')
+                        ]
+                    )
                     typed = 'Tuple[' + types + ']'
             else:
                 # This will be a simpler tuple string like
@@ -2636,9 +2769,10 @@ def determineReturnType(arg, funcName):
                     #  remapping through our ARG_TYPE_PATCH dictionary at the end.
                     typed = typed.rstrip('s')
                 typed = reTupleTypeExtraction.sub(
-                    lambda x: x.group('prefix') + ARG_TYPE_PATCHES.get(
-                        x.group('type'), x.group('type')),
-                    typed)
+                    lambda x: x.group('prefix')
+                    + ARG_TYPE_PATCHES.get(x.group('type'), x.group('type')),
+                    typed,
+                )
                 for i in range(typed.count("Tuple[")):
                     typed += ", ...]"
                 typed = ARG_TYPE_PATCHES.get(typed, typed)
@@ -2679,12 +2813,14 @@ def extractCTypes():
     -------
     Dict[str, Dict[int, str]]
     """
-    proc = subprocess.Popen(('strings %s | c++filt' % HOUSO),
-                            stdout=subprocess.PIPE, shell=True)
+    proc = subprocess.Popen(
+        ('strings %s | c++filt' % HOUSO), stdout=subprocess.PIPE, shell=True
+    )
     stdout, stderr = proc.communicate()
 
-    filteredData = filter(lambda x: x.startswith("in method '"),
-                          stdout.decode('utf-8').split('\n'))
+    filteredData = filter(
+        lambda x: x.startswith("in method '"), stdout.decode('utf-8').split('\n')
+    )
     lines = LineIterator(filteredData)
     argTypes = {}  # Dict[str, Dict[int, str]]
     for line in lines:
@@ -2799,22 +2935,24 @@ def createPYIFile():
                 '    from . import _hou\n'
                 'else:\n'
                 '    import _hou\n',
-                'import _hou\n')
+                'import _hou\n',
+            )
             outfp.write(contents)
 
     # Find the location of the mypy stubgen
-    mypyRaw = setpkglib.check_output(
-        ['which', 'mypy'], packages=['mypy']).strip()
+    mypyRaw = setpkglib.check_output(['which', 'mypy'], packages=['mypy']).strip()
     mypy = re.match(r".*?(/[^']+)", str(mypyRaw)).group(1)
     stubgen = os.path.join(os.path.normpath(mypy + '/../..'), 'bin/stubgen')
 
     # Generate the stubs
     if PY2:
         setpkglib.check_call(
-            [stubgen, '--py2', '--no-import', tmp, '-o', '/tmp/'], packages=['mypy'])
+            [stubgen, '--py2', '--no-import', tmp, '-o', '/tmp/'], packages=['mypy']
+        )
     else:
         setpkglib.check_call(
-            [stubgen, '--no-import', tmp, '-o', '/tmp/'], packages=['mypy'])
+            [stubgen, '--no-import', tmp, '-o', '/tmp/'], packages=['mypy']
+        )
 
 
 def updatePYIFile(classes, funcs):
@@ -2865,17 +3003,24 @@ def updatePYIFile(classes, funcs):
                             # in the class that is typed as Any
                             for enumName in classInfo.enumValues:
                                 prependLines.append(
-                                    (classIndent +
-                                     "    %s: EnumValue = ..." +
-                                     PYI_RECORD_ADDED_COMMENT +
-                                     "\n") % enumName)
+                                    (
+                                        classIndent
+                                        + "    %s: EnumValue = ..."
+                                        + PYI_RECORD_ADDED_COMMENT
+                                        + "\n"
+                                    )
+                                    % enumName
+                                )
 
                             # Now write any functions that we found for this
                             # class which weren't already defined.  This
                             # includes functions we've special-case added.
                             for unwritten in classes[currentClass].unwrittenFunctions():
-                                prependLines.append(unwritten.formatLine(
-                                    currentIndentSize + 4, addReceipt=True))
+                                prependLines.append(
+                                    unwritten.formatLine(
+                                        currentIndentSize + 4, addReceipt=True
+                                    )
+                                )
 
                             currentClass = None
 
@@ -2895,10 +3040,12 @@ def updatePYIFile(classes, funcs):
                         classData = {
                             "name": name,
                             "indent": classIndent,
-                            "superclass": CLASS_GENERICS[name]
+                            "superclass": CLASS_GENERICS[name],
                         }
-                        if (not classData["superclass"] or
-                                classData["superclass"] == "object"):
+                        if (
+                            not classData["superclass"]
+                            or classData["superclass"] == "object"
+                        ):
                             fmt = CLASS_REDEF_NOSUPERCLASS_FMT
                         else:
                             fmt = CLASS_REDEF_SUPERCLASS_FMT
@@ -2925,9 +3072,9 @@ def updatePYIFile(classes, funcs):
                     #     continue
 
                     if (
-                            namespacedName in encounteredFunctionNames or
-                            namespacedName in SKIP_FUNCS or
-                            '*.%s' % funcName in SKIP_FUNCS
+                        namespacedName in encounteredFunctionNames
+                        or namespacedName in SKIP_FUNCS
+                        or '*.%s' % funcName in SKIP_FUNCS
                     ):
                         line = SKIP_LINE_WRITE
                     else:
@@ -2944,11 +3091,13 @@ def updatePYIFile(classes, funcs):
                         # function defs instead of the one we derived from the
                         # docstring or symbol table.
                         overloadedFuncs = OVERLOAD_FUNCTION_DEFINITIONS[
-                            houFunc.className][houFunc.name]
+                            houFunc.className
+                        ][houFunc.name]
                         line = ''
                         for overloadedFunc in overloadedFuncs:
                             line += overloadedFunc.formatLine(
-                                funcIndentLength, overloaded=True)
+                                funcIndentLength, overloaded=True
+                            )
                     elif line != SKIP_LINE_WRITE:
                         line = houFunc.formatLine(funcIndentLength)
 
@@ -2976,13 +3125,13 @@ def updatePYIFile(classes, funcs):
         # includes functions we've special-case added.
         for n, func in funcs.items():  # type: HouFunc
             if (
-                    func.namespacedName in SKIP_FUNCS or
-                    func.namespacedName in OVERLOADED_FUNCTIONS or
-                    '*.%s' % func.name in SKIP_FUNCS):
+                func.namespacedName in SKIP_FUNCS
+                or func.namespacedName in OVERLOADED_FUNCTIONS
+                or '*.%s' % func.name in SKIP_FUNCS
+            ):
                 continue
             if not (func.written or func.className or func.name.startswith('_')):
-                pyiOutput.append(func.formatLine(
-                    currentIndentSize, addReceipt=True))
+                pyiOutput.append(func.formatLine(currentIndentSize, addReceipt=True))
 
     with open(HOUPYI_OUT, 'w') as pyiOutputFile:
         print("Writing %s" % HOUPYI_OUT)

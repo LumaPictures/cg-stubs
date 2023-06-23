@@ -8,8 +8,7 @@ import mypy.stubgenc
 from mypy.fastparse import parse_type_comment
 from mypy.stubgen import main
 from mypy.stubgenc import ArgSig
-from mypy.stubgenc import \
-    DocstringSignatureGenerator as CDocstringSignatureGenerator
+from mypy.stubgenc import DocstringSignatureGenerator as CDocstringSignatureGenerator
 from mypy.stubgenc import FunctionContext, FunctionSig, SignatureGenerator
 
 import Callbacks.Callbacks
@@ -37,14 +36,17 @@ def cleanup_type(type_name: str) -> str:
     optional = False
     if type_name.endswith(', or None'):
         optional = True
-        type_name = type_name[:len(', or None')]
+        type_name = type_name[: len(', or None')]
 
     replacements = [
         ('FnGeolib', 'PyFnGeolib'),
         ('FnAttribute', 'PyFnAttribute'),
         ('FnGeolibServices', 'PyFnGeolibServices'),
         ('FnGeolibProducers', 'PyFnGeolibProducers'),
-        (r'PyFnGeolib.GeolibRuntime\.Transaction', 'PyFnGeolib.GeolibRuntimeTransaction'),
+        (
+            r'PyFnGeolib.GeolibRuntime\.Transaction',
+            'PyFnGeolib.GeolibRuntimeTransaction',
+        ),
         (r'PyFnGeolib.GeolibRuntime\.Op', 'PyFnGeolib.GeolibRuntimeOp'),
         (r'NodegraphAPI\.LiveGroupMixin', 'NodegraphAPI.LiveGroup.LiveGroupMixin'),
         ('number', 'float'),
@@ -70,7 +72,10 @@ def cleanup_type(type_name: str) -> str:
 
     # FIXME: would be nice to have something that can do a search through known objects
     absolute_names = (
-        ('TerminalOpDelegate', 'Nodes3DAPI.TerminalOpDelegates.TerminalOpDelegate.TerminalOpDelegate'),
+        (
+            'TerminalOpDelegate',
+            'Nodes3DAPI.TerminalOpDelegates.TerminalOpDelegate.TerminalOpDelegate',
+        ),
         ('Nodes?', 'NodegraphAPI.Node'),
         ('GroupNode', 'NodegraphAPI.GroupNode'),
         ('Port', 'NodegraphAPI.Port'),
@@ -81,9 +86,13 @@ def cleanup_type(type_name: str) -> str:
         ('GroupAttribute', 'PyFnAttribute.GroupAttribute'),
     )
     for short_name, full_name in absolute_names:
-        type_name = re.sub(r'(?<![A-Za-z0-9._]){}\b'.format(short_name), full_name, type_name)
+        type_name = re.sub(
+            r'(?<![A-Za-z0-9._]){}\b'.format(short_name), full_name, type_name
+        )
 
-    type_name = type_name.replace('object convertible to a float', 'typing.SupportsFloat')
+    type_name = type_name.replace(
+        'object convertible to a float', 'typing.SupportsFloat'
+    )
 
     def list_sub(m):
         return "{}[{}]".format(m.group(1), m.group(2))
@@ -155,8 +164,12 @@ class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
             # It's impossible to get access to members of certain modules without
             # changing the import style, because the modules are replaced with
             # objects of the same name
-            if (len(parts) >= 2 and parts[-2] == parts[-1]) or (len(parts) >= 3 and parts[-3] == parts[-2]):
-                self.import_tracker.add_import_from('.'.join(parts[:-1]), [(parts[-1], None)])
+            if (len(parts) >= 2 and parts[-2] == parts[-1]) or (
+                len(parts) >= 3 and parts[-3] == parts[-2]
+            ):
+                self.import_tracker.add_import_from(
+                    '.'.join(parts[:-1]), [(parts[-1], None)]
+                )
                 self.import_tracker.require_name(parts[-1])
                 return parts[-1]
         return super().strip_or_import(type_name)
@@ -171,8 +184,11 @@ class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
         members = dict(super().get_members(obj))
 
         if isinstance(obj, type) and obj.__name__ == 'CallbacksManager':
-            enums = {x: _TypeEnum(x) for x in dir(Callbacks.Callbacks.Type)
-                     if not x.startswith('_')}
+            enums = {
+                x: _TypeEnum(x)
+                for x in dir(Callbacks.Callbacks.Type)
+                if not x.startswith('_')
+            }
             enumType = type('_TypeEnumList', (), enums)
             enumType.__module__ = 'Callbacks.Callbacks'
             members['Type'] = enumType
@@ -243,30 +259,43 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
             sub_type = self.DATA_ATTRS[obj.__name__]
             is_abstract = obj.__name__ == 'DataAttribute'
             # Add abstract methods that are shared by all sub-classes
-            add(CFunctionStub(
-                "getValue",
-                f"getValue(self, defaultValue: {sub_type} = ..., throwOnError: bool = ...) -> {sub_type}",
-                is_abstract=is_abstract))
-            add(CFunctionStub(
-                "getData",
-                f"getData(self) -> ConstVector[{sub_type}]",
-                is_abstract=is_abstract))
-            add(CFunctionStub(
-                "getNearestSample",
-                f"getNearestSample(self, sampleTime: float) -> ConstVector[{sub_type}]",
-                is_abstract=is_abstract))
-            add(CFunctionStub(
-                "getSamples",
-                f"getSamples(self) -> Dict[float, ConstVector[{sub_type}]]",
-                is_abstract=is_abstract))
+            add(
+                CFunctionStub(
+                    "getValue",
+                    f"getValue(self, defaultValue: {sub_type} = ..., throwOnError: bool = ...) -> {sub_type}",
+                    is_abstract=is_abstract,
+                )
+            )
+            add(
+                CFunctionStub(
+                    "getData",
+                    f"getData(self) -> ConstVector[{sub_type}]",
+                    is_abstract=is_abstract,
+                )
+            )
+            add(
+                CFunctionStub(
+                    "getNearestSample",
+                    f"getNearestSample(self, sampleTime: float) -> ConstVector[{sub_type}]",
+                    is_abstract=is_abstract,
+                )
+            )
+            add(
+                CFunctionStub(
+                    "getSamples",
+                    f"getSamples(self) -> Dict[float, ConstVector[{sub_type}]]",
+                    is_abstract=is_abstract,
+                )
+            )
         elif isinstance(obj, type) and obj.__name__ == 'ConstVector':
-            add(CFunctionStub(
-                "__iter__",
-                "__iter__(self) -> Iterator[T]"))
-            add(CFunctionStub(
-                "__getitem__",
-                "__getitem__(self, arg0: int) -> T\n"
-                "__getitem__(self, arg0: slice) -> ConstVector[T]"))
+            add(CFunctionStub("__iter__", "__iter__(self) -> Iterator[T]"))
+            add(
+                CFunctionStub(
+                    "__getitem__",
+                    "__getitem__(self, arg0: int) -> T\n"
+                    "__getitem__(self, arg0: slice) -> ConstVector[T]",
+                )
+            )
 
         return list(members.items())
 
