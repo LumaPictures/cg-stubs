@@ -562,13 +562,15 @@ class TypeInfo:
             if fallback is not None and fallback in full_type_names:
                 return fallback
             else:
-                if (
+                if short_type_name == "Type":
+                    return "pxr.Tf.Type"
+                elif (
                     current_module
                     and current_module.startswith("pxr.Usd")
                     and short_type_name in ("TimeCode",)
                 ):
                     for full_type in full_type_names:
-                        if full_type.startswith("pxr.Usd"):
+                        if full_type.startswith("pxr.Usd."):
                             return full_type
 
                 if current_func is None:
@@ -675,12 +677,23 @@ class UsdBoostDocstringSignatureGenerator(
             )
             if full_type is None and type_info.is_py_array_type(sub_py_type):
                 sub_py_type = f"pxr.Vt.{sub_py_type}"
+            elif (
+                full_type is None
+                and is_result
+                and ctx.class_info
+                and py_type == ctx.class_info.name
+            ):
+                # this is a fix for nested classes that have methods that return themselves
+                # as a type, without using a fully qualified python path. Instead of trying to figure
+                # out the path, we can use typing.Self.
+                sub_py_type = "typing_extensions.Self"
             elif full_type:
                 sub_py_type = full_type
             if not is_result and sub_py_type:
                 sub_py_type = type_info.add_implicit_unions(sub_py_type)
             new_parts.append(sub_py_type)
-        return "".join(new_parts)
+        py_type = "".join(new_parts)
+        return py_type
 
     def _infer_type(
         self,
