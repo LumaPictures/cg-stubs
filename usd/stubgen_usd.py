@@ -613,7 +613,8 @@ type_info = TypeInfo(
 #   pxr.Sdf.CopySpec, pxr.Usd.TraverseInstanceProxies.  FIXED (mostly)
 # - Matrix3dArray and other math types in Vt don't seem to be in the docs
 # - some wrapped c++ functions don't turn pointers into return types, such as UsdSkelExpandConstantInfluencesToVarying
-# - the stubs for Sdf.ValueTypeNames can be improved with some more work on stubgen
+# - the stubs for Sdf.ValueTypeNames can be improved with some more work on stubgen.  FIXED
+# - boost python sigs do not always include defaults for keyword args.  See UsdGeom.BBoxCache.__init__
 
 
 class UsdBoostDocstringSignatureGenerator(
