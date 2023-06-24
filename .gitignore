@@ -3,3 +3,5 @@
 dist
 __pycache__
 *.pyc
+usd/stubs/**/__DOC.pyi
+usd/stubs/**/_[a-z]*.pyi

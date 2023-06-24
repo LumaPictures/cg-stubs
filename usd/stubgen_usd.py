@@ -13,12 +13,12 @@ import mypy.stubgen
 import mypy.stubgenc
 import mypy.stubutil
 from mypy.fastparse import parse_type_comment
-from mypy.stubdoc import ArgSig
+from mypy.stubdoc import ArgSig, FunctionSig, infer_sig_from_docstring
 from mypy.stubgen import main as stubgen_main
 from mypy.stubgenc import (
     DocstringSignatureGenerator as FunctionContext,
-    FunctionSig,
     SignatureGenerator,
+    ClassInfo,
     infer_method_args,
 )
 from mypy.stubutil import infer_method_ret_type
@@ -32,7 +32,12 @@ from doxygenlib.cdParser import Parser
 from doxygenlib.cdWriterDocstring import Writer
 from doxygenlib.cdUtils import SetDebugMode
 
-from stubgenlib import BaseSigFixer, BoostDocstringSignatureGenerator
+from stubgenlib import (
+    BaseSigFixer,
+    BoostDocstringSignatureGenerator,
+    CFunctionStub,
+    reduce_overloads,
+)
 
 
 SetDebugMode(False)
@@ -315,41 +320,42 @@ class SourceInfo:
                             to_type = self.get_type_from_path(path)
                         if from_type == "This":
                             from_type = self.get_type_from_path(path)
-                        to_type = self.cpp_arg_to_py_type(to_type, is_arg=None)[0]
-                        from_type = self.cpp_arg_to_py_type(from_type, is_arg=None)[0]
+                        # to_type = doc_info.get_full_py_type(self.cpp_arg_to_py_type(to_type))
+                        # from_type = doc_info.get_full_py_type(self.cpp_arg_to_py_type(from_type))
+                        to_type = self.cpp_arg_to_py_type(to_type)
+                        from_type = self.cpp_arg_to_py_type(from_type)
                         result[to_type].add(from_type)
                     elif self.verbose:
                         print("no match", line)
             self._implicitly_convertible_types = dict(result)
-            # print(list(self._implicitly_convertible_types.keys()))
+        if not self._implicitly_convertible_types:
+            raise RuntimeError("Could not find implicitly convertible types")
         return self._implicitly_convertible_types
 
-    def add_implicit_unions(self, typestr: str) -> str:
+    def add_implicit_unions(self, py_type: str) -> str:
         """
         wrap the type string in a Union[] if it is in the list of types with known
         implicit conversions.
 
         Parameters
         ----------
-        typestr : str
+        py_type : str
             fully qualified python type identifier
         """
-        others = self.get_implicitly_convertible_types().get(typestr)
+        others = self.get_implicitly_convertible_types().get(py_type)
         if others is not None:
-            return " | ".join([typestr] + sorted(others))
+            return " | ".join([py_type] + sorted(others))
         else:
-            return typestr
+            return py_type
 
-    def cpp_arg_to_py_type(
-        self, typestr: str, is_arg: bool | None = True
-    ) -> tuple[str, bool]:
+    def cpp_arg_to_py_type(self, cpp_type: str) -> str:
         """
         Convert a c++ type string to a python type string
 
         Returns the new typestring and whether the type appears to be a return value
         """
-        orig = typestr
-        parts = typestr.split()
+        orig = cpp_type
+        parts = cpp_type.split()
         is_result = maybe_result(parts)
 
         # remove extraneous bits
@@ -363,7 +369,7 @@ class SourceInfo:
         for pattern, replace in RENAMES:
             new_typestr = re.sub(pattern, replace, typestr)
             if new_typestr != typestr:
-                return new_typestr, is_result
+                return new_typestr
 
         for pattern, replace in TYPE_MAP:
             typestr = re.sub(pattern, replace, typestr)
@@ -376,19 +382,10 @@ class SourceInfo:
         parts = [x for x in re.split(IDENTIFIER, typestr) if x]
         parts = [(doc_info.to_python_id(x) or x) for x in parts]
 
-        # note: None is a valid value for is_arg
-        if is_arg is True and not is_result:
-            parts = [self.add_implicit_unions(x) for x in parts]
-
         typestr = "".join(parts)
         typestr = typestr.replace(",", ", ")
         typestr = typestr.replace("::", ".")
-        return typestr, is_result
-
-    # def convert_default(self, valuestr: str ) -> str | None:
-    #     for pattern, replace in DEFAULT_VAL_MAP:
-    #         valuestr = re.sub(pattern, replace, valuestr)
-    #     return self.convert_typestr(valuestr, is_arg=False)[0]
+        return typestr
 
 
 class DocInfo:
@@ -547,7 +544,7 @@ class DocInfo:
     def get_full_py_type(
         self,
         short_type_name: str,
-        current_module: str,
+        current_module: str | None = None,
         fallback: str | None = None,
         current_func: str | None = None,
     ) -> str | None:
@@ -560,9 +557,10 @@ class DocInfo:
             # Note: bool, int, list, etc end up here.
             return None  # fallback if fallback is not None else None
         if len(full_type_names) > 1:
-            for full_type in full_type_names:
-                if full_type.startswith(current_module + "."):
-                    return full_type
+            if current_module:
+                for full_type in full_type_names:
+                    if full_type.startswith(current_module + "."):
+                        return full_type
             if fallback is not None and fallback in full_type_names:
                 return fallback
             else:
@@ -629,7 +627,11 @@ class UsdBoostDocstringSignatureGenerator(
         return [self._fix_self_arg(sig, ctx) for sig in sigs]
 
     def cleanup_type(
-        self, boost_py_type: str, ctx: FunctionContext, is_result: bool, fallback=None
+        self,
+        py_type: str,
+        ctx: FunctionContext,
+        is_result: bool,
+        fallback_type: str | None = None,
     ) -> str:
         """
         Called by cleanup_sig_types.
@@ -640,26 +642,26 @@ class UsdBoostDocstringSignatureGenerator(
         if ctx.name == "_GetStaticTfType" and is_result:
             return "pxr.Tf.Type"
 
-        if is_result and boost_py_type == "object":
+        if is_result and py_type == "object":
             return "Any"
 
         # handle generics, like 'list[Attribute]'
-        parts = [x for x in re.split(PYPATH, boost_py_type) if x]
+        parts = [x for x in re.split(PYPATH, py_type) if x]
 
         if len(parts) > 1:
             notifier.warn(
                 "Ignoring fallback for compound type",
                 ctx.module_name,
-                f"{boost_py_type} -> {parts}",
+                f"{py_type} -> {parts}",
             )
-            fallback = None
+            fallback_type = None
 
         new_parts = []
         for sub_py_type in parts:
             full_type = doc_info.get_full_py_type(
                 sub_py_type,
                 ctx.module_name,
-                fallback=fallback,
+                fallback=fallback_type,
                 current_func=ctx.fullname,
             )
             if full_type is None and src_info.is_array_py_type(sub_py_type):
@@ -669,8 +671,7 @@ class UsdBoostDocstringSignatureGenerator(
             if not is_result and sub_py_type:
                 sub_py_type = src_info.add_implicit_unions(sub_py_type)
             new_parts.append(sub_py_type)
-        py_type = "".join(new_parts)
-        return py_type
+        return "".join(new_parts)
 
     def _infer_type(
         self,
@@ -691,17 +692,13 @@ class UsdBoostDocstringSignatureGenerator(
         """
         if boost_py_type in (None, "object", "list"):
             # boost is reliable with most other types, such as int, bool, dict, tuple
-            py_type = converted_py_type
+            return self.cleanup_type(converted_py_type, ctx, is_result)
         elif boost_py_type is not None:
-            py_type = (
-                self.cleanup_type(
-                    boost_py_type, ctx, is_result, fallback=converted_py_type
-                )
-                or boost_py_type
+            return self.cleanup_type(
+                boost_py_type, ctx, is_result, fallback_type=converted_py_type
             )
         else:
-            py_type = None
-        return py_type
+            return None
 
     def _processs_sigs(
         self, sigs: list[FunctionSig], ctx: FunctionContext
@@ -746,7 +743,7 @@ class UsdBoostDocstringSignatureGenerator(
                 args_without_ptr: list[ArgSig] = []
                 ptr_results = []
                 for arg_type, arg_name in cpp_sig.params:
-                    py_arg_type = src_info.cpp_arg_to_py_type(arg_type, is_arg=True)[0]
+                    py_arg_type = src_info.cpp_arg_to_py_type(arg_type)
                     if "*" in arg_type:
                         # a pointer result
                         ptr_results.append(py_arg_type)
@@ -754,9 +751,7 @@ class UsdBoostDocstringSignatureGenerator(
                         args_without_ptr.append(ArgSig(arg_name, py_arg_type))
                     args_with_ptr.append(ArgSig(arg_name, py_arg_type))
 
-                py_ret_type = src_info.cpp_arg_to_py_type(
-                    cpp_sig.returnType, is_arg=False
-                )[0]
+                py_ret_type = src_info.cpp_arg_to_py_type(cpp_sig.returnType)
                 cpp_sigs_with_ptr.append(
                     FunctionSig(ctx.name, args_with_ptr, py_ret_type)
                 )
@@ -819,7 +814,7 @@ class UsdBoostDocstringSignatureGenerator(
                     )
                     sigs[overload_num] = self.cleanup_sig_types(py_sig, ctx)
                 else:
-                    # created best guesses for python types.
+                    # create best guesses for python types.
                     args = []
                     for py_arg, cpp_arg in zip(py_sig.args, cpp_sig.args):
                         py_type = self._infer_type(py_arg.type, cpp_arg.type, ctx)
@@ -837,12 +832,19 @@ class UsdBoostDocstringSignatureGenerator(
 
                     sigs[overload_num] = FunctionSig(py_sig.name, args, return_type)
 
-        # FIXME: remove dupes
-        return sigs
+        return reduce_overloads(sigs)
 
     def get_function_sig(
         self, default_sig: FunctionSig, ctx: FunctionContext
     ) -> list[FunctionSig] | None:
+        if ctx.name == "__iter__":
+            # stubgen has functionality to add __iter__ when __getitem__ is present to get
+            # around an issue with mypy, but we can't process it with UsdBoostDocstringSignatureGenerator
+            # because it mangles generic types (replaces [] in types)
+            new_sigs = infer_sig_from_docstring(ctx.docstr, ctx.name)
+            if new_sigs and new_sigs[0].ret_type != "Any":
+                return new_sigs
+
         sigs = super().get_function_sig(default_sig, ctx)
         if not sigs:
             return None
@@ -866,7 +868,7 @@ class UsdBoostDocstringSignatureGenerator(
         sigs = [FunctionSig(ctx.name, [], None)]
         sigs = self._processs_sigs(sigs, ctx)
         ret_type = sigs[0].ret_type
-        # FIXME: fix mypy to also check the evaluated descriptor type
+        # FIXME: fix mypy to also check the evaluated descriptor type (i.e. value *and* raw_value)
         return ret_type or "Any"
 
 
@@ -900,7 +902,8 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
 
     def get_type_fullname(self, typ: type) -> str:
         type_name = super().get_type_fullname(typ)
-        # enums may leave out their parent class.  e.g. pxr.Usd.VersionPolicy should be pxr.Usd.SchemaRegistry.VersionPolicy
+        # enums may leave out their parent class, and don't appear to implement __qualname__
+        # e.g. pxr.Usd.VersionPolicy should be pxr.Usd.SchemaRegistry.VersionPolicy
         if type_name.startswith("pxr.") and not is_existing_obj(type_name):
             full_type_name = doc_info.get_full_py_type(
                 type_name.split(".")[-1], self.module_name
@@ -993,27 +996,25 @@ mypy.stubgenc.NoParseStubGenerator = CStubGenerator
 
 def test():
     assert (
-        src_info.cpp_arg_to_py_type("PCP_API SdfLayerHandleSet")[0]
+        src_info.cpp_arg_to_py_type("PCP_API SdfLayerHandleSet")
         == "list[pxr.Sdf.Layer]"
     )
     assert (
-        src_info.cpp_arg_to_py_type("std::function<bool( UsdAttribute const&)>const&")[
-            0
-        ]
+        src_info.cpp_arg_to_py_type("std::function<bool( UsdAttribute const&)>const&")
         == "Callable[[pxr.Usd.Attribute], bool]"
     )
 
 
 def main(outdir):
     # test()
-    # return
+    # # return
     # import pprint
     # assert src_info.srcdir is not None
     # pprint.pprint(src_info.get_implicitly_convertible_types())
     # return
 
     doc_info.populate()
-    notifier.set_modules(["pxr.Sdf"])
+    notifier.set_modules(["pxr.UsdGeom"])
     # raise ValueError(doc_info.py_types["PathArray"], doc_info.get_full_py_type("PathArray", "pxr.UsdGeom"))
     # raise ValueError(doc_info.py_types["VersionPolicy"], doc_info.get_full_py_type("VersionPolicy", "pxr.Usd"))
     # raise ValueError(doc_info.py_types["Matrix3dArray"], doc_info.get_full_py_type("Matrix3dArray", "pxr.Usd"))

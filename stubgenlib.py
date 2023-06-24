@@ -1,5 +1,6 @@
 from __future__ import absolute_import, annotations, division, print_function
 
+import itertools
 import re
 from typing import Any
 
@@ -127,6 +128,98 @@ class BoostDocstringSignatureGenerator(SignatureGenerator):
         if ctx.docstr:
             docstr = self.standardize_docstring(ctx.docstr)
             return infer_sig_from_docstring(docstr, ctx.name)
+
+
+class CFunctionStub:
+    """
+    Class that mimics a C function in order to provide parseable docstrings.
+    """
+
+    def __init__(self, name: str, doc: str, is_abstract=False):
+        self.__name__ = name
+        self.__doc__ = doc
+        self.__abstractmethod__ = is_abstract
+
+    @classmethod
+    def _from_sig(cls, sig: FunctionSig, is_abstract=False) -> CFunctionStub:
+        return CFunctionStub(sig.name, sig.format_sig(suffix=""), is_abstract)
+
+    @classmethod
+    def _from_sigs(cls, sigs: list[FunctionSig], is_abstract=False) -> CFunctionStub:
+        return CFunctionStub(
+            sigs[0].name,
+            '\n'.join(sig.format_sig(suffix="") for sig in sigs),
+            is_abstract,
+        )
+
+    def __get__(self):
+        """
+        This exists to make this object look like a method descriptor and thus
+        return true for CStubGenerator.ismethod()
+        """
+        pass
+
+
+def reduce_overloads(sigs: list[FunctionSig]) -> list[FunctionSig]:
+    """
+    Remove unsupported and redundant overloads.
+
+    - Some overloads are a subset of other overloads and can be pruned.
+    - Some methods implement both classmethod and instancemethod overloads, and mypy prevents
+      mixing these and does not correctly analyze them: so we have to drop one, and we've chosen
+      to remove classmethods.  It is possible to implement a "universalmethod" decorator, but
+      we could not use overloads to distinguish their arguments.
+    """
+    # remove dups (FunctionSig is not hashable, so it's a bit cumbersome)
+    new_sigs = []
+    classmethods = []
+    instancmethods = []
+    for sig in sigs:
+        if sig not in new_sigs:
+            if sig.args and sig.args[0].name == 'self':
+                instancmethods.append(sig)
+            else:
+                classmethods.append(sig)
+            new_sigs.append(sig)
+    if classmethods and instancmethods:
+        new_sigs = instancmethods
+
+    if len(new_sigs) <= 1:
+        return new_sigs
+
+    sigs = sorted(new_sigs, key=lambda x: len(x.args), reverse=True)
+    redundant = []
+    for a, b in itertools.combinations(sigs, 2):
+        if contains_other_overload(a, b):
+            redundant.append(b)
+        elif contains_other_overload(b, a):
+            redundant.append(a)
+    results = [sig for sig in sigs if sig not in redundant]
+    if not results:
+        print("removed too much")
+        for x in sigs:
+            print(x)
+        raise ValueError
+    return results
+
+
+def contains_other_overload(sig: FunctionSig, other: FunctionSig) -> bool:
+    """
+    Return whether an overload is fully covered by another overload, and thus redundant.
+    """
+    if other.ret_type != sig.ret_type:
+        # not compatible
+        return False
+    num_other_args = len(other.args)
+    if len(sig.args) < num_other_args:
+        # other has more args, sig cannot contain other
+        return False
+    if sig.args[:num_other_args] == other.args and all(
+        a.default for a in sig.args[num_other_args:]
+    ):
+        # sig contains all of other's args, and the remaining sig args all have defaults
+        return True
+    return False
 
 
 def test():

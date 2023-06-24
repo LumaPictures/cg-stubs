@@ -13,7 +13,7 @@ from mypy.stubgenc import FunctionContext, FunctionSig, SignatureGenerator
 
 import Callbacks.Callbacks
 from Callbacks.Callbacks import _TypeEnum
-from stubgenlib import DocstringSignatureGenerator
+from stubgenlib import DocstringSignatureGenerator, CFunctionStub
 
 EPY_REG = re.compile(r"([LC]\{([^}]+)\})")
 LIST_OF_REG = re.compile(r"\b(list|Sequence|Iterable|Iterator) of (.*)")
@@ -196,24 +196,6 @@ class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
         return list(members.items())
 
 
-class CFunctionStub:
-    """
-    Class that mimics a C function in order to provide parseable docstrings.
-    """
-
-    def __init__(self, name, doc, is_abstract=False):
-        self.__name__ = name
-        self.__doc__ = doc
-        self.__abstractmethod__ = is_abstract
-
-    def __get__(self):
-        """
-        This exists to make this object look like a method descriptor and thus
-        return true for CStubGenerator.ismethod()
-        """
-        pass
-
-
 class CStubGenerator(mypy.stubgenc.CStubGenerator):
     DATA_ATTRS = {
         'DataAttribute': 'T',
@@ -260,40 +242,52 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
             is_abstract = obj.__name__ == 'DataAttribute'
             # Add abstract methods that are shared by all sub-classes
             add(
-                CFunctionStub(
-                    "getValue",
-                    f"getValue(self, defaultValue: {sub_type} = ..., throwOnError: bool = ...) -> {sub_type}",
+                CFunctionStub._from_sig(
+                    FunctionSig(
+                        "getValue",
+                        [
+                            ArgSig("defaultValue", sub_type, default=True),
+                            ArgSig("throwOnError", "bool", default=True),
+                        ],
+                        sub_type,
+                    ),
                     is_abstract=is_abstract,
                 )
             )
             add(
-                CFunctionStub(
-                    "getData",
-                    f"getData(self) -> ConstVector[{sub_type}]",
+                CFunctionStub._from_sig(
+                    FunctionSig("getData", [], "ConstVector[{sub_type}]"),
                     is_abstract=is_abstract,
                 )
             )
             add(
-                CFunctionStub(
-                    "getNearestSample",
-                    f"getNearestSample(self, sampleTime: float) -> ConstVector[{sub_type}]",
+                CFunctionStub._from_sig(
+                    FunctionSig(
+                        "getNearestSample",
+                        [ArgSig("sampleTime", "float")],
+                        "ConstVector[{sub_type}]",
+                    ),
                     is_abstract=is_abstract,
                 )
             )
             add(
-                CFunctionStub(
-                    "getSamples",
-                    f"getSamples(self) -> Dict[float, ConstVector[{sub_type}]]",
+                CFunctionStub._from_sig(
+                    FunctionSig(
+                        "getSamples", [], "Dict[float, ConstVector[{sub_type}]]"
+                    ),
                     is_abstract=is_abstract,
                 )
             )
         elif isinstance(obj, type) and obj.__name__ == 'ConstVector':
-            add(CFunctionStub("__iter__", "__iter__(self) -> Iterator[T]"))
+            add(CFunctionStub._from_sig(FunctionSig("__iter__", [], "Iterator[T]")))
             add(
-                CFunctionStub(
-                    "__getitem__",
-                    "__getitem__(self, arg0: int) -> T\n"
-                    "__getitem__(self, arg0: slice) -> ConstVector[T]",
+                CFunctionStub._from_sigs(
+                    [
+                        FunctionSig("__getitem__", [ArgSig("arg0", "int")], "T"),
+                        FunctionSig(
+                            "__getitem__", [ArgSig("arg0", "slice")], "ConstVector[T]"
+                        ),
+                    ]
                 )
             )
 
