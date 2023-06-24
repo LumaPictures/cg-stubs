@@ -233,13 +233,21 @@ def should_strip_part(x: str) -> bool:
     return x.endswith("_API") or not x
 
 
-class SourceInfo:
-    """
-    Helper for converting c++ data to python data, using info parsed from the
-    source
+class TypeInfo:
+    """Get info about types.
+
+    Provides helpers for converting c++ data to python data, using data
+    parsed from doxygen docs and source code.
     """
 
-    def __init__(self, srcdir: str | None = None, verbose=False):
+    def __init__(
+        self, xml_index_file: str, pxr_modules, srcdir: str | None = None, verbose=False
+    ):
+        self.xml_index_file = xml_index_file
+        self.pxr_modules_names = sorted(pxr_modules, key=len, reverse=True)
+        self.cpp_sigs: dict[str, SigInfo] = {}
+        # mapping of short names to full python paths
+        self.py_types = defaultdict(list)
         self.srcdir = srcdir
         self._valid_modules = None
         self._implicitly_convertible_types = None
@@ -261,14 +269,8 @@ class SourceInfo:
     #             reverse=True)
     #     return self._valid_modules
 
-    def get_type_from_path(self, path):
-        parts = path.split(os.path.sep)
-        name = os.path.splitext(parts[-1])[0]
-        assert name.startswith("wrap")
-        return doc_info.to_python_id(capitalize(parts[-2]) + name[4:])
-
     @staticmethod
-    def is_array_py_type(py_type: str):
+    def is_py_array_type(py_type: str):
         return bool(
             re.match(
                 r"(Int|UInt|Bool|Vec|Short|Doublt|Half|Quat|Range|Rect|Char|Float|Token|Matrix).*Array$",
@@ -276,13 +278,25 @@ class SourceInfo:
             )
         )
 
-    def get_implicitly_convertible_types(self) -> dict[str, set[str]]:
+    def _get_implicitly_convertible_types(self) -> dict[str, set[str]]:
         """
         inspect the boost-python code to parse the rules for implicitly
         convertible types
         """
         if self.srcdir is None:
             return {}
+
+        def get_type_from_path(path):
+            parts = path.split(os.path.sep)
+            name = os.path.splitext(parts[-1])[0]
+            assert name.startswith("wrap")
+            return type_info.to_python_id(capitalize(parts[-2]) + name[4:])
+
+        def process_parsed_type(cpp_type):
+            if cpp_type == "This":
+                cpp_type = get_type_from_path(path)
+            py_type = self.cpp_arg_to_py_type(cpp_type)
+            return type_info.get_full_py_type(py_type) or py_type
 
         # FIXME: add module prefixes to all types (Output, Input, Parameter, etc are not prefixed)
         # FIXME: parse other conversions defined using TfPyContainerConversions
@@ -314,16 +328,8 @@ class SourceInfo:
                     m = code_reg.search(code)
                     if m:
                         match = m.groupdict()
-                        from_type = match["from"]
-                        to_type = match["to"]
-                        if to_type == "This":
-                            to_type = self.get_type_from_path(path)
-                        if from_type == "This":
-                            from_type = self.get_type_from_path(path)
-                        # to_type = doc_info.get_full_py_type(self.cpp_arg_to_py_type(to_type))
-                        # from_type = doc_info.get_full_py_type(self.cpp_arg_to_py_type(from_type))
-                        to_type = self.cpp_arg_to_py_type(to_type)
-                        from_type = self.cpp_arg_to_py_type(from_type)
+                        from_type = process_parsed_type(match["from"])
+                        to_type = process_parsed_type(match["to"])
                         result[to_type].add(from_type)
                     elif self.verbose:
                         print("no match", line)
@@ -342,7 +348,7 @@ class SourceInfo:
         py_type : str
             fully qualified python type identifier
         """
-        others = self.get_implicitly_convertible_types().get(py_type)
+        others = self._get_implicitly_convertible_types().get(py_type)
         if others is not None:
             return " | ".join([py_type] + sorted(others))
         else:
@@ -380,23 +386,12 @@ class SourceInfo:
 
         # convert to python identifers
         parts = [x for x in re.split(IDENTIFIER, typestr) if x]
-        parts = [(doc_info.to_python_id(x) or x) for x in parts]
+        parts = [(type_info.to_python_id(x) or x) for x in parts]
 
         typestr = "".join(parts)
         typestr = typestr.replace(",", ", ")
         typestr = typestr.replace("::", ".")
         return typestr
-
-
-class DocInfo:
-    """Get info from parsed doxygen docs"""
-
-    def __init__(self, xml_index_file: str, pxr_modules):
-        self.xml_index_file = xml_index_file
-        self.pxr_modules_names = sorted(pxr_modules, key=len, reverse=True)
-        self.cpp_sigs: dict[str, SigInfo] = {}
-        # mapping of short names to full python paths
-        self.py_types = defaultdict(list)
 
     def _populate_map(self, docElemPath: list[DocElement]) -> None:
         """
@@ -437,6 +432,9 @@ class DocInfo:
 
         for docElement in docElements:
             self._populate_map([docElement])
+
+        # cache these:
+        self._get_implicitly_convertible_types()
 
     @staticmethod
     def strip_pxr_namespace(cpp_type_name):
@@ -564,8 +562,19 @@ class DocInfo:
             if fallback is not None and fallback in full_type_names:
                 return fallback
             else:
+                if (
+                    current_module
+                    and current_module.startswith("pxr.Usd")
+                    and short_type_name in ("TimeCode",)
+                ):
+                    for full_type in full_type_names:
+                        if full_type.startswith("pxr.Usd"):
+                            return full_type
+
                 if current_func is None:
                     current_func = "<unknown_func>"
+                if current_module is None:
+                    current_module = "<unknown_module>"
                 notifier.warn(
                     "Ambiguous type loookup",
                     current_module,
@@ -581,9 +590,9 @@ modules = get_submodules(pxr.__path__)
 
 notifier = Notifier()
 
-doc_info = DocInfo(os.environ["USD_XML_INDEX"], modules)
-
-src_info = SourceInfo(srcdir=os.environ["USD_SOURCE_ROOT"])
+type_info = TypeInfo(
+    os.environ["USD_XML_INDEX"], modules, srcdir=os.environ["USD_SOURCE_ROOT"]
+)
 
 # Notes
 # - python args do not always match cpp args
@@ -658,18 +667,18 @@ class UsdBoostDocstringSignatureGenerator(
 
         new_parts = []
         for sub_py_type in parts:
-            full_type = doc_info.get_full_py_type(
+            full_type = type_info.get_full_py_type(
                 sub_py_type,
                 ctx.module_name,
                 fallback=fallback_type,
                 current_func=ctx.fullname,
             )
-            if full_type is None and src_info.is_array_py_type(sub_py_type):
+            if full_type is None and type_info.is_py_array_type(sub_py_type):
                 sub_py_type = f"pxr.Vt.{sub_py_type}"
             elif full_type:
                 sub_py_type = full_type
             if not is_result and sub_py_type:
-                sub_py_type = src_info.add_implicit_unions(sub_py_type)
+                sub_py_type = type_info.add_implicit_unions(sub_py_type)
             new_parts.append(sub_py_type)
         return "".join(new_parts)
 
@@ -709,7 +718,7 @@ class UsdBoostDocstringSignatureGenerator(
         def format_args(sig):
             return ", ".join(f"{arg.name}: {arg.type}" for arg in sig.args)
 
-        cpp_info = doc_info.get_cpp_sig_info(ctx.fullname)
+        cpp_info = type_info.get_cpp_sig_info(ctx.fullname)
         if cpp_info is None or len(sigs) != len(cpp_info.overloads):
             sigs = self._fix_self_args(sigs, ctx)
             # apply fixes that don't rely on c++ docs:
@@ -743,7 +752,7 @@ class UsdBoostDocstringSignatureGenerator(
                 args_without_ptr: list[ArgSig] = []
                 ptr_results = []
                 for arg_type, arg_name in cpp_sig.params:
-                    py_arg_type = src_info.cpp_arg_to_py_type(arg_type)
+                    py_arg_type = type_info.cpp_arg_to_py_type(arg_type)
                     if "*" in arg_type:
                         # a pointer result
                         ptr_results.append(py_arg_type)
@@ -751,7 +760,7 @@ class UsdBoostDocstringSignatureGenerator(
                         args_without_ptr.append(ArgSig(arg_name, py_arg_type))
                     args_with_ptr.append(ArgSig(arg_name, py_arg_type))
 
-                py_ret_type = src_info.cpp_arg_to_py_type(cpp_sig.returnType)
+                py_ret_type = type_info.cpp_arg_to_py_type(cpp_sig.returnType)
                 cpp_sigs_with_ptr.append(
                     FunctionSig(ctx.name, args_with_ptr, py_ret_type)
                 )
@@ -905,7 +914,7 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
         # enums may leave out their parent class, and don't appear to implement __qualname__
         # e.g. pxr.Usd.VersionPolicy should be pxr.Usd.SchemaRegistry.VersionPolicy
         if type_name.startswith("pxr.") and not is_existing_obj(type_name):
-            full_type_name = doc_info.get_full_py_type(
+            full_type_name = type_info.get_full_py_type(
                 type_name.split(".")[-1], self.module_name
             )
             if full_type_name is not None:
@@ -940,7 +949,7 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
     def is_classmethod(self, class_info: ClassInfo, name: str, obj: object) -> bool:
         # in boost python it is impossible to distinguish between classmethod and instance method
         # so we consult the docs
-        sig_info = doc_info.get_cpp_sig_info(
+        sig_info = type_info.get_cpp_sig_info(
             f"{self.module_name}.{class_info.name}.{name}"
         )
         if sig_info:
@@ -996,11 +1005,11 @@ mypy.stubgenc.NoParseStubGenerator = CStubGenerator
 
 def test():
     assert (
-        src_info.cpp_arg_to_py_type("PCP_API SdfLayerHandleSet")
+        type_info.cpp_arg_to_py_type("PCP_API SdfLayerHandleSet")
         == "list[pxr.Sdf.Layer]"
     )
     assert (
-        src_info.cpp_arg_to_py_type("std::function<bool( UsdAttribute const&)>const&")
+        type_info.cpp_arg_to_py_type("std::function<bool( UsdAttribute const&)>const&")
         == "Callable[[pxr.Usd.Attribute], bool]"
     )
 
@@ -1009,16 +1018,16 @@ def main(outdir):
     # test()
     # # return
     # import pprint
-    # assert src_info.srcdir is not None
-    # pprint.pprint(src_info.get_implicitly_convertible_types())
+    # assert type_info.srcdir is not None
+    # pprint.pprint(type_info._get_implicitly_convertible_types())
     # return
 
-    doc_info.populate()
-    notifier.set_modules(["pxr.UsdGeom"])
-    # raise ValueError(doc_info.py_types["PathArray"], doc_info.get_full_py_type("PathArray", "pxr.UsdGeom"))
-    # raise ValueError(doc_info.py_types["VersionPolicy"], doc_info.get_full_py_type("VersionPolicy", "pxr.Usd"))
-    # raise ValueError(doc_info.py_types["Matrix3dArray"], doc_info.get_full_py_type("Matrix3dArray", "pxr.Usd"))
-    # raise ValueError(doc_info.py_types["Type"], doc_info.get_full_py_type("Type", "pxr.Usd"))
+    type_info.populate()
+    notifier.set_modules(["pxr.UsdSkel"])
+    # raise ValueError(type_info.py_types["PathArray"], type_info.get_full_py_type("PathArray", "pxr.UsdGeom"))
+    # raise ValueError(type_info.py_types["VersionPolicy"], type_info.get_full_py_type("VersionPolicy", "pxr.Usd"))
+    # raise ValueError(type_info.py_types["Matrix3dArray"], type_info.get_full_py_type("Matrix3dArray", "pxr.Usd"))
+    # raise ValueError(type_info.py_types["Type"], type_info.get_full_py_type("Type", "pxr.Usd"))
 
     stubgen_main(["-p", "pxr", "--verbose", "--no-parse", f"-o={outdir}"])
     notifier.print_summary()
