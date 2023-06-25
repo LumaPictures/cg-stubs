@@ -414,9 +414,11 @@ class BoostDocStringParser:
             self.state.append(STATE_RETURN_VALUE)
 
         # ENDMAKER is necessary for python 3.4 and 3.5.
-        elif token.type in (tokenize.NEWLINE, tokenize.ENDMARKER) and self.state[
-            -1
-        ] in (
+        elif (
+            token.type in (tokenize.NEWLINE, tokenize.ENDMARKER)
+            or token.type == tokenize.OP
+            and token.string == ":"
+        ) and self.state[-1] in (
             STATE_INIT,
             STATE_RETURN_VALUE,
         ):

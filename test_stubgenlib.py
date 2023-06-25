@@ -38,7 +38,7 @@ def test_boost_docstring():
     docstr = """
 __init__( (object)arg1) -> None
 
-__init__( (object)arg1 [, (Camera)arg2]) -> None
+__init__( (object)arg1 [, (Camera)arg2]) -> None :
 
 __init__( (object)arg1 [, (Matrix4d)transform=Gf.Matrix4d(1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0) [, (object)projection=Gf.Camera.Perspective [, (float)apertureOffset=0.0 [, (Range1f)clippingRange=Gf.Range1f(1.0, 10000.0) [, (object)clippingPlanes=[] [, (float)fStop=0.0]]]]]]) -> None"""
 

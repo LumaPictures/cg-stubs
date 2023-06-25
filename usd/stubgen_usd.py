@@ -91,6 +91,20 @@ RENAMES = [
     # nameKey
     (r"\bSdfVariantSetNamesProxy\b", "pxr.Sdf.ListEditorProxy_SdfNameKeyPolicy"),
 ]
+ARRAY_TYPES = {
+    'Bool': 'bool',
+    'Char': 'str',
+    'Double': 'float',
+    'Float': 'float',
+    'Int64': 'int',
+    'Int': 'int',
+    'Short': 'int',
+    'String': 'str',
+    'UChar': 'str',
+    'UInt64': 'int',
+    'UInt': 'int',
+    'UShort': 'int',
+}
 
 
 def is_existing_obj(pypath: str) -> bool:
@@ -269,14 +283,20 @@ class TypeInfo:
     #             reverse=True)
     #     return self._valid_modules
 
-    @staticmethod
-    def is_py_array_type(py_type: str):
-        return bool(
-            re.match(
-                r"(Int|UInt|Bool|Vec|Short|Doublt|Half|Quat|Range|Rect|Char|Float|Token|Matrix).*Array$",
-                py_type,
-            )
+    @classmethod
+    def py_array_to_sub_type(cls, py_type: str) -> str | None:
+        """Takes a short or full python path"""
+        m = re.search(
+            r"\b((Int|UInt|Bool|Vec|Short|Doublt|Half|Quat|Range|Rect|Char|Float|Token|Matrix).*)Array$",
+            py_type,
         )
+        if m:
+            return m.groups()[0]
+
+    @classmethod
+    def is_py_array_type(cls, py_type: str) -> bool:
+        """Takes a short or full python path"""
+        return bool(cls.py_array_to_sub_type(py_type))
 
     def _get_implicitly_convertible_types(self) -> dict[str, set[str]]:
         """
@@ -340,7 +360,7 @@ class TypeInfo:
 
     def add_implicit_unions(self, py_type: str) -> str:
         """
-        wrap the type string in a Union[] if it is in the list of types with known
+        wrap the type string in a Union if it is in the list of types with known
         implicit conversions.
 
         Parameters
@@ -348,7 +368,12 @@ class TypeInfo:
         py_type : str
             fully qualified python type identifier
         """
-        others = self._get_implicitly_convertible_types().get(py_type)
+        sub_type = self.py_array_to_sub_type(py_type)
+        if sub_type:
+            sub_type = ARRAY_TYPES.get(sub_type, f"pxr.Gf.{sub_type}")
+            others = {f"list[{sub_type}]"}
+        else:
+            others = self._get_implicitly_convertible_types().get(py_type)
         if others is not None:
             return " | ".join([py_type] + sorted(others))
         else:
@@ -676,7 +701,11 @@ class UsdBoostDocstringSignatureGenerator(
                 fallback=fallback_type,
                 current_func=ctx.fullname,
             )
-            if full_type is None and type_info.is_py_array_type(sub_py_type):
+            if (
+                full_type is None
+                and not sub_py_type.startswith("pxr.")
+                and type_info.is_py_array_type(sub_py_type)
+            ):
                 sub_py_type = f"pxr.Vt.{sub_py_type}"
             elif (
                 full_type is None
@@ -1035,7 +1064,8 @@ def main(outdir):
     # assert type_info.srcdir is not None
     # pprint.pprint(type_info._get_implicitly_convertible_types())
     # return
-
+    # print(type_info.py_array_to_sub_type("pxr.Vt.Vec3fArray"))
+    # return
     type_info.populate()
     notifier.set_modules(["pxr.UsdSkel"])
     # raise ValueError(type_info.py_types["PathArray"], type_info.get_full_py_type("PathArray", "pxr.UsdGeom"))
