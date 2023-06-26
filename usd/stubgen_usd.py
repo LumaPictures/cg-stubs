@@ -1,5 +1,6 @@
 from __future__ import absolute_import, annotations, division, print_function
 
+import inspect
 import subprocess
 import pkgutil
 import os
@@ -58,6 +59,7 @@ TYPE_MAP = [
     (r"\bstd::pair\b", "tuple"),
     (r"\bstd::set\b", "list"),
     (r"\bdouble\b", "float"),
+    (r"\bHalf\b", "float"),  # FIXME: this isn't working
     (r"\bboost::python::", ""),
     (r"\bvoid\b", "None"),
     (r"\bVtValue\b", "Any"),
@@ -96,6 +98,7 @@ ARRAY_TYPES = {
     'Char': 'str',
     'Double': 'float',
     'Float': 'float',
+    'Half': 'float',
     'Int64': 'int',
     'Int': 'int',
     'Short': 'int',
@@ -287,7 +290,7 @@ class TypeInfo:
     def py_array_to_sub_type(cls, py_type: str) -> str | None:
         """Takes a short or full python path"""
         m = re.search(
-            r"\b((Int|UInt|Bool|Vec|Short|Doublt|Half|Quat|Range|Rect|Char|Float|Token|Matrix).*)Array$",
+            r"\b((Int|UInt|Bool|Vec|Short|Double|Half|Quat|Range|Rect|Char|Float|Token|Matrix).*)Array$",
             py_type,
         )
         if m:
@@ -353,7 +356,34 @@ class TypeInfo:
                         result[to_type].add(from_type)
                     elif self.verbose:
                         print("no match", line)
+
+            # data types: vec, matrix, etc
+            import pxr.Gf
+
+            for name, obj in inspect.getmembers(pxr.Gf):
+                dimension = getattr(obj, "dimension", None)
+                if dimension:
+                    if name.endswith("i"):
+                        data_type = "int"
+                    else:
+                        data_type = "float"
+                    if isinstance(dimension, int) and dimension > 1:
+                        result[f"pxr.Gf.{name}"].add(
+                            "tuple[{}]".format(", ".join([data_type] * dimension))
+                        )
+                        result[f"pxr.Gf.{name}"].add(f"list[{data_type}]")
+
+            # array types
+            import pxr.Vt
+
+            for name, obj in inspect.getmembers(pxr.Vt):
+                sub_type = self.py_array_to_sub_type(name)
+                if sub_type:
+                    sub_type = ARRAY_TYPES.get(sub_type, f"pxr.Gf.{sub_type}")
+                    result[f"pxr.Vt.{name}"].add(f"typing.Iterable[{sub_type}]")
+
             self._implicitly_convertible_types = dict(result)
+
         if not self._implicitly_convertible_types:
             raise RuntimeError("Could not find implicitly convertible types")
         return self._implicitly_convertible_types
@@ -368,12 +398,8 @@ class TypeInfo:
         py_type : str
             fully qualified python type identifier
         """
-        sub_type = self.py_array_to_sub_type(py_type)
-        if sub_type:
-            sub_type = ARRAY_TYPES.get(sub_type, f"pxr.Gf.{sub_type}")
-            others = {f"list[{sub_type}]"}
-        else:
-            others = self._get_implicitly_convertible_types().get(py_type)
+        others = self._get_implicitly_convertible_types().get(py_type)
+
         if others is not None:
             return " | ".join([py_type] + sorted(others))
         else:
@@ -1060,7 +1086,8 @@ def test():
 def main(outdir):
     # test()
     # # return
-    # import pprint
+    import pprint
+
     # assert type_info.srcdir is not None
     # pprint.pprint(type_info._get_implicitly_convertible_types())
     # return
