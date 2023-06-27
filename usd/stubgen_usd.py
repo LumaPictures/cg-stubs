@@ -745,8 +745,20 @@ class UsdBoostDocstringSignatureGenerator(
                 sub_py_type = "typing_extensions.Self"
             elif full_type:
                 sub_py_type = full_type
+
             if not is_result and sub_py_type:
-                sub_py_type = type_info.add_implicit_unions(sub_py_type)
+                other_types = type_info._get_implicitly_convertible_types().get(
+                    sub_py_type
+                )
+                if other_types is not None:
+                    union_types = [sub_py_type] + sorted(other_types)
+                    # special case for lists because they are invariant
+                    # FIXME: what if the subtype was converted to a full path?
+                    if py_type == f"list[{sub_py_type}]":
+                        return " | ".join(f"list[{typ}]" for typ in union_types)
+                    else:
+                        sub_py_type = " | ".join(union_types)
+
             new_parts.append(sub_py_type)
         py_type = "".join(new_parts)
         return py_type
