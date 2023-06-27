@@ -48,6 +48,20 @@ SetDebugMode(False)
 IDENTIFIER = r"([a-zA-Z_][a-zA-Z0-9_]*)"
 PYPATH = r"((?:[a-zA-Z_][a-zA-Z0-9_]*)(?:[.][a-zA-Z_][a-zA-Z0-9_]*)*)"
 STRIP = r"\b(?:const|friend|constexpr)\b"
+ARG_TYPE_MAP = [
+    (r"\bstd::vector\b", "typing.Iterable"),
+    (r"\bstd::set\b", "typing.Iterable"),
+    # Sdf mapping types:
+    (r"\bSdfLayerHandleSet\b", "typing.Iterable[pxr.Sdf.Layer]"),
+    (r"\bSdfPathSet\b", "typing.Iterable[pxr.Sdf.Path]"),
+]
+RESULT_TYPE_MAP = [
+    (r"\bstd::vector\b", "list"),
+    (r"\bstd::set\b", "list"),
+    # Sdf mapping types:
+    (r"\bSdfLayerHandleSet\b", "list[pxr.Sdf.Layer]"),
+    (r"\bSdfPathSet\b", "list[pxr.Sdf.Path]"),
+]
 TYPE_MAP = [
     (r"\bVtArray<\s*SdfAssetPath\s*>", "SdfAssetPathArray"),
     (r"\bstd::string\b", "str"),
@@ -55,9 +69,7 @@ TYPE_MAP = [
     (r"\bsize_t\b", "int"),
     (r"\bchar\b", "str"),
     (r"\bstd::function<(.+)\((.*)\)>", r"typing.Callable[[\2],\1]"),
-    (r"\bstd::vector\b", "list"),
     (r"\bstd::pair\b", "tuple"),
-    (r"\bstd::set\b", "list"),
     (r"\bdouble\b", "float"),
     (r"\bHalf\b", "float"),  # FIXME: this isn't working
     (r"\bboost::python::", ""),
@@ -79,7 +91,6 @@ RENAMES = [
     # simple renames:
     (r"\bSdfBatchNamespaceEdit\b", "pxr.Sdf.NamespaceEdit"),
     # Sdf mapping types:
-    (r"\bSdfLayerHandleSet\b", "list[pxr.Sdf.Layer]"),
     (r"\bSdfDictionaryProxy\b", "pxr.Sdf.MapEditProxy_VtDictionary"),
     (r"\bSdfReferencesProxy\b", "pxr.Sdf.ReferenceTypePolicy"),
     (r"\bSdfSubLayerProxy\b", "pxr.Sdf.ListProxy_SdfSubLayerTypePolicy"),
@@ -318,7 +329,7 @@ class TypeInfo:
         def process_parsed_type(cpp_type):
             if cpp_type == "This":
                 cpp_type = get_type_from_path(path)
-            py_type = self.cpp_arg_to_py_type(cpp_type)
+            py_type = self.cpp_arg_to_py_type(cpp_type, is_result=True)
             return type_info.get_full_py_type(py_type) or py_type
 
         # FIXME: add module prefixes to all types (Output, Input, Parameter, etc are not prefixed)
@@ -405,7 +416,7 @@ class TypeInfo:
         else:
             return py_type
 
-    def cpp_arg_to_py_type(self, cpp_type: str) -> str:
+    def cpp_arg_to_py_type(self, cpp_type: str, is_result) -> str:
         """
         Convert a c++ type string to a python type string
 
@@ -413,7 +424,7 @@ class TypeInfo:
         """
         orig = cpp_type
         parts = cpp_type.split()
-        is_result = maybe_result(parts)
+        is_ptr = "*" in cpp_type
 
         # remove extraneous bits
         parts = [
@@ -428,7 +439,9 @@ class TypeInfo:
             if new_typestr != typestr:
                 return new_typestr
 
-        for pattern, replace in TYPE_MAP:
+        for pattern, replace in TYPE_MAP + (
+            RESULT_TYPE_MAP if is_ptr or is_result else ARG_TYPE_MAP
+        ):
             typestr = re.sub(pattern, replace, typestr)
 
         # swap container syntax
@@ -819,11 +832,15 @@ class UsdBoostDocstringSignatureGenerator(
             for cpp_sig in cpp_info.overloads:
                 args: list[ArgSig] = []
                 for param in cpp_sig.params:
-                    py_arg_type = type_info.cpp_arg_to_py_type(param.type)
+                    py_arg_type = type_info.cpp_arg_to_py_type(
+                        param.type, is_result=False
+                    )
                     has_default = param.default is not None
                     args.append(ArgSig(param.name, py_arg_type, has_default))
 
-                py_ret_type = type_info.cpp_arg_to_py_type(cpp_sig.returnType)
+                py_ret_type = type_info.cpp_arg_to_py_type(
+                    cpp_sig.returnType, is_result=True
+                )
                 cpp_sigs.append(FunctionSig(ctx.name, args, py_ret_type))
             sigs = cpp_sigs
             pprint.pprint(sigs)
@@ -864,7 +881,9 @@ class UsdBoostDocstringSignatureGenerator(
                 ptr_results = []
                 for param in cpp_sig.params:
                     has_default = param.default is not None
-                    py_arg_type = type_info.cpp_arg_to_py_type(param.type)
+                    py_arg_type = type_info.cpp_arg_to_py_type(
+                        param.type, is_result=False
+                    )
                     if "*" in param.type:
                         # a pointer result
                         ptr_results.append(py_arg_type)
@@ -874,7 +893,9 @@ class UsdBoostDocstringSignatureGenerator(
                         )
                     args_with_ptr.append(ArgSig(param.name, py_arg_type, has_default))
 
-                py_ret_type = type_info.cpp_arg_to_py_type(cpp_sig.returnType)
+                py_ret_type = type_info.cpp_arg_to_py_type(
+                    cpp_sig.returnType, is_result=True
+                )
                 cpp_sigs_with_ptr.append(
                     FunctionSig(ctx.name, args_with_ptr, py_ret_type)
                 )
@@ -1132,11 +1153,13 @@ mypy.stubgenc.NoParseStubGenerator = CStubGenerator
 
 def test():
     assert (
-        type_info.cpp_arg_to_py_type("PCP_API SdfLayerHandleSet")
+        type_info.cpp_arg_to_py_type("PCP_API SdfLayerHandleSet", is_result=True)
         == "list[pxr.Sdf.Layer]"
     )
     assert (
-        type_info.cpp_arg_to_py_type("std::function<bool( UsdAttribute const&)>const&")
+        type_info.cpp_arg_to_py_type(
+            "std::function<bool( UsdAttribute const&)>const&", is_result=True
+        )
         == "Callable[[pxr.Usd.Attribute], bool]"
     )
 
