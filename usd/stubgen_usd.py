@@ -216,14 +216,14 @@ class Notifier:
     def __init__(self) -> None:
         self._seen_msgs = defaultdict(int)
         self._seen_keys = defaultdict(int)
-        self._modules = []
+        self._modules: list[str] | None = None
 
     def set_modules(self, modules: list[str]):
         self._modules = modules
 
     def warn(self, key: str, module: str, msg: str):
         if (key, module, msg) not in self._seen_msgs:
-            if not self._modules or module in self._modules:
+            if self._modules is None or module in self._modules:
                 print(f"({module}) {key}: {msg}")
         self._seen_msgs[(key, module, msg)] += 1
         self._seen_keys[key] += 1
@@ -799,8 +799,37 @@ class UsdBoostDocstringSignatureGenerator(
         def format_args(sig):
             return ", ".join(f"{arg.name}: {arg.type}" for arg in sig.args)
 
-        cpp_info = type_info.get_cpp_sig_info(ctx.fullname)
-        if cpp_info is None or len(sigs) != len(cpp_info.overloads):
+        match = re.match(r"(pxr\.Sdf.*Spec).__init__$", ctx.fullname)
+        if match:
+            fullname = "{}.New".format(match.groups()[0])
+            use_cpp_only = True
+        else:
+            fullname = ctx.fullname
+            use_cpp_only = False
+
+        cpp_info = type_info.get_cpp_sig_info(fullname)
+        if use_cpp_only:
+            assert cpp_info is not None
+            import pprint
+
+            print(cpp_info.overloads[0].location)
+            pprint.pprint(cpp_info.overloads[0].params)
+            # Only C++ signatures
+            cpp_sigs: list[FunctionSig] = []
+            for cpp_sig in cpp_info.overloads:
+                args: list[ArgSig] = []
+                for param in cpp_sig.params:
+                    py_arg_type = type_info.cpp_arg_to_py_type(param.type)
+                    has_default = param.default is not None
+                    args.append(ArgSig(param.name, py_arg_type, has_default))
+
+                py_ret_type = type_info.cpp_arg_to_py_type(cpp_sig.returnType)
+                cpp_sigs.append(FunctionSig(ctx.name, args, py_ret_type))
+            sigs = cpp_sigs
+            pprint.pprint(sigs)
+            print()
+        elif cpp_info is None or len(sigs) != len(cpp_info.overloads):
+            # Only python signatures
             sigs = self._fix_self_args(sigs, ctx)
             # apply fixes that don't rely on c++ docs:
             sigs = [self.cleanup_sig_types(sig, ctx) for sig in sigs]
@@ -812,7 +841,7 @@ class UsdBoostDocstringSignatureGenerator(
                     summary += "   py   ({})\n".format(format_args(sig))
                 for overload_num, sig in enumerate(cpp_info.overloads):
                     summary += "   cpp  ({})\n".format(
-                        ", ".join(f"{arg}: {type}" for type, arg in sig.params)
+                        ", ".join(f"{param.name}: {param.type}" for param in sig.params)
                     )
 
                 notifier.warn(
@@ -823,6 +852,7 @@ class UsdBoostDocstringSignatureGenerator(
                     ),
                 )
         else:
+            # C++ and Python signatures
             if not cpp_info.overloads[0].isStatic():
                 sigs = self._fix_self_args(sigs, ctx)
 
@@ -832,14 +862,17 @@ class UsdBoostDocstringSignatureGenerator(
                 args_with_ptr: list[ArgSig] = []
                 args_without_ptr: list[ArgSig] = []
                 ptr_results = []
-                for arg_type, arg_name in cpp_sig.params:
-                    py_arg_type = type_info.cpp_arg_to_py_type(arg_type)
-                    if "*" in arg_type:
+                for param in cpp_sig.params:
+                    has_default = param.default is not None
+                    py_arg_type = type_info.cpp_arg_to_py_type(param.type)
+                    if "*" in param.type:
                         # a pointer result
                         ptr_results.append(py_arg_type)
                     else:
-                        args_without_ptr.append(ArgSig(arg_name, py_arg_type))
-                    args_with_ptr.append(ArgSig(arg_name, py_arg_type))
+                        args_without_ptr.append(
+                            ArgSig(param.name, py_arg_type, has_default)
+                        )
+                    args_with_ptr.append(ArgSig(param.name, py_arg_type, has_default))
 
                 py_ret_type = type_info.cpp_arg_to_py_type(cpp_sig.returnType)
                 cpp_sigs_with_ptr.append(
@@ -862,6 +895,10 @@ class UsdBoostDocstringSignatureGenerator(
                 )
 
             def matches(sigs1, sigs2):
+                """
+                Compare the two signatures, by returning the number of signatures
+                with matching arg length.
+                """
                 return sum(
                     len(sig1.args) == len(sig2.args)
                     for (sig1, sig2) in zip(sigs1, sigs2)
@@ -886,6 +923,7 @@ class UsdBoostDocstringSignatureGenerator(
 
             for overload_num, (py_sig, cpp_sig) in enumerate(zip(sigs, cpp_sigs)):
                 if len(py_sig.args) != len(cpp_sig.args):
+                    # C++ and python arg lists doesn't match: use the python sig
                     py_summary = "   py   ({})".format(format_args(py_sig))
                     cpp_summary = "   cpp  ({})".format(format_args(cpp_sig))
                     cpp_summary1 = " {} cpp! ({})".format(
@@ -922,6 +960,19 @@ class UsdBoostDocstringSignatureGenerator(
 
                     sigs[overload_num] = FunctionSig(py_sig.name, args, return_type)
 
+        if (
+            ctx.class_info is not None
+            and ctx.name.startswith("__")
+            and ctx.name.endswith("__")
+        ):
+            # correct special methods which boost may have given bogus args or values
+            args = infer_method_args(ctx.name, ctx.class_info.self_var)
+            if all(arg.type is not None for arg in args[1:]):
+                sigs = [sig._replace(args=args) for sig in sigs]
+            ret_type = infer_method_ret_type(ctx.name)
+            if ret_type is not None:
+                sigs = [sig._replace(ret_type=ret_type) for sig in sigs]
+
         return reduce_overloads(sigs)
 
     def get_function_sig(
@@ -945,20 +996,7 @@ class UsdBoostDocstringSignatureGenerator(
             and len(sigs) == 1
             and [x.name for x in sigs[0].args] == ["tupleargs", "dictkwds"]
         ):
-            return [FunctionSig("__init__", [], "None")]
-
-        if (
-            ctx.class_info is not None
-            and ctx.name.startswith("__")
-            and ctx.name.endswith("__")
-        ):
-            # correct special methods which boost may have given bogus args or values
-            args = infer_method_args(ctx.name, ctx.class_info.self_var)
-            if all(arg.type is not None for arg in args[1:]):
-                sigs = [sig._replace(args=args) for sig in sigs]
-            ret_type = infer_method_ret_type(ctx.name)
-            if ret_type is not None:
-                sigs = [sig._replace(ret_type=ret_type) for sig in sigs]
+            sigs = [FunctionSig("__init__", [], "None")]
 
         return self._processs_sigs(sigs, ctx)
 
@@ -1114,7 +1152,8 @@ def main(outdir):
     # print(type_info.py_array_to_sub_type("pxr.Vt.Vec3fArray"))
     # return
     type_info.populate()
-    notifier.set_modules(["pxr.UsdSkel"])
+    notifier.set_modules([])
+    # notifier.set_modules(["pxr.UsdSkel"])
     # raise ValueError(type_info.py_types["PathArray"], type_info.get_full_py_type("PathArray", "pxr.UsdGeom"))
     # raise ValueError(type_info.py_types["VersionPolicy"], type_info.get_full_py_type("VersionPolicy", "pxr.Usd"))
     # raise ValueError(type_info.py_types["Matrix3dArray"], type_info.get_full_py_type("Matrix3dArray", "pxr.Usd"))
