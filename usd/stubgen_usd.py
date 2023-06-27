@@ -927,6 +927,14 @@ class UsdBoostDocstringSignatureGenerator(
         if not sigs:
             return None
 
+        # The cpp wrappers use a special no_init object which creates bogus signatures
+        if (
+            ctx.name == "__init__"
+            and len(sigs) == 1
+            and [x.name for x in sigs[0].args] == ["tupleargs", "dictkwds"]
+        ):
+            return [FunctionSig("__init__", [], "None")]
+
         if (
             ctx.class_info is not None
             and ctx.name.startswith("__")
