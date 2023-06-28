@@ -1,5 +1,4 @@
-from typing import Callable
-
-AddCmdlineArgs: Callable
-GetAllPluginArguments: Callable
-GetPluginIdFromArgument: Callable
+# mypy: disable_error_code = misc
+def AddCmdlineArgs(argsParser, altHelpText: str = ...): ...
+def GetAllPluginArguments(): ...
+def GetPluginIdFromArgument(argumentString): ...

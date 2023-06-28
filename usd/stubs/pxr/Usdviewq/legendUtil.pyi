@@ -1,4 +1,3 @@
-from typing import Callable
-
-ToggleLegendWithBrowser: Callable
-_SetAnimValues: Callable
+# mypy: disable_error_code = misc
+def ToggleLegendWithBrowser(legend, button, anim): ...
+def _SetAnimValues(anim, a1, a2): ...

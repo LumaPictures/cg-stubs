@@ -1,4 +1,3 @@
-from typing import Callable
-
-prettyPrint: Callable
-progressDialog: Callable
+# mypy: disable_error_code = misc
+def prettyPrint(v): ...
+def progressDialog(title, value): ...

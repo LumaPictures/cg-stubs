@@ -1,3 +1,4 @@
+# mypy: disable_error_code = misc
 import Boost.Python
 import pxr.UsdAppUtils.cameraArgs as cameraArgs
 import pxr.UsdAppUtils.colorArgs as colorArgs

@@ -1,3 +1,4 @@
+# mypy: disable_error_code = misc
 import pxr.Sdf as Sdf
 import pxr.Sdr as Sdr
 import pxr.Tf as Tf
@@ -5,11 +6,7 @@ import pxr.Usd as Usd
 import pxr.UsdShade as UsdShade
 import pxr.Vt as Vt
 from pxr.UsdUtils.constantsGroup import ConstantsGroup as ConstantsGroup
-from typing import Callable, ClassVar
-
-UpdateSchemaWithSdrNode: Callable
-_CreateAttrSpecFromNodeAttribute: Callable
-_IsNSPrefixConnectableAPICompliant: Callable
+from typing import ClassVar
 
 class PropertyDefiningKeys(ConstantsGroup):
     CONNECTABILITY: ClassVar[str] = ...
@@ -46,3 +43,7 @@ class SchemaDefiningMiscConstants(ConstantsGroup):
     TYPED_SCHEMA: ClassVar[str] = ...
     USD_SOURCE_TYPE: ClassVar[str] = ...
     _all: ClassVar[tuple] = ...
+
+def UpdateSchemaWithSdrNode(schemaLayer, sdrNode, renderContext: str = ..., overrideIdentifier: str = ...): ...
+def _CreateAttrSpecFromNodeAttribute(primSpec, prop, primDefForAttrPruning, schemaPropertyNSPrefixOverride, isSdrInput: bool = ...): ...
+def _IsNSPrefixConnectableAPICompliant(nsPrefix): ...

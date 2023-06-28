@@ -1,3 +1,4 @@
+# mypy: disable_error_code = misc
 import Boost.Python
 import pxr.Tf as Tf
 import pxr.UsdAppUtils as UsdAppUtils

@@ -1,4 +1,3 @@
-from typing import Callable, ClassVar
-
+# mypy: disable_error_code = misc
 class UsdviewContextMenuItem:
-    isValid: ClassVar[Callable] = ...
+    def isValid(self): ...

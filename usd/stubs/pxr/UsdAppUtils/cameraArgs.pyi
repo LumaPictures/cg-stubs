@@ -1,3 +1,4 @@
-from typing import Callable
+# mypy: disable_error_code = misc
+from _typeshed import Incomplete
 
-AddCmdlineArgs: Callable
+def AddCmdlineArgs(argsParser, defaultValue: Incomplete | None = ..., altHelpText: str = ...): ...

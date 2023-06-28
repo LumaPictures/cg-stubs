@@ -1,3 +1,4 @@
+# mypy: disable_error_code = misc
 import pxr.Ar as Ar
 import pxr.CameraUtil as CameraUtil
 import pxr.Garch as Garch

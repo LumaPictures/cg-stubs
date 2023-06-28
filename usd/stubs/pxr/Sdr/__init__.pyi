@@ -1,3 +1,4 @@
+# mypy: disable_error_code = misc
 import Boost.Python
 import pxr.Ndr
 from typing import Any, ClassVar

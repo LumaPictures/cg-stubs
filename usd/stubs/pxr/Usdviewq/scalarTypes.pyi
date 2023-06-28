@@ -1,5 +1,6 @@
-from typing import Callable
+# mypy: disable_error_code = misc
+from _typeshed import Incomplete
 
-GetScalarTypeFromAttr: Callable
-ToClipboard: Callable
-ToString: Callable
+def GetScalarTypeFromAttr(attr): ...
+def ToClipboard(v, typeName: Incomplete | None = ...): ...
+def ToString(v, valueType: Incomplete | None = ...): ...

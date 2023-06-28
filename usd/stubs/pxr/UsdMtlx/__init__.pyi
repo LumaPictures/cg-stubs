@@ -1,3 +1,4 @@
+# mypy: disable_error_code = misc
 import pxr.Usd
 
 def _TestFile(pathname: object, nodeGraphs: bool = ...) -> pxr.Usd.Stage: ...

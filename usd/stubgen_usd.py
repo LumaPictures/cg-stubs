@@ -71,7 +71,8 @@ TYPE_MAP = [
     (r"\bstd::function<(.+)\((.*)\)>", r"typing.Callable[[\2],\1]"),
     (r"\bstd::pair\b", "tuple"),
     (r"\bdouble\b", "float"),
-    (r"\bHalf\b", "float"),  # FIXME: this isn't working
+    (r"\bGfHalf\b", "float"),
+    (r"\bHalf\b", "float"),
     (r"\bboost::python::", ""),
     (r"\bvoid\b", "None"),
     (r"\bVtValue\b", "Any"),
@@ -86,7 +87,6 @@ TYPE_MAP = [
     (r"Const\b", ""),
     (r"Handle\b", ""),
 ]
-
 RENAMES = [
     # simple renames:
     (r"\bSdfBatchNamespaceEdit\b", "pxr.Sdf.NamespaceEdit"),
@@ -105,19 +105,39 @@ RENAMES = [
     (r"\bSdfVariantSetNamesProxy\b", "pxr.Sdf.ListEditorProxy_SdfNameKeyPolicy"),
 ]
 ARRAY_TYPES = {
-    'Bool': 'bool',
-    'Char': 'str',
-    'Double': 'float',
-    'Float': 'float',
-    'Half': 'float',
-    'Int64': 'int',
-    'Int': 'int',
-    'Short': 'int',
-    'String': 'str',
-    'UChar': 'str',
-    'UInt64': 'int',
-    'UInt': 'int',
-    'UShort': 'int',
+    "Bool": "bool",
+    "Char": "str",
+    "Double": "float",
+    "Float": "float",
+    "Half": "float",
+    "Int64": "int",
+    "Int": "int",
+    "Short": "int",
+    "String": "str",
+    "UChar": "str",
+    "UInt64": "int",
+    "UInt": "int",
+    "UShort": "int",
+    "Token": "str",
+}
+# mapping from c++ operators to python special methods
+OPERATORS = {
+    "__neq__": "operator!=",
+    "__eq__": "operator==",
+    "__lt__": "operator<",
+    "__le__": "operator<=",
+    "__gt__": "operator>",
+    "__ge__": "operator>=",
+    "__bool__": "operator bool",
+    "__getitem__": "operator[]",
+    "__call__": "operator()",
+}
+# even though Usd_PrimFlagsPredicate is mentinoned in the docs it is not in the
+# index, so it is not found by the parser.
+# FIXME: instead of relying on the docs to popluate the py_types dict, we could
+#  simply look at the contents of the python modules.
+MISSING_PY_TYPES = {
+    "_PrimFlagsPredicate": ["pxr.Usd._PrimFlagsPredicate"],
 }
 
 
@@ -305,7 +325,9 @@ class TypeInfo:
             py_type,
         )
         if m:
-            return m.groups()[0]
+            sub_type = m.groups()[0]
+            return ARRAY_TYPES.get(sub_type, f"pxr.Gf.{sub_type}")
+        return None
 
     @classmethod
     def is_py_array_type(cls, py_type: str) -> bool:
@@ -390,7 +412,6 @@ class TypeInfo:
             for name, obj in inspect.getmembers(pxr.Vt):
                 sub_type = self.py_array_to_sub_type(name)
                 if sub_type:
-                    sub_type = ARRAY_TYPES.get(sub_type, f"pxr.Gf.{sub_type}")
                     result[f"pxr.Vt.{name}"].add(f"typing.Iterable[{sub_type}]")
 
             self._implicitly_convertible_types = dict(result)
@@ -399,22 +420,22 @@ class TypeInfo:
             raise RuntimeError("Could not find implicitly convertible types")
         return self._implicitly_convertible_types
 
-    def add_implicit_unions(self, py_type: str) -> str:
-        """
-        wrap the type string in a Union if it is in the list of types with known
-        implicit conversions.
-
-        Parameters
-        ----------
-        py_type : str
-            fully qualified python type identifier
-        """
-        others = self._get_implicitly_convertible_types().get(py_type)
-
-        if others is not None:
-            return " | ".join([py_type] + sorted(others))
-        else:
-            return py_type
+    # def add_implicit_unions(self, py_type: str) -> str:
+    #     """
+    #     wrap the type string in a Union if it is in the list of types with known
+    #     implicit conversions.
+    #
+    #     Parameters
+    #     ----------
+    #     py_type : str
+    #         fully qualified python type identifier
+    #     """
+    #     others = self._get_implicitly_convertible_types().get(py_type)
+    #
+    #     if others is not None:
+    #         return " | ".join([py_type] + sorted(others))
+    #     else:
+    #         return py_type
 
     def cpp_arg_to_py_type(self, cpp_type: str, is_result) -> str:
         """
@@ -463,6 +484,7 @@ class TypeInfo:
         """
         docElem = docElemPath[-1]
 
+        cpp_path = "::".join(d.name for d in docElemPath[1:])
         if docElem.isClass() or docElem.isEnum():
             cpp_path = "::".join(d.name for d in docElemPath[1:])
             py_type = self.cpp_to_py_type(cpp_path)
@@ -470,7 +492,6 @@ class TypeInfo:
                 # short to long
                 short_name = py_type.split(".")[-1]
                 if is_existing_obj(py_type):
-                    print(f"Found type {py_type} ({short_name})")
                     self.py_types[short_name].append(py_type)
 
         for childName, childObjectList in docElem.children.items():
@@ -492,10 +513,12 @@ class TypeInfo:
     def populate(self):
         parser = Parser()
         parser.parseDoxygenIndexFile(self.xml_index_file)
-        docElements = parser.traverse(DummyWriter())
+        doc_elements = parser.traverse(DummyWriter())
 
-        for docElement in docElements:
-            self._populate_map([docElement])
+        for doc_element in doc_elements:
+            self._populate_map([doc_element])
+
+        self.py_types.update(MISSING_PY_TYPES)
 
         # cache these:
         self._get_implicitly_convertible_types()
@@ -557,7 +580,8 @@ class TypeInfo:
         if len(remainder) == 2:
             cls, func = remainder
             if func[0].islower():
-                # special cases:
+                # property
+                # TODO: special cases:
                 #   cpp -> CPP
                 #   String -> Token
                 if func.startswith("is"):
@@ -569,12 +593,15 @@ class TypeInfo:
                     ("method->property", f"{module}{cls}::{func}"),
                 ]
             else:
+                # method
+                func = OPERATORS.get(func, func)
                 results = [
                     # cpp->py
                     ("method->method", f"{module}{cls}::{func}"),
                     ("func->staticmethod", f"{module}{cls}{func}"),
                 ]
         elif len(remainder) == 1:
+            # function
             func = remainder[0]
             results = [
                 # py-cpp
@@ -619,22 +646,23 @@ class TypeInfo:
             # Note: bool, int, list, etc end up here.
             return None  # fallback if fallback is not None else None
         if len(full_type_names) > 1:
-            if current_module:
-                for full_type in full_type_names:
-                    if full_type.startswith(current_module + "."):
-                        return full_type
             if fallback is not None and fallback in full_type_names:
                 return fallback
             else:
                 if short_type_name == "Type":
                     return "pxr.Tf.Type"
-                elif (
-                    current_module
-                    and current_module.startswith("pxr.Usd")
-                    and short_type_name in ("TimeCode",)
-                ):
+                elif short_type_name == "TimeCode" and current_module:
+                    if current_module == "pxr.Sdf":
+                        return "pxr.Sdf.TimeCode"
+                    elif current_module.startswith("pxr.Usd"):
+                        for full_type in full_type_names:
+                            if full_type.startswith("pxr.Usd."):
+                                return full_type
+
+                if current_module:
+                    # if all else fails, try to find a type in the current module
                     for full_type in full_type_names:
-                        if full_type.startswith("pxr.Usd."):
+                        if full_type.startswith(current_module + "."):
                             return full_type
 
                 if current_func is None:
@@ -759,6 +787,15 @@ class UsdBoostDocstringSignatureGenerator(
             elif full_type:
                 sub_py_type = full_type
 
+            if "_PrimFlagsPredicate" in sub_py_type:
+                print(
+                    "HERE",
+                    sub_py_type,
+                    full_type,
+                    is_result,
+                    type_info._get_implicitly_convertible_types().get(sub_py_type),
+                )
+
             if not is_result and sub_py_type:
                 other_types = type_info._get_implicitly_convertible_types().get(
                     sub_py_type
@@ -823,10 +860,6 @@ class UsdBoostDocstringSignatureGenerator(
         cpp_info = type_info.get_cpp_sig_info(fullname)
         if use_cpp_only:
             assert cpp_info is not None
-            import pprint
-
-            print(cpp_info.overloads[0].location)
-            pprint.pprint(cpp_info.overloads[0].params)
             # Only C++ signatures
             cpp_sigs: list[FunctionSig] = []
             for cpp_sig in cpp_info.overloads:
@@ -843,8 +876,6 @@ class UsdBoostDocstringSignatureGenerator(
                 )
                 cpp_sigs.append(FunctionSig(ctx.name, args, py_ret_type))
             sigs = cpp_sigs
-            pprint.pprint(sigs)
-            print()
         elif cpp_info is None or len(sigs) != len(cpp_info.overloads):
             # Only python signatures
             sigs = self._fix_self_args(sigs, ctx)
@@ -908,7 +939,7 @@ class UsdBoostDocstringSignatureGenerator(
                     else:
                         results = [py_ret_type] + ptr_results
                     if len(results) > 1:
-                        py_ret_type = 'tuple[{}]'.format(', '.join(results))
+                        py_ret_type = "tuple[{}]".format(", ".join(results))
                     else:
                         py_ret_type = results[0]
                 cpp_sigs_without_ptr.append(
@@ -1031,15 +1062,18 @@ class UsdBoostDocstringSignatureGenerator(
 
 def remove_redundant_submodule(module_name: str) -> str:
     """Convert 'pxr.Sdf._sdf' to 'pxr.Sdf'."""
-    parts = module_name.rsplit(".", 1)
-    if len(parts) == 2:
-        base, sub = parts
-        if sub.startswith("_"):
-            return base
-    return module_name
+    parts = module_name.split(".")
+    if len(parts) == 3:
+        # e.g. pxr.Sdf._sdf
+        if parts[-1].startswith("_"):
+            return ".".join(parts[:-1]), False
+    elif len(parts) == 2:
+        # e.g. pxr.Sdf
+        return module_name, True
+    return module_name, False
 
 
-class CStubGenerator(mypy.stubgenc.CStubGenerator):
+class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
     """
     Make objects in pxr.Sdf._sdf appear to be defined in pxr.Sdf.
 
@@ -1048,14 +1082,20 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.module_name = remove_redundant_submodule(self.module_name)
+        self.module_name, self.is_c_module = remove_redundant_submodule(
+            self.module_name
+        )
 
     def get_obj_module(self, obj: object) -> str | None:
         """Return module name of the object."""
         module_name = getattr(obj, "__module__", None)
         if module_name:
-            return remove_redundant_submodule(module_name)
+            return remove_redundant_submodule(module_name)[0]
         return None
+
+    def generate_module(self) -> str:
+        output = super().generate_module()
+        return "# mypy: disable_error_code = misc\n" + output
 
     def get_type_fullname(self, typ: type) -> str:
         type_name = super().get_type_fullname(typ)
@@ -1070,31 +1110,13 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
 
         return type_name
 
-    #     typename = getattr(typ, "__qualname__", typ.__name__)
-    #     module_name = self.get_obj_module(typ)
-    #     # FIXME: if the module is missing it's not guaranteed to be the current module
-    #     if module_name is None:
-    #         module_name = self.module_name
-
-    #     if module_name != "builtins":
-    #         typename = f"{module_name}.{typename}"
-    #     return typename
-
-    # def get_fullpath(self, obj: object) -> str | None:
-    #     class_name = self.get_type_fullname()
-    #     name = getattr(obj, "__qualname__", getattr(obj, "__name__", None))
-    #     if name is None:
-    #         return None
-    #     module_name = self.get_obj_module(obj)
-    #     # FIXME: if the module is missing it's not guaranteed to be the current module
-    #     if module_name is None:
-    #         module_name = self.module_name
-    #     return f"{module_name}.{name}"
-
     def get_sig_generators(self) -> list[SignatureGenerator]:
         return [UsdBoostDocstringSignatureGenerator()]
 
     def is_classmethod(self, class_info: ClassInfo, name: str, obj: object) -> bool:
+        if not self.is_c_module:
+            return super().is_classmethod(class_info, name, obj)
+
         # in boost python it is impossible to distinguish between classmethod and instance method
         # so we consult the docs
         sig_info = type_info.get_cpp_sig_info(
@@ -1110,11 +1132,30 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
         return False
 
 
-mypy.stubgen.CStubGenerator = CStubGenerator
-mypy.stubgenc.CStubGenerator = CStubGenerator
+# class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
+#     """
+#     Make objects in pxr.Sdf._sdf appear to be defined in pxr.Sdf.
 
-mypy.stubgen.NoParseStubGenerator = CStubGenerator
-mypy.stubgenc.NoParseStubGenerator = CStubGenerator
+#     The downside of this is that both pxr.Sdf._sdf and pxr.Sdf.__init__ are processed
+#     """
+
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.module_name = remove_redundant_submodule(self.module_name)
+
+#     def get_obj_module(self, obj: object) -> str | None:
+#         """Return module name of the object."""
+#         module_name = getattr(obj, "__module__", None)
+#         if module_name:
+#             return remove_redundant_submodule(module_name)
+#         return None
+
+
+# mypy.stubgen.CStubGenerator = CStubGenerator
+# mypy.stubgenc.CStubGenerator = CStubGenerator
+
+mypy.stubgen.NoParseStubGenerator = NoParseStubGenerator
+mypy.stubgenc.NoParseStubGenerator = NoParseStubGenerator
 
 
 # class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
@@ -1169,13 +1210,13 @@ def main(outdir):
     # # return
     import pprint
 
-    # assert type_info.srcdir is not None
-    # pprint.pprint(type_info._get_implicitly_convertible_types())
     # return
     # print(type_info.py_array_to_sub_type("pxr.Vt.Vec3fArray"))
     # return
     type_info.populate()
-    notifier.set_modules([])
+    print("_PrimFlagsPredicate", type_info.get_full_py_type("_PrimFlagsPredicate"))
+    pprint.pprint(type_info._get_implicitly_convertible_types())
+    notifier.set_modules(["pxr.Gf", "pxr.Sdf"])
     # notifier.set_modules(["pxr.UsdSkel"])
     # raise ValueError(type_info.py_types["PathArray"], type_info.get_full_py_type("PathArray", "pxr.UsdGeom"))
     # raise ValueError(type_info.py_types["VersionPolicy"], type_info.get_full_py_type("VersionPolicy", "pxr.Usd"))

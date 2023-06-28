@@ -1,3 +1,2 @@
-from typing import Callable
-
-AddCmdlineArgs: Callable
+# mypy: disable_error_code = misc
+def AddCmdlineArgs(argsParser, defaultValue: str = ..., altHelpText: str = ...): ...
