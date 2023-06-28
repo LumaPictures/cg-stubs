@@ -2,7 +2,6 @@ from __future__ import absolute_import, annotations, division, print_function
 
 import inspect
 import subprocess
-import pkgutil
 import os
 import re
 import pydoc
@@ -65,6 +64,7 @@ RESULT_TYPE_MAP = [
 TYPE_MAP = [
     (r"\bVtArray<\s*SdfAssetPath\s*>", "SdfAssetPathArray"),
     (r"\bstd::string\b", "str"),
+    (r"\bstd::unique_ptr\b", ""),
     (r"\bstring\b", "str"),
     (r"\bsize_t\b", "int"),
     (r"\bchar\b", "str"),
@@ -135,9 +135,11 @@ OPERATORS = {
 # even though Usd_PrimFlagsPredicate is mentinoned in the docs it is not in the
 # index, so it is not found by the parser.
 # FIXME: instead of relying on the docs to popluate the py_types dict, we could
-#  simply look at the contents of the python modules.
+#  simply pre-cache the contents of the python modules.
 MISSING_PY_TYPES = {
     "_PrimFlagsPredicate": ["pxr.Usd._PrimFlagsPredicate"],
+    "StringListOp": ["pxr.Sdf.StringListOp"],
+    "AssetPathArray": ["pxr.Sdf.AssetPathArray"],
 }
 
 

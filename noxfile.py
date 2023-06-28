@@ -8,6 +8,7 @@ APPS = [
     "mari",
     "nuke",
     "substance_painter",
+    "usd",
 ]
 PARAMS = [nox.param(x, id=x) for x in APPS]
 

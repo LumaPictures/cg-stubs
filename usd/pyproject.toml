@@ -1,0 +1,32 @@
+[build-system]
+requires = ["poetry>=1.0.2"]
+build-backend = "poetry.masonry.api"
+
+[tool.poetry]
+name = "types-usd"
+readme = "README.md"
+authors = ["Chad Dombrova"]
+description = "Unofficial python stubs for Pixar's Universal Scene Description (USD)"
+license = "MIT"
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 2",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+]
+version = "23.05.0"
+repository = "https://github.com/LumaPictures/cg-stubs"
+homepage = "https://github.com/LumaPictures/cg-stubs"
+
+keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
+
+packages = [
+    { include = "Boost-stubs", from = "stubs" },
+    { include = "pxr-stubs", from = "stubs" },
+]
+
+[tool.distutils.bdist_wheel]
+universal = true
