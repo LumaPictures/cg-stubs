@@ -3,6 +3,7 @@
 import AssetAPI as AssetAPI
 import Callbacks as Callbacks
 import ConfigurationAPI_cmodule as Configuration
+import PyFnAttribute as FnAttribute
 import Nodes3DAPI.Node3D as Node3D
 import Nodes2DAPI as Nodes2DAPI
 import PyFnGeolibProducers

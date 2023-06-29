@@ -11,7 +11,6 @@ from AssetBrowser.FileInfo import FileInfo as FileInfo
 from Utils.Decorators import deprecated as deprecated
 from _FnKatanaCoreUI import FnFileBrowser as FnFileBrowser, FnFileSequenceEvaluator as FnFileSequenceEvaluator
 from typing import ClassVar
-from typing import Tuple
 
 class Browser(PyQt5.QtWidgets.QFrame):
     _FileSequenceEvaluator: ClassVar[FileSequenceEvaluator] = ...

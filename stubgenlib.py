@@ -5,6 +5,7 @@ import io
 import itertools
 import re
 import tokenize
+from collections import defaultdict
 from typing import Any
 
 from mypy.stubdoc import infer_sig_from_docstring, _TYPE_RE, _ARG_NAME_RE, is_valid_type
@@ -12,7 +13,40 @@ from mypy.stubgenc import ArgSig, FunctionContext, FunctionSig, SignatureGenerat
 from mypy.fastparse import parse_type_comment
 
 
+class Notifier:
+    """
+    Class to display and filter warnings
+    """
+
+    def __init__(self) -> None:
+        self._seen_msgs = defaultdict(int)
+        self._seen_keys = defaultdict(int)
+        self._modules: list[str] | None = None
+
+    def set_modules(self, modules: list[str]):
+        self._modules = modules
+
+    def warn(self, key: str, module: str, msg: str):
+        if (key, module, msg) not in self._seen_msgs:
+            if self._modules is None or module in self._modules:
+                print(f"({module}) {key}: {msg}")
+        self._seen_msgs[(key, module, msg)] += 1
+        self._seen_keys[key] += 1
+
+    def print_summary(self):
+        print()
+        print("Warning Summary:")
+        for key in sorted(self._seen_keys):
+            count = self._seen_keys[key]
+            print(f"  {key}: {count}")
+
+
 class BaseSigFixer:
+    """
+    Mixin base class that handles the boilerplate of cleaning up a signature
+    from an external source, such as documentation
+    """
+
     @staticmethod
     def is_valid(type_name: str) -> bool:
         try:
@@ -54,7 +88,7 @@ class BaseSigFixer:
 
         if invalid:
             print(f"Invalid type after cleanup: {ctx.fullname}")
-            print(sig.format_sig())
+            print("   ", sig.format_sig())
 
         # FIXME: only copy if something has changed?
         return FunctionSig(sig.name, args, return_type)
@@ -99,6 +133,10 @@ class DocstringSignatureGenerator(SignatureGenerator, BaseSigFixer):
 
 
 class BoostDocstringSignatureGenerator(SignatureGenerator):
+    """
+    Parses boost-python style signatures
+    """
+
     def get_function_sig(
         self, default_sig: FunctionSig, ctx: FunctionContext
     ) -> list[FunctionSig] | None:
@@ -113,6 +151,7 @@ class CFunctionStub:
     """
 
     def __init__(self, name: str, doc: str, is_abstract=False):
+        # Use special dunder names so that this object is interpreted as desired during inspection.
         self.__name__ = name
         self.__doc__ = doc
         self.__abstractmethod__ = is_abstract
@@ -143,7 +182,7 @@ def reduce_overloads(sigs: list[FunctionSig]) -> list[FunctionSig]:
 
     - Some overloads are a subset of other overloads and can be pruned.
     - Some methods implement both classmethod and instancemethod overloads, and mypy prevents
-      mixing these and does not correctly analyze them: so we have to drop one, and we've chosen
+      mixing these and does not correctly analyze them. We have to drop one, and we've chosen
       to remove classmethods.  It is possible to implement a "universalmethod" decorator, but
       we could not use overloads to distinguish their arguments.
     """

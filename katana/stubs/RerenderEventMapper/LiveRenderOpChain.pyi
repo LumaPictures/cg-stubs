@@ -1,6 +1,7 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 import LiveRenderPortOpObserver
+import Nodes3DAPI.Node3DEventTypes as Node3DEventTypes
 import Nodes3DAPI.Node3D_geolib3 as Node3D_geolib3
 import NodegraphAPI
 import PyUtilModule.RenderManager.NodegraphUtils as NodegraphUtils
@@ -13,7 +14,9 @@ import PyUtilModule.RenderManager as RenderManager
 import RenderSettingsExtractor
 import PyUtilModule.RenderingCommon as RenderingCommon
 import PyUtilModule.RenderManager.ScenegraphUtils as ScenegraphUtils
+import Utils as Utils
 import abc
+from Nodes3DAPI.OpCacheManager import OpCacheManager as OpCacheManager
 from PyUtilModule.WorkingSet import WorkingSet as WorkingSet
 from PyUtilModule.WorkingSetManager import WorkingSetManager as WorkingSetManager
 from _typeshed import Incomplete
@@ -46,7 +49,10 @@ class LiveAttributeQueue:
     def setOp(self, op: PyFnGeolib.GeolibRuntimeOp): ...
 
 class LiveRenderOpChain:
-    def __init__(self, renderUUID: str, renderSettingsExtractor: RenderSettingsExtractor, initialImplicitResolversOpChain: ImplicitResolversOpChain, initialDefaultRenderSettingsOpChain: RenderSettingsDefaultsOpChain, implicitResolversOpChain: ImplicitResolversOpChain, defaultRenderSettingsOpChain: RenderSettingsDefaultsOpChain, isolateOpChain: IsolateOpChain, renderWorkingSetOpChain: RenderWorkingSetOpChain, renderSettingsOpChain: RenderSettingsOpChain, renderOutputsOpChain: RenderOutputsOpChain, virtualCameraOpChain: VirtualCameraOpChain, cameraOverrideOpChain: CameraOverrideOpChain, aovOpChain: AOVOpChain, roiOpChain: ROIOpChain, renderInfoPluginOpChain: RenderInfoPluginOpChain, liveRenderUpdatesOpChain: LiveRenderUpdatesOpChain): ...
+    _opCacheManager: ClassVar[OpCacheManager] = ...
+    def __init__(self, renderUUID: str, mainSequenceID: int, renderSettingsExtractor: RenderSettingsExtractor, initialImplicitResolversOpChain: ImplicitResolversOpChain, initialDefaultRenderSettingsOpChain: RenderSettingsDefaultsOpChain, implicitResolversOpChain: ImplicitResolversOpChain, defaultRenderSettingsOpChain: RenderSettingsDefaultsOpChain, isolateOpChain: IsolateOpChain, renderWorkingSetOpChain: RenderWorkingSetOpChain, renderSettingsOpChain: RenderSettingsOpChain, renderOutputsOpChain: RenderOutputsOpChain, virtualCameraOpChain: VirtualCameraOpChain, cameraOverrideOpChain: CameraOverrideOpChain, aovOpChain: AOVOpChain, roiOpChain: ROIOpChain, renderInfoPluginOpChain: RenderInfoPluginOpChain, liveRenderUpdatesOpChain: LiveRenderUpdatesOpChain): ...
+    @classmethod
+    def _getCachedOp(cls, port, graphState, visitedState, txn): ...
     def getOp(self, port: NodegraphAPI.Port, graphState: NodegraphAPI.GraphState, visitedState: set, txnProxy: LiveRenderPortOpObserver._TransactionProxy) -> PyFnGeolib.GeolibRuntimeOp: ...
 
 class LiveRenderUpdatesOpChain(_OpArgsOpChain):
@@ -99,6 +105,7 @@ class RenderSettingsExtractor:
         def renderer(self) -> Any: ...
     def __init__(self, runtime: PyFnGeolib.GeolibRuntime): ...
     def extract(self, txn: PyFnGeolib.GeolibRuntimeTransaction, terminalOp: PyFnGeolib.GeolibRuntimeOp) -> RenderSettingsExtractor.Settings: ...
+    def getCachedRootAttrs(self): ...
 
 class RenderSettingsOpChain(_OpChain):
     def __init__(self): ...

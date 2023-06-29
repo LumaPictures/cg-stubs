@@ -2,6 +2,7 @@
 
 import CatalogAPI as CatalogAPI
 import Utils.EventModule as EventModule
+import PyFnAttribute as FnAttribute
 import NodegraphAPI as NodegraphAPI
 import Nodes2DAPI as Nodes2DAPI
 import Nodes3DAPI as Nodes3DAPI

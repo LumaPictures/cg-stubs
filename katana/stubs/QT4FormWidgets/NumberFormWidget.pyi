@@ -9,7 +9,6 @@ import QT4FormWidgets.ValueAdjustment as ValueAdjustment
 from QT4FormWidgets.BaseValueFormWidget import BaseValueFormWidget as BaseValueFormWidget
 from QT4FormWidgets.MultiStateBadge import MultiStateBadge as MultiStateBadge, ToggleStateBadge as ToggleStateBadge, ToggleValuePolicyState as ToggleValuePolicyState
 from typing import ClassVar
-from typing import Tuple
 
 class IncDecLineEdit(InputWidgets.InputLineEdit):
     singleDigitScrollingEnabled: ClassVar[bool] = ...

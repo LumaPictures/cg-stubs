@@ -13,7 +13,9 @@ from mypy.stubgenc import FunctionContext, FunctionSig, SignatureGenerator
 
 import Callbacks.Callbacks
 from Callbacks.Callbacks import _TypeEnum
-from stubgenlib import DocstringSignatureGenerator, CFunctionStub
+from stubgenlib import DocstringSignatureGenerator, CFunctionStub, BaseSigFixer, Notifier
+
+notifier = Notifier()
 
 EPY_REG = re.compile(r"([LC]\{([^}]+)\})")
 LIST_OF_REG = re.compile(r"\b(list|Sequence|Iterable|Iterator) of (.*)")
@@ -50,15 +52,18 @@ def cleanup_type(type_name: str) -> str:
         (r'PyFnGeolib.GeolibRuntime\.Op', 'PyFnGeolib.GeolibRuntimeOp'),
         (r'NodegraphAPI\.LiveGroupMixin', 'NodegraphAPI.LiveGroup.LiveGroupMixin'),
         ('number', 'float'),
+        ('List', 'list'),
+        ('Dict', 'dict'),
+        ('Type', 'type'),
         ('module', 'types.ModuleType'),
-        ('function', 'Callable'),
-        ('callable', 'Callable'),
-        ('hashable', 'Hashable'),
-        ('iterable', 'Iterable'),
+        ('function', 'typing.Callable'),
+        ('callable', 'typing.Callable'),
+        ('hashable', 'typing.Hashable'),
+        ('iterable', 'typing.Iterable'),
         ('class', 'type'),
         ('object', 'Any'),
-        ('sequence', 'Sequence'),
-        ('generator', 'Iterator'),
+        ('sequence', 'typing.Sequence'),
+        ('generator', 'typing.Iterator'),
         ('long', 'int'),
         ('strings?', 'str'),
         ('Str', 'str'),
@@ -124,17 +129,24 @@ def cleanup_type(type_name: str) -> str:
 
 
 class KatanaDocstringSignatureGenerator(DocstringSignatureGenerator):
-    def cleanup_type(self, type_name: str) -> str:
+    def cleanup_type(
+        self, type_name: str, ctx: FunctionContext, is_result: bool
+    ) -> str:
         return cleanup_type(type_name)
 
 
-class KatanaCSignatureGenerator(CDocstringSignatureGenerator):
+class KatanaCSignatureGenerator(CDocstringSignatureGenerator, BaseSigFixer):
+    def cleanup_type(
+        self, type_name: str, ctx: FunctionContext, is_result: bool
+    ) -> str:
+        return cleanup_type(type_name)
+
     def get_function_sig(
         self, default_sig: FunctionSig, ctx: FunctionContext
     ) -> list[FunctionSig] | None:
         sigs = super().get_function_sig(default_sig, ctx)
         if sigs:
-            sigs = [cleanup_sig(sig)[0] for sig in sigs]
+            sigs = [self.cleanup_sig_types(sig, ctx) for sig in sigs]
         if ctx.fullname == "NodegraphAPI_cmodule.Parameter.getValue":
             return [sig._replace(ret_type="Any") for sig in sigs]
         elif ctx.fullname == "NodegraphAPI_cmodule.GroupNode.getChild":
@@ -242,52 +254,40 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
             is_abstract = obj.__name__ == 'DataAttribute'
             # Add abstract methods that are shared by all sub-classes
             add(
-                CFunctionStub._from_sig(
-                    FunctionSig(
-                        "getValue",
-                        [
-                            ArgSig("defaultValue", sub_type, default=True),
-                            ArgSig("throwOnError", "bool", default=True),
-                        ],
-                        sub_type,
-                    ),
+                CFunctionStub(
+                    "getValue",
+                    f"getValue(self, defaultValue: {sub_type} = ..., throwOnError: bool = ...) -> {sub_type}",
                     is_abstract=is_abstract,
                 )
             )
             add(
-                CFunctionStub._from_sig(
-                    FunctionSig("getData", [], "ConstVector[{sub_type}]"),
+                CFunctionStub(
+                    "getData",
+                    f"getData(self) -> ConstVector[{sub_type}]",
                     is_abstract=is_abstract,
                 )
             )
             add(
-                CFunctionStub._from_sig(
-                    FunctionSig(
-                        "getNearestSample",
-                        [ArgSig("sampleTime", "float")],
-                        "ConstVector[{sub_type}]",
-                    ),
+                CFunctionStub(
+                    "getNearestSample",
+                    f"getNearestSample(self, sampleTime: float) -> ConstVector[{sub_type}]",
                     is_abstract=is_abstract,
                 )
             )
             add(
-                CFunctionStub._from_sig(
-                    FunctionSig(
-                        "getSamples", [], "Dict[float, ConstVector[{sub_type}]]"
-                    ),
+                CFunctionStub(
+                    "getSamples",
+                    f"getSamples(self) -> dict[float, ConstVector[{sub_type}]]",
                     is_abstract=is_abstract,
                 )
             )
         elif isinstance(obj, type) and obj.__name__ == 'ConstVector':
-            add(CFunctionStub._from_sig(FunctionSig("__iter__", [], "Iterator[T]")))
+            add(CFunctionStub("__iter__", "__iter__(self) -> typing.Iterator[T]"))
             add(
-                CFunctionStub._from_sigs(
-                    [
-                        FunctionSig("__getitem__", [ArgSig("arg0", "int")], "T"),
-                        FunctionSig(
-                            "__getitem__", [ArgSig("arg0", "slice")], "ConstVector[T]"
-                        ),
-                    ]
+                CFunctionStub(
+                    "__getitem__",
+                    "__getitem__(self, arg0: int) -> T\n"
+                    "__getitem__(self, arg0: slice) -> ConstVector[T]",
                 )
             )
 

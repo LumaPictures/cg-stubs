@@ -6,9 +6,7 @@ version=5
 
 setpkg -c python-3 mari-$version
 
-# can't activate
-#. .venv-py37-linux/bin/activate
-
+REPO_PATH=$(git rev-parse --show-toplevel)
 
 outdir=$REPO_PATH/mari/stubs/
 

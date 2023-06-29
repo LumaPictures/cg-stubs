@@ -5,7 +5,6 @@ import PyQt5.QtWidgets
 from QTFCurve.FCurveListView import FCurveListView as FCurveListView
 from QTFCurve.FCurveValueEdit import FCurveValueEdit as FCurveValueEdit
 from _typeshed import Incomplete
-from typing import Container
 
 class FCurveGraphValueListWidget(PyQt5.QtWidgets.QWidget):
     def __init__(self, parent: Incomplete | None = ...): ...

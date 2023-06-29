@@ -4,7 +4,6 @@ import PyQt5.QtWidgets
 import QT4Widgets as QT4Widgets
 from _typeshed import Incomplete
 from typing import ClassVar
-from typing import Tuple
 
 EVENT_TYPES: dict
 

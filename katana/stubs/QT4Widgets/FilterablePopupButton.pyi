@@ -10,7 +10,6 @@ from QT4Widgets.SortableTreeWidget import SortableTreeWidget as SortableTreeWidg
 from ResourceFiles.IconManager import ResourceManager as ResourceManager
 from _typeshed import Incomplete
 from typing import ClassVar
-from typing import Tuple
 
 MAX_SCREEN_HEIGHT_PERCENT_DEFAULT: float
 MAX_SCREEN_WIDTH_PERCENT_DEFAULT: float

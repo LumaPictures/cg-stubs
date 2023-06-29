@@ -41,3 +41,11 @@ def publish(session: nox.Session, lib: str):
     session.chdir(lib)
     session.install("poetry")
     session.run("poetry", "publish", *session.posargs)
+
+
+@nox.session(reuse_venv=True)
+@nox.parametrize('lib', PARAMS)
+def generate(session: nox.Session, lib: str):
+    session.install("-r", "requirements.txt")
+    session.chdir(lib)
+    session.run(f"./stubgen_{lib}.sh", session.virtualenv.location)

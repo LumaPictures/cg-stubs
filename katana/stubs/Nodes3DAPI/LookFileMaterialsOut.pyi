@@ -11,7 +11,6 @@ from LookFileBakeAPI.Constants import OutputFormat as OutputFormat
 from LookFileBakeAPI.Exceptions import LookFileBakeException as LookFileBakeException
 from Nodes3DAPI.Node3D import Node3D as Node3D
 from _typeshed import Incomplete
-from typing import Tuple
 
 _ExtraHints: dict
 _Parameter_XML: str

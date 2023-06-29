@@ -36,6 +36,7 @@ from stubgenlib import (
     BaseSigFixer,
     BoostDocstringSignatureGenerator,
     CFunctionStub,
+    Notifier,
     reduce_overloads,
 )
 
@@ -243,30 +244,6 @@ class DummyWriter:
 class SigInfo:
     parent: DocElement
     overloads: list[DocElement]
-
-
-class Notifier:
-    def __init__(self) -> None:
-        self._seen_msgs = defaultdict(int)
-        self._seen_keys = defaultdict(int)
-        self._modules: list[str] | None = None
-
-    def set_modules(self, modules: list[str]):
-        self._modules = modules
-
-    def warn(self, key: str, module: str, msg: str):
-        if (key, module, msg) not in self._seen_msgs:
-            if self._modules is None or module in self._modules:
-                print(f"({module}) {key}: {msg}")
-        self._seen_msgs[(key, module, msg)] += 1
-        self._seen_keys[key] += 1
-
-    def print_summary(self):
-        print()
-        print("Warning Summary:")
-        for key in sorted(self._seen_keys):
-            count = self._seen_keys[key]
-            print(f"  {key}: {count}")
 
 
 def maybe_result(parts: list[str]) -> bool:
