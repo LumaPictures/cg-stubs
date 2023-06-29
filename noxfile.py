@@ -50,7 +50,7 @@ def develop(session: nox.Session, lib: str):
     except nox.command.CommandFailed as err:
         msg = str(err)
         if "poetry" in msg:
-            print("You must install poetry in the destination venv")
+            print("You must install poetry>=1.3.2 in the destination venv")
         raise
 
 

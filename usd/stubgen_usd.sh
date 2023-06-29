@@ -19,7 +19,3 @@ python3 -c "import stubgen_usd;stubgen_usd.main('$outdir')"
 
 rm $outdir/pxr/*/_[a-z]*.pyi
 rm $outdir/pxr/*/__DOC.pyi
-
-[ -d $outdir/pxr-stubs ] && mv $outdir/pxr-stubs $outdir/pxr-stubs.bak
-mv $outdir/pxr $outdir/pxr-stubs
-rm -rf $outdir/pxr-stubs $outdir/pxr-stubs.bak

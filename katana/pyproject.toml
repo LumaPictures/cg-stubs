@@ -23,6 +23,7 @@ homepage = "https://github.com/LumaPictures/cg-stubs"
 
 keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
 
+# FIXME: generate this file and these packages using jinja
 packages = [
     { include = "AssetAPI-stubs", from = "stubs" },
     { include = "AssetAPI_cmodule-stubs.pyi", from = "stubs" },
