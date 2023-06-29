@@ -104,6 +104,13 @@ RENAMES = [
     (r"\bSdfPropertyOrderProxy\b", "pxr.Sdf.ListProxy_SdfNameTokenKeyPolicy"),
     # nameKey
     (r"\bSdfVariantSetNamesProxy\b", "pxr.Sdf.ListEditorProxy_SdfNameKeyPolicy"),
+    # Ndr
+    # (these could be automatically processed if we scraped the headers for typedefs).
+    (r"\bNdrTokenVec\b", "list[str]"),
+    (r"\bNdrStringVec\b", "list[str]"),
+    (r"\bNdrIdentifierVec\b", "list[str]"),
+    (r"\bNdrIdentifier\b", "str"),
+    (r"\bNdrTokenMap\b", "dict[str, str]"),
 ]
 ARRAY_TYPES = {
     "Bool": "bool",
