@@ -2,48 +2,9 @@
 import Boost.Python
 import pxr.Tf as Tf
 import pxr.UsdAppUtils as UsdAppUtils
-import pxr.Usdviewq.adjustDefaultMaterial as adjustDefaultMaterial
-import pxr.Usdviewq.adjustDefaultMaterialUI as adjustDefaultMaterialUI
-import pxr.Usdviewq.adjustFreeCamera as adjustFreeCamera
-import pxr.Usdviewq.adjustFreeCameraUI as adjustFreeCameraUI
-import pxr.Usdviewq.appController as appController
-import pxr.Usdviewq.attributeValueEditor as attributeValueEditor
-import pxr.Usdviewq.attributeValueEditorUI as attributeValueEditorUI
-import pxr.Usdviewq.attributeViewContextMenu as attributeViewContextMenu
-import pxr.Usdviewq.common as common
-import pxr.Usdviewq.configController as configController
-import pxr.Usdviewq.customAttributes as customAttributes
-import pxr.Usdviewq.frameSlider as frameSlider
-import pxr.Usdviewq.freeCamera as freeCamera
-import pxr.Usdviewq.headerContextMenu as headerContextMenu
-import pxr.Usdviewq.layerStackContextMenu as layerStackContextMenu
-import pxr.Usdviewq.legendUtil as legendUtil
-import pxr.Usdviewq.mainWindowUI as mainWindowUI
-import pxr.Usdviewq.plugin as plugin
-import pxr.Usdviewq.preferences as preferences
-import pxr.Usdviewq.preferencesUI as preferencesUI
-import pxr.Usdviewq.prettyPrint as prettyPrint
-import pxr.Usdviewq.primContextMenu as primContextMenu
-import pxr.Usdviewq.primContextMenuItems as primContextMenuItems
-import pxr.Usdviewq.primLegend as primLegend
-import pxr.Usdviewq.primLegendUI as primLegendUI
-import pxr.Usdviewq.primTreeWidget as primTreeWidget
-import pxr.Usdviewq.primViewItem as primViewItem
-import pxr.Usdviewq.propertyLegend as propertyLegend
-import pxr.Usdviewq.propertyLegendUI as propertyLegendUI
 import pxr.Usd
-import pxr.Usdviewq.pythonInterpreter as pythonInterpreter
-import pxr.Usdviewq.qt as qt
-import pxr.Usdviewq.rootDataModel as rootDataModel
-import pxr.Usdviewq.scalarTypes as scalarTypes
-import pxr.Usdviewq.selectionDataModel as selectionDataModel
-import pxr.Usdviewq.settings as settings
-import pxr.Usdviewq.stageView as stageView
 import typing_extensions
-import pxr.Usdviewq.usdviewApi as usdviewApi
-import pxr.Usdviewq.usdviewContextMenuItem as usdviewContextMenuItem
-import pxr.Usdviewq.variantComboBox as variantComboBox
-import pxr.Usdviewq.viewSettingsDataModel as viewSettingsDataModel
+from . import adjustDefaultMaterial as adjustDefaultMaterial, adjustDefaultMaterialUI as adjustDefaultMaterialUI, adjustFreeCamera as adjustFreeCamera, adjustFreeCameraUI as adjustFreeCameraUI, appController as appController, attributeValueEditor as attributeValueEditor, attributeValueEditorUI as attributeValueEditorUI, attributeViewContextMenu as attributeViewContextMenu, common as common, configController as configController, customAttributes as customAttributes, frameSlider as frameSlider, freeCamera as freeCamera, headerContextMenu as headerContextMenu, layerStackContextMenu as layerStackContextMenu, legendUtil as legendUtil, mainWindowUI as mainWindowUI, plugin as plugin, preferences as preferences, preferencesUI as preferencesUI, prettyPrint as prettyPrint, primContextMenu as primContextMenu, primContextMenuItems as primContextMenuItems, primLegend as primLegend, primLegendUI as primLegendUI, primTreeWidget as primTreeWidget, primViewItem as primViewItem, propertyLegend as propertyLegend, propertyLegendUI as propertyLegendUI, pythonInterpreter as pythonInterpreter, qt as qt, rootDataModel as rootDataModel, scalarTypes as scalarTypes, selectionDataModel as selectionDataModel, settings as settings, stageView as stageView, usdviewApi as usdviewApi, usdviewContextMenuItem as usdviewContextMenuItem, variantComboBox as variantComboBox, viewSettingsDataModel as viewSettingsDataModel
 from pxr.Usdviewq.appController import AppController as AppController
 from pxr.Usdviewq.common import Timer as Timer
 from pxr.Usdviewq.settings import ConfigManager as ConfigManager

@@ -1,11 +1,7 @@
 # mypy: disable_error_code = misc
 import Boost.Python
-import pxr.UsdAppUtils.cameraArgs as cameraArgs
-import pxr.UsdAppUtils.colorArgs as colorArgs
-import pxr.UsdAppUtils.complexityArgs as complexityArgs
-import pxr.UsdAppUtils.framesArgs as framesArgs
 import pxr.Ar
-import pxr.UsdAppUtils.rendererArgs as rendererArgs
+from . import cameraArgs as cameraArgs, colorArgs as colorArgs, complexityArgs as complexityArgs, framesArgs as framesArgs, rendererArgs as rendererArgs
 from typing import Any, ClassVar, overload
 
 class FrameRecorder(Boost.Python.instance):

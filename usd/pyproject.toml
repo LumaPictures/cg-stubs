@@ -4,6 +4,8 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "types-usd"
+version = "23.05.1"
+
 readme = "README.md"
 authors = ["Chad Dombrova"]
 description = "Unofficial python stubs for Pixar's Universal Scene Description (USD)"
@@ -17,7 +19,6 @@ classifiers = [
     "Operating System :: OS Independent",
     "Intended Audience :: Developers",
 ]
-version = "23.05.0"
 repository = "https://github.com/LumaPictures/cg-stubs"
 homepage = "https://github.com/LumaPictures/cg-stubs"
 

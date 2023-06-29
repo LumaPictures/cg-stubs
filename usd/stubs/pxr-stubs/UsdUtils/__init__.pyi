@@ -1,14 +1,9 @@
 # mypy: disable_error_code = misc
 import Boost.Python
-import pxr.UsdUtils.complianceChecker as complianceChecker
-import pxr.UsdUtils.constantsGroup as constantsGroup
-import pxr.UsdUtils.fixBrokenPixarSchemas as fixBrokenPixarSchemas
 import pxr.Usd
-import pxr.UsdUtils.toolPaths as toolPaths
 import typing
 import typing_extensions
-import pxr.UsdUtils.updateSchemaWithSdrNode as updateSchemaWithSdrNode
-import pxr.UsdUtils.usdzUtils as usdzUtils
+from . import complianceChecker as complianceChecker, constantsGroup as constantsGroup, fixBrokenPixarSchemas as fixBrokenPixarSchemas, toolPaths as toolPaths, updateSchemaWithSdrNode as updateSchemaWithSdrNode, usdzUtils as usdzUtils
 from pxr.UsdUtils.complianceChecker import ComplianceChecker as ComplianceChecker
 from pxr.UsdUtils.fixBrokenPixarSchemas import FixBrokenPixarSchemas as FixBrokenPixarSchemas
 from pxr.UsdUtils.updateSchemaWithSdrNode import PropertyDefiningKeys as PropertyDefiningKeys, SchemaDefiningKeys as SchemaDefiningKeys, SchemaDefiningMiscConstants as SchemaDefiningMiscConstants, UpdateSchemaWithSdrNode as UpdateSchemaWithSdrNode

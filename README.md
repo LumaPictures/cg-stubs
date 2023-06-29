@@ -4,7 +4,7 @@
 
 Supported libraries and applications.
 
-- USD
+- [USD](https://pypi.org/project/types-usd/)
 - houdini
 - katana
 - mari
