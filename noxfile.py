@@ -1,4 +1,5 @@
 import nox
+import nox.command
 
 import pathlib
 
@@ -17,22 +18,40 @@ PARAMS = [nox.param(x, id=x) for x in APPS]
 
 
 def add_stubs_suffix(path: pathlib.Path):
+    import shutil
+
+    # do these at the end to improve time to git refresh
+    to_delete = []
     for child in path.iterdir():
         if '-stubs' not in child.name:
             name = child.stem + '-stubs'
             if child.is_file():
                 name += '.pyi'
             newpath = child.with_name(name)
+            if newpath.exists():
+                if newpath.is_file():
+                    newpath.unlink()
+                else:
+                    backup = newpath.with_suffix(".bak")
+                    newpath.rename(backup)
+                    to_delete.append(backup)
             print(f"Renaming to {newpath}")
             child.rename(newpath)
+    for dir in to_delete:
+        shutil.rmtree(dir)
 
 
 @nox.session(venv_backend='none')
 @nox.parametrize('lib', PARAMS)
 def develop(session: nox.Session, lib: str):
     session.chdir(lib)
-    # must use poetry that is installed in the destination venv
-    session.run("poetry", "install", external=True)
+    try:
+        session.run("poetry", "install", external=True)
+    except nox.command.CommandFailed as err:
+        msg = str(err)
+        if "poetry" in msg:
+            print("You must install poetry in the destination venv")
+        raise
 
 
 @nox.session(reuse_venv=True)
@@ -48,4 +67,6 @@ def publish(session: nox.Session, lib: str):
 def generate(session: nox.Session, lib: str):
     session.install("-r", "requirements.txt")
     session.chdir(lib)
-    session.run(f"./stubgen_{lib}.sh", session.virtualenv.location)
+    session.run(f"./stubgen_{lib}.sh", external=True)
+    session.chdir("stubs")
+    add_stubs_suffix(pathlib.Path("."))
