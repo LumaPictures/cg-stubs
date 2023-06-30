@@ -12,11 +12,15 @@ from mypy.stubgenc import FunctionContext, FunctionSig, SignatureGenerator
 
 import mari
 
-from stubgenlib import DocstringSignatureGenerator
+from stubgenlib import DocstringSignatureGenerator, DocstringTypeFixer
 
 # the mari.so mdule patches in the Mari pure python package using __path__. Undo that
 # so that mypy will just process mari.so as a single c extension.
 mari.__path__ = []
+
+
+class MariDocstringSignatureGenerator(DocstringSignatureGenerator, DocstringTypeFixer):
+    pass
 
 
 class CStubGenerator(mypy.stubgenc.CStubGenerator):
@@ -28,7 +32,7 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
         return super().is_defined_in_module(obj)
 
     def get_sig_generators(self) -> list[SignatureGenerator]:
-        return [DocstringSignatureGenerator()]
+        return [MariDocstringSignatureGenerator()]
 
 
 mypy.stubgen.CStubGenerator = CStubGenerator

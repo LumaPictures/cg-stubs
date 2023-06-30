@@ -5,42 +5,29 @@ from typing import Any
 
 import mypy.stubgen
 import mypy.stubgenc
-from mypy.fastparse import parse_type_comment
 from mypy.stubgen import main
-from mypy.stubgenc import ArgSig
 from mypy.stubgenc import DocstringSignatureGenerator as CDocstringSignatureGenerator
 from mypy.stubgenc import FunctionContext, FunctionSig, SignatureGenerator
 
 import Callbacks.Callbacks
 from Callbacks.Callbacks import _TypeEnum
-from stubgenlib import DocstringSignatureGenerator, CFunctionStub, BaseSigFixer, Notifier
+
+from stubgenlib import (
+    DocstringSignatureGenerator,
+    CFunctionStub,
+    BaseSigFixer,
+    Notifier,
+    DocstringTypeFixer,
+)
 
 notifier = Notifier()
-
-EPY_REG = re.compile(r"([LC]\{([^}]+)\})")
-LIST_OF_REG = re.compile(r"\b(list|Sequence|Iterable|Iterator) of (.*)")
-TUPLE_OF_REG = re.compile(r"\btuple of ([a-zA-Z0-9_.,() ]*)")
-SET_OF_REG = re.compile(r"\bset of ([a-zA-Z0-9_.]*)")
-NUMERIC_TUPLE_REG = re.compile(r"\b(int|float)\[(\d+)\]")
 
 # Remove these to troubleshoot errors:
 DISABLED_CODES = '# mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"\n\n'
 
 
-def cleanup_type(type_name: str) -> str:
-    type_name = type_name.replace('\n', ' ')
-    type_name = type_name.rstrip('.')
-    type_name = EPY_REG.sub(lambda m: m.group(2), type_name).strip()
-
-    type_name = re.sub(r'\bNoneType\b', 'None', type_name)
-
-    # special case
-    optional = False
-    if type_name.endswith(', or None'):
-        optional = True
-        type_name = type_name[: len(', or None')]
-
-    replacements = [
+class KatanaDocstringTypeFixer(DocstringTypeFixer):
+    SPECIAL_REPLACEMENTS = [
         ('FnGeolib', 'PyFnGeolib'),
         ('FnAttribute', 'PyFnAttribute'),
         ('FnGeolibServices', 'PyFnGeolibServices'),
@@ -51,96 +38,43 @@ def cleanup_type(type_name: str) -> str:
         ),
         (r'PyFnGeolib.GeolibRuntime\.Op', 'PyFnGeolib.GeolibRuntimeOp'),
         (r'NodegraphAPI\.LiveGroupMixin', 'NodegraphAPI.LiveGroup.LiveGroupMixin'),
-        ('number', 'float'),
-        ('List', 'list'),
-        ('Dict', 'dict'),
-        ('Type', 'type'),
-        ('module', 'types.ModuleType'),
-        ('function', 'typing.Callable'),
-        ('callable', 'typing.Callable'),
-        ('hashable', 'typing.Hashable'),
-        ('iterable', 'typing.Iterable'),
-        ('class', 'type'),
-        ('object', 'Any'),
-        ('sequence', 'typing.Sequence'),
-        ('generator', 'typing.Iterator'),
-        ('long', 'int'),
-        ('strings?', 'str'),
-        ('Str', 'str'),
-        ('int_', 'int'),
-        ('none', 'None'),
     ]
-    for find, replace in replacements:
-        type_name = re.sub(r'\b{}\b'.format(find), replace, type_name)
 
-    type_name = type_name.replace(' or ', ' | ')
+    def get_replacements(self) -> list[tuple[str, str]]:
+        return self.SPECIAL_REPLACEMENTS + self.REPLACEMENTS
 
-    # FIXME: would be nice to have something that can do a search through known objects
-    absolute_names = (
-        (
-            'TerminalOpDelegate',
-            'Nodes3DAPI.TerminalOpDelegates.TerminalOpDelegate.TerminalOpDelegate',
-        ),
-        ('Nodes?', 'NodegraphAPI.Node'),
-        ('GroupNode', 'NodegraphAPI.GroupNode'),
-        ('Port', 'NodegraphAPI.Port'),
-        ('GraphState', 'NodegraphAPI.GraphState'),
-        ('Op', 'PyFnGeolib.GeolibRuntimeOp'),
-        ('WorkingSet', 'PyUtilModule.WorkingSet.WorkingSet'),
-        ('PortOpClient', 'Nodes3DAPI.PortOpClient.PortOpClient'),
-        ('GroupAttribute', 'PyFnAttribute.GroupAttribute'),
-    )
-    for short_name, full_name in absolute_names:
-        type_name = re.sub(
-            r'(?<![A-Za-z0-9._]){}\b'.format(short_name), full_name, type_name
+    def get_full_name(self, type_name: str) -> str:
+        # FIXME: would be nice to have something that can do a search through known objects
+        absolute_names = (
+            (
+                'TerminalOpDelegate',
+                'Nodes3DAPI.TerminalOpDelegates.TerminalOpDelegate.TerminalOpDelegate',
+            ),
+            ('Nodes?', 'NodegraphAPI.Node'),
+            ('GroupNode', 'NodegraphAPI.GroupNode'),
+            ('Port', 'NodegraphAPI.Port'),
+            ('GraphState', 'NodegraphAPI.GraphState'),
+            ('Op', 'PyFnGeolib.GeolibRuntimeOp'),
+            ('WorkingSet', 'PyUtilModule.WorkingSet.WorkingSet'),
+            ('PortOpClient', 'Nodes3DAPI.PortOpClient.PortOpClient'),
+            ('GroupAttribute', 'PyFnAttribute.GroupAttribute'),
         )
-
-    type_name = type_name.replace(
-        'object convertible to a float', 'typing.SupportsFloat'
-    )
-
-    def list_sub(m):
-        return "{}[{}]".format(m.group(1), m.group(2))
-
-    type_name = LIST_OF_REG.sub(list_sub, type_name, count=1)
-
-    def tuple_sub(m):
-        members = [s.strip() for s in m.group(1).replace(" and ", " , ").split(",")]
-        if len(members) == 1:
-            members.append('...')
-        return "tuple[{}]".format(", ".join(members))
-
-    type_name = TUPLE_OF_REG.sub(tuple_sub, type_name, count=1)
-
-    def set_sub(m):
-        return "set[{}]".format(m.group(1))
-
-    type_name = SET_OF_REG.sub(set_sub, type_name, count=1)
-
-    def numeric_tuple_sub(m):
-        count = int(m.group(2))
-        return "tuple[{}]".format(', '.join([m.group(1)] * count))
-
-    type_name = NUMERIC_TUPLE_REG.sub(numeric_tuple_sub, type_name, count=1)
-
-    if optional:
-        type_name = 'typing.Optional[{}]'.format(type_name)
-    return type_name
+        for short_name, full_name in absolute_names:
+            type_name = re.sub(
+                r'(?<![A-Za-z0-9._]){}\b'.format(short_name), full_name, type_name
+            )
+        return type_name
 
 
-class KatanaDocstringSignatureGenerator(DocstringSignatureGenerator):
-    def cleanup_type(
-        self, type_name: str, ctx: FunctionContext, is_result: bool
-    ) -> str:
-        return cleanup_type(type_name)
+class KatanaDocstringSignatureGenerator(
+    KatanaDocstringTypeFixer, DocstringSignatureGenerator
+):
+    pass
 
 
-class KatanaCSignatureGenerator(CDocstringSignatureGenerator, BaseSigFixer):
-    def cleanup_type(
-        self, type_name: str, ctx: FunctionContext, is_result: bool
-    ) -> str:
-        return cleanup_type(type_name)
-
+class KatanaCSignatureGenerator(
+    CDocstringSignatureGenerator, KatanaDocstringTypeFixer, BaseSigFixer
+):
     def get_function_sig(
         self, default_sig: FunctionSig, ctx: FunctionContext
     ) -> list[FunctionSig] | None:

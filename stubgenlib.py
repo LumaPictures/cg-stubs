@@ -94,6 +94,99 @@ class BaseSigFixer:
         return FunctionSig(sig.name, args, return_type)
 
 
+class DocstringTypeFixer:
+    """
+    Mixin class that fixes human-defined types in docstrings
+    """
+
+    EPY_REG = re.compile(r"([LC]\{([^}]+)\})")
+    LIST_OF_REG = re.compile(r"\b(list|Sequence|Iterable|Iterator) of (.*)")
+    TUPLE_OF_REG = re.compile(r"\btuple of ([a-zA-Z0-9_.,() ]*)")
+    SET_OF_REG = re.compile(r"\bset of ([a-zA-Z0-9_.]*)")
+    NUMERIC_TUPLE_REG = re.compile(r"\b(int|float)\[(\d+)\]")
+
+    REPLACEMENTS = [
+        ('number', 'float'),
+        ('List', 'list'),
+        ('Dict', 'dict'),
+        ('Type', 'type'),
+        ('module', 'types.ModuleType'),
+        ('function', 'typing.Callable'),
+        ('callable', 'typing.Callable'),
+        ('hashable', 'typing.Hashable'),
+        ('iterable', 'typing.Iterable'),
+        ('class', 'type'),
+        ('object', 'Any'),
+        ('sequence', 'typing.Sequence'),
+        ('generator', 'typing.Iterator'),
+        ('long', 'int'),
+        ('strings?', 'str'),
+        ('Str', 'str'),
+        ('int_', 'int'),
+        ('none', 'None'),
+    ]
+
+    def get_replacements(self) -> list[tuple[str, str]]:
+        return self.REPLACEMENTS
+
+    def get_full_name(self, obj_name: str) -> str:
+        return obj_name
+
+    def cleanup_type(
+        self, type_name: str, ctx: FunctionContext, is_result: bool
+    ) -> str:
+        type_name = type_name.replace('\n', ' ')
+        type_name = type_name.rstrip('.')
+        type_name = self.EPY_REG.sub(lambda m: m.group(2), type_name).strip()
+
+        type_name = re.sub(r'\bNoneType\b', 'None', type_name)
+
+        # special case
+        optional = False
+        if type_name.endswith(', or None'):
+            optional = True
+            type_name = type_name[: len(', or None')]
+
+        for find, replace in self.get_replacements():
+            type_name = re.sub(r'\b{}\b'.format(find), replace, type_name)
+
+        type_name = type_name.replace(' or ', ' | ')
+
+        type_name = self.get_full_name(type_name)
+
+        type_name = type_name.replace(
+            'object convertible to a float', 'typing.SupportsFloat'
+        )
+
+        def list_sub(m):
+            return "{}[{}]".format(m.group(1), m.group(2))
+
+        type_name = self.LIST_OF_REG.sub(list_sub, type_name, count=1)
+
+        def tuple_sub(m):
+            members = [s.strip() for s in m.group(1).replace(" and ", " , ").split(",")]
+            if len(members) == 1:
+                members.append('...')
+            return "tuple[{}]".format(", ".join(members))
+
+        type_name = self.TUPLE_OF_REG.sub(tuple_sub, type_name, count=1)
+
+        def set_sub(m):
+            return "set[{}]".format(m.group(1))
+
+        type_name = self.SET_OF_REG.sub(set_sub, type_name, count=1)
+
+        def numeric_tuple_sub(m):
+            count = int(m.group(2))
+            return "tuple[{}]".format(', '.join([m.group(1)] * count))
+
+        type_name = self.NUMERIC_TUPLE_REG.sub(numeric_tuple_sub, type_name, count=1)
+
+        if optional:
+            type_name = 'typing.Optional[{}]'.format(type_name)
+        return type_name
+
+
 class DocstringSignatureGenerator(SignatureGenerator, BaseSigFixer):
     """
     Generate signatures from docstrings.
@@ -125,8 +218,8 @@ class DocstringSignatureGenerator(SignatureGenerator, BaseSigFixer):
             if parsed.returns and parsed.returns.type_name:
                 return_type = parsed.returns.type_name
             sig = FunctionSig(ctx.name, args, return_type)
-            sig = self.cleanup_sig_types(sig, ctx)
 
+            sig = self.cleanup_sig_types(sig, ctx)
             merged_sig = default_sig.merge(sig)
             return [merged_sig]
         return None
