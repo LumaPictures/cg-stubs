@@ -1,6 +1,6 @@
 # Unofficial python stubs for Pixar's Universal Scene Description (USD)
 
-These stubs are designed to be used with a type checker like `mypy` to provide static type checking of USD python code, as well as to provide analysis and completion in IDEs like PyCharm and VSCode (with Pylance).
+These stubs are designed to be used with a type checker like `mypy` to provide static type checking of python code, as well as to provide analysis and completion in IDEs like PyCharm and VSCode (with Pylance).
 
 ## Installing
 
@@ -8,8 +8,8 @@ These stubs are designed to be used with a type checker like `mypy` to provide s
 pip install types-usd
 ```
 
-The version of the package corresponds to the version of USD that it generated from,
-plus a suffix for the version of the stubs.
+The version of the package corresponds to the version of USD that it is generated from,
+plus a version suffix for the revision of the stubs
 
 The stubs have been tested against a large USD codebase using `mypy`, however, there
 are still known issues that need to be resolved.

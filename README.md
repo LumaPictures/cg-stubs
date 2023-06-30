@@ -8,8 +8,8 @@ Supported libraries and applications.
 - houdini
 - katana
 - mari
-- nuke
-- substance_painter
+- [nuke](https://pypi.org/project/types-nuke/)
+- [substance_painter](https://pypi.org/project/types-substance_painter/)
 
 See also:
 - pymel
@@ -19,6 +19,17 @@ See also:
 
 ```
 pip install types-usd types-houdini types-katana types-mari types-nuke types-substance_painter
+```
+
+## Generating the stubs
+
+(replace nuke with the package to generate)
+
+```
+python3 -m venv .venv
+. .venv/bin/activate
+pip install nox
+nox -s 'generate(nuke)'
 ```
 
 ## Developing
