@@ -4,6 +4,8 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "types-nuke"
+version = "13.2.8.0"
+
 readme = "README.md"
 authors = ["Chad Dombrova"]
 description = "Unofficial python stubs for Foundry Nuke"
@@ -17,7 +19,6 @@ classifiers = [
     "Operating System :: OS Independent",
     "Intended Audience :: Developers",
 ]
-version = "13.2.8.0"
 repository = "https://github.com/LumaPictures/cg-stubs"
 homepage = "https://github.com/LumaPictures/cg-stubs"
 
