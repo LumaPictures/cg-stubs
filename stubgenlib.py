@@ -111,6 +111,7 @@ class DocstringTypeFixer:
         ('Dict', 'dict'),
         ('Type', 'type'),
         ('module', 'types.ModuleType'),
+        ('traceback', 'types.TracebackType'),
         ('function', 'typing.Callable'),
         ('callable', 'typing.Callable'),
         ('hashable', 'typing.Hashable'),
