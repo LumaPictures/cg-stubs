@@ -1,0 +1,26 @@
+#!/bin/bash
+set -e
+
+POINT_RELEASE=5
+
+#pip install -U git+https://github.com/chadrik/mypy@stubgenc-all-fixes#mypy
+# pip install -U -e ../mypy
+
+REPO_PATH=$(git rev-parse --show-toplevel)
+outdir=$REPO_PATH/pyside/stubs/
+
+export PYTHONPATH=$REPO_PATH:$REPO_PATH/pyside:$REPO_PATH/../mypy/:$PY_SITE_DIR
+
+python -m stubgen_pyside -p shiboken2 -p PySide2 -o $outdir
+
+echo -e "\nclass Object:\n    pass" >> $outdir/shiboken2/shiboken2.pyi
+echo -e "__version__: str" >> $outdir/PySide2/__init__.pyi
+echo -e "__version_info__: tuple[int, int, float, str, str]" >> $outdir/PySide2/__init__.pyi
+
+#rm -rf ./PySide2-stubs
+#mv ./.build/PySide2 ./PySide2-stubs
+#rm -rf ./shiboken2-stubs
+#mv ./.build/shiboken2 ./shiboken2-stubs
+
+VERSION=$(python -c "import PySide2;print(PySide2.__version__)")
+echo "$VERSION.$POINT_RELEASE" > ./VERSION

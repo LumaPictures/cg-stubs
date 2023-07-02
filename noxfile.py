@@ -8,6 +8,7 @@ APPS = [
     "katana",
     "mari",
     "nuke",
+    "pyside",
     "substance_painter",
     "usd",
 ]
@@ -17,7 +18,7 @@ PARAMS = [nox.param(x, id=x) for x in APPS]
 # TODO: generate pyproject.toml from a jinja template
 
 
-def add_stubs_suffix(path: pathlib.Path):
+def add_stubs_suffix(path: pathlib.Path) -> None:
     import shutil
 
     # do these at the end to improve time to git refresh
@@ -43,7 +44,7 @@ def add_stubs_suffix(path: pathlib.Path):
 
 @nox.session(venv_backend='none')
 @nox.parametrize('lib', PARAMS)
-def develop(session: nox.Session, lib: str):
+def develop(session: nox.Session, lib: str) -> None:
     session.chdir(lib)
     try:
         session.run("poetry", "install", external=True)
@@ -56,7 +57,7 @@ def develop(session: nox.Session, lib: str):
 
 @nox.session(reuse_venv=True)
 @nox.parametrize('lib', PARAMS)
-def publish(session: nox.Session, lib: str):
+def publish(session: nox.Session, lib: str) -> None:
     session.chdir(lib)
     session.install("poetry")
     session.run("poetry", "publish", *session.posargs)
@@ -64,9 +65,21 @@ def publish(session: nox.Session, lib: str):
 
 @nox.session(reuse_venv=True)
 @nox.parametrize('lib', PARAMS)
-def generate(session: nox.Session, lib: str):
+def generate(session: nox.Session, lib: str) -> None:
     session.install("-r", "requirements.txt")
+
+    if lib == "pyside":
+        session.install("PySide2==5.15.2.1")
+
     session.chdir(lib)
     session.run(f"./stubgen_{lib}.sh", external=True)
     session.chdir("stubs")
-    add_stubs_suffix(pathlib.Path("."))
+    # add_stubs_suffix(pathlib.Path("."))
+
+
+@nox.session(reuse_venv=True)
+@nox.parametrize('lib', PARAMS)
+def mypy(session: nox.Session, lib: str) -> None:
+    session.chdir(lib)
+    session.install("mypy==1.4.1")
+    session.run("mypy", "stubs")

@@ -1,0 +1,35 @@
+[metadata]
+name = types-PySide2
+author = Chad Dombrova
+author_email =
+description = The most accurate stubs for the PySide2
+long_description = file: README.md
+long_description_content_type = text/markdown
+version = 5.15.2.1.0
+license = LGPL v2.1
+url = https://github.com/chadrik/types-pyside
+project_urls =
+    Bug Tracker = https://github.com/chadrik/types-pyside/issues
+classifiers =
+    Development Status :: 5 - Production/Stable
+    Programming Language :: Python :: 3
+    License :: OSI Approved :: GNU Lesser General Public License v2 (LGPLv2)
+    Operating System :: OS Independent
+    Intended Audience :: Developers
+    Typing :: Stubs Only
+
+[options]
+package_dir =
+   PySide2-stubs = PySide2-stubs
+   shiboken2-stubs = shiboken2-stubs
+
+python_requires = >=3.6
+
+[options.package_data]
+* = *.pyi
+
+[options.packages.find]
+exclude =
+    tests*
+    pyside_stubgen.py
+    genstubs.sh
