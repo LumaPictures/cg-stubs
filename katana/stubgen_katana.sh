@@ -2,13 +2,11 @@
 
 set -e
 
+version=$1
 if [[ "$version" == "" ]]; then
-  echo "defaulting to 5.0v5 version"
   version=5.0v5
+  echo "defaulting to $version"
 fi
-
-PY_SITE_DIR=$(python -c "import site,os;print(os.pathsep.join(site.getsitepackages()))")
-export REPO_PATH=$(git rev-parse --show-toplevel)
 
 # User provided
 export KATANA_HOME=/luma/soft/applications/Foundry/Linux-x86_64/katana/Katana-$version
@@ -16,11 +14,11 @@ export PATH=$KATANA_HOME:$PATH
 export foundry_LICENSE='4101@katanalicgui.luma.ninja:5053@katanarender.luma.ninja'
 
 
+PY_SITE_DIR=$(python -c "import site,os;print(os.pathsep.join(site.getsitepackages()))")
+export REPO_PATH=$(git rev-parse --show-toplevel)
 export PYTHONPATH=$REPO_PATH:$REPO_PATH/katana:$REPO_PATH/../mypy/:$PY_SITE_DIR
 
-
 sitedir=$KATANA_HOME/bin/python/
-
 tmpdir=${REPO_PATH}/katana/stubs.tmp/$version-$disassembler
 outdir=${REPO_PATH}/katana/stubs
 
