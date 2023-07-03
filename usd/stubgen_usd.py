@@ -406,23 +406,6 @@ class TypeInfo:
             raise RuntimeError("Could not find implicitly convertible types")
         return self._implicitly_convertible_types
 
-    # def add_implicit_unions(self, py_type: str) -> str:
-    #     """
-    #     wrap the type string in a Union if it is in the list of types with known
-    #     implicit conversions.
-    #
-    #     Parameters
-    #     ----------
-    #     py_type : str
-    #         fully qualified python type identifier
-    #     """
-    #     others = self._get_implicitly_convertible_types().get(py_type)
-    #
-    #     if others is not None:
-    #         return " | ".join([py_type] + sorted(others))
-    #     else:
-    #         return py_type
-
     def cpp_arg_to_py_type(self, cpp_type: str, is_result) -> str:
         """
         Convert a c++ type string to a python type string
@@ -541,7 +524,7 @@ class TypeInfo:
                     return [mod, s]
         return [cpp_type]
 
-    # FIXME: reconcile this with the method above
+    # FIXME: reconcile this with cpp_to_py_type
     def to_python_id(self, cpp_type: str) -> str:
         cpp_type = self.strip_pxr_namespace(cpp_type)
         parts = self.split_module(cpp_type)
@@ -623,7 +606,7 @@ class TypeInfo:
         fallback: str | None = None,
         current_func: str | None = None,
     ) -> str | None:
-        """Get a full python object path from a short type name
+        """Get a full python object path from a short type name.
 
         Returns None if the type was not found.
         """
