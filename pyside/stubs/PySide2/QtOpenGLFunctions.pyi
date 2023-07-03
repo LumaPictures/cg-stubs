@@ -1,4 +1,5 @@
 import PySide2.QtGui
+import collections.abc
 import typing
 T = typing.TypeVar('T')
 

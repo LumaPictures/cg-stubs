@@ -270,6 +270,10 @@ class CFunctionStub:
         pass
 
 
+def sig_sort_key(py_sig: FunctionSig) -> tuple[int, tuple[str, ...]]:
+    return (len(py_sig.args), tuple([arg.name for arg in py_sig.args]))
+
+
 def reduce_overloads(sigs: list[FunctionSig]) -> list[FunctionSig]:
     """
     Remove unsupported and redundant overloads.
@@ -297,7 +301,7 @@ def reduce_overloads(sigs: list[FunctionSig]) -> list[FunctionSig]:
     if len(new_sigs) <= 1:
         return new_sigs
 
-    sigs = sorted(new_sigs, key=lambda x: len(x.args), reverse=True)
+    sigs = sorted(new_sigs, key=sig_sort_key, reverse=True)
     redundant = []
     for a, b in itertools.combinations(sigs, 2):
         if contains_other_overload(a, b):
@@ -310,6 +314,7 @@ def reduce_overloads(sigs: list[FunctionSig]) -> list[FunctionSig]:
         for x in sigs:
             print(x)
         raise ValueError
+    # results.reverse()
     return results
 
 
@@ -383,7 +388,7 @@ class BoostDocStringParser:
         self.arg_type: str | None = None
         self.arg_name = ""
         self.arg_default: str | None = None
-        self.ret_type = "Any"
+        self.ret_type = "tying.Any"
         self.defaults = False
         self.found = False
         self.args: list[ArgSig] = []
@@ -572,7 +577,7 @@ class BoostDocStringParser:
                 )
                 self.found = False
             self.args = []
-            self.ret_type = "Any"
+            self.ret_type = "typing.Any"
             self.defaults = False
             # Leave state as INIT.
         else:

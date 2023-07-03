@@ -1,4 +1,7 @@
+import collections.abc
 import shiboken2
+import typing
+T = typing.TypeVar('T')
 
 class QtWebEngine(shiboken2.Object):
     @classmethod

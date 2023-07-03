@@ -595,27 +595,23 @@ class PySideSignatureGenerator(mypy.stubgenc.SignatureGenerator):
         if typ is not None and (
             is_flag(typ) or is_flag_group(typ) or is_flag_item(typ)
         ):
-            docstr = self.flag_overrides.get(name)
-            if docstr:
+            docstr_override = self.flag_overrides.get(name)
+            if docstr_override:
                 is_flag_type = True
                 if is_flag_item(typ):
                     return_type = get_group_from_flag_item(typ)
                 else:
                     return_type = typ
-                docstr = docstr.format(
+                docstr_override = docstr_override.format(
                     mypy.stubgenc.CStubGenerator.get_type_fullname(return_type)
                 )
+        else:
+            docstr_override = self.signature_overrides.get(
+                (OptionalKey(class_name), name)
+            )
 
-        # if not docstr:
-        #     if class_name == "VolatileBool" and name == "get":
-        #         print("get override")
-        docstr = self.signature_overrides.get((OptionalKey(class_name), name))
-
-        # if class_name == "VolatileBool" and name == "get":
-        #     print(docstr)
-        #     raise RuntimeError
-
-        if docstr:
+        if docstr_override:
+            docstr = docstr_override
 
             def prep_doc(d: str) -> str:
                 d = pyside(d)
@@ -630,8 +626,13 @@ class PySideSignatureGenerator(mypy.stubgenc.SignatureGenerator):
                 docstr = prep_doc(docstr)
             results = infer_sig_from_docstring(docstr, name)
         else:
-            # call the standard docstring-based generator
+            # call the standard docstring-based generator.
             results = self.docstring.get_function_sig(default_sig, ctx)
+
+        # if class_name == "QQmlApplicationEngine" and name == "__init__":
+        #     print(results, default_sig, is_flag_type)
+        #     print(docstr)
+        #     raise RuntimeError
 
         if not is_flag_type and results:
             results = reduce_overloads(results)
@@ -726,7 +727,7 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
         sig_generators.insert(0, PySideSignatureGenerator())
         return sig_generators
 
-    def is_skipped_pyside_attribute(self, attr: str, value: Any) -> bool:
+    def _is_skipped_pyside_attribute(self, attr: str, value: Any) -> bool:
         if not attr.isidentifier():
             return True
         # these are unecesssary
@@ -737,6 +738,12 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
         if attr == '__hash__' and value is None:
             return True
         return False
+
+    def add_obj_import(self, module: str, name: str, require: bool = False) -> str:
+        # force use of typing module for safe namespacing.
+        self.import_tracker.require_name(module)
+        self.import_tracker.add_import(module)
+        return f"{module}.{name}"
 
     def is_method(self, class_info: ClassInfo, name: str, obj: object) -> bool:
         # QtCore.Signal gets mistaken for a method descriptor because it has a __get__
@@ -753,19 +760,22 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
         members = [
             x
             for x in super().get_members(obj)
-            if not self.is_skipped_pyside_attribute(x[0], x[1])
+            if not self._is_skipped_pyside_attribute(x[0], x[1])
         ]
         if isinstance(obj, type):
             return members + PySideSignatureGenerator.new_members.get(obj.__name__, [])
         return members
 
-    # def add_typing_import(self, output: List[str]) -> List[str]:
-    #     # we don't call the original function because we don't want the standard typing imports:
-    #     # `from tying import Any` causes conflicts in QtNetwork
-    #     for i, line in enumerate(output):
-    #         if line.startswith('import typing'):
-    #             return output[:i] + [line, "T = typing.TypeVar('T')"] + output[i + 1:]
-    #     return output
+    def get_imports(self) -> str:
+        imports = super().get_imports().split("\n")
+
+        for i, line in enumerate(imports):
+            if line.startswith('import typing'):
+                imports = (
+                    imports[:i] + [line, "T = typing.TypeVar('T')"] + imports[i + 1 :]
+                )
+                break
+        return "\n".join(imports)
 
 
 mypy.stubgen.CStubGenerator = CStubGenerator
