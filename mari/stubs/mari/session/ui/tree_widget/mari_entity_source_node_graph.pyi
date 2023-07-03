@@ -1,0 +1,6 @@
+from .mari_entity import MariEntityTreeWidget as MariEntityTreeWidget
+from _typeshed import Incomplete
+
+class MariEntitySourceNodeGraphTreeWidget(MariEntityTreeWidget):
+    def __init__(self, parent: Incomplete | None = ...) -> None: ...
+    def populateView(self) -> None: ...

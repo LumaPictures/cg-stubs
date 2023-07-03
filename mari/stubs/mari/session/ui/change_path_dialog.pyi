@@ -1,0 +1,16 @@
+from PySide2 import QtWidgets
+from _typeshed import Incomplete
+
+class ChangePathDialog(QtWidgets.QDialog):
+    settings: Incomplete
+    paths: Incomplete
+    filterTypes: Incomplete
+    ignoreButtons: Incomplete
+    ignore: bool
+    ignoreAll: bool
+    currentPath: Incomplete
+    def __init__(self, title, path, filterTypes, ignoreButtons: bool = ..., parent: Incomplete | None = ...) -> None: ...
+    def returnPath(self): ...
+    def setIgnore(self) -> None: ...
+    def setIgnoreAll(self) -> None: ...
+    def selectFile(self) -> None: ...

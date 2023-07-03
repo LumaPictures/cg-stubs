@@ -72,8 +72,8 @@ class BaseSigFixer:
                 type_name = self.cleanup_type(arg.type, ctx, is_result=False)
                 if not self.is_valid(type_name):
                     invalid.append(
-                        "  Invalid arg {}: {} {}".format(
-                            arg.name, repr(arg.type), repr(type_name)
+                        "Invalid arg {} (orig: {} converted: {})".format(
+                            repr(arg.name), repr(arg.type), repr(type_name)
                         )
                     )
                     type_name = None
@@ -82,16 +82,15 @@ class BaseSigFixer:
             return_type = self.cleanup_type(sig.ret_type, ctx, is_result=True)
             if not self.is_valid(return_type):
                 invalid.append(
-                    "  Invalid ret: {} {}".format(repr(sig.ret_type), repr(return_type))
+                    "Invalid ret (orig: {} converted: {})".format(repr(sig.ret_type), repr(return_type))
                 )
                 return_type = None
 
-        if invalid:
-            print(f"Invalid type after cleanup: {ctx.fullname}")
-            print("   ", sig.format_sig())
-
         # FIXME: only copy if something has changed?
-        return FunctionSig(sig.name, args, return_type)
+        converted = FunctionSig(sig.name, args, return_type)
+                
+        return converted
+
 
 
 class DocstringTypeFixer:
@@ -136,7 +135,10 @@ class DocstringTypeFixer:
     def cleanup_type(
         self, type_name: str, ctx: FunctionContext, is_result: bool
     ) -> str:
+        type_name = type_name.replace('`', '')
         type_name = type_name.replace('\n', ' ')
+        type_name = type_name.replace('<', '[')
+        type_name = type_name.replace('>', ']')
         type_name = type_name.rstrip('.')
         type_name = self.EPY_REG.sub(lambda m: m.group(2), type_name).strip()
 
@@ -197,23 +199,36 @@ class DocstringSignatureGenerator(SignatureGenerator, BaseSigFixer):
     google, and epydoc (which Katana uses).
     """
 
+    def __init__(self, override_identity_sig=False):
+        """
+        override_identity_sig : bool
+            If the default sig is (*args, **kwargs) then use the signature from
+            this signature generator without attempting a merge.
+        """
+        self.override_identity_sig = override_identity_sig
+
+    def prepare_docstring(self, docstr: str) -> str:
+        return docstr
+
     def get_function_sig(
         self, default_sig: FunctionSig, ctx: FunctionContext
     ) -> list[FunctionSig] | None:
         import docstring_parser
 
         if ctx.docstr:
-            parsed = docstring_parser.parse(ctx.docstr)
+            parsed = docstring_parser.parse(self.prepare_docstring(ctx.docstr))
             args = []
             return_type = None
             if parsed.params:
                 for param in parsed.params:
-                    # FIXME: handle optional
+                    # param.default can be unreliable. in the case of google-style docs
+                    # the default is parsed from human description, whereas is_optional is
+                    # taken from a more concrete convention: `arg_name(list of in, optional)`
                     args.append(
                         ArgSig(
                             param.arg_name,
                             param.type_name,
-                            default=param.default is not None,
+                            default=param.is_optional,
                         )
                     )
             if parsed.returns and parsed.returns.type_name:
@@ -221,7 +236,10 @@ class DocstringSignatureGenerator(SignatureGenerator, BaseSigFixer):
             sig = FunctionSig(ctx.name, args, return_type)
 
             sig = self.cleanup_sig_types(sig, ctx)
-            merged_sig = default_sig.merge(sig)
+            if self.override_identity_sig and default_sig.is_identity():
+                merged_sig = sig
+            else:
+                merged_sig = default_sig.merge(sig)
             return [merged_sig]
         return None
 
