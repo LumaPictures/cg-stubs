@@ -57,13 +57,14 @@ def add_stubs_suffix(path: pathlib.Path) -> None:
 
 
 @contextlib.contextmanager
-def with_stubs_suffix(session, path: pathlib.Path = pathlib.Path(".")):
+def stubs_suffix(session, path: pathlib.Path = pathlib.Path("./stubs")):
     """Context manager to add -stubs to all folders in the stubs directory.
 
     We only do this when it's time to package the stubs because mypy and vscode
     analysis don't work well within this project when the packages have the -stubs suffix.
     """
     paths = []
+    path = path.absolute()
     for child in path.iterdir():
         if child.is_dir() and not child.name.endswith('-stubs'):
             name = child.stem + '-stubs'
@@ -82,7 +83,7 @@ def with_stubs_suffix(session, path: pathlib.Path = pathlib.Path(".")):
 @nox.parametrize('lib', PARAMS)
 def develop(session: nox.Session, lib: str) -> None:
     session.chdir(lib)
-    with with_stubs_suffix(session):
+    with stubs_suffix(session):
         try:
             session.run("poetry", "install", external=True)
         except nox.command.CommandFailed as err:
@@ -97,7 +98,7 @@ def develop(session: nox.Session, lib: str) -> None:
 def publish(session: nox.Session, lib: str) -> None:
     session.chdir(lib)
     session.install("poetry")
-    with with_stubs_suffix(session):
+    with stubs_suffix(session):
         session.run("poetry", "publish", *session.posargs)
 
 
@@ -115,8 +116,7 @@ def generate(session: nox.Session, lib: str) -> None:
 
     session.chdir(lib)
     session.run(f"./stubgen_{lib}.sh", external=True)
-    session.chdir("stubs")
-    make_packages()
+    make_packages(pathlib.Path("stubs"))
 
 
 @nox.session(reuse_venv=True)
