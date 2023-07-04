@@ -9,6 +9,7 @@ Supported libraries and applications.
 - katana
 - mari
 - [nuke](https://pypi.org/project/types-nuke/)
+- opencolorio
 - [substance_painter](https://pypi.org/project/types-substance_painter/)
 
 See also:

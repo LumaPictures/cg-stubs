@@ -10,6 +10,7 @@ APPS = [
     "katana",
     "mari",
     "nuke",
+    "ocio",
     "pyside",
     "substance_painter",
     "usd",
@@ -58,7 +59,7 @@ def add_stubs_suffix(path: pathlib.Path) -> None:
 @contextlib.contextmanager
 def with_stubs_suffix(session, path: pathlib.Path = pathlib.Path(".")):
     """Context manager to add -stubs to all folders in the stubs directory.
-    
+
     We only do this when it's time to package the stubs because mypy and vscode
     analysis don't work well within this project when the packages have the -stubs suffix.
     """
@@ -107,11 +108,13 @@ def generate(session: nox.Session, lib: str) -> None:
 
     if lib == "pyside":
         session.install("PySide2==5.15.2.1")
+    elif lib == "ocio":
+        session.install("opencolorio==2.2.1")
 
     session.chdir(lib)
     session.run(f"./stubgen_{lib}.sh", external=True)
     session.chdir("stubs")
-    # add_stubs_suffix(pathlib.Path("."))
+    make_packages()
 
 
 @nox.session(reuse_venv=True)

@@ -6,20 +6,18 @@ import mypy.stubgen
 import mypy.stubgenc
 from mypy.fastparse import parse_type_comment
 from mypy.stubgen import main
-from mypy.stubgenc import ArgSig
-from mypy.stubgenc import DocstringSignatureGenerator as CDocstringSignatureGenerator
-from mypy.stubgenc import FunctionContext, FunctionSig, SignatureGenerator
+from mypy.stubgenc import SignatureGenerator
 
 import mari
 
-from stubgenlib import DocstringSignatureGenerator, DocstringTypeFixer
+from stubgenlib import DocstringTypeFixer, FixableDocstringSigGen
 
 # the mari.so module patches in the Mari pure python package using __path__. Undo that
 # so that mypy will just process mari.so as a single c extension.
 mari.__path__ = []
 
 
-class MariDocstringSignatureGenerator(DocstringTypeFixer, DocstringSignatureGenerator):
+class MariDocstringSignatureGenerator(DocstringTypeFixer, FixableDocstringSigGen):
     PYPATH = re.compile(r"((?:[a-zA-Z_][a-zA-Z0-9_]*)(?:[.][a-zA-Z_][a-zA-Z0-9_]*)*)")
 
     def prepare_docstring(self, docstr):
@@ -35,7 +33,12 @@ class MariDocstringSignatureGenerator(DocstringTypeFixer, DocstringSignatureGene
 
         parts = []
         for part in self.PYPATH.split(type_name):
-            if part and part[0].isalpha() and not part.startswith("mari.") and not part.startswith("PySide"):
+            if (
+                part
+                and part[0].isalpha()
+                and not part.startswith("mari.")
+                and not part.startswith("PySide")
+            ):
                 if part[0] == "Q":
                     part = f"PySide2.QtWidgets.{part}"
                 else:
@@ -57,7 +60,7 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
     'mari.Mari.AppVersion'
     >>> mari.AppVersion.Stage.__qualname__
     'Stage'
-    >>> mari.Mari is mari                                                                                                                                                                                                        
+    >>> mari.Mari is mari
     True
 
     What we should get:
@@ -87,7 +90,7 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
 
     def get_type_fullname(self, typ: type) -> str:
         # mari C objects displace part of __qualname__ into __module__, so while
-        # adding __module__ and __qualname__ produces the correct full type name, 
+        # adding __module__ and __qualname__ produces the correct full type name,
         # if we use the *corrected* get_obj_module(), which the base class does,
         # it is not correct.
         typename = getattr(typ, "__qualname__", typ.__name__)

@@ -1,1 +1,2 @@
 docstring_parser
+mypy==1.3.0

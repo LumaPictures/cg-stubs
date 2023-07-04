@@ -1,0 +1,32 @@
+[build-system]
+requires = ["poetry>=1.3.2"]
+build-backend = "poetry.masonry.api"
+
+[tool.poetry]
+name = "types-opencolorio"
+version = "2.2.1.0"
+
+readme = "README.md"
+authors = ["Chad Dombrova"]
+description = "python stubs for PyOpenColorIO"
+license = "MIT"
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 2",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+]
+repository = "https://github.com/LumaPictures/cg-stubs"
+homepage = "https://github.com/LumaPictures/cg-stubs"
+
+keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
+
+packages = [
+    { include = "PyOpenColorIO-stubs", from = "stubs" },
+]
+
+[tool.distutils.bdist_wheel]
+universal = true

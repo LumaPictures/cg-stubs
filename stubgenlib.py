@@ -7,9 +7,16 @@ import re
 import tokenize
 from collections import defaultdict
 from typing import Any
+from typing_extensions import Literal
 
 from mypy.stubdoc import infer_sig_from_docstring, _TYPE_RE, _ARG_NAME_RE, is_valid_type
-from mypy.stubgenc import ArgSig, FunctionContext, FunctionSig, SignatureGenerator
+from mypy.stubgenc import (
+    ArgSig,
+    FunctionContext,
+    FunctionSig,
+    SignatureGenerator,
+    DocstringSignatureGenerator as CDocstringSignatureGenerator,
+)
 from mypy.fastparse import parse_type_comment
 
 
@@ -23,17 +30,17 @@ class Notifier:
         self._seen_keys = defaultdict(int)
         self._modules: list[str] | None = None
 
-    def set_modules(self, modules: list[str]):
+    def set_modules(self, modules: list[str]) -> None:
         self._modules = modules
 
-    def warn(self, key: str, module: str, msg: str):
+    def warn(self, key: str, module: str, msg: str) -> None:
         if (key, module, msg) not in self._seen_msgs:
             if self._modules is None or module in self._modules:
                 print(f"({module}) {key}: {msg}")
         self._seen_msgs[(key, module, msg)] += 1
         self._seen_keys[key] += 1
 
-    def print_summary(self):
+    def print_summary(self) -> None:
         print()
         print("Warning Summary:")
         for key in sorted(self._seen_keys):
@@ -46,6 +53,17 @@ class BaseSigFixer:
     Mixin base class that handles the boilerplate of cleaning up a signature
     from an external source, such as documentation
     """
+
+    def __init__(
+        self, default_sig_handling: Literal["ignore", "merge"] = "merge"
+    ) -> None:
+        """
+        default_sig_handling
+            How to use the default signature.
+            "ignore": only use the sigs from this generator. don't use the default sig.
+            "merge": merge the sigs from this generator into the default.
+        """
+        self.default_sig_handling = default_sig_handling
 
     @staticmethod
     def is_valid(type_name: str) -> bool:
@@ -82,15 +100,35 @@ class BaseSigFixer:
             return_type = self.cleanup_type(sig.ret_type, ctx, is_result=True)
             if not self.is_valid(return_type):
                 invalid.append(
-                    "Invalid ret (orig: {} converted: {})".format(repr(sig.ret_type), repr(return_type))
+                    "Invalid ret (orig: {} converted: {})".format(
+                        repr(sig.ret_type), repr(return_type)
+                    )
                 )
                 return_type = None
 
         # FIXME: only copy if something has changed?
         converted = FunctionSig(sig.name, args, return_type)
-                
+
         return converted
 
+    def get_function_sig(
+        self, default_sig: FunctionSig, ctx: FunctionContext
+    ) -> list[FunctionSig] | None:
+        sigs = super().get_function_sig(default_sig, ctx)
+        if sigs:
+            for i, sig in enumerate(sigs):
+                sig = self.cleanup_sig_types(sig, ctx)
+                if self.default_sig_handling == "ignore":
+                    merged_sig = sig
+                elif default_sig.is_identity() or (
+                    default_sig.has_catchall_args()
+                    and default_sig.ret_type == sig.ret_type
+                ):
+                    merged_sig = sig
+                else:
+                    merged_sig = default_sig.merge(sig)
+                sigs[i] = merged_sig
+        return sigs
 
 
 class DocstringTypeFixer:
@@ -116,9 +154,9 @@ class DocstringTypeFixer:
         ('hashable', 'typing.Hashable'),
         ('iterable', 'typing.Iterable'),
         ('class', 'type'),
-        ('object', 'Any'),
         ('sequence', 'typing.Sequence'),
         ('generator', 'typing.Iterator'),
+        ('buffer', 'typing_extensions.Buffer'),
         ('long', 'int'),
         ('strings?', 'str'),
         ('Str', 'str'),
@@ -126,8 +164,11 @@ class DocstringTypeFixer:
         ('none', 'None'),
     ]
 
-    def get_replacements(self) -> list[tuple[str, str]]:
-        return self.REPLACEMENTS
+    def get_replacements(self, is_result: bool) -> list[tuple[str, str]]:
+        repl = self.REPLACEMENTS
+        if is_result:
+            return repl + [('object', 'Any')]
+        return repl
 
     def get_full_name(self, obj_name: str) -> str:
         return obj_name
@@ -150,7 +191,7 @@ class DocstringTypeFixer:
             optional = True
             type_name = type_name[: len(', or None')]
 
-        for find, replace in self.get_replacements():
+        for find, replace in self.get_replacements(is_result):
             type_name = re.sub(r'\b{}\b'.format(find), replace, type_name)
 
         type_name = type_name.replace(' or ', ' | ')
@@ -161,12 +202,12 @@ class DocstringTypeFixer:
             'object convertible to a float', 'typing.SupportsFloat'
         )
 
-        def list_sub(m):
+        def list_sub(m) -> str:
             return "{}[{}]".format(m.group(1), m.group(2))
 
         type_name = self.LIST_OF_REG.sub(list_sub, type_name, count=1)
 
-        def tuple_sub(m):
+        def tuple_sub(m) -> str:
             members = [s.strip() for s in m.group(1).replace(" and ", " , ").split(",")]
             if len(members) == 1:
                 members.append('...')
@@ -174,12 +215,12 @@ class DocstringTypeFixer:
 
         type_name = self.TUPLE_OF_REG.sub(tuple_sub, type_name, count=1)
 
-        def set_sub(m):
+        def set_sub(m) -> str:
             return "set[{}]".format(m.group(1))
 
         type_name = self.SET_OF_REG.sub(set_sub, type_name, count=1)
 
-        def numeric_tuple_sub(m):
+        def numeric_tuple_sub(m) -> str:
             count = int(m.group(2))
             return "tuple[{}]".format(', '.join([m.group(1)] * count))
 
@@ -190,7 +231,7 @@ class DocstringTypeFixer:
         return type_name
 
 
-class DocstringSignatureGenerator(SignatureGenerator, BaseSigFixer):
+class DocstringSignatureGenerator(SignatureGenerator):
     """
     Generate signatures from docstrings.
 
@@ -198,14 +239,6 @@ class DocstringSignatureGenerator(SignatureGenerator, BaseSigFixer):
     generators, this works with standard docstring formats such as numpy,
     google, and epydoc (which Katana uses).
     """
-
-    def __init__(self, override_identity_sig=False):
-        """
-        override_identity_sig : bool
-            If the default sig is (*args, **kwargs) then use the signature from
-            this signature generator without attempting a merge.
-        """
-        self.override_identity_sig = override_identity_sig
 
     def prepare_docstring(self, docstr: str) -> str:
         return docstr
@@ -234,14 +267,16 @@ class DocstringSignatureGenerator(SignatureGenerator, BaseSigFixer):
             if parsed.returns and parsed.returns.type_name:
                 return_type = parsed.returns.type_name
             sig = FunctionSig(ctx.name, args, return_type)
-
-            sig = self.cleanup_sig_types(sig, ctx)
-            if self.override_identity_sig and default_sig.is_identity():
-                merged_sig = sig
-            else:
-                merged_sig = default_sig.merge(sig)
-            return [merged_sig]
+            return [sig]
         return None
+
+
+class FixableDocstringSigGen(BaseSigFixer, DocstringSignatureGenerator):
+    pass
+
+
+class FixableCDocstringSigGen(BaseSigFixer, CDocstringSignatureGenerator):
+    pass
 
 
 class BoostDocstringSignatureGenerator(SignatureGenerator):
@@ -262,7 +297,7 @@ class CFunctionStub:
     Class that mimics a C function in order to provide parseable docstrings.
     """
 
-    def __init__(self, name: str, doc: str, is_abstract=False):
+    def __init__(self, name: str, doc: str, is_abstract=False) -> None:
         # Use special dunder names so that this object is interpreted as desired during inspection.
         self.__name__ = name
         self.__doc__ = doc
@@ -280,7 +315,7 @@ class CFunctionStub:
             is_abstract,
         )
 
-    def __get__(self):
+    def __get__(self) -> None:
         """
         This exists to make this object look like a method descriptor and thus
         return true for CStubGenerator.ismethod()
@@ -355,7 +390,7 @@ def contains_other_overload(sig: FunctionSig, other: FunctionSig) -> bool:
     return False
 
 
-def boost_parser():
+def boost_parser() -> None:
     from lark import Lark
 
     parser = Lark(
@@ -414,11 +449,11 @@ class BoostDocStringParser:
         self.signatures: list[FunctionSig] = []
         self.verbose = verbose
 
-    def debug(self, *msg):
+    def debug(self, *msg) -> None:
         if self.verbose:
             print(*msg)
 
-    def pop_state(self, reason):
+    def pop_state(self, reason) -> None:
         prev = self.state.pop()
         self.debug("pop state {} {} -> {}".format(reason, prev, self.state[-1]))
 
@@ -639,9 +674,9 @@ def infer_sig_from_boost_docstring(
     sigs = state.get_signatures()
     return sigs
 
-    def is_unique_args(sig: FunctionSig) -> bool:
-        """return true if function argument names are unique"""
-        return len(sig.args) == len({arg.name for arg in sig.args})
+    # def is_unique_args(sig: FunctionSig) -> bool:
+    #     """return true if function argument names are unique"""
+    #     return len(sig.args) == len({arg.name for arg in sig.args})
 
-    # Return only signatures that have unique argument names. Mypy fails on non-unique arg names.
-    return [sig for sig in sigs if is_unique_args(sig)]
+    # # Return only signatures that have unique argument names. Mypy fails on non-unique arg names.
+    # return [sig for sig in sigs if is_unique_args(sig)]
