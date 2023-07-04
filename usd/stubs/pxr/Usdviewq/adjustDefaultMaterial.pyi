@@ -1,4 +1,5 @@
 # mypy: disable_error_code = misc
+import PySide6.QtCore
 import PySide6.QtWidgets
 from pxr.Usdviewq.adjustDefaultMaterialUI import Ui_AdjustDefaultMaterial as Ui_AdjustDefaultMaterial
 from typing import ClassVar

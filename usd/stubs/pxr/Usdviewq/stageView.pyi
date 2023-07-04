@@ -2,19 +2,25 @@
 import pxr.CameraUtil as CameraUtil
 import pxr.Gf as Gf
 import pxr.Glf as Glf
+import PySide6.QtCore
 import PySide6.QtOpenGLWidgets
 import pxr.Sdf as Sdf
 import pxr.Tf as Tf
 import pxr.Usd as Usd
 import pxr.UsdGeom as UsdGeom
 import pxr.UsdImagingGL as UsdImagingGL
+import pxr.Usdviewq.common
+import pxr.Usdviewq.rootDataModel
 from _typeshed import Incomplete
 from pxr.Usdviewq.common import ColorCorrectionModes as ColorCorrectionModes, DefaultFontFamily as DefaultFontFamily, RenderModes as RenderModes, ReportMetricSize as ReportMetricSize, SelectionHighlightModes as SelectionHighlightModes, ShadedRenderModes as ShadedRenderModes, Timer as Timer
 from pxr.Usdviewq.freeCamera import FreeCamera as FreeCamera
 from pxr.Usdviewq.rootDataModel import RootDataModel as RootDataModel
 from pxr.Usdviewq.selectionDataModel import SelectionDataModel as SelectionDataModel
 from pxr.Usdviewq.viewSettingsDataModel import ViewSettingsDataModel as ViewSettingsDataModel
-from typing import Any, ClassVar, Type
+from typing import Any, ClassVar
+
+ALL_INSTANCES: int
+DEBUG_CLIPPING: str
 
 class FilledRect(Rect):
     _glslProgram: ClassVar[None] = ...
@@ -81,7 +87,7 @@ class Reticles(Prim2DDrawTask):
     def updatePrims(self, croppedViewport, qglwidget, inside, outside): ...
 
 class StageView(PySide6.QtOpenGLWidgets.QOpenGLWidget):
-    class DefaultDataModel(RootDataModel):
+    class DefaultDataModel(pxr.Usdviewq.rootDataModel.RootDataModel):
         staticMetaObject: ClassVar[PySide6.QtCore.QMetaObject] = ...
         def __init__(self): ...
         @property
@@ -104,7 +110,7 @@ class StageView(PySide6.QtOpenGLWidgets.QOpenGLWidget):
     renderParams: Any
     rolloverPicking: Any
     upperHUDInfo: Any
-    def __init__(self, parent: Incomplete | None = ..., dataModel: Incomplete | None = ..., makeTimer: Type[Timer] = ...): ...
+    def __init__(self, parent: Incomplete | None = ..., dataModel: Incomplete | None = ..., makeTimer: type[pxr.Usdviewq.common.Timer] = ...): ...
     def DrawAxis(self, viewProjectionMatrix): ...
     def DrawCameraGuides(self, mvpMatrix): ...
     def ExportFreeCameraToStage(self, stage, defcamName: str = ..., imgWidth: Incomplete | None = ..., imgHeight: Incomplete | None = ...): ...

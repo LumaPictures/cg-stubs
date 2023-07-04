@@ -1,4 +1,5 @@
 # mypy: disable_error_code = misc
+import PySide6.QtCore
 import PySide6.QtWidgets
 from pxr.Usdviewq.common import Timer as Timer
 from typing import ClassVar

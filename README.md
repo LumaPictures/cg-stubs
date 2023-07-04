@@ -19,7 +19,7 @@ See also:
 ## Installing
 
 ```
-pip install types-usd types-houdini types-katana types-mari types-nuke types-substance_painter
+pip install types-usd types-houdini types-katana types-mari types-nuke types-opencolorio types-substance_painter
 ```
 
 ## Generating the stubs

@@ -50,6 +50,15 @@ def is_pyside_obj(typ: type) -> bool:
     return typ.__module__.split('.')[0] in PYSIDE
 
 
+def get_type_fullname(typ: type) -> str:
+    typename = getattr(typ, "__qualname__", typ.__name__)
+    module_name = getattr(typ, "__module__", None)
+    assert module_name is not None, typ
+    if module_name != "builtins":
+        typename = f"{module_name}.{typename}"
+    return typename
+
+
 @cache
 def is_flag(typ: type) -> bool:
     return (
@@ -86,9 +95,7 @@ _flag_group_to_item: dict[str, str] = {}
 @cache
 def get_group_from_flag_item(item_type: type) -> type:
     group_type = type(item_type() | item_type())
-    _flag_group_to_item[
-        mypy.stubgenc.CStubGenerator.get_type_fullname(group_type)
-    ] = mypy.stubgenc.CStubGenerator.get_type_fullname(item_type)
+    _flag_group_to_item[get_type_fullname(group_type)] = get_type_fullname(item_type)
     return group_type
 
 
@@ -336,9 +343,6 @@ class PySideSignatureGenerator(mypy.stubgenc.SignatureGenerator):
         # missing index and return.
         '(self, index: int) -> bytes',
         # * Fix `QByteArray.__iter__()` to iterate over `bytes`
-        ('QByteArray', '__iter__'):
-        # __iter__ is implied by __len__ and __getitem__, but it's not enough to satisfy mypy
-        '(self) -> typing.Iterator[bytes]',
         # * Fix support for `bytes(QByteArray(b'foo'))`
         ('QByteArray', '__bytes__'): '(self) -> bytes',
         # FIXME: make this a general rule
@@ -521,7 +525,6 @@ class PySideSignatureGenerator(mypy.stubgenc.SignatureGenerator):
     new_members = {
         # can use any method as a stand-in.  signatures will come from _signature_overrides
         'QByteArray': [
-            ('__iter__', QtCore.QByteArray.__len__),
             ('__bytes__', QtCore.QByteArray.__len__),
         ],
         'QDialog': [
@@ -603,9 +606,7 @@ class PySideSignatureGenerator(mypy.stubgenc.SignatureGenerator):
                     return_type = get_group_from_flag_item(typ)
                 else:
                     return_type = typ
-                docstr_override = docstr_override.format(
-                    mypy.stubgenc.CStubGenerator.get_type_fullname(return_type)
-                )
+                docstr_override = docstr_override.format(get_type_fullname(return_type))
         else:
             docstr_override = self.signature_overrides.get(
                 (OptionalKey(class_name), name)
@@ -629,11 +630,6 @@ class PySideSignatureGenerator(mypy.stubgenc.SignatureGenerator):
         else:
             # call the standard docstring-based generator.
             results = self.docstring.get_function_sig(default_sig, ctx)
-
-        # if class_name == "QQmlApplicationEngine" and name == "__init__":
-        #     print(results, default_sig, is_flag_type)
-        #     print(docstr)
-        #     raise RuntimeError
 
         if not is_flag_type and results:
             results = reduce_overloads(results)
@@ -699,7 +695,7 @@ class PySideSignatureGenerator(mypy.stubgenc.SignatureGenerator):
         return results
 
 
-class CStubGenerator(mypy.stubgenc.CStubGenerator):
+class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         if not _flag_group_to_item:
@@ -710,7 +706,7 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
             # import pprint
             # pprint.pprint(_flag_group_to_item)
 
-    def walk_objects(self, obj: object, seen: set[str]):
+    def walk_objects(self, obj: object, seen: set[str]) -> None:
         for _, child in self.get_members(obj):
             if self.is_class(child):
                 if child in seen:
@@ -779,8 +775,8 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
         return "\n".join(imports)
 
 
-mypy.stubgen.CStubGenerator = CStubGenerator  # type: ignore[attr-defined,misc]
-mypy.stubgenc.CStubGenerator = CStubGenerator  # type: ignore[misc]
+mypy.stubgen.NoParseStubGenerator = NoParseStubGenerator  # type: ignore[attr-defined,misc]
+mypy.stubgenc.NoParseStubGenerator = NoParseStubGenerator  # type: ignore[misc]
 
 if __name__ == '__main__':
     # in order to create and inspect object properties we must create an app

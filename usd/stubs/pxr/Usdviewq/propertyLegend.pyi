@@ -1,4 +1,5 @@
 # mypy: disable_error_code = misc
+import PySide6.QtCore
 import PySide6.QtWidgets
 from pxr.Usdviewq.common import ItalicizeLabelText as ItalicizeLabelText, PropertyViewIcons as PropertyViewIcons, UIBaseColors as UIBaseColors, UIPropertyValueSourceColors as UIPropertyValueSourceColors
 from pxr.Usdviewq.propertyLegendUI import Ui_PropertyLegend as Ui_PropertyLegend

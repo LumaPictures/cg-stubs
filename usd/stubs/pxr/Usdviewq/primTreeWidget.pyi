@@ -1,8 +1,10 @@
 # mypy: disable_error_code = misc
+import PySide6.QtCore
 import PySide6.QtWidgets
 import pxr.Sdf as Sdf
 import pxr.Usd as Usd
 import pxr.UsdGeom as UsdGeom
+import pxr.UsdUtils.constantsGroup
 from _typeshed import Incomplete
 from pxr.UsdUtils.constantsGroup import ConstantsGroup as ConstantsGroup
 from pxr.Usdviewq.common import KeyboardShortcuts as KeyboardShortcuts, PrintWarning as PrintWarning, Timer as Timer, UIPrimTreeColors as UIPrimTreeColors
@@ -32,7 +34,7 @@ class DrawModeWidget(PySide6.QtWidgets.QWidget):
     def _UpdateDrawMode(self): ...
     def paintEvent(self, event): ...
 
-class DrawModes(ConstantsGroup):
+class DrawModes(pxr.UsdUtils.constantsGroup.ConstantsGroup):
     BOUNDS: ClassVar[str] = ...
     CARDS: ClassVar[str] = ...
     DEFAULT: ClassVar[str] = ...

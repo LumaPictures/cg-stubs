@@ -3,13 +3,16 @@ import PySide6.QtWidgets
 import pxr.Sdf as Sdf
 import pxr.Usd as Usd
 import pxr.UsdGeom as UsdGeom
+import pxr.UsdUtils.constantsGroup
 from _typeshed import Incomplete
 from pxr.UsdUtils.constantsGroup import ConstantsGroup as ConstantsGroup
 from pxr.Usdviewq import Utils as Utils
 from pxr.Usdviewq.common import UIFonts as UIFonts, UIPrimTypeColors as UIPrimTypeColors
 from typing import ClassVar
 
-class PrimViewColumnIndex(ConstantsGroup):
+HALF_DARKER: int
+
+class PrimViewColumnIndex(pxr.UsdUtils.constantsGroup.ConstantsGroup):
     DRAWMODE: ClassVar[int] = ...
     GUIDES: ClassVar[int] = ...
     NAME: ClassVar[int] = ...

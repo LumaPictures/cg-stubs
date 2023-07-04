@@ -2,6 +2,7 @@
 import pxr.Usd as Usd
 import pxr.UsdGeom as UsdGeom
 import pxr.UsdShade as UsdShade
+import pxr.UsdUtils.constantsGroup
 from pxr.UsdUtils.constantsGroup import ConstantsGroup as ConstantsGroup
 from typing import ClassVar
 
@@ -14,7 +15,7 @@ class ComputedPropertyFactory:
     def __init__(self, rootDataModel): ...
     def getComputedProperty(self, prim, propName): ...
 
-class ComputedPropertyNames(ConstantsGroup):
+class ComputedPropertyNames(pxr.UsdUtils.constantsGroup.ConstantsGroup):
     LOCAL_WORLD_XFORM: ClassVar[str] = ...
     RESOLVED_FULL_MATERIAL: ClassVar[str] = ...
     RESOLVED_PREVIEW_MATERIAL: ClassVar[str] = ...

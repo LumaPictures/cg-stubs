@@ -110,6 +110,8 @@ def generate(session: nox.Session, lib: str) -> None:
         session.install("PySide2==5.15.2.1")
     elif lib == "ocio":
         session.install("opencolorio==2.2.1")
+    elif lib == "usd":
+        session.install("PySide6==6.5.1.1")
 
     session.chdir(lib)
     session.run(f"./stubgen_{lib}.sh", external=True)

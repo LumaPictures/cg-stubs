@@ -1,4 +1,5 @@
 # mypy: disable_error_code = misc
+import PySide6.QtCore
 import PySide6.QtWidgets
 import pxr.Usd as Usd
 from pxr.Usdviewq.attributeValueEditorUI import Ui_AttributeValueEditor as Ui_AttributeValueEditor

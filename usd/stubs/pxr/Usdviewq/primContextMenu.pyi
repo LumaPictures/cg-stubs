@@ -1,4 +1,5 @@
 # mypy: disable_error_code = misc
+import PySide6.QtCore
 import PySide6.QtWidgets
 from pxr.Usdviewq.primContextMenuItems import _GetContextMenuItems as _GetContextMenuItems
 from typing import ClassVar

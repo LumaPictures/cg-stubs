@@ -1042,7 +1042,7 @@ class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
     The downside of this is that both pxr.Sdf._sdf and pxr.Sdf.__init__ are processed
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.module_name, self.is_c_module = remove_redundant_submodule(
             self.module_name

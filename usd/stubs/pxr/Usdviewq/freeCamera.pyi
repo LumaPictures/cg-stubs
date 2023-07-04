@@ -5,6 +5,8 @@ import pxr.Tf as Tf
 from _typeshed import Incomplete
 from typing import Any, ClassVar
 
+DEBUG_CLIPPING: str
+
 class FreeCamera(PySide6.QtCore.QObject):
     defaultFar: ClassVar[int] = ...
     defaultNear: ClassVar[int] = ...

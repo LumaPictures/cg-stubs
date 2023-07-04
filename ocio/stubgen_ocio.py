@@ -18,7 +18,7 @@ class OcioDocstringSignatureGenerator(DocstringTypeFixer, FixableCDocstringSigGe
     pass
 
 
-class CStubGenerator(mypy.stubgenc.CStubGenerator):
+class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
     def get_sig_generators(self) -> list[SignatureGenerator]:
         return [OcioDocstringSignatureGenerator(default_sig_handling="merge")]
 
@@ -42,8 +42,8 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
             return bases
 
 
-mypy.stubgen.CStubGenerator = CStubGenerator  # type: ignore[attr-defined,misc]
-mypy.stubgenc.CStubGenerator = CStubGenerator  # type: ignore[misc]
+mypy.stubgen.NoParseStubGenerator = NoParseStubGenerator  # type: ignore[attr-defined,misc]
+mypy.stubgenc.NoParseStubGenerator = NoParseStubGenerator  # type: ignore[misc]
 
 if __name__ == "__main__":
     mypy.stubgen.main()

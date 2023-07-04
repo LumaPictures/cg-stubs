@@ -8,5 +8,7 @@ These stubs are designed to be used with a type checker like `mypy` to provide s
 pip install types-opencolorio
 ```
 
+Note that the stubs refer to numpy.
+
 The version of the package corresponds to the version of opencolorio that it is generated from,
 plus a version suffix for the revision of the stubs

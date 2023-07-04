@@ -1,5 +1,7 @@
 # mypy: disable_error_code = misc
 import PySide6.QtCore
+import PySide6.QtCore.Qt
+import PySide6.QtWidgets
 import pxr.Sdf as Sdf
 from _typeshed import Incomplete
 from pxr.Usdviewq import ContainerDataSource as ContainerDataSource, DataSourceLocator as DataSourceLocator, DataSourceLocatorSet as DataSourceLocatorSet, HydraObserver as HydraObserver, SampledDataSource as SampledDataSource, VectorDataSource as VectorDataSource

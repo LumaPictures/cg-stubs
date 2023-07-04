@@ -1,4 +1,5 @@
 # mypy: disable_error_code = misc
+import PySide6.QtCore
 import PySide6.QtWidgets
 import pxr.Tf as Tf
 from _typeshed import Incomplete

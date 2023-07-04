@@ -2,6 +2,7 @@
 import PySide6.QtCore
 import pxr.Sdf as Sdf
 import pxr.UsdGeom as UsdGeom
+import pxr.Usdviewq.settings
 import pxr.Usdviewq.settings as settings
 from pxr.UsdAppUtils.complexityArgs import RefinementComplexities as RefinementComplexities
 from pxr.UsdUtils.constantsGroup import ConstantsGroup as ConstantsGroup
@@ -9,6 +10,11 @@ from pxr.Usdviewq.common import CameraMaskModes as CameraMaskModes, ClearColors 
 from pxr.Usdviewq.freeCamera import FreeCamera as FreeCamera
 from pxr.Usdviewq.settings import StateSource as StateSource
 from typing import Any, ClassVar
+
+DEFAULT_AMBIENT: float
+DEFAULT_SPECULAR: float
+_CLEAR_COLORS_DICT: dict
+_HIGHLIGHT_COLORS_DICT: dict
 
 class OCIOSettings:
     def __init__(self, display: str = ..., view: str = ..., colorSpace: str = ...): ...
@@ -19,7 +25,7 @@ class OCIOSettings:
     @property
     def view(self) -> Any: ...
 
-class ViewSettingsDataModel(PySide6.QtCore.QObject, StateSource):
+class ViewSettingsDataModel(PySide6.QtCore.QObject, pxr.Usdviewq.settings.StateSource):
     signalAutoComputeClippingPlanesChanged: ClassVar[PySide6.QtCore.Signal] = ...
     signalDefaultMaterialChanged: ClassVar[PySide6.QtCore.Signal] = ...
     signalFreeCameraSettingChanged: ClassVar[PySide6.QtCore.Signal] = ...

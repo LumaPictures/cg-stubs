@@ -1,5 +1,7 @@
 # mypy: disable_error_code = misc
+import PySide6.QtCore
 import PySide6.QtWidgets
+import pxr.Usdviewq.usdviewContextMenuItem
 from pxr.Usdviewq.usdviewContextMenuItem import UsdviewContextMenuItem as UsdviewContextMenuItem
 from typing import Any, ClassVar
 
@@ -8,7 +10,7 @@ class HeaderContextMenu(PySide6.QtWidgets.QMenu):
     def __init__(self, parent): ...
     def _prepForShow(self): ...
 
-class HeaderContextMenuItem(UsdviewContextMenuItem):
+class HeaderContextMenuItem(pxr.Usdviewq.usdviewContextMenuItem.UsdviewContextMenuItem):
     action: Any
     def __init__(self, parent, column): ...
     def GetText(self): ...

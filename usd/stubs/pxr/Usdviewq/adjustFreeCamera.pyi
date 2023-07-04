@@ -1,5 +1,6 @@
 # mypy: disable_error_code = misc
 import pxr.Gf as Gf
+import PySide6.QtCore
 import PySide6.QtWidgets
 import pxr.UsdGeom as UsdGeom
 from pxr.Usdviewq.adjustFreeCameraUI import Ui_AdjustFreeCamera as Ui_AdjustFreeCamera

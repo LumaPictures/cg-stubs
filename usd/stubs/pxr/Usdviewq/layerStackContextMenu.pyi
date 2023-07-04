@@ -1,6 +1,8 @@
 # mypy: disable_error_code = misc
 import pxr.Ar as Ar
+import PySide6.QtCore
 import PySide6.QtWidgets
+import pxr.Usdviewq.usdviewContextMenuItem
 from pxr.UsdUtils.toolPaths import FindUsdBinary as FindUsdBinary
 from pxr.Usdviewq.usdviewContextMenuItem import UsdviewContextMenuItem as UsdviewContextMenuItem
 from typing import ClassVar
@@ -22,7 +24,7 @@ class LayerStackContextMenu(PySide6.QtWidgets.QMenu):
     staticMetaObject: ClassVar[PySide6.QtCore.QMetaObject] = ...
     def __init__(self, parent, item): ...
 
-class LayerStackContextMenuItem(UsdviewContextMenuItem):
+class LayerStackContextMenuItem(pxr.Usdviewq.usdviewContextMenuItem.UsdviewContextMenuItem):
     def __init__(self, item): ...
     def GetText(self): ...
     def IsEnabled(self): ...

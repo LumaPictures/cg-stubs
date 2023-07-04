@@ -1,6 +1,8 @@
 # mypy: disable_error_code = misc
+import PySide6.QtCore
 import PySide6.QtWidgets
 import pxr.Sdf as Sdf
+import pxr.Usdviewq.usdviewContextMenuItem
 from pxr.Usdviewq.common import PrimNotFoundException as PrimNotFoundException, PropertyNotFoundException as PropertyNotFoundException, PropertyViewDataRoles as PropertyViewDataRoles, PropertyViewIndex as PropertyViewIndex
 from pxr.Usdviewq.usdviewContextMenuItem import UsdviewContextMenuItem as UsdviewContextMenuItem
 from typing import ClassVar
@@ -9,7 +11,7 @@ class AttributeViewContextMenu(PySide6.QtWidgets.QMenu):
     staticMetaObject: ClassVar[PySide6.QtCore.QMetaObject] = ...
     def __init__(self, parent, item, dataModel): ...
 
-class AttributeViewContextMenuItem(UsdviewContextMenuItem):
+class AttributeViewContextMenuItem(pxr.Usdviewq.usdviewContextMenuItem.UsdviewContextMenuItem):
     def __init__(self, dataModel, item): ...
     def GetText(self): ...
     def IsEnabled(self): ...

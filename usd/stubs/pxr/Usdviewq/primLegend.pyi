@@ -1,4 +1,5 @@
 # mypy: disable_error_code = misc
+import PySide6.QtCore
 import PySide6.QtWidgets
 from pxr.Usdviewq.common import BoldenLabelText as BoldenLabelText, ColorizeLabelText as ColorizeLabelText, ItalicizeLabelText as ItalicizeLabelText, UIPrimTypeColors as UIPrimTypeColors
 from pxr.Usdviewq.primLegendUI import Ui_PrimLegend as Ui_PrimLegend

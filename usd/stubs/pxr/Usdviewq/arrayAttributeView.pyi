@@ -1,4 +1,7 @@
 # mypy: disable_error_code = misc
+import PySide6.QtCore
+import PySide6.QtCore.Qt
+import PySide6.QtGui
 import PySide6.QtWidgets
 from _typeshed import Incomplete
 from typing import ClassVar

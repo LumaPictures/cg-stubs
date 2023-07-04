@@ -3,12 +3,13 @@ import PySide6.QtCore
 import pxr.Usd as Usd
 import pxr.UsdGeom as UsdGeom
 import pxr.UsdShade as UsdShade
+import pxr.UsdUtils.constantsGroup
 from _typeshed import Incomplete
 from pxr.UsdUtils.constantsGroup import ConstantsGroup as ConstantsGroup
 from pxr.Usdviewq.common import IncludedPurposes as IncludedPurposes, Timer as Timer
 from typing import Any, ClassVar
 
-class ChangeNotice(ConstantsGroup):
+class ChangeNotice(pxr.UsdUtils.constantsGroup.ConstantsGroup):
     INFOCHANGES: ClassVar[int] = ...
     NONE: ClassVar[int] = ...
     RESYNC: ClassVar[int] = ...
