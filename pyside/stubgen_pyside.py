@@ -18,6 +18,7 @@ from typing import (
     NamedTuple,
     Tuple,
     Union,
+    cast,
 )
 
 import mypy.stubgen
@@ -141,7 +142,7 @@ def get_properties(typ: type) -> Mapping[str, str]:
                     return name, typing._type_repr(sig.return_annotation)
 
             if prop.isEnumType():
-                c_type_name = prop.typeName()
+                c_type_name = cast(str, prop.typeName())
                 maybe_type_name = c_type_name.replace('::', '.')
                 if maybe_type_name.startswith('Qt.'):
                     maybe_type_name = 'PySide2.QtCore.' + maybe_type_name
@@ -778,8 +779,8 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
         return "\n".join(imports)
 
 
-mypy.stubgen.CStubGenerator = CStubGenerator
-mypy.stubgenc.CStubGenerator = CStubGenerator
+mypy.stubgen.CStubGenerator = CStubGenerator  # type: ignore[attr-defined,misc]
+mypy.stubgenc.CStubGenerator = CStubGenerator  # type: ignore[misc]
 
 if __name__ == '__main__':
     # in order to create and inspect object properties we must create an app

@@ -49,8 +49,9 @@ try:
                 # Mari accepts an input python file. We assume a file
                 # without an extension is a Python script and save it as a
                 # temp .py file.
-                fd, temp_filename = tempfile.mkstemp(suffix='.py',
-                                                     prefix='maripyCommand', dir=getTempDir(), text=True)
+                fd, temp_filename = tempfile.mkstemp(
+                    suffix='.py', prefix='maripyCommand', dir=getTempDir(), text=True
+                )
                 with open(arg, 'r') as src:
                     with os.fdopen(fd, 'w') as tempfile:
                         tempfile.write(src.read())
@@ -64,8 +65,9 @@ try:
             cwd = os.getcwd()
             # mari -x sets the cwd to ~/Mari/Logs.  fix it.
             prefix = "import os;os.chdir(%r);" % cwd
-            fd, temp_filename = tempfile.mkstemp(suffix='.py',
-                                                 prefix='maripyCommand', dir=getTempDir(), text=True)
+            fd, temp_filename = tempfile.mkstemp(
+                suffix='.py', prefix='maripyCommand', dir=getTempDir(), text=True
+            )
             with os.fdopen(fd, 'w') as tempfile:
                 tempfile.write(prefix + arg)
             cmd_args.append(temp_filename)
@@ -81,8 +83,7 @@ try:
     sys.exit(subprocess.call(cmd, universal_newlines=True))
 except OSError as err:
     if err.errno == errno.ENOENT:
-        print("Could not find mari executable: ensure that it is on the "
-              "system PATH")
+        print("Could not find mari executable: ensure that it is on the " "system PATH")
         sys.exit(1)
     else:
         raise

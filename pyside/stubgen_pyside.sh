@@ -6,6 +6,7 @@ POINT_RELEASE=5
 #pip install -U git+https://github.com/chadrik/mypy@stubgenc-all-fixes#mypy
 # pip install -U -e ../mypy
 
+PY_SITE_DIR=$(python -c "import site,os;print(os.pathsep.join(site.getsitepackages()))")
 REPO_PATH=$(git rev-parse --show-toplevel)
 outdir=$REPO_PATH/pyside/stubs/
 

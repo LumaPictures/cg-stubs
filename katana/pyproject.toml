@@ -16,6 +16,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Intended Audience :: Developers",
+    "Typing :: Stubs Only",
 ]
 version = "5.0.5.0"
 repository = "https://github.com/LumaPictures/cg-stubs"

@@ -6,16 +6,15 @@ from typing import Any
 import mypy.stubgen
 import mypy.stubgenc
 from mypy.stubgen import main
-from mypy.stubgenc import DocstringSignatureGenerator as CDocstringSignatureGenerator
 from mypy.stubgenc import FunctionContext, FunctionSig, SignatureGenerator
 
-import Callbacks.Callbacks
-from Callbacks.Callbacks import _TypeEnum
+import Callbacks.Callbacks  # type: ignore[import]
+from Callbacks.Callbacks import _TypeEnum  # type: ignore[import]
 
 from stubgenlib import (
-    DocstringSignatureGenerator,
+    FixableCDocstringSigGen,
+    FixableDocstringSigGen,
     CFunctionStub,
-    BaseSigFixer,
     Notifier,
     DocstringTypeFixer,
 )
@@ -40,7 +39,7 @@ class KatanaDocstringTypeFixer(DocstringTypeFixer):
         (r'NodegraphAPI\.LiveGroupMixin', 'NodegraphAPI.LiveGroup.LiveGroupMixin'),
     ]
 
-    def get_replacements(self) -> list[tuple[str, str]]:
+    def get_replacements(self, is_return: bool) -> list[tuple[str, str]]:
         return self.SPECIAL_REPLACEMENTS + self.REPLACEMENTS
 
     def get_full_name(self, type_name: str) -> str:
@@ -67,26 +66,24 @@ class KatanaDocstringTypeFixer(DocstringTypeFixer):
 
 
 class KatanaDocstringSignatureGenerator(
-    KatanaDocstringTypeFixer, DocstringSignatureGenerator
+    KatanaDocstringTypeFixer, FixableCDocstringSigGen
 ):
     pass
 
 
-class KatanaCSignatureGenerator(
-    CDocstringSignatureGenerator, KatanaDocstringTypeFixer, BaseSigFixer
-):
+class KatanaCSignatureGenerator(FixableCDocstringSigGen, KatanaDocstringTypeFixer):
     def get_function_sig(
         self, default_sig: FunctionSig, ctx: FunctionContext
     ) -> list[FunctionSig] | None:
         sigs = super().get_function_sig(default_sig, ctx)
         if sigs:
             sigs = [self.cleanup_sig_types(sig, ctx) for sig in sigs]
-        if ctx.fullname == "NodegraphAPI_cmodule.Parameter.getValue":
-            return [sig._replace(ret_type="Any") for sig in sigs]
-        elif ctx.fullname == "NodegraphAPI_cmodule.GroupNode.getChild":
-            return [sig._replace(ret_type="Node") for sig in sigs]
-        elif ctx.fullname == "NodegraphAPI_cmodule.Port.getNode":
-            return [sig._replace(ret_type="Node") for sig in sigs]
+            if ctx.fullname == "NodegraphAPI_cmodule.Parameter.getValue":
+                return [sig._replace(ret_type="Any") for sig in sigs]
+            elif ctx.fullname == "NodegraphAPI_cmodule.GroupNode.getChild":
+                return [sig._replace(ret_type="Node") for sig in sigs]
+            elif ctx.fullname == "NodegraphAPI_cmodule.Port.getNode":
+                return [sig._replace(ret_type="Node") for sig in sigs]
         return sigs
 
 
@@ -228,8 +225,8 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
         return list(members.items())
 
 
-mypy.stubgen.NoParseStubGenerator = NoParseStubGenerator
-mypy.stubgenc.NoParseStubGenerator = NoParseStubGenerator
+mypy.stubgen.NoParseStubGenerator = NoParseStubGenerator  # type: ignore[misc]
+mypy.stubgenc.NoParseStubGenerator = NoParseStubGenerator  # type: ignore[misc]
 
-mypy.stubgen.CStubGenerator = CStubGenerator
-mypy.stubgenc.CStubGenerator = CStubGenerator
+mypy.stubgen.CStubGenerator = CStubGenerator  # type: ignore[attr-defined,misc]
+mypy.stubgenc.CStubGenerator = CStubGenerator  # type: ignore[misc]

@@ -23,5 +23,5 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
     #     return [DocstringSignatureGenerator()]
 
 
-mypy.stubgen.CStubGenerator = CStubGenerator
-mypy.stubgenc.CStubGenerator = CStubGenerator
+mypy.stubgen.CStubGenerator = CStubGenerator  # type: ignore[attr-defined,misc]
+mypy.stubgenc.CStubGenerator = CStubGenerator  # type: ignore[misc]

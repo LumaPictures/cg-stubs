@@ -42,8 +42,8 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
             return bases
 
 
-mypy.stubgen.CStubGenerator = CStubGenerator
-mypy.stubgenc.CStubGenerator = CStubGenerator
+mypy.stubgen.CStubGenerator = CStubGenerator  # type: ignore[attr-defined,misc]
+mypy.stubgenc.CStubGenerator = CStubGenerator  # type: ignore[misc]
 
 if __name__ == "__main__":
     mypy.stubgen.main()

@@ -100,7 +100,7 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
         return typename
 
     def get_sig_generators(self) -> list[SignatureGenerator]:
-        return [MariDocstringSignatureGenerator(override_identity_sig=True)]
+        return [MariDocstringSignatureGenerator(default_sig_handling="merge")]
 
     def get_imports(self) -> str:
         output = super().get_imports()
@@ -109,5 +109,5 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
         return output
 
 
-mypy.stubgen.CStubGenerator = CStubGenerator
-mypy.stubgenc.CStubGenerator = CStubGenerator
+mypy.stubgen.CStubGenerator = CStubGenerator  # type: ignore[attr-defined,misc]
+mypy.stubgenc.CStubGenerator = CStubGenerator  # type: ignore[misc]
