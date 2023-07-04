@@ -16,7 +16,7 @@ from mypy.fastparse import parse_type_comment
 from mypy.stubdoc import ArgSig, FunctionSig, infer_sig_from_docstring
 from mypy.stubgen import main as stubgen_main
 from mypy.stubgenc import (
-    DocstringSignatureGenerator as FunctionContext,
+    FunctionContext,
     SignatureGenerator,
     ClassInfo,
     infer_method_args,
@@ -24,13 +24,12 @@ from mypy.stubgenc import (
 from mypy.stubutil import infer_method_ret_type
 
 mypy.stubutil.NOT_IMPORTABLE_MODULES = (
-    "pxr.Tf.testenv",
+    "pxr.Tf.testenv",  # type: ignore[assignment]
     "pxr.Tf.testenv.testTfScriptModuleLoader_AAA_RaisesError",
 )
 
-from doxygenlib.cdParser import Parser
-from doxygenlib.cdWriterDocstring import Writer
-from doxygenlib.cdUtils import SetDebugMode
+from doxygenlib.cdParser import Parser  # type: ignore[import]
+from doxygenlib.cdUtils import SetDebugMode  # type: ignore[import]
 
 from stubgenlib import (
     BaseSigFixer,
@@ -38,6 +37,7 @@ from stubgenlib import (
     CFunctionStub,
     Notifier,
     reduce_overloads,
+    sig_sort_key,
 )
 
 
@@ -66,6 +66,7 @@ TYPE_MAP = [
     (r"\bVtArray<\s*SdfAssetPath\s*>", "SdfAssetPathArray"),
     (r"\bstd::string\b", "str"),
     (r"\bstd::unique_ptr\b", ""),
+    (r"\bstd::ostream\b", "typing.TextIO"),
     (r"\bstring\b", "str"),
     (r"\bsize_t\b", "int"),
     (r"\bchar\b", "str"),
@@ -281,10 +282,10 @@ class TypeInfo:
         self.pxr_modules_names = sorted(pxr_modules, key=len, reverse=True)
         self.cpp_sigs: dict[str, SigInfo] = {}
         # mapping of short names to full python paths
-        self.py_types = defaultdict(list)
+        self.py_types: defaultdict[str, list[str]] = defaultdict(list)
         self.srcdir = srcdir
         self._valid_modules = None
-        self._implicitly_convertible_types = None
+        self._implicitly_convertible_types: dict[str, set[str]] | None = None
         self.verbose = verbose
 
     # def get_valid_modules(self):
@@ -377,7 +378,7 @@ class TypeInfo:
                         print("no match", line)
 
             # data types: vec, matrix, etc
-            import pxr.Gf
+            import pxr.Gf  # type: ignore[import]
 
             for name, obj in inspect.getmembers(pxr.Gf):
                 dimension = getattr(obj, "dimension", None)
@@ -393,7 +394,7 @@ class TypeInfo:
                         result[f"pxr.Gf.{name}"].add(f"list[{data_type}]")
 
             # array types
-            import pxr.Vt
+            import pxr.Vt  # type: ignore[import]
 
             for name, obj in inspect.getmembers(pxr.Vt):
                 sub_type = self.py_array_to_sub_type(name)
@@ -756,15 +757,6 @@ class UsdBoostDocstringSignatureGenerator(
             elif full_type:
                 sub_py_type = full_type
 
-            if "_PrimFlagsPredicate" in sub_py_type:
-                print(
-                    "HERE",
-                    sub_py_type,
-                    full_type,
-                    is_result,
-                    type_info._get_implicitly_convertible_types().get(sub_py_type),
-                )
-
             if not is_result and sub_py_type:
                 other_types = type_info._get_implicitly_convertible_types().get(
                     sub_py_type
@@ -812,9 +804,6 @@ class UsdBoostDocstringSignatureGenerator(
     def _processs_sigs(
         self, sigs: list[FunctionSig], ctx: FunctionContext
     ) -> list[FunctionSig]:
-        def sig_sort_key(py_sig: FunctionSig) -> tuple[int, tuple[str, ...]]:
-            return (len(py_sig.args), tuple([arg.name for arg in py_sig.args]))
-
         def format_args(sig):
             return ", ".join(f"{arg.name}: {arg.type}" for arg in sig.args)
 
@@ -856,9 +845,11 @@ class UsdBoostDocstringSignatureGenerator(
                 summary = ""
                 for overload_num, sig in enumerate(sigs):
                     summary += "   py   ({})\n".format(format_args(sig))
-                for overload_num, sig in enumerate(cpp_info.overloads):
+                for overload_num, cpp_sig in enumerate(cpp_info.overloads):
                     summary += "   cpp  ({})\n".format(
-                        ", ".join(f"{param.name}: {param.type}" for param in sig.params)
+                        ", ".join(
+                            f"{param.name}: {param.type}" for param in cpp_sig.params
+                        )
                     )
 
                 notifier.warn(
@@ -972,8 +963,10 @@ class UsdBoostDocstringSignatureGenerator(
                     return_type = self._infer_type(
                         py_sig.ret_type, cpp_sig.ret_type, ctx, is_result=True
                     )
-                    if py_sig.ret_type == "list" and not return_type.startswith(
-                        "list["
+                    if (
+                        py_sig.ret_type == "list"
+                        and return_type
+                        and not return_type.startswith("list[")
                     ):
                         # c++ info attempted to change the result type. trust boost over the c++ docs in
                         # this case. It's probably a ptr result.
@@ -1029,7 +1022,7 @@ class UsdBoostDocstringSignatureGenerator(
         return ret_type or "Any"
 
 
-def remove_redundant_submodule(module_name: str) -> str:
+def remove_redundant_submodule(module_name: str) -> tuple[str, bool]:
     """Convert 'pxr.Sdf._sdf' to 'pxr.Sdf'."""
     parts = module_name.split(".")
     if len(parts) == 3:
@@ -1123,8 +1116,8 @@ class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
 # mypy.stubgen.CStubGenerator = CStubGenerator
 # mypy.stubgenc.CStubGenerator = CStubGenerator
 
-mypy.stubgen.NoParseStubGenerator = NoParseStubGenerator
-mypy.stubgenc.NoParseStubGenerator = NoParseStubGenerator
+mypy.stubgen.NoParseStubGenerator = NoParseStubGenerator  # type: ignore[misc]
+mypy.stubgenc.NoParseStubGenerator = NoParseStubGenerator  # type: ignore[misc]
 
 
 # class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
