@@ -1,5 +1,6 @@
 from __future__ import absolute_import, print_function
 
+import datetime
 from typing import Any, List, ClassVar, cast, overload
 
 import pytest
@@ -28,7 +29,7 @@ def test_qaction():
     pyside_version <= (5, 14), reason="causes crash in PySide2 < 5.14.2.3"
 )
 def test_qbytearray():
-    byte_array = QtCore.QByteArray(b'foo')
+    byte_array = QtCore.QByteArray(b"foo")
     b: bytes
     b = byte_array[0]
     assert isinstance(b, bytes)
@@ -46,6 +47,16 @@ def test_qcoreapplication():
         "GitFlowAdvanceIntBranch", "hidden", "some help"
     )
     assert isinstance(s, str)
+
+
+def test_qdate():
+    d = QtCore.QDate(datetime.date(1980, 3, 31))
+    assert d.daysTo(datetime.date(1981, 3, 31)) == 365
+
+
+def test_qdatetime():
+    d = QtCore.QDateTime(datetime.datetime(1980, 3, 31))
+    assert d.daysTo(datetime.datetime(1981, 3, 31)) == 365
 
 
 def test_qdialog():
@@ -244,7 +255,7 @@ def test_qprogressdialog():
 def test_qpropertyanimation():
     dialog = QtWidgets.QDialog()
     anim = QtCore.QPropertyAnimation(dialog)
-    anim.setPropertyName("geometry".encode('ascii'))
+    anim.setPropertyName("geometry".encode("ascii"))
     assert isinstance(anim.propertyName(), QtCore.QByteArray)
 
 
@@ -449,9 +460,9 @@ def test_qbrush_implicit_args():
 @pytest.mark.skipif(pyside_version < (5, 14), reason="fails in PySide2 < 5.14.2.3")
 def test_iterability():
     # works with list or iterator
-    option1 = QtCore.QCommandLineOption(['one', 'won'])
-    option2 = QtCore.QCommandLineOption(iter(['two', 'too']))
-    option3 = QtCore.QCommandLineOption('three')
+    option1 = QtCore.QCommandLineOption(["one", "won"])
+    option2 = QtCore.QCommandLineOption(iter(["two", "too"]))
+    option3 = QtCore.QCommandLineOption("three")
 
     parser = QtCore.QCommandLineParser()
     # This fails even with a list:
@@ -466,19 +477,19 @@ def test_iterability():
     # assert QDir.match(['*.txt'], '/path/to/foo.txt') is True
     # assert QDir.match(iter(['*.txt']), '/path/to/foo.txt') is True
 
-    array = QtCore.QJsonArray.fromStringList(iter(['foo', 'bar']))
+    array = QtCore.QJsonArray.fromStringList(iter(["foo", "bar"]))
     assert array.at(0).isString()
 
     combo = QtWidgets.QComboBox()
-    combo.addItems(iter(['one', 'two', 'three']))
+    combo.addItems(iter(["one", "two", "three"]))
     assert combo.count() == 3
 
     model = QtCore.QStringListModel()
-    model.setStringList(iter(['one', 'two', 'three']))
-    assert model.stringList() == ['one', 'two', 'three']
+    model.setStringList(iter(["one", "two", "three"]))
+    assert model.stringList() == ["one", "two", "three"]
 
     group = QtWidgets.QListWidget()
-    group.addItems(iter(['one', 'two', 'three']))
+    group.addItems(iter(["one", "two", "three"]))
     assert combo.count() == 3
 
 
