@@ -16,7 +16,6 @@ import Naming as Naming
 import Nodes3DAPI.Node3D as Node3D
 import NodegraphAPI as NodegraphAPI
 import Nodes2DAPI as Nodes2DAPI
-import PyOpenColorIO as OCIO
 import PyXmlIO as PyXmlIO
 import RenderingAPI as RenderingAPI
 import PyResolutionTableFn as ResolutionTable

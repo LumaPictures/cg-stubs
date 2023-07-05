@@ -4,7 +4,6 @@ import ConfigurationAPI_cmodule as Configuration
 import PyFnAttribute as FnAttribute
 import GeoAPI as GeoAPI
 import NodegraphAPI as NodegraphAPI
-import PyOpenColorIO as OCIO
 import PluginSystemAPI as PluginSystemAPI
 import RenderingAPI.RenderOutputs as RenderOutputs
 import RenderingAPI as RenderingAPI

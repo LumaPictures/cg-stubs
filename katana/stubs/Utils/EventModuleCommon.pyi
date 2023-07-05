@@ -3,7 +3,6 @@
 import typing
 from Utils.Exceptions import GetExceptionMessage as GetExceptionMessage
 from _typeshed import Incomplete
-from typing import Any
 
 _CollapsedHandlers: dict
 _CollapsedHandlersByObjectID: dict
@@ -15,7 +14,7 @@ _insideHandler: bool
 _removedCollapsed: list
 _removedHandlers: list
 
-def CallRegistrationCallbacks(instance: Any): ...
+def CallRegistrationCallbacks(instance: object): ...
 def FilterEvent(eventType, eventID, **kwargs): ...
 def GetAllRegisteredEventTypes(): ...
 def GetNumRegisteredHandlersForEventType(eventType): ...

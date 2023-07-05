@@ -5,7 +5,6 @@ import QT4Color.ColorTransforms as ColorTransforms
 import QT4Color.DropType as DropType
 import QT4Color.Globals as Globals
 import QT4Color.Gradient1D as Gradient1D
-import PyOpenColorIO as OCIO
 import PyQt5.QtCore
 import PyQt5.QtWidgets
 import QT4FormWidgets as QT4FormWidgets

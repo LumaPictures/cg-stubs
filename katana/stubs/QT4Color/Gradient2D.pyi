@@ -3,7 +3,6 @@
 import QT4Color.ColorTransforms as ColorTransforms
 import QT4Color.Degenerate as Degenerate
 import QT4Color.Globals as Globals
-import PyOpenColorIO as OCIO
 import PyQt5.QtCore
 import PyQt5.QtWidgets
 from typing import ClassVar

@@ -1,13 +1,12 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 import PyFnGeolibServices.ExpressionMath as ExpressionMath
-import PyFnAttribute as FnAttribute
+import FnAttribute as FnAttribute
 import PyFnGeolibServices as FnGeolibServices
 import PackageSuperToolAPI.NodeUtils as NU
 import NodegraphAPI as NodegraphAPI
 import Nodes3DAPI as Nodes3DAPI
 import PackageSuperToolAPI.Packages as Packages
-import PyFnAttribute
 from NodegraphAPI.SuperTool import SuperTool
 from PyUtilModule.VirtualKatana import Decorators as Decorators
 from _typeshed import Incomplete
@@ -35,7 +34,7 @@ class BaseNode(SuperTool):
     def getDefaultRootLocation(cls) -> str: ...
     @classmethod
     def getItemListAttributeName(cls) -> str | None: ...
-    def getLocationAttributes(self, locationPath: str) -> PyFnAttribute.GroupAttribute | None: ...
+    def getLocationAttributes(self, locationPath: str) -> FnAttribute.GroupAttribute | None: ...
     def getPackageForPath(self, locationPath: str, raiseOnMissing: bool = ..., locationAttributes: Incomplete | None = ..., includeEditPackages: bool = ..., createDummyOnMissing: bool = ...) -> Package | None: ...
     def getRegisteredDisplayPackageClasses(self) -> list[Package]: ...
     def getRegisteredPackageClasses(self) -> list[tuple[str, type]]: ...

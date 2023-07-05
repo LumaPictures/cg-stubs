@@ -2,7 +2,6 @@
 
 import QT4Color.Degenerate as Degenerate
 import QT4Color.Globals as Globals
-import PyOpenColorIO as OCIO
 import PyQt5.QtCore
 import PyQt5.QtCore.Qt
 import PyQt5.QtWidgets

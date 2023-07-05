@@ -10,6 +10,10 @@ import ConfigurationAPI_cmodule as ConfigurationAPI_cmodule
 import PyResolutionTableFn as PyResolutionTableFn
 import Nodes3DAPI.ScenegraphManager as ScenegraphManager
 
+import PyOpenColorIO as _OCIO
+# assign to variable to re-export
+OCIO = _OCIO
+
 FnGeolib = PyFnGeolib
 FnAttribute = PyFnAttribute
 FnGeolibServices = PyFnGeolibServices

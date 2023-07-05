@@ -40,7 +40,7 @@ class KatanaDocstringTypeFixer(DocstringTypeFixer):
     ]
 
     def get_replacements(self, is_return: bool) -> list[tuple[str, str]]:
-        return self.SPECIAL_REPLACEMENTS + self.REPLACEMENTS
+        return super().get_replacements(is_return) + self.REPLACEMENTS
 
     def get_full_name(self, type_name: str) -> str:
         # FIXME: would be nice to have something that can do a search through known objects
@@ -65,13 +65,13 @@ class KatanaDocstringTypeFixer(DocstringTypeFixer):
         return type_name
 
 
-class KatanaDocstringSignatureGenerator(
-    KatanaDocstringTypeFixer, FixableCDocstringSigGen
+class KatanaSignatureGenerator(
+    KatanaDocstringTypeFixer, FixableDocstringSigGen
 ):
     pass
 
 
-class KatanaCSignatureGenerator(FixableCDocstringSigGen, KatanaDocstringTypeFixer):
+class KatanaCSignatureGenerator(KatanaDocstringTypeFixer, FixableCDocstringSigGen):
     def get_function_sig(
         self, default_sig: FunctionSig, ctx: FunctionContext
     ) -> list[FunctionSig] | None:
@@ -93,7 +93,7 @@ class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
     #     self.known_modules.extend(['PyQt5.QtCore', 'PyQt5.QtWidgets'])
 
     def get_sig_generators(self) -> list[SignatureGenerator]:
-        return [KatanaDocstringSignatureGenerator()]
+        return [KatanaSignatureGenerator()]
 
     def is_defined_in_module(self, obj: object) -> bool:
         # _TypeEnum is a type, but it's created dynamically.  This change ensures
@@ -238,17 +238,16 @@ def main(outdir: str, katana_site_dir: str) -> None:
         "drawing_cmodule",
         "AssetAPI_cmodule",
         "ConfigurationAPI_cmodule",
+        "NodegraphAPI_cmodule",
+        "Nodes2DAPI_cmodule",
+        "Nodes3DAPI_cmodule",
         "PyFCurve",
         "PyFnAttribute",
         "PyFnGeolib",
         "PyFnGeolibProducers",
         "PyFnGeolibServices",
-        "PyOpenColorIO",
         "PyResolutionTableFn",
         "PyXmlIO",
-        "NodegraphAPI_cmodule",
-        "Nodes2DAPI_cmodule",
-        "Nodes3DAPI_cmodule",
         "RenderingAPI_cmodule",
     ]
 
@@ -257,10 +256,10 @@ def main(outdir: str, katana_site_dir: str) -> None:
         args.append(f"-p={module}")
 
     for path in pathlib.Path(katana_site_dir).iterdir():
-        if path.isdir() and path.name[0].isupper():
+        if path.is_dir() and path.name[0].isupper():
             module = path.name
-            # if module == "PyQt5":
-            #     continue
+            if module == "PyQt5":
+                continue
             args.append(f"-p={module}")
 
     mypy.stubgen.main(args)

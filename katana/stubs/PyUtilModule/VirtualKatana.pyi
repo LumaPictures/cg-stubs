@@ -22,7 +22,6 @@ import NodeGraphView as NodeGraphView
 import NodegraphAPI as NodegraphAPI
 import Nodes2DAPI as Nodes2DAPI
 import Nodes3DAPI as Nodes3DAPI
-import PyOpenColorIO as OCIO
 import PluginSystemAPI as PluginSystemAPI
 import PyFCurve as PyFCurve
 import PyXmlIO as PyXmlIO

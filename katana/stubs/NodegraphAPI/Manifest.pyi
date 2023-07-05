@@ -8,7 +8,6 @@ import ConfigurationAPI_cmodule as Configuration
 import PyFnGeolibServices.ExpressionMath as ExpressionMath
 import PyFnAttribute as FnAttribute
 import PyFnGeolibServices as FnGeolibServices
-import PyOpenColorIO as OCIO
 import PyFCurve as PyFCurve
 import PyXmlIO as PyXmlIO
 import PyResolutionTableFn as ResolutionTable
