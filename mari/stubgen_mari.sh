@@ -23,11 +23,4 @@ export PYTHONPATH=$REPO_PATH:$REPO_PATH/mari:$REPO_PATH/../mypy/:$PY_SITE_DIR
 
 echo "converting Mari"
 # py modules
-${REPO_PATH}/mari/maripy -c "import mypy.stubgen;mypy.stubgen.main(['-p=Mari', '--verbose', '--parse-only', '-o=$outdir'])" || true
-rm -rf $outdir/mari-stubs
-mv $outdir/Mari $outdir/mari-stubs
-
-echo "converting mari.so"
-# c module
-${REPO_PATH}/mari/maripy -c "import stubgen_mari;stubgen_mari.main(['-m=mari', '--verbose', '-o=$outdir'])"
-mv $outdir/mari.pyi $outdir/mari-stubs/__init__.pyi
+${REPO_PATH}/mari/maripy -c "import mypy.stubgen;mypy.stubgen.main('$outdir')"

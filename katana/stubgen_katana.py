@@ -1,11 +1,11 @@
 from __future__ import absolute_import, annotations, division, print_function
 
+import pathlib
 import re
 from typing import Any
 
 import mypy.stubgen
 import mypy.stubgenc
-from mypy.stubgen import main
 from mypy.stubgenc import FunctionContext, FunctionSig, SignatureGenerator
 
 import Callbacks.Callbacks  # type: ignore[import]
@@ -27,16 +27,16 @@ DISABLED_CODES = '# mypy: disable-error-code="misc, override, attr-defined, no-r
 
 class KatanaDocstringTypeFixer(DocstringTypeFixer):
     SPECIAL_REPLACEMENTS = [
-        ('FnGeolib', 'PyFnGeolib'),
-        ('FnAttribute', 'PyFnAttribute'),
-        ('FnGeolibServices', 'PyFnGeolibServices'),
-        ('FnGeolibProducers', 'PyFnGeolibProducers'),
+        ("FnGeolib", "PyFnGeolib"),
+        ("FnAttribute", "PyFnAttribute"),
+        ("FnGeolibServices", "PyFnGeolibServices"),
+        ("FnGeolibProducers", "PyFnGeolibProducers"),
         (
-            r'PyFnGeolib.GeolibRuntime\.Transaction',
-            'PyFnGeolib.GeolibRuntimeTransaction',
+            r"PyFnGeolib.GeolibRuntime\.Transaction",
+            "PyFnGeolib.GeolibRuntimeTransaction",
         ),
-        (r'PyFnGeolib.GeolibRuntime\.Op', 'PyFnGeolib.GeolibRuntimeOp'),
-        (r'NodegraphAPI\.LiveGroupMixin', 'NodegraphAPI.LiveGroup.LiveGroupMixin'),
+        (r"PyFnGeolib.GeolibRuntime\.Op", "PyFnGeolib.GeolibRuntimeOp"),
+        (r"NodegraphAPI\.LiveGroupMixin", "NodegraphAPI.LiveGroup.LiveGroupMixin"),
     ]
 
     def get_replacements(self, is_return: bool) -> list[tuple[str, str]]:
@@ -46,21 +46,21 @@ class KatanaDocstringTypeFixer(DocstringTypeFixer):
         # FIXME: would be nice to have something that can do a search through known objects
         absolute_names = (
             (
-                'TerminalOpDelegate',
-                'Nodes3DAPI.TerminalOpDelegates.TerminalOpDelegate.TerminalOpDelegate',
+                "TerminalOpDelegate",
+                "Nodes3DAPI.TerminalOpDelegates.TerminalOpDelegate.TerminalOpDelegate",
             ),
-            ('Nodes?', 'NodegraphAPI.Node'),
-            ('GroupNode', 'NodegraphAPI.GroupNode'),
-            ('Port', 'NodegraphAPI.Port'),
-            ('GraphState', 'NodegraphAPI.GraphState'),
-            ('Op', 'PyFnGeolib.GeolibRuntimeOp'),
-            ('WorkingSet', 'PyUtilModule.WorkingSet.WorkingSet'),
-            ('PortOpClient', 'Nodes3DAPI.PortOpClient.PortOpClient'),
-            ('GroupAttribute', 'PyFnAttribute.GroupAttribute'),
+            ("Nodes?", "NodegraphAPI.Node"),
+            ("GroupNode", "NodegraphAPI.GroupNode"),
+            ("Port", "NodegraphAPI.Port"),
+            ("GraphState", "NodegraphAPI.GraphState"),
+            ("Op", "PyFnGeolib.GeolibRuntimeOp"),
+            ("WorkingSet", "PyUtilModule.WorkingSet.WorkingSet"),
+            ("PortOpClient", "Nodes3DAPI.PortOpClient.PortOpClient"),
+            ("GroupAttribute", "PyFnAttribute.GroupAttribute"),
         )
         for short_name, full_name in absolute_names:
             type_name = re.sub(
-                r'(?<![A-Za-z0-9._]){}\b'.format(short_name), full_name, type_name
+                r"(?<![A-Za-z0-9._]){}\b".format(short_name), full_name, type_name
             )
         return type_name
 
@@ -99,11 +99,11 @@ class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
         # _TypeEnum is a type, but it's created dynamically.  This change ensures
         # that we don't assume things of type _TypeEnum are external to their
         # current module and should thus be imported.
-        return super().is_defined_in_module(obj) or type(obj).__name__ == '_TypeEnum'
+        return super().is_defined_in_module(obj) or type(obj).__name__ == "_TypeEnum"
 
     def strip_or_import(self, type_name: str) -> str:
-        if re.match('^[A-Za-z0-9_.]+$', type_name):
-            parts = type_name.split('.')
+        if re.match("^[A-Za-z0-9_.]+$", type_name):
+            parts = type_name.split(".")
             # It's impossible to get access to members of certain modules without
             # changing the import style, because the modules are replaced with
             # objects of the same name
@@ -111,7 +111,7 @@ class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
                 len(parts) >= 3 and parts[-3] == parts[-2]
             ):
                 self.import_tracker.add_import_from(
-                    '.'.join(parts[:-1]), [(parts[-1], None)]
+                    ".".join(parts[:-1]), [(parts[-1], None)]
                 )
                 self.import_tracker.require_name(parts[-1])
                 return parts[-1]
@@ -126,26 +126,26 @@ class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
         # I'm not separating them because it's easy to get mixed uppp
         members = dict(super().get_members(obj))
 
-        if isinstance(obj, type) and obj.__name__ == 'CallbacksManager':
+        if isinstance(obj, type) and obj.__name__ == "CallbacksManager":
             enums = {
                 x: _TypeEnum(x)
                 for x in dir(Callbacks.Callbacks.Type)
-                if not x.startswith('_')
+                if not x.startswith("_")
             }
-            enumType = type('_TypeEnumList', (), enums)
-            enumType.__module__ = 'Callbacks.Callbacks'
-            members['Type'] = enumType
+            enumType = type("_TypeEnumList", (), enums)
+            enumType.__module__ = "Callbacks.Callbacks"
+            members["Type"] = enumType
 
         return list(members.items())
 
 
 class CStubGenerator(mypy.stubgenc.CStubGenerator):
     DATA_ATTRS = {
-        'DataAttribute': 'T',
-        'DoubleAttribute': 'float',
-        'FloatAttribute': 'float',
-        'IntAttribute': 'int',
-        'StringAttribute': 'str',
+        "DataAttribute": "T",
+        "DoubleAttribute": "float",
+        "FloatAttribute": "float",
+        "IntAttribute": "int",
+        "StringAttribute": "str",
     }
 
     def get_sig_generators(self) -> list[SignatureGenerator]:
@@ -153,24 +153,24 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
         return [KatanaCSignatureGenerator()]
 
     def get_imports(self) -> str:
-        if self.module_name == 'PyFnAttribute':
-            self.add_typing_import('TypeVar')
+        if self.module_name == "PyFnAttribute":
+            self.add_typing_import("TypeVar")
             type_vars = 'T = TypeVar("T")\n'
         else:
-            type_vars = ''
+            type_vars = ""
         imports = super().get_imports()
         return DISABLED_CODES + imports + type_vars
 
     def get_base_types(self, obj: type) -> list[str]:
         bases = super().get_base_types(obj)
-        if obj.__name__ in self.DATA_ATTRS or obj.__name__ == 'ConstVector':
-            sub_type = self.DATA_ATTRS.get(obj.__name__, 'T')
-            if obj.__name__ in ['DataAttribute', 'ConstVector']:
-                self.add_typing_import('Generic')
-                return bases + [f'Generic[{sub_type}]']
+        if obj.__name__ in self.DATA_ATTRS or obj.__name__ == "ConstVector":
+            sub_type = self.DATA_ATTRS.get(obj.__name__, "T")
+            if obj.__name__ in ["DataAttribute", "ConstVector"]:
+                self.add_typing_import("Generic")
+                return bases + [f"Generic[{sub_type}]"]
             else:
                 base = bases[0]
-                return [f'{base}[{sub_type}]']
+                return [f"{base}[{sub_type}]"]
         else:
             return bases
 
@@ -182,7 +182,7 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
 
         if isinstance(obj, type) and obj.__name__ in self.DATA_ATTRS:
             sub_type = self.DATA_ATTRS[obj.__name__]
-            is_abstract = obj.__name__ == 'DataAttribute'
+            is_abstract = obj.__name__ == "DataAttribute"
             # Add abstract methods that are shared by all sub-classes
             add(
                 CFunctionStub(
@@ -212,7 +212,7 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
                     is_abstract=is_abstract,
                 )
             )
-        elif isinstance(obj, type) and obj.__name__ == 'ConstVector':
+        elif isinstance(obj, type) and obj.__name__ == "ConstVector":
             add(CFunctionStub("__iter__", "__iter__(self) -> typing.Iterator[T]"))
             add(
                 CFunctionStub(
@@ -230,3 +230,37 @@ mypy.stubgenc.NoParseStubGenerator = NoParseStubGenerator  # type: ignore[misc]
 
 mypy.stubgen.CStubGenerator = CStubGenerator  # type: ignore[attr-defined,misc]
 mypy.stubgenc.CStubGenerator = CStubGenerator  # type: ignore[misc]
+
+
+def main(outdir: str, katana_site_dir: str) -> None:
+    modules = [
+        "_FnKatanaCoreUI",
+        "drawing_cmodule",
+        "AssetAPI_cmodule",
+        "ConfigurationAPI_cmodule",
+        "PyFCurve",
+        "PyFnAttribute",
+        "PyFnGeolib",
+        "PyFnGeolibProducers",
+        "PyFnGeolibServices",
+        "PyOpenColorIO",
+        "PyResolutionTableFn",
+        "PyXmlIO",
+        "NodegraphAPI_cmodule",
+        "Nodes2DAPI_cmodule",
+        "Nodes3DAPI_cmodule",
+        "RenderingAPI_cmodule",
+    ]
+
+    args = ["-v", "--no-parse", "-o", outdir]
+    for module in modules:
+        args.append(f"-p={module}")
+
+    for path in pathlib.Path(katana_site_dir).iterdir():
+        if path.isdir() and path.name[0].isupper():
+            module = path.name
+            # if module == "PyQt5":
+            #     continue
+            args.append(f"-p={module}")
+
+    mypy.stubgen.main(args)

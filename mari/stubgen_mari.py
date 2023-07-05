@@ -1,11 +1,11 @@
 from __future__ import absolute_import, annotations, division, print_function
 
+import pathlib
 import re
 
 import mypy.stubgen
 import mypy.stubgenc
 from mypy.fastparse import parse_type_comment
-from mypy.stubgen import main
 from mypy.stubgenc import SignatureGenerator
 
 import mari
@@ -111,3 +111,12 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
 
 mypy.stubgen.CStubGenerator = CStubGenerator  # type: ignore[attr-defined,misc]
 mypy.stubgenc.CStubGenerator = CStubGenerator  # type: ignore[misc]
+
+
+def main(outdir: str):
+    # pure python package
+    mypy.stubgen.main(['-p=Mari', '--verbose', '--parse-only', '-o', outdir])
+    # c module
+    mypy.stubgen.main(['-m=mari', '--verbose', '-o', outdir])
+    out = pathlib.Path(outdir)
+    out.joinpath("mari.pyi").rename(out.joinpath("mari/__init__.pyi"))
