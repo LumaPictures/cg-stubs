@@ -69,14 +69,13 @@ def stubs_suffix(session, path: pathlib.Path = pathlib.Path("./stubs")):
         if child.is_dir() and not child.name.endswith('-stubs'):
             name = child.stem + '-stubs'
             newpath = child.with_name(name)
-            print(f"Renaming to {newpath}")
             paths.append((child, newpath))
-            session.run("git", "mv", str(child), str(newpath), external=True)
+            child.rename(newpath)
 
     yield
 
     for orig, new in paths:
-        session.run("git", "mv", str(new), str(orig), external=True)
+        new.rename(orig)
 
 
 @nox.session(venv_backend='none')
