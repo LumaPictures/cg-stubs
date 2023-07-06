@@ -20,7 +20,4 @@ outdir=$REPO_PATH/mari/stubs/
 
 export PYTHONPATH=$REPO_PATH:$REPO_PATH/mari:$REPO_PATH/../mypy/:$PY_SITE_DIR
 
-
-echo "converting Mari"
-# py modules
-${REPO_PATH}/mari/maripy -c "import mypy.stubgen;mypy.stubgen.main('$outdir')"
+${REPO_PATH}/mari/maripy -c "import stubgen_mari;stubgen_mari.main('$outdir')" || true

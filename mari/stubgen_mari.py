@@ -5,7 +5,7 @@ import re
 
 import mypy.stubgen
 import mypy.stubgenc
-from mypy.fastparse import parse_type_comment
+from mypy.stubgen import FunctionContext, FunctionSig
 from mypy.stubgenc import SignatureGenerator
 
 import mari
@@ -22,10 +22,13 @@ class MariDocstringSignatureGenerator(DocstringTypeFixer, FixableDocstringSigGen
 
     def prepare_docstring(self, docstr):
         # remove :obj: from docstring because it breaks the parser
-        return re.sub(r":(?:[a-z_]+):", "", docstr)
+        return re.sub(r":(?:[a-z_]+):", "", docstr).replace("`", "")
 
-    def get_full_name(self, type_name: str) -> str:
-        if type_name == "int":
+    def cleanup_type(
+        self, type_name: str, ctx: FunctionContext, is_result: bool
+    ) -> str:
+        type_name = super().cleanup_type(type_name, ctx, is_result)
+        if type_name == "int" and not is_result:
             # docstrings specify the type of enums as int, but they're not.
             # rather than try to keep track of which args are enums, we just
             # say all int are SupportsInt, which is probably accurate (need to test)
@@ -114,9 +117,22 @@ mypy.stubgenc.CStubGenerator = CStubGenerator  # type: ignore[misc]
 
 
 def main(outdir: str):
-    # pure python package
-    mypy.stubgen.main(['-p=Mari', '--verbose', '--parse-only', '-o', outdir])
-    # c module
-    mypy.stubgen.main(['-m=mari', '--verbose', '-o', outdir])
+    import shutil
     out = pathlib.Path(outdir)
-    out.joinpath("mari.pyi").rename(out.joinpath("mari/__init__.pyi"))
+    # pure python package
+    print("Converting Mari python package")
+    mypy.stubgen.main(['-p=Mari', '--verbose', '--parse-only', '-o', outdir])
+
+    dest = out.joinpath("mari")
+    if dest.exists():
+        shutil.rmtree(dest)
+    src = out.joinpath("Mari")
+    print()
+    print("Renaming {} to {}".format(src, dest))
+    src.rename(dest)
+    print()
+
+    # c module
+    print("Converting mari.so c module")
+    mypy.stubgen.main(['-m=mari', '--verbose', '-o', outdir])
+    out.joinpath("mari.pyi").rename(dest.joinpath("__init__.pyi"))

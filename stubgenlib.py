@@ -109,6 +109,13 @@ class BaseSigFixer:
         # FIXME: only copy if something has changed?
         converted = FunctionSig(sig.name, args, return_type)
 
+        if invalid:
+            print(f"Invalid type after cleanup: {ctx.fullname}")
+            print("  orig: {}".format(sig.format_sig()))
+            print("  new:  {}".format(converted.format_sig()))
+            for item in invalid:
+                print("  {}".format(item))
+
         return converted
 
     def get_function_sig(
@@ -264,8 +271,17 @@ class DocstringSignatureGenerator(SignatureGenerator):
                             default=param.is_optional,
                         )
                     )
-            if parsed.returns and parsed.returns.type_name:
-                return_type = parsed.returns.type_name
+            if parsed.returns:
+                if parsed.returns.type_name:
+                    return_type = parsed.returns.type_name
+                elif parsed.returns.description and ":" in parsed.returns.description:
+                    # the parser fails to extract the type when it encounters
+                    # "list of {blah}" in google doctrings, so try a last ditch
+                    # effort to grab the type
+                    return_type = parsed.returns.description.split(":", 1)[0]
+                else:
+                    return_type = None
+
             sig = FunctionSig(ctx.name, args, return_type)
             return [sig]
         return None
