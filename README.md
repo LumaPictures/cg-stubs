@@ -9,71 +9,54 @@ Supported libraries and applications.
 - katana
 - mari
 - [nuke](https://pypi.org/project/types-nuke/)
-- opencolorio
+- [opencolorio](https://pypi.org/project/types-opencolorio/)
+- [PySide2](https://pypi.org/project/types-PySide2/)
 - [substance_painter](https://pypi.org/project/types-substance_painter/)
 
-See also:
-- pymel
-- pyside2
+For code completion and type analysis, [pymel](https://pypi.org/project/pymel/) has very excellent stubs included. 
 
 ## Installing
 
 ```
-pip install types-usd types-houdini types-katana types-mari types-nuke types-opencolorio types-substance_painter
+pip install types-usd types-houdini types-katana types-mari types-nuke types-opencolorio types-PySide2 types-substance_painter
 ```
 
 ## Generating the stubs
 
-(replace nuke with the package to generate)
+(replace ocio with the package to generate)
 
 ```
 python3 -m venv .venv
 . .venv/bin/activate
 pip install nox
-nox -s 'generate(nuke)'
+nox -s 'generate(ocio)'
 ```
 
 ## Developing
 
-When developing the stubs it is convenient to create an editable install, so that you can edit the files in place.
-Below are two ways to create an editable install (these are confirmed to work with `mypy`).
+This project uses [`nox`](https://nox.thea.codes/en/stable/index.html) as a build tool.
 
-### Manual install
-
-(replace nuke with the package to develop)
-
-```
-# activate the venv that you want to install into
-. /path/to/.venv/bin/activate
-pip install poetry
-cd ./nuke
-poetry install
-```
-
-### Install using `nox`
-
-`nox` is a powerful build tool inspired by `tox`.
-
-(replace nuke with the package to develop)
+The folowing recipe will create an editable install of the stubs for the specified project, so that you can edit the files in place, and test the results in another project using mypy 
+(if you're using the daemon, be sure to run `dmypy stop` to reread freshly modified stubs).
 
 ```
 # activate the venv that you want to install into
 . /path/to/.venv/bin/activate
 pip install nox
-nox -s 'develop(nuke)'
+nox -s 'develop(ocio)'
 ```
 
 ## Publishing to PyPI
 
 To publish to pypi.org:
 
-(replace nuke with the package to publish)
+(replace ocio with the package to publish)
 
 ```
 python3 -m venv .venv
 . .venv/bin/activate
 pip install nox
-nox -s 'publish(nuke)'
+nox -s 'publish(ocio)'
 ```
 
 To publish to a custom registry:
@@ -83,5 +66,5 @@ python3 -m venv .venv
 . .venv/bin/activate
 pip install nox poetry
 poetry config repositories.pypi-nexus https://nexus.myorg/repository/pypi/
-nox -s 'publish(nuke)' --  --repository pypi-nexus -u pypi -p 'whatever'
+nox -s 'publish(ocio)' --  --repository pypi-nexus -u pypi -p 'whatever'
 ```

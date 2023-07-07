@@ -98,7 +98,7 @@ def publish(session: nox.Session, lib: str) -> None:
     session.chdir(lib)
     session.install("poetry")
     with stubs_suffix(session):
-        session.run("poetry", "publish", *session.posargs)
+        session.run("poetry", "publish", "--build", *session.posargs)
 
 
 @nox.session(reuse_venv=True)

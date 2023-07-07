@@ -340,7 +340,7 @@ class CFunctionStub:
     def __get__(self) -> None:
         """
         This exists to make this object look like a method descriptor and thus
-        return true for CStubGenerator.ismethod()
+        return true for InspectionStubGenerator.ismethod()
         """
         pass
 
@@ -463,7 +463,7 @@ class BoostDocStringParser:
         self.arg_type: str | None = None
         self.arg_name = ""
         self.arg_default: str | None = None
-        self.ret_type = "tying.Any"
+        self.ret_type = "typing.Any"
         self.defaults = False
         self.found = False
         self.args: list[ArgSig] = []

@@ -68,7 +68,7 @@ class MariDocstringSignatureGenerator(DocstringTypeFixer, FixableDocstringSigGen
         return sigs
 
 
-class CStubGenerator(mypy.stubgenc.CStubGenerator):
+class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
     """
     mari has a number of idiosyncracies wrt its module name, which have to be corrected.
 
@@ -151,12 +151,13 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
 #         pass
 
 
-mypy.stubgen.CStubGenerator = CStubGenerator  # type: ignore[attr-defined,misc]
-mypy.stubgenc.CStubGenerator = CStubGenerator  # type: ignore[misc]
+mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[attr-defined,misc]
+mypy.stubgenc.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[misc]
 
 
 def main(outdir: str):
     import shutil
+
     out = pathlib.Path(outdir)
     # pure python package
     print("Converting Mari python package")

@@ -1035,7 +1035,7 @@ def remove_redundant_submodule(module_name: str) -> tuple[str, bool]:
     return module_name, False
 
 
-class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
+class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
     """
     Make objects in pxr.Sdf._sdf appear to be defined in pxr.Sdf.
 
@@ -1055,8 +1055,8 @@ class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
             return remove_redundant_submodule(module_name)[0]
         return None
 
-    def generate_module(self) -> str:
-        output = super().generate_module()
+    def output(self) -> str:
+        output = super().output()
         return "# mypy: disable_error_code = misc\n" + output
 
     def get_type_fullname(self, typ: type) -> str:
@@ -1094,7 +1094,7 @@ class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
         return False
 
 
-# class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
+# class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
 #     """
 #     Make objects in pxr.Sdf._sdf appear to be defined in pxr.Sdf.
 
@@ -1113,14 +1113,14 @@ class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
 #         return None
 
 
-# mypy.stubgen.CStubGenerator = CStubGenerator
-# mypy.stubgenc.CStubGenerator = CStubGenerator
+# mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator
+# mypy.stubgenc.InspectionStubGenerator = InspectionStubGenerator
 
-mypy.stubgen.NoParseStubGenerator = NoParseStubGenerator  # type: ignore[misc]
-mypy.stubgenc.NoParseStubGenerator = NoParseStubGenerator  # type: ignore[misc]
+mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[misc]
+mypy.stubgenc.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[misc]
 
 
-# class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
+# class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
 #     """
 #     Make objects in pxr.Sdf appear to be defined in pxr.Sdf._sdf.
 #
@@ -1139,7 +1139,7 @@ mypy.stubgenc.NoParseStubGenerator = NoParseStubGenerator  # type: ignore[misc]
 #         return module_name
 
 
-# class CStubGenerator(NoParseStubGenerator):
+# class InspectionStubGenerator(InspectionStubGenerator):
 #     """
 #     Make objects in pxr.Sdf appear to be defined in pxr.Sdf._sdf.
 #     """
@@ -1147,11 +1147,11 @@ mypy.stubgenc.NoParseStubGenerator = NoParseStubGenerator  # type: ignore[misc]
 #     def get_sig_generators(self) -> list[SignatureGenerator]:
 #         return [BoostDocstringSignatureGenerator()]
 
-# mypy.stubgen.CStubGenerator = CStubGenerator
-# mypy.stubgenc.CStubGenerator = CStubGenerator
+# mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator
+# mypy.stubgenc.InspectionStubGenerator = InspectionStubGenerator
 
-# mypy.stubgen.NoParseStubGenerator = NoParseStubGenerator
-# mypy.stubgenc.NoParseStubGenerator = NoParseStubGenerator
+# mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator
+# mypy.stubgenc.InspectionStubGenerator = InspectionStubGenerator
 
 
 def test():
@@ -1167,7 +1167,7 @@ def test():
     )
 
 
-def main(outdir):
+def main(outdir) -> None:
     # test()
     # # return
     import pprint

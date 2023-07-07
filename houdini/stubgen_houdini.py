@@ -11,7 +11,7 @@ from mypy.stubgenc import DocstringSignatureGenerator as CDocstringSignatureGene
 from mypy.stubgenc import FunctionContext, FunctionSig, SignatureGenerator
 
 
-class CStubGenerator(mypy.stubgenc.CStubGenerator):
+class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
     def is_defined_in_module(self, obj: object) -> bool:
         if self.module_name == 'mari' and getattr(obj, '__module__', '').startswith(
             'mari.Mari'
@@ -23,5 +23,5 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
     #     return [DocstringSignatureGenerator()]
 
 
-mypy.stubgen.CStubGenerator = CStubGenerator  # type: ignore[attr-defined,misc]
-mypy.stubgenc.CStubGenerator = CStubGenerator  # type: ignore[misc]
+mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[attr-defined,misc]
+mypy.stubgenc.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[misc]

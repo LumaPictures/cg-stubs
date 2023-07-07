@@ -693,7 +693,7 @@ class PySideSignatureGenerator(mypy.stubgenc.SignatureGenerator):
         return results
 
 
-class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
+class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         if not _flag_group_to_item:
@@ -773,8 +773,8 @@ class NoParseStubGenerator(mypy.stubgenc.NoParseStubGenerator):
         return "\n".join(imports)
 
 
-mypy.stubgen.NoParseStubGenerator = NoParseStubGenerator  # type: ignore[attr-defined,misc]
-mypy.stubgenc.NoParseStubGenerator = NoParseStubGenerator  # type: ignore[misc]
+mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[attr-defined,misc]
+mypy.stubgenc.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[misc]
 
 if __name__ == "__main__":
     # in order to create and inspect object properties we must create an app
