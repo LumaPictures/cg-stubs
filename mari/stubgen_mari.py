@@ -2,10 +2,11 @@ from __future__ import absolute_import, annotations, division, print_function
 
 import pathlib
 import re
+from typing import Any
 
 import mypy.stubgen
 import mypy.stubgenc
-from mypy.stubgen import FunctionContext, FunctionSig
+from mypy.stubgen import FunctionContext, FunctionSig, ArgSig
 from mypy.stubgenc import SignatureGenerator
 
 import mari
@@ -18,36 +19,53 @@ mari.__path__ = []
 
 
 class MariDocstringSignatureGenerator(DocstringTypeFixer, FixableDocstringSigGen):
-    PYPATH = re.compile(r"((?:[a-zA-Z_][a-zA-Z0-9_]*)(?:[.][a-zA-Z_][a-zA-Z0-9_]*)*)")
 
-    def prepare_docstring(self, docstr):
+    def prepare_docstring(self, docstr: str) -> str:
         # remove :obj: from docstring because it breaks the parser
         return re.sub(r":(?:[a-z_]+):", "", docstr).replace("`", "")
+
+    def get_full_name(self, obj_name: str) -> str:
+        if (
+                obj_name
+                and obj_name[0].isupper()
+                and not obj_name.startswith("mari.")
+                and not obj_name.startswith("PySide")
+        ):
+            if obj_name[0] == "Q":
+                return f"PySide2.QtWidgets.{obj_name}"
+            else:
+                return f"mari.{obj_name}"
+        if obj_name == "list":
+            # use typing.List to avoid a clash with ActionManager.list
+            return "typing.List"
+        else:
+            return obj_name
 
     def cleanup_type(
         self, type_name: str, ctx: FunctionContext, is_result: bool
     ) -> str:
-        type_name = super().cleanup_type(type_name, ctx, is_result)
         if type_name == "int" and not is_result:
             # docstrings specify the type of enums as int, but they're not.
             # rather than try to keep track of which args are enums, we just
             # say all int are SupportsInt, which is probably accurate (need to test)
             return "typing.SupportsInt"
+        else:
+            return super().cleanup_type(type_name, ctx, is_result)
 
-        parts = []
-        for part in self.PYPATH.split(type_name):
-            if (
-                part
-                and part[0].isalpha()
-                and not part.startswith("mari.")
-                and not part.startswith("PySide")
-            ):
-                if part[0] == "Q":
-                    part = f"PySide2.QtWidgets.{part}"
-                else:
-                    part = f"mari.{part}"
-            parts.append(part)
-        return "".join(parts)
+    def get_function_sig(
+        self, default_sig: FunctionSig, ctx: FunctionContext
+    ) -> list[FunctionSig] | None:
+        sigs = super().get_function_sig(default_sig, ctx)
+        if sigs:
+            if ctx.name == "findChannel":
+                return [FunctionSig(name="findChannel", args=[ArgSig("name", "str")], ret_type="Channel")]
+            elif ctx.name.startswith("create") and ctx.name.endswith("Layer") and ctx.name != "createLayer":
+                # LayerStack
+                layer_type = ctx.name[len("create"):]
+                if layer_type == "MaterialLayer":
+                    layer_type = "MultiChannelMaterialLayer"
+                return [sig._replace(ret_type=layer_type) for sig in sigs]
+        return sigs
 
 
 class CStubGenerator(mypy.stubgenc.CStubGenerator):
@@ -110,6 +128,27 @@ class CStubGenerator(mypy.stubgenc.CStubGenerator):
         if self.module_name == "mari":
             output = "from . import current, session, system, utils\n" + output
         return output
+
+    def get_members(self, obj: object) -> list[tuple[str, Any]]:
+        members = super().get_members(obj)
+        if obj.__name__ == "ResourceInfo":
+            return members + [("ICONS", "")]
+        else:
+            return members
+
+
+# class MariPackageSigGen(SignatureGenerator):
+#     def get_function_sig(
+#         self, default_sig: FunctionSig, ctx: FunctionContext
+#     ) -> list[FunctionSig] | None:
+#
+#         if ctx.fullname == "mari.utils.message":
+#             return [sig._replace(ret_type="QtWidgets.QMessageBox.StandardButton") for sig in sigs]
+#
+#
+# class StubGenerator(mypy.stubgen.StubGenerator):
+#     def get_members(self):
+#         pass
 
 
 mypy.stubgen.CStubGenerator = CStubGenerator  # type: ignore[attr-defined,misc]

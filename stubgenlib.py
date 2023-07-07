@@ -143,6 +143,7 @@ class DocstringTypeFixer:
     Mixin class that fixes human-defined types in docstrings
     """
 
+    PYPATH = re.compile(r"((?:[a-zA-Z_][a-zA-Z0-9_]*)(?:[.][a-zA-Z_][a-zA-Z0-9_]*)*)")
     EPY_REG = re.compile(r"([LC]\{([^}]+)\})")
     LIST_OF_REG = re.compile(r"\b(list|Sequence|Iterable|Iterator) of (.*)")
     TUPLE_OF_REG = re.compile(r"\btuple of ([a-zA-Z0-9_.,() ]*)")
@@ -203,8 +204,6 @@ class DocstringTypeFixer:
 
         type_name = type_name.replace(' or ', ' | ')
 
-        type_name = self.get_full_name(type_name)
-
         type_name = type_name.replace(
             'object convertible to a float', 'typing.SupportsFloat'
         )
@@ -235,7 +234,14 @@ class DocstringTypeFixer:
 
         if optional:
             type_name = 'typing.Optional[{}]'.format(type_name)
-        return type_name
+
+        parts = []
+        for part in self.PYPATH.split(type_name):
+            if part and part[0].isalpha():
+                parts.append(self.get_full_name(part))
+            else:
+                parts.append(part)
+        return "".join(parts)
 
 
 class DocstringSignatureGenerator(SignatureGenerator):
