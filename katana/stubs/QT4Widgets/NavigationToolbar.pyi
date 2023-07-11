@@ -1,12 +1,14 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 import PyQt5.QtWidgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtWidgets as QtWidgets
 import ResourceFiles as ResourceFiles
 import Utils as Utils
 from QT4Widgets.ToolbarButton import ToolbarButton as ToolbarButton
 from ResourceFiles.IconManager import ResourceManager as ResourceManager
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class NavigationToolbar(PyQt5.QtWidgets.QFrame):
     _NavigationToolbar__pixmaps: ClassVar[dict] = ...

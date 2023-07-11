@@ -2,6 +2,7 @@
 
 import PyFnAttribute as FnAttribute
 from Nodes3DAPI.TerminalOpDelegates.TerminalOpDelegate import TerminalOpDelegate as TerminalOpDelegate
+from typing import Set, Tuple
 
 class ExampleTerminalOpDelegate(TerminalOpDelegate):
     def __init__(self): ...

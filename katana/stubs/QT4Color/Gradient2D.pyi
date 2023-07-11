@@ -3,9 +3,13 @@
 import QT4Color.ColorTransforms as ColorTransforms
 import QT4Color.Degenerate as Degenerate
 import QT4Color.Globals as Globals
+import PyOpenColorIO as OCIO
 import PyQt5.QtCore
 import PyQt5.QtWidgets
-from typing import ClassVar
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
+from typing import ClassVar, Set, Tuple
 
 OCIO_ERROR: None
 cursor_circle_data: bytes

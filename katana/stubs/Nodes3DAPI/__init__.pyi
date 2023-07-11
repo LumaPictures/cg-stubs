@@ -1,110 +1,8 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
-import Nodes3DAPI.AbstractTransform as AbstractTransform
-import Nodes3DAPI.Alembic_In as Alembic_In
-import Nodes3DAPI.AttributeCopy as AttributeCopy
-import Nodes3DAPI.AttributeEditor as AttributeEditor
-import Nodes3DAPI.AttributeFile_In as AttributeFile_In
-import Nodes3DAPI.AttributeSet as AttributeSet
-import Nodes3DAPI.BlockerCreate as BlockerCreate
-import Nodes3DAPI.BoundsAdjust as BoundsAdjust
-import Nodes3DAPI.CameraClippingPlaneEdit as CameraClippingPlaneEdit
-import Nodes3DAPI.CameraCreate as CameraCreate
-import Nodes3DAPI.CameraImagePlaneCreate as CameraImagePlaneCreate
-import Nodes3DAPI.CollectionCreate as CollectionCreate
-import Nodes3DAPI.ConstraintCache as ConstraintCache
-import Nodes3DAPI.ConstraintListEdit as ConstraintListEdit
-import Nodes3DAPI.Constraints as Constraints
-import Nodes3DAPI.CoordinateSystemDefine as CoordinateSystemDefine
-import Nodes3DAPI.CreateUtil as CreateUtil
-import Nodes3DAPI.DynamicParameterUtil as DynamicParameterUtil
-import Nodes3DAPI.ErrorNode as ErrorNode
-import Nodes3DAPI.Expressions as Expressions
-import Nodes3DAPI.FaceSelect as FaceSelect
-import Nodes3DAPI.FaceSelectionManager as FaceSelectionManager
-import Nodes3DAPI.Fork3D as Fork3D
-import Nodes3DAPI.GenericAssign as GenericAssign
-import Nodes3DAPI.GenericAssignRegistry as GenericAssignRegistry
-import Nodes3DAPI.GenericGeo as GenericGeo
-import Nodes3DAPI.GenericOp as GenericOp
-import Nodes3DAPI.GroupMerge as GroupMerge
-import Nodes3DAPI.HierarchyCopy as HierarchyCopy
-import Nodes3DAPI.HierarchyCreate as HierarchyCreate
-import Nodes3DAPI.IncomingSceneOpDelegates as IncomingSceneOpDelegates
-import Nodes3DAPI.IncomingTest as IncomingTest
-import Nodes3DAPI.InfoCreate as InfoCreate
-import Nodes3DAPI.InputGraphBasedCacheManager as InputGraphBasedCacheManager
-import Nodes3DAPI.Isolate as Isolate
-import Nodes3DAPI.LODMerge as LODMerge
-import Nodes3DAPI.LODRangeAssign as LODRangeAssign
-import Nodes3DAPI.LODSelect as LODSelect
-import Nodes3DAPI.LightCreate as LightCreate
-import Nodes3DAPI.LightLink as LightLink
-import Nodes3DAPI.LightLinkConstants as LightLinkConstants
-import Nodes3DAPI.LightLinkEdit as LightLinkEdit
-import Nodes3DAPI.LightLinkResolve as LightLinkResolve
-import Nodes3DAPI.LightLinkSetup as LightLinkSetup
-import Nodes3DAPI.LightListEdit as LightListEdit
-import Nodes3DAPI.LocationCreate as LocationCreate
-import Nodes3DAPI.LocationGenerate as LocationGenerate
-import Nodes3DAPI.LookFileBake as LookFileBake
-import Nodes3DAPI.LookFileBaking as LookFileBaking
-import Nodes3DAPI.LookFileGlobalsAssignBaseType as LookFileGlobalsAssignBaseType
-import Nodes3DAPI.LookFileMaterialsIn as LookFileMaterialsIn
-import Nodes3DAPI.LookFileMaterialsOut as LookFileMaterialsOut
-import Nodes3DAPI.LookFileOverrideEnable as LookFileOverrideEnable
-import Nodes3DAPI.LookFileResolve as LookFileResolve
-import Nodes3DAPI.Manifest as Manifest
-import Nodes3DAPI.Material as Material
-import Nodes3DAPI.MaterialResolve as MaterialResolve
-import Nodes3DAPI.MaterialStack as MaterialStack
-import Nodes3DAPI.Merge as Merge
-import Nodes3DAPI.NetworkMaterial as NetworkMaterial
-import Nodes3DAPI.NetworkMaterialInterfaceControls as NetworkMaterialInterfaceControls
-import Nodes3DAPI.NetworkMaterialParameterEdit as NetworkMaterialParameterEdit
-import Nodes3DAPI.NetworkMaterialSplice as NetworkMaterialSplice
-import Nodes3DAPI.Node3DEventTypes as Node3DEventTypes
-import Nodes3DAPI.Node3D_geolib3 as Node3D_geolib3
-import Nodes3DAPI.NodeLayoutAttributes as NodeLayoutAttributes
 import Nodes3DAPI_cmodule as Nodes3DAPI_cmodule
-import Nodes3DAPI.OpCacheManager as OpCacheManager
-import Nodes3DAPI.OpResolve as OpResolve
-import Nodes3DAPI.OpScript as OpScript
-import Nodes3DAPI.OpWrite as OpWrite
-import Nodes3DAPI.OutputChannelDefine as OutputChannelDefine
-import Nodes3DAPI.PonyCreate as PonyCreate
-import Nodes3DAPI.PortOpClient as PortOpClient
-import Nodes3DAPI.PrimitiveCreate as PrimitiveCreate
-import Nodes3DAPI.ProxyGeoPromote as ProxyGeoPromote
-import Nodes3DAPI.Prune as Prune
-import Nodes3DAPI.Rename as Rename
-import Nodes3DAPI.RenderNodeUtil as RenderNodeUtil
-import Nodes3DAPI.RenderOutputDefine as RenderOutputDefine
-import Nodes3DAPI.RenderSettingsBaseType as RenderSettingsBaseType
-import Nodes3DAPI.RendererProceduralArgs as RendererProceduralArgs
-import Nodes3DAPI.Rendering as Rendering
-import Nodes3DAPI.RenderingUtil as RenderingUtil
-import Nodes3DAPI.Resolve as Resolve
-import Nodes3DAPI.Resources as Resources
-import Nodes3DAPI.ReverseNormals as ReverseNormals
-import Nodes3DAPI.ScenegraphManager as ScenegraphManager
-import Nodes3DAPI.ScenegraphMask as ScenegraphMask
-import Nodes3DAPI.ShadingNodeArrayConnector as ShadingNodeArrayConnector
-import Nodes3DAPI.ShadingNodeBase as ShadingNodeBase
-import Nodes3DAPI.ShadingNodeSubnet as ShadingNodeSubnet
-import Nodes3DAPI.ShadingNodeUtil as ShadingNodeUtil
-import Nodes3DAPI.TerminalOpDelegates.TerminalOpDelegate as TerminalOpDelegate
-import Nodes3DAPI.TerminalOpDelegates as TerminalOpDelegates
-import Nodes3DAPI.TimingUtils as TimingUtils
-import Nodes3DAPI.Transform3D as Transform3D
-import Nodes3DAPI.TransformEdit as TransformEdit
-import Nodes3DAPI.TransformUtil as TransformUtil
-import Nodes3DAPI.Unfork3D as Unfork3D
-import Nodes3DAPI.UpdateModes as UpdateModes
-import Nodes3DAPI.VariableSwitchUtil as VariableSwitchUtil
-import Nodes3DAPI.VelocityApply as VelocityApply
-import Nodes3DAPI.WorkingSetDebug as WorkingSetDebug
-import Nodes3DAPI.ZoomToRect as ZoomToRect
+from . import AbstractTransform as AbstractTransform, Alembic_In as Alembic_In, AttributeCopy as AttributeCopy, AttributeEditor as AttributeEditor, AttributeFile_In as AttributeFile_In, AttributeSet as AttributeSet, BlockerCreate as BlockerCreate, BoundsAdjust as BoundsAdjust, CameraClippingPlaneEdit as CameraClippingPlaneEdit, CameraCreate as CameraCreate, CameraImagePlaneCreate as CameraImagePlaneCreate, CollectionCreate as CollectionCreate, ConstraintCache as ConstraintCache, ConstraintListEdit as ConstraintListEdit, Constraints as Constraints, CoordinateSystemDefine as CoordinateSystemDefine, CreateUtil as CreateUtil, DynamicParameterUtil as DynamicParameterUtil, ErrorNode as ErrorNode, Expressions as Expressions, FaceSelect as FaceSelect, FaceSelectionManager as FaceSelectionManager, Fork3D as Fork3D, GenericAssign as GenericAssign, GenericAssignRegistry as GenericAssignRegistry, GenericGeo as GenericGeo, GenericOp as GenericOp, GroupMerge as GroupMerge, HierarchyCopy as HierarchyCopy, HierarchyCreate as HierarchyCreate, IncomingSceneOpDelegates as IncomingSceneOpDelegates, IncomingTest as IncomingTest, InfoCreate as InfoCreate, InputGraphBasedCacheManager as InputGraphBasedCacheManager, Isolate as Isolate, LODMerge as LODMerge, LODRangeAssign as LODRangeAssign, LODSelect as LODSelect, LightCreate as LightCreate, LightLink as LightLink, LightLinkConstants as LightLinkConstants, LightLinkEdit as LightLinkEdit, LightLinkResolve as LightLinkResolve, LightLinkSetup as LightLinkSetup, LightListEdit as LightListEdit, LocationCreate as LocationCreate, LocationGenerate as LocationGenerate, LookFileBake as LookFileBake, LookFileBaking as LookFileBaking, LookFileGlobalsAssignBaseType as LookFileGlobalsAssignBaseType, LookFileMaterialsIn as LookFileMaterialsIn, LookFileMaterialsOut as LookFileMaterialsOut, LookFileOverrideEnable as LookFileOverrideEnable, LookFileResolve as LookFileResolve, Manifest as Manifest, Material as Material, MaterialResolve as MaterialResolve, MaterialStack as MaterialStack, Merge as Merge, NetworkMaterial as NetworkMaterial, NetworkMaterialInterfaceControls as NetworkMaterialInterfaceControls, NetworkMaterialParameterEdit as NetworkMaterialParameterEdit, NetworkMaterialSplice as NetworkMaterialSplice, Node3DEventTypes as Node3DEventTypes, Node3D_geolib3 as Node3D_geolib3, NodeLayoutAttributes as NodeLayoutAttributes, OpCacheManager as OpCacheManager, OpResolve as OpResolve, OpScript as OpScript, OpWrite as OpWrite, OutputChannelDefine as OutputChannelDefine, PonyCreate as PonyCreate, PortOpClient as PortOpClient, PrimitiveCreate as PrimitiveCreate, ProxyGeoPromote as ProxyGeoPromote, Prune as Prune, Rename as Rename, RenderNodeUtil as RenderNodeUtil, RenderOutputDefine as RenderOutputDefine, RenderSettingsBaseType as RenderSettingsBaseType, RendererProceduralArgs as RendererProceduralArgs, Rendering as Rendering, RenderingUtil as RenderingUtil, Resolve as Resolve, Resources as Resources, ReverseNormals as ReverseNormals, ScenegraphManager as ScenegraphManager, ScenegraphMask as ScenegraphMask, ShadingNodeArrayConnector as ShadingNodeArrayConnector, ShadingNodeBase as ShadingNodeBase, ShadingNodeSubnet as ShadingNodeSubnet, ShadingNodeUtil as ShadingNodeUtil, TerminalOpDelegates as TerminalOpDelegates, TimingUtils as TimingUtils, Transform3D as Transform3D, TransformEdit as TransformEdit, TransformUtil as TransformUtil, Unfork3D as Unfork3D, UpdateModes as UpdateModes, VariableSwitchUtil as VariableSwitchUtil, VelocityApply as VelocityApply, WorkingSetDebug as WorkingSetDebug, ZoomToRect as ZoomToRect
+from .TerminalOpDelegates import TerminalOpDelegate as TerminalOpDelegate
 from Nodes3DAPI.IncomingSceneOpDelegates import IncomingSceneOpDelegate as IncomingSceneOpDelegate, OutgoingAttributesDelegate as OutgoingAttributesDelegate, RegisterIncomingSceneOpDelegate as RegisterIncomingSceneOpDelegate, RegisterOutgoingAttributesDelegate as RegisterOutgoingAttributesDelegate
 from Nodes3DAPI.Node3D import ApplyImplicitResolverOps as ApplyImplicitResolverOps, ApplyOp as ApplyOp, ApplyRenderSettingsToGraphState as ApplyRenderSettingsToGraphState, CreateClient as CreateClient, Get3DPortFromNode as Get3DPortFromNode, Get3DSourceFromNodeInput as Get3DSourceFromNodeInput, GetExtraParameterValueSourceNodePorts as GetExtraParameterValueSourceNodePorts, GetExtraParameterValueSourceNodes as GetExtraParameterValueSourceNodes, GetGeometryProducer as GetGeometryProducer, GetOp as GetOp, GetOpChain as GetOpChain, GetRegisteredImplicitResolvers as GetRegisteredImplicitResolvers, GetRegisteredTerminalOpDelegate as GetRegisteredTerminalOpDelegate, GetRegisteredTerminalOpDelegateNames as GetRegisteredTerminalOpDelegateNames, GetRenderOp as GetRenderOp, GetRenderProducer as GetRenderProducer, GetRenderTerminalOpSpecs as GetRenderTerminalOpSpecs, GetRenderTerminalOps as GetRenderTerminalOps, GetRenderThreads as GetRenderThreads, ImplicitResolverStage as ImplicitResolverStage, Node3D as Node3D, RegisterImplicitResolver as RegisterImplicitResolver, RegisterTerminalOpDelegate as RegisterTerminalOpDelegate, SetExtraParameterValueSourceNodes as SetExtraParameterValueSourceNodes, SetRenderThreads as SetRenderThreads, UnregisterTerminalOpDelegate as UnregisterTerminalOpDelegate
 from Nodes3DAPI.Node3D_geolib3 import ActivatePort as ActivatePort, CommitChanges as CommitChanges, DeactivatePort as DeactivatePort, GetDefaultSourceOp as GetDefaultSourceOp, GetRuntime as GetRuntime, IsProcessing as IsProcessing, ManualUpdate as ManualUpdate, MarkPortOpClientDirty as MarkPortOpClientDirty, RegisterCommitIdCallback as RegisterCommitIdCallback, RegisterPortOpClient as RegisterPortOpClient, UnregisterPortOpClient as UnregisterPortOpClient, UpdatePortOpClients as UpdatePortOpClients
@@ -112,3 +10,4 @@ from Nodes3DAPI.NodeTypeBuilder import NodeTypeBuilder as NodeTypeBuilder
 from Nodes3DAPI.RenderNode import RenderNode as RenderNode
 from Nodes3DAPI.Rendering import CancelAllRenders as CancelAllRenders, CancelRender as CancelRender, GetRenderCommandLine as GetRenderCommandLine, RenderNode3D as RenderNode3D, SignalRender as SignalRender
 from Nodes3DAPI_cmodule import BuildAttrListFromDynamicParameterGroup as BuildAttrListFromDynamicParameterGroup, DefaultDAPCookOrder as DefaultDAPCookOrder, EvaluateBoolExpresion as EvaluateBoolExpresion
+from typing import Set, Tuple

@@ -12,7 +12,7 @@ import PyResolutionTableFn as ResolutionTable
 import Utils as Utils
 from PyFnGeolibServices.ExpressionMath import function as function
 from _typeshed import Incomplete
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Set, Tuple
 
 _AdditionalLocalsFunctions: dict
 _AssetAttributeCache: dict

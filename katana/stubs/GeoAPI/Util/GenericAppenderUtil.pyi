@@ -8,6 +8,7 @@ import Utils as Utils
 import PyXmlIO as XmlIO
 from Utils.Decorators import deprecated as deprecated
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 GlobalAppenderDict: dict
 GlobalAppenderList: list

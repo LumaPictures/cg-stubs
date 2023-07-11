@@ -3,6 +3,7 @@
 import MediaCacheHandler.DiskUtil as DiskUtil
 import MediaCacheHandler.ImageUtil as ImageUtil
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 def CopyElementsToMediaCache(elementList, deletionCB: Incomplete | None = ..., elementProgressCB: Incomplete | None = ..., fileProgressCB: Incomplete | None = ..., logTiming: bool = ...): ...
 def DeleteElementFromMediaCache(localMediaElementDir): ...

@@ -3,7 +3,11 @@
 import QT4FormWidgets.InputWidgets as InputWidgets
 import QT4FormWidgets.PaintingUtils as PaintingUtils
 import PyQt5.QtWidgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 class ExpressionEditDialog(PyQt5.QtWidgets.QDialog):
     def __init__(self, policy, parent: Incomplete | None = ...): ...

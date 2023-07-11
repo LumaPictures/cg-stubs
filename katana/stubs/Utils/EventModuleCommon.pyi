@@ -3,6 +3,7 @@
 import typing
 from Utils.Exceptions import GetExceptionMessage as GetExceptionMessage
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 _CollapsedHandlers: dict
 _CollapsedHandlersByObjectID: dict

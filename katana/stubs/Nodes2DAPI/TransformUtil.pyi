@@ -2,6 +2,7 @@
 
 import NodegraphAPI as NodegraphAPI
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 def SetPair(parentGroup, pairName, value, t, final, setKey): ...
 def SetSingle(parentGroup, paramName, value, t, final, setKey): ...

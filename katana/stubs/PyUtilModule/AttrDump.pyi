@@ -4,6 +4,7 @@ import NodegraphAPI as NodegraphAPI
 import Nodes3DAPI as Nodes3DAPI
 import _io
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 sampleCounter: int
 

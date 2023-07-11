@@ -1,6 +1,6 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
-from typing import Any
+from typing import Any, Set, Tuple
 
 kAssetContextAlembic: str
 kAssetContextAttributeFile: str

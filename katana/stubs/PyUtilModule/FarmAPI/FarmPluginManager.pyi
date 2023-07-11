@@ -7,8 +7,9 @@ import NodegraphAPI as NodegraphAPI
 import Nodes2DAPI as Nodes2DAPI
 import Utils as Utils
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
-_DefaultFarm: str
+_DefaultFarm: None
 _Plugins: dict
 _RenderContextNameByJobID: dict
 _SequenceIdByRenderContextName: dict

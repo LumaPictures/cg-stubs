@@ -13,7 +13,7 @@ from Callbacks.Callbacks import Callbacks as Callbacks
 from Nodes3DAPI.PortOpClient import GraphStateSpec as GraphStateSpec, PortOpClient as PortOpClient
 from PyUtilModule.RenderManager.Constants import RenderModes as RenderModes
 from PyUtilModule.WorkingSetManager import WorkingSetManager as WorkingSetManager
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Set, Tuple
 
 class LiveRenderPortOpObserver(PortOpClient):
     _abc_impl: ClassVar[_abc_data] = ...

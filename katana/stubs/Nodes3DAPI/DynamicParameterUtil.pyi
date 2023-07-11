@@ -5,6 +5,7 @@ import NodegraphAPI as NodegraphAPI
 import Nodes3DAPI_cmodule as Nodes3DAPI_cmodule
 import PyXmlIO as PyXmlIO
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 _DynamicArrayAttrPathsAttrName: str
 

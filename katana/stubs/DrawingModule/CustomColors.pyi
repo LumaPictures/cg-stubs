@@ -4,6 +4,7 @@ import drawing_cmodule as DrawingModule
 import Utils.EventModule as EventModule
 import NodegraphAPI as NodegraphAPI
 import Utils as Utils
+from typing import Set, Tuple
 
 def CopyNodeColorToLinkColor(node): ...
 def GetCustomNodeColor(node): ...

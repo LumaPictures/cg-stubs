@@ -6,6 +6,7 @@ import NodegraphAPI.NodegraphGlobals as NodegraphGlobals
 import Utils as Utils
 from NodegraphAPI_cmodule import PythonGroupNode as PythonGroupNode, node_createNode as node_createNode, node_registerPythonGroupType as node_registerPythonGroupType
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 _DefaultShapeAttrs: tuple
 _ExtraHints: dict

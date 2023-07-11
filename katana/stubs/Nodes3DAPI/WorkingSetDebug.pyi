@@ -5,7 +5,7 @@ import NodegraphAPI as NodegraphAPI
 from Nodes3DAPI.Node3D import Node3D as Node3D
 from PyUtilModule.WorkingSet import WorkingSet as WorkingSet
 from PyUtilModule.WorkingSetManager import WorkingSetManager as WorkingSetManager
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 _ExtraHints: dict
 _Parameter_XML: str

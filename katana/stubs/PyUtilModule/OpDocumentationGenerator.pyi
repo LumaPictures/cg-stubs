@@ -1,7 +1,7 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 import FnAttribute as FnAttribute
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class AttrTypes:
     kTypeAnyAttribute: ClassVar[int] = ...

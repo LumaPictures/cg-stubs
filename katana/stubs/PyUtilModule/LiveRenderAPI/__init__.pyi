@@ -2,11 +2,12 @@
 
 import Callbacks as Callbacks
 import FnAttribute as FnAttribute
-import PyUtilModule.LiveRenderAPI.PluginActionRegistry as PluginActionRegistry
 import PyFnAttribute
 import PyUtilModule.RenderingCommon as RenderingCommon
 import Utils as Utils
+from . import PluginActionRegistry as PluginActionRegistry
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 kVirtualCameraSceneGraphLocation: str
 

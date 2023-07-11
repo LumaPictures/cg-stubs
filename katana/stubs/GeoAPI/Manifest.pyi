@@ -13,5 +13,6 @@ import PluginSystemAPI as PluginSystemAPI
 import Utils as Utils
 import PyXmlIO as XmlIO
 from PyFnGeolibServices.LookFile import LookFile as LookFile
+from typing import Set, Tuple
 
 Geolib3BaseDir: str

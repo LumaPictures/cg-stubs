@@ -1,7 +1,6 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
-import PackageSuperToolAPI.BaseNode as BaseNode
-import PackageSuperToolAPI.NodeUtils as NodeUtils
-import PackageSuperToolAPI.Packages as Packages
+from . import BaseNode as BaseNode, NodeUtils as NodeUtils, Packages as Packages
+from typing import Set, Tuple
 
 def IsUIMode() -> bool: ...

@@ -3,7 +3,7 @@
 import PyXmlIO
 import NodegraphAPI.Xio as Xio
 from NodegraphAPI.Version.Updater import Updater as Updater
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class Updater2_0_1_38(Updater):
     VERSION: ClassVar[tuple] = ...

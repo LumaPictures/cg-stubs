@@ -12,6 +12,7 @@ import Nodes3DAPI.RenderingUtil as RenderingUtil
 import Utils as Utils
 from Callbacks.Callbacks import _TypeEnum
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 DEFAULT_INTERACTIVE_OUTPUT: str
 _OnRenderSetupCallbackId: _TypeEnum

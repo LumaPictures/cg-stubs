@@ -2,7 +2,7 @@
 
 import PyFnAttribute
 from RenderingAPI import FlushPluginCaches as FlushPluginCaches
-from typing import Any, overload
+from typing import Any, Set, Tuple, overload
 
 kRenderMethodTypeDiskRender: str
 kRenderMethodTypeLiveRender: str

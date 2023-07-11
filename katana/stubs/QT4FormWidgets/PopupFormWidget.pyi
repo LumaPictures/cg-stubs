@@ -3,11 +3,15 @@
 import QT4FormWidgets.HintUtils as HintUtils
 import QT4FormWidgets.InputWidgets as InputWidgets
 import QT4FormWidgets.PaintingUtils as PaintingUtils
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 import ResourceFiles as ResourceFiles
 from QT4FormWidgets.BaseValueFormWidget import BaseValueFormWidget as BaseValueFormWidget
 from QT4FormWidgets.FormWidget import FormWidget as FormWidget
 from QT4FormWidgets.PopupFormWidget import PopupFormWidget as PopupFormWidget
 from ResourceFiles.IconManager import ResourceManager as ResourceManager
+from typing import Set, Tuple
 
 class BooleanFormWidget(PopupFormWidget):
     def _assignValue(self, value): ...

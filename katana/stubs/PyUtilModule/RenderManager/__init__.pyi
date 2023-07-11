@@ -1,15 +1,6 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
-import PyUtilModule.RenderManager.Constants as Constants
-import PyUtilModule.RenderManager.Exceptions as Exceptions
-import PyUtilModule.RenderManager.InteractiveRenderDelegateManager as InteractiveRenderDelegateManager
-import PyUtilModule.RenderManager.NodegraphUtils as NodegraphUtils
-import PyUtilModule.RenderManager.RenderCore as RenderCore
-import PyUtilModule.RenderManager.RenderGlobals as RenderGlobals
-import PyUtilModule.RenderManager.RenderSettings as RenderSettings
-import PyUtilModule.RenderManager.RenderTriggers as RenderTriggers
-import PyUtilModule.RenderManager.ResolutionTableUtils as ResolutionTableUtils
-import PyUtilModule.RenderManager.ScenegraphUtils as ScenegraphUtils
+from . import Constants as Constants, Exceptions as Exceptions, InteractiveRenderDelegateManager as InteractiveRenderDelegateManager, NodegraphUtils as NodegraphUtils, RenderCore as RenderCore, RenderGlobals as RenderGlobals, RenderSettings as RenderSettings, RenderTriggers as RenderTriggers, ResolutionTableUtils as ResolutionTableUtils, ScenegraphUtils as ScenegraphUtils
 from PyUtilModule.RenderManager.Constants import RenderModes as RenderModes
 from PyUtilModule.RenderManager.Exceptions import RenderingException as RenderingException, UnsupportedRenderMethodNameException as UnsupportedRenderMethodNameException
 from PyUtilModule.RenderManager.RenderCore import CancelRender as CancelRender, CancelRendersByType as CancelRendersByType, StartRender as StartRender, StartRenderLegacy as StartRenderLegacy
@@ -18,6 +9,7 @@ from PyUtilModule.RenderManager.RenderSettings import RenderingSettings as Rende
 from PyUtilModule.RenderManager.RenderTriggers import DoesNodeTrigger2DRender as DoesNodeTrigger2DRender
 from PyUtilModule.RenderManager.ResolutionTableUtils import GetTempResolutionTablePath as GetTempResolutionTablePath, SaveResolutionTables as SaveResolutionTables
 from PyUtilModule.RenderManager.ScenegraphUtils import AddRenderSettingsToRecipe as AddRenderSettingsToRecipe
+from typing import Set, Tuple
 
 RENDERCAMERAPATH_VIEWER_BUILTIN: str
 RENDERCAMERATYPES: tuple

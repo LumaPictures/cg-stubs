@@ -2,5 +2,6 @@
 
 import KatanaResources as KatanaResources
 import Utils as Utils
+from typing import Set, Tuple
 
 def InitializePluginManager(): ...

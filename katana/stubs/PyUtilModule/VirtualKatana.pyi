@@ -22,6 +22,7 @@ import NodeGraphView as NodeGraphView
 import NodegraphAPI as NodegraphAPI
 import Nodes2DAPI as Nodes2DAPI
 import Nodes3DAPI as Nodes3DAPI
+import PyOpenColorIO as OCIO
 import PluginSystemAPI as PluginSystemAPI
 import PyFCurve as PyFCurve
 import PyXmlIO as PyXmlIO
@@ -42,7 +43,7 @@ import ViewerAPI as ViewerAPI
 import WorkQueue as WorkQueue
 from Callbacks.Callbacks import Callbacks as Callbacks
 from PyUtilModule import Initialize as Initialize
-from typing import Callable
+from typing import Callable, Set, Tuple
 
 LogGLHandlersOldLevel: int
 update: Callable

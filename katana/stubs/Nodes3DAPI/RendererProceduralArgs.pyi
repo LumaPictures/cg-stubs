@@ -13,7 +13,7 @@ from ConditionalStateGrammar.Parser import ParseCSG as ParseCSG
 from Nodes3DAPI.Node3D import Node3D as Node3D
 from Nodes3DAPI_cmodule import BuildAttrListFromDynamicParameterGroup as BuildAttrListFromDynamicParameterGroup
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 _ExtraHints: dict
 _Parameter_XML: str

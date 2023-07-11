@@ -6,7 +6,7 @@ import PyFnGeolib
 import PyUtilModule.WorkingSet
 from PyUtilModule.WorkingSet import LocationStateMap as LocationStateMap, WorkingSet as WorkingSet
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class WorkingSetClient:
     _WorkingSetClient__DELEGATE_TO_CLIENT: ClassVar[list] = ...

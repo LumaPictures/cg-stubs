@@ -5,6 +5,7 @@ import NodegraphAPI as NodegraphAPI
 import PyXmlIO as PyXmlIO
 from Nodes3DAPI.Node3D import Node3D as Node3D
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 SCRIPT: str
 SETUPSCRIPT: str

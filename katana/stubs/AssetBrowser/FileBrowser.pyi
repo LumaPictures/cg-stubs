@@ -4,14 +4,15 @@ import AssetAPI
 import KatanaResources as KatanaResources
 import PyQt5.QtCore
 import PyQt5.QtWidgets
-import QtWidgets
+import PyQt5.QtCore as QtCore
+import QtWidgets as QtWidgets
 import Utils as Utils
 import _FnKatanaCoreUI as _FnKatanaCoreUI
 import re
 from AssetBrowser.FileInfo import FileInfo as FileInfo
 from Utils.Decorators import deprecated as deprecated
 from _FnKatanaCoreUI import FnFileBrowser as FnFileBrowser, FnFileSequenceEvaluator as FnFileSequenceEvaluator
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class Browser(PyQt5.QtWidgets.QFrame):
     _FileSequenceEvaluator: ClassVar[FileSequenceEvaluator] = ...

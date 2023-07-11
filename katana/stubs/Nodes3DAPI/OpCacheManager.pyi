@@ -3,6 +3,7 @@
 import NodegraphAPI
 import PyFnGeolib
 import typing
+from typing import Set, Tuple
 
 class OpCacheManager:
     def __init__(self, eventHandlerRegistrationFunction: typing.Callable, nodegraphEvents: set | typing.Iterable): ...

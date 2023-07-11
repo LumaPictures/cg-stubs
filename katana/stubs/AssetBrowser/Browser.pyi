@@ -3,7 +3,8 @@
 import AssetBrowser.FileBrowser as FileBrowser
 import PyQt5.QtWidgets
 import QT4Widgets as QT4Widgets
-from typing import ClassVar
+import PyQt5.QtWidgets as QtWidgets
+from typing import ClassVar, Set, Tuple
 
 class BrowserDialog(PyQt5.QtWidgets.QDialog):
     _SETTINGS_GROUP: ClassVar[str] = ...

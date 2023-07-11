@@ -3,9 +3,13 @@
 import QT4FormWidgets.HintUtils as HintUtils
 import QT4FormWidgets.PaintingUtils as PaintingUtils
 import QT4Widgets as QT4Widgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 from QT4FormWidgets.BaseValueFormWidget import BaseValueFormWidget as BaseValueFormWidget
 from QT4FormWidgets.FormWidget import FormWidget as FormWidget
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 class CapsuleFormWidget(BaseValueFormWidget):
     def __init__(self, parent, policy, factory): ...

@@ -7,7 +7,7 @@ import abc
 from Nodes3DAPI.PortOpClient import PortOpClient as PortOpClient
 from Utils.Decorators import deprecated as deprecated
 from _typeshed import Incomplete
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Set, Tuple
 
 kCurrentGraphStateId: GraphStateId
 kNoGraphStateId: GraphStateId

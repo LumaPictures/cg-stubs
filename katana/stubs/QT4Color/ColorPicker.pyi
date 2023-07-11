@@ -5,17 +5,21 @@ import QT4Color.ColorTransforms as ColorTransforms
 import QT4Color.DropType as DropType
 import QT4Color.Globals as Globals
 import QT4Color.Gradient1D as Gradient1D
+import PyOpenColorIO as OCIO
 import PyQt5.QtCore
 import PyQt5.QtWidgets
 import QT4FormWidgets as QT4FormWidgets
 import QT4Widgets as QT4Widgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 import QT4Color.ScreenScraper as ScreenScraper
 from QT4Color.ColorDropWidget import ColorDropWidget as ColorDropWidget
 from QT4Color.ColorFormWidget import ColorComponentTabGroup as ColorComponentTabGroup, UpdateThrottler as UpdateThrottler
 from QT4Color.ColorTextWidget import ColorTextWidget as ColorTextWidget
 from QT4Color.Gradient2D import Gradient2DWidget as Gradient2DWidget
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class ColorPicker(ColorPickerBase):
     def __init__(self, colorObj: Incomplete | None = ...): ...

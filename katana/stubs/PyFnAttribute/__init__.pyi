@@ -1,9 +1,9 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
-import PyFnAttribute.Util as Util
 import typing
+from . import Util as Util
 from collections.abc import abstractmethod
-from typing import Any, Generic, TypeVar, overload
+from typing import Any, Generic, Set, Tuple, TypeVar, overload
 T = TypeVar("T")
 
 GroupBuilderBuildAndFlush: int
@@ -46,6 +46,7 @@ class ConstVector(Generic[T]):
     def __getitem__(self, index: int) -> T: ...
     @overload
     def __getitem__(self, index: slice) -> ConstVector[T]: ...
+    def __iter__(self) -> typing.Iterator[T]: ...
     def __gt__(self, other: object) -> bool: ...
     def __iter__(self) -> typing.Iterator[T]: ...
     def __le__(self, other: object) -> bool: ...

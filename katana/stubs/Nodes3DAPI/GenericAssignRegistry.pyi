@@ -5,6 +5,7 @@ import KatanaResources as KatanaResources
 import NodegraphAPI as NodegraphAPI
 import Utils as Utils
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 gCachedGenericAssignArgs: dict
 gGenericAssignNodeTypes: dict

@@ -5,5 +5,6 @@ import PyFnGeolib as FnGeolib
 import GeoAPI as GeoAPI
 from PyFnGeolibProducers import GeometryProducer as GeometryProducer
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 def CollectPathsFromCELStatement(producerOrClient, celStatement, interruptCallback: Incomplete | None = ...): ...

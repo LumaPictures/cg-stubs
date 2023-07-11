@@ -1,11 +1,14 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 import QT4FormWidgets
-import QtGui
-import QtWidgets
+import PyQt5.QtCore as QtCore
+import QtGui as QtGui
+import QtWidgets as QtWidgets
 import ResourceFiles as ResourceFiles
+from PyQt5.QtGui import EXPRESSION_TRIANGLE_COLOR as EXPRESSION_TRIANGLE_COLOR, TEXTCOLOR_ERROR as TEXTCOLOR_ERROR, TEXTCOLOR_WARNING as TEXTCOLOR_WARNING
 from ResourceFiles.IconManager import ResourceManager as ResourceManager
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 HIGHLIGHTSTYLE_ALWAYS: int
 HIGHLIGHTSTYLE_NONE: int

@@ -14,7 +14,7 @@ import typing
 from Nodes3DAPI_cmodule import BuildAttrListFromDynamicParameterGroup as BuildAttrListFromDynamicParameterGroup
 from _typeshed import Incomplete
 from types import ModuleType
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 __attrTypeClasses: dict
 

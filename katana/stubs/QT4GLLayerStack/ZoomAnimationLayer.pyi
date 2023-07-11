@@ -5,6 +5,7 @@ import QT4GLLayerStack.Util as Util
 from QT4GLLayerStack.EventEaterLayer import EventEaterLayer as EventEaterLayer
 from QT4GLLayerStack.LayerStack import Layer as Layer
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 class ZoomAnimationLayer(QT4GLLayerStack.LayerStack.Layer):
     def __init__(self, prevFocusLayer: Incomplete | None = ...): ...

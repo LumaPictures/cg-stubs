@@ -6,6 +6,7 @@ import NodegraphAPI as NodegraphAPI
 import PyUtilModule as PyUtilModule
 import PyResolutionTableFn as ResolutionTable
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 def ExportCatalogToDisk(items, filePath, imageFormat, imageOptions): ...
 def GetCommonResolutionNameFromItems(items): ...

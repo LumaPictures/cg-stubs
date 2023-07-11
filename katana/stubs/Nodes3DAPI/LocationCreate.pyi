@@ -6,6 +6,7 @@ import PyFnGeolibServices as FnGeolibServices
 import NodegraphAPI as NodegraphAPI
 import Nodes3DAPI_cmodule as Nodes3DAPI_cmodule
 from Nodes3DAPI.Node3D import Node3D as Node3D
+from typing import Set, Tuple
 
 _ExtraHints: dict
 _Parameter_XML: str

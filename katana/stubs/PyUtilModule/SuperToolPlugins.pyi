@@ -4,6 +4,7 @@ import KatanaResources as KatanaResources
 import NodegraphAPI as NodegraphAPI
 import Nodes3DAPI as Nodes3DAPI
 import Utils as Utils
+from typing import Set, Tuple
 
 _SuperTools: dict
 

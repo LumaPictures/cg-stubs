@@ -6,13 +6,14 @@ import CatalogAPI.CatalogUtils as CatalogUtils
 import PyUtilModule.KatanaFile as KatanaFile
 import NodegraphAPI as NodegraphAPI
 import Nodes2DAPI as Nodes2DAPI
+import PyOpenColorIO as OCIO
 import PyResolutionTableFn as ResolutionTable
 import Utils as Utils
 import re
 import typing
 from PyUtilModule.ProjectSnapshot import ProjectSnapshot as ProjectSnapshot, SnapshotType as SnapshotType
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 DEFAULT_INTERACTIVE_OUTPUT: str
 _NonPersistantItemAttrs: dict

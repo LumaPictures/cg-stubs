@@ -3,7 +3,7 @@
 import NodegraphAPI_cmodule
 import PyFnAttribute
 import typing
-from typing import Any, overload
+from typing import Any, Set, Tuple, overload
 
 @overload
 def BuildAttrListFromDynamicParameterGroup(groupParam: NodegraphAPI_cmodule.Parameter, graphState: NodegraphAPI_cmodule.GraphState, applyLocalSettings: bool = ..., attrPath: str = ..., alwaysIncludeSet: list[str] = ..., multisampleDefault: bool = ...) -> list: ...

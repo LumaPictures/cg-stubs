@@ -6,6 +6,7 @@ import Nodes3DAPI as Nodes3DAPI
 import Utils as Utils
 from Utils.Decorators import deprecated as deprecated
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 def GenerateXMLFile(**kwargs): ...
 def GetAutoMkproxy(node): ...

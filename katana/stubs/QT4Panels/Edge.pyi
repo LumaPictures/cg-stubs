@@ -1,6 +1,7 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 from QT4Panels.Edge import Edge
+from typing import Set, Tuple
 
 OtherSide: tuple
 SIDEB: int

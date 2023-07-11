@@ -2,10 +2,13 @@
 
 import PyQt5.QtCore
 import QT4Widgets as QT4Widgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 import ResourceFiles as ResourceFiles
 from QT4Widgets.FilterablePopupButton import FilterablePopupButton
 from ResourceFiles.IconManager import ResourceManager as ResourceManager
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class NonexclusiveCheckboxPopup(FilterablePopupButton):
     valuesChanged: ClassVar[PyQt5.QtCore.pyqtSignal] = ...

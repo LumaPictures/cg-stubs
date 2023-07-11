@@ -2,9 +2,12 @@
 
 import PyQt5.QtCore
 import PyQt5.QtWidgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 import QT4Widgets.WidgetUtils as WidgetUtils
 from QT4Widgets.CustomMenu import CustomMenu as CustomMenu
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class PopdownLabel(PyQt5.QtWidgets.QLabel):
     buildMenuSignal: ClassVar[PyQt5.QtCore.pyqtSignal] = ...

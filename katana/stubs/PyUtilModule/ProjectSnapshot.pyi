@@ -5,7 +5,7 @@ import NodegraphAPI as NodegraphAPI
 import PyXmlIO as PyXmlIO
 from PyUtilModule.ProjectSnapshot import ProjectSnapshot as ProjectSnapshot
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class FullProjectSnapshot(MinimalProjectSnapshot):
     def __init__(self, snapshotParameter: Incomplete | None = ...): ...

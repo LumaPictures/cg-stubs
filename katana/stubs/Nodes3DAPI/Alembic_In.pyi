@@ -6,6 +6,7 @@ import PyFnGeolibServices as FnGeolibServices
 import NodegraphAPI as NodegraphAPI
 from Nodes3DAPI.Node3D import Node3D as Node3D
 from Nodes3DAPI.TimingUtils import GetModifiedFrameTime as GetModifiedFrameTime, GetTimingParameterHints as GetTimingParameterHints, GetTimingParameterXML as GetTimingParameterXML
+from typing import Set, Tuple
 
 _ExtraHints: dict
 _Parameter_XML: str

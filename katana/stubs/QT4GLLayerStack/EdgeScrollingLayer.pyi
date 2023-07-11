@@ -2,9 +2,10 @@
 
 import PyQt5.QtCore
 import QT4GLLayerStack.LayerStack
+import PyQt5.QtCore as QtCore
 import QT4GLLayerStack.Util as Util
 from QT4GLLayerStack.LayerStack import Layer as Layer
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class EdgeScrollingLayer(QT4GLLayerStack.LayerStack.Layer):
     _INTERVAL: ClassVar[int] = ...

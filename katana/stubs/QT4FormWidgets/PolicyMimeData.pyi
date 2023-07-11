@@ -4,7 +4,8 @@ import ConfigurationAPI_cmodule as Configuration
 import PyQt5.QtCore
 import PyXmlIO as PyXmlIO
 import QT4FormWidgets
-import QtCore
+import QtCore as QtCore
+from typing import Set, Tuple
 
 class ParamMimeData(PyQt5.QtCore.QMimeData): ...
 

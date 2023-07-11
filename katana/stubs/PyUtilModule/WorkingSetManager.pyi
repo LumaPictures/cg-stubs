@@ -5,7 +5,7 @@ import Utils as Utils
 import typing
 from PyUtilModule.WorkingSet import WorkingSet as WorkingSet
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 systemWorkingSetName: str
 

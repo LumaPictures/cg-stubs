@@ -7,6 +7,7 @@ import PyUtilModule.RenderManager.RenderGlobals as RenderGlobals
 import RenderingAPI as RenderingAPI
 import PyUtilModule.RenderingCommon as RenderingCommon
 import PyResolutionTableFn as ResolutionTable
+from typing import Set, Tuple
 
 def AddCameraOverrideToRecipe(txn, inputOp, cameraLocationPath): ...
 def AddRenderOutputsToRecipe(txn: GeolibRuntime.Transaction, op: GeolibRuntime.Op, outputs: list) -> GeolibRuntime.Op: ...

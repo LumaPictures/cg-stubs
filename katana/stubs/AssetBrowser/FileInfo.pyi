@@ -2,7 +2,7 @@
 
 import AssetAPI as AssetAPI
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class DirectoryInfo:
     def __init__(self, directoryPath, findSequenceFunc: Incomplete | None = ...): ...

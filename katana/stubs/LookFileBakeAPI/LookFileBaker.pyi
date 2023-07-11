@@ -11,7 +11,7 @@ import typing
 from LookFileBakeAPI.Exceptions import LookFileBakeException as LookFileBakeException
 from LookFileBakeAPI.Utils import CheckRootLocations as CheckRootLocations, FindSharedLodGroupLocations as FindSharedLodGroupLocations, GetLookFileProducerRootId as GetLookFileProducerRootId, GetProducerFromOp as GetProducerFromOp
 from _typeshed import Incomplete
-from typing import Any
+from typing import Any, Set, Tuple
 
 class BakePrePostHandlerBase:
     def notify(self, assetId: str, rootLocationProducers, progressCallback: typing.Callable | None, abortCallback: typing.Callable | None): ...

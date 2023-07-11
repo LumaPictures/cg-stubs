@@ -2,6 +2,7 @@
 
 import NodegraphAPI.Version.Utils as Utils
 import collections
+from typing import Set, Tuple
 
 VERSION_SCRIPT_TYPE_XML: int
 VERSION_SCRIPT_TYPE_XMLIO: int

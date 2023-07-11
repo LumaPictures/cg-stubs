@@ -14,6 +14,7 @@ import Utils as Utils
 import collections
 from Utils.Decorators import deprecated as deprecated
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 RENDERCAMERAPATH_VIEWER_BUILTIN: str
 RENDERCAMERATYPES: tuple

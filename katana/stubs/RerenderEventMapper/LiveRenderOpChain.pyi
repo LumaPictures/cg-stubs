@@ -20,7 +20,7 @@ from Nodes3DAPI.OpCacheManager import OpCacheManager as OpCacheManager
 from PyUtilModule.WorkingSet import WorkingSet as WorkingSet
 from PyUtilModule.WorkingSetManager import WorkingSetManager as WorkingSetManager
 from _typeshed import Incomplete
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Set, Tuple
 
 class AOVOpChain(_OpChain):
     def __init__(self, mainSequenceID: int): ...

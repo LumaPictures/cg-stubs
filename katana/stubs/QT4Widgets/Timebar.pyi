@@ -2,8 +2,11 @@
 
 import PyQt5.QtCore
 import PyQt5.QtWidgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 import QT4Widgets.Timeline as Timeline
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class FrameButtonWidget(PyQt5.QtWidgets.QToolButton):
     def __init__(self, text, parent): ...

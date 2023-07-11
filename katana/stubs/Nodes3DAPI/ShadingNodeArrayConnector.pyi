@@ -5,6 +5,7 @@ import PyFnGeolib as FnGeolib
 import NodegraphAPI as NodegraphAPI
 import Nodes3DAPI.ShadingNodeUtil as ShadingNodeUtil
 from Nodes3DAPI.Node3D import Node3D as Node3D
+from typing import Set, Tuple
 
 class ShadingNodeArrayConnectorNode(Node3D):
     def __init__(self): ...

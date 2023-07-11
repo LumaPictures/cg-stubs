@@ -3,6 +3,7 @@
 import NodegraphAPI.Version.Registry as Registry
 import NodegraphAPI.Xio as Xio
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 localVersion: tuple
 

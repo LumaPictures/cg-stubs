@@ -2,12 +2,14 @@
 
 import PyQt5.QtCore
 import PyQt5.QtWidgets
-import QtCore
+import QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 import ResourceFiles as ResourceFiles
 import QT4Widgets.WidgetUtils as WidgetUtils
 from ResourceFiles.IconManager import ResourceManager as ResourceManager
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class MenuButton(PyQt5.QtWidgets.QPushButton):
     dragEnterEventSignal: ClassVar[PyQt5.QtCore.pyqtSignal] = ...

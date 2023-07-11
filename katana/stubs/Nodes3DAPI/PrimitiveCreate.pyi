@@ -9,6 +9,7 @@ import Nodes3DAPI.TransformUtil as TransformUtil
 from Nodes3DAPI.AbstractTransform import AT as AT, AbstractTransform as AbstractTransform
 from Nodes3DAPI.PrimitiveCreate import PrimitiveCreate
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 _ExtraHints: dict
 _Parameter_XML: str

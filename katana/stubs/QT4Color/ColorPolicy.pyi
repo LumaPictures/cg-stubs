@@ -3,6 +3,7 @@
 import QT4FormWidgets as QT4FormWidgets
 import QT4FormWidgets.PythonValuePolicy
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 FLT_CMP_EPSILON: float
 _EnableFilmlookDefault: bool

@@ -2,7 +2,10 @@
 
 import PyQt5.QtCore
 import PyQt5.QtWidgets
-from typing import ClassVar
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
+from typing import ClassVar, Set, Tuple
 
 class LumaSliderWidget(PyQt5.QtWidgets.QWidget):
     valueChanged: ClassVar[PyQt5.QtCore.pyqtSignal] = ...

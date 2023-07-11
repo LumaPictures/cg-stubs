@@ -5,6 +5,7 @@ import Nodes2DAPI as Nodes2DAPI
 import Nodes3DAPI as Nodes3DAPI
 import Utils as Utils
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 __global_allowDelayedExecution: bool
 __global_buffer2DAutoLock: None

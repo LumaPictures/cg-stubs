@@ -2,6 +2,7 @@
 
 import PyQt5.QtWidgets
 import sip
+from typing import Set, Tuple
 
 class Foundry(sip.simplewrapper):
     class UI(sip.simplewrapper):

@@ -5,6 +5,8 @@ import PyQt5.QtCore
 import PyQt5.QtWidgets
 import QT4FormWidgets as QT4FormWidgets
 import QT4FormWidgets.ValuePolicy
+import PyQt5.QtCore as QtCore
+import PyQt5.QtWidgets as QtWidgets
 import ResourceFiles as ResourceFiles
 import ValuePolicy
 import Utils.WeakMethod as WeakMethod
@@ -16,7 +18,7 @@ from QT4Color.Gradient1D import LinearGradientWidget as LinearGradientWidget
 from QT4FormWidgets.GroupFormWidget import GroupFormWidget
 from ResourceFiles.IconManager import ResourceManager as ResourceManager
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class ColorComponentTabGroup(PyQt5.QtWidgets.QTabWidget):
     valueChanged: ClassVar[PyQt5.QtCore.pyqtSignal] = ...

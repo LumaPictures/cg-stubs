@@ -1,5 +1,6 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
+from typing import Set, Tuple
 
 class ResolutionTable:
     def __init__(self, filename: str = ...) -> None: ...

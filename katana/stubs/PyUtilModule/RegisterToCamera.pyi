@@ -5,6 +5,7 @@ import NodegraphAPI as NodegraphAPI
 import Nodes3DAPI as Nodes3DAPI
 import Utils as Utils
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 def RegisterToCamera(node, distance, planeType, cameraProducer, time): ...
 def RegisterToNamedCamera(node, distance, planeType, scenegraphSourceNode, time, cameraName: Incomplete | None = ...): ...

@@ -2,14 +2,16 @@
 
 import PyFnAttribute as FnAttribute
 import NodegraphAPI as NodegraphAPI
+import PackageSuperToolAPI.Packages
 import PackageSuperToolAPI.Policies as Policies
 import PyQt5.QtCore
 import QT4FormWidgets
+import PyQt5.QtCore as QtCore
 import Utils as Utils
 from PackageSuperToolAPI.UIDelegate import UIDelegate as UIDelegate
 from Utils.Decorators import deprecated as deprecated
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 __uiDelegateClasses: dict
 
@@ -30,7 +32,7 @@ class UIDelegate(PyQt5.QtCore.QObject):
     @classmethod
     def getKeyboardShortcuts(cls): ...
     def getMenuActions(self) -> list[tuple[str, str, bool]]: ...
-    def getPackage(self) -> Package: ...
+    def getPackage(self) -> PackageSuperToolAPI.Packages.Package: ...
     def getPackageNode(self) -> NodegraphAPI.Node: ...
     def getReferencedNode(self, paramName: str) -> NodegraphAPI.Node | None: ...
     def getTabPolicy(self, tabName: str) -> QT4FormWidgets.AbstractValuePolicy | None: ...

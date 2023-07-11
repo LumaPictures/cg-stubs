@@ -6,6 +6,7 @@ import NodegraphAPI
 import NodegraphAPI_cmodule as NodegraphAPI_cmodule
 import NodegraphAPI.NodegraphGlobals as NodegraphGlobals
 import Utils as Utils
+from typing import Set, Tuple
 
 _SuperTools: dict
 

@@ -4,6 +4,7 @@ import NodegraphAPI.NodeExtensions as NodeExtensions
 import NodegraphAPI_cmodule
 import NodegraphAPI.NodegraphGlobals as NodegraphGlobals
 from NodegraphAPI_cmodule import PythonNode as PythonNode, node_registerPythonNodeType as node_registerPythonNodeType
+from typing import Set, Tuple
 
 _ExtraHints: dict
 _Parameter_XML: str

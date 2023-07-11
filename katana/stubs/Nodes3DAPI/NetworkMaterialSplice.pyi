@@ -11,6 +11,7 @@ from Nodes3DAPI.CreateUtil import BuildChild as BuildChild
 from Nodes3DAPI.NetworkMaterial import NetworkMaterialNode as NetworkMaterialNode
 from Nodes3DAPI.ShadingNodeUtil import ReportError as ReportError
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 _DefaultConnectionParamXML: str
 _DefaultDisconnectionParamXML: str

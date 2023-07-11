@@ -2,6 +2,7 @@
 
 import QT4GLLayerStack.LayerStack as LayerStack
 import QT4GLLayerStack.LayerStack
+from typing import Set, Tuple
 
 class CheckerboardLayer(QT4GLLayerStack.LayerStack.Layer):
     def __init__(self, *args, **kwargs): ...

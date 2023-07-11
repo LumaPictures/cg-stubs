@@ -3,7 +3,7 @@
 import NodegraphAPI.Version.Registry as Registry
 import NodegraphAPI.Xio as Xio
 from NodegraphAPI.Version.Updater import Updater as Updater
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class Updater2_7_34(Updater):
     RENAME_ShadingNetworkMaterialAppend_TO: ClassVar[str] = ...

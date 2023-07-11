@@ -1,6 +1,7 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 import FnAttribute
+from typing import Set, Tuple
 
 _virtualCameraAttributes: None
 kVirtualCameraSceneGraphLocation: str

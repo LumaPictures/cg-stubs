@@ -3,10 +3,13 @@
 import PyFCurve as PyFCurve
 import PyQt5.QtCore
 import PyQt5.QtWidgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 from QTFCurve.MixedGroupState import MixedGroupState as MixedGroupState
 from QTFCurve.UniqueListDict import UniqueListDict as UniqueListDict
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 STATE_MIXED: int
 STATE_OFF: int

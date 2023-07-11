@@ -2,7 +2,10 @@
 
 import PyQt5.QtCore
 import PyQt5.QtWidgets
-from typing import ClassVar
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
+from typing import ClassVar, Set, Tuple
 
 class PopupMenuOption(PyQt5.QtWidgets.QFrame):
     class DialogRequestButton(PyQt5.QtWidgets.QLabel):

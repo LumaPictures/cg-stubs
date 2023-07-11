@@ -2,7 +2,10 @@
 
 import QT4Panels.Edge as Edge
 import PyQt5.QtWidgets
-import QtGui
+import PyQt5.QtCore as QtCore
+import QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
+from typing import Set, Tuple
 
 class DragOverlay(PyQt5.QtWidgets.QWidget):
     def __init__(self, parent): ...

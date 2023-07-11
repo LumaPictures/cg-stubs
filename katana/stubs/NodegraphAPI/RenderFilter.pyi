@@ -3,6 +3,7 @@
 import NodegraphAPI.GroupStack
 from NodegraphAPI.GroupStack import GroupStackNode as GroupStackNode
 from NodegraphAPI_cmodule import node_addNodeFlavor as node_addNodeFlavor, node_registerPythonGroupType as node_registerPythonGroupType
+from typing import Set, Tuple
 
 _ExtraHints: dict
 _NodeNameFromParamIsRegistered: bool

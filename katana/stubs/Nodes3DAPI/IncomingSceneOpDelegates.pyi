@@ -6,7 +6,7 @@ import LoggingAPI as LoggingAPI
 import NodegraphAPI as NodegraphAPI
 from _typeshed import Incomplete
 from types import ModuleType
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 _IncomingSceneOpDelegates: dict
 _OutgoingAttributesDelegates: dict

@@ -3,10 +3,10 @@
 import NodegraphAPI_cmodule
 import PyFnAttribute
 import PyXmlIO
-import Nodes2DAPI_cmodule.Views as Views
 import types
 import typing
-from typing import Any, overload
+from . import Views as Views
+from typing import Any, Set, Tuple, overload
 
 RENDER_TYPE_IDLE: int
 RENDER_TYPE_PRIMARY: int

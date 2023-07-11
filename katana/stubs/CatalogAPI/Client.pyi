@@ -6,7 +6,7 @@ import Utils as Utils
 import Utils.UndoStack
 import _CatalogItemProjectSettings
 from CatalogItem import CatalogItem as CatalogItem
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Set, Tuple
 
 _CatalogItemIDs: dict
 _DEFAULT_SLOT: int

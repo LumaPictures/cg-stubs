@@ -3,6 +3,7 @@
 import drawing_cmodule as DrawingModule
 import NodegraphAPI as NodegraphAPI
 import Utils as Utils
+from typing import Set, Tuple
 
 def GetDrawOutputsAttr(node): ...
 def SetDrawOutputsAttr(node, value): ...

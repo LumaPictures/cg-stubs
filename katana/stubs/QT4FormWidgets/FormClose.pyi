@@ -2,8 +2,10 @@
 
 import QT4FormWidgets.FWidget as FWidget
 import QT4FormWidgets.FWidget
+import PyQt5.QtCore as QtCore
 import ResourceFiles as ResourceFiles
 from ResourceFiles.IconManager import ResourceManager as ResourceManager
+from typing import Set, Tuple
 
 DISABLED_OPACITY: float
 

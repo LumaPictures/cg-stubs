@@ -2,7 +2,7 @@
 
 from Callbacks.Callbacks import CallbacksManager, _TypeEnum
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 Callbacks: CallbacksManager
 _Callbacks: dict

@@ -11,6 +11,7 @@ import NodegraphAPI.GroupStack
 import NodegraphAPI_cmodule
 import NodegraphAPI.NodegraphGlobals as NodegraphGlobals
 import PyXmlIO
+import PyQt5.QtCore as QtCore
 import Utils.UndoStack as UndoStack
 import Utils as Utils
 import Utils.UndoStack
@@ -19,7 +20,7 @@ from Callbacks.Callbacks import Callbacks as Callbacks
 from NodegraphAPI_cmodule import GroupNode as GroupNode, PythonGroupNode as PythonGroupNode, node_addNodeFlavor as node_addNodeFlavor, node_getAllNodes as node_getAllNodes, node_registerPythonGroupType as node_registerPythonGroupType
 from Utils.Decorators import deprecated as deprecated
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 NodePortChangeEventTypes: set
 ParameterChangeEventTypes: set

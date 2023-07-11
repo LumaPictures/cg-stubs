@@ -10,7 +10,7 @@ import typing
 from Nodes3DAPI.TerminalOpDelegates.TerminalOpDelegate import TerminalOpDelegate as TerminalOpDelegate
 from PyUtilModule.WorkingSet import WorkingSet
 from PyUtilModule.WorkingSetManager import WorkingSetManager as WorkingSetManager
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class WorkingSetTerminalOpDelegate(TerminalOpDelegate):
     OP_TYPE: ClassVar[str] = ...

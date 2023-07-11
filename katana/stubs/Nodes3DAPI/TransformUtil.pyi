@@ -4,6 +4,7 @@ import PyFnAttribute as FnAttribute
 import Utils as Utils
 import PyFnGeolibServices.XFormUtil as XFormUtil
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 _TransformParameterHints: dict
 _xyz: list

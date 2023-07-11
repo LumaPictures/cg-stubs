@@ -2,7 +2,7 @@
 
 import PyFnAttribute as FnAttribute
 from Nodes3DAPI.Node3D import Node3D as Node3D
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class BaseConstraint(Node3D):
     CommonParamXML: ClassVar[str] = ...

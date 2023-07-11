@@ -6,7 +6,7 @@ import NodegraphAPI_cmodule
 import Utils as Utils
 import re
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 REFMTL_ROOT: str
 _DefaultShapeAttrs: tuple

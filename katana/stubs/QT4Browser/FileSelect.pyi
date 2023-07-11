@@ -2,8 +2,11 @@
 
 import QT4Browser.BrowserSettings as BrowserSettings
 import PyQt5.QtWidgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 from QT4Browser.FileBrowser import FileBrowser as FileBrowser
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 SETTINGS_GROUP_NAME: str
 

@@ -79,6 +79,7 @@ packages = [
     { include = "ViewerAPI-stubs", from = "stubs" },
     { include = "WorkQueue-stubs", from = "stubs" },
     { include = "_FnKatanaCoreUI-stubs", from = "stubs" },
+    { include = "_PyOpenColorIO-stubs", from = "stubs" },
     { include = "drawing_cmodule-stubs", from = "stubs" },
 ]
 

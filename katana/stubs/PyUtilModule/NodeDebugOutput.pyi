@@ -10,6 +10,7 @@ import PyUtilModule.RenderManager as RenderManager
 import RenderingAPI as RenderingAPI
 import Utils as Utils
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 gCompleted: None
 gCustomEditor: None

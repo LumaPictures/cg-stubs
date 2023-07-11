@@ -6,6 +6,7 @@ import NodegraphAPI_cmodule as NodegraphAPI_cmodule
 import Utils as Utils
 import collections
 import typing
+from typing import Set, Tuple
 
 RTLD_GLOBAL: int
 RTLD_NOW: int

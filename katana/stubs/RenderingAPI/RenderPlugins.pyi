@@ -4,12 +4,13 @@ import ConfigurationAPI_cmodule as Configuration
 import PyFnAttribute as FnAttribute
 import GeoAPI as GeoAPI
 import NodegraphAPI as NodegraphAPI
+import PyOpenColorIO as OCIO
 import PluginSystemAPI as PluginSystemAPI
 import RenderingAPI.RenderOutputs as RenderOutputs
 import RenderingAPI as RenderingAPI
 import re
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 _infoPluginsByShaderType: None
 _renderInfoMap: dict

@@ -8,6 +8,7 @@ import PyXmlIO as PyXmlIO
 import Utils as Utils
 from CatalogAPI.CatalogItem import CatalogItem as CatalogItem, _ClearItemAttrs as _ClearItemAttrs
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 DEFAULT_ITEM_XML: str
 RENDER_STATE_CANCELLED: str

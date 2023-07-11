@@ -1,7 +1,7 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 import PyFnAttribute
-from typing import overload
+from typing import Set, Tuple, overload
 
 class AttributeSet:
     def __init__(self) -> None: ...

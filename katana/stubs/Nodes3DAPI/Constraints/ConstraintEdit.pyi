@@ -12,6 +12,7 @@ from Nodes3DAPI.Node3D import Node3D as Node3D
 from Nodes3DAPI_cmodule import BuildAttrListFromDynamicParameterGroup as BuildAttrListFromDynamicParameterGroup
 from Utils.Decorators import deprecated as deprecated
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 _ParamHints: dict
 _Parameter_XML: str

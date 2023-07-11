@@ -3,6 +3,7 @@
 import Utils.EventModuleCommon as EventModuleCommon
 import typing
 from Utils.Exceptions import GetExceptionMessage as GetExceptionMessage
+from typing import Set, Tuple
 
 _EventQueue: list
 _SynchronousEventProcessing: bool

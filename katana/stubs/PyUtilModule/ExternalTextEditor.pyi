@@ -3,6 +3,7 @@
 import ConfigurationAPI_cmodule as Configuration
 import Utils as Utils
 from Utils.Decorators import deprecated as deprecated
+from typing import Set, Tuple
 
 def GetExternalEditor(): ...
 def GetExternalEditorName(): ...

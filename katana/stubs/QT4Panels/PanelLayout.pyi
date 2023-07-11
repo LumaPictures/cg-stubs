@@ -4,8 +4,12 @@ import QT4Panels.DragOverlay as DragOverlay
 import QT4Panels.Edge as Edge
 import QT4Panels.Layouts as Layouts
 import PyQt5.QtWidgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 from QT4Panels.PanelFrame import PanelFrame as PanelFrame
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 class PanelLayout(PyQt5.QtWidgets.QWidget):
     def __init__(self, parent, layout: Incomplete | None = ..., dragType: Incomplete | None = ...): ...

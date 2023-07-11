@@ -6,6 +6,7 @@ import PyUtilModule.RenderManager.RenderGlobals as RenderGlobals
 import Utils as Utils
 from PyUtilModule.RenderManager.Constants import RenderModes as RenderModes
 from PyUtilModule.RenderManager.Exceptions import RenderingException as RenderingException
+from typing import Set, Tuple
 
 def ApplyInteractiveRenderDelegates(renderPort: NodegraphAPI.Port): ...
 def BuildRenderPortsAndGraphStatesList(settings: RenderingSettings, sourcePorts: list[int | str], sourceNodes: NodegraphAPI.Node) -> list[NodegraphAPI.Port]: ...

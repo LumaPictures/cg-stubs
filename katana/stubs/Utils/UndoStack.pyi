@@ -2,6 +2,7 @@
 
 import Utils.EventModule as EventModule
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 _AsyncGroupCount: int
 _AsyncMode: bool

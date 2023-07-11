@@ -3,6 +3,7 @@
 import NodegraphAPI as NodegraphAPI
 import Nodes2DAPI_cmodule as Nodes2DAPI_cmodule
 import Utils as Utils
+from typing import Set, Tuple
 
 THUMBNAIL_MINIMUM_RERENDER_TIME_S: int
 THUMBNAIL_SAMPLE_RATE: tuple

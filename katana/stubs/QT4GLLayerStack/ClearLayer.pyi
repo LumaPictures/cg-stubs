@@ -2,6 +2,8 @@
 
 import QT4GLLayerStack.LayerStack as LayerStack
 import QT4GLLayerStack.LayerStack
+import PyQt5.QtGui as QtGui
+from typing import Set, Tuple
 
 ARRAY_TYPE_TO_CONSTANT: list
 GL_VOID_P: object

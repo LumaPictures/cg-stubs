@@ -1,7 +1,7 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 from _typeshed import Incomplete
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Set, Tuple
 
 _OutputFormats: list
 _OutputFormatsByName: dict

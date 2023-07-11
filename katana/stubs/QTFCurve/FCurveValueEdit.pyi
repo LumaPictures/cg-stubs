@@ -3,9 +3,11 @@
 import PyFCurve as PyFCurve
 import PyQt5.QtWidgets
 import QT4FormWidgets as QT4FormWidgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtWidgets as QtWidgets
 import Utils as Utils
 from QTFCurve.FCurveSnapSettingsMenu import FCurveSnapSettingsMenu as FCurveSnapSettingsMenu
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class FCurveValueEdit(PyQt5.QtWidgets.QWidget):
     class _ValueEditSelectionObserver(PyFCurve.SelectionObserver):

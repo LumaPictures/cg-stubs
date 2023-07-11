@@ -18,7 +18,7 @@ from Nodes3DAPI.PortOpClient import PortOpClient as PortOpClient, g_portOpClient
 from Nodes3DAPI.TerminalOpDelegates.TerminalOpDelegate import TerminalOpDelegate
 from PyFnGeolib import _Geolib as _Geolib, _Runtime as _Runtime, _gDefaultSourceOp as _gDefaultSourceOp
 from _typeshed import Incomplete
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Set, Tuple
 
 NodegraphEventTypes: dict
 _OpDependencyInfo_pull: dict

@@ -2,13 +2,16 @@
 
 import QT4FormWidgets.PaintingUtils as PaintingUtils
 import QT4Widgets as QT4Widgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 from QT4FormWidgets.FWidget import FBoxLayout as FBoxLayout, FButton as FButton, FDisclosureTriangle as FDisclosureTriangle, FLabel as FLabel, FLockIcon as FLockIcon, FMenu as FMenu, FPixmap as FPixmap, FSpacer as FSpacer, FStateBadge as FStateBadge, FSvgIcon as FSvgIcon, FToggleStateBadge as FToggleStateBadge, FWidget as FWidget
 from QT4FormWidgets.FormWidget import AlignChildLabelWidths as AlignChildLabelWidths, AlignLeftControlWidths as AlignLeftControlWidths, FormWidget as FormWidget, ScrubbingStates as ScrubbingStates
 from QT4FormWidgets.NumberFormWidget import CreateSensitivityMenu as CreateSensitivityMenu, FormatNumber as FormatNumber, NumberFormWidget as NumberFormWidget
 from QT4FormWidgets.StringFormWidget import StringFormWidget as StringFormWidget
 from QT4FormWidgets.ValuePolicy import ValuePolicyEvent as ValuePolicyEvent, ValuePolicyProxy as ValuePolicyProxy
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class TabGroupFormWidget(FormWidget):
     _TabGroupFormWidget__STYLEMAP: ClassVar[dict] = ...

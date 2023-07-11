@@ -1,16 +1,6 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
-import QT4Color.ASCColorCorrector as ASCColorCorrector
-import QT4Color.ColorPolicy as ColorPolicy
-import QT4Color.ColorTransforms as ColorTransforms
-import QT4Color.Degenerate as Degenerate
-import QT4Color.DropType as DropType
-import QT4Color.Globals as Globals
-import QT4Color.Gradient1D as Gradient1D
-import QT4Color.Gradient2D as Gradient2D
-import QT4Color.ScreenScraper as ScreenScraper
-import QT4Color.Swatches as Swatches
-import QT4Color.WidgetUtils as WidgetUtils
+from . import ASCColorCorrector as ASCColorCorrector, ColorPolicy as ColorPolicy, ColorTransforms as ColorTransforms, Degenerate as Degenerate, DropType as DropType, Globals as Globals, Gradient1D as Gradient1D, Gradient2D as Gradient2D, ScreenScraper as ScreenScraper, Swatches as Swatches, WidgetUtils as WidgetUtils
 from QT4Color.ASCColorCorrector import ColorGradeWidget as ColorGradeWidget, MonitorGammaWidget as MonitorGammaWidget
 from QT4Color.ColorDropWidget import ColorDropWidget as ColorDropWidget
 from QT4Color.ColorFormWidget import ColorComponentTabGroup as ColorComponentTabGroup, ColorFormWidget as ColorFormWidget, UpdateThrottler as UpdateThrottler
@@ -31,5 +21,6 @@ from QT4Color.ScreenScraper import ScreenScraperPushButton as ScreenScraperPushB
 from QT4Color.Swatches import BuildSwatchPixmap as BuildSwatchPixmap, BuildSwatchPixmapForPolicy as BuildSwatchPixmapForPolicy, GetSwatchColors as GetSwatchColors, PaintColorSwatch as PaintColorSwatch
 from QT4Color.TempColorWidget import TempColorWidget as TempColorWidget, TempColorWidgetBase as TempColorWidgetBase
 from QT4Color.WidgetUtils import MiniLabelButton as MiniLabelButton, SetCompactWidgetWidth as SetCompactWidgetWidth, StripedFrame as StripedFrame
+from typing import Set, Tuple
 
 SMALL: float

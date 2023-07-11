@@ -4,6 +4,7 @@ import NodegraphAPI_cmodule as NodegraphAPI_cmodule
 import PyXmlIO as PyXmlIO
 import Utils as Utils
 import NodegraphAPI.Xio as Xio
+from typing import Set, Tuple
 
 class UserParameterError(RuntimeError): ...
 

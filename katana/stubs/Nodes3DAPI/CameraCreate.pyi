@@ -9,7 +9,7 @@ import Nodes3DAPI.TransformUtil as TransformUtil
 from Nodes3DAPI.AbstractTransform import AbstractTransform
 from Nodes3DAPI_cmodule import BuildGroupAttrFromParam as BuildGroupAttrFromParam
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 _ExtraHints: dict
 _Parameter_XML: str

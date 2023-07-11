@@ -3,8 +3,9 @@
 import QT4FormWidgets.PaintingUtils as PaintingUtils
 import PyQt5.QtCore
 import PyQt5.QtWidgets
-import QtCore
-import QtGui
+import QtCore as QtCore
+import QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 import ResourceFiles as ResourceFiles
 import Utils as Utils
 from QT4FormWidgets.FWidget import FWidget as FWidget
@@ -12,7 +13,7 @@ from QT4FormWidgets.FixableBoxLayout import FixableBoxLayout as FixableBoxLayout
 from ResourceFiles.IconManager import ResourceManager as ResourceManager
 from Utils.Decorators import deprecated as deprecated
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class FBoxLayout(FixableBoxLayout):
     def add(self, w): ...

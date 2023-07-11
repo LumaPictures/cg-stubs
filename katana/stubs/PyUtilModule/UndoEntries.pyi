@@ -7,6 +7,7 @@ import Utils.UndoStack as UndoStack
 import Utils as Utils
 import Utils.UndoStack
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 _parameter_changing_map: dict
 

@@ -1,7 +1,9 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 import ConfigurationAPI_cmodule as Configuration
+import PyQt5.QtCore as QtCore
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 DEFAULT_SOURCE_NAME: str
 REMOTE_HOST: str

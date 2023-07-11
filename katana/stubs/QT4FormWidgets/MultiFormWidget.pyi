@@ -1,10 +1,13 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 import QT4FormWidgets.ArrayItemEntry as ArrayItemEntry
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
 from QT4FormWidgets.FWidget import FBoxLayout as FBoxLayout, FButton as FButton, FDisclosureTriangle as FDisclosureTriangle, FLabel as FLabel, FLockIcon as FLockIcon, FMenu as FMenu, FPixmap as FPixmap, FSpacer as FSpacer, FStateBadge as FStateBadge, FSvgIcon as FSvgIcon, FToggleStateBadge as FToggleStateBadge, FWidget as FWidget
 from QT4FormWidgets.FormWidget import AlignChildLabelWidths as AlignChildLabelWidths, AlignLeftControlWidths as AlignLeftControlWidths, FormWidget as FormWidget, ScrubbingStates as ScrubbingStates
 from QT4FormWidgets.GroupFormWidget import GroupFormWidget as GroupFormWidget
 from QT4FormWidgets.InputWidgets import InputLineEdit as InputLineEdit
+from typing import Set, Tuple
 
 class MultiFormWidget(GroupFormWidget):
     def __init__(self, parent, policy, factory): ...

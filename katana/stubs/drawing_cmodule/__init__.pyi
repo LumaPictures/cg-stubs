@@ -2,7 +2,7 @@
 
 import NodegraphAPI_cmodule
 import Nodes2DAPI_cmodule
-from typing import Any, overload
+from typing import Any, Set, Tuple, overload
 
 NodeDehilightingModeConnected: int
 NodeDehilightingModeContributing: int

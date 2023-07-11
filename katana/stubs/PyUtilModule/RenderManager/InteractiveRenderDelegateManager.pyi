@@ -3,6 +3,7 @@
 import PyUtilModule.IRFs as IRFs
 import NodegraphAPI as NodegraphAPI
 import NodegraphAPI.RenderFilter
+from typing import Set, Tuple
 
 _delegates: dict
 _renderFiltersDelegate: None

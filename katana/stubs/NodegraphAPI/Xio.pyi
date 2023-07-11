@@ -5,6 +5,7 @@ import Naming as UniqueName
 import Utils as Utils
 from Utils.Decorators import deprecated as deprecated
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 def DeleteChildByName(node, childName): ...
 def Document_getReleaseTag(doc: PyXmlIO.Element) -> str: ...

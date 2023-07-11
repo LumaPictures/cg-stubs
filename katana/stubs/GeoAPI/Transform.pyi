@@ -2,6 +2,7 @@
 
 import GeoAPI.Util as Util
 import PyFnGeolibServices.XFormUtil as XFormUtil
+from typing import Set, Tuple
 
 def ProducerLocalTransform(producer): ...
 def ProducerWorldBounds(producer): ...

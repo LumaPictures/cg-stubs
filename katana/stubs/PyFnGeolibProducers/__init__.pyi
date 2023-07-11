@@ -1,7 +1,8 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 import PyFnAttribute
-import PyFnGeolibProducers.RendererOutputUtil as RendererOutputUtil
+from . import RendererOutputUtil as RendererOutputUtil
+from typing import Set, Tuple
 
 class BinaryAttrWriter:
     def __init__(self, arg0: str) -> None: ...

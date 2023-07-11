@@ -25,7 +25,7 @@ from Nodes3DAPI.ScenegraphMask import GetScenegraphMaskEnabled as GetScenegraphM
 from Nodes3DAPI.TerminalOpDelegates.TerminalOpDelegate import TerminalOpDelegate
 from PyUtilModule.WorkingSetManager import WorkingSetManager as WorkingSetManager
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 _CustomImplicitResolvers: dict
 _Finalize3DNodeChangesCallbackID: _TypeEnum

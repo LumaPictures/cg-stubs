@@ -2,8 +2,12 @@
 
 import QT4FormWidgets.InputWidgets as InputWidgets
 import QT4FormWidgets.PaintingUtils as PaintingUtils
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 from QT4FormWidgets.BaseValueFormWidget import BaseValueFormWidget as BaseValueFormWidget
 from QT4FormWidgets.MultiStateBadge import MultiStateBadge as MultiStateBadge, ToggleStateBadge as ToggleStateBadge, ToggleValuePolicyState as ToggleValuePolicyState
+from typing import Set, Tuple
 
 class StringFormWidget(BaseValueFormWidget):
     def __init__(self, parent, policy, factory): ...

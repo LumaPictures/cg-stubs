@@ -17,6 +17,7 @@ from Nodes3DAPI.Node3D import Node3D as Node3D
 from Nodes3DAPI.ShadingNodeUtil import GetConnectionNames as GetConnectionNames, ReportError as ReportError
 from Nodes3DAPI_cmodule import BuildAttrListFromDynamicParameterGroup as BuildAttrListFromDynamicParameterGroup
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 DEFAULT_PORT_COLOR: str
 PORT_DATATYPE_COLORS: dict

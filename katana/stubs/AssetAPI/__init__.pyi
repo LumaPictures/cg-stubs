@@ -4,6 +4,7 @@ import AssetAPI_cmodule as AssetAPI_cmodule
 import KatanaResources as KatanaResources
 import Utils as Utils
 from AssetAPI_cmodule import AssetPlugin as AssetPlugin, AssetTransaction as AssetTransaction, FileSequence as FileSequence, FileSequencePlugin as FileSequencePlugin, GetAssetPlugin as GetAssetPlugin, GetAssetPluginNames as GetAssetPluginNames, GetDefaultAssetPlugin as GetDefaultAssetPlugin, GetDefaultAssetPluginName as GetDefaultAssetPluginName, GetDefaultFileSequencePlugin as GetDefaultFileSequencePlugin, GetDefaultFileSequencePluginName as GetDefaultFileSequencePluginName, GetFileSequencePlugin as GetFileSequencePlugin, GetFileSequencePluginNames as GetFileSequencePluginNames, ResetAllAssetAPIPlugins as ResetAllAssetAPIPlugins, SetDefaultAssetPluginName as SetDefaultAssetPluginName, SetDefaultFileSequencePluginName as SetDefaultFileSequencePluginName
+from typing import Set, Tuple
 
 kAssetContextAlembic: str
 kAssetContextAttributeFile: str

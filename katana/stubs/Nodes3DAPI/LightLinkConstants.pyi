@@ -1,6 +1,6 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class InitialState:
     DEFAULT: ClassVar[float] = ...

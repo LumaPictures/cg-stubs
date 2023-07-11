@@ -3,6 +3,7 @@
 import NodegraphAPI as NodegraphAPI
 import NodegraphAPI_cmodule
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 _DefaultShapeAttrs: tuple
 _ExtraHints: dict

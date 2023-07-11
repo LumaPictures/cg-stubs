@@ -8,6 +8,7 @@ import NodegraphAPI as NodegraphAPI
 import Nodes3DAPI as Nodes3DAPI
 import PyFnAttribute
 import Utils as Utils
+from typing import Set, Tuple
 
 class ManipulatorBridge:
     def __init__(self): ...

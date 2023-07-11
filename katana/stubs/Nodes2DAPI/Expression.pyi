@@ -4,6 +4,7 @@ import NodegraphAPI as NodegraphAPI
 import Nodes2DAPI_cmodule as Nodes2DAPI_cmodule
 import Utils as Utils
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 _mtrsCache: dict
 

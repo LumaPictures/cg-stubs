@@ -4,7 +4,10 @@ import QT4Panels.DragTabs as DragTabs
 import PyQt5.QtCore
 import PyQt5.QtWidgets
 import QT4Widgets as QT4Widgets
-from typing import ClassVar
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
+from typing import ClassVar, Set, Tuple
 
 MARGIN: int
 

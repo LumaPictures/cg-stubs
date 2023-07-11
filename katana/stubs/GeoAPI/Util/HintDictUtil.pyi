@@ -2,6 +2,7 @@
 
 import PyFnAttribute as FnAttribute
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 g_evalCache: dict
 

@@ -3,6 +3,7 @@
 import PyXmlIO as PyXmlIO
 import Utils as Utils
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 LinearGradLayerXML: str
 SuperGradLayerXML: str

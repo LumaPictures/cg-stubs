@@ -7,6 +7,7 @@ import Nodes3DAPI.CameraCreate
 import PyXmlIO as PyXmlIO
 import Naming as UniqueName
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 _ExtraHints: dict
 _Manipulator_XML: str

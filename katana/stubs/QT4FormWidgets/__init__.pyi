@@ -1,26 +1,8 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
-import QT4FormWidgets.ArrayItemEntry as ArrayItemEntry
-import QT4FormWidgets.Conditional as Conditional
-import QT4FormWidgets.ExpressionEditDialog as ExpressionEditDialog
-import QT4FormWidgets.FWidget as FWidget
-import QT4FormWidgets.FixableBoxLayout as FixableBoxLayout
-import QT4FormWidgets.FormClose as FormClose
-import QT4FormWidgets.FormWidgetTools as FormWidgetTools
-import QT4FormWidgets.HintUtils as HintUtils
-import QT4FormWidgets.InputWidgets as InputWidgets
-import QT4FormWidgets.Manifest as Manifest
-import QT4FormWidgets.MenuGroupFormWidget as MenuGroupFormWidget
-import QT4FormWidgets.MenuUtils as MenuUtils
-import QT4FormWidgets.MultiStateBadge as MultiStateBadge
-import QT4FormWidgets.OpenState as OpenState
-import QT4FormWidgets.PaintingUtils as PaintingUtils
-import QT4FormWidgets.PolicyMimeData as PolicyMimeData
-import QT4FormWidgets.StateChangeAction as StateChangeAction
-import QT4FormWidgets.TabGroupFormWidget as TabGroupFormWidget
-import QT4FormWidgets.ValueAdjustment as ValueAdjustment
-import QT4FormWidgets.ValuePolicy as ValuePolicy
-import QT4FormWidgets.WideEditDialog as WideEditDialog
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from . import ArrayItemEntry as ArrayItemEntry, Conditional as Conditional, ExpressionEditDialog as ExpressionEditDialog, FWidget as FWidget, FixableBoxLayout as FixableBoxLayout, FormClose as FormClose, FormWidgetTools as FormWidgetTools, HintUtils as HintUtils, InputWidgets as InputWidgets, Manifest as Manifest, MenuGroupFormWidget as MenuGroupFormWidget, MenuUtils as MenuUtils, MultiStateBadge as MultiStateBadge, OpenState as OpenState, PaintingUtils as PaintingUtils, PolicyMimeData as PolicyMimeData, StateChangeAction as StateChangeAction, TabGroupFormWidget as TabGroupFormWidget, ValueAdjustment as ValueAdjustment, ValuePolicy as ValuePolicy, WideEditDialog as WideEditDialog
 from QT4FormWidgets.ArrayFormWidget import ArrayFormWidget as ArrayFormWidget
 from QT4FormWidgets.BaseValueFormWidget import BaseValueFormWidget as BaseValueFormWidget
 from QT4FormWidgets.CapsuleFormWidget import CapsuleFormWidget as CapsuleFormWidget
@@ -43,3 +25,4 @@ from QT4FormWidgets.TextFormWidget import TextFormWidget as TextFormWidget
 from QT4FormWidgets.ValuePolicy import AbstractValuePolicy as AbstractValuePolicy, ValuePolicyEvent as ValuePolicyEvent, ValuePolicyProxy as ValuePolicyProxy
 from QT4FormWidgets.ValuePolicyAdapter import CreateValuePolicyAdapter as CreateValuePolicyAdapter, CreateValuePolicyAdapterMap as CreateValuePolicyAdapterMap, FlattenValuePolicyAdapterMap as FlattenValuePolicyAdapterMap, ValuePolicyAdapter as ValuePolicyAdapter
 from QT4FormWidgets.WidgetFactory import GetDefaultWidgetFactory as GetDefaultWidgetFactory, WidgetFactory as WidgetFactory
+from typing import Set, Tuple

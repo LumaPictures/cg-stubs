@@ -6,6 +6,7 @@ import NodegraphAPI.NodegraphGlobals as NodegraphGlobals
 import NodegraphAPI.Util as Util
 import Utils as Utils
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 AllChangeEventTypes: set
 EventType_nodegraph_changed: str

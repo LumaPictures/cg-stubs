@@ -11,7 +11,7 @@ import PyUtilModule.RenderManager.RenderGlobals as RenderGlobals
 import RenderingAPI as RenderingAPI
 from PyUtilModule.RenderManager.Constants import RenderModes as RenderModes
 from PyUtilModule.RenderManager.Exceptions import UnsupportedRenderMethodNameException as UnsupportedRenderMethodNameException
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class RenderingSettings:
     kOpTreeExportPass: ClassVar[int] = ...

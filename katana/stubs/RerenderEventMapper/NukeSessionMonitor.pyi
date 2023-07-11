@@ -8,7 +8,7 @@ import PyFnGeolib
 import RenderManager.RenderSettings
 import Utils as Utils
 from Callbacks.Callbacks import Callbacks as Callbacks
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class NukeSessionMonitor:
     _kCatalogBufferChanged: ClassVar[str] = ...

@@ -13,7 +13,7 @@ import PyFnGeolib
 import typing
 from Callbacks.Callbacks import _TypeEnum
 from _typeshed import Incomplete
-from typing import Any
+from typing import Any, Set, Tuple
 
 _PostLookFileBakeCallbackId: _TypeEnum
 _PreLookFileBakeCallbackId: _TypeEnum

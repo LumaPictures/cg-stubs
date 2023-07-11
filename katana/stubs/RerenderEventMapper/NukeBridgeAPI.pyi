@@ -8,7 +8,7 @@ import RenderingAPI as RenderingAPI
 import Utils as Utils
 from PyUtilModule.VirtualKatana import RenderManager as RenderManager
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 RENDER_NODE_NAME: str
 g_nukeConfigurationError: None

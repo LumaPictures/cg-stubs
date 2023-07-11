@@ -3,14 +3,15 @@
 import NodegraphAPI as NodegraphAPI
 import PyQt5.QtCore
 import PyQt5.QtWidgets
-import QtGui
-import QtWidgets
+import PyQt5.QtCore as QtCore
+import QtGui as QtGui
+import QtWidgets as QtWidgets
 import QT4Widgets.TextEditorUtils as TextEditorUtils
 import Utils as Utils
 import code
 import re
 import typing
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 _TAB_WIDTH: int
 

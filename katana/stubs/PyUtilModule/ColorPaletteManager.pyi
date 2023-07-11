@@ -4,6 +4,7 @@ import NodegraphAPI as NodegraphAPI
 import PyXmlIO as PyXmlIO
 import Utils as Utils
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 param_xml: str
 

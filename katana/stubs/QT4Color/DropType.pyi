@@ -1,7 +1,10 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 import QT4Color.Swatches as Swatches
 from QT4Color.ColorPolicy import CreateColorPolicy as CreateColorPolicy, DoesColorPolicyEnableFilmlook as DoesColorPolicyEnableFilmlook, DoesColorPolicyEnableNoFilmlookColorSpace as DoesColorPolicyEnableNoFilmlookColorSpace, DoesColorPolicyHaveAlpha as DoesColorPolicyHaveAlpha, DoesColorPolicyRestrictComponents as DoesColorPolicyRestrictComponents, GetColorPolicyChildren as GetColorPolicyChildren, GetColorPolicyRGBA as GetColorPolicyRGBA, GetDefaultColorComponentTab as GetDefaultColorComponentTab, SetColorPolicyEnableFilmlook as SetColorPolicyEnableFilmlook, SetColorPolicyEnableFilmlookDefault as SetColorPolicyEnableFilmlookDefault, SetColorPolicyEnableNoFilmlookColorSpaceDefault as SetColorPolicyEnableNoFilmlookColorSpaceDefault, SetColorPolicyRGBA as SetColorPolicyRGBA, SetColorPolicyRestrictComponents as SetColorPolicyRestrictComponents, SetColorPolicyRestrictComponentsDefault as SetColorPolicyRestrictComponentsDefault
+from typing import Set, Tuple
 
 def BuildDragDataFromInfo(**dragDict): ...
 def BuildDragPixmapFromColor(color, enableFilmlook: bool = ..., enableNoFilmlookColorSpace: bool = ..., hasAlpha: bool = ...): ...

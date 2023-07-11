@@ -1,6 +1,6 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
-from typing import Any, ClassVar, overload
+from typing import Any, ClassVar, Set, Tuple, overload
 
 CHANGE_TYPE_BEGIN: FCurve.ChangeType
 CHANGE_TYPE_END: FCurve.ChangeType

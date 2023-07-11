@@ -2,15 +2,16 @@
 
 import PyQt5.QtCore
 import PyQt5.QtWidgets
-import QtCore
-import QtWidgets
+import QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import QtWidgets as QtWidgets
 import ResourceFiles as ResourceFiles
 import Utils as Utils
 import QT4Widgets.WidgetUtils as WidgetUtils
 from QT4Widgets.SortableTreeWidget import SortableTreeWidget as SortableTreeWidget, SortableTreeWidgetItem as SortableTreeWidgetItem
 from ResourceFiles.IconManager import ResourceManager as ResourceManager
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 MAX_SCREEN_HEIGHT_PERCENT_DEFAULT: float
 MAX_SCREEN_WIDTH_PERCENT_DEFAULT: float

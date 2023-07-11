@@ -2,12 +2,12 @@
 
 import QT4FormWidgets.HintUtils as HintUtils
 import QT4FormWidgets.PolicyMimeData as PolicyMimeData
-import QtCore
+import QtCore as QtCore
 import QtWidgets
 import Utils.WeakMethod as WeakMethod
 import re
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class AbstractValuePolicy:
     SUBSCRIPT_EXPR: ClassVar[re.Pattern] = ...

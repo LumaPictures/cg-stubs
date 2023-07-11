@@ -5,6 +5,7 @@ import NodegraphAPI as NodegraphAPI
 import NodegraphAPI_cmodule
 import Utils as Utils
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 _ExtraHints: dict
 _NODEGRAPH_SPACING_V: int

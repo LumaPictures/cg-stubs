@@ -2,6 +2,7 @@
 
 import NodegraphAPI.Xio as Xio
 from NodegraphAPI.Version.Registry import GetNodeTypeVersionUpdateFunctions as GetNodeTypeVersionUpdateFunctions
+from typing import Set, Tuple
 
 def UpdateNodeTypeVersions(document): ...
 def WillUpdateNodeTypeVersions(document): ...

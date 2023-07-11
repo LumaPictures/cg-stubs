@@ -1,7 +1,7 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 import RenderingAPI as RenderingAPI
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class RenderModes:
     DISK_RENDER: ClassVar[str] = ...

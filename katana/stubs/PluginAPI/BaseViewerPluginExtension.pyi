@@ -3,6 +3,7 @@
 import FnGeolib
 import FnGeolib.GeolibRuntime
 import ViewerAPI
+from typing import Set, Tuple
 
 class BaseViewerPluginExtension:
     def onApplyTerminalOps(self, txn: FnGeolib.GeolibRuntime.Transaction, inputOp: FnGeolib.GeolibRuntimeOp | None, viewerDelegate: ViewerAPI.ViewerDelegate) -> FnGeolib.GeolibRuntimeOp: ...

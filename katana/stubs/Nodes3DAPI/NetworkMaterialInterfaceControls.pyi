@@ -6,6 +6,7 @@ import NodegraphAPI as NodegraphAPI
 import re
 from ConditionalStateGrammar.Parser import ParseCSG as ParseCSG
 from Nodes3DAPI.Node3D import Node3D as Node3D
+from typing import Set, Tuple
 
 _BooleanOps: list
 _ComparisonOps: list

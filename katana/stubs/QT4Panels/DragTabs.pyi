@@ -5,8 +5,11 @@ import QT4Panels.Edge as Edge
 import PyQt5.QtCore
 import PyQt5.QtWidgets
 import QT4Widgets as QT4Widgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 ACTIONADD: int
 ACTIONBORDER: int

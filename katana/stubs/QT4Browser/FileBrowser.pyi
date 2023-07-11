@@ -6,9 +6,12 @@ import QT4Browser.FileInfo as FileInfo
 import PyQt5.QtCore
 import PyQt5.QtWidgets
 import QT4Browser.FileInfo
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 import re
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 PREVIEW_TEXT: str
 RECENT_LIST_LIMIT: int

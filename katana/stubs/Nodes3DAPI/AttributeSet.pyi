@@ -6,6 +6,7 @@ import Nodes3DAPI_cmodule as Nodes3DAPI_cmodule
 import Utils as Utils
 from Nodes3DAPI.Node3D import Node3D as Node3D
 from Utils.Decorators import deprecated as deprecated
+from typing import Set, Tuple
 
 _ExtraHints: dict
 _Parameter_XML: str

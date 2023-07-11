@@ -3,6 +3,7 @@
 import NodegraphAPI_cmodule as NodegraphAPI_cmodule
 import Utils as Utils
 from NodegraphAPI_cmodule import Predefined as Predefined
+from typing import Set, Tuple
 
 def AddNodeFlavor(nodeType, flavor): ...
 def ClearFlavorNodes(flavor): ...

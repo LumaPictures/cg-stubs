@@ -5,6 +5,7 @@ import RenderingAPI as RenderingAPI
 import Utils as Utils
 import PyXmlIO as XmlIO
 import typing
+from typing import Set, Tuple
 
 ARGS_FILE_VERSION: float
 

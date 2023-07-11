@@ -6,7 +6,7 @@ import collections
 import enum
 from Nodes3DAPI_cmodule import BuildAttrListFromDynamicParameterGroup as BuildAttrListFromDynamicParameterGroup, BuildGroupAttrFromParam as BuildGroupAttrFromParam
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class LayoutAttributesMixin:
     def __init__(self): ...

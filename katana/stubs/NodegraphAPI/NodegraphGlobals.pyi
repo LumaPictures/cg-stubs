@@ -13,6 +13,7 @@ import NodegraphAPI.Xio as Xio
 import io
 from NodegraphAPI_cmodule import __root_node as __root_node
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 RTLD_GLOBAL: int
 RTLD_NOW: int

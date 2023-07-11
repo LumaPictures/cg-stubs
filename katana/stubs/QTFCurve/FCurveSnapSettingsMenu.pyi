@@ -2,7 +2,11 @@
 
 import PyQt5.QtWidgets
 import QT4Widgets as QT4Widgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 from QT4Widgets.PopdownLabel import PopdownLabel
+from typing import Set, Tuple
 
 class FCurveSnapSettingsMenu(PopdownLabel):
     def __init__(self, graphWidget, *args): ...

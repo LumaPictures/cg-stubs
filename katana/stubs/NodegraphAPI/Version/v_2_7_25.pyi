@@ -2,6 +2,7 @@
 
 import NodegraphAPI.Version.Registry as Registry
 import NodegraphAPI.Xio as Xio
+from typing import Set, Tuple
 
 localVersion: tuple
 nodeUpgraders: dict

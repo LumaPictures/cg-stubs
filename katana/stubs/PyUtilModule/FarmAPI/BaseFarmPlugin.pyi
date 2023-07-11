@@ -3,7 +3,7 @@
 import BaseFarmPlugin as BaseFarmPlugin
 import FarmAPI.FarmPluginManager
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class BaseFarmPlugin:
     class InstallationMetadata:

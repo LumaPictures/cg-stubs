@@ -6,6 +6,7 @@ import Nodes2DAPI as Nodes2DAPI
 import PyXmlIO as PyXmlIO
 import Utils as Utils
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 def AddInput(node): ...
 def AddPostScript(node): ...

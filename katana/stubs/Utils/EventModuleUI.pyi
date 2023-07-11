@@ -2,9 +2,12 @@
 
 import Utils.EventModuleCommon as EventModuleCommon
 import PyQt5.QtCore
-import QtCore
+import QtCore as QtCore
+import PyQt5.QtWidgets as QtWidgets
 import typing
+from PyQt5.QtCore import kKatanaEventType as kKatanaEventType
 from Utils.Exceptions import GetExceptionMessage as GetExceptionMessage
+from typing import Set, Tuple
 
 INVOKE_COLLAPSED_HANDLERS_PERIOD: int
 _eventQueuedWhileProcessingEvents: bool

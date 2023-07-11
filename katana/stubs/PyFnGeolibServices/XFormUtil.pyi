@@ -2,6 +2,7 @@
 
 import PyFnAttribute
 import typing
+from typing import Set, Tuple
 
 def CalcTransformMatrixAtExistingTimes(attr: PyFnAttribute.GroupAttribute) -> Tuple[PyFnAttribute.DoubleAttribute, bool]: ...
 def CalcTransformMatrixAtTime(attr: object, time: float) -> Tuple[PyFnAttribute.DoubleAttribute, bool]: ...

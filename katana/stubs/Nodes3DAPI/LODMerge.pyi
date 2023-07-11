@@ -4,6 +4,7 @@ import PyFnAttribute as FnAttribute
 import NodegraphAPI as NodegraphAPI
 import PyXmlIO as PyXmlIO
 from Nodes3DAPI.Node3D import Node3D as Node3D
+from typing import Set, Tuple
 
 _DefaultInputParamXML: str
 _ExtraHints: dict

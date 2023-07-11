@@ -4,7 +4,10 @@ import PyQt5.QtCore
 import PyQt5.QtGui
 import QT4FormWidgets as QT4FormWidgets
 import QT4FormWidgets.InputWidgets
-from typing import ClassVar
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
+from typing import ClassVar, Set, Tuple
 
 class ColorTextValidator(PyQt5.QtGui.QValidator):
     def __init__(self, *args): ...

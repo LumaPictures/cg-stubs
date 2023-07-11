@@ -10,7 +10,7 @@ from Callbacks.Callbacks import _TypeEnum
 from PyUtilModule.VirtualKatana import Decorators as Decorators
 from Utils.Decorators import deprecated as deprecated
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 __AdoptableLocationTypes: dict
 __DeprecatedPackageClasses: dict

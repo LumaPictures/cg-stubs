@@ -2,8 +2,12 @@
 
 import QT4GLLayerStack.LayerStack
 import QT4Widgets as QT4Widgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 import QT4GLLayerStack.Util as Util
 from QT4GLLayerStack.LayerStack import Layer as Layer
+from typing import Set, Tuple
 
 ARRAY_TYPE_TO_CONSTANT: list
 GL_VOID_P: object

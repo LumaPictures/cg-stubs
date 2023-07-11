@@ -2,12 +2,15 @@
 
 import PyQt5.QtWidgets
 import QT4FormWidgets
-import QtWidgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import QtWidgets as QtWidgets
 import ResourceFiles as ResourceFiles
 from QT4FormWidgets.ExpressionEditDialog import ExpressionEditDialog as ExpressionEditDialog
 from QT4FormWidgets.StateChangeAction import StateChangeAction as StateChangeAction
 from ResourceFiles.IconManager import ResourceManager as ResourceManager
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 class PasteMenu(PyQt5.QtWidgets.QMenu):
     def __init__(self, source, parent, locked): ...

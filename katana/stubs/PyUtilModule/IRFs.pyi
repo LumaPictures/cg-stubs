@@ -2,6 +2,7 @@
 
 import NodegraphAPI as NodegraphAPI
 import NodegraphAPI.RenderFilter
+from typing import Set, Tuple
 
 def GetActiveRenderFilterNodes() -> list[NodegraphAPI.RenderFilter.RenderFilterNode]: ...
 def IsValidRenderFilterNode(node: NodegraphAPI.Node) -> bool: ...

@@ -3,6 +3,7 @@
 import Utils as Utils
 from NodegraphAPI.NodegraphGlobals import GetRootNode as GetRootNode
 from NodegraphAPI_cmodule import GroupNode as GroupNode
+from typing import Set, Tuple
 
 saveflags: int
 useFlags: bool

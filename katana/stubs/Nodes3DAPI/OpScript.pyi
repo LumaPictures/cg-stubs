@@ -9,6 +9,7 @@ import PyFnGeolibServices as FnGeolibServices
 import NodegraphAPI as NodegraphAPI
 from ConditionalStateGrammar.Parser import ParseCSG as ParseCSG
 from Nodes3DAPI.Node3D import Node3D as Node3D
+from typing import Set, Tuple
 
 _ExtraHints: dict
 _Parameter_XML: str

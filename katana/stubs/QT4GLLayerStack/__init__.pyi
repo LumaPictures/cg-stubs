@@ -1,7 +1,6 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
-import QT4GLLayerStack.Manifest as Manifest
-import QT4GLLayerStack.Util as Util
+from . import Manifest as Manifest, Util as Util
 from QT4GLLayerStack.CheckerboardLayer import CheckerboardLayer as CheckerboardLayer
 from QT4GLLayerStack.ClearLayer import ClearLayer as ClearLayer
 from QT4GLLayerStack.EdgeScrollingLayer import EdgeScrollingLayer as EdgeScrollingLayer
@@ -12,3 +11,4 @@ from QT4GLLayerStack.PanInteractionLayer import PanInteractionLayer as PanIntera
 from QT4GLLayerStack.RectangleLayer import RectangleLayer as RectangleLayer
 from QT4GLLayerStack.ZoomAnimationLayer import ZoomAnimationLayer as ZoomAnimationLayer
 from QT4GLLayerStack.ZoomInteractionLayer import ZoomInteractionLayer as ZoomInteractionLayer
+from typing import Set, Tuple

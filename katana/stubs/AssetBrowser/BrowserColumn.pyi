@@ -3,10 +3,12 @@
 import PyQt5.QtCore
 import PyQt5.QtWidgets
 import QT4Widgets as QT4Widgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtWidgets as QtWidgets
 from QT4Widgets.FilterFieldWidget import FilterFieldWidget as FilterFieldWidget
 from QT4Widgets.TreeWidgetUtil import UpdateSuppressor as UpdateSuppressor
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class BrowserColumn(PyQt5.QtWidgets.QFrame):
     itemDoubleClicked: ClassVar[PyQt5.QtCore.pyqtSignal] = ...

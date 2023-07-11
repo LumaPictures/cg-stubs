@@ -5,7 +5,7 @@ import NodegraphAPI as NodegraphAPI
 import Utils as Utils
 import typing
 from Nodes3DAPI.Node3D_geolib3 import _GetPushDependencies as _GetPushDependencies
-from typing import Any
+from typing import Any, Set, Tuple
 
 NodegraphEventTypes: dict
 kNodePortChangeEventsKey: int

@@ -4,6 +4,7 @@ import QT4FormWidgets.ValuePolicy
 import QT4FormWidgets.ValuePolicy as ValuePolicy
 import re
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 RE_ARRAY: re.Pattern
 

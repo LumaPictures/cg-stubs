@@ -1,6 +1,6 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
-from typing import Any, overload
+from typing import Any, Set, Tuple, overload
 
 RETIME_FREEZE: int
 RETIME_MIRROR: int

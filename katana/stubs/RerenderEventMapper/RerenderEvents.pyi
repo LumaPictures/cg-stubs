@@ -15,6 +15,7 @@ import Nodes3DAPI.Node3D_geolib3 as Node3D_geolib3
 import NodegraphAPI as NodegraphAPI
 import Nodes2DAPI as Nodes2DAPI
 import Nodes3DAPI as Nodes3DAPI
+import PyQt5.QtCore as QtCore
 import PyUtilModule.RenderManager.RenderCore as RenderCore
 import PyUtilModule.RenderManager.RenderGlobals as RenderGlobals
 import PyUtilModule.RenderManager as RenderManager
@@ -27,7 +28,7 @@ from PyUtilModule.WorkingSet import WorkingSet as WorkingSet, __renderWorkingSet
 from PyUtilModule.WorkingSetClient import WorkingSetClient as WorkingSetClient
 from PyUtilModule.WorkingSetManager import WorkingSetManager as WorkingSetManager
 from _typeshed import Incomplete
-from typing import Any
+from typing import Any, Set, Tuple
 
 ForesightPlusEnabled: bool
 __allowFollowRenderWorkingSet: bool

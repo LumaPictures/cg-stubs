@@ -3,7 +3,7 @@
 import ConfigurationAPI_cmodule as Configuration
 import types
 from _typeshed import Incomplete
-from typing import Any
+from typing import Any, Set, Tuple
 
 NodegraphAPI: None
 Nodes2DAPI: None

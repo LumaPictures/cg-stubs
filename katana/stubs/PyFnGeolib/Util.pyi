@@ -2,6 +2,7 @@
 
 import PyFnAttribute
 import PyFnGeolib
+from typing import Set, Tuple
 
 class Traversal:
     def __init__(self, client: PyFnGeolib.GeolibRuntimeClient, rootLocation: str) -> None: ...

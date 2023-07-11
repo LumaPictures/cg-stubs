@@ -8,6 +8,7 @@ import typing
 from LookFileBakeAPI.Exceptions import LookFileBakeException as LookFileBakeException
 from PyFnGeolibProducers import GeometryProducer as GeometryProducer
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 _CelMatchAttrName: str
 g_typeToAttrDict: dict

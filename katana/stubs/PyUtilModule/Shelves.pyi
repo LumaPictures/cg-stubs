@@ -6,7 +6,7 @@ import Shelves
 import Utils as Utils
 from Utils.Decorators import deprecated as deprecated
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 SHELF_TYPE_BUILTIN: int
 SHELF_TYPE_CUSTOM: int

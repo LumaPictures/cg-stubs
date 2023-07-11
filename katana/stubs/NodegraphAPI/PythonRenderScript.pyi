@@ -2,7 +2,7 @@
 
 import NodegraphAPI_cmodule
 from NodegraphAPI_cmodule import PythonNode as PythonNode, node_addNodeFlavor as node_addNodeFlavor, node_registerPythonNodeType as node_registerPythonNodeType
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 _ExtraHints: dict
 _Parameter_XML: str

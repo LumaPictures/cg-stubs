@@ -2,6 +2,7 @@
 
 import NodegraphAPI
 import NodegraphAPI_cmodule as NodegraphAPI_cmodule
+from typing import Set, Tuple
 
 def GetAttributes(_node): ...
 def GetPortAttributes(node: NodegraphAPI.Node, port: NodegraphAPI.Port) -> dict: ...

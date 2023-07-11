@@ -13,6 +13,7 @@ import PyUtilModule.UndoEntries as UndoEntries
 import Utils as Utils
 import typing
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 MAX_CRASH_FILES: int
 _CrashActions: int

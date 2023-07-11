@@ -115,6 +115,7 @@ def generate(session: nox.Session, lib: str) -> None:
 
     session.chdir(lib)
     session.run(f"./stubgen_{lib}.sh", external=True)
+    # FIXME: move this to stubgenlib
     make_packages(pathlib.Path("stubs"))
 
 

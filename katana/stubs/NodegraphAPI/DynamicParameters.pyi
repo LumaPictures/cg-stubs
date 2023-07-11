@@ -2,6 +2,7 @@
 
 import PyXmlIO as PyXmlIO
 import NodegraphAPI.Xio as Xio
+from typing import Set, Tuple
 
 def CreateGroupParameter(node, delimitedParameterName): ...
 def CreateNumberParameter(node, delimitedParameterName): ...

@@ -5,6 +5,7 @@ import FnGeolib as FnGeolib
 import FnGeolib.GeolibRuntime
 import PyFnGeolibServices as FnGeolibServices
 import Nodes3DAPI as Nodes3DAPI
+from typing import Set, Tuple
 
 class ImplicitOpsManager:
     def __init__(self): ...

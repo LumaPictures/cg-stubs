@@ -3,6 +3,7 @@
 import PyFnAttribute as FnAttribute
 import NodegraphAPI as NodegraphAPI
 from Nodes3DAPI.Node3D import Node3D as Node3D
+from typing import Set, Tuple
 
 _ParamHints: dict
 _Parameter_XML: str

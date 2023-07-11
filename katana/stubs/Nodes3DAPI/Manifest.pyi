@@ -16,6 +16,7 @@ import Naming as Naming
 import Nodes3DAPI.Node3D as Node3D
 import NodegraphAPI as NodegraphAPI
 import Nodes2DAPI as Nodes2DAPI
+import PyOpenColorIO as OCIO
 import PyXmlIO as PyXmlIO
 import RenderingAPI as RenderingAPI
 import PyResolutionTableFn as ResolutionTable
@@ -26,3 +27,4 @@ import Utils as Utils
 import WorkQueue as WorkQueue
 import PyUtilModule.WorkingSet as WorkingSet
 import PyUtilModule.WorkingSetManager as WorkingSetManager
+from typing import Set, Tuple

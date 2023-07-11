@@ -1,5 +1,6 @@
 from __future__ import absolute_import, annotations, division, print_function
 
+import os
 import pathlib
 import re
 from typing import Any
@@ -57,6 +58,7 @@ class KatanaDocstringTypeFixer(DocstringTypeFixer):
             ("WorkingSet", "PyUtilModule.WorkingSet.WorkingSet"),
             ("PortOpClient", "Nodes3DAPI.PortOpClient.PortOpClient"),
             ("GroupAttribute", "PyFnAttribute.GroupAttribute"),
+            ("Package", "PackageSuperToolAPI.Packages.Package"),
         )
         for short_name, full_name in absolute_names:
             type_name = re.sub(
@@ -94,9 +96,9 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         "StringAttribute": "str",
     }
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.known_modules.extend(['PyQt5.QtCore', 'PyQt5.QtWidgets'])
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.known_modules.extend(['PyQt5.QtCore', 'PyQt5.QtWidgets', 'PyQt5.QtGui'])
 
     def get_sig_generators(self) -> list[SignatureGenerator]:
         if self.is_c_module:
@@ -109,6 +111,11 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         # that we don't assume things of type _TypeEnum are external to their
         # current module and should thus be imported.
         return super().is_defined_in_module(obj) or type(obj).__name__ == "_TypeEnum"
+
+    def set_defined_names(self, defined_names: set[str]) -> None:
+        super().set_defined_names(defined_names)
+        for typ in ["Tuple", "Set"]:
+            self.add_typing_import(typ, require=True)
 
     def strip_or_import(self, type_name: str) -> str:
         if not self.is_c_module and re.match("^[A-Za-z0-9_.]+$", type_name):
@@ -127,12 +134,12 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         return super().strip_or_import(type_name)
 
     def get_imports(self) -> str:
-        imports = super().get_imports()
         if self.module_name == "PyFnAttribute":
             self.add_typing_import("TypeVar")
             type_vars = 'T = TypeVar("T")\n'
         else:
             type_vars = ""
+        imports = super().get_imports()
         return DISABLED_CODES + imports + type_vars
 
     def get_members(self, obj: object) -> list[tuple[str, Any]]:
@@ -236,6 +243,7 @@ def main(outdir: str, katana_site_dir: str) -> None:
         "PyResolutionTableFn",
         "PyXmlIO",
         "RenderingAPI_cmodule",
+        "PyOpenColorIO",
     ]
 
     args = ["-v", "--no-parse", "-o", outdir]
@@ -250,3 +258,11 @@ def main(outdir: str, katana_site_dir: str) -> None:
             args.append(f"-p={module}")
 
     mypy.stubgen.main(args)
+
+    # the cg-stubs repo provides stubs for PyOpenColorIO 2.x, but Katana uses
+    # OCIO 1.x until Katana 6. So we generate stubs for Katana's OCIO lib.
+    # However, we make it private and only refer to it via Katana.OCIO so that
+    # the Katana stubs for this lib are not used by other apps which may be using
+    # differnet OCIO versions.
+    out = pathlib.Path(outdir)
+    out.joinpath("PyOpenColorIO.pyi").rename(out.joinpath("_PyOpenColorIO.pyi"))

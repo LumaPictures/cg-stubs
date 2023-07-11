@@ -1,6 +1,7 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 import PyFnAttribute
+from typing import Set, Tuple
 
 def RemoveTimeSamplesIfAllSame(arg0: PyFnAttribute.Attribute) -> PyFnAttribute.Attribute: ...
 def RemoveTimeSamplesUnneededForShutter(arg0: PyFnAttribute.Attribute, arg1: float, arg2: float) -> PyFnAttribute.Attribute: ...

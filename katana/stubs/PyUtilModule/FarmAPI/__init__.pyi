@@ -1,17 +1,16 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
-import PyUtilModule.FarmAPI.FarmManager as FarmManager
-import PyUtilModule.FarmAPI.FarmPluginManager as FarmPluginManager
 import PyUtilModule.KatanaFile as KatanaFile
 import NodegraphAPI as NodegraphAPI
 import Utils as Utils
 import PyXmlIO as XmlIO
 import typing
 import xml.etree.ElementTree
+from . import FarmManager as FarmManager, FarmPluginManager as FarmPluginManager
 from PyUtilModule.FarmAPI.BaseFarmPlugin import BaseFarmPlugin as BaseFarmPlugin, FarmPluginException as FarmPluginException, Job as Job, JobNotFoundException as JobNotFoundException
 from Utils.Decorators import deprecated as deprecated
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 NODES_ALL: str
 NODES_SELECTED: str

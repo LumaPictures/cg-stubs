@@ -14,7 +14,7 @@ import PyXmlIO as XmlIO
 from ConditionalStateGrammar.Parser import ParseCSG as ParseCSG
 from Nodes3DAPI.GenericAssign import GenericAssign as GenericAssign
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 _ExtraHints: dict
 _Parameter_XML: str

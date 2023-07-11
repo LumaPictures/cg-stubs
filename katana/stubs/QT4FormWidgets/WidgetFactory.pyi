@@ -13,6 +13,7 @@ from QT4FormWidgets.PopupFormWidget import BooleanFormWidget as BooleanFormWidge
 from QT4FormWidgets.StringFormWidget import StringFormWidget as StringFormWidget
 from QT4FormWidgets.TabGroupFormWidget import TabGroupFormWidget as TabGroupFormWidget
 from QT4FormWidgets.TextFormWidget import TextFormWidget as TextFormWidget
+from typing import Set, Tuple
 
 __defaultFactory: None
 

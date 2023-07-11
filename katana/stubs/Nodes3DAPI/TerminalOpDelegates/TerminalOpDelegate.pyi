@@ -2,6 +2,7 @@
 
 import NodegraphAPI
 import PyFnGeolib
+from typing import Set, Tuple
 
 class TerminalOpDelegate:
     def appendOp(self, op: PyFnGeolib.GeolibRuntimeOp, txn: PyFnGeolib.GeolibRuntimeTransaction, port: NodegraphAPI.Port | None, graphState: NodegraphAPI.GraphState) -> PyFnGeolib.GeolibRuntimeOp: ...

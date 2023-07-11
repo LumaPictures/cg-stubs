@@ -2,10 +2,11 @@
 
 import PyQt5.QtCore
 import PyQt5.QtWidgets
-import QtCore
-import QtWidgets
+import QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import QtWidgets as QtWidgets
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class LogView(PyQt5.QtWidgets.QAbstractScrollArea):
     _ScrollbarPositionsCache: ClassVar[dict] = ...

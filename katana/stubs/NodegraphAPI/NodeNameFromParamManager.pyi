@@ -3,6 +3,7 @@
 import Callbacks as Callbacks
 import NodegraphAPI as NodegraphAPI
 import Utils as Utils
+from typing import Set, Tuple
 
 _ExpressionSet: set
 _NodeNameFromParamEntry: dict

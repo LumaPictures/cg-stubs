@@ -4,7 +4,7 @@ import FnAttribute as FnAttribute
 import typing
 from PyUtilModule.WorkingSet import WorkingSet as WorkingSet
 from _typeshed import Incomplete
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Set, Tuple
 
 class LocationStateMap(dict):
     def __init__(self, parent: Incomplete | None = ...): ...

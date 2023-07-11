@@ -6,6 +6,7 @@ import Nodes3DAPI.ScenegraphManager as ScenegraphManager
 import Utils as Utils
 from PyUtilModule.WorkingSetManager import WorkingSetManager as WorkingSetManager
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 __RootBookmarksParamName: str
 

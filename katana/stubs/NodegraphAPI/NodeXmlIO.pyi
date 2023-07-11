@@ -12,6 +12,7 @@ import Utils as Utils
 import NodegraphAPI.Version as Version
 from NodegraphAPI_cmodule import Context as Context
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 global_reservedNodesXmlRootAttrs: set
 global_userNodesXmlRootAttrs: dict

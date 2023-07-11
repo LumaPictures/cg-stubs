@@ -3,7 +3,7 @@
 from Utils.Exceptions import GetExceptionMessage as GetExceptionMessage
 from _typeshed import Incomplete
 from types import ModuleType
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 CachedModulePaths: dict
 DefaultPathList: list

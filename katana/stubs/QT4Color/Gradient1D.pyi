@@ -2,12 +2,15 @@
 
 import QT4Color.Degenerate as Degenerate
 import QT4Color.Globals as Globals
+import PyOpenColorIO as OCIO
 import PyQt5.QtCore
-import PyQt5.QtCore.Qt
 import PyQt5.QtWidgets
 import QT4FormWidgets as QT4FormWidgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 from QT4Color.ColorTransforms import ClampRGBA as ClampRGBA, ConvertColorToUnits as ConvertColorToUnits, ConvertUnitsToColor as ConvertUnitsToColor
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 OCIO_ERROR: None
 

@@ -7,6 +7,7 @@ import LookFileBakeAPI as LookFileBakeAPI
 import typing
 from PyFnGeolibProducers import GeometryProducer as GeometryProducer
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 _CelMatchAttrName: str
 _formatVersionNames: dict

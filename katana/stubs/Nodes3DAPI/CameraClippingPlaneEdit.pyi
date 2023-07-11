@@ -5,6 +5,7 @@ import Nodes3DAPI.Node3D as Node3D
 import NodegraphAPI as NodegraphAPI
 from Nodes3DAPI.GenericAssign import GenericAssign as GenericAssign
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 _ExtraHints: dict
 _Parameter_XML: str

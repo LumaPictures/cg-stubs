@@ -1,9 +1,10 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 import NodegraphAPI
-import QtCore
+import QtCore as QtCore
 import QtGui
 import typing
+from typing import Set, Tuple
 
 MIME_TYPE_COLLECTIONS: str
 MIME_TYPE_LOCATIONPATHS: str

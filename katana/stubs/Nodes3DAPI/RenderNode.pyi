@@ -12,6 +12,7 @@ import Nodes3DAPI.Rendering as Rendering
 import RenderingAPI as RenderingAPI
 import Nodes3DAPI.RenderingUtil as RenderingUtil
 import Utils as Utils
+from typing import Set, Tuple
 
 class MergeOutputs:
     def __init__(self): ...

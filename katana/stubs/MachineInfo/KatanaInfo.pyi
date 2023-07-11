@@ -3,6 +3,7 @@
 import ConfigurationAPI_cmodule as Configuration
 import MachineInfo.MachineInfo as MachineInfo
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 def GetImageDiskMemoryMB(isBatch, customLogger: Incomplete | None = ...): ...
 def GetImageMemoryMB(isBatch, customLogger: Incomplete | None = ...): ...

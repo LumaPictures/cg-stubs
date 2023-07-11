@@ -3,7 +3,7 @@
 import QT4FormWidgets.ValuePolicy
 import QT4FormWidgets.ValuePolicy as ValuePolicy
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class PythonDictValuePolicy(QT4FormWidgets.ValuePolicy.AbstractValuePolicy):
     RESERVED_NAMES: ClassVar[set] = ...

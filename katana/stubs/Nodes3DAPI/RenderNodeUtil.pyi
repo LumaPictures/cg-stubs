@@ -16,6 +16,7 @@ import Utils as Utils
 import re
 from Nodes3DAPI.RenderNode import RenderNode
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 _CameraInfoLookups: tuple
 _LoadedLiveGroups: None

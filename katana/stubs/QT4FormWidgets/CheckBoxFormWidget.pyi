@@ -2,10 +2,12 @@
 
 import PyQt5.QtCore
 import PyQt5.QtWidgets
+import QtCore as QtCore
 import QtCore.Qt
-import QtGui
+import QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 from QT4FormWidgets.BaseValueFormWidget import BaseValueFormWidget as BaseValueFormWidget
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class CheckBoxFormWidget(BaseValueFormWidget):
     def __init__(self, parent, policy, factory): ...

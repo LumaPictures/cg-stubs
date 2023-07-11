@@ -8,6 +8,7 @@ from PyUtilModule.WorkingSet import WorkingSet as WorkingSet
 from PyUtilModule.WorkingSetManager import WorkingSetManager as WorkingSetManager
 from Utils.Decorators import deprecated as deprecated
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 ExpandedWorkingSetName: str
 PinnedWorkingSetName: str

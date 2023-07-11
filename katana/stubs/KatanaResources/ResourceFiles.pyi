@@ -3,6 +3,7 @@
 import ConfigurationAPI_cmodule as Configuration
 import Utils as Utils
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 _DefaultResources: str
 _InternalResources: str

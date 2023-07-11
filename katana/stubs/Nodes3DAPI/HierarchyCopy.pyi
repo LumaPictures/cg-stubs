@@ -5,6 +5,7 @@ import NodegraphAPI as NodegraphAPI
 import Naming as UniqueName
 import PyXmlIO as XmlIO
 from Nodes3DAPI.Node3D import Node3D as Node3D
+from typing import Set, Tuple
 
 _ExtraHints: dict
 _Parameter_Entry_XML: str

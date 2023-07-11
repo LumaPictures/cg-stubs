@@ -2,6 +2,7 @@
 
 import FnAttribute as FnAttribute
 import Utils as Utils
+from typing import Set, Tuple
 
 __KeepAsListWhiteList: frozenset
 __OrderHintWhiteList: frozenset

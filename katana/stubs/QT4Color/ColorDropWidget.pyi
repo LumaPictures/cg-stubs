@@ -3,9 +3,12 @@
 import PyQt5.QtCore
 import PyQt5.QtWidgets
 import QT4Widgets as QT4Widgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 import QT4Color.Swatches as Swatches
 from QT4Color.DropType import BuildDragDataFromInfo as BuildDragDataFromInfo, BuildDragPixmapFromColor as BuildDragPixmapFromColor, GetColorDragType as GetColorDragType, GetColorInfoFromDragObject as GetColorInfoFromDragObject, GetColorPolicyDragDict as GetColorPolicyDragDict
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class ColorDropWidget(PyQt5.QtWidgets.QWidget):
     clickedSignal: ClassVar[PyQt5.QtCore.pyqtSignal] = ...

@@ -3,6 +3,7 @@
 import NodegraphAPI as NodegraphAPI
 import Utils as Utils
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 _BYPASS_PARAM_NAME: str
 _BypassableNodesCache: set

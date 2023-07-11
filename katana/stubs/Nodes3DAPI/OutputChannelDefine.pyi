@@ -12,6 +12,7 @@ import Naming as UniqueName
 import Utils as Utils
 from Nodes3DAPI.Node3D import Node3D as Node3D
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 OutputChannelDefineSubClasses: dict
 

@@ -1,18 +1,9 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
-import QT4Widgets.DarkMojo as DarkMojo
-import QT4Widgets.Manifest as Manifest
-import QT4Widgets.Profile as Profile
-import QT4Widgets.PythonConsole as PythonConsole
-import QT4Widgets.QtAttributes as QtAttributes
-import QT4Widgets.Settings as Settings
-import QT4Widgets.TextEditorUtils as TextEditorUtils
-import QT4Widgets.Threads as Threads
-import QT4Widgets.Timebar as Timebar
-import QT4Widgets.Timeline as Timeline
-import QT4Widgets.TopWindows as TopWindows
-import QT4Widgets.TreeWidgetUtil as TreeWidgetUtil
-import QT4Widgets.WidgetUtils as WidgetUtils
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
+from . import DarkMojo as DarkMojo, Manifest as Manifest, Profile as Profile, PythonConsole as PythonConsole, QtAttributes as QtAttributes, Settings as Settings, TextEditorUtils as TextEditorUtils, Threads as Threads, Timebar as Timebar, Timeline as Timeline, TopWindows as TopWindows, TreeWidgetUtil as TreeWidgetUtil, WidgetUtils as WidgetUtils
 from QT4Widgets.CapsuleCombo import CapsuleCombo as CapsuleCombo, CapsuleComboBase as CapsuleComboBase, TransitionValidator as TransitionValidator
 from QT4Widgets.CustomMenu import CustomMenu as CustomMenu
 from QT4Widgets.CustomQLineEdit import CustomQLineEdit as CustomQLineEdit
@@ -35,3 +26,4 @@ from QT4Widgets.ToolbarButton import LabeledToolbarButton as LabeledToolbarButto
 from QT4Widgets.TopWindows import TrackTopWindow as TrackTopWindow
 from QT4Widgets.TreeWidgetUtil import ContextMenuHelper as ContextMenuHelper, UpdateSuppressor as UpdateSuppressor
 from QT4Widgets.VerticalDivider import VerticalDivider as VerticalDivider
+from typing import Set, Tuple

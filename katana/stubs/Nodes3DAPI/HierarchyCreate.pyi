@@ -8,6 +8,7 @@ import Naming as SafeIdentifier
 import Naming as UniqueName
 from ConditionalStateGrammar.Parser import ParseCSG as ParseCSG
 from Nodes3DAPI.Node3D import Node3D as Node3D
+from typing import Set, Tuple
 
 ATTRS: str
 INFO: str

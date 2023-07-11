@@ -3,12 +3,15 @@
 import QT4FormWidgets.PaintingUtils as PaintingUtils
 import QT4Widgets as QT4Widgets
 import QT4Widgets.FilterablePopupButton
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
 import ResourceFiles as ResourceFiles
 from QT4FormWidgets.BaseValueFormWidget import BaseValueFormWidget as BaseValueFormWidget
 from QT4FormWidgets.FormWidget import AlignChildLabelWidths as AlignChildLabelWidths, AlignLeftControlWidths as AlignLeftControlWidths, FormWidget as FormWidget, ScrubbingStates as ScrubbingStates
 from QT4Widgets.FilterablePopupButton import FilterablePopupButton
 from ResourceFiles.IconManager import ResourceManager as ResourceManager
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 class FilterablePopupFormWidget(BaseValueFormWidget):
     class Popup(QT4Widgets.FilterablePopupButton.FilterablePopup):

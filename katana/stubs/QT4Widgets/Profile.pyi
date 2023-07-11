@@ -2,8 +2,11 @@
 
 import ConfigurationAPI_cmodule as Configuration
 import PyQt5.QtWidgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class CallersCalleesNavigationPopup(PyQt5.QtWidgets.QFrame):
     ASSOCIATED_FUNCTION_COLUMN_INDEX: ClassVar[int] = ...

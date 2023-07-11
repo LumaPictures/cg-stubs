@@ -2,6 +2,7 @@
 
 import NodegraphAPI as NodegraphAPI
 import NodegraphAPI.NodeDelegateManager
+from typing import Set, Tuple
 
 _ColorLabels: dict
 _PastelLabels: dict

@@ -1,9 +1,12 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 import QT4FormWidgets as QT4FormWidgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
 from QT4Color.ColorPolicy import CreateColorPolicy as CreateColorPolicy, DoesColorPolicyEnableFilmlook as DoesColorPolicyEnableFilmlook, DoesColorPolicyEnableNoFilmlookColorSpace as DoesColorPolicyEnableNoFilmlookColorSpace, DoesColorPolicyHaveAlpha as DoesColorPolicyHaveAlpha, DoesColorPolicyRestrictComponents as DoesColorPolicyRestrictComponents, GetColorPolicyChildren as GetColorPolicyChildren, GetColorPolicyRGBA as GetColorPolicyRGBA, GetDefaultColorComponentTab as GetDefaultColorComponentTab, SetColorPolicyEnableFilmlook as SetColorPolicyEnableFilmlook, SetColorPolicyEnableFilmlookDefault as SetColorPolicyEnableFilmlookDefault, SetColorPolicyEnableNoFilmlookColorSpaceDefault as SetColorPolicyEnableNoFilmlookColorSpaceDefault, SetColorPolicyRGBA as SetColorPolicyRGBA, SetColorPolicyRestrictComponents as SetColorPolicyRestrictComponents, SetColorPolicyRestrictComponentsDefault as SetColorPolicyRestrictComponentsDefault
 from QT4Color.Gradient1D import LinearGradientWidget as LinearGradientWidget
 from QT4FormWidgets.NumberFormWidget import NumberFormWidget
+from typing import Set, Tuple
 
 class ColorComponentFormWidget(NumberFormWidget):
     def __init__(self, colorComponent, parent, colorPolicy, widgetFactory): ...

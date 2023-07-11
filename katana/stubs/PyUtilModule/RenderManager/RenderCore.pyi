@@ -22,6 +22,7 @@ from PyUtilModule.RenderManager.ResolutionTableUtils import GetTempResolutionTab
 from PyUtilModule.RenderManager.ScenegraphUtils import AddCameraOverrideToRecipe as AddCameraOverrideToRecipe, AddRenderOutputsToRecipe as AddRenderOutputsToRecipe, AddRenderSettingsToRecipe as AddRenderSettingsToRecipe, AddVirtualCameraToRecipe as AddVirtualCameraToRecipe, BakeAOVs as BakeAOVs, GetInteractiveOutputs as GetInteractiveOutputs
 from Utils.Decorators import deprecated as deprecated
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 DEFAULT_INTERACTIVE_OUTPUT: str
 _ENABLE_THUMBNAILS: bool

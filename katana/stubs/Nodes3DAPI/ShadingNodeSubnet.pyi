@@ -8,7 +8,7 @@ import NodegraphAPI_cmodule
 import Nodes3DAPI.Node3D_geolib3
 import Utils as Utils
 from Nodes3DAPI.Node3D_geolib3 import NodeGeolib3 as NodeGeolib3
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 _ExtraHints: dict
 

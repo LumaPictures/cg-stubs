@@ -2,7 +2,7 @@
 
 import NodegraphAPI
 import typing
-from typing import Any, ClassVar, overload
+from typing import Any, ClassVar, Set, Tuple, overload
 
 __cleanupNodeClass: PyCapsule
 __cleanupNotify: PyCapsule

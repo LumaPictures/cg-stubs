@@ -2,6 +2,7 @@
 
 from ViewerAPI.ImplicitOpsManager import ImplicitOpsManager as ImplicitOpsManager
 from ViewerAPI.ManipulatorBridge import ManipulatorBridge as ManipulatorBridge
+from typing import Set, Tuple
 
 CameraDirtyBits_AllDirty: int
 CameraDirtyBits_Clean: int

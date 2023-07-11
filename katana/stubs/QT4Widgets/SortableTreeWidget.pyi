@@ -2,13 +2,13 @@
 
 import PyQt5.QtCore
 import PyQt5.QtWidgets
-import QtCore
-import QtGui
-import QtWidgets
+import QtCore as QtCore
+import QtGui as QtGui
+import QtWidgets as QtWidgets
 import QtWidgets.QAbstractItemView
 import QT4Widgets.TreeWidgetUtil as TreeWidgetUtil
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class CallbackRecord:
     def __init__(self): ...

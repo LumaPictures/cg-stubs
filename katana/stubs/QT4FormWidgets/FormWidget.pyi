@@ -12,15 +12,16 @@ import PyQt5.QtGui
 import PyQt5.QtWidgets
 import QT4FormWidgets
 import QT4Widgets as QT4Widgets
-import QtCore
-import QtWidgets
+import QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import QtWidgets as QtWidgets
 from QT4FormWidgets.FWidget import FDisclosureTriangle as FDisclosureTriangle
 from QT4FormWidgets.FixableBoxLayout import FixableBoxLayout as FixableBoxLayout
 from QT4FormWidgets.FormClose import FormClose as FormClose
 from QT4FormWidgets.FormWidgetLabel import FormWidgetLabel as FormWidgetLabel
 from QT4FormWidgets.MultiStateBadge import MultiStateBadge as MultiStateBadge, ToggleStateBadge as ToggleStateBadge
 from _typeshed import Incomplete
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 g_timerUpdateWindows: set
 

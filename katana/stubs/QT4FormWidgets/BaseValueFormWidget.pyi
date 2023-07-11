@@ -2,13 +2,16 @@
 
 import QT4FormWidgets.ExternalEditorDialog as ExternalEditorDialog
 import QT4FormWidgets.PaintingUtils as PaintingUtils
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
 from QT4FormWidgets.FWidget import FBoxLayout as FBoxLayout, FButton as FButton, FDisclosureTriangle as FDisclosureTriangle, FLabel as FLabel, FLockIcon as FLockIcon, FMenu as FMenu, FPixmap as FPixmap, FSpacer as FSpacer, FStateBadge as FStateBadge, FSvgIcon as FSvgIcon, FToggleStateBadge as FToggleStateBadge, FWidget as FWidget
 from QT4FormWidgets.FormWidget import FormWidget as FormWidget
 from QT4FormWidgets.InputWidgets import HelpButton as HelpButton, HelpFWidget as HelpFWidget, InputComboBox as InputComboBox, InputLineEdit as InputLineEdit, InputTextEdit as InputTextEdit
 from QT4FormWidgets.ValuePolicy import AbstractValuePolicy as AbstractValuePolicy, ValuePolicyEvent as ValuePolicyEvent, ValuePolicyProxy as ValuePolicyProxy
 from QT4FormWidgets.WideEditDialog import WideEditDialog as WideEditDialog
 from ResourceFiles.IconManager import ResourceManager as ResourceManager
-from typing import ClassVar
+from typing import ClassVar, Set, Tuple
 
 class BaseValueFormWidget(FormWidget):
     _Pixmaps: ClassVar[dict] = ...

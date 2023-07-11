@@ -5,6 +5,7 @@ import NodegraphAPI as NodegraphAPI
 import Nodes2DAPI as Nodes2DAPI
 import Utils as Utils
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 def CalculateInOut(node: Nodes2DAPI.Node2D): ...
 def GetChannelNames(node, time: Incomplete | None = ...): ...

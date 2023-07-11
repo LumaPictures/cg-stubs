@@ -1,35 +1,12 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
-import NodegraphAPI.BypassParameterManager as BypassParameterManager
-import NodegraphAPI.CallbackTypes as CallbackTypes
 import Callbacks as Callbacks
-import NodegraphAPI.Constants as Constants
-import NodegraphAPI.DynamicParameters as DynamicParameters
-import NodegraphAPI.ExpressionModule as ExpressionModule
-import NodegraphAPI.Flavor as Flavor
 import FnAttribute as FnAttribute
-import NodegraphAPI.GroupStack as GroupStack
-import NodegraphAPI.InteractiveRenderFilters as InteractiveRenderFilters
-import NodegraphAPI.LiveGroup as LiveGroup
-import NodegraphAPI.NodeDelegateManager as NodeDelegateManager
-import NodegraphAPI.NodeExtensions as NodeExtensions
-import NodegraphAPI.NodeGraphViewExtensions as NodeGraphViewExtensions
-import NodegraphAPI.NodeNameFromParamManager as NodeNameFromParamManager
-import NodegraphAPI.NodeXmlIO as NodeXmlIO
 import NodegraphAPI_cmodule as NodegraphAPI_cmodule
-import NodegraphAPI.NodegraphChangedEvents as NodegraphChangedEvents
-import NodegraphAPI.NodegraphGlobals as NodegraphGlobals
-import NodegraphAPI.ParameterValueOption as ParameterValueOption
 import PyFnAttribute
-import NodegraphAPI.RenderFilter as RenderFilter
-import NodegraphAPI.RenderScript as RenderScript
-import NodegraphAPI.StructuredPorts as StructuredPorts
-import NodegraphAPI.UserParameters as UserParameters
-import NodegraphAPI.Util as Util
 import Utils as Utils
-import NodegraphAPI.Version as Version
-import NodegraphAPI.Xio as Xio
 import typing
+from . import BypassParameterManager as BypassParameterManager, CallbackTypes as CallbackTypes, Constants as Constants, DynamicParameters as DynamicParameters, ExpressionModule as ExpressionModule, Flavor as Flavor, GroupStack as GroupStack, InteractiveRenderFilters as InteractiveRenderFilters, LiveGroup as LiveGroup, NodeDelegateManager as NodeDelegateManager, NodeExtensions as NodeExtensions, NodeGraphViewExtensions as NodeGraphViewExtensions, NodeNameFromParamManager as NodeNameFromParamManager, NodeXmlIO as NodeXmlIO, NodegraphChangedEvents as NodegraphChangedEvents, NodegraphGlobals as NodegraphGlobals, ParameterValueOption as ParameterValueOption, RenderFilter as RenderFilter, RenderScript as RenderScript, StructuredPorts as StructuredPorts, UserParameters as UserParameters, Util as Util, Version as Version, Xio as Xio
 from NodegraphAPI.DynamicParameters import CreateGroupParameter as CreateGroupParameter, CreateNumberParameter as CreateNumberParameter, CreateStringParameter as CreateStringParameter, DeleteParameter as DeleteParameter
 from NodegraphAPI.ExpressionModule import FCurveLookup as FCurveLookup, GetExpressionGlobalValue as GetExpressionGlobalValue, SetExpressionGlobalValue as SetExpressionGlobalValue, SetupExpressionGlobalScopeFromRootNode as SetupExpressionGlobalScopeFromRootNode
 from NodegraphAPI.Flavor import AddNodeFlavor as AddNodeFlavor, ClearFlavorNodes as ClearFlavorNodes, GetAllFlavors as GetAllFlavors, GetFlavorNodes as GetFlavorNodes, GetNodeFlavors as GetNodeFlavors, NodeMatchesFlavors as NodeMatchesFlavors, RemoveNodeFlavor as RemoveNodeFlavor
@@ -41,6 +18,7 @@ from NodegraphAPI.PythonRenderScript import PythonRenderScript as PythonRenderSc
 from NodegraphAPI.SuperTool import RegisterSuperTool as RegisterSuperTool, SuperTool as SuperTool
 from NodegraphAPI_cmodule import Context as Context, GetAllExpressionedParameters as GetAllExpressionedParameters, GetExpressionReferences as GetExpressionReferences, GetNodeGraphContext as GetNodeGraphContext, GraphState as GraphState, GraphStateBuilder as GraphStateBuilder, GroupNode as GroupNode, Node as Node, Parameter as Parameter, Port as Port, PythonGroupNode as PythonGroupNode, PythonNode as PythonNode
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 NodeGraphContextParameter: str
 RTLD_GLOBAL: int

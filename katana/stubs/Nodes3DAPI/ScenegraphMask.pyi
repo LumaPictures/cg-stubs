@@ -4,6 +4,7 @@ import Nodes3DAPI.ScenegraphManager as ScenegraphManager
 import PyUtilModule.ScenegraphUtils as ScenegraphUtils
 import Utils as Utils
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 __scenegraphMaskEnabled: bool
 __visibilityFollowsWorkingSet: bool

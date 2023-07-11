@@ -1,12 +1,10 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
-import CatalogAPI.Catalog as Catalog
-import CatalogAPI.CatalogItem as CatalogItem
-import CatalogAPI.CatalogUtils as CatalogUtils
-import CatalogAPI.Client as Client
+from . import Catalog as Catalog, CatalogItem as CatalogItem, CatalogUtils as CatalogUtils, Client as Client
 from CatalogAPI.Catalog import CreateCatalogItem as CreateCatalogItem, DeleteCatalogItems as DeleteCatalogItems, DuplicateCatalogItem as DuplicateCatalogItem, FillDragDataFromItem as FillDragDataFromItem, FindCatalogItemBySequenceID as FindCatalogItemBySequenceID, FindUnlockedCatalogItemBySlot as FindUnlockedCatalogItemBySlot, GetCatalogItems as GetCatalogItems, GetCatalogThumbnailWidth as GetCatalogThumbnailWidth, GetFirstCatalogItem as GetFirstCatalogItem, GetItemFromDragData as GetItemFromDragData, GetLastCatalogItem as GetLastCatalogItem, GetNextCatalogItem as GetNextCatalogItem, GetNumCatalogItems as GetNumCatalogItems, GetPreviousCatalogItem as GetPreviousCatalogItem, MoveCatalogItem as MoveCatalogItem, MoveCatalogItemToTop as MoveCatalogItemToTop, SetCatalogThumbnailWidth as SetCatalogThumbnailWidth
 from CatalogAPI.CatalogUtils import ExportCatalogToDisk as ExportCatalogToDisk, GetCommonResolutionNameFromItems as GetCommonResolutionNameFromItems, GetFirstFrame as GetFirstFrame, GetMemoryUsageMB as GetMemoryUsageMB, GetNearestTimeInSequence as GetNearestTimeInSequence, GetSequenceCreationTime as GetSequenceCreationTime, GetSequenceObj as GetSequenceObj, GetUniqueImageNumberInDirectory as GetUniqueImageNumberInDirectory, ImportImageSequence as ImportImageSequence, IsPersistantCatalogAllowed as IsPersistantCatalogAllowed, ValidatePersistantDirectory as ValidatePersistantDirectory
 from CatalogAPI.Client import ApplyCatalogItemProjectSettings as ApplyCatalogItemProjectSettings, AutoViewCatalogItem as AutoViewCatalogItem, CreateCatalogClientKey as CreateCatalogClientKey, DeleteCatalogClientKey as DeleteCatalogClientKey, GetAllowedViewSlots as GetAllowedViewSlots, GetClientCatalogItems as GetClientCatalogItems, GetClientKeys as GetClientKeys, GetClientViewSlots as GetClientViewSlots, GetCurrentlyViewedSlots as GetCurrentlyViewedSlots, GetPrimaryClientKey as GetPrimaryClientKey, GetRecommendedRenderSlots as GetRecommendedRenderSlots, GetUnassignedSlot as GetUnassignedSlot, IsClientPinned as IsClientPinned, SetClientCatalogItem as SetClientCatalogItem, SetClientPinned as SetClientPinned, SetClientViewSlot as SetClientViewSlot, SwapClientViewSlots as SwapClientViewSlots
+from typing import Set, Tuple
 
 RENDER_STATE_CANCELLED: str
 RENDER_STATE_COMPLETED: str

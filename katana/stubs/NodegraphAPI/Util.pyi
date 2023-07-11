@@ -5,6 +5,7 @@ import NodegraphAPI_cmodule as NodegraphAPI_cmodule
 import NodegraphAPI.StructuredPorts as StructuredPorts
 import Utils as Utils
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 __python_reserved: set
 

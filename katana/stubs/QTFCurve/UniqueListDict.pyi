@@ -1,6 +1,7 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 from _typeshed import Incomplete
+from typing import Set, Tuple
 
 class UniqueListDict:
     def __init__(self, name: Incomplete | None = ..., defaultKey: Incomplete | None = ..., pairList: list = ...): ...
