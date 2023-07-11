@@ -17,5 +17,5 @@ outdir=$REPO_PATH/usd/stubs
 # the __init__ modules do runtime injection, so parsing these modules produces bad results..
 python3 -c "import stubgen_usd;stubgen_usd.main('$outdir')"
 
-rm $outdir/pxr/*/_[a-z]*.pyi
-rm $outdir/pxr/*/__DOC.pyi
+rm -f $outdir/pxr/*/_[a-z]*.pyi
+rm -f $outdir/pxr/*/__DOC.pyi

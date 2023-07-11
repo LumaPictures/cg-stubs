@@ -13,7 +13,7 @@ Supported libraries and applications.
 - [PySide2](https://pypi.org/project/types-PySide2/)
 - [substance_painter](https://pypi.org/project/types-substance_painter/)
 
-For code completion and type analysis, [pymel](https://pypi.org/project/pymel/) has very excellent stubs included. 
+For code completion and type analysis in Maya, [pymel](https://pypi.org/project/pymel/) has very excellent stubs included. 
 
 ## Installing
 

@@ -5,9 +5,9 @@ import subprocess
 import os
 import re
 import pydoc
-import types
 from collections import defaultdict
 from dataclasses import dataclass
+from typing import Any
 
 import mypy.stubgen
 import mypy.stubgenc
@@ -329,13 +329,13 @@ class TypeInfo:
         if self.srcdir is None:
             return {}
 
-        def get_type_from_path(path):
+        def get_type_from_path(path) -> str:
             parts = path.split(os.path.sep)
             name = os.path.splitext(parts[-1])[0]
             assert name.startswith("wrap")
             return type_info.to_python_id(capitalize(parts[-2]) + name[4:])
 
-        def process_parsed_type(cpp_type):
+        def process_parsed_type(cpp_type) -> str:
             if cpp_type == "This":
                 cpp_type = get_type_from_path(path)
             py_type = self.cpp_arg_to_py_type(cpp_type, is_result=True)
@@ -691,14 +691,10 @@ class UsdBoostDocstringSignatureGenerator(
             and not sig.args[0].default
             and sig.args[0].type in ("object", ctx.class_info.name)
         ):
+            notifier.warn("Stripping self type", ctx.module_name, ctx.fullname)
             return sig._replace(args=sig.args[1:])
         else:
             return sig
-
-    def _fix_self_args(
-        self, sigs: list[FunctionSig], ctx: FunctionContext
-    ) -> list[FunctionSig]:
-        return [self._fix_self_arg(sig, ctx) for sig in sigs]
 
     def cleanup_type(
         self,
@@ -809,6 +805,7 @@ class UsdBoostDocstringSignatureGenerator(
 
         match = re.match(r"(pxr\.Sdf.*Spec).__init__$", ctx.fullname)
         if match:
+            # these types use a New() class constructor
             fullname = "{}.New".format(match.groups()[0])
             use_cpp_only = True
         else:
@@ -818,7 +815,8 @@ class UsdBoostDocstringSignatureGenerator(
         cpp_info = type_info.get_cpp_sig_info(fullname)
         if use_cpp_only:
             assert cpp_info is not None
-            # Only C++ signatures
+            # Only C++ signatures:
+            # convert to FunctionSig
             cpp_sigs: list[FunctionSig] = []
             for cpp_sig in cpp_info.overloads:
                 args: list[ArgSig] = []
@@ -835,13 +833,17 @@ class UsdBoostDocstringSignatureGenerator(
                 cpp_sigs.append(FunctionSig(ctx.name, args, py_ret_type))
             sigs = cpp_sigs
         elif cpp_info is None or len(sigs) != len(cpp_info.overloads):
-            # Only python signatures
-            sigs = self._fix_self_args(sigs, ctx)
+            # Only python signatures:
+            if not cpp_info or not any(
+                overload.isStatic() for overload in cpp_info.overloads
+            ):
+                sigs = [self._fix_self_arg(sig, ctx) for sig in sigs]
             # apply fixes that don't rely on c++ docs:
             sigs = [self.cleanup_sig_types(sig, ctx) for sig in sigs]
             if cpp_info is None:
                 notifier.warn("No c++ info found", ctx.module_name, ctx.fullname)
             else:
+                # summarize the C++ <> python incompatibilties
                 summary = ""
                 for overload_num, sig in enumerate(sigs):
                     summary += "   py   ({})\n".format(format_args(sig))
@@ -860,9 +862,9 @@ class UsdBoostDocstringSignatureGenerator(
                     ),
                 )
         else:
-            # C++ and Python signatures
-            if not cpp_info.overloads[0].isStatic():
-                sigs = self._fix_self_args(sigs, ctx)
+            # C++ and Python signatures:
+            if not any(overload.isStatic() for overload in cpp_info.overloads):
+                sigs = [self._fix_self_arg(sig, ctx) for sig in sigs]
 
             cpp_sigs_with_ptr: list[FunctionSig] = []
             cpp_sigs_without_ptr: list[FunctionSig] = []
@@ -906,7 +908,7 @@ class UsdBoostDocstringSignatureGenerator(
                     FunctionSig(ctx.name, args_without_ptr, py_ret_type)
                 )
 
-            def matches(sigs1, sigs2):
+            def matches(sigs1, sigs2) -> int:
                 """
                 Compare the two signatures, by returning the number of signatures
                 with matching arg length.
@@ -1042,7 +1044,7 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
     The downside of this is that both pxr.Sdf._sdf and pxr.Sdf.__init__ are processed
     """
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self.module_name, self.is_c_module = remove_redundant_submodule(
             self.module_name
@@ -1167,19 +1169,12 @@ def test():
     )
 
 
-def main(outdir) -> None:
-    # test()
-    # # return
+def main(outdir: str) -> None:
     import pprint
 
-    # return
-    # print(type_info.py_array_to_sub_type("pxr.Vt.Vec3fArray"))
-    # return
     type_info.populate()
-    print("_PrimFlagsPredicate", type_info.get_full_py_type("_PrimFlagsPredicate"))
-    pprint.pprint(type_info._get_implicitly_convertible_types())
-    notifier.set_modules(["pxr.Gf", "pxr.Sdf"])
-    # notifier.set_modules(["pxr.UsdSkel"])
+    notifier.set_modules(["pxr.Tf"])
+
     # raise ValueError(type_info.py_types["PathArray"], type_info.get_full_py_type("PathArray", "pxr.UsdGeom"))
     # raise ValueError(type_info.py_types["VersionPolicy"], type_info.get_full_py_type("VersionPolicy", "pxr.Usd"))
     # raise ValueError(type_info.py_types["Matrix3dArray"], type_info.get_full_py_type("Matrix3dArray", "pxr.Usd"))
