@@ -1,4 +1,5 @@
-# mypy: disable_error_code = misc
+# mypy: disable-error-code="misc, override, no-redef"
+
 import pxr.Plug as Plug
 import pxr.Tf as Tf
 from _typeshed import Incomplete

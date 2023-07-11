@@ -1,4 +1,5 @@
-# mypy: disable_error_code = misc
+# mypy: disable-error-code="misc, override, no-redef"
+
 class FixBrokenPixarSchemas:
     def __init__(self, usdLayer): ...
     def FixupCoordSysAPI(self): ...

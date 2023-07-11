@@ -1,2 +1,3 @@
-# mypy: disable_error_code = misc
+# mypy: disable-error-code="misc, override, no-redef"
+
 from . import Ar as Ar, CameraUtil as CameraUtil, Garch as Garch, GeomUtil as GeomUtil, Gf as Gf, Glf as Glf, Kind as Kind, Ndr as Ndr, Pcp as Pcp, Plug as Plug, PxOsd as PxOsd, Sdf as Sdf, Sdr as Sdr, Tf as Tf, Trace as Trace, Usd as Usd, UsdAppUtils as UsdAppUtils, UsdGeom as UsdGeom, UsdHydra as UsdHydra, UsdImagingGL as UsdImagingGL, UsdLux as UsdLux, UsdMedia as UsdMedia, UsdMtlx as UsdMtlx, UsdPhysics as UsdPhysics, UsdProc as UsdProc, UsdRender as UsdRender, UsdRi as UsdRi, UsdShade as UsdShade, UsdSkel as UsdSkel, UsdUI as UsdUI, UsdUtils as UsdUtils, UsdVol as UsdVol, Usdviewq as Usdviewq, Vt as Vt, Work as Work

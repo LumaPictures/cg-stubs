@@ -1,4 +1,5 @@
-# mypy: disable_error_code = misc
+# mypy: disable-error-code="misc, override, no-redef"
+
 from _typeshed import Incomplete
 
 _toStringFnCache: dict

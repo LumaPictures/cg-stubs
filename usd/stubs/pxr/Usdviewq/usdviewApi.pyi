@@ -1,4 +1,5 @@
-# mypy: disable_error_code = misc
+# mypy: disable-error-code="misc, override, no-redef"
+
 import pxr.Gf as Gf
 from _typeshed import Incomplete
 from typing import Any

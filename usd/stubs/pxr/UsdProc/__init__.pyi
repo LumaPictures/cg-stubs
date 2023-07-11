@@ -1,4 +1,5 @@
-# mypy: disable_error_code = misc
+# mypy: disable-error-code="misc, override, no-redef"
+
 import Boost.Python
 import pxr.Sdf
 import pxr.Tf
@@ -27,10 +28,8 @@ class GenerativeProcedural(pxr.UsdGeom.Boundable):
     @classmethod
     def _GetStaticTfType(cls) -> pxr.Tf.Type: ...
     def __bool__(self) -> bool: ...
-    def __reduce__(self): ...
 
 class Tokens(Boost.Python.instance):
     GenerativeProcedural: ClassVar[Any] = ...  # read-only
     proceduralSystem: ClassVar[Any] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
-    def __reduce__(self): ...

@@ -1,4 +1,5 @@
-# mypy: disable_error_code = misc
+# mypy: disable-error-code="misc, override, no-redef"
+
 class ConfigController:
     def __init__(self, currentConfig, appController): ...
     def _hide(self, ui): ...

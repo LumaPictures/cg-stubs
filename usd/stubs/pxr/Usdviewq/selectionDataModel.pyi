@@ -1,4 +1,5 @@
-# mypy: disable_error_code = misc
+# mypy: disable-error-code="misc, override, no-redef"
+
 import pxr.Gf as Gf
 import PySide6.QtCore
 import pxr.Sdf as Sdf

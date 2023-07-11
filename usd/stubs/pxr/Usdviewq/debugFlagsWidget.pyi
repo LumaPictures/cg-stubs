@@ -1,4 +1,5 @@
-# mypy: disable_error_code = misc
+# mypy: disable-error-code="misc, override, no-redef"
+
 import PySide6.QtCore
 import PySide6.QtWidgets
 import pxr.Tf as Tf

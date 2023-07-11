@@ -1,4 +1,5 @@
-# mypy: disable_error_code = misc
+# mypy: disable-error-code="misc, override, no-redef"
+
 class Ui_Preferences:
     def retranslateUi(self, Preferences): ...
     def setupUi(self, Preferences): ...

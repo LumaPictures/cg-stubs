@@ -1,4 +1,5 @@
-# mypy: disable_error_code = misc
+# mypy: disable-error-code="misc, override, no-redef"
+
 import pxr.CameraUtil as CameraUtil
 import pxr.Gf as Gf
 import pxr.Glf as Glf

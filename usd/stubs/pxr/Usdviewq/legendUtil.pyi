@@ -1,4 +1,5 @@
-# mypy: disable_error_code = misc
+# mypy: disable-error-code="misc, override, no-redef"
+
 LEGEND_BUTTON_SELECTEDSTYLE: str
 
 def ToggleLegendWithBrowser(legend, button, anim): ...

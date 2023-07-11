@@ -1,4 +1,5 @@
-# mypy: disable_error_code = misc
+# mypy: disable-error-code="misc, override, no-redef"
+
 from pxr.Usdviewq.attributeValueEditor import AttributeValueEditor as AttributeValueEditor
 from pxr.Usdviewq.frameSlider import FrameSlider as FrameSlider
 from pxr.Usdviewq.primLegend import PrimLegend as PrimLegend

@@ -193,61 +193,6 @@ class DummyWriter:
         raise NotImplementedError
 
 
-# class StubHelper(Writer, DummyWriter):
-
-#     def populate_map(self, sig_map, docElemPath: list[DocElement]) -> list[str]:
-#         """
-#         docElem : list of DocElements from the root to the documented item
-#         """
-#         docElem = docElemPath[-1]
-
-#         for childName, childObjectList in docElem.children.items():
-#             if self.module.__name__ == 'pxr.Sdf' and docElem.name == "Sdf":
-#                 print(childObjectList)
-
-#             # Alteranately. don't bother trying to find the python object
-#             # (pypath, ppypath1, ppypath2) = self.__pathGenerator(parentPath, overloads)
-
-#             # Work out the possible Python name(s) for this C++ object
-#             # Note that some C++ names have both potential corresponding
-#             # python method and property names.
-#             (pyobj, pypath, proppyobj, proppypath, jumped) \
-#                 = self._getPythonObjectAndPath(docElemPath, childObjectList)
-#             if self.module.__name__ == 'pxr.Sdf' and \
-#                     "SdfPathFindLongestPrefix" in [child.name for child in childObjectList]:
-#                 print("HERE", docElem, childName, pyobj, pypath, [child.location for child in childObjectList])
-
-#             if self.module.__name__ == 'pxr.Sdf' and \
-#                     "VT_TYPE_IS_CHEAP_TO_COPY" in [child.name for child in childObjectList]:
-#                 print("GARBAGE", docElem, childName, pyobj, pypath, [child.location for child in childObjectList])
-
-#             # if docElem.name == "SdfPathFindLongestPrefix":
-#             #     print("NAME", pyobj, pypath, proppypath)
-#             # pyobj will be None if the object does not exist in self.module
-#             if pyobj is not None:
-#                 info = {
-#                     'parent': docElem,
-#                     'definitions': childObjectList,
-#                 }
-#                 fullPyPath = "{}.{}".format(self.module.__name__, pypath)
-#                 sig_map[pypath] = info
-#                 sig_map[fullPyPath] = info
-
-#             # recurse through all of this element's children too
-#             for child in childObjectList:
-#                 if self.module.__name__ == 'pxr.Sdf' and child.name == "SdfPathFindLongestPrefix":
-#                     print("CHILD", child)
-#                 self.populate_map(sig_map, docElemPath + [child])
-
-# parser = Parser()
-# parser.parseDoxygenIndexFile(self.xml_index_file)
-# docElements = parser.traverse(DummyWriter())
-# for module_name in modules:
-#     writer = StubHelper("pxr", module_name)
-#     for docElement in docElements:
-#         writer.populate_map(cpp_sigs, [docElement])
-
-
 @dataclass
 class SigInfo:
     parent: DocElement
@@ -276,7 +221,11 @@ class TypeInfo:
     """
 
     def __init__(
-        self, xml_index_file: str, pxr_modules, srcdir: str | None = None, verbose=False
+        self,
+        xml_index_file: str,
+        pxr_modules: list[str],
+        srcdir: str | None = None,
+        verbose: bool = False,
     ):
         self.xml_index_file = xml_index_file
         self.pxr_modules_names = sorted(pxr_modules, key=len, reverse=True)
@@ -1050,6 +999,11 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
             self.module_name
         )
 
+    def is_skipped_attribute(self, attr: str) -> bool:
+        # skip the Mari object because it causes self.strip_or_import("mari.API") -> "Mari.API"
+        # by adding a "mari" -> "Mari" alias lookup to import_tracker.reverse_alias
+        return super().is_skipped_attribute(attr) or attr == "__reduce__"
+
     def get_obj_module(self, obj: object) -> str | None:
         """Return module name of the object."""
         module_name = getattr(obj, "__module__", None)
@@ -1059,7 +1013,7 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
 
     def output(self) -> str:
         output = super().output()
-        return "# mypy: disable_error_code = misc\n" + output
+        return '# mypy: disable-error-code="misc, override, no-redef"\n\n' + output
 
     def get_type_fullname(self, typ: type) -> str:
         type_name = super().get_type_fullname(typ)
@@ -1096,64 +1050,8 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         return False
 
 
-# class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
-#     """
-#     Make objects in pxr.Sdf._sdf appear to be defined in pxr.Sdf.
-
-#     The downside of this is that both pxr.Sdf._sdf and pxr.Sdf.__init__ are processed
-#     """
-
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.module_name = remove_redundant_submodule(self.module_name)
-
-#     def get_obj_module(self, obj: object) -> str | None:
-#         """Return module name of the object."""
-#         module_name = getattr(obj, "__module__", None)
-#         if module_name:
-#             return remove_redundant_submodule(module_name)
-#         return None
-
-
-# mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator
-# mypy.stubgenc.InspectionStubGenerator = InspectionStubGenerator
-
 mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[misc]
 mypy.stubgenc.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[misc]
-
-
-# class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
-#     """
-#     Make objects in pxr.Sdf appear to be defined in pxr.Sdf._sdf.
-#
-#     The downside of this approach is that types in the stubs are idenfified as pxr.Sdf._sdf.Foo
-#     """
-
-#     def get_obj_module(self, obj: object) -> str | None:
-#         """Return module name of the object."""
-#         module_name = getattr(obj, "__module__", None)
-#         if module_name:
-#             parts = module_name.split('.')
-#             if len(parts) == 2:
-#                 module_name = '.'.join(parts + ['_' + parts[-1].lower()])
-#                 # print(obj, module_name)
-#                 # print(self.known_modules)
-#         return module_name
-
-
-# class InspectionStubGenerator(InspectionStubGenerator):
-#     """
-#     Make objects in pxr.Sdf appear to be defined in pxr.Sdf._sdf.
-#     """
-
-#     def get_sig_generators(self) -> list[SignatureGenerator]:
-#         return [BoostDocstringSignatureGenerator()]
-
-# mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator
-# mypy.stubgenc.InspectionStubGenerator = InspectionStubGenerator
-
-# mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator
-# mypy.stubgenc.InspectionStubGenerator = InspectionStubGenerator
 
 
 def test():
