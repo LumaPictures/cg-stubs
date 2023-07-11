@@ -30,6 +30,6 @@ class GenerativeProcedural(pxr.UsdGeom.Boundable):
     def __bool__(self) -> bool: ...
 
 class Tokens(Boost.Python.instance):
-    GenerativeProcedural: ClassVar[Any] = ...  # read-only
-    proceduralSystem: ClassVar[Any] = ...  # read-only
+    GenerativeProcedural: ClassVar[str] = ...  # read-only
+    proceduralSystem: ClassVar[str] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...

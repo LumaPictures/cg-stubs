@@ -24,9 +24,9 @@ class Registry(Boost.Python.instance):
     def expired(self) -> Any: ...
 
 class Tokens(Boost.Python.instance):
-    assembly: ClassVar[Any] = ...  # read-only
-    component: ClassVar[Any] = ...  # read-only
-    group: ClassVar[Any] = ...  # read-only
-    model: ClassVar[Any] = ...  # read-only
-    subcomponent: ClassVar[Any] = ...  # read-only
+    assembly: ClassVar[str] = ...  # read-only
+    component: ClassVar[str] = ...  # read-only
+    group: ClassVar[str] = ...  # read-only
+    model: ClassVar[str] = ...  # read-only
+    subcomponent: ClassVar[str] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...

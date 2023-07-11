@@ -495,11 +495,11 @@ class _TestStaticTokens(Boost.Python.instance):
     def __init__(self, *args, **kwargs) -> None: ...
 
 class _testStaticTokens(Boost.Python.instance):
-    Fuji: ClassVar[Any] = ...  # read-only
-    McIntosh: ClassVar[Any] = ...  # read-only
-    Pippin: ClassVar[Any] = ...  # read-only
-    orange: ClassVar[Any] = ...  # read-only
-    pear: ClassVar[Any] = ...  # read-only
+    Fuji: ClassVar[str] = ...  # read-only
+    McIntosh: ClassVar[str] = ...  # read-only
+    Pippin: ClassVar[str] = ...  # read-only
+    orange: ClassVar[str] = ...  # read-only
+    pear: ClassVar[str] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
 
 def DictionaryStrcmp(arg1: str | pxr.Ar.ResolvedPath, arg2: str | pxr.Ar.ResolvedPath) -> int: ...

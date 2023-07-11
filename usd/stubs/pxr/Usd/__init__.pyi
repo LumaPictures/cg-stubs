@@ -52,10 +52,10 @@ class APISchemaBase(SchemaBase):
     def __bool__(self) -> bool: ...
 
 class AssetInfoKeys(Boost.Python.instance):
-    identifier: ClassVar[Any] = ...  # read-only
-    name: ClassVar[Any] = ...  # read-only
-    payloadAssetDependencies: ClassVar[Any] = ...  # read-only
-    version: ClassVar[Any] = ...  # read-only
+    identifier: ClassVar[str] = ...  # read-only
+    name: ClassVar[str] = ...  # read-only
+    payloadAssetDependencies: ClassVar[str] = ...  # read-only
+    version: ClassVar[str] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
 
 class Attribute(Property):
@@ -1461,8 +1461,8 @@ class StagePopulationMask(Boost.Python.instance):
 
 class TimeCode(Boost.Python.instance):
     class Tokens(Boost.Python.instance):
-        DEFAULT: ClassVar[Any] = ...  # read-only
-        EARLIEST: ClassVar[Any] = ...  # read-only
+        DEFAULT: ClassVar[str] = ...  # read-only
+        EARLIEST: ClassVar[str] = ...  # read-only
         def __init__(self, *args, **kwargs) -> None: ...
     __instance_size__: ClassVar[int] = ...
     @overload
@@ -1490,25 +1490,25 @@ class TimeCode(Boost.Python.instance):
     def __ne__(self, other: object) -> bool: ...
 
 class Tokens(Boost.Python.instance):
-    APISchemaBase: ClassVar[Any] = ...  # read-only
-    ClipsAPI: ClassVar[Any] = ...  # read-only
-    CollectionAPI: ClassVar[Any] = ...  # read-only
-    ModelAPI: ClassVar[Any] = ...  # read-only
-    Typed: ClassVar[Any] = ...  # read-only
-    apiSchemas: ClassVar[Any] = ...  # read-only
-    clipSets: ClassVar[Any] = ...  # read-only
-    clips: ClassVar[Any] = ...  # read-only
-    collection: ClassVar[Any] = ...  # read-only
-    collection_MultipleApplyTemplate_: ClassVar[Any] = ...  # read-only
-    collection_MultipleApplyTemplate_Excludes: ClassVar[Any] = ...  # read-only
-    collection_MultipleApplyTemplate_ExpansionRule: ClassVar[Any] = ...  # read-only
-    collection_MultipleApplyTemplate_IncludeRoot: ClassVar[Any] = ...  # read-only
-    collection_MultipleApplyTemplate_Includes: ClassVar[Any] = ...  # read-only
-    exclude: ClassVar[Any] = ...  # read-only
-    expandPrims: ClassVar[Any] = ...  # read-only
-    expandPrimsAndProperties: ClassVar[Any] = ...  # read-only
-    explicitOnly: ClassVar[Any] = ...  # read-only
-    fallbackPrimTypes: ClassVar[Any] = ...  # read-only
+    APISchemaBase: ClassVar[str] = ...  # read-only
+    ClipsAPI: ClassVar[str] = ...  # read-only
+    CollectionAPI: ClassVar[str] = ...  # read-only
+    ModelAPI: ClassVar[str] = ...  # read-only
+    Typed: ClassVar[str] = ...  # read-only
+    apiSchemas: ClassVar[str] = ...  # read-only
+    clipSets: ClassVar[str] = ...  # read-only
+    clips: ClassVar[str] = ...  # read-only
+    collection: ClassVar[str] = ...  # read-only
+    collection_MultipleApplyTemplate_: ClassVar[str] = ...  # read-only
+    collection_MultipleApplyTemplate_Excludes: ClassVar[str] = ...  # read-only
+    collection_MultipleApplyTemplate_ExpansionRule: ClassVar[str] = ...  # read-only
+    collection_MultipleApplyTemplate_IncludeRoot: ClassVar[str] = ...  # read-only
+    collection_MultipleApplyTemplate_Includes: ClassVar[str] = ...  # read-only
+    exclude: ClassVar[str] = ...  # read-only
+    expandPrims: ClassVar[str] = ...  # read-only
+    expandPrimsAndProperties: ClassVar[str] = ...  # read-only
+    explicitOnly: ClassVar[str] = ...  # read-only
+    fallbackPrimTypes: ClassVar[str] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
 
 class Typed(SchemaBase):

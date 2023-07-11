@@ -69,22 +69,22 @@ class MeshTopologyValidation(Boost.Python.instance):
     def __iter__(self) -> Any: ...
 
 class OpenSubdivTokens(Boost.Python.instance):
-    all: ClassVar[Any] = ...  # read-only
-    bilinear: ClassVar[Any] = ...  # read-only
-    boundaries: ClassVar[Any] = ...  # read-only
-    catmullClark: ClassVar[Any] = ...  # read-only
-    chaikin: ClassVar[Any] = ...  # read-only
-    cornersOnly: ClassVar[Any] = ...  # read-only
-    cornersPlus1: ClassVar[Any] = ...  # read-only
-    cornersPlus2: ClassVar[Any] = ...  # read-only
-    edgeAndCorner: ClassVar[Any] = ...  # read-only
-    edgeOnly: ClassVar[Any] = ...  # read-only
-    leftHanded: ClassVar[Any] = ...  # read-only
-    loop: ClassVar[Any] = ...  # read-only
-    none: ClassVar[Any] = ...  # read-only
-    rightHanded: ClassVar[Any] = ...  # read-only
-    smooth: ClassVar[Any] = ...  # read-only
-    uniform: ClassVar[Any] = ...  # read-only
+    all: ClassVar[str] = ...  # read-only
+    bilinear: ClassVar[str] = ...  # read-only
+    boundaries: ClassVar[str] = ...  # read-only
+    catmullClark: ClassVar[str] = ...  # read-only
+    chaikin: ClassVar[str] = ...  # read-only
+    cornersOnly: ClassVar[str] = ...  # read-only
+    cornersPlus1: ClassVar[str] = ...  # read-only
+    cornersPlus2: ClassVar[str] = ...  # read-only
+    edgeAndCorner: ClassVar[str] = ...  # read-only
+    edgeOnly: ClassVar[str] = ...  # read-only
+    leftHanded: ClassVar[str] = ...  # read-only
+    loop: ClassVar[str] = ...  # read-only
+    none: ClassVar[str] = ...  # read-only
+    rightHanded: ClassVar[str] = ...  # read-only
+    smooth: ClassVar[str] = ...  # read-only
+    uniform: ClassVar[str] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
 
 class SubdivTags(Boost.Python.instance):

@@ -77,27 +77,27 @@ class SpatialAudio(pxr.UsdGeom.Xformable):
     def __bool__(self) -> bool: ...
 
 class Tokens(Boost.Python.instance):
-    AssetPreviewsAPI: ClassVar[Any] = ...  # read-only
-    SpatialAudio: ClassVar[Any] = ...  # read-only
-    auralMode: ClassVar[Any] = ...  # read-only
-    defaultImage: ClassVar[Any] = ...  # read-only
-    endTime: ClassVar[Any] = ...  # read-only
-    filePath: ClassVar[Any] = ...  # read-only
-    gain: ClassVar[Any] = ...  # read-only
-    loopFromStage: ClassVar[Any] = ...  # read-only
-    loopFromStart: ClassVar[Any] = ...  # read-only
-    loopFromStartToEnd: ClassVar[Any] = ...  # read-only
-    mediaOffset: ClassVar[Any] = ...  # read-only
-    nonSpatial: ClassVar[Any] = ...  # read-only
-    onceFromStart: ClassVar[Any] = ...  # read-only
-    onceFromStartToEnd: ClassVar[Any] = ...  # read-only
-    playbackMode: ClassVar[Any] = ...  # read-only
-    previewThumbnails: ClassVar[Any] = ...  # read-only
-    previewThumbnailsDefault: ClassVar[Any] = ...  # read-only
-    previews: ClassVar[Any] = ...  # read-only
-    spatial: ClassVar[Any] = ...  # read-only
-    startTime: ClassVar[Any] = ...  # read-only
-    thumbnails: ClassVar[Any] = ...  # read-only
+    AssetPreviewsAPI: ClassVar[str] = ...  # read-only
+    SpatialAudio: ClassVar[str] = ...  # read-only
+    auralMode: ClassVar[str] = ...  # read-only
+    defaultImage: ClassVar[str] = ...  # read-only
+    endTime: ClassVar[str] = ...  # read-only
+    filePath: ClassVar[str] = ...  # read-only
+    gain: ClassVar[str] = ...  # read-only
+    loopFromStage: ClassVar[str] = ...  # read-only
+    loopFromStart: ClassVar[str] = ...  # read-only
+    loopFromStartToEnd: ClassVar[str] = ...  # read-only
+    mediaOffset: ClassVar[str] = ...  # read-only
+    nonSpatial: ClassVar[str] = ...  # read-only
+    onceFromStart: ClassVar[str] = ...  # read-only
+    onceFromStartToEnd: ClassVar[str] = ...  # read-only
+    playbackMode: ClassVar[str] = ...  # read-only
+    previewThumbnails: ClassVar[str] = ...  # read-only
+    previewThumbnailsDefault: ClassVar[str] = ...  # read-only
+    previews: ClassVar[str] = ...  # read-only
+    spatial: ClassVar[str] = ...  # read-only
+    startTime: ClassVar[str] = ...  # read-only
+    thumbnails: ClassVar[str] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
 
 class _CanApplyResult(Boost.Python.instance):

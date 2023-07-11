@@ -99,9 +99,9 @@ class StageCache(Boost.Python.instance):
 
 class TimeCodeRange(Boost.Python.instance):
     class Tokens(Boost.Python.instance):
-        EmptyTimeCodeRange: ClassVar[Any] = ...  # read-only
-        RangeSeparator: ClassVar[Any] = ...  # read-only
-        StrideSeparator: ClassVar[Any] = ...  # read-only
+        EmptyTimeCodeRange: ClassVar[str] = ...  # read-only
+        RangeSeparator: ClassVar[str] = ...  # read-only
+        StrideSeparator: ClassVar[str] = ...  # read-only
         def __init__(self, *args, **kwargs) -> None: ...
 
     class _Iterator(Boost.Python.instance):
@@ -135,23 +135,23 @@ class TimeCodeRange(Boost.Python.instance):
     def stride(self) -> float: ...
 
 class UsdStageStatsKeys(Boost.Python.instance):
-    activePrimCount: ClassVar[Any] = ...  # read-only
-    approxMemoryInMb: ClassVar[Any] = ...  # read-only
-    assetCount: ClassVar[Any] = ...  # read-only
-    inactivePrimCount: ClassVar[Any] = ...  # read-only
-    instanceCount: ClassVar[Any] = ...  # read-only
-    instancedModelCount: ClassVar[Any] = ...  # read-only
-    modelCount: ClassVar[Any] = ...  # read-only
-    primCounts: ClassVar[Any] = ...  # read-only
-    primCountsByType: ClassVar[Any] = ...  # read-only
-    primary: ClassVar[Any] = ...  # read-only
-    prototypeCount: ClassVar[Any] = ...  # read-only
-    prototypes: ClassVar[Any] = ...  # read-only
-    pureOverCount: ClassVar[Any] = ...  # read-only
-    totalInstanceCount: ClassVar[Any] = ...  # read-only
-    totalPrimCount: ClassVar[Any] = ...  # read-only
-    untyped: ClassVar[Any] = ...  # read-only
-    usedLayerCount: ClassVar[Any] = ...  # read-only
+    activePrimCount: ClassVar[str] = ...  # read-only
+    approxMemoryInMb: ClassVar[str] = ...  # read-only
+    assetCount: ClassVar[str] = ...  # read-only
+    inactivePrimCount: ClassVar[str] = ...  # read-only
+    instanceCount: ClassVar[str] = ...  # read-only
+    instancedModelCount: ClassVar[str] = ...  # read-only
+    modelCount: ClassVar[str] = ...  # read-only
+    primCounts: ClassVar[str] = ...  # read-only
+    primCountsByType: ClassVar[str] = ...  # read-only
+    primary: ClassVar[str] = ...  # read-only
+    prototypeCount: ClassVar[str] = ...  # read-only
+    prototypes: ClassVar[str] = ...  # read-only
+    pureOverCount: ClassVar[str] = ...  # read-only
+    totalInstanceCount: ClassVar[str] = ...  # read-only
+    totalPrimCount: ClassVar[str] = ...  # read-only
+    untyped: ClassVar[str] = ...  # read-only
+    usedLayerCount: ClassVar[str] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
 
 def AuthorCollection(collectionName: str | pxr.Ar.ResolvedPath, usdPrim: pxr.Usd.Prim, pathsToInclude: list[pxr.Sdf.Path] | list[str], pathsToExclude: list[pxr.Sdf.Path] | list[str] = ...) -> pxr.Usd.CollectionAPI: ...

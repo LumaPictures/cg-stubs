@@ -65,15 +65,15 @@ class Simple(pxr.Usd.Typed):
     def __bool__(self) -> bool: ...
 
 class Tokens(Boost.Python.instance):
-    ComplexPrim: ClassVar[Any] = ...  # read-only
-    ParamsAPI: ClassVar[Any] = ...  # read-only
-    SimplePrim: ClassVar[Any] = ...  # read-only
-    complexString: ClassVar[Any] = ...  # read-only
-    intAttr: ClassVar[Any] = ...  # read-only
-    paramsMass: ClassVar[Any] = ...  # read-only
-    paramsVelocity: ClassVar[Any] = ...  # read-only
-    paramsVolume: ClassVar[Any] = ...  # read-only
-    target: ClassVar[Any] = ...  # read-only
+    ComplexPrim: ClassVar[str] = ...  # read-only
+    ParamsAPI: ClassVar[str] = ...  # read-only
+    SimplePrim: ClassVar[str] = ...  # read-only
+    complexString: ClassVar[str] = ...  # read-only
+    intAttr: ClassVar[str] = ...  # read-only
+    paramsMass: ClassVar[str] = ...  # read-only
+    paramsVelocity: ClassVar[str] = ...  # read-only
+    paramsVolume: ClassVar[str] = ...  # read-only
+    target: ClassVar[str] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
 
 class _CanApplyResult(Boost.Python.instance):

@@ -445,7 +445,7 @@ class LineSeg(Boost.Python.instance):
     def length(self) -> float: ...
 
 class Matrix2d(Boost.Python.instance):
-    dimension: ClassVar[Any] = ...  # read-only
+    dimension: ClassVar[tuple] = ...  # read-only
     __safe_for_unpickling__: ClassVar[bool] = ...
     @overload
     def __init__(self, arg2: float, arg3: float, arg4: float, arg5: float) -> None: ...
@@ -521,7 +521,7 @@ class Matrix2d(Boost.Python.instance):
     def __truediv__(self, arg2: Matrix2d) -> Any: ...
 
 class Matrix2f(Boost.Python.instance):
-    dimension: ClassVar[Any] = ...  # read-only
+    dimension: ClassVar[tuple] = ...  # read-only
     __safe_for_unpickling__: ClassVar[bool] = ...
     @overload
     def __init__(self, arg2: float, arg3: float, arg4: float, arg5: float) -> None: ...
@@ -593,7 +593,7 @@ class Matrix2f(Boost.Python.instance):
     def __truediv__(self, arg2: Matrix2f) -> Any: ...
 
 class Matrix3d(Boost.Python.instance):
-    dimension: ClassVar[Any] = ...  # read-only
+    dimension: ClassVar[tuple] = ...  # read-only
     __safe_for_unpickling__: ClassVar[bool] = ...
     @overload
     def __init__(self, arg2: float, arg3: float, arg4: float, arg5: float, arg6: float, arg7: float, arg8: float, arg9: float, arg10: float) -> None: ...
@@ -687,7 +687,7 @@ class Matrix3d(Boost.Python.instance):
     def __truediv__(self, arg2: Matrix3d) -> Any: ...
 
 class Matrix3f(Boost.Python.instance):
-    dimension: ClassVar[Any] = ...  # read-only
+    dimension: ClassVar[tuple] = ...  # read-only
     __safe_for_unpickling__: ClassVar[bool] = ...
     @overload
     def __init__(self, arg2: float, arg3: float, arg4: float, arg5: float, arg6: float, arg7: float, arg8: float, arg9: float, arg10: float) -> None: ...
@@ -777,7 +777,7 @@ class Matrix3f(Boost.Python.instance):
     def __truediv__(self, arg2: Matrix3f) -> Any: ...
 
 class Matrix4d(Boost.Python.instance):
-    dimension: ClassVar[Any] = ...  # read-only
+    dimension: ClassVar[tuple] = ...  # read-only
     __safe_for_unpickling__: ClassVar[bool] = ...
     @overload
     def __init__(self, arg2: float, arg3: float, arg4: float, arg5: float, arg6: float, arg7: float, arg8: float, arg9: float, arg10: float, arg11: float, arg12: float, arg13: float, arg14: float, arg15: float, arg16: float, arg17: float) -> None: ...
@@ -912,7 +912,7 @@ class Matrix4d(Boost.Python.instance):
     def __truediv__(self, arg2: Matrix4d) -> Any: ...
 
 class Matrix4f(Boost.Python.instance):
-    dimension: ClassVar[Any] = ...  # read-only
+    dimension: ClassVar[tuple] = ...  # read-only
     __safe_for_unpickling__: ClassVar[bool] = ...
     @overload
     def __init__(self, arg2: float, arg3: float, arg4: float, arg5: float, arg6: float, arg7: float, arg8: float, arg9: float, arg10: float, arg11: float, arg12: float, arg13: float, arg14: float, arg15: float, arg16: float, arg17: float) -> None: ...
@@ -1333,7 +1333,7 @@ class Quath(Boost.Python.instance):
     def __truediv__(self, arg2: object) -> Any: ...
 
 class Range1d(Boost.Python.instance):
-    dimension: ClassVar[Any] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
     __instance_size__: ClassVar[int] = ...
     max: float
     min: float
@@ -1382,7 +1382,7 @@ class Range1d(Boost.Python.instance):
     def __truediv__(self, arg2: float) -> Any: ...
 
 class Range1f(Boost.Python.instance):
-    dimension: ClassVar[Any] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
     __instance_size__: ClassVar[int] = ...
     max: float
     min: float
@@ -1431,8 +1431,8 @@ class Range1f(Boost.Python.instance):
     def __truediv__(self, arg2: float) -> Any: ...
 
 class Range2d(Boost.Python.instance):
-    dimension: ClassVar[Any] = ...  # read-only
-    unitSquare: ClassVar[Any] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
+    unitSquare: ClassVar[Range2d] = ...  # read-only
     __instance_size__: ClassVar[int] = ...
     max: Vec2d
     min: Vec2d
@@ -1483,8 +1483,8 @@ class Range2d(Boost.Python.instance):
     def __truediv__(self, arg2: float) -> Any: ...
 
 class Range2f(Boost.Python.instance):
-    dimension: ClassVar[Any] = ...  # read-only
-    unitSquare: ClassVar[Any] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
+    unitSquare: ClassVar[Range2f] = ...  # read-only
     __instance_size__: ClassVar[int] = ...
     max: Vec2f
     min: Vec2f
@@ -1535,8 +1535,8 @@ class Range2f(Boost.Python.instance):
     def __truediv__(self, arg2: float) -> Any: ...
 
 class Range3d(Boost.Python.instance):
-    dimension: ClassVar[Any] = ...  # read-only
-    unitCube: ClassVar[Any] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
+    unitCube: ClassVar[Range3d] = ...  # read-only
     __instance_size__: ClassVar[int] = ...
     max: Vec3d
     min: Vec3d
@@ -1587,8 +1587,8 @@ class Range3d(Boost.Python.instance):
     def __truediv__(self, arg2: float) -> Any: ...
 
 class Range3f(Boost.Python.instance):
-    dimension: ClassVar[Any] = ...  # read-only
-    unitCube: ClassVar[Any] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
+    unitCube: ClassVar[Range3f] = ...  # read-only
     __instance_size__: ClassVar[int] = ...
     max: Vec3f
     min: Vec3f
@@ -1769,7 +1769,7 @@ class Rotation(Boost.Python.instance):
     def __truediv__(self, arg2: float) -> Any: ...
 
 class Size2(Boost.Python.instance):
-    dimension: ClassVar[Any] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
     __instance_size__: ClassVar[int] = ...
     @overload
     def __init__(self, arg2: int, arg3: int) -> None: ...
@@ -1802,7 +1802,7 @@ class Size2(Boost.Python.instance):
     def __truediv__(self, arg2: int) -> Any: ...
 
 class Size3(Boost.Python.instance):
-    dimension: ClassVar[Any] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
     __instance_size__: ClassVar[int] = ...
     @overload
     def __init__(self, arg2: int, arg3: int, arg4: int) -> None: ...
@@ -1870,8 +1870,8 @@ class Transform(Boost.Python.instance):
     def __ne__(self, other: object) -> bool: ...
 
 class Vec2d(Boost.Python.instance):
-    __isGfVec: ClassVar[Any] = ...  # read-only
-    dimension: ClassVar[Any] = ...  # read-only
+    __isGfVec: ClassVar[bool] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
     __safe_for_unpickling__: ClassVar[bool] = ...
     @overload
     def __init__(self, arg2: float, arg3: float) -> None: ...
@@ -1930,8 +1930,8 @@ class Vec2d(Boost.Python.instance):
     def __truediv__(self, arg2: float) -> Any: ...
 
 class Vec2f(Boost.Python.instance):
-    __isGfVec: ClassVar[Any] = ...  # read-only
-    dimension: ClassVar[Any] = ...  # read-only
+    __isGfVec: ClassVar[bool] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
     __safe_for_unpickling__: ClassVar[bool] = ...
     @overload
     def __init__(self, arg2: float, arg3: float) -> None: ...
@@ -1990,8 +1990,8 @@ class Vec2f(Boost.Python.instance):
     def __truediv__(self, arg2: float) -> Any: ...
 
 class Vec2h(Boost.Python.instance):
-    __isGfVec: ClassVar[Any] = ...  # read-only
-    dimension: ClassVar[Any] = ...  # read-only
+    __isGfVec: ClassVar[bool] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
     __safe_for_unpickling__: ClassVar[bool] = ...
     @overload
     def __init__(self, arg2: object, arg3: object) -> None: ...
@@ -2050,8 +2050,8 @@ class Vec2h(Boost.Python.instance):
     def __truediv__(self, arg2: object) -> Any: ...
 
 class Vec2i(Boost.Python.instance):
-    __isGfVec: ClassVar[Any] = ...  # read-only
-    dimension: ClassVar[Any] = ...  # read-only
+    __isGfVec: ClassVar[bool] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
     __safe_for_unpickling__: ClassVar[bool] = ...
     @overload
     def __init__(self, arg2: int, arg3: int) -> None: ...
@@ -2099,8 +2099,8 @@ class Vec2i(Boost.Python.instance):
     def __truediv__(self, arg2: int) -> Any: ...
 
 class Vec3d(Boost.Python.instance):
-    __isGfVec: ClassVar[Any] = ...  # read-only
-    dimension: ClassVar[Any] = ...  # read-only
+    __isGfVec: ClassVar[bool] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
     __safe_for_unpickling__: ClassVar[bool] = ...
     @overload
     def __init__(self, arg2: float, arg3: float, arg4: float) -> None: ...
@@ -2166,8 +2166,8 @@ class Vec3d(Boost.Python.instance):
     def __xor__(self, arg2: Vec3d | list[float] | tuple[float, float, float]) -> Any: ...
 
 class Vec3f(Boost.Python.instance):
-    __isGfVec: ClassVar[Any] = ...  # read-only
-    dimension: ClassVar[Any] = ...  # read-only
+    __isGfVec: ClassVar[bool] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
     __safe_for_unpickling__: ClassVar[bool] = ...
     @overload
     def __init__(self, arg2: float, arg3: float, arg4: float) -> None: ...
@@ -2233,8 +2233,8 @@ class Vec3f(Boost.Python.instance):
     def __xor__(self, arg2: Vec3f | list[float] | tuple[float, float, float]) -> Any: ...
 
 class Vec3h(Boost.Python.instance):
-    __isGfVec: ClassVar[Any] = ...  # read-only
-    dimension: ClassVar[Any] = ...  # read-only
+    __isGfVec: ClassVar[bool] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
     __safe_for_unpickling__: ClassVar[bool] = ...
     @overload
     def __init__(self, arg2: object, arg3: object, arg4: object) -> None: ...
@@ -2300,8 +2300,8 @@ class Vec3h(Boost.Python.instance):
     def __xor__(self, arg2: Vec3h | list[float] | tuple[float, float, float]) -> Any: ...
 
 class Vec3i(Boost.Python.instance):
-    __isGfVec: ClassVar[Any] = ...  # read-only
-    dimension: ClassVar[Any] = ...  # read-only
+    __isGfVec: ClassVar[bool] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
     __safe_for_unpickling__: ClassVar[bool] = ...
     @overload
     def __init__(self, arg2: int, arg3: int, arg4: int) -> None: ...
@@ -2351,8 +2351,8 @@ class Vec3i(Boost.Python.instance):
     def __truediv__(self, arg2: int) -> Any: ...
 
 class Vec4d(Boost.Python.instance):
-    __isGfVec: ClassVar[Any] = ...  # read-only
-    dimension: ClassVar[Any] = ...  # read-only
+    __isGfVec: ClassVar[bool] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
     __safe_for_unpickling__: ClassVar[bool] = ...
     @overload
     def __init__(self, arg2: float, arg3: float, arg4: float, arg5: float) -> None: ...
@@ -2415,8 +2415,8 @@ class Vec4d(Boost.Python.instance):
     def __truediv__(self, arg2: float) -> Any: ...
 
 class Vec4f(Boost.Python.instance):
-    __isGfVec: ClassVar[Any] = ...  # read-only
-    dimension: ClassVar[Any] = ...  # read-only
+    __isGfVec: ClassVar[bool] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
     __safe_for_unpickling__: ClassVar[bool] = ...
     @overload
     def __init__(self, arg2: float, arg3: float, arg4: float, arg5: float) -> None: ...
@@ -2479,8 +2479,8 @@ class Vec4f(Boost.Python.instance):
     def __truediv__(self, arg2: float) -> Any: ...
 
 class Vec4h(Boost.Python.instance):
-    __isGfVec: ClassVar[Any] = ...  # read-only
-    dimension: ClassVar[Any] = ...  # read-only
+    __isGfVec: ClassVar[bool] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
     __safe_for_unpickling__: ClassVar[bool] = ...
     @overload
     def __init__(self, arg2: object, arg3: object, arg4: object, arg5: object) -> None: ...
@@ -2543,8 +2543,8 @@ class Vec4h(Boost.Python.instance):
     def __truediv__(self, arg2: object) -> Any: ...
 
 class Vec4i(Boost.Python.instance):
-    __isGfVec: ClassVar[Any] = ...  # read-only
-    dimension: ClassVar[Any] = ...  # read-only
+    __isGfVec: ClassVar[bool] = ...  # read-only
+    dimension: ClassVar[int] = ...  # read-only
     __safe_for_unpickling__: ClassVar[bool] = ...
     @overload
     def __init__(self, arg2: int, arg3: int, arg4: int, arg5: int) -> None: ...

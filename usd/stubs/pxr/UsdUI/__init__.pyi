@@ -86,21 +86,21 @@ class SceneGraphPrimAPI(pxr.Usd.APISchemaBase):
     def __bool__(self) -> bool: ...
 
 class Tokens(Boost.Python.instance):
-    Backdrop: ClassVar[Any] = ...  # read-only
-    NodeGraphNodeAPI: ClassVar[Any] = ...  # read-only
-    SceneGraphPrimAPI: ClassVar[Any] = ...  # read-only
-    closed: ClassVar[Any] = ...  # read-only
-    minimized: ClassVar[Any] = ...  # read-only
-    open: ClassVar[Any] = ...  # read-only
-    uiDescription: ClassVar[Any] = ...  # read-only
-    uiDisplayGroup: ClassVar[Any] = ...  # read-only
-    uiDisplayName: ClassVar[Any] = ...  # read-only
-    uiNodegraphNodeDisplayColor: ClassVar[Any] = ...  # read-only
-    uiNodegraphNodeExpansionState: ClassVar[Any] = ...  # read-only
-    uiNodegraphNodeIcon: ClassVar[Any] = ...  # read-only
-    uiNodegraphNodePos: ClassVar[Any] = ...  # read-only
-    uiNodegraphNodeSize: ClassVar[Any] = ...  # read-only
-    uiNodegraphNodeStackingOrder: ClassVar[Any] = ...  # read-only
+    Backdrop: ClassVar[str] = ...  # read-only
+    NodeGraphNodeAPI: ClassVar[str] = ...  # read-only
+    SceneGraphPrimAPI: ClassVar[str] = ...  # read-only
+    closed: ClassVar[str] = ...  # read-only
+    minimized: ClassVar[str] = ...  # read-only
+    open: ClassVar[str] = ...  # read-only
+    uiDescription: ClassVar[str] = ...  # read-only
+    uiDisplayGroup: ClassVar[str] = ...  # read-only
+    uiDisplayName: ClassVar[str] = ...  # read-only
+    uiNodegraphNodeDisplayColor: ClassVar[str] = ...  # read-only
+    uiNodegraphNodeExpansionState: ClassVar[str] = ...  # read-only
+    uiNodegraphNodeIcon: ClassVar[str] = ...  # read-only
+    uiNodegraphNodePos: ClassVar[str] = ...  # read-only
+    uiNodegraphNodeSize: ClassVar[str] = ...  # read-only
+    uiNodegraphNodeStackingOrder: ClassVar[str] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
 
 class _CanApplyResult(Boost.Python.instance):

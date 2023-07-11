@@ -432,7 +432,7 @@ class DimensionlessUnit(pxr.Tf.Tf_PyEnumWrapper):
 
 class FileFormat(Boost.Python.instance):
     class Tokens(Boost.Python.instance):
-        TargetArg: ClassVar[Any] = ...  # read-only
+        TargetArg: ClassVar[str] = ...  # read-only
         def __init__(self, *args, **kwargs) -> None: ...
     def __init__(self, *args, **kwargs) -> None: ...
     def CanRead(self, arg2: str | pxr.Ar.ResolvedPath) -> bool: ...
@@ -1263,8 +1263,8 @@ class MapEditProxy___1_map_string__string____1_less_string_____1_allocator___1_p
     def expired(self) -> Any: ...
 
 class NamespaceEdit(Boost.Python.instance):
-    atEnd: ClassVar[Any] = ...  # read-only
-    same: ClassVar[Any] = ...  # read-only
+    atEnd: ClassVar[int] = ...  # read-only
+    same: ClassVar[int] = ...  # read-only
     currentPath: Any
     index: Any
     newPath: Any
@@ -1373,9 +1373,9 @@ class Path(Boost.Python.instance):
         def __ne__(self, other: object) -> bool: ...
         @property
         def errorMessage(self) -> Any: ...
-    absoluteRootPath: ClassVar[Any] = ...  # read-only
-    emptyPath: ClassVar[Any] = ...  # read-only
-    reflexiveRelativePath: ClassVar[Any] = ...  # read-only
+    absoluteRootPath: ClassVar[Path] = ...  # read-only
+    emptyPath: ClassVar[Path] = ...  # read-only
+    reflexiveRelativePath: ClassVar[Path] = ...  # read-only
     absoluteIndicator: ClassVar[str] = ...
     childDelimiter: ClassVar[str] = ...
     expressionIndicator: ClassVar[str] = ...
@@ -2092,17 +2092,17 @@ class ValueBlock(Boost.Python.instance):
     def __ne__(self, other: object) -> bool: ...
 
 class ValueRoleNames(Boost.Python.instance):
-    Color: ClassVar[Any] = ...  # read-only
-    EdgeIndex: ClassVar[Any] = ...  # read-only
-    FaceIndex: ClassVar[Any] = ...  # read-only
-    Frame: ClassVar[Any] = ...  # read-only
-    Group: ClassVar[Any] = ...  # read-only
-    Normal: ClassVar[Any] = ...  # read-only
-    Point: ClassVar[Any] = ...  # read-only
-    PointIndex: ClassVar[Any] = ...  # read-only
-    TextureCoordinate: ClassVar[Any] = ...  # read-only
-    Transform: ClassVar[Any] = ...  # read-only
-    Vector: ClassVar[Any] = ...  # read-only
+    Color: ClassVar[str] = ...  # read-only
+    EdgeIndex: ClassVar[str] = ...  # read-only
+    FaceIndex: ClassVar[str] = ...  # read-only
+    Frame: ClassVar[str] = ...  # read-only
+    Group: ClassVar[str] = ...  # read-only
+    Normal: ClassVar[str] = ...  # read-only
+    Point: ClassVar[str] = ...  # read-only
+    PointIndex: ClassVar[str] = ...  # read-only
+    TextureCoordinate: ClassVar[str] = ...  # read-only
+    Transform: ClassVar[str] = ...  # read-only
+    Vector: ClassVar[str] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
 
 class ValueTypeName(Boost.Python.instance):
@@ -2133,114 +2133,114 @@ class ValueTypeName(Boost.Python.instance):
     def type(self) -> pxr.Tf.Type: ...
 
 class ValueTypeNames(Boost.Python.instance):
-    Asset: ClassVar[Any] = ...  # read-only
-    AssetArray: ClassVar[Any] = ...  # read-only
-    Bool: ClassVar[Any] = ...  # read-only
-    BoolArray: ClassVar[Any] = ...  # read-only
-    Color3d: ClassVar[Any] = ...  # read-only
-    Color3dArray: ClassVar[Any] = ...  # read-only
-    Color3f: ClassVar[Any] = ...  # read-only
-    Color3fArray: ClassVar[Any] = ...  # read-only
-    Color3h: ClassVar[Any] = ...  # read-only
-    Color3hArray: ClassVar[Any] = ...  # read-only
-    Color4d: ClassVar[Any] = ...  # read-only
-    Color4dArray: ClassVar[Any] = ...  # read-only
-    Color4f: ClassVar[Any] = ...  # read-only
-    Color4fArray: ClassVar[Any] = ...  # read-only
-    Color4h: ClassVar[Any] = ...  # read-only
-    Color4hArray: ClassVar[Any] = ...  # read-only
-    Double: ClassVar[Any] = ...  # read-only
-    Double2: ClassVar[Any] = ...  # read-only
-    Double2Array: ClassVar[Any] = ...  # read-only
-    Double3: ClassVar[Any] = ...  # read-only
-    Double3Array: ClassVar[Any] = ...  # read-only
-    Double4: ClassVar[Any] = ...  # read-only
-    Double4Array: ClassVar[Any] = ...  # read-only
-    DoubleArray: ClassVar[Any] = ...  # read-only
-    Float: ClassVar[Any] = ...  # read-only
-    Float2: ClassVar[Any] = ...  # read-only
-    Float2Array: ClassVar[Any] = ...  # read-only
-    Float3: ClassVar[Any] = ...  # read-only
-    Float3Array: ClassVar[Any] = ...  # read-only
-    Float4: ClassVar[Any] = ...  # read-only
-    Float4Array: ClassVar[Any] = ...  # read-only
-    FloatArray: ClassVar[Any] = ...  # read-only
-    Frame4d: ClassVar[Any] = ...  # read-only
-    Frame4dArray: ClassVar[Any] = ...  # read-only
-    Group: ClassVar[Any] = ...  # read-only
-    Half: ClassVar[Any] = ...  # read-only
-    Half2: ClassVar[Any] = ...  # read-only
-    Half2Array: ClassVar[Any] = ...  # read-only
-    Half3: ClassVar[Any] = ...  # read-only
-    Half3Array: ClassVar[Any] = ...  # read-only
-    Half4: ClassVar[Any] = ...  # read-only
-    Half4Array: ClassVar[Any] = ...  # read-only
-    HalfArray: ClassVar[Any] = ...  # read-only
-    Int: ClassVar[Any] = ...  # read-only
-    Int2: ClassVar[Any] = ...  # read-only
-    Int2Array: ClassVar[Any] = ...  # read-only
-    Int3: ClassVar[Any] = ...  # read-only
-    Int3Array: ClassVar[Any] = ...  # read-only
-    Int4: ClassVar[Any] = ...  # read-only
-    Int4Array: ClassVar[Any] = ...  # read-only
-    Int64: ClassVar[Any] = ...  # read-only
-    Int64Array: ClassVar[Any] = ...  # read-only
-    IntArray: ClassVar[Any] = ...  # read-only
-    Matrix2d: ClassVar[Any] = ...  # read-only
-    Matrix2dArray: ClassVar[Any] = ...  # read-only
-    Matrix3d: ClassVar[Any] = ...  # read-only
-    Matrix3dArray: ClassVar[Any] = ...  # read-only
-    Matrix4d: ClassVar[Any] = ...  # read-only
-    Matrix4dArray: ClassVar[Any] = ...  # read-only
-    Normal3d: ClassVar[Any] = ...  # read-only
-    Normal3dArray: ClassVar[Any] = ...  # read-only
-    Normal3f: ClassVar[Any] = ...  # read-only
-    Normal3fArray: ClassVar[Any] = ...  # read-only
-    Normal3h: ClassVar[Any] = ...  # read-only
-    Normal3hArray: ClassVar[Any] = ...  # read-only
-    Opaque: ClassVar[Any] = ...  # read-only
-    Point3d: ClassVar[Any] = ...  # read-only
-    Point3dArray: ClassVar[Any] = ...  # read-only
-    Point3f: ClassVar[Any] = ...  # read-only
-    Point3fArray: ClassVar[Any] = ...  # read-only
-    Point3h: ClassVar[Any] = ...  # read-only
-    Point3hArray: ClassVar[Any] = ...  # read-only
-    Quatd: ClassVar[Any] = ...  # read-only
-    QuatdArray: ClassVar[Any] = ...  # read-only
-    Quatf: ClassVar[Any] = ...  # read-only
-    QuatfArray: ClassVar[Any] = ...  # read-only
-    Quath: ClassVar[Any] = ...  # read-only
-    QuathArray: ClassVar[Any] = ...  # read-only
-    String: ClassVar[Any] = ...  # read-only
-    StringArray: ClassVar[Any] = ...  # read-only
-    TexCoord2d: ClassVar[Any] = ...  # read-only
-    TexCoord2dArray: ClassVar[Any] = ...  # read-only
-    TexCoord2f: ClassVar[Any] = ...  # read-only
-    TexCoord2fArray: ClassVar[Any] = ...  # read-only
-    TexCoord2h: ClassVar[Any] = ...  # read-only
-    TexCoord2hArray: ClassVar[Any] = ...  # read-only
-    TexCoord3d: ClassVar[Any] = ...  # read-only
-    TexCoord3dArray: ClassVar[Any] = ...  # read-only
-    TexCoord3f: ClassVar[Any] = ...  # read-only
-    TexCoord3fArray: ClassVar[Any] = ...  # read-only
-    TexCoord3h: ClassVar[Any] = ...  # read-only
-    TexCoord3hArray: ClassVar[Any] = ...  # read-only
-    TimeCode: ClassVar[Any] = ...  # read-only
-    TimeCodeArray: ClassVar[Any] = ...  # read-only
-    Token: ClassVar[Any] = ...  # read-only
-    TokenArray: ClassVar[Any] = ...  # read-only
-    UChar: ClassVar[Any] = ...  # read-only
-    UCharArray: ClassVar[Any] = ...  # read-only
-    UInt: ClassVar[Any] = ...  # read-only
-    UInt64: ClassVar[Any] = ...  # read-only
-    UInt64Array: ClassVar[Any] = ...  # read-only
-    UIntArray: ClassVar[Any] = ...  # read-only
-    Vector3d: ClassVar[Any] = ...  # read-only
-    Vector3dArray: ClassVar[Any] = ...  # read-only
-    Vector3f: ClassVar[Any] = ...  # read-only
-    Vector3fArray: ClassVar[Any] = ...  # read-only
-    Vector3h: ClassVar[Any] = ...  # read-only
-    Vector3hArray: ClassVar[Any] = ...  # read-only
+    Asset: ClassVar[ValueTypeName] = ...  # read-only
+    AssetArray: ClassVar[ValueTypeName] = ...  # read-only
+    Bool: ClassVar[ValueTypeName] = ...  # read-only
+    BoolArray: ClassVar[ValueTypeName] = ...  # read-only
+    Color3d: ClassVar[ValueTypeName] = ...  # read-only
+    Color3dArray: ClassVar[ValueTypeName] = ...  # read-only
+    Color3f: ClassVar[ValueTypeName] = ...  # read-only
+    Color3fArray: ClassVar[ValueTypeName] = ...  # read-only
+    Color3h: ClassVar[ValueTypeName] = ...  # read-only
+    Color3hArray: ClassVar[ValueTypeName] = ...  # read-only
+    Color4d: ClassVar[ValueTypeName] = ...  # read-only
+    Color4dArray: ClassVar[ValueTypeName] = ...  # read-only
+    Color4f: ClassVar[ValueTypeName] = ...  # read-only
+    Color4fArray: ClassVar[ValueTypeName] = ...  # read-only
+    Color4h: ClassVar[ValueTypeName] = ...  # read-only
+    Color4hArray: ClassVar[ValueTypeName] = ...  # read-only
+    Double: ClassVar[ValueTypeName] = ...  # read-only
+    Double2: ClassVar[ValueTypeName] = ...  # read-only
+    Double2Array: ClassVar[ValueTypeName] = ...  # read-only
+    Double3: ClassVar[ValueTypeName] = ...  # read-only
+    Double3Array: ClassVar[ValueTypeName] = ...  # read-only
+    Double4: ClassVar[ValueTypeName] = ...  # read-only
+    Double4Array: ClassVar[ValueTypeName] = ...  # read-only
+    DoubleArray: ClassVar[ValueTypeName] = ...  # read-only
+    Float: ClassVar[ValueTypeName] = ...  # read-only
+    Float2: ClassVar[ValueTypeName] = ...  # read-only
+    Float2Array: ClassVar[ValueTypeName] = ...  # read-only
+    Float3: ClassVar[ValueTypeName] = ...  # read-only
+    Float3Array: ClassVar[ValueTypeName] = ...  # read-only
+    Float4: ClassVar[ValueTypeName] = ...  # read-only
+    Float4Array: ClassVar[ValueTypeName] = ...  # read-only
+    FloatArray: ClassVar[ValueTypeName] = ...  # read-only
+    Frame4d: ClassVar[ValueTypeName] = ...  # read-only
+    Frame4dArray: ClassVar[ValueTypeName] = ...  # read-only
+    Group: ClassVar[ValueTypeName] = ...  # read-only
+    Half: ClassVar[ValueTypeName] = ...  # read-only
+    Half2: ClassVar[ValueTypeName] = ...  # read-only
+    Half2Array: ClassVar[ValueTypeName] = ...  # read-only
+    Half3: ClassVar[ValueTypeName] = ...  # read-only
+    Half3Array: ClassVar[ValueTypeName] = ...  # read-only
+    Half4: ClassVar[ValueTypeName] = ...  # read-only
+    Half4Array: ClassVar[ValueTypeName] = ...  # read-only
+    HalfArray: ClassVar[ValueTypeName] = ...  # read-only
+    Int: ClassVar[ValueTypeName] = ...  # read-only
+    Int2: ClassVar[ValueTypeName] = ...  # read-only
+    Int2Array: ClassVar[ValueTypeName] = ...  # read-only
+    Int3: ClassVar[ValueTypeName] = ...  # read-only
+    Int3Array: ClassVar[ValueTypeName] = ...  # read-only
+    Int4: ClassVar[ValueTypeName] = ...  # read-only
+    Int4Array: ClassVar[ValueTypeName] = ...  # read-only
+    Int64: ClassVar[ValueTypeName] = ...  # read-only
+    Int64Array: ClassVar[ValueTypeName] = ...  # read-only
+    IntArray: ClassVar[ValueTypeName] = ...  # read-only
+    Matrix2d: ClassVar[ValueTypeName] = ...  # read-only
+    Matrix2dArray: ClassVar[ValueTypeName] = ...  # read-only
+    Matrix3d: ClassVar[ValueTypeName] = ...  # read-only
+    Matrix3dArray: ClassVar[ValueTypeName] = ...  # read-only
+    Matrix4d: ClassVar[ValueTypeName] = ...  # read-only
+    Matrix4dArray: ClassVar[ValueTypeName] = ...  # read-only
+    Normal3d: ClassVar[ValueTypeName] = ...  # read-only
+    Normal3dArray: ClassVar[ValueTypeName] = ...  # read-only
+    Normal3f: ClassVar[ValueTypeName] = ...  # read-only
+    Normal3fArray: ClassVar[ValueTypeName] = ...  # read-only
+    Normal3h: ClassVar[ValueTypeName] = ...  # read-only
+    Normal3hArray: ClassVar[ValueTypeName] = ...  # read-only
+    Opaque: ClassVar[ValueTypeName] = ...  # read-only
+    Point3d: ClassVar[ValueTypeName] = ...  # read-only
+    Point3dArray: ClassVar[ValueTypeName] = ...  # read-only
+    Point3f: ClassVar[ValueTypeName] = ...  # read-only
+    Point3fArray: ClassVar[ValueTypeName] = ...  # read-only
+    Point3h: ClassVar[ValueTypeName] = ...  # read-only
+    Point3hArray: ClassVar[ValueTypeName] = ...  # read-only
+    Quatd: ClassVar[ValueTypeName] = ...  # read-only
+    QuatdArray: ClassVar[ValueTypeName] = ...  # read-only
+    Quatf: ClassVar[ValueTypeName] = ...  # read-only
+    QuatfArray: ClassVar[ValueTypeName] = ...  # read-only
+    Quath: ClassVar[ValueTypeName] = ...  # read-only
+    QuathArray: ClassVar[ValueTypeName] = ...  # read-only
+    String: ClassVar[ValueTypeName] = ...  # read-only
+    StringArray: ClassVar[ValueTypeName] = ...  # read-only
+    TexCoord2d: ClassVar[ValueTypeName] = ...  # read-only
+    TexCoord2dArray: ClassVar[ValueTypeName] = ...  # read-only
+    TexCoord2f: ClassVar[ValueTypeName] = ...  # read-only
+    TexCoord2fArray: ClassVar[ValueTypeName] = ...  # read-only
+    TexCoord2h: ClassVar[ValueTypeName] = ...  # read-only
+    TexCoord2hArray: ClassVar[ValueTypeName] = ...  # read-only
+    TexCoord3d: ClassVar[ValueTypeName] = ...  # read-only
+    TexCoord3dArray: ClassVar[ValueTypeName] = ...  # read-only
+    TexCoord3f: ClassVar[ValueTypeName] = ...  # read-only
+    TexCoord3fArray: ClassVar[ValueTypeName] = ...  # read-only
+    TexCoord3h: ClassVar[ValueTypeName] = ...  # read-only
+    TexCoord3hArray: ClassVar[ValueTypeName] = ...  # read-only
+    TimeCode: ClassVar[ValueTypeName] = ...  # read-only
+    TimeCodeArray: ClassVar[ValueTypeName] = ...  # read-only
+    Token: ClassVar[ValueTypeName] = ...  # read-only
+    TokenArray: ClassVar[ValueTypeName] = ...  # read-only
+    UChar: ClassVar[ValueTypeName] = ...  # read-only
+    UCharArray: ClassVar[ValueTypeName] = ...  # read-only
+    UInt: ClassVar[ValueTypeName] = ...  # read-only
+    UInt64: ClassVar[ValueTypeName] = ...  # read-only
+    UInt64Array: ClassVar[ValueTypeName] = ...  # read-only
+    UIntArray: ClassVar[ValueTypeName] = ...  # read-only
+    Vector3d: ClassVar[ValueTypeName] = ...  # read-only
+    Vector3dArray: ClassVar[ValueTypeName] = ...  # read-only
+    Vector3f: ClassVar[ValueTypeName] = ...  # read-only
+    Vector3fArray: ClassVar[ValueTypeName] = ...  # read-only
+    Vector3h: ClassVar[ValueTypeName] = ...  # read-only
+    Vector3hArray: ClassVar[ValueTypeName] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
     def Find(self) -> ValueTypeName: ...
 

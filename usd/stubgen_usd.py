@@ -969,8 +969,7 @@ class UsdBoostDocstringSignatureGenerator(
         sigs = [FunctionSig(ctx.name, [], None)]
         sigs = self._processs_sigs(sigs, ctx)
         ret_type = sigs[0].ret_type
-        # FIXME: fix mypy to also check the evaluated descriptor type (i.e. value *and* raw_value)
-        return ret_type or "Any"
+        return ret_type or default_type
 
 
 def remove_redundant_submodule(module_name: str) -> tuple[str, bool]:

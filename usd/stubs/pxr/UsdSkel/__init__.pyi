@@ -348,36 +348,36 @@ class SkinningQuery(Boost.Python.instance):
     def __bool__(self) -> bool: ...
 
 class Tokens(Boost.Python.instance):
-    BlendShape: ClassVar[Any] = ...  # read-only
-    PackedJointAnimation: ClassVar[Any] = ...  # read-only
-    SkelAnimation: ClassVar[Any] = ...  # read-only
-    SkelBindingAPI: ClassVar[Any] = ...  # read-only
-    SkelRoot: ClassVar[Any] = ...  # read-only
-    Skeleton: ClassVar[Any] = ...  # read-only
-    bindTransforms: ClassVar[Any] = ...  # read-only
-    blendShapeWeights: ClassVar[Any] = ...  # read-only
-    blendShapes: ClassVar[Any] = ...  # read-only
-    classicLinear: ClassVar[Any] = ...  # read-only
-    dualQuaternion: ClassVar[Any] = ...  # read-only
-    jointNames: ClassVar[Any] = ...  # read-only
-    joints: ClassVar[Any] = ...  # read-only
-    normalOffsets: ClassVar[Any] = ...  # read-only
-    offsets: ClassVar[Any] = ...  # read-only
-    pointIndices: ClassVar[Any] = ...  # read-only
-    primvarsSkelGeomBindTransform: ClassVar[Any] = ...  # read-only
-    primvarsSkelJointIndices: ClassVar[Any] = ...  # read-only
-    primvarsSkelJointWeights: ClassVar[Any] = ...  # read-only
-    primvarsSkelSkinningMethod: ClassVar[Any] = ...  # read-only
-    restTransforms: ClassVar[Any] = ...  # read-only
-    rotations: ClassVar[Any] = ...  # read-only
-    scales: ClassVar[Any] = ...  # read-only
-    skelAnimationSource: ClassVar[Any] = ...  # read-only
-    skelBlendShapeTargets: ClassVar[Any] = ...  # read-only
-    skelBlendShapes: ClassVar[Any] = ...  # read-only
-    skelJoints: ClassVar[Any] = ...  # read-only
-    skelSkeleton: ClassVar[Any] = ...  # read-only
-    translations: ClassVar[Any] = ...  # read-only
-    weight: ClassVar[Any] = ...  # read-only
+    BlendShape: ClassVar[str] = ...  # read-only
+    PackedJointAnimation: ClassVar[str] = ...  # read-only
+    SkelAnimation: ClassVar[str] = ...  # read-only
+    SkelBindingAPI: ClassVar[str] = ...  # read-only
+    SkelRoot: ClassVar[str] = ...  # read-only
+    Skeleton: ClassVar[str] = ...  # read-only
+    bindTransforms: ClassVar[str] = ...  # read-only
+    blendShapeWeights: ClassVar[str] = ...  # read-only
+    blendShapes: ClassVar[str] = ...  # read-only
+    classicLinear: ClassVar[str] = ...  # read-only
+    dualQuaternion: ClassVar[str] = ...  # read-only
+    jointNames: ClassVar[str] = ...  # read-only
+    joints: ClassVar[str] = ...  # read-only
+    normalOffsets: ClassVar[str] = ...  # read-only
+    offsets: ClassVar[str] = ...  # read-only
+    pointIndices: ClassVar[str] = ...  # read-only
+    primvarsSkelGeomBindTransform: ClassVar[str] = ...  # read-only
+    primvarsSkelJointIndices: ClassVar[str] = ...  # read-only
+    primvarsSkelJointWeights: ClassVar[str] = ...  # read-only
+    primvarsSkelSkinningMethod: ClassVar[str] = ...  # read-only
+    restTransforms: ClassVar[str] = ...  # read-only
+    rotations: ClassVar[str] = ...  # read-only
+    scales: ClassVar[str] = ...  # read-only
+    skelAnimationSource: ClassVar[str] = ...  # read-only
+    skelBlendShapeTargets: ClassVar[str] = ...  # read-only
+    skelBlendShapes: ClassVar[str] = ...  # read-only
+    skelJoints: ClassVar[str] = ...  # read-only
+    skelSkeleton: ClassVar[str] = ...  # read-only
+    translations: ClassVar[str] = ...  # read-only
+    weight: ClassVar[str] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
 
 class Topology(Boost.Python.instance):

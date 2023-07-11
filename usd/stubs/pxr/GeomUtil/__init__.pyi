@@ -3,13 +3,13 @@
 import Boost.Python
 import pxr.PxOsd
 import pxr.Vt
-from typing import Any, ClassVar
+from typing import ClassVar
 
 __MFB_FULL_PACKAGE_NAME: str
 
 class CapsuleMeshGenerator(Boost.Python.instance):
-    minNumCapAxial: ClassVar[Any] = ...  # read-only
-    minNumRadial: ClassVar[Any] = ...  # read-only
+    minNumCapAxial: ClassVar[int] = ...  # read-only
+    minNumRadial: ClassVar[int] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
     @classmethod
     def ComputeNumPoints(cls, arg1: int, arg2: int, arg3: bool) -> int: ...
@@ -19,7 +19,7 @@ class CapsuleMeshGenerator(Boost.Python.instance):
     def GenerateTopology(cls, arg1: int, arg2: int, arg3: bool) -> pxr.PxOsd.MeshTopology: ...
 
 class ConeMeshGenerator(Boost.Python.instance):
-    minNumRadial: ClassVar[Any] = ...  # read-only
+    minNumRadial: ClassVar[int] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
     @classmethod
     def ComputeNumPoints(cls, arg1: int, arg2: bool) -> int: ...
@@ -38,7 +38,7 @@ class CuboidMeshGenerator(Boost.Python.instance):
     def GenerateTopology(cls) -> pxr.PxOsd.MeshTopology: ...
 
 class CylinderMeshGenerator(Boost.Python.instance):
-    minNumRadial: ClassVar[Any] = ...  # read-only
+    minNumRadial: ClassVar[int] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
     @classmethod
     def ComputeNumPoints(cls, arg1: int, arg2: bool) -> int: ...
@@ -48,8 +48,8 @@ class CylinderMeshGenerator(Boost.Python.instance):
     def GenerateTopology(cls, arg1: int, arg2: bool) -> pxr.PxOsd.MeshTopology: ...
 
 class SphereMeshGenerator(Boost.Python.instance):
-    minNumAxial: ClassVar[Any] = ...  # read-only
-    minNumRadial: ClassVar[Any] = ...  # read-only
+    minNumAxial: ClassVar[int] = ...  # read-only
+    minNumRadial: ClassVar[int] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
     @classmethod
     def ComputeNumPoints(cls, arg1: int, arg2: int, arg3: bool) -> int: ...

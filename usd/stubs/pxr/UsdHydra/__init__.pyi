@@ -34,36 +34,36 @@ class GenerativeProceduralAPI(pxr.Usd.APISchemaBase):
     def __bool__(self) -> bool: ...
 
 class Tokens(Boost.Python.instance):
-    HwPrimvar_1: ClassVar[Any] = ...  # read-only
-    HwPtexTexture_1: ClassVar[Any] = ...  # read-only
-    HwUvTexture_1: ClassVar[Any] = ...  # read-only
-    HydraGenerativeProceduralAPI: ClassVar[Any] = ...  # read-only
-    black: ClassVar[Any] = ...  # read-only
-    clamp: ClassVar[Any] = ...  # read-only
-    displayLookBxdf: ClassVar[Any] = ...  # read-only
-    faceIndex: ClassVar[Any] = ...  # read-only
-    faceOffset: ClassVar[Any] = ...  # read-only
-    frame: ClassVar[Any] = ...  # read-only
-    hydraGenerativeProcedural: ClassVar[Any] = ...  # read-only
-    infoFilename: ClassVar[Any] = ...  # read-only
-    infoVarname: ClassVar[Any] = ...  # read-only
-    linear: ClassVar[Any] = ...  # read-only
-    linearMipmapLinear: ClassVar[Any] = ...  # read-only
-    linearMipmapNearest: ClassVar[Any] = ...  # read-only
-    magFilter: ClassVar[Any] = ...  # read-only
-    minFilter: ClassVar[Any] = ...  # read-only
-    mirror: ClassVar[Any] = ...  # read-only
-    nearest: ClassVar[Any] = ...  # read-only
-    nearestMipmapLinear: ClassVar[Any] = ...  # read-only
-    nearestMipmapNearest: ClassVar[Any] = ...  # read-only
-    primvarsHdGpProceduralType: ClassVar[Any] = ...  # read-only
-    proceduralSystem: ClassVar[Any] = ...  # read-only
-    repeat: ClassVar[Any] = ...  # read-only
-    textureMemory: ClassVar[Any] = ...  # read-only
-    useMetadata: ClassVar[Any] = ...  # read-only
-    uv: ClassVar[Any] = ...  # read-only
-    wrapS: ClassVar[Any] = ...  # read-only
-    wrapT: ClassVar[Any] = ...  # read-only
+    HwPrimvar_1: ClassVar[str] = ...  # read-only
+    HwPtexTexture_1: ClassVar[str] = ...  # read-only
+    HwUvTexture_1: ClassVar[str] = ...  # read-only
+    HydraGenerativeProceduralAPI: ClassVar[str] = ...  # read-only
+    black: ClassVar[str] = ...  # read-only
+    clamp: ClassVar[str] = ...  # read-only
+    displayLookBxdf: ClassVar[str] = ...  # read-only
+    faceIndex: ClassVar[str] = ...  # read-only
+    faceOffset: ClassVar[str] = ...  # read-only
+    frame: ClassVar[str] = ...  # read-only
+    hydraGenerativeProcedural: ClassVar[str] = ...  # read-only
+    infoFilename: ClassVar[str] = ...  # read-only
+    infoVarname: ClassVar[str] = ...  # read-only
+    linear: ClassVar[str] = ...  # read-only
+    linearMipmapLinear: ClassVar[str] = ...  # read-only
+    linearMipmapNearest: ClassVar[str] = ...  # read-only
+    magFilter: ClassVar[str] = ...  # read-only
+    minFilter: ClassVar[str] = ...  # read-only
+    mirror: ClassVar[str] = ...  # read-only
+    nearest: ClassVar[str] = ...  # read-only
+    nearestMipmapLinear: ClassVar[str] = ...  # read-only
+    nearestMipmapNearest: ClassVar[str] = ...  # read-only
+    primvarsHdGpProceduralType: ClassVar[str] = ...  # read-only
+    proceduralSystem: ClassVar[str] = ...  # read-only
+    repeat: ClassVar[str] = ...  # read-only
+    textureMemory: ClassVar[str] = ...  # read-only
+    useMetadata: ClassVar[str] = ...  # read-only
+    uv: ClassVar[str] = ...  # read-only
+    wrapS: ClassVar[str] = ...  # read-only
+    wrapT: ClassVar[str] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
 
 class _CanApplyResult(Boost.Python.instance):

@@ -147,25 +147,25 @@ class StatementsAPI(pxr.Usd.APISchemaBase):
     def __bool__(self) -> bool: ...
 
 class Tokens(Boost.Python.instance):
-    RiMaterialAPI: ClassVar[Any] = ...  # read-only
-    RiRenderPassAPI: ClassVar[Any] = ...  # read-only
-    RiSplineAPI: ClassVar[Any] = ...  # read-only
-    StatementsAPI: ClassVar[Any] = ...  # read-only
-    bspline: ClassVar[Any] = ...  # read-only
-    cameraVisibility: ClassVar[Any] = ...  # read-only
-    catmullRom: ClassVar[Any] = ...  # read-only
-    collectionCameraVisibilityIncludeRoot: ClassVar[Any] = ...  # read-only
-    constant: ClassVar[Any] = ...  # read-only
-    interpolation: ClassVar[Any] = ...  # read-only
-    linear: ClassVar[Any] = ...  # read-only
-    matte: ClassVar[Any] = ...  # read-only
-    outputsRiDisplacement: ClassVar[Any] = ...  # read-only
-    outputsRiSurface: ClassVar[Any] = ...  # read-only
-    outputsRiVolume: ClassVar[Any] = ...  # read-only
-    positions: ClassVar[Any] = ...  # read-only
-    renderContext: ClassVar[Any] = ...  # read-only
-    spline: ClassVar[Any] = ...  # read-only
-    values: ClassVar[Any] = ...  # read-only
+    RiMaterialAPI: ClassVar[str] = ...  # read-only
+    RiRenderPassAPI: ClassVar[str] = ...  # read-only
+    RiSplineAPI: ClassVar[str] = ...  # read-only
+    StatementsAPI: ClassVar[str] = ...  # read-only
+    bspline: ClassVar[str] = ...  # read-only
+    cameraVisibility: ClassVar[str] = ...  # read-only
+    catmullRom: ClassVar[str] = ...  # read-only
+    collectionCameraVisibilityIncludeRoot: ClassVar[str] = ...  # read-only
+    constant: ClassVar[str] = ...  # read-only
+    interpolation: ClassVar[str] = ...  # read-only
+    linear: ClassVar[str] = ...  # read-only
+    matte: ClassVar[str] = ...  # read-only
+    outputsRiDisplacement: ClassVar[str] = ...  # read-only
+    outputsRiSurface: ClassVar[str] = ...  # read-only
+    outputsRiVolume: ClassVar[str] = ...  # read-only
+    positions: ClassVar[str] = ...  # read-only
+    renderContext: ClassVar[str] = ...  # read-only
+    spline: ClassVar[str] = ...  # read-only
+    values: ClassVar[str] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
 
 class _CanApplyResult(Boost.Python.instance):

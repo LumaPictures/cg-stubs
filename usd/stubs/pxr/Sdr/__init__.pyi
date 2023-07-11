@@ -9,78 +9,78 @@ from typing import Any, ClassVar
 __MFB_FULL_PACKAGE_NAME: str
 
 class NodeContext(Boost.Python.instance):
-    Displacement: ClassVar[Any] = ...  # read-only
-    Light: ClassVar[Any] = ...  # read-only
-    LightFilter: ClassVar[Any] = ...  # read-only
-    Pattern: ClassVar[Any] = ...  # read-only
-    PixelFilter: ClassVar[Any] = ...  # read-only
-    SampleFilter: ClassVar[Any] = ...  # read-only
-    Surface: ClassVar[Any] = ...  # read-only
-    Volume: ClassVar[Any] = ...  # read-only
+    Displacement: ClassVar[str] = ...  # read-only
+    Light: ClassVar[str] = ...  # read-only
+    LightFilter: ClassVar[str] = ...  # read-only
+    Pattern: ClassVar[str] = ...  # read-only
+    PixelFilter: ClassVar[str] = ...  # read-only
+    SampleFilter: ClassVar[str] = ...  # read-only
+    Surface: ClassVar[str] = ...  # read-only
+    Volume: ClassVar[str] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
 
 class NodeMetadata(Boost.Python.instance):
-    Category: ClassVar[Any] = ...  # read-only
-    Departments: ClassVar[Any] = ...  # read-only
-    Help: ClassVar[Any] = ...  # read-only
-    ImplementationName: ClassVar[Any] = ...  # read-only
-    Label: ClassVar[Any] = ...  # read-only
-    Pages: ClassVar[Any] = ...  # read-only
-    Primvars: ClassVar[Any] = ...  # read-only
-    Role: ClassVar[Any] = ...  # read-only
-    SdrDefinitionNameFallbackPrefix: ClassVar[Any] = ...  # read-only
-    SdrUsdEncodingVersion: ClassVar[Any] = ...  # read-only
-    Target: ClassVar[Any] = ...  # read-only
+    Category: ClassVar[str] = ...  # read-only
+    Departments: ClassVar[str] = ...  # read-only
+    Help: ClassVar[str] = ...  # read-only
+    ImplementationName: ClassVar[str] = ...  # read-only
+    Label: ClassVar[str] = ...  # read-only
+    Pages: ClassVar[str] = ...  # read-only
+    Primvars: ClassVar[str] = ...  # read-only
+    Role: ClassVar[str] = ...  # read-only
+    SdrDefinitionNameFallbackPrefix: ClassVar[str] = ...  # read-only
+    SdrUsdEncodingVersion: ClassVar[str] = ...  # read-only
+    Target: ClassVar[str] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
 
 class NodeRole(Boost.Python.instance):
-    Field: ClassVar[Any] = ...  # read-only
-    Math: ClassVar[Any] = ...  # read-only
-    Primvar: ClassVar[Any] = ...  # read-only
-    Texture: ClassVar[Any] = ...  # read-only
+    Field: ClassVar[str] = ...  # read-only
+    Math: ClassVar[str] = ...  # read-only
+    Primvar: ClassVar[str] = ...  # read-only
+    Texture: ClassVar[str] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
 
 class PropertyMetadata(Boost.Python.instance):
-    Colorspace: ClassVar[Any] = ...  # read-only
-    Connectable: ClassVar[Any] = ...  # read-only
-    DefaultInput: ClassVar[Any] = ...  # read-only
-    Help: ClassVar[Any] = ...  # read-only
-    Hints: ClassVar[Any] = ...  # read-only
-    ImplementationName: ClassVar[Any] = ...  # read-only
-    IsAssetIdentifier: ClassVar[Any] = ...  # read-only
-    IsDynamicArray: ClassVar[Any] = ...  # read-only
-    Label: ClassVar[Any] = ...  # read-only
-    Options: ClassVar[Any] = ...  # read-only
-    Page: ClassVar[Any] = ...  # read-only
-    RenderType: ClassVar[Any] = ...  # read-only
-    Role: ClassVar[Any] = ...  # read-only
-    SdrUsdDefinitionType: ClassVar[Any] = ...  # read-only
-    Tag: ClassVar[Any] = ...  # read-only
-    Target: ClassVar[Any] = ...  # read-only
-    ValidConnectionTypes: ClassVar[Any] = ...  # read-only
-    VstructConditionalExpr: ClassVar[Any] = ...  # read-only
-    VstructMemberName: ClassVar[Any] = ...  # read-only
-    VstructMemberOf: ClassVar[Any] = ...  # read-only
-    Widget: ClassVar[Any] = ...  # read-only
+    Colorspace: ClassVar[str] = ...  # read-only
+    Connectable: ClassVar[str] = ...  # read-only
+    DefaultInput: ClassVar[str] = ...  # read-only
+    Help: ClassVar[str] = ...  # read-only
+    Hints: ClassVar[str] = ...  # read-only
+    ImplementationName: ClassVar[str] = ...  # read-only
+    IsAssetIdentifier: ClassVar[str] = ...  # read-only
+    IsDynamicArray: ClassVar[str] = ...  # read-only
+    Label: ClassVar[str] = ...  # read-only
+    Options: ClassVar[str] = ...  # read-only
+    Page: ClassVar[str] = ...  # read-only
+    RenderType: ClassVar[str] = ...  # read-only
+    Role: ClassVar[str] = ...  # read-only
+    SdrUsdDefinitionType: ClassVar[str] = ...  # read-only
+    Tag: ClassVar[str] = ...  # read-only
+    Target: ClassVar[str] = ...  # read-only
+    ValidConnectionTypes: ClassVar[str] = ...  # read-only
+    VstructConditionalExpr: ClassVar[str] = ...  # read-only
+    VstructMemberName: ClassVar[str] = ...  # read-only
+    VstructMemberOf: ClassVar[str] = ...  # read-only
+    Widget: ClassVar[str] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
 
 class PropertyRole(Boost.Python.instance):
     def __init__(self, *args, **kwargs) -> None: ...
 
 class PropertyTypes(Boost.Python.instance):
-    Color: ClassVar[Any] = ...  # read-only
-    Color4: ClassVar[Any] = ...  # read-only
-    Float: ClassVar[Any] = ...  # read-only
-    Int: ClassVar[Any] = ...  # read-only
-    Matrix: ClassVar[Any] = ...  # read-only
-    Normal: ClassVar[Any] = ...  # read-only
-    Point: ClassVar[Any] = ...  # read-only
-    String: ClassVar[Any] = ...  # read-only
-    Struct: ClassVar[Any] = ...  # read-only
-    Terminal: ClassVar[Any] = ...  # read-only
-    Unknown: ClassVar[Any] = ...  # read-only
-    Vector: ClassVar[Any] = ...  # read-only
-    Vstruct: ClassVar[Any] = ...  # read-only
+    Color: ClassVar[str] = ...  # read-only
+    Color4: ClassVar[str] = ...  # read-only
+    Float: ClassVar[str] = ...  # read-only
+    Int: ClassVar[str] = ...  # read-only
+    Matrix: ClassVar[str] = ...  # read-only
+    Normal: ClassVar[str] = ...  # read-only
+    Point: ClassVar[str] = ...  # read-only
+    String: ClassVar[str] = ...  # read-only
+    Struct: ClassVar[str] = ...  # read-only
+    Terminal: ClassVar[str] = ...  # read-only
+    Unknown: ClassVar[str] = ...  # read-only
+    Vector: ClassVar[str] = ...  # read-only
+    Vstruct: ClassVar[str] = ...  # read-only
     def __init__(self, *args, **kwargs) -> None: ...
 
 class Registry(pxr.Ndr.Registry):
