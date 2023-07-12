@@ -148,6 +148,7 @@ class DocstringTypeFixer:
     LIST_OF_REG = re.compile(r"\b(list|Sequence|Iterable|Iterator) of (.*)")
     TUPLE_OF_REG = re.compile(r"\btuple of ([a-zA-Z0-9_.,() ]*)")
     SET_OF_REG = re.compile(r"\bset of ([a-zA-Z0-9_.]*)")
+    DICT_OF_REG = re.compile(r"\bdict of ([a-zA-Z0-9_.]*) (?:of|to) ([a-zA-Z0-9_.]*)")
     NUMERIC_TUPLE_REG = re.compile(r"\b(int|float)\[(\d+)\]")
 
     REPLACEMENTS = [
@@ -225,6 +226,11 @@ class DocstringTypeFixer:
             return "set[{}]".format(m.group(1))
 
         type_name = self.SET_OF_REG.sub(set_sub, type_name, count=1)
+
+        def dict_sub(m) -> str:
+            return "dict[{}, {}]".format(m.group(1), m.group(2))
+
+        type_name = self.DICT_OF_REG.sub(dict_sub, type_name, count=1)
 
         def numeric_tuple_sub(m) -> str:
             count = int(m.group(2))

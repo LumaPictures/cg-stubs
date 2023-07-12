@@ -3,7 +3,7 @@
 import AssetAPI as AssetAPI
 import PyFnAttribute as FnAttribute
 import PyFnGeolib as FnGeolib
-import PyFnGeolibProducers as FnGeolibProducers
+import FnGeolibProducers as FnGeolibProducers
 import LookFileBakeAPI.LookFileUtil as LookFileUtil
 import LookFileBakeAPI.OutputFormatAPI as OutputFormatAPI
 import PyFnGeolib
@@ -14,7 +14,7 @@ from _typeshed import Incomplete
 from typing import Any, Set, Tuple
 
 class BakePrePostHandlerBase:
-    def notify(self, assetId: str, rootLocationProducers, progressCallback: typing.Callable | None, abortCallback: typing.Callable | None): ...
+    def notify(self, assetId: str, rootLocationProducers: dict[str, FnGeolibProducers.GeometryProducer], progressCallback: typing.Callable | None, abortCallback: typing.Callable | None): ...
 
 class LookFileBaker:
     additionalSettings: Any
