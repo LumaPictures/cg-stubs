@@ -1,9 +1,10 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 import QT4Panels.Edge as Edge
+import PyQt5.QtGui
 import PyQt5.QtWidgets
 import PyQt5.QtCore as QtCore
-import QtGui as QtGui
+import PyQt5.QtGui as QtGui
 import PyQt5.QtWidgets as QtWidgets
 from typing import Set, Tuple
 
@@ -25,5 +26,5 @@ class SplittableBoxOverlay(PyQt5.QtWidgets.QWidget):
     def setRect(self, rect, showSplits): ...
     def show(self): ...
 
-def GetHighlightColor(palette: QtGui.QPalette) -> QtGui.QColor: ...
+def GetHighlightColor(palette: PyQt5.QtGui.QPalette) -> PyQt5.QtGui.QColor: ...
 def _BlendColors(c1, c2, blend): ...

@@ -59,6 +59,14 @@ class KatanaDocstringTypeFixer(DocstringTypeFixer):
             ("PortOpClient", "Nodes3DAPI.PortOpClient.PortOpClient"),
             ("GroupAttribute", "PyFnAttribute.GroupAttribute"),
             ("Package", "PackageSuperToolAPI.Packages.Package"),
+            # stuubgen will add imported modules that it discovers to generated
+            # output, but types in docstrings may refer to modules that are not
+            # imported into the module namespace.  e.g. QtCore. Forcing to the
+            # full path will ensure that an import is added. An alternative may
+            # be to register `import PyQt5.QtCore as QtCore' in every module:
+            # it's likely that the imports will only be added if the imported
+            # object is actually used.
+            ("(Qt.*)", r"PyQt5.\1"),
         )
         for short_name, full_name in absolute_names:
             type_name = re.sub(
