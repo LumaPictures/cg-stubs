@@ -124,4 +124,8 @@ def generate(session: nox.Session, lib: str) -> None:
 def mypy(session: nox.Session, lib: str) -> None:
     session.chdir(lib)
     session.install("mypy==1.4.1")
-    session.run("mypy", "stubs")
+
+    if lib == "ocio":
+        session.install("numpy")
+
+    session.run("mypy")

@@ -3,6 +3,7 @@ from __future__ import absolute_import, annotations, division, print_function
 import inspect
 import subprocess
 import os
+import pathlib
 import re
 import pydoc
 from collections import defaultdict
@@ -47,28 +48,34 @@ SetDebugMode(False)
 # a python identifier
 IDENTIFIER = r"([a-zA-Z_][a-zA-Z0-9_]*)"
 PYPATH = r"((?:[a-zA-Z_][a-zA-Z0-9_]*)(?:[.][a-zA-Z_][a-zA-Z0-9_]*)*)"
-STRIP = r"\b(?:const|friend|constexpr)\b"
+STRIP = r"\b(?:const|friend|constexpr|class)\b"
 ARG_TYPE_MAP = [
     (r"\bstd::vector\b", "typing.Iterable"),
     (r"\bstd::set\b", "typing.Iterable"),
+    (r"\bstd::unordered_set\b", "typing.Iterable"),
     # Sdf mapping types:
     (r"\bSdfLayerHandleSet\b", "typing.Iterable[pxr.Sdf.Layer]"),
-    (r"\bSdfPathSet\b", "typing.Iterable[pxr.Sdf.Path]"),
+    # (r"\bSdfPathSet\b", "typing.Iterable[pxr.Sdf.Path]"),
 ]
 RESULT_TYPE_MAP = [
     (r"\bstd::vector\b", "list"),
     (r"\bstd::set\b", "list"),
+    (r"\bstd::unordered_set\b", "list"),
     # Sdf mapping types:
     (r"\bSdfLayerHandleSet\b", "list[pxr.Sdf.Layer]"),
-    (r"\bSdfPathSet\b", "list[pxr.Sdf.Path]"),
+    # (r"\bSdfPathSet\b", "list[pxr.Sdf.Path]"),
 ]
 TYPE_MAP = [
     (r"\bVtArray<\s*SdfAssetPath\s*>", "SdfAssetPathArray"),
     (r"\bstd::string\b", "str"),
+    (r"\bstd::map\b", "dict"),
+    (r"\bstd::unordered_map\b", "dict"),
     (r"\bstd::unique_ptr\b", ""),
     (r"\bstd::ostream\b", "typing.TextIO"),
     (r"\bstring\b", "str"),
     (r"\bsize_t\b", "int"),
+    (r"\bint64_t\b", "int"),
+    (r"\bUsdSchemaVersion\b", "int"),
     (r"\bchar\b", "str"),
     (r"\bstd::function<(.+)\((.*)\)>", r"typing.Callable[[\2],\1]"),
     (r"\bstd::pair\b", "tuple"),
@@ -78,6 +85,7 @@ TYPE_MAP = [
     (r"\bboost::python::", ""),
     (r"\bvoid\b", "None"),
     (r"\bVtValue\b", "Any"),
+    # this gets a lot of things right, but does produce a few errors, like list[Error] for PcpErrorVector, instead of list[ErrorBase]
     (r"\b" + IDENTIFIER + r"Vector\b", r"list[\1]"),
     (r"\bTfToken\b", "str"),
     (r"\bVtDictionary\b", "dict"),
@@ -93,25 +101,27 @@ RENAMES = [
     # simple renames:
     (r"\bSdfBatchNamespaceEdit\b", "pxr.Sdf.NamespaceEdit"),
     # Sdf mapping types:
-    (r"\bSdfDictionaryProxy\b", "pxr.Sdf.MapEditProxy_VtDictionary"),
-    (r"\bSdfReferencesProxy\b", "pxr.Sdf.ReferenceTypePolicy"),
-    (r"\bSdfSubLayerProxy\b", "pxr.Sdf.ListProxy_SdfSubLayerTypePolicy"),
+    (r"\bSdfDictionaryProxy\b", "pxr.Sdf.MapEditProxy_VtDictionary"),  # typedef
+    (r"\bSdfReferencesProxy\b", "pxr.Sdf.ReferenceTypePolicy"),  # typedef
+    (r"\bSdfSubLayerProxy\b", "pxr.Sdf.ListProxy_SdfSubLayerTypePolicy"),  # typedef
     # pathKey
-    (r"\bSdfInheritsProxy\b", "pxr.Sdf.ListEditorProxy_SdfPathKeyPolicy"),
-    (r"\bSdfSpecializesProxy\b", "pxr.Sdf.ListEditorProxy_SdfPathKeyPolicy"),
+    (r"\bSdfInheritsProxy\b", "pxr.Sdf.ListEditorProxy_SdfPathKeyPolicy"),  # typedef
+    (r"\bSdfSpecializesProxy\b", "pxr.Sdf.ListEditorProxy_SdfPathKeyPolicy"),  # typedef
     # nameTokenKey
-    (r"\bSdfNameOrderProxy\b", "pxr.Sdf.ListProxy_SdfNameTokenKeyPolicy"),
-    (r"\bSdfNameChildrenOrderProxy\b", "pxr.Sdf.ListProxy_SdfNameTokenKeyPolicy"),
-    (r"\bSdfPropertyOrderProxy\b", "pxr.Sdf.ListProxy_SdfNameTokenKeyPolicy"),
+    (r"\bSdfNameOrderProxy\b", "pxr.Sdf.ListProxy_SdfNameTokenKeyPolicy"),  # typedef
+    (
+        r"\bSdfNameChildrenOrderProxy\b",
+        "pxr.Sdf.ListProxy_SdfNameTokenKeyPolicy",
+    ),  # typedef
+    (
+        r"\bSdfPropertyOrderProxy\b",
+        "pxr.Sdf.ListProxy_SdfNameTokenKeyPolicy",
+    ),  # typedef
     # nameKey
-    (r"\bSdfVariantSetNamesProxy\b", "pxr.Sdf.ListEditorProxy_SdfNameKeyPolicy"),
-    # Ndr
-    # (these could be automatically processed if we scraped the headers for typedefs).
-    (r"\bNdrTokenVec\b", "list[str]"),
-    (r"\bNdrStringVec\b", "list[str]"),
-    (r"\bNdrIdentifierVec\b", "list[str]"),
-    (r"\bNdrIdentifier\b", "str"),
-    (r"\bNdrTokenMap\b", "dict[str, str]"),
+    (
+        r"\bSdfVariantSetNamesProxy\b",
+        "pxr.Sdf.ListEditorProxy_SdfNameKeyPolicy",
+    ),  # typedef
 ]
 ARRAY_TYPES = {
     "Bool": "bool",
@@ -220,13 +230,22 @@ class TypeInfo:
     parsed from doxygen docs and source code.
     """
 
+    TYPE_DEF_INCLUDES = [
+        "pxr/usd/sdf/types.h",
+        "pxr/usd/sdf/path.h",
+        "pxr/usd/sdf/fileFormat.h",
+        # "pxr/usd/sdf/proxyTypes.h",
+        "pxr/usd/ndr/declare.h",
+        "pxr/usd/usdGeom/basisCurves.h",
+    ]
+
     def __init__(
         self,
         xml_index_file: str,
         pxr_modules: list[str],
         srcdir: str | None = None,
         verbose: bool = False,
-    ):
+    ) -> None:
         self.xml_index_file = xml_index_file
         self.pxr_modules_names = sorted(pxr_modules, key=len, reverse=True)
         self.cpp_sigs: dict[str, SigInfo] = {}
@@ -235,6 +254,7 @@ class TypeInfo:
         self.srcdir = srcdir
         self._valid_modules = None
         self._implicitly_convertible_types: dict[str, set[str]] | None = None
+        self._typedefs: list[tuple[str, str]] | None = None
         self.verbose = verbose
 
     # def get_valid_modules(self):
@@ -269,6 +289,33 @@ class TypeInfo:
     def is_py_array_type(cls, py_type: str) -> bool:
         """Takes a short or full python path"""
         return bool(cls.py_array_to_sub_type(py_type))
+
+    def _get_typedefs(self) -> list[tuple[str, str]]:
+        if not self.srcdir:
+            return []
+
+        if self._typedefs is None:
+            self._typedefs = []
+            reg = re.compile(r"\btypedef ([^;]+);")
+
+            srcdir = pathlib.Path(self.srcdir)
+            for include_file in self.TYPE_DEF_INCLUDES:
+                include_file = srcdir.joinpath(include_file)
+                print(include_file)
+                text = include_file.read_text().replace("\n", " ")
+                for match in reg.finditer(text):
+                    typedef_str = match.group(1)
+                    type, alias = typedef_str.rsplit(" ", 1)
+                    alias = alias.replace(" ", "")
+                    type = type.strip()
+                    # fixup type.  kinda ugly, but it's easier to do it now before types are
+                    # full expanded
+                    if type.startswith("std::unordered_map<"):
+                        parts = type.split(",")
+                        if len(parts) == 3:
+                            type = ",".join(parts[:-1]) + ">"
+                    self._typedefs.append((alias, type))
+        return self._typedefs
 
     def _get_implicitly_convertible_types(self) -> dict[str, set[str]]:
         """
@@ -356,15 +403,27 @@ class TypeInfo:
             raise RuntimeError("Could not find implicitly convertible types")
         return self._implicitly_convertible_types
 
-    def cpp_arg_to_py_type(self, cpp_type: str, is_result) -> str:
+    def cpp_arg_to_py_type(self, cpp_type: str, is_result: bool) -> str:
         """
         Convert a c++ type string to a python type string
 
         Returns the new typestring and whether the type appears to be a return value
         """
-        orig = cpp_type
-        parts = cpp_type.split()
-        is_ptr = "*" in cpp_type
+        typestr = cpp_type
+        is_ptr = "*" in typestr
+
+        def replace_typedefs(typ: str) -> str:
+            for alias, replace in self._get_typedefs():
+                typ = re.sub(rf"\b{alias}\b", replace, typ)
+            return typ
+
+        while True:
+            new_typestr = replace_typedefs(typestr)
+            if new_typestr == typestr:
+                break
+            typestr = new_typestr
+
+        parts = typestr.split()
 
         # remove extraneous bits
         parts = [
@@ -395,6 +454,7 @@ class TypeInfo:
         typestr = "".join(parts)
         typestr = typestr.replace(",", ", ")
         typestr = typestr.replace("::", ".")
+
         return typestr
 
     def _populate_map(self, docElemPath: list[DocElement]) -> None:
@@ -1068,6 +1128,9 @@ def test():
 
 def main(outdir: str) -> None:
     import pprint
+
+    pprint.pprint(type_info._get_typedefs())
+    # raise RuntimeError
 
     type_info.populate()
     notifier.set_modules(["pxr.Tf"])
