@@ -1,12 +1,13 @@
 from __future__ import absolute_import, annotations, division, print_function
 
 import contextlib
+import fnmatch
 import io
 import itertools
 import re
 import tokenize
 from collections import defaultdict
-from typing import Any
+from typing import Any, NamedTuple, TypeVar
 from typing_extensions import Literal
 
 from mypy.stubdoc import infer_sig_from_docstring, _TYPE_RE, _ARG_NAME_RE, is_valid_type
@@ -18,6 +19,8 @@ from mypy.stubgenc import (
     DocstringSignatureGenerator as CDocstringSignatureGenerator,
 )
 from mypy.fastparse import parse_type_comment
+
+T = TypeVar("T")
 
 
 class Notifier:
@@ -46,6 +49,39 @@ class Notifier:
         for key in sorted(self._seen_keys):
             count = self._seen_keys[key]
             print(f"  {key}: {count}")
+
+
+def merge_signatures(
+    dest: FunctionSig, other: FunctionSig, force: bool = False
+) -> FunctionSig:
+    """Merge the `other` signature `dest`, returning a new signature.
+
+    The other signature can have fewer arguments: args will be matched by position
+    for special methods and name otherwise.
+
+    If force is True, types from other signature will override this one even if
+    this sig has non-None types.
+    """
+    args: list[ArgSig] = []
+    if dest.is_special_method() and len(other.args) == len(dest.args):
+        for arg, other_arg in zip(dest.args, other.args):
+            if (arg.type is None or force) and other_arg.type is not None:
+                arg = ArgSig(arg.name, other_arg.type, arg.default)
+            args.append(arg)
+    else:
+        other_args = {arg.name: arg for arg in other.args}
+        for arg in dest.args:
+            if arg.name in other_args:
+                other_arg = other_args[arg.name]
+                if (arg.type is None or force) and other_arg.type is not None:
+                    arg = ArgSig(arg.name, other_arg.type, arg.default)
+            args.append(arg)
+
+    ret_type = dest.ret_type
+    if (ret_type is None or force) and other.ret_type:
+        ret_type = other.ret_type
+
+    return FunctionSig(name=dest.name, args=args, ret_type=ret_type)
 
 
 class BaseSigFixer:
@@ -133,7 +169,7 @@ class BaseSigFixer:
                 ):
                     merged_sig = sig
                 else:
-                    merged_sig = default_sig.merge(sig)
+                    merged_sig = merge_signatures(default_sig, sig)
                 sigs[i] = merged_sig
         return sigs
 
@@ -708,3 +744,167 @@ def infer_sig_from_boost_docstring(
 
     # # Return only signatures that have unique argument names. Mypy fails on non-unique arg names.
     # return [sig for sig in sigs if is_unique_args(sig)]
+
+
+def get_mypy_ignore_directive(codes: list[str]) -> str:
+    return '# mypy: disable-error-code="{}"\n\n'.format(", ".join(codes))
+
+
+ANY = None
+
+Optionality = NamedTuple("Optionality", [("accepts_none", bool), ("has_default", bool)])
+
+
+class AdvancedSignatureGenerator(SignatureGenerator):
+    docstring = CDocstringSignatureGenerator()
+
+    # Full signature replacements.
+    #   name_pattern: sig_str
+    signature_overrides: dict[str, str | list[str]] = {}
+
+    # Override argument types
+    #   (name_pattern, arg, type): arg_type
+    arg_type_overrides: dict[tuple[str, str | None, str | None], str] = {}
+
+    # Types that have implicit alternatives.
+    #   type_str: list of types that can be used instead
+    implicit_arg_types: dict[str, list[str]] = {}
+
+    # Args which should be made Optional[].
+    #   (name_pattern, arg, type): Optionality
+    optional_args: dict[tuple[str, str | None, str | None], Optionality] = {}
+
+    # Add new overloads to existing functions.
+    new_overloads: dict[str, list[str]] = {}
+
+    def __init__(self) -> None:
+        # insert OptionalKeys
+        self.arg_type_overrides = self.arg_type_overrides.copy()
+        self.arg_type_overrides.update(
+            {
+                # method, arg, type
+                (
+                    "*",
+                    ANY,
+                    orig,
+                ): "typing.Union[{},{}]".format(orig, ",".join(alt))
+                for orig, alt in self.implicit_arg_types.items()
+            }
+        )
+        self.arg_type_overrides.update(
+            {
+                # method, arg, type
+                (
+                    "*",
+                    ANY,
+                    "typing.Union[{},NoneType]".format(orig),
+                ): "typing.Union[{},{},NoneType]".format(orig, ",".join(alt))
+                for orig, alt in self.implicit_arg_types.items()
+            }
+        )
+        # self.arg_name_replacements = {
+        #     tuple(OptionalKey(k) for k in key): value
+        #     for key, value in self._arg_name_replacements.items()
+        # }
+
+    def find_func_match(self, fullname: str, items: dict[str, T]) -> T | None:
+        """Look for a match in the given dictionary of function/method overrides"""
+        for method_match, value in items.items():
+            if fnmatch.fnmatch(fullname, method_match):
+                return value
+        return None
+
+    def find_arg_match(
+        self,
+        fullname: str,
+        arg_name: str,
+        arg_type: str,
+        items: dict[tuple[str, str | None, str | None], T],
+    ) -> T | None:
+        """Look for a match in the given dictionary of argument overrides"""
+        for (method_match, arg_name_match, arg_type_match), value in items.items():
+            if (
+                fnmatch.fnmatch(fullname, method_match)
+                and (arg_name_match is None or arg_name_match == arg_name)
+                and (arg_type_match is None or arg_type_match == arg_type)
+            ):
+                return value
+        return None
+
+    def get_docstr(self, ctx: FunctionContext) -> str | list[str] | None:
+        """Look for a docstring siganture in signature_overrides"""
+        return self.find_func_match(ctx.fullname, self.signature_overrides)
+
+    def process_arg(self, ctx: FunctionContext, arg: ArgSig) -> None:
+        """Update ArgSig in place"""
+        if not arg.type:
+            return
+
+        # if key in self.arg_name_replacements:
+        #     arg.name = self.arg_name_replacements[key]
+
+        optionality = self.find_arg_match(
+            ctx.fullname, arg.name, arg.type, self.optional_args
+        )
+        if optionality is not None:
+            if optionality.has_default:
+                arg.default = True
+            elif optionality.accepts_none:
+                arg.type = "typing.Union[{},NoneType]".format(arg.type)
+
+        # FIXME: I think we want an else here, since arg.type is set, above
+        arg_type_override = self.find_arg_match(
+            ctx.fullname, arg.name, arg.type, self.arg_type_overrides
+        )
+        if arg_type_override is not None:
+            arg.type = arg_type_override
+
+    def process_sig(self, ctx: FunctionContext, sig: FunctionSig) -> FunctionSig:
+        for arg in sig.args:
+            self.process_arg(ctx, arg)
+        return sig
+
+    def process_sigs(
+        self, ctx: FunctionContext, results: list[FunctionSig]
+    ) -> list[FunctionSig] | None:
+        for i, inferred in enumerate(results):
+            results[i] = self.process_sig(ctx, inferred)
+
+        new_overloads = self.find_func_match(ctx.fullname, self.new_overloads)
+        if new_overloads:
+            docstr = "\n".join(ctx.name + overload for overload in new_overloads)
+            new_sigs = infer_sig_from_docstring(docstr, ctx.name)
+            if new_sigs:
+                results.extend(new_sigs)
+        return results
+
+    def get_function_sig(
+        self, default_sig: FunctionSig, ctx: FunctionContext
+    ) -> list[FunctionSig] | None:
+        docstr = None
+        name = ctx.name
+        docstr = ctx.docstr
+
+        docstr_override = self.get_docstr(ctx)
+        if docstr_override:
+            docstr = docstr_override
+
+            def prep_doc(d: str) -> str:
+                if not d.startswith(name):
+                    d = name + d
+                return d
+
+            # process our override
+            if isinstance(docstr, list):
+                docstr = "\n".join(prep_doc(d) for d in docstr)
+            else:
+                docstr = prep_doc(docstr)
+            results = infer_sig_from_docstring(docstr, name)
+        else:
+            # call the standard docstring-based generator.
+            results = self.docstring.get_function_sig(default_sig, ctx)
+
+        if results:
+            return self.process_sigs(ctx, results)
+
+        return results

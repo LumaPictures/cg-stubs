@@ -2,6 +2,7 @@ import collections.abc
 import typing
 T = typing.TypeVar('T')
 
+__version__: str
 __version_info__: tuple
 
 class VoidPtr:

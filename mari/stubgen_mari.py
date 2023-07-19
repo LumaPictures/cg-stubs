@@ -11,7 +11,11 @@ from mypy.stubgenc import SignatureGenerator
 
 import mari
 
-from stubgenlib import DocstringTypeFixer, FixableDocstringSigGen
+from stubgenlib import (
+    get_mypy_ignore_directive,
+    DocstringTypeFixer,
+    FixableDocstringSigGen,
+)
 
 # the mari.so module patches in the Mari pure python package using __path__. Undo that
 # so that mypy will just process mari.so as a single c extension.
@@ -19,17 +23,16 @@ mari.__path__ = []
 
 
 class MariDocstringSignatureGenerator(DocstringTypeFixer, FixableDocstringSigGen):
-
     def prepare_docstring(self, docstr: str) -> str:
         # remove :obj: from docstring because it breaks the parser
         return re.sub(r":(?:[a-z_]+):", "", docstr).replace("`", "")
 
     def get_full_name(self, obj_name: str) -> str:
         if (
-                obj_name
-                and obj_name[0].isupper()
-                and not obj_name.startswith("mari.")
-                and not obj_name.startswith("PySide")
+            obj_name
+            and obj_name[0].isupper()
+            and not obj_name.startswith("mari.")
+            and not obj_name.startswith("PySide")
         ):
             if obj_name[0] == "Q":
                 return f"PySide2.QtWidgets.{obj_name}"
@@ -58,10 +61,20 @@ class MariDocstringSignatureGenerator(DocstringTypeFixer, FixableDocstringSigGen
         sigs = super().get_function_sig(default_sig, ctx)
         if sigs:
             if ctx.name == "findChannel":
-                return [FunctionSig(name="findChannel", args=[ArgSig("name", "str")], ret_type="Channel")]
-            elif ctx.name.startswith("create") and ctx.name.endswith("Layer") and ctx.name != "createLayer":
+                return [
+                    FunctionSig(
+                        name="findChannel",
+                        args=[ArgSig("name", "str")],
+                        ret_type="Channel",
+                    )
+                ]
+            elif (
+                ctx.name.startswith("create")
+                and ctx.name.endswith("Layer")
+                and ctx.name != "createLayer"
+            ):
                 # LayerStack
-                layer_type = ctx.name[len("create"):]
+                layer_type = ctx.name[len("create") :]
                 if layer_type == "MaterialLayer":
                     layer_type = "MultiChannelMaterialLayer"
                 return [sig._replace(ret_type=layer_type) for sig in sigs]
@@ -127,7 +140,10 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         output = super().get_imports()
         if self.module_name == "mari":
             output = "from . import current, session, system, utils\n" + output
-        return output
+        return (
+            get_mypy_ignore_directive(["misc", "override", "no-redef", "assignment"])
+            + output
+        )
 
     def get_members(self, obj: object) -> list[tuple[str, Any]]:
         members = super().get_members(obj)

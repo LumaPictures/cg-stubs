@@ -13,6 +13,7 @@ import Callbacks.Callbacks  # type: ignore[import]
 from Callbacks.Callbacks import _TypeEnum  # type: ignore[import]
 
 from stubgenlib import (
+    get_mypy_ignore_directive,
     FixableCDocstringSigGen,
     FixableDocstringSigGen,
     CFunctionStub,
@@ -21,9 +22,6 @@ from stubgenlib import (
 )
 
 notifier = Notifier()
-
-# Remove these to troubleshoot errors:
-DISABLED_CODES = '# mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"\n\n'
 
 
 class KatanaDocstringTypeFixer(DocstringTypeFixer):
@@ -148,7 +146,13 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         else:
             type_vars = ""
         imports = super().get_imports()
-        return DISABLED_CODES + imports + type_vars
+        return (
+            get_mypy_ignore_directive(
+                ["misc", "override", "attr-defined", "no-redef", "assignment"]
+            )
+            + imports
+            + type_vars
+        )
 
     def get_members(self, obj: object) -> list[tuple[str, Any]]:
         # Note that there is a mix of fixes here for C and non-C modules, but
