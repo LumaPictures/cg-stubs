@@ -37,6 +37,7 @@ from stubgenlib import (
     BoostDocstringSignatureGenerator,
     CFunctionStub,
     Notifier,
+    CppTypeConverter,
     reduce_overloads,
     sig_sort_key,
 )
@@ -46,120 +47,7 @@ SetDebugMode(False)
 
 # FIXME: there's a python func for this
 # a python identifier
-IDENTIFIER = r"([a-zA-Z_][a-zA-Z0-9_]*)"
 PYPATH = r"((?:[a-zA-Z_][a-zA-Z0-9_]*)(?:[.][a-zA-Z_][a-zA-Z0-9_]*)*)"
-STRIP = r"\b(?:const|friend|constexpr|class)\b"
-ARG_TYPE_MAP = [
-    (r"\bstd::vector\b", "typing.Iterable"),
-    (r"\bstd::set\b", "typing.Iterable"),
-    (r"\bstd::unordered_set\b", "typing.Iterable"),
-    # Sdf mapping types:
-    (r"\bSdfLayerHandleSet\b", "typing.Iterable[pxr.Sdf.Layer]"),
-    # (r"\bSdfPathSet\b", "typing.Iterable[pxr.Sdf.Path]"),
-]
-RESULT_TYPE_MAP = [
-    (r"\bstd::vector\b", "list"),
-    (r"\bstd::set\b", "list"),
-    (r"\bstd::unordered_set\b", "list"),
-    # Sdf mapping types:
-    (r"\bSdfLayerHandleSet\b", "list[pxr.Sdf.Layer]"),
-    # (r"\bSdfPathSet\b", "list[pxr.Sdf.Path]"),
-]
-TYPE_MAP = [
-    (r"\bVtArray<\s*SdfAssetPath\s*>", "SdfAssetPathArray"),
-    (r"\bstd::string\b", "str"),
-    (r"\bstd::map\b", "dict"),
-    (r"\bstd::unordered_map\b", "dict"),
-    (r"\bstd::unique_ptr\b", ""),
-    (r"\bstd::ostream\b", "typing.TextIO"),
-    (r"\bstring\b", "str"),
-    (r"\bsize_t\b", "int"),
-    (r"\bint64_t\b", "int"),
-    (r"\bUsdSchemaVersion\b", "int"),
-    (r"\bchar\b", "str"),
-    (r"\bstd::function<(.+)\((.*)\)>", r"typing.Callable[[\2],\1]"),
-    (r"\bstd::pair\b", "tuple"),
-    (r"\bdouble\b", "float"),
-    (r"\bGfHalf\b", "float"),
-    (r"\bHalf\b", "float"),
-    (r"\bboost::python::", ""),
-    (r"\bvoid\b", "None"),
-    (r"\bVtValue\b", "Any"),
-    # this gets a lot of things right, but does produce a few errors, like list[Error] for PcpErrorVector, instead of list[ErrorBase]
-    (r"\b" + IDENTIFIER + r"Vector\b", r"list[\1]"),
-    (r"\bTfToken\b", "str"),
-    (r"\bVtDictionary\b", "dict"),
-    (r"\bUsdMetadataValueMap\b", "dict"),
-    # strip suffixes
-    (r"RefPtr\b", ""),
-    (r"Ptr\b", ""),
-    (r"ConstHandle\b", ""),
-    (r"Const\b", ""),
-    (r"Handle\b", ""),
-]
-RENAMES = [
-    # simple renames:
-    (r"\bSdfBatchNamespaceEdit\b", "pxr.Sdf.NamespaceEdit"),
-    # Sdf mapping types:
-    (r"\bSdfDictionaryProxy\b", "pxr.Sdf.MapEditProxy_VtDictionary"),  # typedef
-    (r"\bSdfReferencesProxy\b", "pxr.Sdf.ReferenceTypePolicy"),  # typedef
-    (r"\bSdfSubLayerProxy\b", "pxr.Sdf.ListProxy_SdfSubLayerTypePolicy"),  # typedef
-    # pathKey
-    (r"\bSdfInheritsProxy\b", "pxr.Sdf.ListEditorProxy_SdfPathKeyPolicy"),  # typedef
-    (r"\bSdfSpecializesProxy\b", "pxr.Sdf.ListEditorProxy_SdfPathKeyPolicy"),  # typedef
-    # nameTokenKey
-    (r"\bSdfNameOrderProxy\b", "pxr.Sdf.ListProxy_SdfNameTokenKeyPolicy"),  # typedef
-    (
-        r"\bSdfNameChildrenOrderProxy\b",
-        "pxr.Sdf.ListProxy_SdfNameTokenKeyPolicy",
-    ),  # typedef
-    (
-        r"\bSdfPropertyOrderProxy\b",
-        "pxr.Sdf.ListProxy_SdfNameTokenKeyPolicy",
-    ),  # typedef
-    # nameKey
-    (
-        r"\bSdfVariantSetNamesProxy\b",
-        "pxr.Sdf.ListEditorProxy_SdfNameKeyPolicy",
-    ),  # typedef
-]
-ARRAY_TYPES = {
-    "Bool": "bool",
-    "Char": "str",
-    "Double": "float",
-    "Float": "float",
-    "Half": "float",
-    "Int64": "int",
-    "Int": "int",
-    "Short": "int",
-    "String": "str",
-    "UChar": "str",
-    "UInt64": "int",
-    "UInt": "int",
-    "UShort": "int",
-    "Token": "str",
-}
-# mapping from c++ operators to python special methods
-OPERATORS = {
-    "__neq__": "operator!=",
-    "__eq__": "operator==",
-    "__lt__": "operator<",
-    "__le__": "operator<=",
-    "__gt__": "operator>",
-    "__ge__": "operator>=",
-    "__bool__": "operator bool",
-    "__getitem__": "operator[]",
-    "__call__": "operator()",
-}
-# even though Usd_PrimFlagsPredicate is mentinoned in the docs it is not in the
-# index, so it is not found by the parser.
-# FIXME: instead of relying on the docs to popluate the py_types dict, we could
-#  simply pre-cache the contents of the python modules.
-MISSING_PY_TYPES = {
-    "_PrimFlagsPredicate": ["pxr.Usd._PrimFlagsPredicate"],
-    "StringListOp": ["pxr.Sdf.StringListOp"],
-    "AssetPathArray": ["pxr.Sdf.AssetPathArray"],
-}
 
 
 def is_existing_obj(pypath: str) -> bool:
@@ -216,14 +104,7 @@ def maybe_result(parts: list[str]) -> bool:
     return "const" not in parts and ("*" in parts or "&" in parts)
 
 
-def should_strip_part(x: str) -> bool:
-    """
-    whether the part looks like a c++ keyword
-    """
-    return x.endswith("_API") or not x
-
-
-class TypeInfo:
+class TypeInfo(CppTypeConverter):
     """Get info about types.
 
     Provides helpers for converting c++ data to python data, using data
@@ -238,6 +119,108 @@ class TypeInfo:
         "pxr/usd/ndr/declare.h",
         "pxr/usd/usdGeom/basisCurves.h",
     ]
+    ARG_TYPE_MAP = CppTypeConverter.ARG_TYPE_MAP + [
+        # Sdf mapping types:
+        (r"\bSdfLayerHandleSet\b", "typing.Iterable[pxr.Sdf.Layer]"),
+        # (r"\bSdfPathSet\b", "typing.Iterable[pxr.Sdf.Path]"),
+    ]
+    RESULT_TYPE_MAP = CppTypeConverter.RESULT_TYPE_MAP + [
+        # Sdf mapping types:
+        (r"\bSdfLayerHandleSet\b", "list[pxr.Sdf.Layer]"),
+        # (r"\bSdfPathSet\b", "list[pxr.Sdf.Path]"),
+    ]
+    TYPE_MAP = CppTypeConverter.TYPE_MAP + [
+        (r"\bVtArray<\s*SdfAssetPath\s*>", "SdfAssetPathArray"),
+        (r"\bint64_t\b", "int"),
+        (r"\bUsdSchemaVersion\b", "int"),
+        (r"\bGfHalf\b", "float"),
+        (r"\bHalf\b", "float"),
+        (r"\bboost::python::", ""),
+        (r"\bVtValue\b", "Any"),
+        # this gets a lot of things right, but does produce a few errors, like list[Error] for PcpErrorVector, instead of list[ErrorBase]
+        (r"\b" + CppTypeConverter.IDENTIFIER + r"Vector\b", r"list[\1]"),
+        (r"\bTfToken\b", "str"),
+        (r"\bVtDictionary\b", "dict"),
+        (r"\bUsdMetadataValueMap\b", "dict"),
+        # strip suffixes
+        (r"RefPtr\b", ""),
+        (r"Ptr\b", ""),
+        (r"ConstHandle\b", ""),
+        (r"Const\b", ""),
+        (r"Handle\b", ""),
+    ]
+    RENAMES = [
+        # simple renames:
+        (r"\bSdfBatchNamespaceEdit\b", "pxr.Sdf.NamespaceEdit"),
+        # Sdf mapping types:
+        (r"\bSdfDictionaryProxy\b", "pxr.Sdf.MapEditProxy_VtDictionary"),  # typedef
+        (r"\bSdfReferencesProxy\b", "pxr.Sdf.ReferenceTypePolicy"),  # typedef
+        (r"\bSdfSubLayerProxy\b", "pxr.Sdf.ListProxy_SdfSubLayerTypePolicy"),  # typedef
+        # pathKey
+        (
+            r"\bSdfInheritsProxy\b",
+            "pxr.Sdf.ListEditorProxy_SdfPathKeyPolicy",
+        ),  # typedef
+        (
+            r"\bSdfSpecializesProxy\b",
+            "pxr.Sdf.ListEditorProxy_SdfPathKeyPolicy",
+        ),  # typedef
+        # nameTokenKey
+        (
+            r"\bSdfNameOrderProxy\b",
+            "pxr.Sdf.ListProxy_SdfNameTokenKeyPolicy",
+        ),  # typedef
+        (
+            r"\bSdfNameChildrenOrderProxy\b",
+            "pxr.Sdf.ListProxy_SdfNameTokenKeyPolicy",
+        ),  # typedef
+        (
+            r"\bSdfPropertyOrderProxy\b",
+            "pxr.Sdf.ListProxy_SdfNameTokenKeyPolicy",
+        ),  # typedef
+        # nameKey
+        (
+            r"\bSdfVariantSetNamesProxy\b",
+            "pxr.Sdf.ListEditorProxy_SdfNameKeyPolicy",
+        ),  # typedef
+    ]
+    ARRAY_TYPES = {
+        "Bool": "bool",
+        "Char": "str",
+        "Double": "float",
+        "Float": "float",
+        "Half": "float",
+        "Int64": "int",
+        "Int": "int",
+        "Short": "int",
+        "String": "str",
+        "UChar": "str",
+        "UInt64": "int",
+        "UInt": "int",
+        "UShort": "int",
+        "Token": "str",
+    }
+    # mapping from c++ operators to python special methods
+    OPERATORS = {
+        "__neq__": "operator!=",
+        "__eq__": "operator==",
+        "__lt__": "operator<",
+        "__le__": "operator<=",
+        "__gt__": "operator>",
+        "__ge__": "operator>=",
+        "__bool__": "operator bool",
+        "__getitem__": "operator[]",
+        "__call__": "operator()",
+    }
+    # even though Usd_PrimFlagsPredicate is mentinoned in the docs it is not in the
+    # index, so it is not found by the parser.
+    # FIXME: instead of relying on the docs to popluate the py_types dict, we could
+    #  simply pre-cache the contents of the python modules.
+    MISSING_PY_TYPES = {
+        "_PrimFlagsPredicate": ["pxr.Usd._PrimFlagsPredicate"],
+        "StringListOp": ["pxr.Sdf.StringListOp"],
+        "AssetPathArray": ["pxr.Sdf.AssetPathArray"],
+    }
 
     def __init__(
         self,
@@ -251,11 +234,9 @@ class TypeInfo:
         self.cpp_sigs: dict[str, SigInfo] = {}
         # mapping of short names to full python paths
         self.py_types: defaultdict[str, list[str]] = defaultdict(list)
-        self.srcdir = srcdir
         self._valid_modules = None
         self._implicitly_convertible_types: dict[str, set[str]] | None = None
-        self._typedefs: list[tuple[str, str]] | None = None
-        self.verbose = verbose
+        super().__init__(srcdir=srcdir, verbose=verbose)
 
     # def get_valid_modules(self):
     #     """
@@ -282,40 +263,13 @@ class TypeInfo:
         )
         if m:
             sub_type = m.groups()[0]
-            return ARRAY_TYPES.get(sub_type, f"pxr.Gf.{sub_type}")
+            return cls.ARRAY_TYPES.get(sub_type, f"pxr.Gf.{sub_type}")
         return None
 
     @classmethod
     def is_py_array_type(cls, py_type: str) -> bool:
         """Takes a short or full python path"""
         return bool(cls.py_array_to_sub_type(py_type))
-
-    def _get_typedefs(self) -> list[tuple[str, str]]:
-        if not self.srcdir:
-            return []
-
-        if self._typedefs is None:
-            self._typedefs = []
-            reg = re.compile(r"\btypedef ([^;]+);")
-
-            srcdir = pathlib.Path(self.srcdir)
-            for include_file in self.TYPE_DEF_INCLUDES:
-                include_file = srcdir.joinpath(include_file)
-                print(include_file)
-                text = include_file.read_text().replace("\n", " ")
-                for match in reg.finditer(text):
-                    typedef_str = match.group(1)
-                    type, alias = typedef_str.rsplit(" ", 1)
-                    alias = alias.replace(" ", "")
-                    type = type.strip()
-                    # fixup type.  kinda ugly, but it's easier to do it now before types are
-                    # full expanded
-                    if type.startswith("std::unordered_map<"):
-                        parts = type.split(",")
-                        if len(parts) == 3:
-                            type = ",".join(parts[:-1]) + ">"
-                    self._typedefs.append((alias, type))
-        return self._typedefs
 
     def _get_implicitly_convertible_types(self) -> dict[str, set[str]]:
         """
@@ -325,17 +279,17 @@ class TypeInfo:
         if self.srcdir is None:
             return {}
 
-        def get_type_from_path(path) -> str:
+        def get_type_from_path(path: str) -> str:
             parts = path.split(os.path.sep)
             name = os.path.splitext(parts[-1])[0]
             assert name.startswith("wrap")
-            return type_info.to_python_id(capitalize(parts[-2]) + name[4:])
+            return self.to_python_id(capitalize(parts[-2]) + name[4:])
 
-        def process_parsed_type(cpp_type) -> str:
+        def process_parsed_type(cpp_type: str) -> str:
             if cpp_type == "This":
                 cpp_type = get_type_from_path(path)
             py_type = self.cpp_arg_to_py_type(cpp_type, is_result=True)
-            return type_info.get_full_py_type(py_type) or py_type
+            return self.get_full_py_type(py_type) or py_type
 
         # FIXME: add module prefixes to all types (Output, Input, Parameter, etc are not prefixed)
         # FIXME: parse other conversions defined using TfPyContainerConversions
@@ -352,7 +306,7 @@ class TypeInfo:
             )
             code_reg = re.compile(
                 r"\s+implicitly_convertible<\s*(?P<from>(%s|:)+),\s*(?P<to>(%s|:)+)\s*>\(\)"
-                % (IDENTIFIER, IDENTIFIER)
+                % (self.IDENTIFIER, self.IDENTIFIER)
             )
             result = defaultdict(set)
             for line in output.split("\n"):
@@ -403,60 +357,6 @@ class TypeInfo:
             raise RuntimeError("Could not find implicitly convertible types")
         return self._implicitly_convertible_types
 
-    def cpp_arg_to_py_type(self, cpp_type: str, is_result: bool) -> str:
-        """
-        Convert a c++ type string to a python type string
-
-        Returns the new typestring and whether the type appears to be a return value
-        """
-        typestr = cpp_type
-        is_ptr = "*" in typestr
-
-        def replace_typedefs(typ: str) -> str:
-            for alias, replace in self._get_typedefs():
-                typ = re.sub(rf"\b{alias}\b", replace, typ)
-            return typ
-
-        while True:
-            new_typestr = replace_typedefs(typestr)
-            if new_typestr == typestr:
-                break
-            typestr = new_typestr
-
-        parts = typestr.split()
-
-        # remove extraneous bits
-        parts = [
-            re.sub(STRIP, "", x).replace("*", "").replace("&", "").strip()
-            for x in parts
-        ]
-        parts = [x for x in parts if not should_strip_part(x)]
-        typestr = "".join(parts)
-
-        for pattern, replace in RENAMES:
-            new_typestr = re.sub(pattern, replace, typestr)
-            if new_typestr != typestr:
-                return new_typestr
-
-        for pattern, replace in TYPE_MAP + (
-            RESULT_TYPE_MAP if is_ptr or is_result else ARG_TYPE_MAP
-        ):
-            typestr = re.sub(pattern, replace, typestr)
-
-        # swap container syntax
-        typestr = typestr.replace("<", "[")
-        typestr = typestr.replace(">", "]")
-
-        # convert to python identifers
-        parts = [x for x in re.split(IDENTIFIER, typestr) if x]
-        parts = [(type_info.to_python_id(x) or x) for x in parts]
-
-        typestr = "".join(parts)
-        typestr = typestr.replace(",", ", ")
-        typestr = typestr.replace("::", ".")
-
-        return typestr
-
     def _populate_map(self, docElemPath: list[DocElement]) -> None:
         """
         docElemPath : list of DocElements from the root to the documented item
@@ -489,7 +389,7 @@ class TypeInfo:
             for child in childObjectList:
                 self._populate_map(docElemPath + [child])
 
-    def populate(self):
+    def populate(self) -> None:
         parser = Parser()
         parser.parseDoxygenIndexFile(self.xml_index_file)
         doc_elements = parser.traverse(DummyWriter())
@@ -497,13 +397,13 @@ class TypeInfo:
         for doc_element in doc_elements:
             self._populate_map([doc_element])
 
-        self.py_types.update(MISSING_PY_TYPES)
+        self.py_types.update(self.MISSING_PY_TYPES)
 
         # cache these:
         self._get_implicitly_convertible_types()
 
     @staticmethod
-    def strip_pxr_namespace(cpp_type_name):
+    def strip_pxr_namespace(cpp_type_name: str) -> str:
         if cpp_type_name.startswith("pxr::"):
             cpp_type_name = cpp_type_name[len("pxr::") :]
         return cpp_type_name
@@ -545,8 +445,14 @@ class TypeInfo:
             name = parts[1]
             return f"pxr.{mod}.{name}"
 
-    @staticmethod
-    def py_to_cpp_func_paths(pypath: str) -> list[tuple[str, str]]:
+    def should_strip_part(self, x: str) -> bool:
+        """
+        whether the part looks like a c++ keyword
+        """
+        return x.endswith("_API") or not x
+
+    @classmethod
+    def py_to_cpp_func_paths(cls, pypath: str) -> list[tuple[str, str]]:
         """
         Convert from python object path to cpp object path
         """
@@ -557,7 +463,7 @@ class TypeInfo:
         #   SdfPathFindLongestPrefix
         remainder = parts[2:]
         if len(remainder) == 2:
-            cls, func = remainder
+            typ, func = remainder
             if func[0].islower():
                 # property
                 # TODO: special cases:
@@ -569,15 +475,15 @@ class TypeInfo:
                     func = "Get" + capitalize(func)
                 results = [
                     # cpp->py
-                    ("method->property", f"{module}{cls}::{func}"),
+                    ("method->property", f"{module}{typ}::{func}"),
                 ]
             else:
                 # method
-                func = OPERATORS.get(func, func)
+                func = cls.OPERATORS.get(func, func)
                 results = [
                     # cpp->py
-                    ("method->method", f"{module}{cls}::{func}"),
-                    ("func->staticmethod", f"{module}{cls}{func}"),
+                    ("method->method", f"{module}{typ}::{func}"),
+                    ("func->staticmethod", f"{module}{typ}{func}"),
                 ]
         elif len(remainder) == 1:
             # function
@@ -591,7 +497,7 @@ class TypeInfo:
             results = []
         return results
 
-    def format_cpp_sig(self, doc_elem: DocElement):
+    def format_cpp_sig(self, doc_elem: DocElement) -> str:
         params = ", ".join([f"{p[1]}: {p[0]}" for p in doc_elem.params])
         return f"def {doc_elem.name}({params}) -> {doc_elem.returnType}: ..."
 
