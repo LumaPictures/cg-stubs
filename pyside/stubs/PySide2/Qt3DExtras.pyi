@@ -2,6 +2,7 @@ import PySide2.Qt3DCore
 import PySide2.Qt3DRender
 import PySide2.QtCore
 import PySide2.QtGui
+import _typeshed
 import collections.abc
 import shiboken2
 import typing
@@ -10,16 +11,16 @@ T = typing.TypeVar('T')
 class Qt3DExtras(shiboken2.Object):
     class QAbstractCameraController(PySide2.Qt3DCore.Qt3DCore.QEntity):
         class InputState(shiboken2.Object):
-            altKeyActive: typing.Any
-            leftMouseButtonActive: typing.Any
-            middleMouseButtonActive: typing.Any
-            rightMouseButtonActive: typing.Any
-            rxAxisValue: typing.Any
-            ryAxisValue: typing.Any
-            shiftKeyActive: typing.Any
-            txAxisValue: typing.Any
-            tyAxisValue: typing.Any
-            tzAxisValue: typing.Any
+            altKeyActive: None
+            leftMouseButtonActive: None
+            middleMouseButtonActive: None
+            rightMouseButtonActive: None
+            rxAxisValue: None
+            ryAxisValue: None
+            shiftKeyActive: None
+            txAxisValue: None
+            tyAxisValue: None
+            tzAxisValue: None
             @typing.overload
             def __init__(self, InputState: Qt3DExtras.QAbstractCameraController.InputState) -> None: ...
             @typing.overload

@@ -258,7 +258,7 @@ def main(outdir: str, katana_site_dir: str) -> None:
         "PyOpenColorIO",
     ]
 
-    args = ["-v", "--no-parse", "-o", outdir]
+    args = ["-v", "--inspect-mode", "-o", outdir]
     for module in modules:
         args.append(f"-p={module}")
 

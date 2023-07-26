@@ -1,7 +1,6 @@
 # mypy: disable-error-code="misc, override, no-redef"
 
 import Boost.Python
-from typing import Any
 
 __MFB_FULL_PACKAGE_NAME: str
 
@@ -13,4 +12,4 @@ class GLPlatformDebugContext(Boost.Python.instance):
     def __lt__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     @property
-    def expired(self) -> Any: ...
+    def expired(self): ...

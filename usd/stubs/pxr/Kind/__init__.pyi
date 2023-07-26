@@ -2,7 +2,7 @@
 
 import Boost.Python
 import pxr.Ar
-from typing import Any, ClassVar
+from typing import ClassVar
 
 __MFB_FULL_PACKAGE_NAME: str
 
@@ -21,7 +21,7 @@ class Registry(Boost.Python.instance):
     def __lt__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     @property
-    def expired(self) -> Any: ...
+    def expired(self): ...
 
 class Tokens(Boost.Python.instance):
     assembly: ClassVar[str] = ...  # read-only

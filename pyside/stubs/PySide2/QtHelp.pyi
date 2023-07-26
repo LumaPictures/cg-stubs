@@ -1,6 +1,7 @@
 import PySide2.QtCore
 import PySide2.QtGui
 import PySide2.QtWidgets
+import _typeshed
 import collections.abc
 import shiboken2
 import typing
@@ -198,8 +199,8 @@ class QHelpIndexWidget(PySide2.QtWidgets.QListView):
     def filterIndices(self, filter: str, wildcard: str = ...) -> None: ...
 
 class QHelpLink(shiboken2.Object):
-    title: typing.Any
-    url: typing.Any
+    title: None
+    url: None
     @typing.overload
     def __init__(self, QHelpLink: QHelpLink) -> None: ...
     @typing.overload
@@ -240,7 +241,7 @@ class QHelpSearchQuery(shiboken2.Object):
         PHRASE: typing.ClassVar[QHelpSearchQuery.FieldName] = ...
         WITHOUT: typing.ClassVar[QHelpSearchQuery.FieldName] = ...
         values: typing.ClassVar[dict] = ...
-        name: typing.Any
+        name: None
         @classmethod
         def __init__(cls, *args, **kwargs) -> None: ...
         def __add__(self, other: typing.SupportsInt) -> QHelpSearchQuery.FieldName: ...
@@ -272,8 +273,8 @@ class QHelpSearchQuery(shiboken2.Object):
     FUZZY: typing.ClassVar[QHelpSearchQuery.FieldName] = ...
     PHRASE: typing.ClassVar[QHelpSearchQuery.FieldName] = ...
     WITHOUT: typing.ClassVar[QHelpSearchQuery.FieldName] = ...
-    fieldName: typing.Any
-    wordList: typing.Any
+    fieldName: None
+    wordList: None
     @typing.overload
     def __init__(self, field: QHelpSearchQuery.FieldName, wordList_: typing.Iterable[str]) -> None: ...
     @typing.overload

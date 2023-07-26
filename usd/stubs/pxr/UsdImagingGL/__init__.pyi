@@ -8,6 +8,7 @@ import pxr.Glf
 import pxr.Sdf
 import pxr.Usd
 import typing
+from _typeshed import Incomplete
 from typing import Any, ClassVar, overload
 
 ALL_INSTANCES: int
@@ -20,7 +21,6 @@ class CullStyle(Boost.Python.enum):
     CULL_STYLE_NOTHING: ClassVar[CullStyle] = ...
     names: ClassVar[dict] = ...
     values: ClassVar[dict] = ...
-    __slots__: ClassVar[tuple] = ...
 
 class DrawMode(Boost.Python.enum):
     DRAW_GEOM_FLAT: ClassVar[DrawMode] = ...
@@ -33,7 +33,6 @@ class DrawMode(Boost.Python.enum):
     DRAW_WIREFRAME_ON_SURFACE: ClassVar[DrawMode] = ...
     names: ClassVar[dict] = ...
     values: ClassVar[dict] = ...
-    __slots__: ClassVar[tuple] = ...
 
 class Engine(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
@@ -82,64 +81,64 @@ class Engine(Boost.Python.instance):
 
 class RenderParams(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    applyRenderState: Any
-    bboxLineColor: Any
-    bboxLineDashSize: Any
-    bboxes: Any
-    clearColor: Any
-    clipPlanes: Any
-    colorCorrectionMode: Any
-    complexity: Any
-    cullStyle: Any
-    drawMode: Any
-    enableIdRender: Any
-    enableLighting: Any
-    enableSampleAlphaToCoverage: Any
-    enableSceneLights: Any
-    enableSceneMaterials: Any
-    enableUsdDrawModes: Any
-    forceRefresh: Any
-    frame: Any
-    gammaCorrectColors: Any
-    highlight: Any
-    ocioColorSpace: Any
-    ocioDisplay: Any
-    ocioLook: Any
-    ocioView: Any
-    overrideColor: Any
-    showGuides: Any
-    showProxy: Any
-    showRender: Any
-    wireframeColor: Any
+    applyRenderState: Incomplete
+    bboxLineColor: Incomplete
+    bboxLineDashSize: Incomplete
+    bboxes: Incomplete
+    clearColor: Incomplete
+    clipPlanes: Incomplete
+    colorCorrectionMode: Incomplete
+    complexity: Incomplete
+    cullStyle: Incomplete
+    drawMode: Incomplete
+    enableIdRender: Incomplete
+    enableLighting: Incomplete
+    enableSampleAlphaToCoverage: Incomplete
+    enableSceneLights: Incomplete
+    enableSceneMaterials: Incomplete
+    enableUsdDrawModes: Incomplete
+    forceRefresh: Incomplete
+    frame: Incomplete
+    gammaCorrectColors: Incomplete
+    highlight: Incomplete
+    ocioColorSpace: Incomplete
+    ocioDisplay: Incomplete
+    ocioLook: Incomplete
+    ocioView: Incomplete
+    overrideColor: Incomplete
+    showGuides: Incomplete
+    showProxy: Incomplete
+    showRender: Incomplete
+    wireframeColor: Incomplete
     def __init__(self) -> None: ...
 
 class RendererCommandArgDescriptor(Boost.Python.instance):
     def __init__(self, *args, **kwargs) -> None: ...
     @property
-    def argName(self) -> Any: ...
+    def argName(self): ...
     @property
-    def defaultValue(self) -> Any: ...
+    def defaultValue(self): ...
 
 class RendererCommandDescriptor(Boost.Python.instance):
     def __init__(self, *args, **kwargs) -> None: ...
     @property
-    def commandArgs(self) -> Any: ...
+    def commandArgs(self): ...
     @property
-    def commandDescription(self) -> Any: ...
+    def commandDescription(self): ...
     @property
-    def commandName(self) -> Any: ...
+    def commandName(self): ...
 
 class RendererSetting(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
     def __init__(self) -> None: ...
     @property
-    def defValue(self) -> Any: ...
+    def defValue(self): ...
     @property
-    def key(self) -> Any: ...
+    def key(self): ...
     @property
-    def name(self) -> Any: ...
+    def name(self): ...
     @property
-    def type(self) -> Any: ...
+    def type(self): ...
 
 class RendererSettingType(Boost.Python.enum):
     FLAG: ClassVar[RendererSettingType] = ...
@@ -148,4 +147,3 @@ class RendererSettingType(Boost.Python.enum):
     STRING: ClassVar[RendererSettingType] = ...
     names: ClassVar[dict] = ...
     values: ClassVar[dict] = ...
-    __slots__: ClassVar[tuple] = ...

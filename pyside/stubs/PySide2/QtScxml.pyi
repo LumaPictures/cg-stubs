@@ -1,4 +1,5 @@
 import PySide2.QtCore
+import _typeshed
 import collections.abc
 import shiboken2
 import typing
@@ -94,7 +95,7 @@ class QScxmlEvent(shiboken2.Object):
         InternalEvent: typing.ClassVar[QScxmlEvent.EventType] = ...
         PlatformEvent: typing.ClassVar[QScxmlEvent.EventType] = ...
         values: typing.ClassVar[dict] = ...
-        name: typing.Any
+        name: None
         @classmethod
         def __init__(cls, *args, **kwargs) -> None: ...
         def __add__(self, other: typing.SupportsInt) -> QScxmlEvent.EventType: ...
@@ -151,9 +152,9 @@ class QScxmlEvent(shiboken2.Object):
 
 class QScxmlExecutableContent(shiboken2.Object):
     class AssignmentInfo(shiboken2.Object):
-        context: typing.Any
-        dest: typing.Any
-        expr: typing.Any
+        context: None
+        dest: None
+        expr: None
         @typing.overload
         def __init__(self, AssignmentInfo: QScxmlExecutableContent.AssignmentInfo) -> None: ...
         @typing.overload
@@ -161,8 +162,8 @@ class QScxmlExecutableContent(shiboken2.Object):
         def __copy__(self) -> None: ...
 
     class EvaluatorInfo(shiboken2.Object):
-        context: typing.Any
-        expr: typing.Any
+        context: None
+        expr: None
         @typing.overload
         def __init__(self, EvaluatorInfo: QScxmlExecutableContent.EvaluatorInfo) -> None: ...
         @typing.overload
@@ -170,10 +171,10 @@ class QScxmlExecutableContent(shiboken2.Object):
         def __copy__(self) -> None: ...
 
     class ForeachInfo(shiboken2.Object):
-        array: typing.Any
-        context: typing.Any
-        index: typing.Any
-        item: typing.Any
+        array: None
+        context: None
+        index: None
+        item: None
         @typing.overload
         def __init__(self, ForeachInfo: QScxmlExecutableContent.ForeachInfo) -> None: ...
         @typing.overload
@@ -181,13 +182,13 @@ class QScxmlExecutableContent(shiboken2.Object):
         def __copy__(self) -> None: ...
 
     class InvokeInfo(shiboken2.Object):
-        autoforward: typing.Any
-        context: typing.Any
-        expr: typing.Any
-        finalize: typing.Any
-        id: typing.Any
-        location: typing.Any
-        prefix: typing.Any
+        autoforward: None
+        context: None
+        expr: None
+        finalize: None
+        id: None
+        location: None
+        prefix: None
         @typing.overload
         def __init__(self, InvokeInfo: QScxmlExecutableContent.InvokeInfo) -> None: ...
         @typing.overload
@@ -195,9 +196,9 @@ class QScxmlExecutableContent(shiboken2.Object):
         def __copy__(self) -> None: ...
 
     class ParameterInfo(shiboken2.Object):
-        expr: typing.Any
-        location: typing.Any
-        name: typing.Any
+        expr: None
+        location: None
+        name: None
         @typing.overload
         def __init__(self, ParameterInfo: QScxmlExecutableContent.ParameterInfo) -> None: ...
         @typing.overload

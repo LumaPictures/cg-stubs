@@ -23,7 +23,11 @@ pip install types-usd types-houdini types-katana types-mari types-nuke types-ope
 
 ## Generating the stubs
 
-(replace ocio with the package to generate)
+(replace ocio with your desired package to generate)
+
+First, look at `ocio/stubgen_ocio.sh` to see if there are any env vars to set in the `# Custom variables` section.
+
+Next, build it:
 
 ```
 python3 -m venv .venv

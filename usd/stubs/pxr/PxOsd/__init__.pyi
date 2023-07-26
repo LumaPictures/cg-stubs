@@ -5,6 +5,7 @@ import pxr.Ar
 import pxr.Tf
 import pxr.Vt
 import typing
+from _typeshed import Incomplete
 from typing import Any, ClassVar, overload
 
 __MFB_FULL_PACKAGE_NAME: str
@@ -60,8 +61,8 @@ class MeshTopologyValidation(Boost.Python.instance):
         def GetValueFromName(self, name: object) -> Any: ...
 
     class Invalidation(Boost.Python.instance):
-        code: Any
-        message: Any
+        code: Incomplete
+        message: Incomplete
         def __init__(self, arg2: object) -> None: ...
     __instance_size__: ClassVar[int] = ...
     def __init__(self) -> None: ...

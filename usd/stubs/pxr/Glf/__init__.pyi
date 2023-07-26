@@ -3,7 +3,8 @@
 import Boost.Python
 import pxr.Ar
 import pxr.Gf
-from typing import Any, ClassVar, overload
+from _typeshed import Incomplete
+from typing import ClassVar, overload
 
 __MFB_FULL_PACKAGE_NAME: str
 
@@ -21,7 +22,7 @@ class DrawTarget(Boost.Python.instance):
     def __lt__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     @property
-    def expired(self) -> Any: ...
+    def expired(self): ...
 
 class GLQueryObject(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
@@ -39,8 +40,8 @@ class SimpleLight(Boost.Python.instance):
     ambient: pxr.Gf.Vec4f
     attenuation: pxr.Gf.Vec3f
     diffuse: pxr.Gf.Vec4f
-    hasShadow: Any
-    id: Any
+    hasShadow: Incomplete
+    id: Incomplete
     isCameraSpaceLight: bool
     isDomeLight: bool
     position: pxr.Gf.Vec4f
@@ -72,10 +73,10 @@ class Texture(Boost.Python.instance):
     @classmethod
     def GetTextureMemoryAllocated(cls) -> int: ...
     @property
-    def magFilterSupported(self) -> Any: ...
+    def magFilterSupported(self): ...
     @property
     def memoryUsed(self) -> int: ...
     @property
-    def minFilterSupported(self) -> Any: ...
+    def minFilterSupported(self): ...
 
 def RegisterDefaultDebugOutputMessageCallback() -> None: ...

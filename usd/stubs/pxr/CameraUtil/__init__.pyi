@@ -3,6 +3,7 @@
 import Boost.Python
 import pxr.Gf
 import pxr.Tf
+from _typeshed import Incomplete
 from typing import Any, ClassVar, overload
 
 Crop: ConformWindowPolicy
@@ -20,9 +21,9 @@ class ConformWindowPolicy(pxr.Tf.Tf_PyEnumWrapper):
 
 class Framing(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    dataWindow: Any
-    displayWindow: Any
-    pixelAspectRatio: Any
+    dataWindow: Incomplete
+    displayWindow: Incomplete
+    pixelAspectRatio: Incomplete
     @overload
     def __init__(self, displayWindow: pxr.Gf.Range2f | list[float] | tuple[float, float], dataWindow: pxr.Gf.Rect2i, pixelAspectRatio: float = ...) -> None: ...
     @overload

@@ -7,6 +7,7 @@ import pxr.Tf
 import pxr.Usd
 import pxr.UsdGeom
 import typing
+from _typeshed import Incomplete
 from typing import Any, ClassVar, overload
 
 __MFB_FULL_PACKAGE_NAME: str
@@ -407,11 +408,11 @@ class RevoluteJoint(Joint):
 class RigidBodyAPI(pxr.Usd.APISchemaBase):
     class MassInformation(Boost.Python.instance):
         __instance_size__: ClassVar[int] = ...
-        centerOfMass: Any
-        inertia: Any
-        localPos: Any
-        localRot: Any
-        volume: Any
+        centerOfMass: Incomplete
+        inertia: Incomplete
+        localPos: Incomplete
+        localRot: Incomplete
+        volume: Incomplete
         def __init__(self) -> None: ...
     __instance_size__: ClassVar[int] = ...
     @overload
@@ -591,7 +592,7 @@ class _CanApplyResult(Boost.Python.instance):
     def __iter__(self) -> typing.Iterator[Any]: ...
     def __ne__(self, other: object) -> bool: ...
     @property
-    def whyNot(self) -> Any: ...
+    def whyNot(self): ...
 
 def GetStageKilogramsPerUnit(stage: pxr.Usd.Stage) -> float: ...
 def MassUnitsAre(authoredUnits: float, standardUnits: float, epsilon: float = ...) -> bool: ...

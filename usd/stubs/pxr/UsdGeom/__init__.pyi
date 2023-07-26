@@ -9,6 +9,7 @@ import pxr.Usd
 import pxr.UsdShade
 import pxr.Vt
 import typing
+from _typeshed import Incomplete
 from typing import Any, ClassVar, overload
 
 __MFB_FULL_PACKAGE_NAME: str
@@ -353,8 +354,8 @@ class HermiteCurves(Curves):
 class Imageable(pxr.Usd.Typed):
     class PurposeInfo(Boost.Python.instance):
         __instance_size__: ClassVar[int] = ...
-        isInheritable: Any
-        purpose: Any
+        isInheritable: Incomplete
+        purpose: Incomplete
         @overload
         def __init__(self, arg2: object, arg3: bool) -> None: ...
         @overload
@@ -1408,7 +1409,7 @@ class _CanApplyResult(Boost.Python.instance):
     def __iter__(self) -> typing.Iterator[Any]: ...
     def __ne__(self, other: object) -> bool: ...
     @property
-    def whyNot(self) -> Any: ...
+    def whyNot(self): ...
 
 def GetFallbackUpAxis() -> str: ...
 def GetStageMetersPerUnit(stage: pxr.Usd.Stage) -> float: ...

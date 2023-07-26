@@ -221,39 +221,6 @@ def short_name(type_name: str) -> str:
     return type_name.split(".")[-1]
 
 
-@total_ordering
-class OptionalKey:
-    """
-    Util to simplify optional hierarchical keys.
-
-    Allows this to be true:
-        OptionalKey('foo') == OptionalKey(None)
-    """
-
-    def __init__(self, s: Hashable) -> None:
-        self.s = s
-
-    def __repr__(self) -> str:
-        return "OptionalKey({})".format(repr(self.s))
-
-    def __hash__(self) -> int:
-        # Use the same hash as None, so that we get a chance to run __eq__ when
-        # compared to None as a dictionary key
-        return hash(None)
-
-    def __eq__(self, other: object) -> bool:
-        if isinstance(other, OptionalKey):
-            other = other.s
-        if self.s is None or other is None:
-            return True
-        return other == self.s
-
-    def __lt__(self, other: object) -> bool:
-        if isinstance(other, OptionalKey):
-            other = other.s
-        return other < self.s
-
-
 # constant for clarity
 ANY = None
 

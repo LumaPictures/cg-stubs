@@ -963,6 +963,7 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         self.module_name, self.is_c_module = remove_redundant_submodule(
             self.module_name
         )
+        self.resort_members = True
 
     def is_skipped_attribute(self, attr: str) -> bool:
         # skip the Mari object because it causes self.strip_or_import("mari.API") -> "Mari.API"
@@ -1035,21 +1036,22 @@ def test():
 def main(outdir: str) -> None:
     import pprint
 
-    pprint.pprint(type_info._get_typedefs())
+    # pprint.pprint(type_info._get_typedefs())
     # raise RuntimeError
 
     type_info.populate()
-    notifier.set_modules(["pxr.Tf"])
 
-    # raise ValueError(type_info.py_types["PathArray"], type_info.get_full_py_type("PathArray", "pxr.UsdGeom"))
-    # raise ValueError(type_info.py_types["VersionPolicy"], type_info.get_full_py_type("VersionPolicy", "pxr.Usd"))
-    # raise ValueError(type_info.py_types["Matrix3dArray"], type_info.get_full_py_type("Matrix3dArray", "pxr.Usd"))
-    # raise ValueError(type_info.py_types["Type"], type_info.get_full_py_type("Type", "pxr.Usd"))
+    # Change this to only see errors for particular modules:
+    # notifier.set_modules(["pxr.Tf"])
 
-    stubgen_main(["-p", "pxr", "--verbose", "--no-parse", f"-o={outdir}"])
+    stubgen_main(
+        [
+            "-p",
+            "pxr",
+            "--verbose",
+            "--inspect-mode",
+            "--include-private",
+            f"-o={outdir}",
+        ]
+    )
     notifier.print_summary()
-
-
-# real    2m10.416s
-# user    4m9.176s
-# sys     0m13.360s
