@@ -1,6 +1,8 @@
+import _typeshed
 import collections.abc
 import typing
 T = typing.TypeVar('T')
+import typing_extensions
 
 __version__: str
 __version_info__: tuple
@@ -28,5 +30,4 @@ def isValid(*args, **kwargs): ...
 def ownedByPython(*args, **kwargs): ...
 def wrapInstance(*args, **kwargs): ...
 
-class Object:
-    pass
+class Object: ...

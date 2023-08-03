@@ -156,7 +156,7 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
 
     def get_members(self, obj: object) -> list[tuple[str, Any]]:
         # Note that there is a mix of fixes here for C and non-C modules, but
-        # I'm not separating them because it's easy to get mixed uppp
+        # I'm not separating them because it's easy to get mixed up
         members = dict(super().get_members(obj))
 
         if self.is_c_module:

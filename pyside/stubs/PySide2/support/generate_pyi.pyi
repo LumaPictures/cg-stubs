@@ -1,5 +1,5 @@
 from _typeshed import Incomplete
-from collections.abc import Generator
+from typing import Generator
 
 sourcepath: Incomplete
 USE_PEP563: Incomplete

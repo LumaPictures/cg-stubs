@@ -6,6 +6,7 @@ import collections.abc
 import shiboken2
 import typing
 T = typing.TypeVar('T')
+import typing_extensions
 
 class QCompressedHelpInfo(shiboken2.Object):
     @typing.overload
@@ -199,8 +200,8 @@ class QHelpIndexWidget(PySide2.QtWidgets.QListView):
     def filterIndices(self, filter: str, wildcard: str = ...) -> None: ...
 
 class QHelpLink(shiboken2.Object):
-    title: None
-    url: None
+    title: _typeshed.Incomplete
+    url: _typeshed.Incomplete
     @typing.overload
     def __init__(self, QHelpLink: QHelpLink) -> None: ...
     @typing.overload
@@ -241,7 +242,7 @@ class QHelpSearchQuery(shiboken2.Object):
         PHRASE: typing.ClassVar[QHelpSearchQuery.FieldName] = ...
         WITHOUT: typing.ClassVar[QHelpSearchQuery.FieldName] = ...
         values: typing.ClassVar[dict] = ...
-        name: None
+        name: _typeshed.Incomplete
         @classmethod
         def __init__(cls, *args, **kwargs) -> None: ...
         def __add__(self, other: typing.SupportsInt) -> QHelpSearchQuery.FieldName: ...
@@ -273,8 +274,8 @@ class QHelpSearchQuery(shiboken2.Object):
     FUZZY: typing.ClassVar[QHelpSearchQuery.FieldName] = ...
     PHRASE: typing.ClassVar[QHelpSearchQuery.FieldName] = ...
     WITHOUT: typing.ClassVar[QHelpSearchQuery.FieldName] = ...
-    fieldName: None
-    wordList: None
+    fieldName: _typeshed.Incomplete
+    wordList: _typeshed.Incomplete
     @typing.overload
     def __init__(self, field: QHelpSearchQuery.FieldName, wordList_: typing.Iterable[str]) -> None: ...
     @typing.overload

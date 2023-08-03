@@ -758,18 +758,19 @@ Optionality = NamedTuple("Optionality", [("accepts_none", bool), ("has_default",
 
 
 class AdvancedSignatureGenerator(SignatureGenerator):
-    docstring = CDocstringSignatureGenerator()
-
     # Full signature replacements.
     #   name_pattern: sig_str
+    #   e.g. "*.VolatileBool.set": "(self, a: object) -> None"
     signature_overrides: dict[str, str | list[str]] = {}
 
     # Override argument types
     #   (name_pattern, arg, type): arg_type
+    #   e.g. ("*", "flags", "int"): "typing.SupportsInt"
     arg_type_overrides: dict[tuple[str, str | None, str | None], str] = {}
 
     # Types that have implicit alternatives.
     #   type_str: list of types that can be used instead
+    #   e.g. "PySide2.QtGui.QKeySequence": ["str"],
     implicit_arg_types: dict[str, list[str]] = {}
 
     # Args which should be made Optional[].
@@ -777,9 +778,12 @@ class AdvancedSignatureGenerator(SignatureGenerator):
     optional_args: dict[tuple[str, str | None, str | None], Optionality] = {}
 
     # Add new overloads to existing functions.
+    #   name_pattern: list of sig_str
+    #   e.g. "*.VolatileBool.set": ["(self, a: object) -> None"]
     new_overloads: dict[str, list[str]] = {}
 
-    def __init__(self) -> None:
+    def __init__(self, fallback_sig_gen=CDocstringSignatureGenerator()) -> None:
+        self.docstring = fallback_sig_gen
         # insert OptionalKeys
         self.arg_type_overrides = self.arg_type_overrides.copy()
         self.arg_type_overrides.update(

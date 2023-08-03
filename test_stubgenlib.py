@@ -34,7 +34,7 @@ from mypy.stubdoc import FunctionSig, ArgSig
 #     assert stubgenlib.BoostDocstringSignatureGenerator.standardize_docstring(docstr) == expected
 
 
-def test_boost_docstring():
+def test_boost_docstring_overloads():
     docstr = """
 __init__( (object)arg1) -> None
 
@@ -73,4 +73,26 @@ __init__( (object)arg1 [, (Matrix4d)transform=Gf.Matrix4d(1.0, 0.0, 0.0, 0.0, 0.
             ],
             ret_type='None',
         ),
+    ]
+
+
+def test_boost_docstring_existing_description():
+    docstr = """
+Find( (object)identifier [, (dict)args={}]) -> Layer :
+    Find(filename) -> LayerPtr
+    
+    filename : string
+    
+    Returns the open layer with the given filename, or None.  Note that this is a static class method.
+"""
+    result = stubgenlib.infer_sig_from_boost_docstring(docstr, "Find")
+    assert result == [
+        FunctionSig(
+            name='Find',
+            args=[
+                ArgSig(name='identifier', type='object', default=False),
+                ArgSig(name='args', type='dict', default=True),
+            ],
+            ret_type='Layer',
+        )
     ]

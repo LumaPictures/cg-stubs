@@ -1,7 +1,9 @@
 import PySide2.QtCore
+import _typeshed
 import collections.abc
 import typing
 T = typing.TypeVar('T')
+import typing_extensions
 
 class QWebChannel(PySide2.QtCore.QObject):
     blockUpdatesChanged: typing.ClassVar[PySide2.QtCore.Signal] = ...

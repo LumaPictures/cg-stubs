@@ -277,6 +277,9 @@ class TypeInfo(CppTypeConverter):
         convertible types
         """
         if self.srcdir is None:
+            raise RuntimeError(
+                "Skipping implicitly convertible types: No source dir provided"
+            )
             return {}
 
         def get_type_from_path(path: str) -> str:

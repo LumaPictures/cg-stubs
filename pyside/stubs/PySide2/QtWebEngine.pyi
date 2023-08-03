@@ -1,7 +1,9 @@
+import _typeshed
 import collections.abc
 import shiboken2
 import typing
 T = typing.TypeVar('T')
+import typing_extensions
 
 class QtWebEngine(shiboken2.Object):
     @classmethod

@@ -1,9 +1,11 @@
 import PySide2.QtCore
 import PySide2.QtGui
 import PySide2.QtWidgets
+import _typeshed
 import collections.abc
 import typing
 T = typing.TypeVar('T')
+import typing_extensions
 
 class QGraphicsSvgItem(PySide2.QtWidgets.QGraphicsObject):
     staticMetaObject: typing.ClassVar[PySide2.QtCore.QMetaObject] = ...

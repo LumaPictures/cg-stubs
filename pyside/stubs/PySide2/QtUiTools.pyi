@@ -1,8 +1,10 @@
 import PySide2.QtCore
 import PySide2.QtWidgets
+import _typeshed
 import collections.abc
 import typing
 T = typing.TypeVar('T')
+import typing_extensions
 
 class QUiLoader(PySide2.QtCore.QObject):
     staticMetaObject: typing.ClassVar[PySide2.QtCore.QMetaObject] = ...

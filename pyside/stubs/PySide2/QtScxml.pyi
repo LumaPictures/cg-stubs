@@ -4,6 +4,7 @@ import collections.abc
 import shiboken2
 import typing
 T = typing.TypeVar('T')
+import typing_extensions
 
 class QScxmlCompiler(shiboken2.Object):
     class Loader(shiboken2.Object):
@@ -95,7 +96,7 @@ class QScxmlEvent(shiboken2.Object):
         InternalEvent: typing.ClassVar[QScxmlEvent.EventType] = ...
         PlatformEvent: typing.ClassVar[QScxmlEvent.EventType] = ...
         values: typing.ClassVar[dict] = ...
-        name: None
+        name: _typeshed.Incomplete
         @classmethod
         def __init__(cls, *args, **kwargs) -> None: ...
         def __add__(self, other: typing.SupportsInt) -> QScxmlEvent.EventType: ...
@@ -152,9 +153,9 @@ class QScxmlEvent(shiboken2.Object):
 
 class QScxmlExecutableContent(shiboken2.Object):
     class AssignmentInfo(shiboken2.Object):
-        context: None
-        dest: None
-        expr: None
+        context: _typeshed.Incomplete
+        dest: _typeshed.Incomplete
+        expr: _typeshed.Incomplete
         @typing.overload
         def __init__(self, AssignmentInfo: QScxmlExecutableContent.AssignmentInfo) -> None: ...
         @typing.overload
@@ -162,8 +163,8 @@ class QScxmlExecutableContent(shiboken2.Object):
         def __copy__(self) -> None: ...
 
     class EvaluatorInfo(shiboken2.Object):
-        context: None
-        expr: None
+        context: _typeshed.Incomplete
+        expr: _typeshed.Incomplete
         @typing.overload
         def __init__(self, EvaluatorInfo: QScxmlExecutableContent.EvaluatorInfo) -> None: ...
         @typing.overload
@@ -171,10 +172,10 @@ class QScxmlExecutableContent(shiboken2.Object):
         def __copy__(self) -> None: ...
 
     class ForeachInfo(shiboken2.Object):
-        array: None
-        context: None
-        index: None
-        item: None
+        array: _typeshed.Incomplete
+        context: _typeshed.Incomplete
+        index: _typeshed.Incomplete
+        item: _typeshed.Incomplete
         @typing.overload
         def __init__(self, ForeachInfo: QScxmlExecutableContent.ForeachInfo) -> None: ...
         @typing.overload
@@ -182,13 +183,13 @@ class QScxmlExecutableContent(shiboken2.Object):
         def __copy__(self) -> None: ...
 
     class InvokeInfo(shiboken2.Object):
-        autoforward: None
-        context: None
-        expr: None
-        finalize: None
-        id: None
-        location: None
-        prefix: None
+        autoforward: _typeshed.Incomplete
+        context: _typeshed.Incomplete
+        expr: _typeshed.Incomplete
+        finalize: _typeshed.Incomplete
+        id: _typeshed.Incomplete
+        location: _typeshed.Incomplete
+        prefix: _typeshed.Incomplete
         @typing.overload
         def __init__(self, InvokeInfo: QScxmlExecutableContent.InvokeInfo) -> None: ...
         @typing.overload
@@ -196,9 +197,9 @@ class QScxmlExecutableContent(shiboken2.Object):
         def __copy__(self) -> None: ...
 
     class ParameterInfo(shiboken2.Object):
-        expr: None
-        location: None
-        name: None
+        expr: _typeshed.Incomplete
+        location: _typeshed.Incomplete
+        name: _typeshed.Incomplete
         @typing.overload
         def __init__(self, ParameterInfo: QScxmlExecutableContent.ParameterInfo) -> None: ...
         @typing.overload

@@ -1,7 +1,9 @@
 import PySide2.QtGui
+import _typeshed
 import collections.abc
 import typing
 T = typing.TypeVar('T')
+import typing_extensions
 
 class QOpenGLFunctions_1_0(PySide2.QtGui.QAbstractOpenGLFunctions):
     def __init__(self) -> None: ...

@@ -7,20 +7,21 @@ import collections.abc
 import shiboken2
 import typing
 T = typing.TypeVar('T')
+import typing_extensions
 
 class Qt3DExtras(shiboken2.Object):
     class QAbstractCameraController(PySide2.Qt3DCore.Qt3DCore.QEntity):
         class InputState(shiboken2.Object):
-            altKeyActive: None
-            leftMouseButtonActive: None
-            middleMouseButtonActive: None
-            rightMouseButtonActive: None
-            rxAxisValue: None
-            ryAxisValue: None
-            shiftKeyActive: None
-            txAxisValue: None
-            tyAxisValue: None
-            tzAxisValue: None
+            altKeyActive: _typeshed.Incomplete
+            leftMouseButtonActive: _typeshed.Incomplete
+            middleMouseButtonActive: _typeshed.Incomplete
+            rightMouseButtonActive: _typeshed.Incomplete
+            rxAxisValue: _typeshed.Incomplete
+            ryAxisValue: _typeshed.Incomplete
+            shiftKeyActive: _typeshed.Incomplete
+            txAxisValue: _typeshed.Incomplete
+            tyAxisValue: _typeshed.Incomplete
+            tzAxisValue: _typeshed.Incomplete
             @typing.overload
             def __init__(self, InputState: Qt3DExtras.QAbstractCameraController.InputState) -> None: ...
             @typing.overload

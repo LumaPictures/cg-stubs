@@ -1,9 +1,11 @@
 import PySide2.Qt3DCore
 import PySide2.QtCore
+import _typeshed
 import collections.abc
 import shiboken2
 import typing
 T = typing.TypeVar('T')
+import typing_extensions
 
 class Qt3DLogic(shiboken2.Object):
     class QFrameAction(PySide2.Qt3DCore.Qt3DCore.QComponent):
