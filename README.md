@@ -5,9 +5,9 @@
 Supported libraries and applications.
 
 - [USD](https://pypi.org/project/types-usd/)
-- houdini
-- katana
-- mari
+- [houdini](https://pypi.org/project/types-houdini/)
+- [katana](https://pypi.org/project/types-katana/)
+- [mari](https://pypi.org/project/types-mari/)
 - [nuke](https://pypi.org/project/types-nuke/)
 - [opencolorio](https://pypi.org/project/types-opencolorio/)
 - [PySide2](https://pypi.org/project/types-PySide2/)
