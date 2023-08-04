@@ -27,7 +27,7 @@ pip install types-usd types-houdini types-katana types-mari types-nuke types-ope
 
 First, look at `ocio/stubgen_ocio.sh` to see if there are any env vars to set in the `# Custom variables` section.
 
-Next, build it:
+Next, build it.  Requires python 3.7+:
 
 ```
 python3 -m venv .venv
@@ -35,6 +35,19 @@ python3 -m venv .venv
 pip install nox
 nox -s 'generate(ocio)'
 ```
+
+If this fails, here's a paranoid/foolproof approach:
+
+```
+# setup your env, e.g. setpkg python-3.7
+unset PYTHONPATH
+python3 -m venv .venv37
+. .venv37/bin/activate
+python3 -m pip install nox
+rm -rf .nox
+python3 -m nox -s 'generate(ocio)'
+```
+
 
 ## Developing
 

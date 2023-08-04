@@ -8,7 +8,7 @@ version = "2023.8.3.0.0"
 
 readme = "README.md"
 authors = ["Chad Dombrova"]
-description = "Unofficial python stubs for Foundry Nuuke"
+description = "Unofficial python stubs for Adobe Substance 3D Painter"
 license = "MIT"
 
 classifiers = [

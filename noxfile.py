@@ -32,7 +32,7 @@ def make_packages(path: pathlib.Path = pathlib.Path(".")) -> None:
             if not pkgdir.exists():
                 pkgdir.mkdir()
             child.rename(pkgdir / "__init__.pyi")
-        elif child.is_dir():
+        elif child.is_dir() and list(child.iterdir()):
             marker = child / "py.typed"
             marker.touch()
 
@@ -104,14 +104,17 @@ def publish(session: nox.Session, lib: str) -> None:
 @nox.session(reuse_venv=True)
 @nox.parametrize('lib', PARAMS)
 def generate(session: nox.Session, lib: str) -> None:
-    session.install("-r", "requirements.txt")
+    args = ("-r", "requirements.txt")
 
     if lib == "pyside":
-        session.install("PySide2==5.15.2.1")
+        args += ("PySide2==5.15.2.1",)
     elif lib == "ocio":
-        session.install("opencolorio==2.2.1")
+        args += ("opencolorio==2.2.1",)
     elif lib == "usd":
-        session.install("PySide6==6.5.1.1")
+        args += ("PySide6==6.5.1.1",)
+
+    session.env.pop('PYTHONPATH', None)
+    session.install(*args)
 
     session.chdir(lib)
     session.run(f"./stubgen_{lib}.sh", external=True)
