@@ -74,7 +74,11 @@ class KatanaDocstringTypeFixer(DocstringTypeFixer):
 
 
 class KatanaSignatureGenerator(KatanaDocstringTypeFixer, FixableDocstringSigGen):
-    pass
+    # FIXME: implement?
+    def get_property_type(
+        self, default_type: str | None, ctx: FunctionContext
+    ) -> str | None:
+        return None
 
 
 class KatanaCSignatureGenerator(KatanaDocstringTypeFixer, FixableCDocstringSigGen):
@@ -121,7 +125,7 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
     def set_defined_names(self, defined_names: set[str]) -> None:
         super().set_defined_names(defined_names)
         for typ in ["Tuple", "Set"]:
-            self.add_typing_import(typ, require=True)
+            self.add_name(f"typing.{typ}", require=True)
 
     def strip_or_import(self, type_name: str) -> str:
         if not self.is_c_module and re.match("^[A-Za-z0-9_.]+$", type_name):
@@ -141,7 +145,7 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
 
     def get_imports(self) -> str:
         if self.module_name == "PyFnAttribute":
-            self.add_typing_import("TypeVar")
+            self.add_name("typing.TypeVar")
             type_vars = 'T = TypeVar("T")\n'
         else:
             type_vars = ""
@@ -225,7 +229,7 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         if obj.__name__ in self.DATA_ATTRS or obj.__name__ == "ConstVector":
             sub_type = self.DATA_ATTRS.get(obj.__name__, "T")
             if obj.__name__ in ["DataAttribute", "ConstVector"]:
-                self.add_typing_import("Generic")
+                self.add_name("typing.Generic")
                 return bases + [f"Generic[{sub_type}]"]
             else:
                 base = bases[0]

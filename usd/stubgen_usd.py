@@ -29,7 +29,8 @@ mypy.stubutil.NOT_IMPORTABLE_MODULES = (
     "pxr.Tf.testenv.testTfScriptModuleLoader_AAA_RaisesError",
 )
 
-from doxygenlib.cdParser import Parser  # type: ignore[import]
+from doxygenlib.cdParser import Parser, XMLNode  # type: ignore[import]
+from doxygenlib.cdDocElement import DocElement  # type: ignore[import]
 from doxygenlib.cdUtils import SetDebugMode  # type: ignore[import]
 
 from stubgenlib import (
@@ -41,7 +42,6 @@ from stubgenlib import (
     reduce_overloads,
     sig_sort_key,
 )
-
 
 SetDebugMode(False)
 
@@ -934,7 +934,9 @@ class UsdBoostDocstringSignatureGenerator(
 
         return self._processs_sigs(sigs, ctx)
 
-    def get_property_type(self, default_type: str, ctx: FunctionContext) -> str | None:
+    def get_property_type(
+        self, default_type: str | None, ctx: FunctionContext
+    ) -> str | None:
         sigs = [FunctionSig(ctx.name, [], None)]
         sigs = self._processs_sigs(sigs, ctx)
         ret_type = sigs[0].ret_type

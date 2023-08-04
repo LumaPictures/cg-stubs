@@ -25,7 +25,7 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
     def set_defined_names(self, defined_names: set[str]) -> None:
         super().set_defined_names(defined_names)
         for typ in ["Iterable", "Iterator", "Callable"]:
-            self.add_typing_import(typ, require=False)
+            self.add_name(f"typing.{typ}", require=False)
 
     def get_members(self, obj: object) -> list[tuple[str, Any]]:
         return [

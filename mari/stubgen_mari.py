@@ -23,6 +23,12 @@ mari.__path__ = []
 
 
 class MariDocstringSignatureGenerator(DocstringTypeFixer, FixableDocstringSigGen):
+    # FIXME: implement?
+    def get_property_type(
+        self, default_type: str | None, ctx: FunctionContext
+    ) -> str | None:
+        return None
+
     def prepare_docstring(self, docstr: str) -> str:
         # remove :obj: from docstring because it breaks the parser
         return re.sub(r":(?:[a-z_]+):", "", docstr).replace("`", "")
@@ -147,7 +153,7 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
 
     def get_members(self, obj: object) -> list[tuple[str, Any]]:
         members = super().get_members(obj)
-        if obj.__name__ == "ResourceInfo":
+        if getattr(obj, '__name__', None) == "ResourceInfo":
             return members + [("ICONS", "")]
         else:
             return members

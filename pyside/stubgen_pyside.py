@@ -425,6 +425,12 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
         ],
     }
 
+    # FIXME: implement?
+    def get_property_type(
+        self, default_type: str | None, ctx: FunctionContext
+    ) -> str | None:
+        return None
+
     def is_flag_type(self, ctx: FunctionContext) -> bool:
         if ctx.class_info is None:
             return False
@@ -437,12 +443,15 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
 
     def get_docstr(self, ctx: FunctionContext) -> str | list[str] | None:
         if self.is_flag_type(ctx):
+            assert ctx.class_info is not None
             typ = ctx.class_info.cls
             docstr_override = self.flag_overrides[ctx.name]
             if is_flag_item(typ):
                 return_type = get_group_from_flag_item(typ)
-            else:
+            elif typ is not None:
                 return_type = typ
+            else:
+                return None
             return docstr_override.format(get_type_fullname(return_type))
         else:
             return super().get_docstr(ctx)
@@ -543,7 +552,8 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
             return True
         return False
 
-    def add_obj_import(self, module: str, name: str, require: bool = False) -> str:
+    def add_name(self, fullname: str, require: bool = True) -> str:
+        module, name = fullname.rsplit(".", 1)
         # force use of typing module for safe namespacing.
         self.import_tracker.require_name(module)
         self.import_tracker.add_import(module)

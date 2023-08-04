@@ -129,3 +129,16 @@ def mypy(session: nox.Session, lib: str) -> None:
         session.install("numpy")
 
     session.run("mypy")
+
+
+@nox.session(reuse_venv=True)
+def self_mypy(session: nox.Session) -> None:
+    session.install("-r", "requirements.txt")
+    source = []
+    for app in APPS:
+        fpath = pathlib.Path(f"{app}/stubgen_{app}.py")
+        if fpath.exists():
+            source.append(str(fpath))
+
+    session.env["MYPYPATH"] = "../mypy"
+    session.run("mypy", "stubgenlib.py", *source)

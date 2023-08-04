@@ -10,7 +10,7 @@ import tokenize
 from abc import abstractmethod
 from collections import defaultdict
 from typing import Any, NamedTuple, TypeVar
-from typing_extensions import Literal
+from typing_extensions import Final, Literal
 
 from mypy.stubdoc import infer_sig_from_docstring, _TYPE_RE, _ARG_NAME_RE, is_valid_type
 from mypy.stubgenc import (
@@ -31,8 +31,8 @@ class Notifier:
     """
 
     def __init__(self) -> None:
-        self._seen_msgs = defaultdict(int)
-        self._seen_keys = defaultdict(int)
+        self._seen_msgs: defaultdict[tuple[str, str, str], int] = defaultdict(int)
+        self._seen_keys: defaultdict[str, int] = defaultdict(int)
         self._modules: list[str] | None = None
 
     def set_modules(self, modules: list[str]) -> None:
@@ -159,7 +159,8 @@ class BaseSigFixer:
     def get_function_sig(
         self, default_sig: FunctionSig, ctx: FunctionContext
     ) -> list[FunctionSig] | None:
-        sigs = super().get_function_sig(default_sig, ctx)
+        # TYPING: this is a mixin so this func doesn't exist on super
+        sigs = super().get_function_sig(default_sig, ctx)  # type: ignore[misc]
         if sigs:
             for i, sig in enumerate(sigs):
                 sig = self.cleanup_sig_types(sig, ctx)
@@ -318,7 +319,7 @@ class DocstringSignatureGenerator(SignatureGenerator):
                         ArgSig(
                             param.arg_name,
                             param.type_name,
-                            default=param.is_optional,
+                            default=bool(param.is_optional),
                         )
                     )
             if parsed.returns:
@@ -508,7 +509,7 @@ class BoostDocStringParser:
         self.arg_name = ""
         self.arg_default: str | None = None
         self.ret_type = "typing.Any"
-        self.defaults = False
+        self.defaults: str | bool = False
         self.found = False
         self.args: list[ArgSig] = []
         # Valid signatures found so far.
@@ -887,9 +888,7 @@ class AdvancedSignatureGenerator(SignatureGenerator):
     def get_function_sig(
         self, default_sig: FunctionSig, ctx: FunctionContext
     ) -> list[FunctionSig] | None:
-        docstr = None
         name = ctx.name
-        docstr = ctx.docstr
 
         docstr_override = self.get_docstr(ctx)
         if docstr_override:
@@ -966,9 +965,7 @@ class CppTypeConverter:
 
             srcdir = pathlib.Path(self.srcdir)
             for include_file in self.TYPE_DEF_INCLUDES:
-                include_file = srcdir.joinpath(include_file)
-                print(include_file)
-                text = include_file.read_text().replace("\n", " ")
+                text = srcdir.joinpath(include_file).read_text().replace("\n", " ")
                 for match in reg.finditer(text):
                     typedef_str = match.group(1)
                     type, alias = typedef_str.rsplit(" ", 1)
