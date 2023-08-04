@@ -59,8 +59,14 @@ The folowing recipe will create an editable install of the stubs for the specifi
 ```
 # activate the venv that you want to install into
 . /path/to/.venv/bin/activate
-pip install nox
+pip install -r nox
 nox -s 'develop(ocio)'
+```
+
+Alternately, you may find it easier to simply install a `.pth` file:
+
+```
+echo "/path/to/cg-stubs/ocio/stubs/" > /path/to/venv/lib/python3.7/site-packages/ocio.pth
 ```
 
 ## Publishing to PyPI
