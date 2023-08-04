@@ -7,16 +7,8 @@ import PyQt5.QtWidgets as QtWidgets
 from QT4GLLayerStack.LayerStack import Layer as Layer
 from typing import Set, Tuple
 
-ARRAY_TYPE_TO_CONSTANT: list
-GL_VOID_P: object
-GLvoid: None
-_EdgeList: list
-ctypes_version: list
-integer_types: tuple
-void: None
-
 class RectangleLayer(QT4GLLayerStack.LayerStack.Layer):
-    def __init__(self, *args, **kwargs): ...
+    def __init__(self, *args, **kwargs) -> None: ...
     def _RectangleLayer__fillBackground(self): ...
     def _RectangleLayer__findDragEdges(self, localX, localY): ...
     def _RectangleLayer__paintDimBackground(self): ...

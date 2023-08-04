@@ -2,6 +2,4 @@
 
 from typing import Set, Tuple
 
-_global_make_safe_trans: str
-
 def GetSafeIdentifier(name: str) -> str: ...

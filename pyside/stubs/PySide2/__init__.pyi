@@ -12,7 +12,6 @@
 #   QtGui
 #   QtHelp
 #   QtLocation
-#   QtMacExtras
 #   QtMultimedia
 #   QtMultimediaWidgets
 #   QtNetwork
@@ -41,6 +40,7 @@
 #   QtWebEngineWidgets
 #   QtWebSockets
 #   QtWidgets
+#   QtX11Extras
 #   QtXml
 #   QtXmlPatterns
 __version__: str

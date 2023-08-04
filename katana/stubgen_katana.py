@@ -14,6 +14,7 @@ from Callbacks.Callbacks import _TypeEnum  # type: ignore[import]
 
 from stubgenlib import (
     get_mypy_ignore_directive,
+    AdvancedSignatureGenerator,
     FixableCDocstringSigGen,
     FixableDocstringSigGen,
     CFunctionStub,
@@ -73,7 +74,9 @@ class KatanaDocstringTypeFixer(DocstringTypeFixer):
         return type_name
 
 
-class KatanaSignatureGenerator(KatanaDocstringTypeFixer, FixableDocstringSigGen):
+class KatanaDocstringSignatureGenerator(
+    KatanaDocstringTypeFixer, FixableDocstringSigGen
+):
     # FIXME: implement?
     def get_property_type(
         self, default_type: str | None, ctx: FunctionContext
@@ -97,6 +100,11 @@ class KatanaCSignatureGenerator(KatanaDocstringTypeFixer, FixableCDocstringSigGe
         return sigs
 
 
+class KatanaSignatureGenerator(AdvancedSignatureGenerator):
+    # TODO: add overrides
+    pass
+
+
 class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
     DATA_ATTRS = {
         "DataAttribute": "T",
@@ -108,13 +116,23 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.known_modules.extend(['PyQt5.QtCore', 'PyQt5.QtWidgets', 'PyQt5.QtGui'])
+        self.known_modules.extend(["PyQt5.QtCore", "PyQt5.QtWidgets", "PyQt5.QtGui"])
+        # preserve original sorting to redude the diff, for now
+        self.resort_members = True
 
     def get_sig_generators(self) -> list[SignatureGenerator]:
         if self.is_c_module:
             return [KatanaCSignatureGenerator()]
         else:
-            return [KatanaSignatureGenerator()]
+            return [
+                KatanaSignatureGenerator(
+                    fallback_sig_gen=KatanaDocstringSignatureGenerator()
+                )
+            ]
+
+    def should_reexport(self, name: str, full_module: str, name_is_alias: bool) -> bool:
+        # the usual logic breaks down because Katana has so many damned packages
+        return full_module in self.known_modules
 
     def is_defined_in_module(self, obj: object) -> bool:
         # _TypeEnum is a type, but it's created dynamically.  This change ensures
@@ -262,7 +280,7 @@ def main(outdir: str, katana_site_dir: str) -> None:
         "PyOpenColorIO",
     ]
 
-    args = ["-v", "--inspect-mode", "-o", outdir]
+    args = ["-v", "--inspect-mode", "--include-private", "-o", outdir]
     for module in modules:
         args.append(f"-p={module}")
 

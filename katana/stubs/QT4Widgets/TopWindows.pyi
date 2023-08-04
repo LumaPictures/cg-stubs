@@ -3,7 +3,4 @@
 import PyQt5.QtCore as QtCore
 from typing import Set, Tuple
 
-_ManagedWindows: dict
-
 def TrackTopWindow(window): ...
-def _WindowCallback(): ...

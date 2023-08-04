@@ -2,6 +2,4 @@
 
 from typing import Set, Tuple
 
-_DeprecatedFunctions: set
-
 def deprecated(*args): ...

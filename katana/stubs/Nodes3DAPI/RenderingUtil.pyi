@@ -4,9 +4,6 @@ import ConfigurationAPI_cmodule as Configuration
 from _typeshed import Incomplete
 from typing import Set, Tuple
 
-DEFAULT_DIR_PERMISSIONS: int
-global_tempFileCounter: int
-
 def CalcCropWindow(rect, dataWindow, renderSettingsCropWindow): ...
 def GetLocalNumber(): ...
 def GetTmpLocalFile(suffix: str, prefix: str, frame: Incomplete | None = ...) -> str: ...

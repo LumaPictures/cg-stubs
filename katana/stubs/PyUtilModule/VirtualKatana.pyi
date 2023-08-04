@@ -43,6 +43,7 @@ import ViewerAPI as ViewerAPI
 import WorkQueue as WorkQueue
 from Callbacks.Callbacks import Callbacks as Callbacks
 from PyUtilModule import Initialize as Initialize
+from PyUtilModule.VirtualKatana import AttrDump as AttrDump, ChildProcess as ChildProcess, ColorPaletteManager as ColorPaletteManager, Decorators as Decorators, FaceSelectionManager as FaceSelectionManager, FarmAPI as FarmAPI, FarmManager as FarmManager, FormMaster as FormMaster, Hints as Hints, IRFs as IRFs, KatanaFile as KatanaFile, LayeredMenuAPI as LayeredMenuAPI, LiveRenderAPI as LiveRenderAPI, NodeDebugOutput as NodeDebugOutput, NodeMaster as NodeMaster, NonUIPluginManager as NonUIPluginManager, OpDocumentationGenerator as OpDocumentationGenerator, PrefNames as PrefNames, ProjectSnapshot as ProjectSnapshot, Qt as Qt, QtCore as QtCore, QtGui as QtGui, QtNetwork as QtNetwork, QtOpenGL as QtOpenGL, QtSql as QtSql, QtSvg as QtSvg, QtTest as QtTest, QtWidgets as QtWidgets, QtXml as QtXml, QtXmlPatterns as QtXmlPatterns, RegisterToCamera as RegisterToCamera, RenderManager as RenderManager, RenderingCommon as RenderingCommon, ScenegraphBookmarkManager as ScenegraphBookmarkManager, ScenegraphManager as ScenegraphManager, ScenegraphUtils as ScenegraphUtils, Shelves as Shelves, SuperToolPlugins as SuperToolPlugins, UI4 as UI4, UserNodes as UserNodes, Widgets as Widgets, WorkingSet as WorkingSet, WorkingSetClient as WorkingSetClient, WorkingSetManager as WorkingSetManager
 from typing import Callable, Set, Tuple
 
 LogGLHandlersOldLevel: int

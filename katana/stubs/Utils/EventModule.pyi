@@ -5,8 +5,5 @@ from Utils.EventModuleCommon import GetAllRegisteredEventTypes as GetAllRegister
 from Utils.EventModuleDefault import Initialize as Initialize, ProcessAllEvents as ProcessAllEvents, ProcessEvents as ProcessEvents, PumpIdleQueue as PumpIdleQueue, QueueEvent as QueueEvent, QueuePriorityEvent as QueuePriorityEvent
 from typing import Set, Tuple
 
-_SynchronousEventProcessing: bool
-__warningregistry__: dict
-
 def RegisterDebugEventHandler(): ...
 def SynchronousEventProcessingScope(): ...

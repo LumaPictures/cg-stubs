@@ -3,7 +3,6 @@
 import FnAttribute
 from typing import Set, Tuple
 
-_virtualCameraAttributes: None
 kVirtualCameraSceneGraphLocation: str
 
 def GetVirtualCameraAttributes() -> FnAttribute.GroupAttribute | None: ...

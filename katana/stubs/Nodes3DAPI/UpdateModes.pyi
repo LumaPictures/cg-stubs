@@ -9,8 +9,6 @@ Manual: int
 Modes: tuple
 Options: list
 PenUp: int
-__dirty: bool
-__updateMode: int
 
 def GetUpdateMode() -> int: ...
 def IsDirty(): ...
