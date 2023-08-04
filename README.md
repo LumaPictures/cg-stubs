@@ -32,7 +32,7 @@ Next, build it.  Requires python 3.7+:
 ```
 python3 -m venv .venv
 . .venv/bin/activate
-pip install nox
+pip install -r nox-requirements.txt
 nox -s 'generate(ocio)'
 ```
 
@@ -43,7 +43,7 @@ If this fails, here's a paranoid/foolproof approach:
 unset PYTHONPATH
 python3 -m venv .venv37
 . .venv37/bin/activate
-python3 -m pip install nox
+python3 -m pip install -r nox-requirements.txt
 rm -rf .nox
 python3 -m nox -s 'generate(ocio)'
 ```

@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "types-usd"
-version = "23.05.4"
+version = "23.5.4"
 
 readme = "README.md"
 authors = ["Chad Dombrova"]

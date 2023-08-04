@@ -1,6 +1,61 @@
-exclude: '.*[.]pyi$'
 repos:
--   repo: https://github.com/psf/black
-    rev: 23.3.0
-    hooks:
-    -   id: black
+- repo: local
+  hooks:
+  - id: black
+    name: black
+    entry: nox
+    args: [-s, black, --no-install, --]
+    language: system
+    pass_filenames: true
+    require_serial: true
+    stages:
+    - commit
+    - push
+    - manual
+    files: ^.*/[^/]*[.]py$
+  - id: check_yaml
+    name: check_yaml
+    entry: nox
+    args: [-s, check_yaml, --no-install, --]
+    language: system
+    pass_filenames: true
+    require_serial: false
+    stages:
+    - commit
+    - push
+    - manual
+    files: ^.*[.](yaml|yml)$
+  - id: check_toml
+    name: check_toml
+    entry: nox
+    args: [-s, check_toml, --no-install, --]
+    language: system
+    pass_filenames: true
+    require_serial: false
+    stages:
+    - commit
+    - push
+    - manual
+    files: ^.*[.]toml$
+  - id: precommit_gen
+    name: precommit_gen
+    entry: nox
+    args: [-s, precommit_gen, --no-install, --]
+    language: system
+    pass_filenames: false
+    require_serial: false
+    stages:
+    - commit
+    - push
+    files: ^noxfile[.]py$
+  - id: self_mypy
+    name: self_mypy
+    entry: nox
+    args: [-s, self_mypy, --no-install, --]
+    language: system
+    pass_filenames: false
+    require_serial: true
+    stages:
+    - manual
+    - push
+    files: ^.*/[^/]*[.]py$
