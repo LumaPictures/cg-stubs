@@ -280,7 +280,6 @@ class TypeInfo(CppTypeConverter):
             raise RuntimeError(
                 "Skipping implicitly convertible types: No source dir provided"
             )
-            return {}
 
         def get_type_from_path(path: str) -> str:
             parts = path.split(os.path.sep)
@@ -597,6 +596,44 @@ type_info = TypeInfo(
 # - boost python sigs do not always include defaults for keyword args.  See UsdGeom.BBoxCache.__init__
 
 
+def _filter_overloads(
+    module_name: str, fullname: str, cpp_info
+) -> tuple[list | None, bool]:
+    """Filter c++ overloads"""
+    if fullname == "pxr.Tf.Type.Define":
+        # TfType::Define has 4 overloads, 2x static and 2x non-static. It also
+        # uses templating to get its args, which are not picked up by doxygen.
+        cpp_overloads = None
+        is_static = True
+    elif cpp_info:
+        if len(set(overload.isStatic() for overload in cpp_info.overloads)) != 1:
+            summary = "\n"
+            for cpp_sig in cpp_info.overloads:
+                summary += "   {}({}) [static={}]\n".format(
+                    fullname,
+                    ", ".join(
+                        f"{param.name}: {param.type}" for param in cpp_sig.params
+                    ),
+                    cpp_sig.isStatic(),
+                )
+            notifier.warn(
+                "Mixture of static and non-static overloads: removing static",
+                module_name,
+                summary,
+            )
+            cpp_overloads = [
+                overload for overload in cpp_info.overloads if not overload.isStatic()
+            ]
+            is_static = False
+        else:
+            cpp_overloads = cpp_info.overloads
+            is_static = all(overload.isStatic() for overload in cpp_overloads)
+    else:
+        cpp_overloads = None
+        is_static = False
+    return cpp_overloads, is_static
+
+
 class UsdBoostDocstringSignatureGenerator(
     BoostDocstringSignatureGenerator, BaseSigFixer
 ):
@@ -731,12 +768,14 @@ class UsdBoostDocstringSignatureGenerator(
             use_cpp_only = False
 
         cpp_info = type_info.get_cpp_sig_info(fullname)
+        cpp_overloads, is_static = _filter_overloads(
+            ctx.module_name, fullname, cpp_info
+        )
         if use_cpp_only:
-            assert cpp_info is not None
-            # Only C++ signatures:
+            # We only use C++ signatures:
             # convert to FunctionSig
             cpp_sigs: list[FunctionSig] = []
-            for cpp_sig in cpp_info.overloads:
+            for cpp_sig in cpp_overloads:
                 args: list[ArgSig] = []
                 for param in cpp_sig.params:
                     py_arg_type = type_info.cpp_arg_to_py_type(
@@ -750,43 +789,42 @@ class UsdBoostDocstringSignatureGenerator(
                 )
                 cpp_sigs.append(FunctionSig(ctx.name, args, py_ret_type))
             sigs = cpp_sigs
-        elif cpp_info is None or len(sigs) != len(cpp_info.overloads):
-            # Only python signatures:
-            if not cpp_info or not any(
-                overload.isStatic() for overload in cpp_info.overloads
-            ):
+        elif cpp_overloads is None or len(sigs) != len(cpp_overloads):
+            # We only have python signatures:
+            if not is_static:
                 sigs = [self._fix_self_arg(sig, ctx) for sig in sigs]
             # apply fixes that don't rely on c++ docs:
             sigs = [self.cleanup_sig_types(sig, ctx) for sig in sigs]
-            if cpp_info is None:
+            if cpp_overloads is None:
                 notifier.warn("No c++ info found", ctx.module_name, ctx.fullname)
             else:
                 # summarize the C++ <> python incompatibilties
                 summary = ""
-                for overload_num, sig in enumerate(sigs):
+                for sig in sigs:
                     summary += "   py   ({})\n".format(format_args(sig))
-                for overload_num, cpp_sig in enumerate(cpp_info.overloads):
-                    summary += "   cpp  ({})\n".format(
+                for cpp_sig in cpp_overloads:
+                    summary += "   cpp  ({}) [static={}]\n".format(
                         ", ".join(
                             f"{param.name}: {param.type}" for param in cpp_sig.params
-                        )
+                        ),
+                        cpp_sig.isStatic(),
                     )
 
                 notifier.warn(
                     "Number of overloads do not match",
                     ctx.module_name,
                     "(py {} != cpp {}): {}\n{}".format(
-                        len(sigs), len(cpp_info.overloads), ctx.fullname, summary
+                        len(sigs), len(cpp_overloads), ctx.fullname, summary
                     ),
                 )
         else:
             # C++ and Python signatures:
-            if not any(overload.isStatic() for overload in cpp_info.overloads):
+            if not is_static:
                 sigs = [self._fix_self_arg(sig, ctx) for sig in sigs]
 
             cpp_sigs_with_ptr: list[FunctionSig] = []
             cpp_sigs_without_ptr: list[FunctionSig] = []
-            for cpp_sig in cpp_info.overloads:
+            for cpp_sig in cpp_overloads:
                 args_with_ptr: list[ArgSig] = []
                 args_without_ptr: list[ArgSig] = []
                 ptr_results = []
@@ -1008,13 +1046,12 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
 
         # in boost python it is impossible to distinguish between classmethod and instance method
         # so we consult the docs
-        sig_info = type_info.get_cpp_sig_info(
-            f"{self.module_name}.{class_info.name}.{name}"
-        )
+        fullname = f"{self.module_name}.{class_info.name}.{name}"
+        sig_info = type_info.get_cpp_sig_info(fullname)
         if sig_info:
             parent = sig_info.parent
             if parent.isClass():
-                return any(d.isStatic() for d in sig_info.overloads)
+                return _filter_overloads(self.module_name, fullname, sig_info)[1]
             else:
                 # this is a loose function that has been added as a staticmethod
                 return True
@@ -1039,15 +1076,15 @@ def test():
 
 
 def main(outdir: str) -> None:
-    import pprint
-
-    # pprint.pprint(type_info._get_typedefs())
-    # raise RuntimeError
-
     type_info.populate()
 
     # Change this to only see errors for particular modules:
-    # notifier.set_modules(["pxr.Tf"])
+    notifier.set_modules(
+        [
+            # "pxr.UsdGeom",
+            "pxr.Tf",
+        ]
+    )
 
     stubgen_main(
         [

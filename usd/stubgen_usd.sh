@@ -6,7 +6,7 @@ REPO_PATH=$(git rev-parse --show-toplevel)
 
 # Custom variables --
 MYPY_ROOT=$REPO_PATH/../mypy
-export USD_BUILD_ROOT=~/dev/USD/.build-new
+export USD_BUILD_ROOT=~/dev/USD/.build-py-sigs
 export USD_SOURCE_ROOT=~/dev/USD_private_chadrik
 # End custom variables --
 
