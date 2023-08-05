@@ -4,11 +4,11 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "types-PySide2"
-version = "23.05.1"
+version = "5.15.2.1.6"
 
 readme = "README.md"
 authors = ["Chad Dombrova"]
-description = "Unofficial python stubs for Pixar's Universal Scene Description (USD)"
+description = "The most accurate stubs for PySide2"
 license = "MIT"
 
 classifiers = [

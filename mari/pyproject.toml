@@ -28,5 +28,8 @@ packages = [
     { include = "mari-stubs", from = "stubs" },
 ]
 
+[tool.poetry.dependencies]
+types=PySide2 = "^5.15.0.0"
+
 [tool.distutils.bdist_wheel]
 universal = true
