@@ -12,6 +12,7 @@
 #   QtGui
 #   QtHelp
 #   QtLocation
+#   QtMacExtras
 #   QtMultimedia
 #   QtMultimediaWidgets
 #   QtNetwork
