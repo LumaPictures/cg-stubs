@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "types-opencolorio"
-version = "2.2.1.1"
+version = "2.2.1.2"
 
 readme = "README.md"
 authors = ["Chad Dombrova"]
