@@ -35,4 +35,4 @@ ${REPO_PATH}/katana/katanapy -c "import stubgen_katana;stubgen_katana.main('$out
 
 rm -rf $outdir/Katana/noxfile.pyi
 #rm -rf $outdir/PyQt5
-#rm -rf $outdir/NodegraphAPI/Version/v_*
+rm -rf $outdir/NodegraphAPI/Version/v_*

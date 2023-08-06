@@ -151,7 +151,10 @@ class KatanaSignatureGenerator(AdvancedSignatureGenerator):
         # None means the type is unset/unknown
         ("NodegraphAPI_cmodule.*.getNode", "Any"): "Node",
         ("*.getNode", None): "NodegraphAPI.Node",
-        ("NodegraphAPI_cmodule.Parameter.getValue", "*"): "Any",
+        (
+            "NodegraphAPI_cmodule.Parameter.getValue",
+            "*",
+        ): "Any",
         ("NodegraphAPI_cmodule.GroupNode.getChild", "*"): "Node",
         ("NodegraphAPI_cmodule.GroupNode.getChildren", "*"): "list[Node]",
         ("NodegraphAPI_cmodule.Parameter.getChildren", "*"): "list[Parameter]",
