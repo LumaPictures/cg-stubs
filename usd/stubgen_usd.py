@@ -626,8 +626,8 @@ def _filter_overloads(
             ]
             is_static = False
         else:
+            is_static = all(overload.isStatic() for overload in cpp_info.overloads)
             cpp_overloads = cpp_info.overloads
-            is_static = all(overload.isStatic() for overload in cpp_overloads)
     else:
         cpp_overloads = None
         is_static = False
@@ -772,6 +772,7 @@ class UsdBoostDocstringSignatureGenerator(
             ctx.module_name, fullname, cpp_info
         )
         if use_cpp_only:
+            assert cpp_overloads is not None
             # We only use C++ signatures:
             # convert to FunctionSig
             cpp_sigs: list[FunctionSig] = []

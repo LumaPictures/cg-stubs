@@ -1,6 +1,7 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
-import FnAttribute as FnAttribute
+import PyFnAttribute as FnAttribute
+import PyFnAttribute
 from typing import ClassVar, Set, Tuple
 
 class AttrTypes:
@@ -16,7 +17,7 @@ class AttrTypes:
     def toString(cls, value: int) -> str: ...
 
 class OpDescription:
-    def __init__(self, opType: str, descriptionAttr: FnAttribute.GroupAttribute) -> None: ...
+    def __init__(self, opType: str, descriptionAttr: PyFnAttribute.GroupAttribute) -> None: ...
     @staticmethod
     def _OpDescription__getAttrs(descriptionAttr, attrsAttrName): ...
     @staticmethod

@@ -1,13 +1,15 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 import PyFnAttribute as FnAttribute
+import NodegraphAPI
 import Nodes3DAPI.TransformUtil as TransformUtil
+import typing
 from Nodes3DAPI.Node3D import Node3D as Node3D
 from _typeshed import Incomplete
 from typing import Set, Tuple
 
 class AbstractTransform(Node3D):
-    def _getXformAttribute(self, frameTime, includeInteractive: bool = ..., graphState: Incomplete | None = ...): ...
+    def _getXformAttribute(self, frameTime, includeInteractive: bool = ..., graphState: typing.Optional[NodegraphAPI.GraphState] = ...): ...
     def canOverride(self, attrName): ...
     def findOverrideParameter(self, path, attrName, time, index: Incomplete | None = ..., editable: bool = ...): ...
     def setInteractiveTransform(self, path, absScale, absRotate, absTranslate, time): ...

@@ -753,8 +753,6 @@ def get_mypy_ignore_directive(codes: list[str]) -> str:
     return '# mypy: disable-error-code="{}"\n\n'.format(", ".join(codes))
 
 
-ANY = None
-
 Optionality = NamedTuple("Optionality", [("accepts_none", bool), ("has_default", bool)])
 
 
@@ -767,7 +765,12 @@ class AdvancedSignatureGenerator(SignatureGenerator):
     # Override argument types
     #   (name_pattern, arg, type): arg_type
     #   e.g. ("*", "flags", "int"): "typing.SupportsInt"
-    arg_type_overrides: dict[tuple[str, str | None, str | None], str] = {}
+    arg_type_overrides: dict[tuple[str, str, str | None], str] = {}
+
+    # Override argument types
+    #   (name_pattern, type): arg_type
+    #   e.g. ("*", "int"): "typing.SupportsInt"
+    result_type_overrides: dict[tuple[str, str | None], str] = {}
 
     # Types that have implicit alternatives.
     #   type_str: list of types that can be used instead
@@ -776,7 +779,10 @@ class AdvancedSignatureGenerator(SignatureGenerator):
 
     # Args which should be made Optional[].
     #   (name_pattern, arg, type): Optionality
-    optional_args: dict[tuple[str, str | None, str | None], Optionality] = {}
+    optional_args: dict[tuple[str, str, str | None], Optionality] = {}
+
+    # Results which should be made Optional[].
+    optional_result: list[str] = []
 
     # Add new overloads to existing functions.
     #   name_pattern: list of sig_str
@@ -784,15 +790,15 @@ class AdvancedSignatureGenerator(SignatureGenerator):
     new_overloads: dict[str, list[str]] = {}
 
     def __init__(self, fallback_sig_gen=CDocstringSignatureGenerator()) -> None:
-        self.docstring = fallback_sig_gen
+        self.fallback_sig_gen = fallback_sig_gen
         # insert OptionalKeys
         self.arg_type_overrides = self.arg_type_overrides.copy()
         self.arg_type_overrides.update(
             {
-                # method, arg, type
+                # method, arg name, type
                 (
                     "*",
-                    ANY,
+                    "*",
                     orig,
                 ): "typing.Union[{},{}]".format(orig, ",".join(alt))
                 for orig, alt in self.implicit_arg_types.items()
@@ -800,15 +806,19 @@ class AdvancedSignatureGenerator(SignatureGenerator):
         )
         self.arg_type_overrides.update(
             {
-                # method, arg, type
+                # method, arg name, type
                 (
                     "*",
-                    ANY,
+                    "*",
                     "typing.Union[{},NoneType]".format(orig),
                 ): "typing.Union[{},{},NoneType]".format(orig, ",".join(alt))
                 for orig, alt in self.implicit_arg_types.items()
             }
         )
+        # restructure this so that it can be used with find_result_match
+        self._optional_result: dict[tuple[str, str | None], bool] = {
+            (name, "*"): True for name in self.optional_result
+        }
         # self.arg_name_replacements = {
         #     tuple(OptionalKey(k) for k in key): value
         #     for key, value in self._arg_name_replacements.items()
@@ -821,20 +831,44 @@ class AdvancedSignatureGenerator(SignatureGenerator):
                 return value
         return None
 
+    def _type_match(self, type_match: str | None, arg_type: str | None) -> bool:
+        if arg_type is None:
+            return type_match is None or  type_match == "*"
+        elif type_match:
+            return fnmatch.fnmatch(arg_type, type_match)
+        else:
+            return False
+
     def find_arg_match(
         self,
         fullname: str,
         arg_name: str,
-        arg_type: str,
-        items: dict[tuple[str, str | None, str | None], T],
+        arg_type: str | None,
+        items: dict[tuple[str, str, str | None], T],
     ) -> T | None:
-        """Look for a match in the given dictionary of argument overrides"""
+        """Look for a match in the given dictionary of argument overrides
+
+        setting arg_type to None, means only replace if the type is unset (None).
+        """
         for (method_match, arg_name_match, arg_type_match), value in items.items():
             if (
                 fnmatch.fnmatch(fullname, method_match)
-                and (arg_name_match is None or arg_name_match == arg_name)
-                and (arg_type_match is None or arg_type_match == arg_type)
+                and fnmatch.fnmatch(arg_name, arg_name_match)
+                and self._type_match(arg_type_match, arg_type)
             ):
+                return value
+        return None
+
+    def find_result_match(
+        self,
+        fullname: str,
+        ret_type: str | None,
+        items: dict[tuple[str, str | None], T],
+    ) -> T | None:
+        """Look for a match in the given dictionary of argument overrides"""
+        for (method_match, ret_type_match), value in items.items():
+            if (fnmatch.fnmatch(fullname, method_match)
+                    and self._type_match(ret_type_match, ret_type)):
                 return value
         return None
 
@@ -844,9 +878,6 @@ class AdvancedSignatureGenerator(SignatureGenerator):
 
     def process_arg(self, ctx: FunctionContext, arg: ArgSig) -> None:
         """Update ArgSig in place"""
-        if not arg.type:
-            return
-
         # if key in self.arg_name_replacements:
         #     arg.name = self.arg_name_replacements[key]
 
@@ -869,6 +900,12 @@ class AdvancedSignatureGenerator(SignatureGenerator):
     def process_sig(self, ctx: FunctionContext, sig: FunctionSig) -> FunctionSig:
         for arg in sig.args:
             self.process_arg(ctx, arg)
+        if self.find_result_match(ctx.fullname, sig.ret_type, self._optional_result):
+            sig = sig._replace(ret_type=f"typing.Optional[{sig.ret_type}]")
+        else:
+            ret_override = self.find_result_match(ctx.fullname, sig.ret_type, self.result_type_overrides)
+            if ret_override:
+                sig = sig._replace(ret_type=ret_override)
         return sig
 
     def process_sigs(
@@ -907,7 +944,9 @@ class AdvancedSignatureGenerator(SignatureGenerator):
             results = infer_sig_from_docstring(docstr, name)
         else:
             # call the standard docstring-based generator.
-            results = self.docstring.get_function_sig(default_sig, ctx)
+            results = self.fallback_sig_gen.get_function_sig(default_sig, ctx)
+            if results is None:
+                results = [default_sig]
 
         if results:
             return self.process_sigs(ctx, results)

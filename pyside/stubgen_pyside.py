@@ -221,13 +221,9 @@ def short_name(type_name: str) -> str:
     return type_name.split(".")[-1]
 
 
-# constant for clarity
-ANY = None
-
-
 class PySideSignatureGenerator(AdvancedSignatureGenerator):
     # Full signature replacements.
-    # The class name can be ANY, in which case it will match any class
+    # The class name can be "*", in which case it will match any class
     signature_overrides: dict[str, str | list[str]] = {
         # these docstring sigs are malformed
         "*.VolatileBool.get": "(self) -> bool",
@@ -253,7 +249,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
         "*.QObject.setProperty": "(self, name: str, value: typing.Any) -> bool",
         "*.QObject.property": "(self, name: str) -> typing.Any",
         "*.QState.assignProperty": "(self, object: QObject, name: str, value: typing.Any) -> None",
-        # (ANY, 'propertyName'):
+        # ("*", 'propertyName'):
         #     '(self) -> str',
         "*.QCoreApplication.translate": "(cls, context: str, key: str, disambiguation: typing.Union[str,NoneType] = ..., n: int = ...) -> str",
         # * Fix `QTreeWidgetItemIterator.__iter__()` to iterate over `QTreeWidgetItemIterator`
@@ -361,34 +357,34 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
     }
 
     # Override argument types
-    arg_type_overrides: dict[tuple[str, str | None, str | None], str] = {
+    arg_type_overrides: dict[tuple[str, str, str | None], str] = {
         # (method, arg, type)
         ("*", "flags", "int"): "typing.SupportsInt",
         ("*", "weight", "int"): "typing.SupportsInt",
         ("*", "format", "typing.Union[bytes,NoneType]"): "typing.Optional[str]",
         ("*", "role", "int"): "PySide2.QtCore.Qt.ItemDataRole",
-        ("*.addAction", ANY, "object"): "typing.Callable[[], typing.Any]",
+        ("*.addAction", "*", "object"): "typing.Callable[[], typing.Any]",
     }
 
     # Find and replace argument names
-    arg_name_replacements: dict[tuple[str, str | None, str | None], str] = {
+    arg_name_replacements: dict[tuple[str, str, str | None], str] = {
         # (method, arg, type)
     }
 
     # Values which should be made Optional[].
-    optional_args: dict[tuple[str, str | None, str | None], Optionality] = {
+    optional_args: dict[tuple[str, str, str | None], Optionality] = {
         # (method, arg, type)
-        ("*.QPainter.drawText", "br", ANY): Optionality(
+        ("*.QPainter.drawText", "br", "*"): Optionality(
             accepts_none=True, has_default=True
         ),
-        ("*.QPainter.drawPolygon", "arg__2", ANY): Optionality(
+        ("*.QPainter.drawPolygon", "arg__2", "*"): Optionality(
             accepts_none=True, has_default=True
         ),
-        ("*.QProgressDialog.setCancelButton", "button", ANY): Optionality(
+        ("*.QProgressDialog.setCancelButton", "button", "*"): Optionality(
             accepts_none=True, has_default=False
         ),
-        ("*.setModel", "model", ANY): Optionality(accepts_none=True, has_default=False),
-        ("*.QLabel.setPixmap", "arg__1", ANY): Optionality(
+        ("*.setModel", "model", "*"): Optionality(accepts_none=True, has_default=False),
+        ("*.QLabel.setPixmap", "arg__1", "*"): Optionality(
             accepts_none=True, has_default=False
         ),
         ("*", "parent", "PySide2.QtWidgets.QWidget"): Optionality(
@@ -397,7 +393,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
         ("*", "parent", "PySide2.QtCore.QObject"): Optionality(
             accepts_none=True, has_default=False
         ),
-        ("*.QInputDialog.getText", "echo", ANY): Optionality(
+        ("*.QInputDialog.getText", "echo", "*"): Optionality(
             accepts_none=False, has_default=True
         ),
     }
@@ -429,7 +425,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
     def get_property_type(
         self, default_type: str | None, ctx: FunctionContext
     ) -> str | None:
-        return None
+        return default_type
 
     def is_flag_type(self, ctx: FunctionContext) -> bool:
         if ctx.class_info is None:

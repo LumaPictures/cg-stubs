@@ -32,17 +32,21 @@ cache = lru_cache(None)
 # FIXME: auto-detect number of cores
 PROCESSES = 8
 GLOB_TO_REGEX = [
+    # I'm pretty sure that "**/*.py" should match a python file at the root, e.g. "setup.py"
+    # this first replacement ensures that this works in pre-commit
+    ('**/', '.*'),
     ('**', '.*'),
     ('*', '[^/]*'),
     ('.', '[.]'),
     ('?', '.'),
     ('{', '('),
     ('}', ')'),
-    (',', '|')
+    (',', '|'),
 ]
 GLOB_TO_REGEX_MAP = dict(GLOB_TO_REGEX)
 GLOB_TO_REGEX_REG = re.compile(
-    r'({})'.format('|'.join(re.escape(f) for f, r in GLOB_TO_REGEX)))
+    r'({})'.format('|'.join(re.escape(f) for f, r in GLOB_TO_REGEX))
+)
 
 
 # Config --
@@ -57,18 +61,16 @@ TAG_TO_PRECOMMIT_STAGE = {
 }
 
 # Files to include, and from which to generate pre-commit regex
-LINT_FILES = (
-    '**/*.py',
-)
+LINT_FILES = ('**/*.py',)
 
 # Standard set of "special" python files that are not linted
-LINT_EXCLUDE = (
-)
+LINT_EXCLUDE = ()
 
 
 def multiline(s: str) -> str:
     """Indicate to ruamel.ymal to format the string as mult-line"""
     from ruamel.yaml.scalarstring import LiteralScalarString
+
     if '\n' in s:
         return LiteralScalarString(textwrap.dedent(s).strip('\n'))
     else:
@@ -78,6 +80,7 @@ def multiline(s: str) -> str:
 def flatlist(*s: Any) -> list:
     """Indicate to ruamel.ymal to format the list on a single line"""
     from ruamel.yaml.comments import CommentedSeq
+
     l = CommentedSeq(s)
     l.fa.set_flow_style()
     return l
@@ -93,6 +96,7 @@ def glob_to_regex(pattern: str) -> str:
     It currently does not work with paths that contain complex characters that
     need to be escaped.
     """
+
     def replace(match: Match) -> str:
         pat = match.groups()[0]
         return GLOB_TO_REGEX_MAP[pat]
@@ -126,25 +130,29 @@ def globs_to_regex(patterns: tuple[str, ...]) -> Pattern | None:
 
 
 def filter_paths_regex(
-        paths: Iterable[str],
-        include: Pattern | None = None,
-        exclude: Pattern | None = None,
+    paths: Iterable[str],
+    include: Pattern | None = None,
+    exclude: Pattern | None = None,
 ) -> Iterator[str]:
     for path in paths:
         if (not include or include.search(path)) and (
-                not exclude or not exclude.search(path)):
+            not exclude or not exclude.search(path)
+        ):
             yield path
 
 
 def filter_paths(
-        paths: Iterable[str],
-        include: Iterable[str] | None = None,
-        exclude: Iterable[str] | None = None
+    paths: Iterable[str],
+    include: Iterable[str] | None = None,
+    exclude: Iterable[str] | None = None,
 ) -> list[str]:
-    return list(filter_paths_regex(
-        paths,
-        globs_to_regex(include) if include else None,
-        globs_to_regex(exclude) if exclude else None))
+    return list(
+        filter_paths_regex(
+            paths,
+            globs_to_regex(include) if include else None,
+            globs_to_regex(exclude) if exclude else None,
+        )
+    )
 
 
 class GitRepo:
@@ -158,12 +166,14 @@ class GitRepo:
     @cache
     def files(self) -> list[str]:
         import subprocess
+
         output = subprocess.check_output(['git', 'ls-files'], cwd=self.root)
         return [x for x in output.decode().split('\n') if x]
 
     @cache
-    def file_matches(self, include: tuple[str, ...] | None,
-                     exclude: tuple[str, ...] | None = None) -> list[str]:
+    def file_matches(
+        self, include: tuple[str, ...] | None, exclude: tuple[str, ...] | None = None
+    ) -> list[str]:
         return list(filter_paths(self.files(), include, exclude))
 
     @cache
@@ -178,8 +188,9 @@ class GitRepo:
         return sorted(results)
 
     @cache
-    def folder_matches(self, include: tuple[str, ...] | None,
-                       exclude: tuple[str, ...] | None = None) -> list[str]:
+    def folder_matches(
+        self, include: tuple[str, ...] | None, exclude: tuple[str, ...] | None = None
+    ) -> list[str]:
         return list(filter_paths(self.folders(), include, exclude))
 
 
@@ -209,14 +220,17 @@ class Options:
     def exclude_regex(self) -> Pattern | None:
         return globs_to_regex(self.exclude) if self.exclude is not None else None
 
-    def files(self, session: nox.Session,
-              include: tuple[str, ...] | None = None,
-              exclude: tuple[str, ...] | None = None
-              ) -> list[str]:
+    def files(
+        self,
+        session: nox.Session,
+        include: tuple[str, ...] | None = None,
+        exclude: tuple[str, ...] | None = None,
+    ) -> list[str]:
         if self.pass_filenames and session.posargs:
             return filter_paths(session.posargs, include=include, exclude=exclude)
-        return repo.file_matches(include=include or self.paths,
-                                 exclude=exclude or self.exclude)
+        return repo.file_matches(
+            include=include or self.paths, exclude=exclude or self.exclude
+        )
 
 
 def with_versions(versions: Iterable[str]) -> Callable[[Any], Any]:
@@ -226,9 +240,13 @@ def with_versions(versions: Iterable[str]) -> Callable[[Any], Any]:
     return nox.parametrize('ver', [nox.param(v, id=v) for v in sorted(versions)])
 
 
-def check(paths=None, exclude: tuple[str, ...] | None = None,
-          pass_filenames=True, require_serial=True,
-          **session_kwargs):
+def check(
+    paths=None,
+    exclude: tuple[str, ...] | None = None,
+    pass_filenames=True,
+    require_serial=True,
+    **session_kwargs,
+):
     """
     Decorator for lint-like tasks intended to run as pre-commit
     """
@@ -238,10 +256,12 @@ def check(paths=None, exclude: tuple[str, ...] | None = None,
     session_kwargs.setdefault('tags', DEFAULT_LINT_TAGS)
 
     def deco(func):
-        options = Options(paths=tuple(paths) if paths else None,
-                          exclude=tuple(exclude) if exclude else None,
-                          pass_filenames=pass_filenames,
-                          require_serial=require_serial)
+        options = Options(
+            paths=tuple(paths) if paths else None,
+            exclude=tuple(exclude) if exclude else None,
+            pass_filenames=pass_filenames,
+            require_serial=require_serial,
+        )
 
         @nox.session(**session_kwargs)
         @functools.wraps(func)
@@ -253,6 +273,7 @@ def check(paths=None, exclude: tuple[str, ...] | None = None,
         wrapper.options = options
 
         return wrapper
+
     return deco
 
 
@@ -265,14 +286,10 @@ def black(session: nox.Session, options: Options):
     session.run('black', *options.files(session), log=False)
 
 
-@check(
-    paths=(
-        '**.{yaml|yml}',
-    ),
-    venv_backend='none'
-)
+@check(paths=('**.{yaml|yml}',), venv_backend='none')
 def check_yaml(session: nox.Session, options: Options):
     import ruamel.yaml
+
     yaml = ruamel.yaml.YAML()
 
     load_fn = yaml.load
@@ -288,14 +305,10 @@ def check_yaml(session: nox.Session, options: Options):
     return retval
 
 
-@check(
-    paths=(
-        '**.toml',
-    ),
-    venv_backend='none'
-)
+@check(paths=('**.toml',), venv_backend='none')
 def check_toml(session: nox.Session, options: Options):
     import tomli
+
     retval = 0
     for filename in options.files(session):
         with open(filename, 'rb') as f:
@@ -318,6 +331,7 @@ def precommit_gen(session: nox.Session, options: Options):
     Generate a pre-commit-hooks.yaml from the lint tasks in this module.
     """
     import ruamel.yaml
+
     yaml = ruamel.yaml.YAML()
 
     hooks = []
@@ -352,7 +366,9 @@ def precommit_gen(session: nox.Session, options: Options):
                         'hooks': hooks,
                     }
                 ]
-            }, f)
+            },
+            f,
+        )
 
 
 def make_packages(path: pathlib.Path = pathlib.Path(".")) -> None:
@@ -468,12 +484,8 @@ def mypy(session: nox.Session, lib: str) -> None:
     session.run("mypy")
 
 
-@check(
-    paths=LINT_FILES,
-    pass_filenames=False,
-    tags=['ci', 'prepush']
-)
-def self_mypy(session: nox.Session) -> None:
+@check(paths=LINT_FILES, pass_filenames=False, tags=['ci', 'prepush'])
+def self_mypy(session: nox.Session, options: Options) -> None:
     session.install("-r", "requirements.txt")
     source = []
     for app in APPS:

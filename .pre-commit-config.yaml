@@ -12,7 +12,7 @@ repos:
     - commit
     - push
     - manual
-    files: ^.*/[^/]*[.]py$
+    files: ^.*[^/]*[.]py$
   - id: check_yaml
     name: check_yaml
     entry: nox
@@ -58,4 +58,4 @@ repos:
     stages:
     - manual
     - push
-    files: ^.*/[^/]*[.]py$
+    files: ^.*[^/]*[.]py$

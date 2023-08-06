@@ -3,10 +3,11 @@
 import AssetAPI as AssetAPI
 import PyFnAttribute as FnAttribute
 import PyFnGeolib as FnGeolib
-import FnGeolibProducers as FnGeolibProducers
+import PyFnGeolibProducers as FnGeolibProducers
 import LookFileBakeAPI.LookFileUtil as LookFileUtil
 import LookFileBakeAPI.OutputFormatAPI as OutputFormatAPI
 import PyFnGeolib
+import PyFnGeolibProducers
 import typing
 from LookFileBakeAPI.Exceptions import LookFileBakeException as LookFileBakeException
 from LookFileBakeAPI.Utils import CheckRootLocations as CheckRootLocations, FindSharedLodGroupLocations as FindSharedLodGroupLocations, GetLookFileProducerRootId as GetLookFileProducerRootId, GetProducerFromOp as GetProducerFromOp
@@ -14,7 +15,7 @@ from _typeshed import Incomplete
 from typing import Set, Tuple
 
 class BakePrePostHandlerBase:
-    def notify(self, assetId: str, rootLocationProducers: dict[str, FnGeolibProducers.GeometryProducer], progressCallback: typing.Callable | None, abortCallback: typing.Callable | None): ...
+    def notify(self, assetId: str, rootLocationProducers: dict[str, PyFnGeolibProducers.GeometryProducer], progressCallback: typing.Callable | None, abortCallback: typing.Callable | None): ...
 
 class LookFileBaker:
     additionalSettings: Incomplete
@@ -33,5 +34,5 @@ class LookFileBaker:
     def _appendLightsDefaultValuesBackupOp(op, txn, rootLocations): ...
     @staticmethod
     def _getModifiedPassProducer(op, rootLocations): ...
-    def bake(self, referenceOp: PyFnGeolib.GeolibRuntime.Op, passNamesAndOps, rootLocations: typing.Iterable[str], outputPath) -> list[str]: ...
-    def bakeAndPublish(self, referenceOp: PyFnGeolib.GeolibRuntime.Op, passNamesAndOps, rootLocations: typing.Iterable[str], assetId: str, assetArgs: Incomplete | None = ..., preBakeHandler: Incomplete | None = ..., postBakeHandler: Incomplete | None = ...) -> str: ...
+    def bake(self, referenceOp: PyFnGeolib.GeolibRuntimeOp, passNamesAndOps, rootLocations: typing.Iterable[str], outputPath) -> list[str]: ...
+    def bakeAndPublish(self, referenceOp: PyFnGeolib.GeolibRuntimeOp, passNamesAndOps, rootLocations: typing.Iterable[str], assetId: str, assetArgs: Incomplete | None = ..., preBakeHandler: Incomplete | None = ..., postBakeHandler: Incomplete | None = ...) -> str: ...

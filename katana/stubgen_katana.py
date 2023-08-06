@@ -40,7 +40,7 @@ class KatanaDocstringTypeFixer(DocstringTypeFixer):
     ]
 
     def get_replacements(self, is_return: bool) -> list[tuple[str, str]]:
-        return super().get_replacements(is_return) + self.REPLACEMENTS
+        return super().get_replacements(is_return) + self.SPECIAL_REPLACEMENTS
 
     def get_full_name(self, type_name: str) -> str:
         # FIXME: would be nice to have something that can do a search through known objects
@@ -81,28 +81,104 @@ class KatanaDocstringSignatureGenerator(
     def get_property_type(
         self, default_type: str | None, ctx: FunctionContext
     ) -> str | None:
-        return None
+        return default_type
 
 
 class KatanaCSignatureGenerator(KatanaDocstringTypeFixer, FixableCDocstringSigGen):
-    def get_function_sig(
-        self, default_sig: FunctionSig, ctx: FunctionContext
-    ) -> list[FunctionSig] | None:
-        sigs = super().get_function_sig(default_sig, ctx)
-        if sigs:
-            sigs = [self.cleanup_sig_types(sig, ctx) for sig in sigs]
-            if ctx.fullname == "NodegraphAPI_cmodule.Parameter.getValue":
-                return [sig._replace(ret_type="Any") for sig in sigs]
-            elif ctx.fullname == "NodegraphAPI_cmodule.GroupNode.getChild":
-                return [sig._replace(ret_type="Node") for sig in sigs]
-            elif ctx.fullname == "NodegraphAPI_cmodule.Port.getNode":
-                return [sig._replace(ret_type="Node") for sig in sigs]
-        return sigs
+    pass
 
 
 class KatanaSignatureGenerator(AdvancedSignatureGenerator):
-    # TODO: add overrides
-    pass
+    signature_overrides: dict[str, str | list[str]] = {
+        # these docstring sigs are malformed
+        "NodegraphAPI_cmodule.GraphState.edit": "(self) -> GraphStateBuilder",
+        "NodegraphAPI_cmodule.GraphState.getDynamicEntry": "(self, path: str)",
+        "NodegraphAPI_cmodule.GraphState.getOpSystemArgs": "(self) -> GroupAttribute",
+        "NodegraphAPI_cmodule.GraphState.getStaticEntry": "(self, path: str)",
+        "NodegraphAPI_cmodule.Node.getInputPort": "(self, name: str) -> Port | None",
+        "NodegraphAPI_cmodule.Node.getOutputPort": "(self, name: str) -> Port | None",
+        "NodegraphAPI_cmodule.Node.getParameterValue": "(self, name: str, time: float)",
+    }
+    # FIXME: enabling these creates an explosion of errors to resolve.
+    # optional_result = [
+    #     "NodegraphAPI_cmodule.Node.getInputPortByIndex",
+    #     "NodegraphAPI_cmodule.Node.getOutputPortByIndex",
+    #     "NodegraphAPI_cmodule.Node.getParameter",
+    #     "NodegraphAPI_cmodule.GroupNode.getChild",
+    #     "NodegraphAPI_cmodule.Parameter.getChild",
+    #     "NodegraphAPI_cmodule.Parameter.getChildByIndex",
+    #     "NodegraphAPI_cmodule.Port.getPort",
+    #     "PyFnAttribute.GroupAttribute.getChildByIndex",
+    #     "PyFnAttribute.GroupAttribute.getChildByName",
+    #     "PyFnGeolibProducers.GeometryProducer.getAttribute",
+    #     "PyFnGeolibProducers.GeometryProducer.getChildByName",
+    #     "PyFnGeolibProducers.GeometryProducer.getDelimitedGlobalAttribute",
+    #     "PyFnGeolibProducers.GeometryProducer.getDelimitedLocalAttribute",
+    #     "PyFnGeolibProducers.GeometryProducer.getFirstChild",
+    #     "PyFnGeolibProducers.GeometryProducer.getFnAttribute",
+    #     "PyFnGeolibProducers.GeometryProducer.getGlobalAttribute",
+    #     "PyFnGeolibProducers.GeometryProducer.getNextSibling",
+    #     "PyFnGeolibProducers.GeometryProducer.getProducerByPath",
+    # ]
+    arg_type_overrides = {
+        # FIXME: I'm using typing.Optional here because " | None" is getting stripped
+        (
+            "*",
+            "graphState",
+            "Incomplete | None",
+        ): "typing.Optional[NodegraphAPI.GraphState]",
+        ("*", "graphState", None): "NodegraphAPI.GraphState",
+        ("*", "port", "Incomplete | None"): "typing.Optional[NodegraphAPI.Port]",
+        ("*", "port", None): "NodegraphAPI.Port",
+        ("*", "node", "Incomplete | None"): "typing.Optional[NodegraphAPI.Node]",
+        ("*", "node", None): "NodegraphAPI.Node",
+        (
+            "*",
+            "producer",
+            "Incomplete | None",
+        ): "typing.Optional[PyFnGeolibProducers.GeometryProducer]",
+        ("*", "producer", None): "PyFnGeolibProducers.GeometryProducer",
+        ("*", "*Callback", "Incomplete | None"): "typing.Optional[typing.Callable]",
+        ("*", "*Callback", None): "typing.Callable",
+        ("Nodes3DAPI.RenderNodeUtil.SyncOutputPorts", "node", "*"): "NodegraphAPI.Node",
+        (
+            "Nodes3DAPI.RenderNodeUtil.GetRenderNodeInfo",
+            "node",
+            "*",
+        ): "NodegraphAPI.Node",
+    }
+    result_type_overrides = {
+        # None means the type is unset/unknown
+        ("NodegraphAPI_cmodule.*.getNode", "Any"): "Node",
+        ("*.getNode", None): "NodegraphAPI.Node",
+        ("NodegraphAPI_cmodule.Parameter.getValue", "*"): "Any",
+        ("NodegraphAPI_cmodule.GroupNode.getChild", "*"): "Node",
+        ("NodegraphAPI_cmodule.GroupNode.getChildren", "*"): "list[Node]",
+        ("NodegraphAPI_cmodule.Parameter.getChildren", "*"): "list[Parameter]",
+        ("NodegraphAPI_cmodule.Port.getConnectedPorts", "*"): "list[Port]",
+        ("PyFnAttribute.GroupAttribute.childList", "*"): "list[tuple[str, Attribute]]",
+        (
+            "PyFnGeolibProducers.GeometryProducer_childIter.__next__",
+            "*",
+        ): "GeometryProducer",
+        (
+            "PyFnGeolibProducers.GeometryProducer.getFlattenedGlobalXform",
+            "*",
+        ): "tuple[float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float]",
+        (
+            "drawing_cmodule.nodeWorld_getBounds",
+            "*",
+        ): "tuple[float, float, float, float]",
+        (
+            "drawing_cmodule.nodeWorld_getBoundsOfListOfNodes",
+            "*",
+        ): "tuple[float, float, float, float]",
+    }
+
+    def get_property_type(
+        self, default_type: str | None, ctx: FunctionContext
+    ) -> str | None:
+        return self.fallback_sig_gen.get_property_type(default_type, ctx)
 
 
 class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
@@ -122,7 +198,9 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
 
     def get_sig_generators(self) -> list[SignatureGenerator]:
         if self.is_c_module:
-            return [KatanaCSignatureGenerator()]
+            return [
+                KatanaSignatureGenerator(fallback_sig_gen=KatanaCSignatureGenerator())
+            ]
         else:
             return [
                 KatanaSignatureGenerator(
