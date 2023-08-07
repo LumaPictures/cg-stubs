@@ -20,6 +20,7 @@ from stubgenlib import (
     CFunctionStub,
     Notifier,
     DocstringTypeFixer,
+    Optionality,
 )
 
 notifier = Notifier()
@@ -176,6 +177,13 @@ class KatanaSignatureGenerator(AdvancedSignatureGenerator):
             "drawing_cmodule.nodeWorld_getBoundsOfListOfNodes",
             "*",
         ): "tuple[float, float, float, float]",
+    }
+    optional_args = {
+        (
+            "UI4.FormMaster.KatanaFactory.KatanaWidgetFactoryClass.buildWidget",
+            "policy",
+            "*",
+        ): Optionality(accepts_none=True, has_default=False),
     }
 
     def get_property_type(

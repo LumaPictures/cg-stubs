@@ -3,6 +3,7 @@
 import UI4.FormMaster.Editors as Editors
 import PyQt5.QtWidgets
 import QT4FormWidgets as QT4FormWidgets
+import typing
 from QT4FormWidgets.WidgetFactory import WidgetFactory
 from _typeshed import Incomplete
 from typing import ClassVar, Set, Tuple
@@ -18,7 +19,7 @@ class AttributeWidgetFactoryClass(KatanaWidgetFactoryClass):
 class KatanaWidgetFactoryClass(WidgetFactory):
     _KatanaWidgetFactoryClass__defaultWidgetTypes: ClassVar[dict] = ...
     def _getWidgetClass(self, policy: QT4FormWidgets.AbstractValuePolicy, hints: dict, widgetType: Incomplete | None = ...) -> type | None: ...
-    def buildWidget(self, parent: PyQt5.QtWidgets.QWidget, policy: QT4FormWidgets.AbstractValuePolicy) -> QT4FormWidgets.FormWidget: ...
+    def buildWidget(self, parent: PyQt5.QtWidgets.QWidget, policy: typing.Union[QT4FormWidgets.AbstractValuePolicy, None]) -> QT4FormWidgets.FormWidget: ...
 
 class ParameterWidgetFactoryClass(KatanaWidgetFactoryClass):
     def _getWidgetClass(self, policy, hints): ...
