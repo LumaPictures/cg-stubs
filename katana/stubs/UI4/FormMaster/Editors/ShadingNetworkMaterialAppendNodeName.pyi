@@ -1,0 +1,19 @@
+# mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
+
+import NodegraphAPI as NodegraphAPI
+import QT4FormWidgets as QT4FormWidgets
+import Utils as Utils
+from QT4FormWidgets.GroupFormWidget import GroupFormWidget
+from QT4FormWidgets.StringFormWidget import StringFormWidget
+from UI4.FormMaster.Editors.ShadingNetworkPopupButton import ShadingNetworkPopupButton as ShadingNetworkPopupButton
+from typing import Set, Tuple
+
+class NetworkMaterialSpliceNodeName(StringFormWidget):
+    def __init__(self, parent, policy, factory) -> None: ...
+    def _NetworkMaterialSpliceNodeName__getNetworkAttr(self): ...
+    def _NetworkMaterialSpliceNodeName__nodePortChosen(self, nodeName, portType, portName): ...
+    def _buildControlWidget(self, layout): ...
+
+class ShadingNetworkNodesAttributeGroupWidget(GroupFormWidget):
+    def _ShadingNetworkNodesAttributeGroupWidget__getNetworkAttr(self): ...
+    def _buildControlWidget(self, layout): ...

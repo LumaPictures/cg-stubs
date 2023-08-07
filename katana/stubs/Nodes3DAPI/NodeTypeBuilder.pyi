@@ -12,6 +12,7 @@ import Nodes3DAPI.TimingUtils as TimingUtils
 import Nodes3DAPI.TransformUtil as TransformUtil
 import typing
 from Nodes3DAPI_cmodule import BuildAttrListFromDynamicParameterGroup as BuildAttrListFromDynamicParameterGroup
+from UI4.FormMaster.GenericAssignParameterPolicy_geolib3 import g_policyRegistrationCallback as g_policyRegistrationCallback
 from _typeshed import Incomplete
 from types import ModuleType
 from typing import ClassVar, Set, Tuple

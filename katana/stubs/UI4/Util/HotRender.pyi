@@ -1,0 +1,16 @@
+# mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
+
+import NodegraphAPI
+import PyQt5.QtWidgets as QtWidgets
+import PyUtilModule.RenderManager as RenderManager
+import typing
+from _typeshed import Incomplete
+from typing import Set, Tuple
+
+class _HotrenderInterrupt:
+    def __init__(self) -> None: ...
+    def _HotrenderInterrupt__interrupt(self): ...
+    def close(self): ...
+    def serialHotrenderCB(self, message: Incomplete | None = ...): ...
+
+def SerialHotRender(nodeList, node: typing.Optional[NodegraphAPI.Node] = ..., renderMethodName: Incomplete | None = ..., remoteRender: bool = ..., renderFarm: Incomplete | None = ...): ...

@@ -9,6 +9,8 @@ import PyFnAttribute
 import PyQt5.QtCore
 import PyQt5.QtWidgets
 import QT4FormWidgets as QT4FormWidgets
+import UI4.Widgets.SceneGraphView.SceneGraphLocationTranslation as SceneGraphLocationTranslation
+import UI4.Util.ScenegraphIconManager as ScenegraphIconManager
 import UI4 as UI4
 import UI4.NodeMaster.NodeInteractionDelegateManager
 import UI4.Widgets
@@ -17,6 +19,7 @@ import Utils as Utils
 import typing
 from BaseNode import BaseNode
 from PyUtilModule.VirtualKatana import Decorators as Decorators, FormMaster as FormMaster, NodeMaster as NodeMaster, QtCore as QtCore, QtWidgets as QtWidgets, ScenegraphManager as ScenegraphManager
+from UI4.Widgets.SceneGraphView.ColumnDataType import ColumnDataType as ColumnDataType
 from Utils.Decorators import deprecated as deprecated
 from _typeshed import Incomplete
 from typing import ClassVar, Set, Tuple

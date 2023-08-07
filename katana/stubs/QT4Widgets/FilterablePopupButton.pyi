@@ -6,6 +6,7 @@ import PyQt5.QtCore as QtCore
 import PyQt5.QtGui as QtGui
 import PyQt5.QtWidgets as QtWidgets
 import ResourceFiles as ResourceFiles
+import UI4 as UI4
 import Utils as Utils
 import QT4Widgets.WidgetUtils as WidgetUtils
 from QT4Widgets.SortableTreeWidget import SortableTreeWidget as SortableTreeWidget, SortableTreeWidgetItem as SortableTreeWidgetItem

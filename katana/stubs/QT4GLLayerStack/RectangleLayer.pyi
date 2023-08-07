@@ -4,6 +4,7 @@ import QT4GLLayerStack.LayerStack
 import PyQt5.QtCore as QtCore
 import PyQt5.QtGui as QtGui
 import PyQt5.QtWidgets as QtWidgets
+import UI4 as UI4
 from QT4GLLayerStack.LayerStack import Layer as Layer
 from typing import Set, Tuple
 

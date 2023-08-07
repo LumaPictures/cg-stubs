@@ -8,6 +8,7 @@ import PyQt5.QtCore as QtCore
 import PyQt5.QtGui as QtGui
 import PyQt5.QtWidgets as QtWidgets
 import QT4Widgets.TextEditorUtils as TextEditorUtils
+import UI4 as UI4
 import Utils as Utils
 import code
 import re

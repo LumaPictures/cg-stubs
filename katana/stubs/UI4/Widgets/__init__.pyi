@@ -1,0 +1,144 @@
+# mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
+
+import DrawingModule as DrawingModule
+import NodeGraphView as NodeGraphView
+import NodegraphAPI as NodegraphAPI
+import Nodes2DAPI as Nodes2DAPI
+import Nodes3DAPI as Nodes3DAPI
+import QT4Color as QT4Color
+import QT4Widgets as QT4Widgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
+import PyUtilModule.RenderManager.RenderGlobals as RenderGlobals
+import PyUtilModule.RenderManager as RenderManager
+import Nodes3DAPI.ScenegraphManager as ScenegraphManager
+import UI4 as UI4
+import Utils as Utils
+import QT4Widgets.WidgetUtils as WidgetUtils
+from . import AttributeHistoryWidgets as AttributeHistoryWidgets, AutoKeyToggle as AutoKeyToggle, BaseWidgets as BaseWidgets, CatalogRenderStatsWidget as CatalogRenderStatsWidget, CollectAndSelect as CollectAndSelect, DoubleSpinBox as DoubleSpinBox, FilterPopups as FilterPopups, GradientLayer as GradientLayer, ImageOptionsWidgets as ImageOptionsWidgets, MessageBox as MessageBox, PaneButtons as PaneButtons, ProductSaveWidgets as ProductSaveWidgets, RenderModePopup as RenderModePopup, RenderViewWidgets as RenderViewWidgets, ScrollAreaMemory as ScrollAreaMemory, SortableGroups as SortableGroups, SortablePanel as SortablePanel, SortableParams as SortableParams, StatefulMenu as StatefulMenu, UpdateModeWidgets as UpdateModeWidgets, VariablesPopup as VariablesPopup, WorkingSetWidgets as WorkingSetWidgets
+from .SceneGraphView import Bridge as Bridge, ColumnManager as ColumnManager, ColumnPresetManager as ColumnPresetManager, ContextMenuEvent as ContextMenuEvent, SceneGraphLocationTranslation as SceneGraphLocationTranslation, SceneGraphTree as SceneGraphTree, SceneGraphViewClientManager as SceneGraphViewClientManager, SceneGraphViewColumn as SceneGraphViewColumn, SceneGraphViewIconManager as SceneGraphViewIconManager, ViewLink as ViewLink
+from QT4Widgets.CustomMenu import CustomMenu as CustomMenu
+from QT4Widgets.FilterFieldWidget import FilterFieldWidget as FilterFieldWidget
+from QT4Widgets.FilterablePopupButton import FilterablePopup as FilterablePopup, FilterablePopupButton as FilterablePopupButton
+from QT4Widgets.MenuButton import MenuButton as MenuButton
+from QT4Widgets.PopdownLabel import PopdownLabel as PopdownLabel
+from QT4Widgets.SortableTreeWidget import CallbackRecord as CallbackRecord, SortableTreeWidget as SortableTreeWidget, SortableTreeWidgetItem as SortableTreeWidgetItem, SortableTreeWidgetItemDelegate as SortableTreeWidgetItemDelegate
+from QT4Widgets.StretchBox import StretchBox as StretchBox
+from UI4.Util.IconManager import GetPixmap as GetPixmap
+from UI4.Widgets.AssetIDLabel import AssetIDLabel as AssetIDLabel
+from UI4.Widgets.AttributeDropLabel import AttributeDropLabel as AttributeDropLabel
+from UI4.Widgets.AttributeEditorIndicatorLabel import AttributeEditorIndicatorLabel as AttributeEditorIndicatorLabel
+from UI4.Widgets.AttributeHistoryWidgets import AddAttributeHistoryActionsToMenu as AddAttributeHistoryActionsToMenu, AttributeHistoryPopup as AttributeHistoryPopup, AttributeHistoryPopupWidget as AttributeHistoryPopupWidget, AttributeHistoryTreeWidget as AttributeHistoryTreeWidget, AttributeInheritancePopup as AttributeInheritancePopup, AttributeInheritancePopupWidget as AttributeInheritancePopupWidget
+from UI4.Widgets.AutoKeyToggle import AutoKeyAllToggle as AutoKeyAllToggle
+from UI4.Widgets.BaseLayoutResizer import BaseLayoutResizer as BaseLayoutResizer
+from UI4.Widgets.BaseNodeGraphLayerStack import BaseNodeGraphLayerStack as BaseNodeGraphLayerStack
+from UI4.Widgets.BaseWidgets import BaseFrame as BaseFrame, BaseWidget as BaseWidget
+from UI4.Widgets.CameraPickerButton import CameraPickerButton as CameraPickerButton
+from UI4.Widgets.CatalogChannelsWidget import CatalogChannelsWidget as CatalogChannelsWidget
+from UI4.Widgets.CatalogFrameRangeWidget import CatalogFrameRangeWidget as CatalogFrameRangeWidget
+from UI4.Widgets.CatalogHistogramWidget import CatalogHistogramWidget as CatalogHistogramWidget
+from UI4.Widgets.CatalogItemWidget import CatalogItemWidget as CatalogItemWidget
+from UI4.Widgets.CatalogLockWidget import CatalogLockWidget as CatalogLockWidget
+from UI4.Widgets.CatalogNameWidget import CatalogNameWidget as CatalogNameWidget
+from UI4.Widgets.CatalogProgressWidget import CatalogProgressWidget as CatalogProgressWidget, ProgressWidget as ProgressWidget
+from UI4.Widgets.CatalogRenderLogWidget import CatalogRenderLogWidget as CatalogRenderLogWidget
+from UI4.Widgets.CatalogRenderStatsWidget import CatalogRenderGlobalsStatsWidget as CatalogRenderGlobalsStatsWidget, CatalogRenderTaskByNameStatsWidget as CatalogRenderTaskByNameStatsWidget, CatalogRenderTaskByTypeStatsWidget as CatalogRenderTaskByTypeStatsWidget
+from UI4.Widgets.CatalogResolutionWidget import CatalogResolutionWidget as CatalogResolutionWidget
+from UI4.Widgets.CatalogStopWidget import CatalogStopWidget as CatalogStopWidget
+from UI4.Widgets.CatalogThumbnailWidget import CatalogThumbnailWidget as CatalogThumbnailWidget
+from UI4.Widgets.CelResultsWidget import CelResultsWidget as CelResultsWidget, CelResultsWindow as CelResultsWindow
+from UI4.Widgets.CheckableTreeDialog import CheckableTreeDialog as CheckableTreeDialog
+from UI4.Widgets.Checkbox import Checkbox as Checkbox
+from UI4.Widgets.CollectAndSelect import CollectAndSelectInScenegraph as CollectAndSelectInScenegraph
+from UI4.Widgets.ColorProbeButton import ColorProbeBase as ColorProbeBase, ColorProbeButton as ColorProbeButton
+from UI4.Widgets.ComboBoxNoWheel import ComboBoxNoWheel as ComboBoxNoWheel
+from UI4.Widgets.CrashFileSelectorDialog import CrashFileSelectorDialog as CrashFileSelectorDialog
+from UI4.Widgets.DoubleClickSizeGrip import DoubleClickSizeGrip as DoubleClickSizeGrip
+from UI4.Widgets.DropdownArrowButton import DropdownArrowButton as DropdownArrowButton
+from UI4.Widgets.EditWrenchButton import EditWrenchButton as EditWrenchButton
+from UI4.Widgets.FarmDefaultDialog import FarmDefaultDialog as FarmDefaultDialog, GenerateFarmCreateSettingsOnRootNode as GenerateFarmCreateSettingsOnRootNode
+from UI4.Widgets.FastLabel import FastLabel as FastLabel
+from UI4.Widgets.FilterPopups import LookFileMaterialFilterPopup as LookFileMaterialFilterPopup, ShaderFilterPopup as ShaderFilterPopup, ShaderTypeFilterPopup as ShaderTypeFilterPopup
+from UI4.Widgets.FlipbookDialog import FlipbookDialog as FlipbookDialog
+from UI4.Widgets.GeolibProcessingStateWidget import GeolibProcessingStateWidget as GeolibProcessingStateWidget
+from UI4.Widgets.GetSetMenu import GetSetAction as GetSetAction, GetSetMenu as GetSetMenu
+from UI4.Widgets.GradientLayer import GradientLayerBundle as GradientLayerBundle, GradientLayerBundleManager as GradientLayerBundleManager, HueGradientFCurveLayer as HueGradientFCurveLayer, HueGradientLayerStackLayer as HueGradientLayerStackLayer, LinearGradientFCurveLayer as LinearGradientFCurveLayer, LinearGradientLayerStackLayer as LinearGradientLayerStackLayer
+from UI4.Widgets.GraphStateVariablesPopupButton import GraphStateVariablesPopupButton as GraphStateVariablesPopupButton
+from UI4.Widgets.HBoxLayoutResizer import HBoxLayoutResizer as HBoxLayoutResizer
+from UI4.Widgets.HighlightWidget import HighlightWidget as HighlightWidget
+from UI4.Widgets.HistogramLayer import HistogramLayer as HistogramLayer
+from UI4.Widgets.HorizontalDivider import HorizontalDivider as HorizontalDivider
+from UI4.Widgets.HtmlEditorWidget import HtmlEditorWidget as HtmlEditorWidget
+from UI4.Widgets.IconLabelFrame import IconLabelFrame as IconLabelFrame
+from UI4.Widgets.ImageOptionsWidgets import ColorspaceSelectionWidget as ColorspaceSelectionWidget, ImageOptionsWidget as ImageOptionsWidget, OptionComboBase as OptionComboBase, OutputImageExtensionWidget as OutputImageExtensionWidget
+from UI4.Widgets.ImplicitFilterToggle import ImplicitFilterToggle as ImplicitFilterToggle, ImplicitFilterWarningLabel as ImplicitFilterWarningLabel
+from UI4.Widgets.IndicatorLabelFrame import IndicatorLabelFrame as IndicatorLabelFrame
+from UI4.Widgets.KeyboardShortcutLineEdit import KeyboardShortcutLineEdit as KeyboardShortcutLineEdit
+from UI4.Widgets.LiveRenderViewerCameraButton import LiveRenderViewerCameraButton as LiveRenderViewerCameraButton
+from UI4.Widgets.LogRecordTreeView import LogRecordTreeView as LogRecordTreeView
+from UI4.Widgets.LookFileMaterialComboBox import LookFileMaterialComboBox as LookFileMaterialComboBox
+from UI4.Widgets.MessagesToolbarButton import MessagesToolbarButton as MessagesToolbarButton
+from UI4.Widgets.MetaCheckBox import MetaCheckBox as MetaCheckBox
+from UI4.Widgets.ModalProcessInterruptWidget import ModalProcessInterruptWidget as ModalProcessInterruptWidget
+from UI4.Widgets.MonitorManipulatorButton import MonitorManipulatorButton as MonitorManipulatorButton
+from UI4.Widgets.NavigationToolbar import NavigationToolbar as NavigationToolbar
+from UI4.Widgets.NodeButton import NodeButton as NodeButton
+from UI4.Widgets.NodeChooserButton import NodeChooserButton as NodeChooserButton
+from UI4.Widgets.NodeColorsMenu import ColorAction as ColorAction, NodeColorsMenu as NodeColorsMenu, SetNodeColorCustom as SetNodeColorCustom
+from UI4.Widgets.NodeMenu import NodeMenu as NodeMenu
+from UI4.Widgets.NodePopupMenu import NodePopupMenu as NodePopupMenu, PortRenameWidget as PortRenameWidget, ShadingPortPopupMenu as ShadingPortPopupMenu
+from UI4.Widgets.NodeTypePopup import NodeTypePopup as NodeTypePopup
+from UI4.Widgets.NonexclusiveCheckboxPopup import NonexclusiveCheckboxPopup as NonexclusiveCheckboxPopup
+from UI4.Widgets.NotificationToolbarButton import NotificationToolbarButton as NotificationToolbarButton
+from UI4.Widgets.PaneButtons import AddTabButton as AddTabButton, CloseAllTabsButton as CloseAllTabsButton, CloseTabButton as CloseTabButton, MaximizePaneButton as MaximizePaneButton
+from UI4.Widgets.PanelScrollArea import PanelScrollArea as PanelScrollArea
+from UI4.Widgets.PanelWidget import PanelWidget as PanelWidget
+from UI4.Widgets.PolicyHelpButton import PolicyHelpButton as PolicyHelpButton
+from UI4.Widgets.PopdownLabel import LabelButton as LabelButton
+from UI4.Widgets.PopupButton import PopupButton as PopupButton
+from UI4.Widgets.PortNameLineEdit import PortNameLineEdit as PortNameLineEdit
+from UI4.Widgets.ProductSaveWidgets import FileSaveDialog as FileSaveDialog, FileSaveWidget as FileSaveWidget, ProductOrFileSaveDialog as ProductOrFileSaveDialog, ProductSaveDialog as ProductSaveDialog
+from UI4.Widgets.ProgressDialog import ProgressDialog as ProgressDialog
+from UI4.Widgets.ProxyResCombo import ProxyResCombo as ProxyResCombo
+from UI4.Widgets.PublicInterfaceParameters import PublicInterfaceParameters as PublicInterfaceParameters
+from UI4.Widgets.RenderModePopup import RenderModePopupButton as RenderModePopupButton
+from UI4.Widgets.RenderSelectedToggle import RenderSelectedToggle as RenderSelectedToggle
+from UI4.Widgets.RenderViewWidgets import RenderViewCapsule as RenderViewCapsule, RenderViewsAutoUpdateCheckbox as RenderViewsAutoUpdateCheckbox
+from UI4.Widgets.ResizeToggleArrow import ResizeToggleArrow as ResizeToggleArrow
+from UI4.Widgets.ResolutionComboBox import ResolutionComboBox as ResolutionComboBox
+from UI4.Widgets.RoiCombo import RoiCombo as RoiCombo
+from UI4.Widgets.RolloverPixmap import RolloverPixmap as RolloverPixmap
+from UI4.Widgets.SceneGraphView.ColumnDataType import ColumnDataType as ColumnDataType, RegisterDataType as RegisterDataType
+from UI4.Widgets.SceneGraphView.HorizontalHeaderView import HorizontalHeaderView as HorizontalHeaderView
+from UI4.Widgets.SceneGraphView.SceneGraphView import SceneGraphView as SceneGraphView
+from UI4.Widgets.ServiceProviderListWidget import ServiceProviderListWidget as ServiceProviderListWidget
+from UI4.Widgets.SetVersionFilterablePopup import SetVersionFilterablePopup as SetVersionFilterablePopup
+from UI4.Widgets.ShaderComboBox import ShaderComboBox as ShaderComboBox
+from UI4.Widgets.ShelfButton import ShelfButton as ShelfButton
+from UI4.Widgets.SortableGroups import SortableGroupsFormWidget as SortableGroupsFormWidget
+from UI4.Widgets.SortableListWidget import SortableListWidget as SortableListWidget, SortableListWidgetItem as SortableListWidgetItem, SortableListWidgetItemDelegate as SortableListWidgetItemDelegate
+from UI4.Widgets.SortablePanel import ParameterExpressionPanel as ParameterExpressionPanel, ParameterSortablePanel as ParameterSortablePanel, ParameterSortablePanelFormWidget as ParameterSortablePanelFormWidget, SortablePanelBase as SortablePanelBase, SortablePanelFormWidget as SortablePanelFormWidget
+from UI4.Widgets.SortableParams import SortableParamsFormWidget as SortableParamsFormWidget
+from UI4.Widgets.StopButton import SimpleStopWidget as SimpleStopWidget, StopButton as StopButton
+from UI4.Widgets.SwitchingBoxLayout import SwitchingBoxLayout as SwitchingBoxLayout
+from UI4.Widgets.TabDockWidget import TabDockWidget as TabDockWidget
+from UI4.Widgets.ToolbarButton import LabeledToolbarButton as LabeledToolbarButton, ToolbarButton as ToolbarButton
+from UI4.Widgets.ToolbarWidget import ToolbarWidget as ToolbarWidget
+from UI4.Widgets.TreeWidget import TreeItem as TreeItem, TreeWidget as TreeWidget
+from UI4.Widgets.TriangleButton import TriangleButton as TriangleButton
+from UI4.Widgets.UpdateModeWidgets import UpdateModePopdownButton2D as UpdateModePopdownButton2D, UpdateModePopdownButton3D as UpdateModePopdownButton3D, UpdateModeWidget2D as UpdateModeWidget2D, UpdateModeWidget3D as UpdateModeWidget3D
+from UI4.Widgets.VBoxLayoutResizer import VBoxLayoutResizer as VBoxLayoutResizer
+from UI4.Widgets.VPStateButton import VPStateButton as VPStateButton
+from UI4.Widgets.VariablesPopup import VariablesPopupButton as VariablesPopupButton
+from UI4.Widgets.VerticalDivider import VerticalDivider as VerticalDivider
+from UI4.Widgets.ViewIndicatorLabel import ViewIndicatorLabel as ViewIndicatorLabel
+from UI4.Widgets.ViewerWorkingSetButton import ViewerWorkingSetButton as ViewerWorkingSetButton
+from UI4.Widgets.ViewportPane import ViewportPane as ViewportPane
+from UI4.Widgets.ViewportWidget import ViewportWidget as ViewportWidget
+from UI4.Widgets.WheelEventIgnoringTabBar import WheelEventIgnoringTabBar as WheelEventIgnoringTabBar
+from UI4.Widgets.WidgetHilightBox import WidgetHilightBox as WidgetHilightBox
+from UI4.Widgets.WorkingSetWidgets import WorkingSetClearStateAction as WorkingSetClearStateAction, WorkingSetContextMenu as WorkingSetContextMenu, WorkingSetExpandBranchAction as WorkingSetExpandBranchAction, WorkingSetIconManager as WorkingSetIconManager, WorkingSetIncludeProxyChildren as WorkingSetIncludeProxyChildren, WorkingSetResetStateAction as WorkingSetResetStateAction, WorkingSetStateAction as WorkingSetStateAction, WorkingSetStateCheckableAction as WorkingSetStateCheckableAction
+from typing import Set, Tuple
+
+def Initialize(): ...

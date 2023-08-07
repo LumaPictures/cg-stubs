@@ -1,6 +1,8 @@
 # mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
 
 import PyFnAttribute as FnAttribute
+import UI4.Util.IconManager as IconManager
+import UI4.Widgets.SceneGraphView.ItemDelegates as ItemDelegates
 import NodegraphAPI as NodegraphAPI
 import PackageSuperToolAPI.Packages
 import PackageSuperToolAPI.Packages as Packages
@@ -10,7 +12,10 @@ import PyQt5.QtWidgets
 import PyQt5.QtCore as QtCore
 import PyQt5.QtGui as QtGui
 import PyQt5.QtWidgets as QtWidgets
+import UI4.Widgets.SceneGraphView.SceneGraphViewIconManager as SceneGraphViewIconManager
+import UI4.Util.ScenegraphIconManager as ScenegraphIconManager
 import UI4.Widgets.SceneGraphView
+from UI4.Widgets.SceneGraphView.ColumnDataType import RegisterDataType as RegisterDataType
 from UI4.Widgets.SceneGraphView.ItemDelegates.NameItemDelegate import NameItemDelegate
 from _typeshed import Incomplete
 from typing import ClassVar, Set, Tuple

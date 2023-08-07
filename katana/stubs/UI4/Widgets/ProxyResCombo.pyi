@@ -1,0 +1,19 @@
+# mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
+
+import PyQt5.QtWidgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtWidgets as QtWidgets
+import PyUtilModule.RenderManager as RenderManager
+import Utils as Utils
+from QT4Widgets.PopdownLabel import PopdownLabel as PopdownLabel
+from typing import Set, Tuple
+
+class MyAction(PyQt5.QtWidgets.QAction):
+    def __init__(self, mode, *args) -> None: ...
+    def _MyAction__activatedCB(self): ...
+
+class ProxyResCombo(PopdownLabel):
+    def __init__(self, *args) -> None: ...
+    def _ProxyResCombo__sampleRateUpdate_CB(self, *args, **kwargs): ...
+    def buildMenu(self, menu: PyQt5.QtWidgets.QMenu): ...
+    def updateState(self): ...

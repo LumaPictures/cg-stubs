@@ -1,0 +1,33 @@
+# mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
+
+import DrawingModule as DrawingModule
+import PyUtilModule.EnvUtils as EnvUtils
+import NodegraphAPI.NodeNameFromParamManager as NodeNameFromParamManager
+import NodegraphAPI as NodegraphAPI
+import UI4.FormMaster.ParameterPolicy as ParameterPolicy
+import PyQt5.QtCore
+import PyQt5.QtGui
+import PyQt5.QtWidgets
+import QT4FormWidgets as QT4FormWidgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
+import Utils as Utils
+from QT4FormWidgets.ExpressionEditDialog import ExpressionEditDialog as ExpressionEditDialog
+from _typeshed import Incomplete
+from typing import ClassVar, Set, Tuple
+
+class _NodeNameEditFrame(PyQt5.QtWidgets.QFrame):
+    _NodeNameRegExp: ClassVar[PyQt5.QtCore.QRegExp] = ...
+    def __init__(self, node: NodegraphAPI.Node, nameParameter: Incomplete | None = ..., usePadding: bool = ..., scale: float = ..., parent: Incomplete | None = ...) -> None: ...
+    def _NodeNameEditFrame__on_lineEdit_editingAborted(self): ...
+    def _NodeNameEditFrame__on_lineEdit_editingFinished(self): ...
+    def mousePressEvent(self, mouseEvent: PyQt5.QtGui.QMouseEvent): ...
+    def showEvent(self, event: PyQt5.QtGui.QShowEvent): ...
+
+class _NodeNameLineEdit(PyQt5.QtWidgets.QLineEdit):
+    editingAborted: ClassVar[PyQt5.QtCore.pyqtSignal] = ...
+    def contextMenuEvent(self, event): ...
+    def keyPressEvent(self, event: PyQt5.QtGui.QKeyEvent): ...
+
+def EditNodeName(node: NodegraphAPI.Node, position: Incomplete | None = ..., size: Incomplete | None = ..., bold: bool = ..., useNodeGraphStyle: bool = ..., scale: float = ..., parent: Incomplete | None = ...): ...

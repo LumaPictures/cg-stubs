@@ -7,6 +7,7 @@ import PyUtilModule.LiveRenderAPI as LiveRenderAPI
 import NodegraphAPI as NodegraphAPI
 import Nodes3DAPI as Nodes3DAPI
 import PyFnAttribute
+import UI4 as UI4
 import Utils as Utils
 from typing import Set, Tuple
 

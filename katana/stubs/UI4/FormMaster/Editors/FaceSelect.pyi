@@ -1,0 +1,16 @@
+# mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
+
+import KatanaResources as KatanaResources
+import QT4FormWidgets as QT4FormWidgets
+import PyQt5.QtGui as QtGui
+import PyQt5.QtWidgets as QtWidgets
+from PyUtilModule.VirtualKatana import FaceSelectionManager as FaceSelectionManager
+from QT4FormWidgets.StringFormWidget import StringFormWidget
+from typing import Set, Tuple
+
+class FaceSelectFormWidget(StringFormWidget):
+    def __init__(self, parent, policy, factory) -> None: ...
+    def _FaceSelectFormWidget__adoptFacesCB(self): ...
+    def _FaceSelectFormWidget__adoptMenuAboutToShow(self, menu): ...
+    def _buildControlWidget(self, layout): ...
+    def getMeshLocation(self): ...

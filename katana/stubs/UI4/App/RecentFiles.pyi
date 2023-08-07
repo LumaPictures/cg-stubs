@@ -1,0 +1,13 @@
+# mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
+
+import AssetAPI as AssetAPI
+import UI4.Util.FileHelpers as FileHelpers
+import UI4.KatanaPrefs.PrefNames as PrefNames
+import Utils as Utils
+from UI4.KatanaPrefs.KatanaPrefsObject import Prefs as Prefs
+from typing import Set, Tuple
+
+def ClearRecentFiles(): ...
+def GetAllRecentFiles() -> list[str]: ...
+def OpenRecentFileByIndex(recentFileIndex: int): ...
+def PushRecentFile(fileName): ...

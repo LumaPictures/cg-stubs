@@ -1,0 +1,26 @@
+# mypy: disable-error-code="misc, override, attr-defined, no-redef, assignment"
+
+import UI4.Util.AttributeHistory as AttributeHistory
+import UI4.Util.IconManager as IconManager
+import NodegraphAPI as NodegraphAPI
+import PyQt5.QtCore
+import QT4FormWidgets
+import PyQt5.QtCore as QtCore
+import PyQt5.QtWidgets as QtWidgets
+import Nodes3DAPI.ScenegraphManager as ScenegraphManager
+import UI4 as UI4
+import Utils as Utils
+from _typeshed import Incomplete
+from typing import Set, Tuple
+
+MENU_CONTENTS_EXISTING: int
+MENU_CONTENTS_NEW: int
+
+def AddMimeData(mimeData: PyQt5.QtCore.QMimeData, locationPolicy: QT4FormWidgets.AbstractValuePolicy): ...
+def CheckMimeData(mimeData: PyQt5.QtCore.QMimeData, allowNodes: bool = ...) -> PyQt5.QtCore.DropAction: ...
+def FillMenu(menu, locationPolicy, contents: Incomplete | None = ..., adjustRelativeTo: Incomplete | None = ..., locked: bool = ..., basePath: bool = ..., adoptScenegraphSelectionEnabled: bool = ...): ...
+def FilterLocationPath(unverifiedPath, allowRelative: bool = ...): ...
+def GetNodesCreatingSceneGraphLocations(nodes: list[nodes]) -> list[node, str]: ...
+def GetReferencingInfo(locationPolicy): ...
+def SelectInScenegraph(locationPath: str): ...
+def SetMimeData(mimeData, locationPolicy, allowNodes: bool = ...): ...
