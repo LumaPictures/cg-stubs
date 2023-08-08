@@ -2,7 +2,9 @@
 
 ## Python stubs for VFX and Animation
 
-Supported libraries and applications.
+These stubs are intended to be used with a type checker like [`mypy`](https://mypy.readthedocs.io/en/stable/) to provide [static type checking](https://realpython.com/python-type-checking/) of python code, as well as analysis and completion in IDEs like PyCharm and VSCode with Pylance.
+
+Supported libraries and applications:
 
 - [USD](https://pypi.org/project/types-usd/)
 - [houdini](https://pypi.org/project/types-houdini/)
@@ -13,7 +15,7 @@ Supported libraries and applications.
 - [PySide2](https://pypi.org/project/types-PySide2/)
 - [substance_painter](https://pypi.org/project/types-substance_painter/)
 
-For code completion and type analysis in Maya, [pymel](https://pypi.org/project/pymel/) has very excellent stubs included. 
+Note that [pymel](https://pypi.org/project/pymel/) now has very excellent stubs included (more info [here](https://dev.to/chadrik/pymels-new-type-stubs-2die)). 
 
 ## Installing
 
@@ -27,16 +29,26 @@ pip install types-usd types-houdini types-katana types-mari types-nuke types-ope
 
 First, look at `ocio/stubgen_ocio.sh` to see if there are any env vars to set in the `# Custom variables` section.
 
-Next, build it.  Requires python 3.7+:
+Next, you'll need to check out a custom build of mypy (until my [PR](https://github.com/python/mypy/pull/15770) gets merged):
 
 ```
+git clone https://github.com/LumaPictures/cg-stubs
+git clone https://github.com/chadrik/mypy
+cd mypy
+git checkout stubgen/shared-sig-gen-14
+```
+
+Next, build the stubs using [`nox`](https://nox.thea.codes/en/stable/index.html).  Requires python 3.7+:
+
+```
+cd cg-stubs
 python3 -m venv .venv
 . .venv/bin/activate
 pip install -r nox-requirements.txt
 nox -s 'generate(ocio)'
 ```
 
-If this fails, here's a paranoid/foolproof approach:
+If this fails, here's a more foolproof approach:
 
 ```
 # setup your env, e.g. setpkg python-3.7
@@ -51,43 +63,27 @@ python3 -m nox -s 'generate(ocio)'
 
 ## Developing
 
-This project uses [`nox`](https://nox.thea.codes/en/stable/index.html) as a build tool.
-
-The folowing recipe will create an editable install of the stubs for the specified project, so that you can edit the files in place, and test the results in another project using mypy 
-(if you're using the daemon, be sure to run `dmypy stop` to reread freshly modified stubs).
-
-```
-# activate the venv that you want to install into
-. /path/to/.venv/bin/activate
-pip install -r nox
-nox -s 'develop(ocio)'
-```
-
-Alternately, you may find it easier to simply install a `.pth` file:
+The easiest way to test stubs while you're devleoping them is to create an editable install.  Simply create a `.pth` file in your site-packages directory:
 
 ```
 echo "/path/to/cg-stubs/ocio/stubs/" > /path/to/venv/lib/python3.7/site-packages/ocio.pth
 ```
 
+The name of the .pth file does not matter.  Note that if you're using the mypy daemon, be sure to run `dmypy stop` to reread freshly modified stubs.
+
 ## Publishing to PyPI
 
-To publish to pypi.org:
+To publish to pypi.org, first run the nox installation steps from the Generating section, then:
 
 (replace ocio with the package to publish)
 
 ```
-python3 -m venv .venv
-. .venv/bin/activate
-pip install nox
 nox -s 'publish(ocio)'
 ```
 
 To publish to a custom registry:
 
 ```
-python3 -m venv .venv
-. .venv/bin/activate
-pip install nox poetry
 poetry config repositories.pypi-nexus https://nexus.myorg/repository/pypi/
 nox -s 'publish(ocio)' --  --repository pypi-nexus -u pypi -p 'whatever'
 ```
