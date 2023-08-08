@@ -26,6 +26,8 @@ keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
 
 # FIXME: generate this file and these packages using jinja
 packages = [
+    { include = "_FnKatanaCoreUI-stubs", from = "stubs" },
+    { include = "_PyOpenColorIO-stubs", from = "stubs" },
     { include = "AssetAPI-stubs", from = "stubs" },
     { include = "AssetAPI_cmodule-stubs", from = "stubs" },
     { include = "AssetBrowser-stubs", from = "stubs" },
@@ -75,11 +77,10 @@ packages = [
     { include = "RenderingAPI_cmodule-stubs", from = "stubs" },
     { include = "RerenderEventMapper-stubs", from = "stubs" },
     { include = "ResourceFiles-stubs", from = "stubs" },
+    { include = "UI4-stubs", from = "stubs" },
     { include = "Utils-stubs", from = "stubs" },
     { include = "ViewerAPI-stubs", from = "stubs" },
     { include = "WorkQueue-stubs", from = "stubs" },
-    { include = "_FnKatanaCoreUI-stubs", from = "stubs" },
-    { include = "_PyOpenColorIO-stubs", from = "stubs" },
     { include = "drawing_cmodule-stubs", from = "stubs" },
 ]
 
