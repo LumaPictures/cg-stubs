@@ -19,6 +19,8 @@ Note that [pymel](https://pypi.org/project/pymel/) now has very excellent stubs 
 
 ## Installing
 
+These are distributed as "stubs-only" python packages, so you can just pip install whichever packages you need:
+
 ```
 pip install types-usd types-houdini types-katana types-mari types-nuke types-opencolorio types-PySide2 types-substance_painter
 ```
@@ -63,7 +65,7 @@ python3 -m nox -s 'generate(ocio)'
 
 ## Developing
 
-The easiest way to test stubs while you're devleoping them is to create an editable install.  Simply create a `.pth` file in your site-packages directory:
+The easiest way to use the stubs while you're devleoping them is to create an editable install.  Simply create a `.pth` file in the site-packages directory of the venv where your other deps live:
 
 ```
 echo "/path/to/cg-stubs/ocio/stubs/" > /path/to/venv/lib/python3.7/site-packages/ocio.pth
