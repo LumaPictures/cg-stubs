@@ -19,7 +19,7 @@ Note that [pymel](https://pypi.org/project/pymel/) now has very excellent stubs 
 
 ## Installing
 
-These are distributed as "stubs-only" python packages, so you can just pip install whichever packages you need:
+These are distributed as "stubs-only" python packages, so you can just `pip install` whichever packages you need:
 
 ```
 pip install types-usd types-houdini types-katana types-mari types-nuke types-opencolorio types-PySide2 types-substance_painter
@@ -27,7 +27,9 @@ pip install types-usd types-houdini types-katana types-mari types-nuke types-ope
 
 ## Generating the stubs
 
-(replace ocio with your desired package to generate)
+You only need to do this if you your goal is to help improve the stubs. Otherwise, just use `pip`.
+
+In the instructions below, replace ocio with your desired package to generate.
 
 First, look at `ocio/stubgen_ocio.sh` to see if there are any env vars to set in the `# Custom variables` section.
 
@@ -38,6 +40,7 @@ git clone https://github.com/LumaPictures/cg-stubs
 git clone https://github.com/chadrik/mypy
 cd mypy
 git checkout stubgen/shared-sig-gen-14
+cd ..
 ```
 
 Next, build the stubs using [`nox`](https://nox.thea.codes/en/stable/index.html).  Requires python 3.7+:
@@ -62,8 +65,7 @@ rm -rf .nox
 python3 -m nox -s 'generate(ocio)'
 ```
 
-
-## Developing
+### Testing while Developing
 
 The easiest way to use the stubs while you're devleoping them is to create an editable install.  Simply create a `.pth` file in the site-packages directory of the venv where your other deps live:
 
@@ -73,11 +75,39 @@ echo "/path/to/cg-stubs/ocio/stubs/" > /path/to/venv/lib/python3.7/site-packages
 
 The name of the .pth file does not matter.  Note that if you're using the mypy daemon, be sure to run `dmypy stop` to reread freshly modified stubs.
 
+### Generating the USD stubs
+
+The USD stubs currently require you to build a special fork of USD, until the necessary changes are merged.
+
+```
+git clone https://github.com/chadrik/USD
+git checkout doc-stubs2
+python3 -m venv .venv
+.venv/bin/activate
+pip install PySide6 PyOpenGL
+python3 build_scripts/build_usd.py --python-docs --docs .build
+```
+
+Then update the variables in `stubgen_usd.sh` and generate as normal.
+
+### Generating the Substance Painter stubs
+
+These must be generated from within the UI, because I could not figure out how to run a standlone interpreter.
+
+```
+import mypy.stubgen;mypy.stubgen.main(['-p', '_substance_painter'])
+```
+
+Then generate as normal to cleanup the stubs.
+
+### Generating the Houdini stubs
+
+The Houdini stubs currently use a completely different approach to building which will eventually be ported to nox.  So this may be unapproachable for most users for now.
+
+
 ## Publishing to PyPI
 
-To publish to pypi.org, first run the nox installation steps from the Generating section, then:
-
-(replace ocio with the package to publish)
+To publish to pypi.org, first run the nox installation steps from the Generating section, then run the `publish` task (replacing ocio with the package to publish):
 
 ```
 nox -s 'publish(ocio)'

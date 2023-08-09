@@ -1,6 +1,5 @@
 #!/bin/bash
 
-echo $(which python)
 PY_SITE_DIR=$(python -c "import site,os;print(os.pathsep.join(site.getsitepackages()))")
 REPO_PATH=$(git rev-parse --show-toplevel)
 outdir=$REPO_PATH/ocio/stubs/
