@@ -7,7 +7,7 @@ name = "types-houdini"
 version = "19.5.1"
 
 readme = "README.md"
-authors = ["Chad Dombrova"]
+authors = ["Chad Dombrova", "Ben Andersen"]
 description = "Unofficial python stubs for SideFX Houdini"
 license = "MIT"
 
