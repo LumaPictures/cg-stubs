@@ -1,5 +1,5 @@
 import _typeshed
-import collections.abc
+import collections
 import typing
 T = typing.TypeVar('T')
 import typing_extensions

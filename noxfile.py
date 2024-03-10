@@ -143,8 +143,8 @@ def filter_paths_regex(
 
 def filter_paths(
     paths: Iterable[str],
-    include: Iterable[str] | None = None,
-    exclude: Iterable[str] | None = None,
+    include: tuple[str, ...] | None = None,
+    exclude: tuple[str, ...] | None = None,
 ) -> list[str]:
     return list(
         filter_paths_regex(
@@ -454,14 +454,14 @@ def publish(session: nox.Session, lib: str) -> None:
 @nox.session(reuse_venv=True)
 @nox.parametrize('lib', PARAMS)
 def generate(session: nox.Session, lib: str) -> None:
-    args = ("-r", "requirements.txt")
+    args = ["-r", "requirements.txt"]
 
     if lib == "pyside":
-        args += ("PySide2==5.15.2.1",)
+        args += ["PySide2==5.15.2.1"]
     elif lib == "ocio":
-        args += ("opencolorio==2.2.1",)
+        args += ["opencolorio==2.2.1"]
     elif lib == "usd":
-        args += ("PySide6==6.5.1.1",)
+        args += ["PySide6==6.5.1.1"]
 
     session.env.pop('PYTHONPATH', None)
     session.install(*args)
@@ -475,8 +475,8 @@ def generate(session: nox.Session, lib: str) -> None:
 @nox.session(reuse_venv=True)
 @nox.parametrize('lib', PARAMS)
 def mypy(session: nox.Session, lib: str) -> None:
+    session.install("-r", "requirements.txt")
     session.chdir(lib)
-    session.install("mypy==1.4.1")
 
     if lib == "ocio":
         session.install("numpy")
@@ -486,12 +486,11 @@ def mypy(session: nox.Session, lib: str) -> None:
 
 @check(paths=LINT_FILES, pass_filenames=False, tags=['ci', 'prepush'])
 def self_mypy(session: nox.Session, options: Options) -> None:
-    session.install("-r", "requirements.txt")
+    session.install("-r", "requirements.txt", "-r", "nox-requirements.txt")
     source = []
     for app in APPS:
         fpath = pathlib.Path(f"{app}/stubgen_{app}.py")
         if fpath.exists():
             source.append(str(fpath))
 
-    session.env["MYPYPATH"] = "../mypy"
-    session.run("mypy", "stubgenlib.py", *source)
+    session.run("mypy", "noxfile.py", "stubgenlib.py", *source)

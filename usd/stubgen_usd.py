@@ -20,7 +20,7 @@ from mypy.stubgenc import (
     FunctionContext,
     SignatureGenerator,
     ClassInfo,
-    infer_method_args,
+    infer_c_method_args,
 )
 from mypy.stubutil import infer_method_ret_type
 
@@ -783,7 +783,7 @@ class UsdBoostDocstringSignatureGenerator(
                         param.type, is_result=False
                     )
                     has_default = param.default is not None
-                    args.append(ArgSig(param.name, py_arg_type, has_default))
+                    args.append(ArgSig(param.name, py_arg_type, default=has_default))
 
                 py_ret_type = type_info.cpp_arg_to_py_type(
                     cpp_sig.returnType, is_result=True
@@ -839,9 +839,11 @@ class UsdBoostDocstringSignatureGenerator(
                         ptr_results.append(py_arg_type)
                     else:
                         args_without_ptr.append(
-                            ArgSig(param.name, py_arg_type, has_default)
+                            ArgSig(param.name, py_arg_type, default=has_default)
                         )
-                    args_with_ptr.append(ArgSig(param.name, py_arg_type, has_default))
+                    args_with_ptr.append(
+                        ArgSig(param.name, py_arg_type, default=has_default)
+                    )
 
                 py_ret_type = type_info.cpp_arg_to_py_type(
                     cpp_sig.returnType, is_result=True
@@ -917,7 +919,9 @@ class UsdBoostDocstringSignatureGenerator(
                     args = []
                     for py_arg, cpp_arg in zip(py_sig.args, cpp_sig.args):
                         py_type = self._infer_type(py_arg.type, cpp_arg.type, ctx)
-                        args.append(ArgSig(py_arg.name, py_type, py_arg.default))
+                        args.append(
+                            ArgSig(py_arg.name, py_type, default=py_arg.default)
+                        )
 
                     return_type = self._infer_type(
                         py_sig.ret_type, cpp_sig.ret_type, ctx, is_result=True
@@ -939,7 +943,7 @@ class UsdBoostDocstringSignatureGenerator(
             and ctx.name.endswith("__")
         ):
             # correct special methods which boost may have given bogus args or values
-            args = infer_method_args(ctx.name, ctx.class_info.self_var)
+            args = infer_c_method_args(ctx.name, ctx.class_info.self_var)
             if all(arg.type is not None for arg in args[1:]):
                 sigs = [sig._replace(args=args) for sig in sigs]
             ret_type = infer_method_ret_type(ctx.name)
@@ -955,7 +959,7 @@ class UsdBoostDocstringSignatureGenerator(
             # stubgen has functionality to add __iter__ when __getitem__ is present to get
             # around an issue with mypy, but we can't process it with UsdBoostDocstringSignatureGenerator
             # because it mangles generic types (replaces [] in types)
-            new_sigs = infer_sig_from_docstring(ctx.docstr, ctx.name)
+            new_sigs = infer_sig_from_docstring(ctx.docstring, ctx.name)
             if new_sigs and new_sigs[0].ret_type != "Any":
                 return new_sigs
 

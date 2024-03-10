@@ -27,23 +27,14 @@ pip install types-usd types-houdini types-katana types-mari types-nuke types-ope
 
 ## Generating the stubs
 
-You only need to do this if you your goal is to help improve the stubs. Otherwise, just use `pip`.
+You only need to do this if you your goal is to help improve the stubs. Otherwise, just use `pip`, as explained above.
+
+Building the stubs requires python 3.9 or greater:
 
 In the instructions below, replace ocio with your desired package to generate.
 
-First, look at `ocio/stubgen_ocio.sh` to see if there are any env vars to set in the `# Custom variables` section.
-
-Next, you'll need to check out a custom build of mypy (until my [PR](https://github.com/python/mypy/pull/15770) gets merged):
-
-```
-git clone https://github.com/LumaPictures/cg-stubs
-git clone https://github.com/chadrik/mypy
-cd mypy
-git checkout stubgen/shared-sig-gen-14
-cd ..
-```
-
-Next, build the stubs using [`nox`](https://nox.thea.codes/en/stable/index.html).  Requires python 3.7+:
+First, look at `<pkgname>/stubgen_<pkgname>.sh` to see if there are any env vars to set in the `# Custom variables` section.
+Next, build the stubs using [`nox`](https://nox.thea.codes/en/stable/index.html).
 
 ```
 cd cg-stubs
@@ -56,13 +47,12 @@ nox -s 'generate(ocio)'
 If this fails, here's a more foolproof approach:
 
 ```
-# setup your env, e.g. setpkg python-3.7
 unset PYTHONPATH
-python3 -m venv .venv37
-. .venv37/bin/activate
-python3 -m pip install -r nox-requirements.txt
+python3.9 -m venv .venv39
+. .venv39/bin/activate
+python3.9 -m pip install -r nox-requirements.txt
 rm -rf .nox
-python3 -m nox -s 'generate(ocio)'
+python3.9 -m nox -s 'generate(ocio)'
 ```
 
 ### Testing while Developing
@@ -102,7 +92,7 @@ Then generate as normal to cleanup the stubs.
 
 ### Generating the Houdini stubs
 
-The Houdini stubs currently use a completely different approach to building which will eventually be ported to nox.  So this may be unapproachable for most users for now.
+The Houdini stubs currently use a completely different approach to building which will eventually be ported to `nox`.  So this may be unapproachable for most users for now.
 
 
 ## Publishing to PyPI

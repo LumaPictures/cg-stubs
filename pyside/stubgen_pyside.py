@@ -205,16 +205,17 @@ def add_property_args(typ: type, sigs: List[FunctionSig]) -> None:
     if properties:
         property_names = set(properties)
         for sig in sigs:
-            arg_names = set([arg.name for arg in sig.args])
+            arg_names = [arg.name for arg in sig.args]
             missing = property_names.difference(arg_names)
             if missing:
-                # FIXME: add '*' arg
-                sig.args.extend(
-                    [
-                        ArgSig(name=name, type=properties[name], default=True)
-                        for name in sorted(missing)
-                    ]
-                )
+                try:
+                    index = arg_names.index("**kwargs")
+                except ValueError:
+                    index = len(arg_names)
+                sig.args[index:index] = [
+                    ArgSig(name=name, type=properties[name], default=True)
+                    for name in sorted(missing)
+                ]
 
 
 def short_name(type_name: str) -> str:
@@ -262,7 +263,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
         # * Fix QPolygon special methods
         # first and third overloads should return QPolygon
         "*.QPolygon.__lshift__": [
-            "(self, l: typing.List[PySide2.QtCore.QPoint]) -> PySide2.QtGui.QPolygon",
+            "(self, l: list[PySide2.QtCore.QPoint]) -> PySide2.QtGui.QPolygon",
             "(self, stream: PySide2.QtCore.QDataStream) -> PySide2.QtCore.QDataStream",
             "(self, t: PySide2.QtCore.QPoint) -> PySide2.QtGui.QPolygon",
         ],
@@ -293,21 +294,21 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
         # ('QFont', 'weight': pyside('(self) -> PySide2.QtGui.QFont.Weight'),  # fixed in PySide6
         # * Fix arguments that accept `QModelIndex` which were typed as `int` in many places
         # known offenders: QAbstractItemView, QItemSelectionModel, QTreeView, QListView
-        "*.selectedIndexes": "(self) -> typing.List[PySide2.QtCore.QModelIndex]",
-        "*.QItemSelectionModel.selectedColumns": "(self, row: int = ...) -> typing.List[PySide2.QtCore.QModelIndex]",
-        "*.QItemSelectionModel.selectedRows": "(self, column: int = ...) -> typing.List[PySide2.QtCore.QModelIndex]",
-        "*.QItemSelection.indexes": "(self) -> typing.List[PySide2.QtCore.QModelIndex]",
-        "*.QItemSelectionRange.indexes": "(self) -> typing.List[PySide2.QtCore.QModelIndex]",
-        "*.QAbstractItemModel.mimeData": "(self, indexes: typing.List[PySide2.QtCore.QModelIndex]) -> PySide2.QtCore.QMimeData",
-        "*.QStandardItemModel.mimeData": "(self, indexes: typing.List[PySide2.QtCore.QModelIndex]) -> PySide2.QtCore.QMimeData",
+        "*.selectedIndexes": "(self) -> list[PySide2.QtCore.QModelIndex]",
+        "*.QItemSelectionModel.selectedColumns": "(self, row: int = ...) -> list[PySide2.QtCore.QModelIndex]",
+        "*.QItemSelectionModel.selectedRows": "(self, column: int = ...) -> list[PySide2.QtCore.QModelIndex]",
+        "*.QItemSelection.indexes": "(self) -> list[PySide2.QtCore.QModelIndex]",
+        "*.QItemSelectionRange.indexes": "(self) -> list[PySide2.QtCore.QModelIndex]",
+        "*.QAbstractItemModel.mimeData": "(self, indexes: list[PySide2.QtCore.QModelIndex]) -> PySide2.QtCore.QMimeData",
+        "*.QStandardItemModel.mimeData": "(self, indexes: list[PySide2.QtCore.QModelIndex]) -> PySide2.QtCore.QMimeData",
         # * Fix return type for `QApplication.instance()` and `QGuiApplication.instance()` :
         "*.QCoreApplication.instance": "(cls: typing.Type[T]) -> T",
         # * Fix return type for `QObject.findChild()` and `QObject.findChildren()` :
         "*.QObject.findChild": "(self, arg__1: typing.Type[T], arg__2: str = ...) -> T",
         "*.QObject.findChildren": [
-            "(self, arg__1: typing.Type[T], arg__2: QRegExp = ...) -> typing.List[T]",
-            "(self, arg__1: typing.Type[T], arg__2: QRegularExpression = ...) -> typing.List[T]",
-            "(self, arg__1: typing.Type[T], arg__2: str = ...) -> typing.List[T]",
+            "(self, arg__1: typing.Type[T], arg__2: QRegExp = ...) -> list[T]",
+            "(self, arg__1: typing.Type[T], arg__2: QRegularExpression = ...) -> list[T]",
+            "(self, arg__1: typing.Type[T], arg__2: str = ...) -> list[T]",
         ],
         "*.qVersion": "() -> str",
         # FIXME: this can be handled by merging with the default sig
@@ -513,18 +514,19 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         if not _flag_group_to_item:
-            seen: set[str] = set()
+            seen: set[type] = set()
             for known_module_name in self.known_modules:
                 module = importlib.import_module(known_module_name)
                 self.walk_objects(module, seen)
 
-    def walk_objects(self, obj: object, seen: set[str]) -> None:
+    def walk_objects(self, obj: object, seen: set[type]) -> None:
         for _, child in self.get_members(obj):
-            if self.is_class(child):
+            if inspect.isclass(child):
                 if child in seen:
                     continue
                 seen.add(child)
                 # add to the cache
+                child = cast(type, child)
                 get_properties(child)
                 if is_flag_item(child):
                     # add to the cache
