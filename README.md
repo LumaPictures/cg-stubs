@@ -27,7 +27,7 @@ pip install types-usd types-houdini types-katana types-mari types-nuke types-ope
 
 ## Generating the stubs
 
-You only need to do this if you your goal is to help improve the stubs. Otherwise, just use `pip`, as explained above.
+You only need to do this if your goal is to help improve the stubs. Otherwise, just use `pip`, as explained above.
 
 Building the stubs requires python 3.9 or greater:
 
@@ -55,6 +55,12 @@ rm -rf .nox
 python3.9 -m nox -s 'generate(ocio)'
 ```
 
+Alternately, you can globally install `nox` using [`pipx`](https://github.com/pypa/pipx)
+
+```commandline
+pipx install nox
+```
+
 ### Testing while Developing
 
 The easiest way to use the stubs while you're devleoping them is to create an editable install.  Simply create a `.pth` file in the site-packages directory of the venv where your other deps live:
@@ -75,7 +81,7 @@ git checkout doc-stubs2
 python3 -m venv .venv
 .venv/bin/activate
 pip install PySide6 PyOpenGL
-python3 build_scripts/build_usd.py --python-docs --docs .build
+python3 build_scripts/build_usd.py --python-docs --docs .build-23.08
 ```
 
 Then update the variables in `stubgen_usd.sh` and generate as normal.
