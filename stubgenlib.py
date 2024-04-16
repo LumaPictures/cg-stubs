@@ -68,7 +68,7 @@ def merge_signatures(
     if dest.is_special_method() and len(other.args) == len(dest.args):
         for arg, other_arg in zip(dest.args, other.args):
             if (arg.type is None or force) and other_arg.type is not None:
-                arg = ArgSig(arg.name, other_arg.type, arg.default)
+                arg = ArgSig(arg.name, other_arg.type, default=arg.default)
             args.append(arg)
     else:
         other_args = {arg.name: arg for arg in other.args}
@@ -76,7 +76,7 @@ def merge_signatures(
             if arg.name in other_args:
                 other_arg = other_args[arg.name]
                 if (arg.type is None or force) and other_arg.type is not None:
-                    arg = ArgSig(arg.name, other_arg.type, arg.default)
+                    arg = ArgSig(arg.name, other_arg.type, default=arg.default)
             args.append(arg)
 
     ret_type = dest.ret_type
@@ -133,7 +133,7 @@ class BaseSigFixer:
                         )
                     )
                     type_name = None
-            args.append(ArgSig(arg.name, type_name, arg.default))
+            args.append(ArgSig(arg.name, type_name, default=arg.default))
         if sig.ret_type:
             return_type = self.cleanup_type(sig.ret_type, ctx, is_result=True)
             if not self.is_valid(return_type):
@@ -166,7 +166,7 @@ class BaseSigFixer:
                 sig = self.cleanup_sig_types(sig, ctx)
                 if self.default_sig_handling == "ignore":
                     merged_sig = sig
-                elif default_sig.is_identity() or (
+                elif default_sig.is_catchall_signature() or (
                     default_sig.has_catchall_args()
                     and default_sig.ret_type == sig.ret_type
                 ):

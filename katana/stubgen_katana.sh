@@ -11,13 +11,12 @@ fi
 export REPO_PATH=$(git rev-parse --show-toplevel)
 
 # Custom variables --
-MYPY_ROOT=$REPO_PATH/../mypy
 export KATANA_HOME=/luma/soft/applications/Foundry/Linux-x86_64/katana/Katana-$version
 export PATH=$KATANA_HOME:$PATH
 export foundry_LICENSE='4101@katanalicgui.luma.ninja:5053@katanarender.luma.ninja'
 # End custom variables --
 
-export PYTHONPATH=$REPO_PATH:$REPO_PATH/katana:$MYPY_ROOT:$PY_SITE_DIR
+export PYTHONPATH=$REPO_PATH:$REPO_PATH/katana:$PY_SITE_DIR
 
 sitedir=$KATANA_HOME/bin/python/
 outdir=${REPO_PATH}/katana/stubs

@@ -33,16 +33,6 @@ In the instructions below, replace ocio with your desired package to generate.
 
 First, look at `ocio/stubgen_ocio.sh` to see if there are any env vars to set in the `# Custom variables` section.
 
-Next, you'll need to check out a custom build of mypy (until my [PR](https://github.com/python/mypy/pull/15770) gets merged):
-
-```
-git clone https://github.com/LumaPictures/cg-stubs
-git clone https://github.com/chadrik/mypy
-cd mypy
-git checkout stubgen/shared-sig-gen-14
-cd ..
-```
-
 Next, build the stubs using [`nox`](https://nox.thea.codes/en/stable/index.html).  Requires python 3.7+:
 
 ```
@@ -56,10 +46,10 @@ nox -s 'generate(ocio)'
 If this fails, here's a more foolproof approach:
 
 ```
-# setup your env, e.g. setpkg python-3.7
+# setup your env, e.g. setpkg python-3.9
 unset PYTHONPATH
-python3 -m venv .venv37
-. .venv37/bin/activate
+python3 -m venv .venv39
+. .venv39/bin/activate
 python3 -m pip install -r nox-requirements.txt
 rm -rf .nox
 python3 -m nox -s 'generate(ocio)'
@@ -70,7 +60,7 @@ python3 -m nox -s 'generate(ocio)'
 The easiest way to use the stubs while you're devleoping them is to create an editable install.  Simply create a `.pth` file in the site-packages directory of the venv where your other deps live:
 
 ```
-echo "/path/to/cg-stubs/ocio/stubs/" > /path/to/venv/lib/python3.7/site-packages/ocio.pth
+echo "/path/to/cg-stubs/ocio/stubs/" > /path/to/venv/lib/python3.9/site-packages/ocio.pth
 ```
 
 The name of the .pth file does not matter.  Note that if you're using the mypy daemon, be sure to run `dmypy stop` to reread freshly modified stubs.
@@ -83,7 +73,7 @@ The USD stubs currently require you to build a special fork of USD, until the ne
 git clone https://github.com/chadrik/USD
 git checkout doc-stubs2
 python3 -m venv .venv
-.venv/bin/activate
+. .venv/bin/activate
 pip install PySide6 PyOpenGL
 python3 build_scripts/build_usd.py --python-docs --docs .build
 ```

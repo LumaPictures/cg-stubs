@@ -3,7 +3,6 @@ set -e
 
 POINT_RELEASE=5
 
-#pip install -U git+https://github.com/chadrik/mypy@stubgenc-all-fixes#mypy
 # pip install -U -e ../mypy
 
 PY_SITE_DIR=$(python -c "import site,os;print(os.pathsep.join(site.getsitepackages()))")
@@ -11,10 +10,9 @@ REPO_PATH=$(git rev-parse --show-toplevel)
 outdir=$REPO_PATH/pyside/stubs/
 
 # Custom variables --
-MYPY_ROOT=$REPO_PATH/../mypy
 # End custom variables --
 
-export PYTHONPATH=$REPO_PATH:$REPO_PATH/pyside:$MYPY_ROOT:$PY_SITE_DIR
+export PYTHONPATH=$REPO_PATH:$REPO_PATH/pyside:$PY_SITE_DIR
 
 python -m stubgen_pyside -p shiboken2 -p PySide2 --include-private -o $outdir
 
