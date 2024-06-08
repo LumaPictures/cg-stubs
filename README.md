@@ -78,10 +78,10 @@ The USD stubs currently require you to build a special fork of USD, until the ne
 ```
 git clone https://github.com/chadrik/USD
 git checkout doc-stubs2
-python3 -m venv .venv
+python3.9 -m venv .venv
 .venv/bin/activate
 pip install PySide6 PyOpenGL
-python3 build_scripts/build_usd.py --python-docs --docs .build-23.08
+python3.9 build_scripts/build_usd.py --python-docs --docs .build-23.08-py39
 ```
 
 Then update the variables in `stubgen_usd.sh` and generate as normal.

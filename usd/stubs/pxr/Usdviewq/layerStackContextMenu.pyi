@@ -1,8 +1,8 @@
 # mypy: disable-error-code="misc, override, no-redef"
 
-import pxr.Ar as Ar
 import PySide6.QtCore
 import PySide6.QtWidgets
+import pxr.Ar as Ar
 import pxr.Usdviewq.usdviewContextMenuItem
 from pxr.UsdUtils.toolPaths import FindUsdBinary as FindUsdBinary
 from pxr.Usdviewq.usdviewContextMenuItem import UsdviewContextMenuItem as UsdviewContextMenuItem

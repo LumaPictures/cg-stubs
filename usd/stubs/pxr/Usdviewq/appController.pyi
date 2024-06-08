@@ -1,9 +1,9 @@
 # mypy: disable-error-code="misc, override, no-redef"
 
-import pxr.Ar as Ar
-import pxr.Glf as Glf
 import PySide6.QtCore
 import PySide6.QtWidgets
+import pxr.Ar as Ar
+import pxr.Glf as Glf
 import pxr.Sdf as Sdf
 import pxr.Tf as Tf
 import pxr.Usd as Usd
@@ -12,12 +12,12 @@ import pxr.UsdGeom as UsdGeom
 import pxr.UsdImagingGL as UsdImagingGL
 import pxr.UsdShade as UsdShade
 import pxr.UsdUtils as UsdUtils
+import pxr.UsdUtils.constantsGroup
 import pxr.Usdviewq.adjustDefaultMaterial as adjustDefaultMaterial
 import pxr.Usdviewq.adjustFreeCamera as adjustFreeCamera
 import pxr.Usdviewq.plugin as plugin
 import pxr.Usdviewq.preferences as preferences
 import pxr.Usdviewq.prettyPrint as prettyPrint
-import pxr.UsdUtils.constantsGroup
 import pxr.Usdviewq.rootDataModel
 import pxr.Usdviewq.settings
 from _typeshed import Incomplete

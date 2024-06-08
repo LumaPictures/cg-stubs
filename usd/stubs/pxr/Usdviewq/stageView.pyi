@@ -1,10 +1,10 @@
 # mypy: disable-error-code="misc, override, no-redef"
 
+import PySide6.QtCore
+import PySide6.QtOpenGLWidgets
 import pxr.CameraUtil as CameraUtil
 import pxr.Gf as Gf
 import pxr.Glf as Glf
-import PySide6.QtCore
-import PySide6.QtOpenGLWidgets
 import pxr.Sdf as Sdf
 import pxr.Tf as Tf
 import pxr.Usd as Usd

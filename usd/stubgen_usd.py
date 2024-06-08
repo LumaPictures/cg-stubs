@@ -13,7 +13,6 @@ from typing import Any
 import mypy.stubgen
 import mypy.stubgenc
 import mypy.stubutil
-from mypy.fastparse import parse_type_comment
 from mypy.stubdoc import ArgSig, FunctionSig, infer_sig_from_docstring
 from mypy.stubgen import main as stubgen_main
 from mypy.stubgenc import (
@@ -24,10 +23,12 @@ from mypy.stubgenc import (
 )
 from mypy.stubutil import infer_method_ret_type
 
-mypy.stubutil.NOT_IMPORTABLE_MODULES = (
-    "pxr.Tf.testenv",  # type: ignore[assignment]
-    "pxr.Tf.testenv.testTfScriptModuleLoader_AAA_RaisesError",
-)
+# this doesn't work with mypy downloaded from pypi because it's been compiled.
+# produces "TypeError: tuple[] object expected; got tuple[str, str]"
+# mypy.stubutil.NOT_IMPORTABLE_MODULES = (
+#     "pxr.Tf.testenv",  # type: ignore[assignment]
+#     "pxr.Tf.testenv.testTfScriptModuleLoader_AAA_RaisesError",
+# )
 
 from doxygenlib.cdParser import Parser, XMLNode  # type: ignore[import]
 from doxygenlib.cdDocElement import DocElement  # type: ignore[import]
@@ -1014,8 +1015,6 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         self.resort_members = True
 
     def is_skipped_attribute(self, attr: str) -> bool:
-        # skip the Mari object because it causes self.strip_or_import("mari.API") -> "Mari.API"
-        # by adding a "mari" -> "Mari" alias lookup to import_tracker.reverse_alias
         return super().is_skipped_attribute(attr) or attr == "__reduce__"
 
     def get_obj_module(self, obj: object) -> str | None:
@@ -1098,6 +1097,7 @@ def main(outdir: str) -> None:
             "--verbose",
             "--inspect-mode",
             "--include-private",
+            "--ignore-errors",  # necesary bc pxr.Tf.testenv cannot be imported
             f"-o={outdir}",
         ]
     )

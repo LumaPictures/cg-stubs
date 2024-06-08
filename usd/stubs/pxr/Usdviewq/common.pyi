@@ -1,10 +1,10 @@
 # mypy: disable-error-code="misc, override, no-redef"
 
-import pxr.Ar as Ar
-import pxr.Kind as Kind
-import PySide6.QtCore.Qt
+import PySide6.QtCore
 import PySide6.QtCore.Qt
 import PySide6.QtGui
+import pxr.Ar as Ar
+import pxr.Kind as Kind
 import pxr.Sdf as Sdf
 import pxr.Tf as Tf
 import pxr.Trace as Trace
@@ -12,6 +12,7 @@ import pxr.Usd as Usd
 import pxr.UsdGeom as UsdGeom
 import pxr.UsdShade as UsdShade
 import pxr.UsdUtils.constantsGroup
+import types
 from _typeshed import Incomplete
 from pxr.UsdUtils.constantsGroup import ConstantsGroup as ConstantsGroup
 from pxr.Usdviewq.customAttributes import CustomAttribute as CustomAttribute
@@ -163,7 +164,7 @@ class Timer:
     def Invalidate(self): ...
     def PrintTime(self): ...
     def __enter__(self): ...
-    def __exit__(self, excType, excVal, excTB): ...
+    def __exit__(self, excType: type[BaseException] | None, excVal: BaseException | None, excTB: types.TracebackType | None): ...
 
 class UIBaseColors(pxr.UsdUtils.constantsGroup.ConstantsGroup):
     DARK_YELLOW: ClassVar[PySide6.QtGui.QBrush] = ...

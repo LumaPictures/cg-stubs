@@ -2,8 +2,8 @@
 
 import PySide6.QtCore
 import PySide6.QtWidgets
-import pxr.Tf as Tf
 import code
+import pxr.Tf as Tf
 from _typeshed import Incomplete
 from pxr.Usdviewq.common import DefaultFontFamily as DefaultFontFamily
 from pxr.Usdviewq.usdviewApi import UsdviewApi as UsdviewApi

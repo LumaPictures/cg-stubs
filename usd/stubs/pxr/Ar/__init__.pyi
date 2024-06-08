@@ -21,8 +21,8 @@ class AssetInfo(Boost.Python.instance):
 
 class DefaultResolver(Resolver):
     def __init__(self, *args, **kwargs) -> None: ...
-    @classmethod
-    def SetDefaultSearchPath(cls, searchPath: typing.Iterable[str | ResolvedPath]) -> None: ...
+    @staticmethod
+    def SetDefaultSearchPath(searchPath: typing.Iterable[str | ResolvedPath]) -> None: ...
 
 class DefaultResolverContext(Boost.Python.instance):
     @overload

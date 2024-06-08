@@ -5,8 +5,8 @@ import pxr.Sdr as Sdr
 import pxr.Tf as Tf
 import pxr.Usd as Usd
 import pxr.UsdShade as UsdShade
-import pxr.Vt as Vt
 import pxr.UsdUtils.constantsGroup
+import pxr.Vt as Vt
 from pxr.UsdUtils.constantsGroup import ConstantsGroup as ConstantsGroup
 from typing import ClassVar
 
