@@ -476,6 +476,7 @@ def publish(session: nox.Session, lib: str) -> None:
     with stubs_suffix(session):
         session.run("poetry", "publish", "--build", *session.posargs)
     output = session.run("poetry", "version", "-s", silent=True)
+    assert output is not None
     version = output.splitlines()[-1]
     session.run("git", "tag", f"{lib}/v{version}", external=True)
 

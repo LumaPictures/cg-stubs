@@ -11,6 +11,7 @@ __MFB_FULL_PACKAGE_NAME: str
 
 class NodeContext(Boost.Python.instance):
     Displacement: ClassVar[str] = ...  # read-only
+    DisplayFilter: ClassVar[str] = ...  # read-only
     Light: ClassVar[str] = ...  # read-only
     LightFilter: ClassVar[str] = ...  # read-only
     Pattern: ClassVar[str] = ...  # read-only
