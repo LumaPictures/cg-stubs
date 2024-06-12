@@ -1,5 +1,33 @@
 from __future__ import absolute_import, annotations, division, print_function
 
+# FIXME:  maybe we can kill two birds with one stone if we change this code to inject
+#  valid signatures into docstrings instead of generating stubs.
+# - Run stubgen a first time (we use stubgen just to piggy back the object crawling behavior).
+#   During first pass we write sigs to __doc__, or alternately write we write __DOC.py files.
+#   disable pyi generation during this crawl.
+# - run stubgen a second time, this time parsing the new docstrings with signatures, and writing pyi as normal
+
+# Notes
+# - python args do not always match cpp args
+# - many classes (Sdf.Spec, Sdf.VariantSpec, Sdf.Path) add a self arg to methods.
+#   I have a good heuristic to determine which are self-args
+# - some arguments are pointer results. in most cases we can safely assume that these will be added
+#   as tuple results, but there are a few exceptions
+#       pxr.Sdf.Layer.CanApply: the tuple result is conditional on the main return result
+#       pxr.Sdf.PrimSpec.CanSetName: ptr result is ignored
+#       pxr.Sdf.Path.GetAllTargetPathsRecursively: ptr is the main result
+#       pxr.Sdf.Path.IsValidPathString: returns a tuple-like Sdf_PathIsValidPathStringResult
+# - only a few methods seem to properly handle std::string
+# - it seems that free functions are not collected by the pixar parser. some of these are added as static
+#   methods to python classes: e.g. SdfPathFindLongestPrefix -> Path.FindLongestPrefix
+# - it's apparent that the order of overloads differs between boost and doxygen for at least some functions:
+#   pxr.Sdf.CopySpec, pxr.Usd.TraverseInstanceProxies.  FIXED (mostly)
+# - Matrix3dArray and other math types in Vt don't seem to be in the docs
+# - some wrapped c++ functions don't turn pointers into return types, such as UsdSkelExpandConstantInfluencesToVarying
+# - the stubs for Sdf.ValueTypeNames can be improved with some more work on stubgen.  FIXED
+# - boost python sigs do not always include defaults for keyword args.  See UsdGeom.BBoxCache.__init__
+
+
 import inspect
 import subprocess
 import os
@@ -91,6 +119,7 @@ def capitalize(s: str) -> str:
 class DummyWriter:
     """
     Writer class that allows doxygenlib.Parser.traverse() to run without erroring.
+
     Here's an outline of the doxygenlib process:
     1. The main entry piont creates a `Parser`, then calls `parser.parse()` to parse xml file
        into a tree of `XMLNode`
@@ -601,7 +630,7 @@ class TypeInfo(CppTypeConverter):
                         current_module, current_func.rsplit(".")[-1]
                     ),
                     cpp_overloads,
-                )
+                )[0]
                 all_types = set()
                 for sig in sigs:
                     for arg in sig.args:
@@ -640,26 +669,6 @@ notifier = Notifier()
 type_info = TypeInfo(
     os.environ["USD_XML_INDEX"], modules, srcdir=os.environ["USD_SOURCE_ROOT"]
 )
-
-# Notes
-# - python args do not always match cpp args
-# - many classes (Sdf.Spec, Sdf.VariantSpec, Sdf.Path) add a self arg to methods.
-#   I have a good heuristic to determine which are self-args
-# - some arguments are pointer results. in most cases we can safely assume that these will be added
-#   as tuple results, but there are a few exceptions
-#       pxr.Sdf.Layer.CanApply: the tuple result is conditional on the main return result
-#       pxr.Sdf.PrimSpec.CanSetName: ptr result is ignored
-#       pxr.Sdf.Path.GetAllTargetPathsRecursively: ptr is the main result
-#       pxr.Sdf.Path.IsValidPathString: returns a tuple-like Sdf_PathIsValidPathStringResult
-# - only a few methods seem to properly handle std::string
-# - it seems that free functions are not collected by the pixar parser. some of these are added as static
-#   methods to python classes: e.g. SdfPathFindLongestPrefix -> Path.FindLongestPrefix
-# - it's apparent that the order of overloads differs between boost and doxygen for at least some functions:
-#   pxr.Sdf.CopySpec, pxr.Usd.TraverseInstanceProxies.  FIXED (mostly)
-# - Matrix3dArray and other math types in Vt don't seem to be in the docs
-# - some wrapped c++ functions don't turn pointers into return types, such as UsdSkelExpandConstantInfluencesToVarying
-# - the stubs for Sdf.ValueTypeNames can be improved with some more work on stubgen.  FIXED
-# - boost python sigs do not always include defaults for keyword args.  See UsdGeom.BBoxCache.__init__
 
 
 def _filter_overloads(
@@ -725,24 +734,6 @@ def format_cpp_args(cpp_sig: DocElement) -> str:
 
 def get_sigs_from_cpp_overloads(
     ctx: FunctionContext, cpp_overloads: list[DocElement]
-) -> list[FunctionSig]:
-    # We only use C++ signatures:
-    # convert to FunctionSig
-    cpp_sigs: list[FunctionSig] = []
-    for cpp_sig in cpp_overloads:
-        args: list[ArgSig] = []
-        for param in cpp_sig.params:
-            py_arg_type = type_info.cpp_arg_to_py_type(param.type, is_result=False)
-            has_default = param.default is not None
-            args.append(ArgSig(param.name, py_arg_type, default=has_default))
-
-        py_ret_type = type_info.cpp_arg_to_py_type(cpp_sig.returnType, is_result=True)
-        cpp_sigs.append(FunctionSig(ctx.name, args, py_ret_type))
-    return cpp_sigs
-
-
-def get_sigs_from_cpp_overloads_with_ptrs(
-    ctx: FunctionContext, cpp_overloads: list[DocElement]
 ) -> tuple[list[FunctionSig], list[FunctionSig]]:
     """
     Convert a set of C++ overloads into two sets of python signatures.
@@ -750,27 +741,25 @@ def get_sigs_from_cpp_overloads_with_ptrs(
     The first set of sigs is a straight conversion from C++ to python.
     The second set of sigs has pointer args converted into return types.
     """
-    cpp_sigs_with_ptr = []
-    cpp_sigs_without_ptr = []
+    sigs_with_ptrs: list[FunctionSig] = []
+    sigs_without_ptrs: list[FunctionSig] = []
     for cpp_sig in cpp_overloads:
-        args_with_ptr: list[ArgSig] = []
-        args_without_ptr: list[ArgSig] = []
+        args_ptr: list[ArgSig] = []
+        args_no_ptr: list[ArgSig] = []
         ptr_results = []
         for param in cpp_sig.params:
             has_default = param.default is not None
             py_arg_type = type_info.cpp_arg_to_py_type(param.type, is_result=False)
-            args_with_ptr.append(ArgSig(param.name, py_arg_type, default=has_default))
+            args_ptr.append(ArgSig(param.name, py_arg_type, default=has_default))
 
             if "*" in param.type:
                 # a pointer result
                 ptr_results.append(py_arg_type)
             else:
-                args_without_ptr.append(
-                    ArgSig(param.name, py_arg_type, default=has_default)
-                )
+                args_no_ptr.append(ArgSig(param.name, py_arg_type, default=has_default))
 
         py_ret_type = type_info.cpp_arg_to_py_type(cpp_sig.returnType, is_result=True)
-        cpp_sigs_with_ptr.append(FunctionSig(ctx.name, args_with_ptr, py_ret_type))
+        sigs_with_ptrs.append(FunctionSig(ctx.name, args_ptr, py_ret_type))
 
         if ptr_results:
             # if ctx.name in ("GetKind", "GetConnectedSource"):
@@ -783,10 +772,8 @@ def get_sigs_from_cpp_overloads_with_ptrs(
                 py_ret_type = "tuple[{}]".format(", ".join(results))
             else:
                 py_ret_type = results[0]
-        cpp_sigs_without_ptr.append(
-            FunctionSig(ctx.name, args_without_ptr, py_ret_type)
-        )
-    return cpp_sigs_with_ptr, cpp_sigs_without_ptr
+        sigs_without_ptrs.append(FunctionSig(ctx.name, args_no_ptr, py_ret_type))
+    return sigs_with_ptrs, sigs_without_ptrs
 
 
 class UsdBoostDocstringSignatureGenerator(
@@ -949,7 +936,7 @@ class UsdBoostDocstringSignatureGenerator(
 
         if use_cpp_only:
             assert cpp_overloads is not None
-            sigs = get_sigs_from_cpp_overloads(ctx, cpp_overloads)
+            sigs = get_sigs_from_cpp_overloads(ctx, cpp_overloads)[0]
         else:
             if not is_static:
                 sigs = [self._fix_self_arg(sig, ctx) for sig in sigs]
@@ -990,10 +977,9 @@ class UsdBoostDocstringSignatureGenerator(
             else:
                 # C++ and Python signatures exist and number of overloads is equal:
 
-                (
-                    cpp_sigs_with_ptr,
-                    cpp_sigs_without_ptr,
-                ) = get_sigs_from_cpp_overloads_with_ptrs(ctx, cpp_overloads)
+                (sigs_with_ptrs, sigs_without_ptrs) = get_sigs_from_cpp_overloads(
+                    ctx, cpp_overloads
+                )
 
                 def matches(sigs1: list[FunctionSig], sigs2: list[FunctionSig]) -> int:
                     """
@@ -1012,23 +998,26 @@ class UsdBoostDocstringSignatureGenerator(
 
                 # boost python signatures:
                 sigs = sorted(sigs, key=sig_sort_key)
-                # direct conversion of C++ info to python signatures:
-                cpp_sigs_with_ptr = sorted(cpp_sigs_with_ptr, key=sig_sort_key)
-                # conversion of C++ info to python signatures, with ptr args converted to results
-                cpp_sigs_without_ptr = sorted(cpp_sigs_without_ptr, key=sig_sort_key)
 
                 # determine whether to use overloads that return-by-ptr or not.
                 # USD code is not consistent about one approach over the other.
+
+                # direct conversion of C++ info to python signatures:
+                sigs_with_ptrs = sorted(sigs_with_ptrs, key=sig_sort_key)
+                # conversion of C++ info to python signatures, with ptr args converted to results
+                sigs_without_ptrs = sorted(sigs_without_ptrs, key=sig_sort_key)
+
                 # compare the two sets of sigs that were generated from parsed C++ info
                 # and determine which set of overloads has the most correspondence to the
                 # boost signatures, which is our source of truth.
-                with_ptr_matches = matches(sigs, cpp_sigs_with_ptr)
-                without_ptr_matches = matches(sigs, cpp_sigs_without_ptr)
+                num_no_ptr_matches = matches(sigs, sigs_without_ptrs)
+                num_ptr_matches = matches(sigs, sigs_with_ptrs)
 
-                if without_ptr_matches > with_ptr_matches:
-                    cpp_sigs = cpp_sigs_without_ptr
+                # use the set with the most matches
+                if num_no_ptr_matches > num_ptr_matches:
+                    cpp_sigs = sigs_without_ptrs
                 else:
-                    cpp_sigs = cpp_sigs_with_ptr
+                    cpp_sigs = sigs_with_ptrs
 
                 # loop through and cleanup types
                 for overload_num, (py_sig, cpp_sig) in enumerate(zip(sigs, cpp_sigs)):
@@ -1037,12 +1026,12 @@ class UsdBoostDocstringSignatureGenerator(
                         py_summary = "   py   ({})".format(format_py_args(py_sig))
                         cpp_summary = "   cpp  ({})".format(format_py_args(cpp_sig))
                         cpp_summary1 = " {} cpp! ({})".format(
-                            without_ptr_matches,
-                            format_py_args(cpp_sigs_without_ptr[overload_num]),
+                            num_no_ptr_matches,
+                            format_py_args(sigs_without_ptrs[overload_num]),
                         )
                         cpp_summary2 = " {} cpp* ({})".format(
-                            with_ptr_matches,
-                            format_py_args(cpp_sigs_with_ptr[overload_num]),
+                            num_ptr_matches,
+                            format_py_args(sigs_with_ptrs[overload_num]),
                         )
                         num_sigs = len(sigs)
                         curr_overload = overload_num + 1
@@ -1246,6 +1235,7 @@ def main(outdir: str) -> None:
             "--verbose",
             "--inspect-mode",
             "--include-private",
+            # "--include-docstrings",
             f"-o={outdir}",
         ]
     )
