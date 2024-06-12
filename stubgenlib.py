@@ -408,6 +408,7 @@ class CFunctionStub:
         """
 
 
+# FIXME: should this include the return type?
 def sig_sort_key(py_sig: FunctionSig) -> tuple[int, tuple[str, ...]]:
     return (len(py_sig.args), tuple([arg.name for arg in py_sig.args]))
 

@@ -89,6 +89,19 @@ def capitalize(s: str) -> str:
 
 
 class DummyWriter:
+    """
+    Writer class that allows doxygenlib.Parser.traverse() to run without erroring.
+    Here's an outline of the doxygenlib process:
+    1. The main entry piont creates a `Parser`, then calls `parser.parse()` to parse xml file
+       into a tree of `XMLNode`
+    2. The main entry point then loop over modules and for each module it instantiates
+       a `Writer`.  Then:
+    3. `parser.traverse()` is called to create `DocElement` instances from `XMLNode` instances.
+        The parser calls `writer.getDocString() to fill in the `DocElement.doc` attribute.
+    4. `writer.generate()` is called to actually write the __DOC.py files.
+    5. The loop completes.
+    """
+
     def getDocString(self, node: XMLNode) -> str:
         return ""
 
@@ -731,8 +744,14 @@ def get_sigs_from_cpp_overloads(
 def get_sigs_from_cpp_overloads_with_ptrs(
     ctx: FunctionContext, cpp_overloads: list[DocElement]
 ) -> tuple[list[FunctionSig], list[FunctionSig]]:
-    cpp_sigs_with_ptr: list[FunctionSig] = []
-    cpp_sigs_without_ptr: list[FunctionSig] = []
+    """
+    Convert a set of C++ overloads into two sets of python signatures.
+
+    The first set of sigs is a straight conversion from C++ to python.
+    The second set of sigs has pointer args converted into return types.
+    """
+    cpp_sigs_with_ptr = []
+    cpp_sigs_without_ptr = []
     for cpp_sig in cpp_overloads:
         args_with_ptr: list[ArgSig] = []
         args_without_ptr: list[ArgSig] = []
@@ -740,6 +759,8 @@ def get_sigs_from_cpp_overloads_with_ptrs(
         for param in cpp_sig.params:
             has_default = param.default is not None
             py_arg_type = type_info.cpp_arg_to_py_type(param.type, is_result=False)
+            args_with_ptr.append(ArgSig(param.name, py_arg_type, default=has_default))
+
             if "*" in param.type:
                 # a pointer result
                 ptr_results.append(py_arg_type)
@@ -747,7 +768,6 @@ def get_sigs_from_cpp_overloads_with_ptrs(
                 args_without_ptr.append(
                     ArgSig(param.name, py_arg_type, default=has_default)
                 )
-            args_with_ptr.append(ArgSig(param.name, py_arg_type, default=has_default))
 
         py_ret_type = type_info.cpp_arg_to_py_type(cpp_sig.returnType, is_result=True)
         cpp_sigs_with_ptr.append(FunctionSig(ctx.name, args_with_ptr, py_ret_type))
@@ -890,6 +910,10 @@ class UsdBoostDocstringSignatureGenerator(
     def _processs_sigs(
         self, sigs: list[FunctionSig], ctx: FunctionContext
     ) -> list[FunctionSig]:
+        """
+        sigs: signatures as processed from UsdBoostDocstringSignatureGenerator
+        """
+
         def summarize_overload_mismatch(
             sigs: list[FunctionSig], cpp_overloads: list[DocElement], corrected=False
         ):
@@ -973,7 +997,7 @@ class UsdBoostDocstringSignatureGenerator(
 
                 def matches(sigs1: list[FunctionSig], sigs2: list[FunctionSig]) -> int:
                     """
-                    Compare the two signatures, by returning the number of signatures
+                    Compare the two sets of overloads, by returning the number of signatures
                     with matching arg length.
                     """
                     return sum(
@@ -981,23 +1005,32 @@ class UsdBoostDocstringSignatureGenerator(
                         for (sig1, sig2) in zip(sigs1, sigs2)
                     )
 
-                # the order of overloads between boost and doxygen do not match. sort based on
-                # the list of args.
+                # the order of overloads between boost and doxygen do not match.
+                # before we compare them we need to sort all of them based on
+                # the list of args. Remembrer: we've already determined boost/python
+                # and C++ have the same number of overloads.
+
+                # boost python signatures:
                 sigs = sorted(sigs, key=sig_sort_key)
-
-                # determine whether to move return-by-ptr args to results or not. USD code is not consistent about
-                # one approach over the other.
-                cpp_sigs_without_ptr = sorted(cpp_sigs_without_ptr, key=sig_sort_key)
+                # direct conversion of C++ info to python signatures:
                 cpp_sigs_with_ptr = sorted(cpp_sigs_with_ptr, key=sig_sort_key)
+                # conversion of C++ info to python signatures, with ptr args converted to results
+                cpp_sigs_without_ptr = sorted(cpp_sigs_without_ptr, key=sig_sort_key)
 
-                without_ptr_matches = matches(sigs, cpp_sigs_without_ptr)
+                # determine whether to use overloads that return-by-ptr or not.
+                # USD code is not consistent about one approach over the other.
+                # compare the two sets of sigs that were generated from parsed C++ info
+                # and determine which set of overloads has the most correspondence to the
+                # boost signatures, which is our source of truth.
                 with_ptr_matches = matches(sigs, cpp_sigs_with_ptr)
+                without_ptr_matches = matches(sigs, cpp_sigs_without_ptr)
 
                 if without_ptr_matches > with_ptr_matches:
                     cpp_sigs = cpp_sigs_without_ptr
                 else:
                     cpp_sigs = cpp_sigs_with_ptr
 
+                # loop through and cleanup types
                 for overload_num, (py_sig, cpp_sig) in enumerate(zip(sigs, cpp_sigs)):
                     if len(py_sig.args) != len(cpp_sig.args):
                         # C++ and python arg lists doesn't match: use the python sig
@@ -1014,9 +1047,11 @@ class UsdBoostDocstringSignatureGenerator(
                         num_sigs = len(sigs)
                         curr_overload = overload_num + 1
                         notifier.warn(
-                            "Sigs differ",
+                            "Number of args between python and C++ signature differs (using python)",
                             ctx.module_name,
-                            f"({curr_overload} of {num_sigs}): {ctx.fullname}\n{py_summary}\n{cpp_summary}\n{cpp_summary1}\n{cpp_summary2}",
+                            (
+                                f"({curr_overload} of {num_sigs}): {ctx.fullname}\n{py_summary}\n{cpp_summary}\n{cpp_summary1}\n{cpp_summary2}"
+                            ),
                         )
                         sigs[overload_num] = self.cleanup_sig_types(py_sig, ctx)
                     else:
