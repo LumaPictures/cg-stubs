@@ -161,16 +161,15 @@ class TypeInfo(CppTypeConverter):
     parsed from doxygen docs and source code.
     """
 
-    # FIXME: this appears to no longer be used, but the idea of parsing the type_defs
-    #  be easier to maintain
-    # TYPE_DEF_INCLUDES = [
-    #     "pxr/usd/sdf/types.h",
-    #     "pxr/usd/sdf/path.h",
-    #     "pxr/usd/sdf/fileFormat.h",
-    #     # "pxr/usd/sdf/proxyTypes.h",
-    #     "pxr/usd/ndr/declare.h",
-    #     "pxr/usd/usdGeom/basisCurves.h",
-    # ]
+    # Used by CppTypeConverter,_get_typedefs()
+    TYPE_DEF_INCLUDES = [
+        "pxr/usd/sdf/types.h",
+        "pxr/usd/sdf/path.h",
+        "pxr/usd/sdf/fileFormat.h",
+        # "pxr/usd/sdf/proxyTypes.h",
+        "pxr/usd/ndr/declare.h",
+        "pxr/usd/usdGeom/basisCurves.h",
+    ]
     ARG_TYPE_MAP = CppTypeConverter.ARG_TYPE_MAP + [
         # Sdf mapping types:
         (r"\bSdfLayerHandleSet\b", "typing.Iterable[pxr.Sdf.Layer]"),
@@ -330,8 +329,11 @@ class TypeInfo(CppTypeConverter):
         convertible types
         """
         if self.srcdir is None:
+            raise RuntimeError("No source dir provided")
+
+        if not os.path.exists(self.srcdir):
             raise RuntimeError(
-                "Skipping implicitly convertible types: No source dir provided"
+                "Source directory does not exist: {}".format(self.srcdir)
             )
 
         def get_type_from_path(path: str) -> str:
@@ -381,6 +383,7 @@ class TypeInfo(CppTypeConverter):
                         result[to_type].add(from_type)
                     elif self.verbose:
                         print("no match", line)
+            print("Parsing found {} implicitly convertible types".format(len(result)))
 
             # data types: vec, matrix, etc
             import pxr.Gf  # type: ignore[import]
@@ -1217,7 +1220,7 @@ def main(outdir: str) -> None:
     notifier.set_modules(
         [
             # "pxr.UsdGeom",
-            "pxr.UsdShade",
+            "pxr.Sdf",
         ]
     )
 
