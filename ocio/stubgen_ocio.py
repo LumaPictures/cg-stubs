@@ -10,7 +10,6 @@ from mypy.stubgenc import SignatureGenerator
 from stubgenlib import (
     DocstringTypeFixer,
     FixableCDocstringSigGen,
-    CDocstringSignatureGenerator,
 )
 
 

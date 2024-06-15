@@ -5,7 +5,7 @@ build-backend = "poetry.masonry.api"
 [tool.poetry]
 name = "types-katana"
 readme = "README.md"
-authors = ["Chad Dombrova"]
+authors = ["Chad Dombrova", "Nathan Rusch"]
 description = "Unofficial python stubs for Foundry Katana"
 license = "MIT"
 

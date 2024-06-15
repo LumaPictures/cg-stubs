@@ -68,7 +68,12 @@ def merge_signatures(
     if dest.is_special_method() and len(other.args) == len(dest.args):
         for arg, other_arg in zip(dest.args, other.args):
             if (arg.type is None or force) and other_arg.type is not None:
-                arg = ArgSig(arg.name, other_arg.type, default=arg.default)
+                arg = ArgSig(
+                    arg.name,
+                    other_arg.type,
+                    default=arg.default,
+                    default_value=arg.default_value,
+                )
             args.append(arg)
     else:
         other_args = {arg.name: arg for arg in other.args}
@@ -76,7 +81,12 @@ def merge_signatures(
             if arg.name in other_args:
                 other_arg = other_args[arg.name]
                 if (arg.type is None or force) and other_arg.type is not None:
-                    arg = ArgSig(arg.name, other_arg.type, default=arg.default)
+                    arg = ArgSig(
+                        arg.name,
+                        other_arg.type,
+                        default=arg.default,
+                        default_value=arg.default_value,
+                    )
             args.append(arg)
 
     ret_type = dest.ret_type
@@ -133,7 +143,14 @@ class BaseSigFixer:
                         )
                     )
                     type_name = None
-            args.append(ArgSig(arg.name, type_name, default=arg.default))
+            args.append(
+                ArgSig(
+                    arg.name,
+                    type_name,
+                    default=arg.default,
+                    default_value=arg.default_value,
+                )
+            )
         if sig.ret_type:
             return_type = self.cleanup_type(sig.ret_type, ctx, is_result=True)
             if not self.is_valid(return_type):
@@ -306,8 +323,8 @@ class DocstringSignatureGenerator(SignatureGenerator):
     ) -> list[FunctionSig] | None:
         import docstring_parser
 
-        if ctx.docstr:
-            parsed = docstring_parser.parse(self.prepare_docstring(ctx.docstr))
+        if ctx.docstring:
+            parsed = docstring_parser.parse(self.prepare_docstring(ctx.docstring))
             args = []
             return_type = None
             if parsed.params:
@@ -354,8 +371,8 @@ class BoostDocstringSignatureGenerator(SignatureGenerator):
     def get_function_sig(
         self, default_sig: FunctionSig, ctx: FunctionContext
     ) -> list[FunctionSig] | None:
-        if ctx.docstr:
-            return infer_sig_from_boost_docstring(ctx.docstr, ctx.name)
+        if ctx.docstring:
+            return infer_sig_from_boost_docstring(ctx.docstring, ctx.name)
         return None
 
 
@@ -372,13 +389,15 @@ class CFunctionStub:
 
     @classmethod
     def _from_sig(cls, sig: FunctionSig, is_abstract=False) -> CFunctionStub:
-        return CFunctionStub(sig.name, sig.format_sig(suffix=""), is_abstract)
+        return CFunctionStub(
+            sig.name, sig.format_sig().replace(": ...", ""), is_abstract
+        )
 
     @classmethod
     def _from_sigs(cls, sigs: list[FunctionSig], is_abstract=False) -> CFunctionStub:
         return CFunctionStub(
             sigs[0].name,
-            '\n'.join(sig.format_sig(suffix="") for sig in sigs),
+            '\n'.join(sig.format_sig().replace(": ...", "") for sig in sigs),
             is_abstract,
         )
 
@@ -387,7 +406,6 @@ class CFunctionStub:
         This exists to make this object look like a method descriptor and thus
         return true for InspectionStubGenerator.ismethod()
         """
-        pass
 
 
 def sig_sort_key(py_sig: FunctionSig) -> tuple[int, tuple[str, ...]]:
@@ -833,7 +851,7 @@ class AdvancedSignatureGenerator(SignatureGenerator):
 
     def _type_match(self, type_match: str | None, arg_type: str | None) -> bool:
         if arg_type is None:
-            return type_match is None or  type_match == "*"
+            return type_match is None or type_match == "*"
         elif type_match:
             return fnmatch.fnmatch(arg_type, type_match)
         else:
@@ -867,8 +885,9 @@ class AdvancedSignatureGenerator(SignatureGenerator):
     ) -> T | None:
         """Look for a match in the given dictionary of argument overrides"""
         for (method_match, ret_type_match), value in items.items():
-            if (fnmatch.fnmatch(fullname, method_match)
-                    and self._type_match(ret_type_match, ret_type)):
+            if fnmatch.fnmatch(fullname, method_match) and self._type_match(
+                ret_type_match, ret_type
+            ):
                 return value
         return None
 
@@ -903,7 +922,9 @@ class AdvancedSignatureGenerator(SignatureGenerator):
         if self.find_result_match(ctx.fullname, sig.ret_type, self._optional_result):
             sig = sig._replace(ret_type=f"typing.Optional[{sig.ret_type}]")
         else:
-            ret_override = self.find_result_match(ctx.fullname, sig.ret_type, self.result_type_overrides)
+            ret_override = self.find_result_match(
+                ctx.fullname, sig.ret_type, self.result_type_overrides
+            )
             if ret_override:
                 sig = sig._replace(ret_type=ret_override)
         return sig

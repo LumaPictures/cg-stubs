@@ -143,8 +143,8 @@ def filter_paths_regex(
 
 def filter_paths(
     paths: Iterable[str],
-    include: Iterable[str] | None = None,
-    exclude: Iterable[str] | None = None,
+    include: tuple[str, ...] | None = None,
+    exclude: tuple[str, ...] | None = None,
 ) -> list[str]:
     return list(
         filter_paths_regex(
@@ -286,38 +286,38 @@ def black(session: nox.Session, options: Options):
     session.run('black', *options.files(session), log=False)
 
 
-@check(paths=('**.{yaml|yml}',), venv_backend='none')
-def check_yaml(session: nox.Session, options: Options):
-    import ruamel.yaml
-
-    yaml = ruamel.yaml.YAML()
-
-    load_fn = yaml.load
-
-    retval = 0
-    for filename in options.files(session):
-        try:
-            with open(filename, encoding='UTF-8') as f:
-                load_fn(f)
-        except ruamel.yaml.YAMLError as exc:
-            print(exc)
-            retval = 1
-    return retval
-
-
-@check(paths=('**.toml',), venv_backend='none')
-def check_toml(session: nox.Session, options: Options):
-    import tomli
-
-    retval = 0
-    for filename in options.files(session):
-        with open(filename, 'rb') as f:
-            try:
-                tomli.load(f)
-            except tomli.TOMLDecodeError as exc:
-                print(f'{filename}: {exc}')
-                retval = 1
-    return retval
+# @check(paths=('**.{yaml|yml}',), venv_backend='none')
+# def check_yaml(session: nox.Session, options: Options):
+#     import ruamel.yaml
+#
+#     yaml = ruamel.yaml.YAML()
+#
+#     load_fn = yaml.load
+#
+#     retval = 0
+#     for filename in options.files(session):
+#         try:
+#             with open(filename, encoding='UTF-8') as f:
+#                 load_fn(f)
+#         except ruamel.yaml.YAMLError as exc:
+#             print(exc)
+#             retval = 1
+#     return retval
+#
+#
+# @check(paths=('**.toml',), venv_backend='none')
+# def check_toml(session: nox.Session, options: Options):
+#     import tomli
+#
+#     retval = 0
+#     for filename in options.files(session):
+#         with open(filename, 'rb') as f:
+#             try:
+#                 tomli.load(f)
+#             except tomli.TOMLDecodeError as exc:
+#                 print(f'{filename}: {exc}')
+#                 retval = 1
+#     return retval
 
 
 @check(
@@ -330,45 +330,71 @@ def precommit_gen(session: nox.Session, options: Options):
     """
     Generate a pre-commit-hooks.yaml from the lint tasks in this module.
     """
-    import ruamel.yaml
+    # hooks = []
+    # for hook_name, obj in nox.registry._REGISTRY.items():
+    #     if hasattr(obj, 'options') and isinstance(obj.options, Options):
+    #         assert isinstance(obj, nox._decorators.Func)
+    #         hook = {
+    #             'id': hook_name,
+    #             'name': hook_name,
+    #             'entry': 'nox',
+    #             'args': flatlist('-s', hook_name, '--no-install', '--'),
+    #             'language': 'system',
+    #             'pass_filenames': obj.options.pass_filenames,
+    #             # see not on Options.require_serial for why we don't use
+    #             # obj.options.require_serial,
+    #             'require_serial': obj.venv_backend != 'none',
+    #             'stages': [TAG_TO_PRECOMMIT_STAGE.get(x, x) for x in obj.tags],
+    #         }
+    #         paths_regex = obj.options.paths_regex()
+    #         if paths_regex:
+    #             hook['files'] = multiline(paths_regex.pattern)
+    #         exclude_regex = obj.options.exclude_regex()
+    #         if exclude_regex:
+    #             hook['exclude'] = multiline(exclude_regex.pattern)
+    #         hooks.append(hook)
+    #
+    # with open('.pre-commit-config.yaml', 'w') as f:
+    #     yaml.dump(
+    #         {
+    #             'repos': [
+    #                 {
+    #                     'repo': 'local',
+    #                     'hooks': hooks,
+    #                 }
+    #             ]
+    #         },
+    #         f,
+    #     )
 
-    yaml = ruamel.yaml.YAML()
-
-    hooks = []
+    text = """
+repos:
+- repo: local
+  hooks:
+"""
     for hook_name, obj in nox.registry._REGISTRY.items():
         if hasattr(obj, 'options') and isinstance(obj.options, Options):
             assert isinstance(obj, nox._decorators.Func)
-            hook = {
-                'id': hook_name,
-                'name': hook_name,
-                'entry': 'nox',
-                'args': flatlist('-s', hook_name, '--no-install', '--'),
-                'language': 'system',
-                'pass_filenames': obj.options.pass_filenames,
-                # see not on Options.require_serial for why we don't use
-                # obj.options.require_serial,
-                'require_serial': obj.venv_backend != 'none',
-                'stages': [TAG_TO_PRECOMMIT_STAGE.get(x, x) for x in obj.tags],
-            }
+            stages = [TAG_TO_PRECOMMIT_STAGE.get(x, x) for x in obj.tags]
+            text += f"""
+  - id: {hook_name}
+    name: {hook_name}
+    entry: nox
+    args: [-s, {hook_name}, --no-install, --]
+    language: system
+    pass_filenames: {'true' if obj.options.pass_filenames else 'false'}
+    require_serial: {'true' if obj.venv_backend != 'none' else 'false'}
+    stages: [{', '.join(stages)}]\n"""
+
             paths_regex = obj.options.paths_regex()
             if paths_regex:
-                hook['files'] = multiline(paths_regex.pattern)
+                text += f"    files: {paths_regex.pattern}\n"
             exclude_regex = obj.options.exclude_regex()
             if exclude_regex:
-                hook['exclude'] = multiline(exclude_regex.pattern)
-            hooks.append(hook)
+                text += f"    exclude: {exclude_regex.pattern}\n"
+
     with open('.pre-commit-config.yaml', 'w') as f:
-        yaml.dump(
-            {
-                'repos': [
-                    {
-                        'repo': 'local',
-                        'hooks': hooks,
-                    }
-                ]
-            },
-            f,
-        )
+        f.write(text)
 
 
 def make_packages(path: pathlib.Path = pathlib.Path(".")) -> None:
@@ -449,19 +475,38 @@ def publish(session: nox.Session, lib: str) -> None:
     session.install("poetry")
     with stubs_suffix(session):
         session.run("poetry", "publish", "--build", *session.posargs)
+    output = session.run("poetry", "version", "-s", silent=True)
+    assert output is not None
+    version = output.splitlines()[-1]
+    session.run("git", "tag", f"{lib}/v{version}", external=True)
+
+
+def get_version(directory: str, root=False) -> str:
+    import tomli
+
+    filename = os.path.join(directory, "pyproject.toml")
+    with open(filename, "rb") as f:
+        data = tomli.load(f)
+    version = data["tool.poetry"]["version"]
+    if root:
+        return version.rsplit(".", 1)[0]
+    else:
+        return version
 
 
 @nox.session(reuse_venv=True)
 @nox.parametrize('lib', PARAMS)
 def generate(session: nox.Session, lib: str) -> None:
-    args = ("-r", "requirements.txt")
+    args = ["-r", "requirements.txt"]
 
     if lib == "pyside":
-        args += ("PySide2==5.15.2.1",)
+        version = get_version(lib, root=True)
+        args += [f"PySide2=={version}"]
     elif lib == "ocio":
-        args += ("opencolorio==2.2.1",)
+        version = get_version(lib, root=True)
+        args += [f"opencolorio=={version}"]
     elif lib == "usd":
-        args += ("PySide6==6.5.1.1",)
+        args += ["PySide6==6.5.1.1"]
 
     session.env.pop('PYTHONPATH', None)
     session.install(*args)
@@ -475,8 +520,8 @@ def generate(session: nox.Session, lib: str) -> None:
 @nox.session(reuse_venv=True)
 @nox.parametrize('lib', PARAMS)
 def mypy(session: nox.Session, lib: str) -> None:
+    session.install("-r", "requirements.txt")
     session.chdir(lib)
-    session.install("mypy==1.4.1")
 
     if lib == "ocio":
         session.install("numpy")
@@ -486,12 +531,11 @@ def mypy(session: nox.Session, lib: str) -> None:
 
 @check(paths=LINT_FILES, pass_filenames=False, tags=['ci', 'prepush'])
 def self_mypy(session: nox.Session, options: Options) -> None:
-    session.install("-r", "requirements.txt")
+    session.install("-r", "requirements.txt", "-r", "nox-requirements.txt")
     source = []
     for app in APPS:
         fpath = pathlib.Path(f"{app}/stubgen_{app}.py")
         if fpath.exists():
             source.append(str(fpath))
 
-    session.env["MYPYPATH"] = "../mypy"
-    session.run("mypy", "stubgenlib.py", *source)
+    session.run("mypy", "noxfile.py", "stubgenlib.py", *source)

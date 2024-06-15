@@ -1,8 +1,8 @@
 # mypy: disable-error-code="misc, override, no-redef"
 
-import pxr.Gf as Gf
 import PySide6.QtCore
 import PySide6.QtWidgets
+import pxr.Gf as Gf
 import pxr.UsdGeom as UsdGeom
 from pxr.Usdviewq.adjustFreeCameraUI import Ui_AdjustFreeCamera as Ui_AdjustFreeCamera
 from pxr.Usdviewq.common import FixableDoubleValidator as FixableDoubleValidator

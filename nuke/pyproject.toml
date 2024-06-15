@@ -7,7 +7,7 @@ name = "types-nuke"
 version = "13.2.8.0"
 
 readme = "README.md"
-authors = ["Chad Dombrova"]
+authors = ["Chad Dombrova", "Nathan Rusch"]
 description = "Unofficial python stubs for Foundry Nuke"
 license = "MIT"
 

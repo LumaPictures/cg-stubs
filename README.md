@@ -27,13 +27,14 @@ pip install types-usd types-houdini types-katana types-mari types-nuke types-ope
 
 ## Generating the stubs
 
-You only need to do this if you your goal is to help improve the stubs. Otherwise, just use `pip`.
+You only need to do this if your goal is to help improve the stubs. Otherwise, just use `pip`, as explained above.
+
+Building the stubs requires python 3.9 or greater:
 
 In the instructions below, replace ocio with your desired package to generate.
 
-First, look at `ocio/stubgen_ocio.sh` to see if there are any env vars to set in the `# Custom variables` section.
-
-Next, build the stubs using [`nox`](https://nox.thea.codes/en/stable/index.html).  Requires python 3.7+:
+First, look at `<pkgname>/stubgen_<pkgname>.sh` to see if there are any env vars to set in the `# Custom variables` section.
+Next, build the stubs using [`nox`](https://nox.thea.codes/en/stable/index.html).
 
 ```
 cd cg-stubs
@@ -46,13 +47,18 @@ nox -s 'generate(ocio)'
 If this fails, here's a more foolproof approach:
 
 ```
-# setup your env, e.g. setpkg python-3.9
 unset PYTHONPATH
-python3 -m venv .venv39
+python3.9 -m venv .venv39
 . .venv39/bin/activate
-python3 -m pip install -r nox-requirements.txt
+python3.9 -m pip install -r nox-requirements.txt
 rm -rf .nox
-python3 -m nox -s 'generate(ocio)'
+python3.9 -m nox -s 'generate(ocio)'
+```
+
+Alternately, you can globally install `nox` using [`pipx`](https://github.com/pypa/pipx)
+
+```commandline
+pipx install nox
 ```
 
 ### Testing while Developing
@@ -72,10 +78,10 @@ The USD stubs currently require you to build a special fork of USD, until the ne
 ```
 git clone https://github.com/chadrik/USD
 git checkout doc-stubs2
-python3 -m venv .venv
-. .venv/bin/activate
+python3.9 -m venv .venv
+.venv/bin/activate
 pip install PySide6 PyOpenGL
-python3 build_scripts/build_usd.py --python-docs --docs .build
+python3.9 build_scripts/build_usd.py --python-docs --docs .build-23.08-py39
 ```
 
 Then update the variables in `stubgen_usd.sh` and generate as normal.
@@ -92,7 +98,7 @@ Then generate as normal to cleanup the stubs.
 
 ### Generating the Houdini stubs
 
-The Houdini stubs currently use a completely different approach to building which will eventually be ported to nox.  So this may be unapproachable for most users for now.
+The Houdini stubs currently use a completely different approach to building which will eventually be ported to `nox`.  So this may be unapproachable for most users for now.
 
 
 ## Publishing to PyPI

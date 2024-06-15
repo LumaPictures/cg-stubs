@@ -1,6 +1,8 @@
+
 repos:
 - repo: local
   hooks:
+
   - id: black
     name: black
     entry: nox
@@ -8,35 +10,9 @@ repos:
     language: system
     pass_filenames: true
     require_serial: true
-    stages:
-    - commit
-    - push
-    - manual
+    stages: [commit, push, manual]
     files: ^.*[^/]*[.]py$
-  - id: check_yaml
-    name: check_yaml
-    entry: nox
-    args: [-s, check_yaml, --no-install, --]
-    language: system
-    pass_filenames: true
-    require_serial: false
-    stages:
-    - commit
-    - push
-    - manual
-    files: ^.*[.](yaml|yml)$
-  - id: check_toml
-    name: check_toml
-    entry: nox
-    args: [-s, check_toml, --no-install, --]
-    language: system
-    pass_filenames: true
-    require_serial: false
-    stages:
-    - commit
-    - push
-    - manual
-    files: ^.*[.]toml$
+
   - id: precommit_gen
     name: precommit_gen
     entry: nox
@@ -44,10 +20,9 @@ repos:
     language: system
     pass_filenames: false
     require_serial: false
-    stages:
-    - commit
-    - push
+    stages: [commit, push]
     files: ^noxfile[.]py$
+
   - id: self_mypy
     name: self_mypy
     entry: nox
@@ -55,7 +30,5 @@ repos:
     language: system
     pass_filenames: false
     require_serial: true
-    stages:
-    - manual
-    - push
+    stages: [manual, push]
     files: ^.*[^/]*[.]py$

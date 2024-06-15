@@ -1,3 +1,5 @@
+__all__ = ['QtCore', 'QtGui', 'QtWidgets', 'QtPrintSupport', 'QtSql', 'QtNetwork', 'QtTest', 'QtConcurrent', 'QtMacExtras', 'QtXml', 'QtXmlPatterns', 'QtHelp', 'QtMultimedia', 'QtMultimediaWidgets', 'QtOpenGL', 'QtOpenGLFunctions', 'QtPositioning', 'QtLocation', 'QtQml', 'QtQuick', 'QtQuickControls2', 'QtQuickWidgets', 'QtRemoteObjects', 'QtScxml', 'QtScript', 'QtScriptTools', 'QtSensors', 'QtSerialPort', 'QtTextToSpeech', 'QtCharts', 'QtSvg', 'QtDataVisualization', 'QtUiTools', 'QtWebChannel', 'QtWebEngineCore', 'QtWebEngine', 'QtWebEngineWidgets', 'QtWebSockets', 'Qt3DCore', 'Qt3DRender', 'Qt3DInput', 'Qt3DLogic', 'Qt3DAnimation', 'Qt3DExtras']
+
 # Names in __all__ with no definition:
 #   Qt3DAnimation
 #   Qt3DCore
@@ -41,7 +43,6 @@
 #   QtWebEngineWidgets
 #   QtWebSockets
 #   QtWidgets
-#   QtX11Extras
 #   QtXml
 #   QtXmlPatterns
 __version__: str
