@@ -66,7 +66,7 @@ pipx install nox
 The easiest way to use the stubs while you're devleoping them is to create an editable install.  Simply create a `.pth` file in the site-packages directory of the venv where your other deps live:
 
 ```
-echo "/path/to/cg-stubs/ocio/stubs/" > /path/to/venv/lib/python3.7/site-packages/ocio.pth
+echo "/path/to/cg-stubs/ocio/stubs/" > /path/to/venv/lib/python3.9/site-packages/ocio.pth
 ```
 
 The name of the .pth file does not matter.  Note that if you're using the mypy daemon, be sure to run `dmypy stop` to reread freshly modified stubs.
