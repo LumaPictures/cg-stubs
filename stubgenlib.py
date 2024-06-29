@@ -1022,12 +1022,13 @@ class CppTypeConverter:
 
         if self._typedefs is None:
             self._typedefs = []
-            reg = re.compile(r"\btypedef ([^;]+);")
+            typedef_reg = re.compile(r"\btypedef ([^;]+);")
+            using_reg = re.compile(r"\busing\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*([^;]+);")
 
             srcdir = pathlib.Path(self.srcdir)
             for include_file in self.TYPE_DEF_INCLUDES:
                 text = srcdir.joinpath(include_file).read_text().replace("\n", " ")
-                for match in reg.finditer(text):
+                for match in typedef_reg.finditer(text):
                     typedef_str = match.group(1)
                     type, alias = typedef_str.rsplit(" ", 1)
                     alias = alias.replace(" ", "")
@@ -1038,6 +1039,11 @@ class CppTypeConverter:
                         parts = type.split(",")
                         if len(parts) == 3:
                             type = ",".join(parts[:-1]) + ">"
+                    self._typedefs.append((alias, type))
+                for match in using_reg.finditer(text):
+                    alias = match.group(1).strip()
+                    type = match.group(2).strip()
+                    print(include_file, "Found", alias, type)
                     self._typedefs.append((alias, type))
         return self._typedefs
 

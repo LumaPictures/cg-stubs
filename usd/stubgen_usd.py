@@ -168,7 +168,9 @@ class TypeInfo(CppTypeConverter):
         "pxr/usd/sdf/fileFormat.h",
         # "pxr/usd/sdf/proxyTypes.h",
         "pxr/usd/ndr/declare.h",
+        "pxr/usd/usd/prim.h",
         "pxr/usd/usdGeom/basisCurves.h",
+        "pxr/usd/usdShade/udimUtils.h",
     ]
     ARG_TYPE_MAP = CppTypeConverter.ARG_TYPE_MAP + [
         # Sdf mapping types:
@@ -1220,7 +1222,7 @@ def main(outdir: str) -> None:
     notifier.set_modules(
         [
             # "pxr.UsdGeom",
-            "pxr.Sdf",
+            # "pxr.Sdf",
         ]
     )
 
