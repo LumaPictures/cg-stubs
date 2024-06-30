@@ -3,7 +3,16 @@
 from typing import ClassVar
 
 class RefinementComplexities:
+    """
+    An enum-like container of standard complexity settings.
+    """
+
     class _RefinementComplexity:
+    """
+        Class which represents a level of mesh refinement complexity. Each
+        level has a string identifier, a display name, and a float complexity
+        value.
+        """
         def __init__(self, compId, name, value) -> None: ...
         @property
         def id(self): ...
@@ -17,14 +26,37 @@ class RefinementComplexities:
     VERY_HIGH: ClassVar[RefinementComplexities._RefinementComplexity] = ...
     _ordered: ClassVar[tuple] = ...
     @classmethod
-    def fromId(cls, compId): ...
+    def fromId(cls, compId):
+        """
+        Get a complexity from its identifier.
+        """
     @classmethod
-    def fromName(cls, name): ...
+    def fromName(cls, name):
+        """
+        Get a complexity from its display name.
+        """
     @classmethod
-    def next(cls, comp): ...
+    def next(cls, comp):
+        """
+        Get the next highest level of complexity. If already at the highest
+        level, return it.
+        """
     @classmethod
-    def ordered(cls): ...
+    def ordered(cls):
+        """
+        Get a tuple of all complexity levels in order.
+        """
     @classmethod
-    def prev(cls, comp): ...
+    def prev(cls, comp):
+        """
+        Get the next lowest level of complexity. If already at the lowest
+        level, return it.
+        """
 
-def AddCmdlineArgs(argsParser, defaultValue: RefinementComplexities._RefinementComplexity = ..., altHelpText: str = ...): ...
+def AddCmdlineArgs(argsParser, defaultValue: RefinementComplexities._RefinementComplexity = ..., altHelpText: str = ...):
+    """
+    Adds complexity-related command line arguments to argsParser.
+
+    The resulting 'complexity' argument will be one of the standard
+    RefinementComplexities.
+    """

@@ -45,18 +45,40 @@ class ARKitShaderChecker(BaseRuleChecker):
     def GetDescription(): ...
 
 class BaseRuleChecker:
+    """This is Base class for all the rule-checkers."""
     def __init__(self, verbose, consumerLevelChecks, assetLevelChecks) -> None: ...
-    def CheckDependencies(self, usdStage, layerDeps, assetDeps): ...
-    def CheckDiagnostics(self, diagnostics): ...
-    def CheckLayer(self, layer): ...
-    def CheckPrim(self, prim): ...
-    def CheckStage(self, usdStage): ...
-    def CheckUnresolvedPaths(self, unresolvedPaths): ...
-    def CheckZipFile(self, zipFile, packagePath): ...
+    def CheckDependencies(self, usdStage, layerDeps, assetDeps):
+        """ Check usdStage's layer and asset dependencies that were gathered 
+                    using UsdUtils.ComputeAllDependencies().
+        """
+    def CheckDiagnostics(self, diagnostics):
+        """ Check the diagnostic messages that were generated when opening the 
+                    USD stage. The diagnostic messages are collected using a 
+                    UsdUtilsCoalescingDiagnosticDelegate.
+        """
+    def CheckLayer(self, layer):
+        """ Check the given SdfLayer. """
+    def CheckPrim(self, prim):
+        """ Check the given prim, which may only exist is a specific combination
+                    of variant selections on the UsdStage.
+        """
+    def CheckStage(self, usdStage):
+        """ Check the given usdStage. """
+    def CheckUnresolvedPaths(self, unresolvedPaths):
+        """ Check or process any unresolved asset paths that were found when 
+                    analysing the dependencies.
+        """
+    def CheckZipFile(self, zipFile, packagePath):
+        """ Check the zipFile object created by opening the package at path 
+                    packagePath.
+        """
     def GetErrors(self): ...
     def GetFailedChecks(self): ...
     def GetWarnings(self): ...
-    def ResetCaches(self): ...
+    def ResetCaches(self):
+        """ Reset any caches the rule owns.  Called whenever stage authoring
+                occurs, such as when we iterate through VariantSet combinations.
+        """
     def _AddError(self, msg): ...
     def _AddFailedCheck(self, msg): ...
     def _AddWarning(self, msg): ...
@@ -69,6 +91,25 @@ class ByteAlignmentChecker(BaseRuleChecker):
     def GetDescription(): ...
 
 class ComplianceChecker:
+    ''' A utility class for checking compliance of a given USD asset or a USDZ 
+    package.
+
+    Since usdz files are zip files, someone could use generic zip tools to 
+    create an archive and just change the extension, producing a .usdz file that 
+    does not honor the additional constraints that usdz files require.  Even if 
+    someone does use our official archive creation tools, though, we 
+    intentionally allow creation of usdz files that can be very "permissive" in 
+    their contents for internal studio uses, where portability outside the 
+    studio is not a concern.  For content meant to be delivered over the web 
+    (eg. ARKit assets), however, we must be much more restrictive.
+
+    This class provides two levels of compliance checking: 
+    * "structural" validation that is represented by a set of base rules. 
+    * "ARKit" compatibility validation, which includes many more restrictions.
+    
+    Calling ComplianceChecker.DumpAllRules() will print an enumeration of the 
+    various rules in the two categories of compliance checking.
+    '''
     def __init__(self, arkit: bool = ..., skipARKitRootLayerCheck: bool = ..., rootPackageOnly: bool = ..., skipVariants: bool = ..., verbose: bool = ..., assetLevelChecks: bool = ...) -> None: ...
     def CheckCompliance(self, inputFile): ...
     @staticmethod

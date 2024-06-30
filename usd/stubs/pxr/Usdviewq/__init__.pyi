@@ -17,7 +17,10 @@ from typing import Any, Callable, ClassVar, overload
 __MFB_FULL_PACKAGE_NAME: str
 
 class ContainerDataSource(Boost.Python.instance):
-    def __init__(self, *args, **kwargs) -> None: ...
+    def __init__(self, *args, **kwargs) -> None:
+        """Raises an exception
+        This class cannot be instantiated from Python
+        """
     @overload
     def Get(self, arg2: object) -> Any: ...
     @overload
@@ -25,24 +28,27 @@ class ContainerDataSource(Boost.Python.instance):
     def GetNames(self) -> list: ...
 
 class DataSourceBase(Boost.Python.instance):
-    def __init__(self, *args, **kwargs) -> None: ...
+    def __init__(self, *args, **kwargs) -> None:
+        """Raises an exception
+        This class cannot be instantiated from Python
+        """
 
 class DataSourceLocator(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self, arg2: object, arg3: object, arg4: object, arg5: object, arg6: object, arg7: object) -> None: ...
-    @overload
-    def __init__(self, arg2: object, arg3: object, arg4: object, arg5: object, arg6: object) -> None: ...
-    @overload
-    def __init__(self, arg2: object, arg3: object, arg4: object, arg5: object) -> None: ...
-    @overload
-    def __init__(self, arg2: object, arg3: object, arg4: object) -> None: ...
-    @overload
-    def __init__(self, arg2: object, arg3: object) -> None: ...
+    def __init__(self) -> None: ...
     @overload
     def __init__(self, arg2: object) -> None: ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self, arg2: object, arg3: object) -> None: ...
+    @overload
+    def __init__(self, arg2: object, arg3: object, arg4: object) -> None: ...
+    @overload
+    def __init__(self, arg2: object, arg3: object, arg4: object, arg5: object) -> None: ...
+    @overload
+    def __init__(self, arg2: object, arg3: object, arg4: object, arg5: object, arg6: object) -> None: ...
+    @overload
+    def __init__(self, arg2: object, arg3: object, arg4: object, arg5: object, arg6: object, arg7: object) -> None: ...
     @overload
     def Append(self, arg2: object) -> typing_extensions.Self: ...
     @overload
@@ -80,23 +86,108 @@ class DataSourceLocatorSet(Boost.Python.instance):
     def insert(self, arg2: DataSourceLocatorSet) -> None: ...
 
 class HydraObserver(Boost.Python.instance):
+    """
+    Abstracts pieces necessary for implementing a Hydra Scene Browser in a
+    manner convenient for exposing to python.
+
+
+    For C++ code, this offers no benefits over directly implementing an
+    HdSceneIndexObserver. It exists solely in service of the python
+    implementation of Hydra Scene Browser present in usdview.
+
+    See extras/imaging/examples/hdui for an example of a C++ direct
+    implementation.
+    """
     __instance_size__: ClassVar[int] = ...
     def __init__(self) -> None: ...
-    def ClearPendingNotices(self) -> None: ...
-    def GetChildPrimPaths(self, arg2: pxr.Sdf.Path | str) -> list[pxr.Sdf.Path]: ...
-    def GetDisplayName(self) -> str: ...
-    def GetInputDisplayNames(self, arg2: IndexList) -> list[str]: ...
-    def GetPendingNotices(self) -> list[NoticeEntry]: ...
-    def GetPrim(self, arg2: pxr.Sdf.Path | str) -> HdSceneIndexPrim: ...
-    @staticmethod
-    def GetRegisteredSceneIndexNames() -> list[str]: ...
-    def HasPendingNotices(self) -> bool: ...
-    def TargetToInputSceneIndex(self, arg2: IndexList) -> bool: ...
-    def TargetToNamedSceneIndex(self, arg2: str | pxr.Ar.ResolvedPath) -> bool: ...
+    def ClearPendingNotices(self) -> None:
+        """
+        Clears any accumulated scene change notices.
+        """
+    def GetChildPrimPaths(self, arg2: pxr.Sdf.Path | str) -> list[pxr.Sdf.Path]:
+        """
+        Returns the paths of the immediate children of the specified
+        C{primPath} for the actively observer scene index.
+        """
+    def GetDisplayName(self) -> str:
+        """
+        Returns the display name of the actively targeted scene index.
 
-class InvalidUsdviewOption(Exception): ...
+
+        This display name is currently derived from the C++ typename.
+        """
+    def GetInputDisplayNames(self, arg2: IndexList) -> list[str]:
+        """
+        Starting from the currently targeted HdSceneIndex, each value in the
+        C{inputIndices} is treated as an index into the result of
+        HdFilteringSceneIndexBase::GetInputScenes.
+
+
+        If the scene index reached is a subclass of HdFilteringSceneIndexBase,
+        the display names of the return value of GetInputScenes is returned.
+        Otherwise, the return value is empty.
+        """
+    def GetPendingNotices(self) -> list[NoticeEntry]:
+        """
+        Returns (and clears) any accumulated scene change notices.
+
+
+        Consumers of this follow a polling rather than callback pattern.
+        """
+    def GetPrim(self, arg2: pxr.Sdf.Path | str) -> HdSceneIndexPrim:
+        """
+        Returns the prim type and data source for the specified C{primPath}
+        for the actively observer scene index.
+        """
+    @staticmethod
+    def GetRegisteredSceneIndexNames() -> list[str]:
+        """
+        Returns the names of scene indices previously registered with
+        HdSceneIndexNameRegistry.
+
+
+        It allows a browser to retrieve available instances without direct
+        interaction with the application.
+        """
+    def HasPendingNotices(self) -> bool:
+        """
+        Returns true if there are pending scene change notices.
+
+
+        Consumers of this follow a polling rather than callback pattern.
+        """
+    def TargetToInputSceneIndex(self, arg2: IndexList) -> bool:
+        """
+        Starting from the currently targeted HdSceneIndex, each value in the
+        C{inputIndices} is treated as an index into the result of
+        HdFilteringSceneIndexBase::GetInputScenes.
+
+
+        Returns true if each followed index maps to a valid index into the
+        input scenes of the previous.
+        """
+    def TargetToNamedSceneIndex(self, arg2: str | pxr.Ar.ResolvedPath) -> bool:
+        """
+        Target this observer to a scene index with the given name previously
+        registered via HdSceneIndexNameRegistry.
+        """
+
+class InvalidUsdviewOption(Exception):
+    """Raised when an invalid Usdview option is found in
+    Launcher.ValidateOptions or any methods which override it.
+    """
 
 class Launcher:
+    """
+    Base class for argument parsing, validation, and initialization for UsdView
+
+    Subclasses can choose to override
+      -- GetHelpDescription()
+      -- RegisterOptions()
+      -- ParseOptions()
+      -- ValidateOptions()
+      -- GetResolverContext()
+    """
     __init__: ClassVar[Callable] = ...
     GetHelpDescription: ClassVar[Callable] = ...
     GetResolverContext: ClassVar[Callable] = ...
@@ -109,19 +200,41 @@ class Launcher:
     _Launcher__LaunchProcess: ClassVar[Callable] = ...
 
 class SampledDataSource(Boost.Python.instance):
-    def __init__(self, *args, **kwargs) -> None: ...
+    def __init__(self, *args, **kwargs) -> None:
+        """Raises an exception
+        This class cannot be instantiated from Python
+        """
     def GetTypeString(self) -> str: ...
     def GetValue(self, arg2: float) -> Any: ...
 
 class Utils(Boost.Python.instance):
+    """
+    Performance enhancing utilities for usdview.
+    """
     __instance_size__: ClassVar[int] = ...
     def __init__(self) -> None: ...
     @staticmethod
-    def GetPrimInfo(arg1: pxr.Usd.Prim, arg2: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> tuple: ...
+    def GetPrimInfo(arg1: pxr.Usd.Prim, arg2: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> tuple:
+        """
+        Fetch prim-related data in batch to to speed up Qt treeview item
+        population.
+
+
+        Takes a time argument so that we can evaluate the prim's visibiity if
+        it is imageable.
+        """
     @staticmethod
-    def _GetAllPrimsOfType(arg1: pxr.Usd.Stage, arg2: pxr.Tf.Type) -> list[pxr.Usd.Prim]: ...
+    def _GetAllPrimsOfType(arg1: pxr.Usd.Stage, arg2: pxr.Tf.Type) -> list[pxr.Usd.Prim]:
+        """
+        For the given C{stage} and C{schemaType}, return all active, defined
+        prims that either match the schemaType exactly or are a descendant
+        type.
+        """
 
 class VectorDataSource(Boost.Python.instance):
-    def __init__(self, *args, **kwargs) -> None: ...
+    def __init__(self, *args, **kwargs) -> None:
+        """Raises an exception
+        This class cannot be instantiated from Python
+        """
     def GetElement(self, arg2: int) -> Any: ...
     def GetNumElements(self) -> int: ...

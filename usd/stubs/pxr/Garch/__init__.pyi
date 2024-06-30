@@ -5,6 +5,12 @@ import Boost.Python
 __MFB_FULL_PACKAGE_NAME: str
 
 class GLPlatformDebugContext(Boost.Python.instance):
+    """
+    Platform specific context (e.g.
+
+
+    X11/GLX) which supports debug output.
+    """
     def __init__(self, arg2: int, arg3: int, arg4: bool, arg5: bool) -> None: ...
     def makeCurrent(self) -> None: ...
     def __bool__(self) -> bool: ...

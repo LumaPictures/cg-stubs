@@ -45,6 +45,9 @@ class Notifier:
         self._seen_msgs[(key, module, msg)] += 1
         self._seen_keys[key] += 1
 
+    def accumulate(self, key: str):
+        self._seen_keys[key] += 1
+
     def print_summary(self) -> None:
         print()
         print("Warning Summary:")
@@ -128,7 +131,9 @@ class BaseSigFixer:
         """Override this to implement logic to fix a type"""
         return type_name
 
-    def cleanup_sig_types(self, sig: FunctionSig, ctx: FunctionContext) -> FunctionSig:
+    def cleanup_sig_types(
+        self, sig: FunctionSig, ctx: FunctionContext, docstring: str | None = None
+    ) -> FunctionSig:
         args = []
         return_type = None
         invalid = []
@@ -162,7 +167,9 @@ class BaseSigFixer:
                 return_type = None
 
         # FIXME: only copy if something has changed?
-        converted = FunctionSig(sig.name, args, return_type)
+        converted = sig._replace(args=args, ret_type=return_type)
+        if docstring:
+            converted = converted._replace(docstring=docstring)
 
         if invalid:
             print(f"Invalid type after cleanup: {ctx.fullname}")
@@ -447,7 +454,7 @@ def reduce_overloads(sigs: list[FunctionSig]) -> list[FunctionSig]:
             redundant.append(b)
         elif contains_other_overload(b, a):
             redundant.append(a)
-    results = [sig for sig in sigs if sig not in redundant]
+    results = [sig for sig in new_sigs if sig not in redundant]
     if not results:
         print("removed too much")
         for x in sigs:

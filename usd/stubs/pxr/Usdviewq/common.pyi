@@ -23,6 +23,9 @@ ICON_DIR_ROOT: str
 _icons: dict
 
 class BusyContext:
+    '''When used as a context object with python\'s "with" statement,
+    will set Qt\'s busy cursor upon entry and pop it on exit.
+    '''
     def __enter__(self): ...
     def __exit__(self, *args): ...
 
@@ -33,6 +36,7 @@ class CameraMaskModes(pxr.UsdUtils.constantsGroup.ConstantsGroup):
     _all: ClassVar[tuple] = ...
 
 class ClearColors(pxr.UsdUtils.constantsGroup.ConstantsGroup):
+    """Names of available background colors."""
     BLACK: ClassVar[str] = ...
     DARK_GREY: ClassVar[str] = ...
     LIGHT_GREY: ClassVar[str] = ...
@@ -46,6 +50,8 @@ class ColorCorrectionModes(pxr.UsdUtils.constantsGroup.ConstantsGroup):
     _all: ClassVar[tuple] = ...
 
 class DefaultFontFamily(pxr.UsdUtils.constantsGroup.ConstantsGroup):
+    """Names of the default font family and monospace font family to be used
+    with usdview"""
     FONT_FAMILY: ClassVar[str] = ...
     MONOSPACE_FONT_FAMILY: ClassVar[str] = ...
     _all: ClassVar[tuple] = ...
@@ -56,6 +62,7 @@ class FixableDoubleValidator(PySide6.QtGui.QDoubleValidator):
     def fixup(self, valStr): ...
 
 class HighlightColors(pxr.UsdUtils.constantsGroup.ConstantsGroup):
+    """Names of available highlight colors for selected objects."""
     CYAN: ClassVar[str] = ...
     WHITE: ClassVar[str] = ...
     YELLOW: ClassVar[str] = ...
@@ -95,9 +102,11 @@ class PickModes(pxr.UsdUtils.constantsGroup.ConstantsGroup):
     _all: ClassVar[tuple] = ...
 
 class PrimNotFoundException(Exception):
+    """Raised when a prim does not exist at a valid path."""
     def __init__(self, path) -> None: ...
 
 class PropertyNotFoundException(Exception):
+    """Raised when a property does not exist at a valid path."""
     def __init__(self, path) -> None: ...
 
 class PropertyViewDataRoles(pxr.UsdUtils.constantsGroup.ConstantsGroup):
@@ -161,6 +170,17 @@ class ShadedRenderModes(pxr.UsdUtils.constantsGroup.ConstantsGroup):
     _all: ClassVar[tuple] = ...
 
 class Timer:
+    '''Use as a context object with python\'s "with" statement, like so:
+       with Timer("do some stuff", printTiming=True):
+           doSomeStuff()
+
+       If you want to defer printing timing information, one way to do so is as
+       follows:
+       with Timer("do some stuff") as t:
+           doSomeStuff()
+       if wantToPrintTime:
+           t.PrintTime()
+    '''
     def __init__(self, label, printTiming: bool = ...) -> None: ...
     def Invalidate(self): ...
     def PrintTime(self): ...
@@ -210,22 +230,73 @@ class UIPropertyValueSourceColors(pxr.UsdUtils.constantsGroup.ConstantsGroup):
 
 def BoldenLabelText(text, substring): ...
 def ColorizeLabelText(text, substring, r, g, b): ...
-def Drange(start, stop, step): ...
+def Drange(start, stop, step):
+    """Return a list whose first element is 'start' and the following elements
+        (if any) are 'start' plus increasing whole multiples of 'step', up to but
+        not greater than 'stop'.  For example:
+        Drange(1, 3, 0.3) -> [1, 1.3, 1.6, 1.9, 2.2, 2.5, 2.8]"""
 def DumpMallocTags(stage, contextStr): ...
-def GetAssetCreationTime(primStack, assetIdentifier): ...
-def GetEnclosingModelPrim(prim): ...
+def GetAssetCreationTime(primStack, assetIdentifier):
+    '''Finds the weakest layer in which assetInfo.identifier is set to
+        \'assetIdentifier\', and considers that an "asset-defining layer".
+        If assetInfo.identifier is not set in any layer, assumes the weakest
+        layer is the defining layer.  We then retrieve the creation time for
+        the asset by stat\'ing the defining layer\'s real path.
+
+        Returns a triple of strings: (fileDisplayName, creationTime, owner)'''
+def GetEnclosingModelPrim(prim):
+    """If 'prim' is inside/under a model of any kind, return the closest
+        such ancestor prim - If 'prim' has no model ancestor, return None"""
 def GetFileOwner(path): ...
-def GetInstanceIdForIndex(prim, instanceIndex, time): ...
-def GetInstanceIndicesForIds(prim, instanceIds, time): ...
-def GetPrimLoadability(prim): ...
-def GetPrimsLoadability(prims): ...
+def GetInstanceIdForIndex(prim, instanceIndex, time):
+    """Attempt to find an authored Id value for the instance at index
+        'instanceIndex' at time 'time', on the given prim 'prim', which we access
+        as a UsdGeom.PointInstancer (whether it actually is or not, to provide
+        some dynamic duck-typing for custom instancer types that support Ids.
+        Returns 'None' if no ids attribute was found, or if instanceIndex is
+        outside the bounds of the ids array."""
+def GetInstanceIndicesForIds(prim, instanceIds, time):
+    """Attempt to find the instance indices of a list of authored instance IDs
+        for prim 'prim' at time 'time'. If the prim is not a PointInstancer or does
+        not have authored IDs, returns None. If any ID from 'instanceIds' does not
+        exist at the given time, its index is not added to the list (because it does
+        not have an index)."""
+def GetPrimLoadability(prim):
+    '''Return a tuple of (isLoadable, isLoaded) for \'prim\', according to
+        the following rules:
+        A prim is loadable if it is active, and either of the following are true:
+           * prim has a payload
+           * prim is a model group
+        The latter is useful because loading is recursive on a UsdStage, and it
+        is convenient to be able to (e.g.) load everything loadable in a set.
+
+        A prim \'isLoaded\' only if there are no unloaded prims beneath it, i.e.
+        it is stating whether the prim is "fully loaded".  This
+        is a debatable definition, but seems useful for usdview\'s purposes.'''
+def GetPrimsLoadability(prims):
+    """Follow the logic of GetPrimLoadability for each prim, combining
+        results so that isLoadable is the disjunction of all prims, and
+        isLoaded is the conjunction."""
 def GetPropertyColor(prop, frame, hasValue: Incomplete | None = ..., hasAuthoredValue: Incomplete | None = ..., valueIsDefault: Incomplete | None = ...): ...
 def GetPropertyTextFont(prop, frame): ...
 def GetRootLayerStackInfo(stage): ...
 def GetShortStringForValue(prop, val): ...
-def GetValueAndDisplayString(prop, time): ...
-def HasSessionVis(prim): ...
-def InvisRootPrims(stage): ...
+def GetValueAndDisplayString(prop, time):
+    """If `prop` is a timeSampled Sdf.AttributeSpec, compute a string specifying
+        how many timeSamples it possesses.  Otherwise, compute the single default
+        value, or targets for a relationship, or value at 'time' for a
+        Usd.Attribute.  Return a tuple of a parameterless function that returns the
+        resolved value at 'time', and the computed brief string for display.  We
+        return a value-producing function rather than the value itself because for
+        an Sdf.AttributeSpec with multiple timeSamples, the resolved value is
+        *all* of the timeSamples, which can be expensive to compute, and is
+        rarely needed.
+    """
+def HasSessionVis(prim):
+    """Is there a session-layer override for visibility for 'prim'?"""
+def InvisRootPrims(stage):
+    """Make all defined root prims of stage be invisible,
+        at Usd.TimeCode.Default()"""
 def ItalicizeLabelText(text, substring): ...
 def PrettyFormatSize(sz): ...
 def PrintWarning(title, description): ...

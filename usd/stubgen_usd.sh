@@ -12,8 +12,9 @@ export USD_SOURCE_ROOT=~/dev/USD
 # End custom variables --
 
 # $USD_SOURCE_ROOT/docs/python is required to find doxygenlib
+MYPY_ROOT=$REPO_PATH/../mypy
 export USD_XML_INDEX="${USD_BUILD_ROOT}/docs/doxy_xml/index.xml"
-export PYTHONPATH=$REPO_PATH:$REPO_PATH/usd:$USD_BUILD_ROOT/lib/python:$USD_SOURCE_ROOT/docs/python:$PY_SITE_DIR
+export PYTHONPATH=$REPO_PATH:$REPO_PATH/usd:$MYPY_ROOT:$USD_BUILD_ROOT/lib/python:$USD_SOURCE_ROOT/docs/python:$PY_SITE_DIR
 export PXR_USD_PYTHON_DISABLE_DOCS=1
 
 # clean first, in case modules have been removed (or stubgen is silently failing)

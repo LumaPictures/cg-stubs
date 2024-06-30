@@ -35,7 +35,15 @@ class DrawMode(Boost.Python.enum):
     values: ClassVar[dict] = ...
 
 class Engine(Boost.Python.instance):
+    """
+    The UsdImagingGLEngine is the main entry point API for rendering USD
+    scenes.
+    """
+
     class Parameters(Boost.Python.instance):
+    """
+        Parameters to construct UsdImagingGLEngine.
+        """
         __instance_size__: ClassVar[int] = ...
         allowAsynchronousSceneProcessing: Incomplete
         driver: Incomplete
@@ -48,55 +56,284 @@ class Engine(Boost.Python.instance):
         def __init__(self) -> None: ...
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self, arg2: pxr.Sdf.Path | str, arg3: object, arg4: object) -> None: ...
-    @overload
-    def __init__(self, arg2: Engine.Parameters) -> None: ...
-    @overload
     def __init__(self) -> None: ...
-    def AddSelected(self, arg2: pxr.Sdf.Path | str, arg3: int) -> None: ...
-    def ClearSelected(self) -> None: ...
+    @overload
+    def __init__(self, arg2: Engine.Parameters) -> None:
+        """
+        An HdDriver, containing the Hgi of your choice, can be optionally
+        passed in during construction.
+
+
+        This can be helpful if you application creates multiple
+        UsdImagingGLEngine that wish to use the same HdDriver / Hgi. The
+        C{rendererPluginId} argument indicates the renderer plugin that Hyrda
+        should use. If the empty token is passed in, a default renderer plugin
+        will be chosen depending on the value of C{gpuEnabled}. The
+        C{gpuEnabled} argument determines if this instance will allow Hydra to
+        use the GPU to produce images.
+        """
+    @overload
+    def __init__(self, arg2: pxr.Sdf.Path | str, arg3: object, arg4: object) -> None: ...
+    def AddSelected(self, arg2: pxr.Sdf.Path | str, arg3: int) -> None:
+        """
+        Add a path with instanceIndex to the list of prim paths that should be
+        included in selection highlighting.
+
+
+        UsdImagingDelegate::ALL_INSTANCES can be used for highlighting all
+        instances if path is an instancer.
+        """
+    def ClearSelected(self) -> None:
+        """
+        Clear the list of prim paths that should be included in selection
+        highlighting.
+        """
     @staticmethod
-    def GetAvailableRenderSettingsPrimPaths(arg1: pxr.Usd.Prim) -> list[pxr.Sdf.Path]: ...
-    def GetCurrentRendererId(self) -> str: ...
-    def GetRenderStats(self) -> dict: ...
-    def GetRendererAovs(self) -> list[str]: ...
-    def GetRendererCommandDescriptors(self) -> list: ...
+    def GetAvailableRenderSettingsPrimPaths(arg1: pxr.Usd.Prim) -> list[pxr.Sdf.Path]:
+        """
+        Utility method to query available render settings prims.
+        """
+    def GetCurrentRendererId(self) -> str:
+        """
+        Return the id of the currently used renderer plugin.
+        """
+    def GetRenderStats(self) -> dict:
+        """
+        Returns render statistics.
+
+
+        The contents of the dictionary will depend on the current render
+        delegate.
+        """
+    def GetRendererAovs(self) -> list[str]:
+        """
+        Return the vector of available renderer AOV settings.
+        """
+    def GetRendererCommandDescriptors(self) -> list:
+        """
+        Return command deescriptors for commands supported by the active
+        render delegate.
+        """
     @staticmethod
-    def GetRendererDisplayName(arg1: str | pxr.Ar.ResolvedPath) -> str: ...
+    def GetRendererDisplayName(arg1: str | pxr.Ar.ResolvedPath) -> str:
+        """
+        Return the user-friendly description of a renderer plugin.
+        """
     @staticmethod
-    def GetRendererPlugins() -> list[str]: ...
-    def GetRendererSetting(self, arg2: str | pxr.Ar.ResolvedPath) -> Any: ...
-    def GetRendererSettingsList(self) -> list: ...
-    def InvokeRendererCommand(self, command: str | pxr.Ar.ResolvedPath, args: HdCommandArgs = ...) -> bool: ...
+    def GetRendererPlugins() -> list[str]:
+        """
+        Return the vector of available render-graph delegate plugins.
+        """
+    def GetRendererSetting(self, arg2: str | pxr.Ar.ResolvedPath) -> Any:
+        """
+        Gets a renderer setting's current value.
+        """
+    def GetRendererSettingsList(self) -> list:
+        """
+        Returns the list of renderer settings.
+        """
+    def InvokeRendererCommand(self, command: str | pxr.Ar.ResolvedPath, args: HdCommandArgs = ...) -> bool:
+        """
+        Invokes command on the active render delegate.
+
+
+        If successful, returns C{true}, returns C{false} otherwise. Note that
+        the command will not succeeed if it is not among those returned by
+        GetRendererCommandDescriptors() for the same active render delegate.
+        """
     @staticmethod
-    def IsColorCorrectionCapable() -> bool: ...
-    def IsConverged(self) -> bool: ...
-    def IsPauseRendererSupported(self) -> bool: ...
-    def IsStopRendererSupported(self) -> bool: ...
-    def PauseRenderer(self) -> bool: ...
-    def PollForAsynchronousUpdates(self) -> bool: ...
-    def Render(self, arg2: pxr.Usd.Prim, arg3: RenderParams) -> None: ...
-    def RestartRenderer(self) -> bool: ...
-    def ResumeRenderer(self) -> bool: ...
-    def SetActiveRenderSettingsPrimPath(self, arg2: pxr.Sdf.Path | str) -> None: ...
-    def SetCameraPath(self, arg2: pxr.Sdf.Path | str) -> None: ...
-    def SetCameraState(self, arg2: pxr.Gf.Matrix4d, arg3: pxr.Gf.Matrix4d) -> None: ...
-    def SetColorCorrectionSettings(self, arg2: str | pxr.Ar.ResolvedPath, arg3: str | pxr.Ar.ResolvedPath, arg4: str | pxr.Ar.ResolvedPath, arg5: str | pxr.Ar.ResolvedPath, arg6: str | pxr.Ar.ResolvedPath) -> None: ...
-    def SetFraming(self, arg2: pxr.CameraUtil.Framing) -> None: ...
+    def IsColorCorrectionCapable() -> bool:
+        """
+        Returns true if the platform is color correction capable.
+        """
+    def IsConverged(self) -> bool:
+        """
+        Returns true if the resulting image is fully converged.
+
+
+        (otherwise, caller may need to call Render() again to refine the
+        result)
+        """
+    def IsPauseRendererSupported(self) -> bool:
+        """
+        Query the renderer as to whether it supports pausing and resuming.
+        """
+    def IsStopRendererSupported(self) -> bool:
+        """
+        Query the renderer as to whether it supports stopping and restarting.
+        """
+    def PauseRenderer(self) -> bool:
+        """
+        Pause the renderer.
+
+
+        Returns C{true} if successful.
+        """
+    def PollForAsynchronousUpdates(self) -> bool:
+        """
+        If C{allowAsynchronousSceneProcessing} is true within the Parameters
+        provided to the UsdImagingGLEngine constructor, an application can
+        periodically call this from the main thread.
+
+
+        A return value of true indicates that the scene has changed and the
+        render should be updated.
+        """
+    def Render(self, arg2: pxr.Usd.Prim, arg3: RenderParams) -> None:
+        """
+        Entry point for kicking off a render.
+        """
+    def RestartRenderer(self) -> bool:
+        """
+        Restart the renderer.
+
+
+        Returns C{true} if successful.
+        """
+    def ResumeRenderer(self) -> bool:
+        """
+        Resume the renderer.
+
+
+        Returns C{true} if successful.
+        """
+    def SetActiveRenderSettingsPrimPath(self, arg2: pxr.Sdf.Path | str) -> None:
+        """
+        Set active render settings prim to use to drive rendering.
+        """
+    def SetCameraPath(self, arg2: pxr.Sdf.Path | str) -> None:
+        """
+        Scene camera API Set the scene camera path to use for rendering.
+        """
+    def SetCameraState(self, arg2: pxr.Gf.Matrix4d, arg3: pxr.Gf.Matrix4d) -> None:
+        """
+        Free camera API Set camera framing state directly (without pointing to
+        a camera on the USD stage).
+
+
+        The projection matrix is expected to be pre-adjusted for the window
+        policy.
+        """
+    def SetColorCorrectionSettings(self, arg2: str | pxr.Ar.ResolvedPath, arg3: str | pxr.Ar.ResolvedPath, arg4: str | pxr.Ar.ResolvedPath, arg5: str | pxr.Ar.ResolvedPath, arg6: str | pxr.Ar.ResolvedPath) -> None:
+        """
+        Set C{ccType} to one of the HdxColorCorrectionTokens: {disabled, sRGB,
+        openColorIO}.
+
+
+        If'openColorIO'is used, C{ocioDisplay}, C{ocioView}, C{ocioColorSpace}
+        and C{ocioLook} are options the client may supply to configure OCIO.
+        C{ocioColorSpace} refers to the input (source) color space. The
+        default value is substituted if an option isn't specified. You can
+        find the values for these strings inside the profile/config .ocio
+        file. For example:
+
+        displays: rec709g22: !<View>{name: studio, colorspace: linear, looks:
+        studio_65_lg2}
+        """
+    def SetFraming(self, arg2: pxr.CameraUtil.Framing) -> None:
+        """
+        Determines how the filmback of the camera is mapped into the pixels of
+        the render buffer and what pixels of the render buffer will be
+        rendered into.
+        """
     def SetLightingState(self, arg2: object, arg3: pxr.Glf.SimpleMaterial, arg4: pxr.Gf.Vec4f | list[float] | tuple[float, float, float, float]) -> None: ...
-    def SetOverrideWindowPolicy(self, arg2: pxr.CameraUtil.ConformWindowPolicy | None) -> None: ...
-    def SetRenderBufferSize(self, arg2: pxr.Gf.Vec2i | list[int] | pxr.Gf.Size2 | tuple[int, int]) -> None: ...
-    def SetRenderViewport(self, arg2: pxr.Gf.Vec4d | list[float] | tuple[float, float, float, float]) -> None: ...
-    def SetRendererAov(self, arg2: str | pxr.Ar.ResolvedPath) -> bool: ...
-    def SetRendererPlugin(self, arg2: str | pxr.Ar.ResolvedPath) -> bool: ...
-    def SetRendererSetting(self, arg2: str | pxr.Ar.ResolvedPath, arg3: Any) -> None: ...
-    def SetSelected(self, arg2: typing.Iterable[pxr.Sdf.Path | str]) -> None: ...
-    def SetSelectionColor(self, arg2: pxr.Gf.Vec4f | list[float] | tuple[float, float, float, float]) -> None: ...
-    def SetWindowPolicy(self, arg2: pxr.CameraUtil.ConformWindowPolicy) -> None: ...
-    def StopRenderer(self) -> bool: ...
-    def TestIntersection(self, arg2: pxr.Gf.Matrix4d, arg3: pxr.Gf.Matrix4d, arg4: pxr.Usd.Prim, arg5: RenderParams) -> tuple: ...
+    def SetOverrideWindowPolicy(self, arg2: pxr.CameraUtil.ConformWindowPolicy | None) -> None:
+        """
+        Specifies whether to force a window policy when conforming the frustum
+        of the camera to match the display window of the camera framing.
+
+
+        If set to {false, ...}, the window policy of the specified camera will
+        be used.
+
+        Note: std::pair<bool, ...>is used instead of std::optional<...>because
+        the latter is only available in C++17 or later.
+        """
+    def SetRenderBufferSize(self, arg2: pxr.Gf.Vec2i | list[int] | pxr.Gf.Size2 | tuple[int, int]) -> None:
+        """
+        Set the size of the render buffers baking the AOVs.
+
+
+        GUI applications should set this to the size of the window.
+        """
+    def SetRenderViewport(self, arg2: pxr.Gf.Vec4d | list[float] | tuple[float, float, float, float]) -> None:
+        """
+        Set the viewport to use for rendering as (x,y,w,h), where (x,y)
+        represents the lower left corner of the viewport rectangle, and (w,h)
+        is the width and height of the viewport in pixels.
+
+
+        Deprecated
+
+        Use SetFraming and SetRenderBufferSize instead.
+        """
+    def SetRendererAov(self, arg2: str | pxr.Ar.ResolvedPath) -> bool:
+        """
+        Set the current renderer AOV to C{id}.
+        """
+    def SetRendererPlugin(self, arg2: str | pxr.Ar.ResolvedPath) -> bool:
+        """
+        Set the current render-graph delegate to C{id}.
+
+
+        the plugin will be loaded if it's not yet.
+        """
+    def SetRendererSetting(self, arg2: str | pxr.Ar.ResolvedPath, arg3: Any) -> None:
+        """
+        Sets a renderer setting's value.
+        """
+    def SetSelected(self, arg2: typing.Iterable[pxr.Sdf.Path | str]) -> None:
+        """
+        Sets (replaces) the list of prim paths that should be included in
+        selection highlighting.
+
+
+        These paths may include root paths which will be expanded internally.
+        """
+    def SetSelectionColor(self, arg2: pxr.Gf.Vec4f | list[float] | tuple[float, float, float, float]) -> None:
+        """
+        Sets the selection highlighting color.
+        """
+    def SetWindowPolicy(self, arg2: pxr.CameraUtil.ConformWindowPolicy) -> None:
+        """
+        Set the window policy to use.
+
+
+        XXX: This is currently used for scene cameras set via SetCameraPath.
+        See comment in SetCameraState for the free cam.
+        """
+    def StopRenderer(self) -> bool:
+        """
+        Stop the renderer.
+
+
+        Returns C{true} if successful.
+        """
+    def TestIntersection(self, arg2: pxr.Gf.Matrix4d, arg3: pxr.Gf.Matrix4d, arg4: pxr.Usd.Prim, arg5: RenderParams) -> tuple:
+        """
+        Finds closest point of intersection with a frustum by rendering.
+
+
+        This method uses a PickRender and a customized depth buffer to find an
+        approximate point of intersection by rendering. This is less accurate
+        than implicit methods or rendering with GL_SELECT, but leverages any
+        data already cached in the renderer.
+
+        Returns whether a hit occurred and if so, C{outHitPoint} will contain
+        the intersection point in world space (i.e. C{projectionMatrix} and
+        C{viewMatrix} factored back out of the result), and C{outHitNormal}
+        will contain the world space normal at that point.
+
+        C{outHitPrimPath} will point to the gprim selected by the pick.
+        C{outHitInstancerPath} will point to the point instancer (if
+        applicable) of that gprim. For nested instancing, outHitInstancerPath
+        points to the closest instancer.
+        """
 
 class RenderParams(Boost.Python.instance):
+    """
+    Used as an arguments class for various methods in UsdImagingGLEngine.
+    """
     __instance_size__: ClassVar[int] = ...
     applyRenderState: Incomplete
     bboxLineColor: Incomplete
@@ -130,14 +367,22 @@ class RenderParams(Boost.Python.instance):
     def __init__(self) -> None: ...
 
 class RendererCommandArgDescriptor(Boost.Python.instance):
-    def __init__(self, *args, **kwargs) -> None: ...
+    """Renderer Command Argument Metadata"""
+    def __init__(self, *args, **kwargs) -> None:
+        """Raises an exception
+        This class cannot be instantiated from Python
+        """
     @property
     def argName(self): ...
     @property
     def defaultValue(self): ...
 
 class RendererCommandDescriptor(Boost.Python.instance):
-    def __init__(self, *args, **kwargs) -> None: ...
+    """Renderer Command Metadata"""
+    def __init__(self, *args, **kwargs) -> None:
+        """Raises an exception
+        This class cannot be instantiated from Python
+        """
     @property
     def commandArgs(self): ...
     @property

@@ -19,6 +19,8 @@ _CLEAR_COLORS_DICT: dict
 _HIGHLIGHT_COLORS_DICT: dict
 
 class OCIOSettings:
+    """Class to hold OCIO display, view, and colorSpace config settings
+    as strings."""
     def __init__(self, display: str = ..., view: str = ..., colorSpace: str = ...) -> None: ...
     @property
     def colorSpace(self): ...
@@ -88,9 +90,20 @@ class ViewSettingsDataModel(pxr.Usdviewq.settings.StateSource, PySide6.QtCore.QO
     showReticles_Outside: Incomplete
     showUndefinedPrims: Incomplete
     def __init__(self, rootDataModel, parent) -> None: ...
-    def _frustumChanged(self): ...
-    def _frustumSettingsChanged(self): ...
-    def _updateFreeCameraData(self): ...
+    def _frustumChanged(self):
+        """
+        Needed when updating any camera setting (including movements). Will not
+        update the property viewer.
+        """
+    def _frustumSettingsChanged(self):
+        """
+        Needed when updating specific camera settings (e.g., aperture). See
+        _updateFreeCameraData for the full list of dependent settings. Will
+        update the property viewer.
+        """
+    def _updateFreeCameraData(self):
+        """Updates member variables with the current free camera view settings.
+        """
     def onSaveState(self, state): ...
     def resetDefaultMaterial(self): ...
     def setDefaultMaterial(self, *args, **kwargs): ...
