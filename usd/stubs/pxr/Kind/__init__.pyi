@@ -33,7 +33,7 @@ class Registry(Boost.Python.instance):
         Return an unordered vector of all kinds known to the registry.
         """
     @staticmethod
-    def GetBaseKind(arg1: str | pxr.Ar.ResolvedPath) -> str:
+    def GetBaseKind(kind: str | pxr.Ar.ResolvedPath) -> str:
         """
         Return the base kind of the given kind.
 
@@ -42,12 +42,12 @@ class Registry(Boost.Python.instance):
         coding error if *kind* is unknown to the registry.
         """
     @staticmethod
-    def HasKind(arg1: str | pxr.Ar.ResolvedPath) -> bool:
+    def HasKind(kind: str | pxr.Ar.ResolvedPath) -> bool:
         """
         Test whether *kind* is known to the registry.
         """
     @staticmethod
-    def IsA(arg1: str | pxr.Ar.ResolvedPath, arg2: str | pxr.Ar.ResolvedPath) -> bool:
+    def IsA(derivedKind: str | pxr.Ar.ResolvedPath, baseKind: str | pxr.Ar.ResolvedPath) -> bool:
         """
         Test whether *derivedKind* is the same as *baseKind* or has it as a
         base kind (either directly or indirectly).
@@ -60,27 +60,27 @@ class Registry(Boost.Python.instance):
         Therefore this method will not raise any errors.
         """
     @classmethod
-    def IsAssembly(cls, arg1: str | pxr.Ar.ResolvedPath) -> bool:
+    def IsAssembly(cls, kind: str | pxr.Ar.ResolvedPath) -> bool:
         """
         Return true if C{kind} IsA assembly kind.
         """
     @classmethod
-    def IsComponent(cls, arg1: str | pxr.Ar.ResolvedPath) -> bool:
+    def IsComponent(cls, kind: str | pxr.Ar.ResolvedPath) -> bool:
         """
         Returns true if C{kind} IsA component kind.
         """
     @classmethod
-    def IsGroup(cls, arg1: str | pxr.Ar.ResolvedPath) -> bool:
+    def IsGroup(cls, kind: str | pxr.Ar.ResolvedPath) -> bool:
         """
         Returns true if C{kind} IsA group kind.
         """
     @classmethod
-    def IsModel(cls, arg1: str | pxr.Ar.ResolvedPath) -> bool:
+    def IsModel(cls, kind: str | pxr.Ar.ResolvedPath) -> bool:
         """
         Returns true if C{kind} IsA model kind.
         """
     @classmethod
-    def IsSubComponent(cls, arg1: str | pxr.Ar.ResolvedPath) -> bool:
+    def IsSubComponent(cls, kind: str | pxr.Ar.ResolvedPath) -> bool:
         """
         Returns true if C{kind} IsA subcomponent kind.
         """

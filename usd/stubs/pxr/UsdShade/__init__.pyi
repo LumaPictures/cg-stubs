@@ -52,9 +52,24 @@ class ConnectableAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdShadeConnectableAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdShadeConnectableAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdShadeConnectableAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdShadeConnectableAPI (schemaObj.GetPrim()),
+        as it preserves SchemaBase state.
+        """
     @overload
     @staticmethod
     def CanConnect(input: Input, source: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output) -> bool:
@@ -111,16 +126,63 @@ class ConnectableAPI(pxr.Usd.APISchemaBase):
     def ConnectToSource(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, source: ConnectableAPI, sourceName: object, sourceType: AttributeType = ..., typeName: pxr.Sdf.ValueTypeName = ...) -> bool: ...
     @overload
     @staticmethod
-    def ConnectToSource(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, sourcePath: pxr.Sdf.Path | str) -> bool: ...
+    def ConnectToSource(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, sourcePath: pxr.Sdf.Path | str) -> bool:
+        """
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
+
+        Connect the given shading attribute to the source at path,
+        C{sourcePath}.
+
+
+        C{sourcePath} should be the fully namespaced property path.
+
+        This overload is provided for convenience, for use in contexts where
+        the prim types are unknown or unavailable.
+        """
     @overload
     @staticmethod
-    def ConnectToSource(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, input: Input) -> bool: ...
+    def ConnectToSource(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, input: Input) -> bool:
+        """
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
+
+        Connect the given shading attribute to the given source input.
+        """
     @overload
     @staticmethod
-    def ConnectToSource(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, output: Output) -> bool: ...
+    def ConnectToSource(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, output: Output) -> bool:
+        """
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
+
+        Connect the given shading attribute to the given source output.
+        """
     @overload
     @staticmethod
-    def ConnectToSource(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, source: ConnectionSourceInfo, mod: ConnectionModification = ...) -> bool: ...
+    def ConnectToSource(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, source: ConnectionSourceInfo, mod: ConnectionModification = ...) -> bool:
+        """
+        Authors a connection for a given shading attribute C{shadingAttr}.
+
+
+        C{shadingAttr} can represent a parameter, an input or an output.
+        C{source} is a struct that describes the upstream source attribute
+        with all the information necessary to make a connection. See the
+        documentation for UsdShadeConnectionSourceInfo. C{mod} describes the
+        operation that should be applied to the list of connections. By
+        default the new connection will replace any existing connections, but
+        it can add to the list of connections to represent multiple input
+        connections.
+
+        C{true} if a connection was created successfully. C{false} if
+        C{shadingAttr} or C{source} is invalid.
+
+        This method does not verify the connectability of the shading
+        attribute to the source. Clients must invoke CanConnect() themselves
+        to ensure compatibility.
+
+        The source shading attribute is created if it doesn't exist already.
+        """
     def CreateInput(self, name: str | pxr.Ar.ResolvedPath, type: pxr.Sdf.ValueTypeName) -> Input:
         '''
         Create an input which can both have a value and be connected.
@@ -174,9 +236,57 @@ class ConnectableAPI(pxr.Usd.APISchemaBase):
 
         """
     @staticmethod
-    def GetConnectedSource(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output) -> Any: ...
+    def GetConnectedSource(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output) -> tuple[ConnectableAPI, str, AttributeType]:
+        """
+        Deprecated
+
+        Shading attributes can have multiple connections and so using
+        GetConnectedSources is needed in general
+
+        Finds the source of a connection for the given shading attribute.
+
+        C{shadingAttr} is the shading attribute whose connection we want to
+        interrogate. C{source} is an output parameter which will be set to the
+        source connectable prim. C{sourceName} will be set to the name of the
+        source shading attribute, which may be an input or an output, as
+        specified by C{sourceType} C{sourceType} will have the type of the
+        source shading attribute, i.e. whether it is an C{Input} or C{Output}
+
+        C{true} if the shading attribute is connected to a valid, defined
+        source attribute. C{false} if the shading attribute is not connected
+        to a single, defined source attribute.
+
+        Previously this method would silently return false for multiple
+        connections. We are changing the behavior of this method to return the
+        result for the first connection and issue a TfWarn about it. We want
+        to encourage clients to use GetConnectedSources going forward.
+
+        The python wrapping for this method returns a (source, sourceName,
+        sourceType) tuple if the parameter is connected, else C{None}
+        """
     @staticmethod
-    def GetConnectedSources(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output) -> Any: ...
+    def GetConnectedSources(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output) -> tuple[list[SourceInfo], list[pxr.Sdf.Path]]:
+        """
+        Finds the valid sources of connections for the given shading
+        attribute.
+
+
+        C{shadingAttr} is the shading attribute whose connections we want to
+        interrogate. C{invalidSourcePaths} is an optional output parameter to
+        collect the invalid source paths that have not been reported in the
+        returned vector.
+
+        Returns a vector of C{UsdShadeConnectionSourceInfo} structs with
+        information about each upsteam attribute. If the vector is empty,
+        there have been no connections.
+
+        A valid connection requires the existence of the source attribute and
+        also requires that the source prim is UsdShadeConnectableAPI
+        compatible.
+
+        The python wrapping returns a tuple with the valid connections first,
+        followed by the invalid source paths.
+        """
     def GetInput(self, name: str | pxr.Ar.ResolvedPath) -> Input:
         """
         Return the requested input if it exists.
@@ -212,7 +322,15 @@ class ConnectableAPI(pxr.Usd.APISchemaBase):
         authored builtins.
         '''
     @staticmethod
-    def GetRawConnectedSourcePaths(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output) -> list: ...
+    def GetRawConnectedSourcePaths(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output) -> list[pxr.Sdf.Path]:
+        '''
+        Deprecated
+
+        Please us GetConnectedSources to retrieve multiple connections
+
+        Returns the"raw"(authored) connected source paths for the given
+        shading attribute.
+        '''
     @staticmethod
     def GetSchemaAttributeNames(includeInherited: bool = ...) -> list[str]:
         """
@@ -279,7 +397,7 @@ class ConnectableAPI(pxr.Usd.APISchemaBase):
         encapsulation rules are respected or not.
         """
     @staticmethod
-    def SetConnectedSources(arg1: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, arg2: typing.Iterable[ConnectionSourceInfo]) -> bool:
+    def SetConnectedSources(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, sourceInfos: typing.Iterable[ConnectionSourceInfo]) -> bool:
         """
         Authors a list of connections for a given shading attribute
         C{shadingAttr}.
@@ -326,7 +444,7 @@ class ConnectionSourceInfo(Boost.Python.instance):
     @overload
     def __init__(self, output: Output) -> None: ...
     @overload
-    def __init__(self, arg2: pxr.Usd.Stage, arg3: pxr.Sdf.Path | str) -> None:
+    def __init__(self, stage: pxr.Usd.Stage, sourcePath: pxr.Sdf.Path | str) -> None:
         """
         Construct the information for this struct from a property path.
 
@@ -569,7 +687,7 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
         the prim, if none fallback to backward compatible deprecated behavior.
         """
     @staticmethod
-    def FindBindingsWithInheritanceForPrim(arg1: pxr.Usd.Prim) -> list[pxr.UsdSkel.Binding]:
+    def FindBindingsWithInheritanceForPrim(prim: pxr.Usd.Prim) -> list[pxr.UsdSkel.Binding]:
         """
         Find the list of coordinate system bindings that apply to this prim,
         including inherited bindings.
@@ -691,7 +809,7 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
         """
     @overload
     @staticmethod
-    def GetSchemaAttributeNames(arg1: bool, includeInherited: str | pxr.Ar.ResolvedPath) -> list[str]:
+    def GetSchemaAttributeNames(includeInherited: bool, includeInherited: str | pxr.Ar.ResolvedPath) -> list[str]:
         """
         Return a vector of names of all pre-declared attributes for this
         schema class and all its ancestor classes for a given instance name.
@@ -725,7 +843,7 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
         Which implies it has the appropriate binding relationship(s).
         """
     @staticmethod
-    def IsCoordSysAPIPath(arg1: pxr.Sdf.Path | str) -> bool:
+    def IsCoordSysAPIPath(path: pxr.Sdf.Path | str) -> bool:
         """
         Checks if the given path C{path} is of an API schema of type
         CoordSysAPI.
@@ -1014,7 +1132,7 @@ class Input(Boost.Python.instance):
         the composed"sdrMetadata"dictionary.
         '''
     @staticmethod
-    def IsInput(arg1: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output) -> bool:
+    def IsInput(attr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output) -> bool:
         """
         Test whether a given UsdAttribute represents a valid Input, which
         implies that creating a UsdShadeInput from the attribute will succeed.
@@ -1023,7 +1141,7 @@ class Input(Boost.Python.instance):
         Success implies that C{attr.IsDefined()} is true.
         """
     @staticmethod
-    def IsInterfaceInputName(arg1: str | pxr.Ar.ResolvedPath) -> bool:
+    def IsInterfaceInputName(name: str | pxr.Ar.ResolvedPath) -> bool:
         """
         Test if this name has a namespace that indicates it could be an input.
         """
@@ -1038,7 +1156,7 @@ class Input(Boost.Python.instance):
         UsdShadeConnectableAPI::IsSourceConnectionFromBaseMaterial
         """
     def Set(self, value: object, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool: ...
-    def SetConnectability(self, arg2: str | pxr.Ar.ResolvedPath) -> bool:
+    def SetConnectability(self, connectability: str | pxr.Ar.ResolvedPath) -> bool:
         '''
         Set the connectability of the Input.
 
@@ -1063,7 +1181,7 @@ class Input(Boost.Python.instance):
 
         SetConnectability()
         '''
-    def SetConnectedSources(self, arg2: typing.Iterable[ConnectionSourceInfo]) -> bool:
+    def SetConnectedSources(self, sourceInfos: typing.Iterable[ConnectionSourceInfo]) -> bool:
         """
         Connects this Input to the given sources, C{sourceInfos}.
 
@@ -1071,7 +1189,7 @@ class Input(Boost.Python.instance):
 
         UsdShadeConnectableAPI::SetConnectedSources
         """
-    def SetDisplayGroup(self, arg2: str | pxr.Ar.ResolvedPath) -> bool:
+    def SetDisplayGroup(self, displayGroup: str | pxr.Ar.ResolvedPath) -> bool:
         '''
         Set the displayGroup metadata for this Input, i.e.
 
@@ -1085,7 +1203,7 @@ class Input(Boost.Python.instance):
 
         SdrShaderProperty::GetPage()
         '''
-    def SetDocumentation(self, arg2: str | pxr.Ar.ResolvedPath) -> bool:
+    def SetDocumentation(self, docs: str | pxr.Ar.ResolvedPath) -> bool:
         """
         Set documentation string for this Input.
 
@@ -1177,9 +1295,24 @@ class Material(NodeGraph):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdShadeMaterial on UsdPrim C{prim}.
+
+
+        Equivalent to UsdShadeMaterial::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdShadeMaterial on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdShadeMaterial (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def ClearBaseMaterial(self) -> None:
         """
         Clear the base Material of this Material.
@@ -1640,9 +1773,21 @@ class MaterialBindingAPI(pxr.Usd.APISchemaBase):
         """
         __instance_size__: ClassVar[int] = ...
         @overload
-        def __init__(self) -> None: ...
+        def __init__(self) -> None:
+            """
+            Default constructor initializes a CollectionBinding object with
+            invalid collection, material and bindingRel data members.
+            """
         @overload
-        def __init__(self, collBindingRel: pxr.Usd.Relationship) -> None: ...
+        def __init__(self, collBindingRel: pxr.Usd.Relationship) -> None:
+            """
+            Constructs a CollectionBinding object from the given collection-
+            binding relationship.
+
+
+            This inspects the targets of the relationship and determines the bound
+            collection and the target material that the collection is bound to.
+            """
         def GetBindingRel(self) -> pxr.Usd.Relationship:
             """
             Returns the binding-relationship that represents this collection-
@@ -1683,7 +1828,11 @@ class MaterialBindingAPI(pxr.Usd.APISchemaBase):
         """
         __instance_size__: ClassVar[int] = ...
         @overload
-        def __init__(self) -> None: ...
+        def __init__(self) -> None:
+            """
+            Default constructor initializes a DirectBinding object with invalid
+            material and bindingRel data members.
+            """
         @overload
         def __init__(self, bindingRel: pxr.Usd.Relationship) -> None: ...
         def GetBindingRel(self) -> pxr.Usd.Relationship:
@@ -1707,9 +1856,25 @@ class MaterialBindingAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdShadeMaterialBindingAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdShadeMaterialBindingAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdShadeMaterialBindingAPI on the prim held by
+        C{schemaObj}.
+
+
+        Should be preferred over UsdShadeMaterialBindingAPI
+        (schemaObj.GetPrim()), as it preserves SchemaBase state.
+        """
     def AddPrimToBindingCollection(self, prim: pxr.Usd.Prim, bindingName: str | pxr.Ar.ResolvedPath, materialPurpose: str | pxr.Ar.ResolvedPath = ...) -> bool:
         """
         Adds the specified C{prim} to the collection targeted by the binding
@@ -2060,7 +2225,7 @@ class MaterialBindingAPI(pxr.Usd.APISchemaBase):
         UsdGeomSubset::SetFamilyType**
         '''
     @staticmethod
-    def SetMaterialBindingStrength(arg1: pxr.Usd.Relationship, bindingRel: str | pxr.Ar.ResolvedPath) -> bool:
+    def SetMaterialBindingStrength(bindingRel: pxr.Usd.Relationship, bindingRel: str | pxr.Ar.ResolvedPath) -> bool:
         """
         Sets the'bindMaterialAs'token-valued metadata on the given binding
         relationship.
@@ -2143,9 +2308,24 @@ class NodeDefAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdShadeNodeDefAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdShadeNodeDefAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdShadeNodeDefAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdShadeNodeDefAPI (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> NodeDefAPI:
         '''
@@ -2437,7 +2617,7 @@ class NodeDefAPI(pxr.Usd.APISchemaBase):
 
         GetImplementationSource()
         """
-    def SetShaderId(self, arg2: str | pxr.Ar.ResolvedPath) -> bool:
+    def SetShaderId(self, id: str | pxr.Ar.ResolvedPath) -> bool:
         """
         Sets the shader's ID value.
 
@@ -2503,11 +2683,37 @@ class NodeGraph(pxr.Usd.Typed):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdShadeNodeGraph on UsdPrim C{prim}.
+
+
+        Equivalent to UsdShadeNodeGraph::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdShadeNodeGraph on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdShadeNodeGraph (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     @overload
-    def __init__(self, connectable: ConnectableAPI) -> None: ...
+    def __init__(self, connectable: ConnectableAPI) -> None:
+        """
+        Constructor that takes a ConnectableAPI object.
+
+
+        Allow implicit (auto) conversion of UsdShadeConnectableAPI to
+        UsdShadeNodeGraph, so that a ConnectableAPI can be passed into any
+        function that accepts a NodeGraph.
+
+        that the conversion may produce an invalid NodeGraph object, because
+        not all UsdShadeConnectableAPI s are UsdShadeNodeGraph s
+        """
     def ComputeInterfaceInputConsumersMap(self, computeTransitiveConsumers: bool = ...) -> dict:
         """
         Walks the namespace subtree below the node-graph and computes a map
@@ -2911,7 +3117,7 @@ class Output(Boost.Python.instance):
         the composed"sdrMetadata"dictionary.
         '''
     @staticmethod
-    def IsOutput(arg1: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output) -> bool:
+    def IsOutput(attr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output) -> bool:
         """
         Test whether a given UsdAttribute represents a valid Output, which
         implies that creating a UsdShadeOutput from the attribute will
@@ -2931,7 +3137,7 @@ class Output(Boost.Python.instance):
         UsdShadeConnectableAPI::IsSourceConnectionFromBaseMaterial
         """
     def Set(self, value: object, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool: ...
-    def SetConnectedSources(self, arg2: typing.Iterable[ConnectionSourceInfo]) -> bool:
+    def SetConnectedSources(self, sourceInfos: typing.Iterable[ConnectionSourceInfo]) -> bool:
         """
         Connects this Output to the given sources, C{sourceInfos}.
 
@@ -3005,11 +3211,37 @@ class Shader(pxr.Usd.Typed):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdShadeShader on UsdPrim C{prim}.
+
+
+        Equivalent to UsdShadeShader::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdShadeShader on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdShadeShader (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     @overload
-    def __init__(self, connectable: ConnectableAPI) -> None: ...
+    def __init__(self, connectable: ConnectableAPI) -> None:
+        """
+        Constructor that takes a ConnectableAPI object.
+
+
+        Allow implicit (auto) conversion of UsdShadeConnectableAPI to
+        UsdShadeShader, so that a ConnectableAPI can be passed into any
+        function that accepts a Shader.
+
+        that the conversion may produce an invalid Shader object, because not
+        all UsdShadeConnectableAPI s are Shaders
+        """
     def ClearSdrMetadata(self) -> None:
         '''
         Clears any"sdrMetadata"value authored on the shader in the current
@@ -3199,7 +3431,7 @@ class Shader(pxr.Usd.Typed):
         Sets the value corresponding to C{key} to the given string C{value},
         in the shader\'s"sdrMetadata"dictionary at the current EditTarget.
         '''
-    def SetShaderId(self, arg2: str | pxr.Ar.ResolvedPath) -> bool:
+    def SetShaderId(self, id: str | pxr.Ar.ResolvedPath) -> bool:
         """
         Forwards to UsdShadeNodeDefAPI(prim).
         """
@@ -3247,7 +3479,7 @@ class ShaderDefParserPlugin(Boost.Python.instance):
         declared under C{GetDiscoveryTypes()} , and those types are
         collectively identified as one"source type".
         '''
-    def Parse(self, arg2: pxr.Ndr.NodeDiscoveryResult) -> pxr.Sdr.ShaderNode:
+    def Parse(self, discoveryResult: pxr.Ndr.NodeDiscoveryResult) -> pxr.Sdr.ShaderNode:
         """
         Takes the specified C{NdrNodeDiscoveryResult} instance, which was a
         result of the discovery process, and generates a new C{NdrNode}.
@@ -3395,7 +3627,7 @@ class Utils(Boost.Python.instance):
         This class cannot be instantiated from Python
         """
     @staticmethod
-    def GetBaseNameAndType(arg1: str | pxr.Ar.ResolvedPath) -> tuple[str, AttributeType]:
+    def GetBaseNameAndType(fullName: str | pxr.Ar.ResolvedPath) -> tuple[str, AttributeType]:
         """
         Given the full name of a shading attribute, returns it's base name and
         shading attribute type.
@@ -3407,7 +3639,7 @@ class Utils(Boost.Python.instance):
         the source property; otherwise the empty path.
         """
     @staticmethod
-    def GetFullName(arg1: str | pxr.Ar.ResolvedPath, arg2: AttributeType) -> str:
+    def GetFullName(baseName: str | pxr.Ar.ResolvedPath, type: AttributeType) -> str:
         """
         Returns the full shading attribute name given the basename and the
         shading attribute type.
@@ -3417,13 +3649,13 @@ class Utils(Boost.Python.instance):
         C{type} is the UsdShadeAttributeType of the shading attribute.
         """
     @staticmethod
-    def GetPrefixForAttributeType(arg1: AttributeType) -> str:
+    def GetPrefixForAttributeType(sourceType: AttributeType) -> str:
         """
         Returns the namespace prefix of the USD attribute associated with the
         given shading attribute type.
         """
     @staticmethod
-    def GetType(arg1: str | pxr.Ar.ResolvedPath) -> AttributeType:
+    def GetType(fullName: str | pxr.Ar.ResolvedPath) -> AttributeType:
         """
         Given the full name of a shading attribute, returns its shading
         attribute type.

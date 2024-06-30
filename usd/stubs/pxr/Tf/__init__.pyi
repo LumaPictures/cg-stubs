@@ -132,7 +132,7 @@ class Debug(Boost.Python.instance):
         This class cannot be instantiated from Python
         """
     @staticmethod
-    def GetDebugSymbolDescription(arg1: str | pxr.Ar.ResolvedPath) -> str:
+    def GetDebugSymbolDescription(name: str | pxr.Ar.ResolvedPath) -> str:
         """
         Get a description for the specified debug symbol.
 
@@ -156,7 +156,7 @@ class Debug(Boost.Python.instance):
         Get a listing of all debug symbols.
         """
     @staticmethod
-    def IsDebugSymbolNameEnabled(arg1: str | pxr.Ar.ResolvedPath) -> bool:
+    def IsDebugSymbolNameEnabled(name: str | pxr.Ar.ResolvedPath) -> bool:
         """
         True if the specified debug symbol is set.
         """
@@ -172,7 +172,7 @@ class Debug(Boost.Python.instance):
         of all debug symbols set by this call are returned as a vector.
         """
     @staticmethod
-    def SetOutputFile(arg1: FILE) -> None:
+    def SetOutputFile(file: FILE) -> None:
         """
         Direct debug output to *either* stdout or stderr.
 
@@ -202,7 +202,7 @@ class Enum(Boost.Python.instance):
         This class cannot be instantiated from Python
         """
     @staticmethod
-    def GetValueFromFullName(arg1: str | pxr.Ar.ResolvedPath) -> tuple[Enum, bool]:
+    def GetValueFromFullName(fullname: str | pxr.Ar.ResolvedPath) -> tuple[Enum, bool]:
         '''
         Returns the enumerated value for a fully-qualified name.
 
@@ -415,7 +415,7 @@ class MallocTag(Boost.Python.instance):
         accounted for.
         """
     @staticmethod
-    def Initialize(arg1: str | pxr.Ar.ResolvedPath) -> bool:
+    def Initialize(errMsg: str | pxr.Ar.ResolvedPath) -> bool:
         """
         Initialize the memory tagging system.
 
@@ -440,7 +440,7 @@ class MallocTag(Boost.Python.instance):
         C{true}.
         """
     @staticmethod
-    def SetCapturedMallocStacksMatchList(arg1: str | pxr.Ar.ResolvedPath) -> None:
+    def SetCapturedMallocStacksMatchList(matchList: str | pxr.Ar.ResolvedPath) -> None:
         """
         Sets the tags to trace.
 
@@ -466,7 +466,7 @@ class MallocTag(Boost.Python.instance):
         Use the empty string to disable stack capturing.
         """
     @staticmethod
-    def SetDebugMatchList(arg1: str | pxr.Ar.ResolvedPath) -> None:
+    def SetDebugMatchList(matchList: str | pxr.Ar.ResolvedPath) -> None:
         """
         Sets the tags to trap in the debugger.
 
@@ -729,7 +729,7 @@ class ScriptModuleLoader(Boost.Python.instance):
         Return a python dict containing all currently known modules under
         their canonical names.
         """
-    def WriteDotFile(self, arg2: str | pxr.Ar.ResolvedPath) -> None:
+    def WriteDotFile(self, file: str | pxr.Ar.ResolvedPath) -> None:
         """
         Write a graphviz dot-file for the dependency graph of all.
 
@@ -778,7 +778,7 @@ class Stopwatch(Boost.Python.instance):
     '''
     __instance_size__: ClassVar[int] = ...
     def __init__(self) -> None: ...
-    def AddFrom(self, arg2: Stopwatch) -> None:
+    def AddFrom(self, t: Stopwatch) -> None:
         """
         Adds the accumulated time and sample count from C{t} into the
         C{TfStopwatch}.
@@ -888,7 +888,7 @@ class TemplateString(Boost.Python.instance):
         Constructs a new template string.
         """
     @overload
-    def __init__(self, arg2: str | pxr.Ar.ResolvedPath) -> None:
+    def __init__(self, template_: str | pxr.Ar.ResolvedPath) -> None:
         """
         Constructs a new template string.
         """
@@ -903,13 +903,13 @@ class TemplateString(Boost.Python.instance):
         """
         Returns any error messages generated during template parsing.
         """
-    def SafeSubstitute(self, arg2: dict) -> str:
+    def SafeSubstitute(self, : dict) -> str:
         """
         Like Substitute() , except that if placeholders are missing from the
         mapping, instead of raising a coding error, the original placeholder
         will appear in the resulting string intact.
         """
-    def Substitute(self, arg2: dict) -> str:
+    def Substitute(self, : dict) -> str:
         """
         Performs the template substitution, returning a new string.
 
@@ -1084,8 +1084,8 @@ class Type(Boost.Python.instance):
 
         """
     @overload
-    def __init__(self, arg2: Type) -> None: ...
-    def AddAlias(self, arg2: Type, arg3: str | pxr.Ar.ResolvedPath) -> None:
+    def __init__(self, info: Type) -> None: ...
+    def AddAlias(self, base: Type, name: str | pxr.Ar.ResolvedPath) -> None:
         """
         Add an alias name for this type under the given base type.
 
@@ -1100,7 +1100,7 @@ class Type(Boost.Python.instance):
     @staticmethod
     def Find(arg1: object) -> Type: ...
     @staticmethod
-    def FindByName(arg1: str | pxr.Ar.ResolvedPath) -> Type:
+    def FindByName(name: str | pxr.Ar.ResolvedPath) -> Type:
         """
         Retrieve the C{TfType} corresponding to the given C{name}.
 
@@ -1120,7 +1120,7 @@ class Type(Boost.Python.instance):
           Find(obj) == FindByName( Find(obj).GetTypeName() )
 
         """
-    def FindDerivedByName(self, arg2: str | pxr.Ar.ResolvedPath) -> Type:
+    def FindDerivedByName(self, name: str | pxr.Ar.ResolvedPath) -> Type:
         """
         Retrieve the C{TfType} that derives from this type and has the given
         alias or typename.
@@ -1129,7 +1129,7 @@ class Type(Boost.Python.instance):
 
         AddAlias
         """
-    def GetAliases(self, arg2: Type) -> tuple:
+    def GetAliases(self, derivedType: Type) -> tuple:
         """
         Returns a vector of the aliases registered for the derivedType under
         this, the base type.
@@ -1178,7 +1178,13 @@ class Type(Boost.Python.instance):
         type is specified with no bases, it is implicitly considered to derive
         from the root type.
         """
-    def IsA(self, arg2: Type) -> bool: ...
+    def IsA(self, queryType: Type) -> bool:
+        """
+        Return true if this type is the same as or derived from C{queryType}.
+
+
+        If C{queryType} is unknown, this always returns C{false}.
+        """
     @overload
     @staticmethod
     def _DumpTypeHierarchy() -> None: ...
@@ -1439,7 +1445,7 @@ class _testStaticTokens(Boost.Python.instance):
 
 def DictionaryStrcmp(arg1: str | pxr.Ar.ResolvedPath, arg2: str | pxr.Ar.ResolvedPath) -> int: ...
 def DumpTokenStats() -> None: ...
-def FindLongestAccessiblePrefix(arg1: str | pxr.Ar.ResolvedPath) -> int:
+def FindLongestAccessiblePrefix(path: str | pxr.Ar.ResolvedPath) -> int:
     """
     Return the index delimiting the longest accessible prefix of *path*.
 
@@ -1475,7 +1481,7 @@ def GetCurrentScopeDescriptionStack() -> list[str]:
     The most recently pushed description is at back(), and the least
     recently pushed description is at front().
     '''
-def GetEnvSetting(arg1: str | pxr.Ar.ResolvedPath) -> T:
+def GetEnvSetting(setting: str | pxr.Ar.ResolvedPath) -> T:
     """
     Returns the value of the specified env setting, registered using
     C{TF_DEFINE_ENV_SETTING}.
@@ -1498,7 +1504,7 @@ def InstallTerminateAndCrashHandlers() -> None:
     SIGSEGV, SIGBUS, SIGFPE, and SIGABRT.
     """
 def InvokeWithErrorHandling(tupleargs, dictkwds) -> typing.Any: ...
-def IsValidIdentifier(arg1: str | pxr.Ar.ResolvedPath) -> bool:
+def IsValidIdentifier(identifier: str | pxr.Ar.ResolvedPath) -> bool:
     """
     Test whether *identifier* is valid.
 
@@ -1518,7 +1524,7 @@ def LogStackTrace(reason: str | pxr.Ar.ResolvedPath, logToDb: bool = ...) -> Non
     If C{logtodb} is true, then the stack trace will be added to the
     stack_trace database table.
     """
-def MakeValidIdentifier(arg1: str | pxr.Ar.ResolvedPath) -> str:
+def MakeValidIdentifier(_in: str | pxr.Ar.ResolvedPath) -> str:
     '''
     Produce a valid identifier (see TfIsValidIdentifier) from C{in} by
     replacing invalid characters with\'_\'.
@@ -1558,7 +1564,7 @@ def ReportActiveErrorMarks() -> None:
     """
 def RepostErrors(exception: object) -> bool: ...
 def SetPythonExceptionDebugTracingEnabled(enabled: bool) -> None: ...
-def StringSplit(arg1: str | pxr.Ar.ResolvedPath, arg2: str | pxr.Ar.ResolvedPath) -> list[str]:
+def StringSplit(src: str | pxr.Ar.ResolvedPath, separator: str | pxr.Ar.ResolvedPath) -> list[str]:
     """
     Breaks the given string apart, returning a vector of strings.
 
@@ -1568,8 +1574,35 @@ def StringSplit(arg1: str | pxr.Ar.ResolvedPath, arg2: str | pxr.Ar.ResolvedPath
     like pythons string split method.
     """
 def StringToDouble(arg1: str | pxr.Ar.ResolvedPath) -> float: ...
-def StringToLong(arg1: str | pxr.Ar.ResolvedPath) -> int: ...
-def StringToULong(arg1: str | pxr.Ar.ResolvedPath) -> int: ...
+def StringToLong(txt: str | pxr.Ar.ResolvedPath) -> int:
+    """
+    Convert a sequence of digits in C{txt} to a long int value.
+
+
+    Caller is responsible for ensuring that C{txt} has content matching:
+    ::
+
+      -?[0-9]+
+
+    If the digit sequence's value is out of range, set C{*outOfRange} to
+    true (if C{outOfRange} is not None) and return either
+    std::numeric_limits<long>::min() or max(), whichever is closest to the
+    true value.
+    """
+def StringToULong(txt: str | pxr.Ar.ResolvedPath) -> int:
+    """
+    Convert a sequence of digits in C{txt} to an unsigned long value.
+
+
+    Caller is responsible for ensuring that C{txt} has content matching:
+    ::
+
+      [0-9]+
+
+    If the digit sequence's value is out of range, set C{*outOfRange} to
+    true (if C{outOfRange} is not None) and return
+    std::numeric_limits<unsignedlong>::max().
+    """
 def TouchFile(fileName: str | pxr.Ar.ResolvedPath, create: bool = ...) -> bool:
     """
     Touch C{fileName}, updating access and modification time to'now'.

@@ -33,9 +33,25 @@ class GenerativeProcedural(pxr.UsdGeom.Boundable):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdProcGenerativeProcedural on UsdPrim C{prim}.
+
+
+        Equivalent to UsdProcGenerativeProcedural::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdProcGenerativeProcedural on the prim held by
+        C{schemaObj}.
+
+
+        Should be preferred over UsdProcGenerativeProcedural
+        (schemaObj.GetPrim()), as it preserves SchemaBase state.
+        """
     def CreateProceduralSystemAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetProceduralSystemAttr() , and also Create vs Get Property

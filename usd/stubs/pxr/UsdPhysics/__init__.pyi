@@ -29,9 +29,25 @@ class ArticulationRootAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdPhysicsArticulationRootAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdPhysicsArticulationRootAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdPhysicsArticulationRootAPI on the prim held by
+        C{schemaObj}.
+
+
+        Should be preferred over UsdPhysicsArticulationRootAPI
+        (schemaObj.GetPrim()), as it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> ArticulationRootAPI:
         '''
@@ -125,9 +141,24 @@ class CollisionAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdPhysicsCollisionAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdPhysicsCollisionAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdPhysicsCollisionAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdPhysicsCollisionAPI (schemaObj.GetPrim()),
+        as it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> CollisionAPI:
         '''
@@ -264,9 +295,24 @@ class CollisionGroup(pxr.Usd.Typed):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdPhysicsCollisionGroup on UsdPrim C{prim}.
+
+
+        Equivalent to UsdPhysicsCollisionGroup::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdPhysicsCollisionGroup on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdPhysicsCollisionGroup
+        (schemaObj.GetPrim()), as it preserves SchemaBase state.
+        """
     @staticmethod
     def ComputeCollisionGroupTable(stage: pxr.Usd.Stage) -> CollisionGroupTable:
         """
@@ -424,9 +470,24 @@ class DistanceJoint(Joint):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdPhysicsDistanceJoint on UsdPrim C{prim}.
+
+
+        Equivalent to UsdPhysicsDistanceJoint::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdPhysicsDistanceJoint on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdPhysicsDistanceJoint
+        (schemaObj.GetPrim()), as it preserves SchemaBase state.
+        """
     def CreateMaxDistanceAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetMaxDistanceAttr() , and also Create vs Get Property Methods for
@@ -767,7 +828,7 @@ class DriveAPI(pxr.Usd.APISchemaBase):
         """
     @overload
     @staticmethod
-    def GetSchemaAttributeNames(arg1: bool, includeInherited: str | pxr.Ar.ResolvedPath) -> list[str]:
+    def GetSchemaAttributeNames(includeInherited: bool, includeInherited: str | pxr.Ar.ResolvedPath) -> list[str]:
         """
         Return a vector of names of all pre-declared attributes for this
         schema class and all its ancestor classes for a given instance name.
@@ -864,7 +925,7 @@ class DriveAPI(pxr.Usd.APISchemaBase):
         force, acceleration
         '''
     @staticmethod
-    def IsPhysicsDriveAPIPath(arg1: pxr.Sdf.Path | str) -> bool:
+    def IsPhysicsDriveAPIPath(path: pxr.Sdf.Path | str) -> bool:
         """
         Checks if the given path C{path} is of an API schema of type
         PhysicsDriveAPI.
@@ -893,9 +954,25 @@ class FilteredPairsAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdPhysicsFilteredPairsAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdPhysicsFilteredPairsAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdPhysicsFilteredPairsAPI on the prim held by
+        C{schemaObj}.
+
+
+        Should be preferred over UsdPhysicsFilteredPairsAPI
+        (schemaObj.GetPrim()), as it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> FilteredPairsAPI:
         '''
@@ -990,9 +1067,24 @@ class FixedJoint(Joint):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdPhysicsFixedJoint on UsdPrim C{prim}.
+
+
+        Equivalent to UsdPhysicsFixedJoint::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdPhysicsFixedJoint on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdPhysicsFixedJoint (schemaObj.GetPrim()),
+        as it preserves SchemaBase state.
+        """
     @staticmethod
     def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> FixedJoint:
         """
@@ -1062,9 +1154,24 @@ class Joint(pxr.UsdGeom.Imageable):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdPhysicsJoint on UsdPrim C{prim}.
+
+
+        Equivalent to UsdPhysicsJoint::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdPhysicsJoint on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdPhysicsJoint (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateBody0Rel(self) -> pxr.Usd.Relationship:
         """
         See GetBody0Rel() , and also Create vs Get Property Methods for when
@@ -1578,7 +1685,7 @@ class LimitAPI(pxr.Usd.APISchemaBase):
         """
     @overload
     @staticmethod
-    def GetSchemaAttributeNames(arg1: bool, includeInherited: str | pxr.Ar.ResolvedPath) -> list[str]:
+    def GetSchemaAttributeNames(includeInherited: bool, includeInherited: str | pxr.Ar.ResolvedPath) -> list[str]:
         """
         Return a vector of names of all pre-declared attributes for this
         schema class and all its ancestor classes for a given instance name.
@@ -1589,7 +1696,7 @@ class LimitAPI(pxr.Usd.APISchemaBase):
         proper namespace prefix.
         """
     @staticmethod
-    def IsPhysicsLimitAPIPath(arg1: pxr.Sdf.Path | str) -> bool:
+    def IsPhysicsLimitAPIPath(path: pxr.Sdf.Path | str) -> bool:
         """
         Checks if the given path C{path} is of an API schema of type
         PhysicsLimitAPI.
@@ -1614,9 +1721,24 @@ class MassAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdPhysicsMassAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdPhysicsMassAPI::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdPhysicsMassAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdPhysicsMassAPI (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> MassAPI:
         '''
@@ -1882,9 +2004,24 @@ class MaterialAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdPhysicsMaterialAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdPhysicsMaterialAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdPhysicsMaterialAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdPhysicsMaterialAPI (schemaObj.GetPrim()),
+        as it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> MaterialAPI:
         '''
@@ -2097,9 +2234,25 @@ class MeshCollisionAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdPhysicsMeshCollisionAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdPhysicsMeshCollisionAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdPhysicsMeshCollisionAPI on the prim held by
+        C{schemaObj}.
+
+
+        Should be preferred over UsdPhysicsMeshCollisionAPI
+        (schemaObj.GetPrim()), as it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> MeshCollisionAPI:
         '''
@@ -2237,9 +2390,24 @@ class PrismaticJoint(Joint):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdPhysicsPrismaticJoint on UsdPrim C{prim}.
+
+
+        Equivalent to UsdPhysicsPrismaticJoint::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdPhysicsPrismaticJoint on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdPhysicsPrismaticJoint
+        (schemaObj.GetPrim()), as it preserves SchemaBase state.
+        """
     def CreateAxisAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetAxisAttr() , and also Create vs Get Property Methods for when
@@ -2403,9 +2571,24 @@ class RevoluteJoint(Joint):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdPhysicsRevoluteJoint on UsdPrim C{prim}.
+
+
+        Equivalent to UsdPhysicsRevoluteJoint::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdPhysicsRevoluteJoint on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdPhysicsRevoluteJoint
+        (schemaObj.GetPrim()), as it preserves SchemaBase state.
+        """
     def CreateAxisAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetAxisAttr() , and also Create vs Get Property Methods for when
@@ -2580,9 +2763,24 @@ class RigidBodyAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdPhysicsRigidBodyAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdPhysicsRigidBodyAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdPhysicsRigidBodyAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdPhysicsRigidBodyAPI (schemaObj.GetPrim()),
+        as it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> RigidBodyAPI:
         '''
@@ -2632,7 +2830,7 @@ class RigidBodyAPI(pxr.Usd.APISchemaBase):
 
         UsdPrim::RemoveAPI()
         """
-    def ComputeMassProperties(self, arg2: MassInformationFn) -> tuple:
+    def ComputeMassProperties(self, massInfoFn: MassInformationFn) -> tuple:
         """
         Compute mass properties of the rigid body C{diagonalInertia} Computed
         diagonal of the inertial tensor for the rigid body.
@@ -2843,9 +3041,24 @@ class Scene(pxr.Usd.Typed):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdPhysicsScene on UsdPrim C{prim}.
+
+
+        Equivalent to UsdPhysicsScene::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdPhysicsScene on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdPhysicsScene (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateGravityDirectionAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetGravityDirectionAttr() , and also Create vs Get Property
@@ -2978,9 +3191,24 @@ class SphericalJoint(Joint):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdPhysicsSphericalJoint on UsdPrim C{prim}.
+
+
+        Equivalent to UsdPhysicsSphericalJoint::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdPhysicsSphericalJoint on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdPhysicsSphericalJoint
+        (schemaObj.GetPrim()), as it preserves SchemaBase state.
+        """
     def CreateAxisAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetAxisAttr() , and also Create vs Get Property Methods for when

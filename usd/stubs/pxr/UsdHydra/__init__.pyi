@@ -25,9 +25,25 @@ class GenerativeProceduralAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdHydraGenerativeProceduralAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdHydraGenerativeProceduralAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdHydraGenerativeProceduralAPI on the prim held by
+        C{schemaObj}.
+
+
+        Should be preferred over UsdHydraGenerativeProceduralAPI
+        (schemaObj.GetPrim()), as it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> GenerativeProceduralAPI:
         '''

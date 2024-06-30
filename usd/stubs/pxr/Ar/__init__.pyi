@@ -331,7 +331,7 @@ class Resolver(Boost.Python.instance):
         resolved paths. In this case, the assets'resolved paths must be
         consulted to determine if they are the same.
         """
-    def RefreshContext(self, arg2: ResolverContext) -> None:
+    def RefreshContext(self, context: ResolverContext) -> None:
         """
         Refresh any caches associated with the given context.
 
@@ -416,7 +416,10 @@ class ResolverContext(Boost.Python.instance):
     ArResolverContextBinder
     """
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """
+        Construct an empty asset resolver context.
+        """
     @overload
     def __init__(self, arg2: object) -> None: ...
     def Get(self) -> list:
@@ -493,9 +496,15 @@ class Timestamp(Boost.Python.instance):
     """
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """
+        Create an invalid timestamp.
+        """
     @overload
-    def __init__(self, arg2: float) -> None: ...
+    def __init__(self, time: float) -> None:
+        """
+        Create a timestamp at C{time}, which must be a Unix time value.
+        """
     @overload
     def __init__(self, arg2: Timestamp) -> None: ...
     def GetTime(self) -> float:

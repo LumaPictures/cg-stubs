@@ -687,10 +687,25 @@ class BasisCurves(Curves):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomBasisCurves on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomBasisCurves::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
-    def ComputeInterpolationForSize(self, arg2: int, arg3: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> tuple[str, list[tuple[str, int]]]:
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomBasisCurves on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomBasisCurves (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
+    def ComputeInterpolationForSize(self, n: int, timeCode: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> tuple[str, list[tuple[str, int]]]:
         """
         Computes interpolation token for C{n}.
 
@@ -700,7 +715,7 @@ class BasisCurves(Curves):
 
         The topology is determined using C{timeCode}.
         """
-    def ComputeUniformDataSize(self, arg2: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> int:
+    def ComputeUniformDataSize(self, timeCode: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> int:
         '''
         Computes the expected size for data with"uniform"interpolation.
 
@@ -708,7 +723,7 @@ class BasisCurves(Curves):
         If you\'re trying to determine what interpolation to use, it is more
         efficient to use C{ComputeInterpolationForSize}
         '''
-    def ComputeVaryingDataSize(self, arg2: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> int:
+    def ComputeVaryingDataSize(self, timeCode: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> int:
         '''
         Computes the expected size for data with"varying"interpolation.
 
@@ -716,7 +731,7 @@ class BasisCurves(Curves):
         If you\'re trying to determine what interpolation to use, it is more
         efficient to use C{ComputeInterpolationForSize}
         '''
-    def ComputeVertexDataSize(self, arg2: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> int:
+    def ComputeVertexDataSize(self, timeCode: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> int:
         '''
         Computes the expected size for data with"vertex"interpolation.
 
@@ -930,9 +945,24 @@ class Boundable(Xformable):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomBoundable on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomBoundable::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomBoundable on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomBoundable (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def ComputeExtent(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> pxr.Vt.Vec3fArray:
         """
         If an extent is authored on this boundable, it queries the C{extent}
@@ -1108,9 +1138,24 @@ class Camera(Xformable):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomCamera on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomCamera::Get (prim.GetStage(), prim.GetPath()) for
+        a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomCamera on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomCamera (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateClippingPlanesAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetClippingPlanesAttr() , and also Create vs Get Property Methods
@@ -1648,9 +1693,24 @@ class Capsule(Gprim):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomCapsule on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomCapsule::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomCapsule on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomCapsule (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateAxisAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetAxisAttr() , and also Create vs Get Property Methods for when
@@ -1855,9 +1915,24 @@ class Capsule_1(Gprim):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomCapsule_1 on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomCapsule_1::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomCapsule_1 on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomCapsule_1 (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateAxisAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetAxisAttr() , and also Create vs Get Property Methods for when
@@ -2094,9 +2169,24 @@ class Cone(Gprim):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomCone on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomCone::Get (prim.GetStage(), prim.GetPath()) for a
+        *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomCone on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomCone (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateAxisAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetAxisAttr() , and also Create vs Get Property Methods for when
@@ -2340,7 +2430,7 @@ class ConstraintTarget(Boost.Python.instance):
         use UsdGeomConstraintTarget::Get() , since the authored values must
         already be in model-space.
         """
-    def Get(self, arg2: pxr.Gf.Matrix4d, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
+    def Get(self, value: pxr.Gf.Matrix4d, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
         """
         Get the attribute value of the ConstraintTarget at C{time}.
         """
@@ -2349,7 +2439,7 @@ class ConstraintTarget(Boost.Python.instance):
         Explicit UsdAttribute extractor.
         """
     @staticmethod
-    def GetConstraintAttrName(arg1: str | pxr.Ar.ResolvedPath) -> str:
+    def GetConstraintAttrName(constraintName: str | pxr.Ar.ResolvedPath) -> str:
         """
         Returns the fully namespaced constraint attribute name, given the
         constraint name.
@@ -2369,7 +2459,7 @@ class ConstraintTarget(Boost.Python.instance):
         the attribute is identified as a ConstraintTarget.
         """
     @classmethod
-    def IsValid(cls, arg1: pxr.Usd.Attribute | ConstraintTarget | Primvar | XformOp | pxr.UsdShade.Input | pxr.UsdShade.Output) -> bool:
+    def IsValid(cls, attr: pxr.Usd.Attribute | ConstraintTarget | Primvar | XformOp | pxr.UsdShade.Input | pxr.UsdShade.Output) -> bool:
         """
         Test whether a given UsdAttribute represents valid ConstraintTarget,
         which implies that creating a UsdGeomConstraintTarget from the
@@ -2412,9 +2502,24 @@ class Cube(Gprim):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomCube on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomCube::Get (prim.GetStage(), prim.GetPath()) for a
+        *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomCube on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomCube (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateExtentAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetExtentAttr() , and also Create vs Get Property Methods for when
@@ -2556,9 +2661,24 @@ class Curves(PointBased):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomCurves on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomCurves::Get (prim.GetStage(), prim.GetPath()) for
+        a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomCurves on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomCurves (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     @staticmethod
     def ComputeExtent(points: object, widths: object) -> Any: ...
     def CreateCurveVertexCountsAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
@@ -2714,9 +2834,24 @@ class Cylinder(Gprim):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomCylinder on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomCylinder::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomCylinder on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomCylinder (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateAxisAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetAxisAttr() , and also Create vs Get Property Methods for when
@@ -2918,9 +3053,24 @@ class Cylinder_1(Gprim):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomCylinder_1 on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomCylinder_1::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomCylinder_1 on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomCylinder_1 (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     def CreateAxisAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetAxisAttr() , and also Create vs Get Property Methods for when
@@ -3156,9 +3306,24 @@ class Gprim(Boundable):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomGprim on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomGprim::Get (prim.GetStage(), prim.GetPath()) for
+        a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomGprim on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomGprim (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateDisplayColorAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetDisplayColorAttr() , and also Create vs Get Property Methods
@@ -3419,9 +3584,19 @@ class HermiteCurves(Curves):
         """
         __instance_size__: ClassVar[int] = ...
         @overload
-        def __init__(self) -> None: ...
+        def __init__(self) -> None:
+            """
+            Construct empty points and tangents arrays.
+            """
         @overload
-        def __init__(self, arg2: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], arg3: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f]) -> None: ...
+        def __init__(self, points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], tangents: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f]) -> None:
+            """
+            Initializes C{points} and C{tangents} if they are the same size.
+
+
+            If points and tangents are not the same size, an empty container is
+            created.
+            """
         def GetPoints(self) -> pxr.Vt.Vec3fArray:
             """
             Get separated points array.
@@ -3440,7 +3615,7 @@ class HermiteCurves(Curves):
             Returns true if the containers are empty.
             """
         @staticmethod
-        def Separate(arg1: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f]) -> HermiteCurves.PointAndTangentArrays:
+        def Separate(interleaved: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f]) -> HermiteCurves.PointAndTangentArrays:
             """
             Given an C{interleaved} points and tangents arrays (P0, T0, ..., Pn,
             Tn), separates them into two arrays (P0, ..., PN) and (T0, ..., Tn).
@@ -3455,9 +3630,24 @@ class HermiteCurves(Curves):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomHermiteCurves on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomHermiteCurves::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomHermiteCurves on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomHermiteCurves (schemaObj.GetPrim()),
+        as it preserves SchemaBase state.
+        """
     def CreateTangentsAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetTangentsAttr() , and also Create vs Get Property Methods for
@@ -3597,9 +3787,24 @@ class Imageable(pxr.Usd.Typed):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomImageable on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomImageable::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomImageable on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomImageable (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def ComputeEffectiveVisibility(self, purpose: str | pxr.Ar.ResolvedPath = ..., time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> str:
         '''
         Calculate the effective purpose visibility of this prim for the given
@@ -4155,9 +4360,24 @@ class Mesh(PointBased):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomMesh on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomMesh::Get (prim.GetStage(), prim.GetPath()) for a
+        *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomMesh on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomMesh (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateCornerIndicesAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetCornerIndicesAttr() , and also Create vs Get Property Methods
@@ -4810,9 +5030,24 @@ class ModelAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomModelAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomModelAPI::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomModelAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomModelAPI (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> ModelAPI:
         '''
@@ -4919,7 +5154,7 @@ class ModelAPI(pxr.Usd.APISchemaBase):
 
         GetModelDrawModeAttr()
         '''
-    def CreateConstraintTarget(self, arg2: str | pxr.Ar.ResolvedPath) -> ConstraintTarget:
+    def CreateConstraintTarget(self, constraintName: str | pxr.Ar.ResolvedPath) -> ConstraintTarget:
         """
         Creates a new constraint target with the given name,
         C{constraintName}.
@@ -5042,7 +5277,7 @@ class ModelAPI(pxr.Usd.APISchemaBase):
           UsdGeomModelAPI(stage->GetPrimAtPath(path));
 
         """
-    def GetConstraintTarget(self, arg2: str | pxr.Ar.ResolvedPath) -> ConstraintTarget:
+    def GetConstraintTarget(self, constraintName: str | pxr.Ar.ResolvedPath) -> ConstraintTarget:
         """
         Get the constraint target with the given name, C{constraintName}.
 
@@ -5367,9 +5602,24 @@ class MotionAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomMotionAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomMotionAPI::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomMotionAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomMotionAPI (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> MotionAPI:
         '''
@@ -5651,9 +5901,24 @@ class NurbsCurves(Curves):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomNurbsCurves on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomNurbsCurves::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomNurbsCurves on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomNurbsCurves (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     def CreateKnotsAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetKnotsAttr() , and also Create vs Get Property Methods for when
@@ -5899,9 +6164,24 @@ class NurbsPatch(PointBased):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomNurbsPatch on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomNurbsPatch::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomNurbsPatch on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomNurbsPatch (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     def CreatePointWeightsAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetPointWeightsAttr() , and also Create vs Get Property Methods
@@ -6534,9 +6814,24 @@ class Plane(Gprim):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomPlane on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomPlane::Get (prim.GetStage(), prim.GetPath()) for
+        a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomPlane on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomPlane (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateAxisAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetAxisAttr() , and also Create vs Get Property Methods for when
@@ -6769,9 +7064,24 @@ class PointBased(Gprim):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomPointBased on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomPointBased::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomPointBased on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomPointBased (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     @staticmethod
     def ComputeExtent(points: object) -> Any: ...
     def ComputePointsAtTime(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode, baseTime: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> pxr.Vt.Vec3fArray:
@@ -7282,9 +7592,24 @@ class PointInstancer(Boundable):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomPointInstancer on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomPointInstancer::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomPointInstancer on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomPointInstancer (schemaObj.GetPrim()),
+        as it preserves SchemaBase state.
+        """
     def ActivateAllIds(self) -> bool:
         '''
         Ensure that all instances are active over all time.
@@ -7317,7 +7642,44 @@ class PointInstancer(Boundable):
         each may still be"invisible"due to its presence in the *invisibleIds*
         attribute (see VisId() , InvisId() )
         '''
-    def ComputeExtentAtTime(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode, baseTime: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> pxr.Vt.Vec3fArray: ...
+    def ComputeExtentAtTime(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode, baseTime: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> pxr.Vt.Vec3fArray:
+        '''
+        Compute the extent of the point instancer based on the per-
+        instance,"PointInstancer relative"transforms at C{time}, as described
+        in Computing an Instance Transform.
+
+
+        If there is no error, we return C{true} and C{extent} will be the
+        tightest bounds we can compute efficiently. If an error occurs,
+        C{false} will be returned and C{extent} will be left untouched.
+
+        For now, this uses a UsdGeomBBoxCache with the"default","proxy",
+        and"render"purposes.
+
+        extent
+
+        - the out parameter for the extent. On success, it will contain two
+        elements representing the min and max. time
+
+        - UsdTimeCode at which we want to evaluate the extent baseTime
+
+        - required for correct interpolation between samples when *velocities*
+        or *angularVelocities* are present. If there are samples for
+        *positions* and *velocities* at t1 and t2, normal value resolution
+        would attempt to interpolate between the two samples, and if they
+        could not be interpolated because they differ in size (common in cases
+        where velocity is authored), will choose the sample at t1. When
+        sampling for the purposes of motion-blur, for example, it is common,
+        when rendering the frame at t2, to sample at [ t2-shutter/2,
+        t2+shutter/2 ] for a shutter interval of *shutter*. The first sample
+        falls between t1 and t2, but we must sample at t2 and apply velocity-
+        based interpolation based on those samples to get a correct result. In
+        such scenarios, one should provide a C{baseTime} of t2 when querying
+        *both* samples. If your application does not care about off-sample
+        interpolation, it can supply the same value for C{baseTime} that it
+        does for C{time}. When C{baseTime} is less than or equal to C{time},
+        we will choose the lower bracketing timeSample.
+        '''
     def ComputeExtentAtTimes(self, times: object, baseTime: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> Any: ...
     def ComputeInstanceTransformsAtTime(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode, baseTime: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode, doProtoXforms: PointInstancer.ProtoXformInclusion = ..., applyMask: PointInstancer.MaskApplication = ...) -> pxr.Vt.Matrix4dArray:
         '''
@@ -7947,9 +8309,24 @@ class Points(PointBased):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomPoints on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomPoints::Get (prim.GetStage(), prim.GetPath()) for
+        a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomPoints on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomPoints (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     @staticmethod
     def ComputeExtent(points: object, widths: object) -> Any: ...
     def CreateIdsAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
@@ -8469,7 +8846,7 @@ class Primvar(Boost.Python.instance):
 
         UsdAttribute::GetTimeSamples
         '''
-    def GetTimeSamplesInInterval(self, arg2: pxr.Gf.Interval) -> list[float]:
+    def GetTimeSamplesInInterval(self, interval: pxr.Gf.Interval) -> list[float]:
         '''
         Populates a vector with authored sample times in C{interval}.
 
@@ -8594,7 +8971,7 @@ class Primvar(Boost.Python.instance):
 
         GetElementSize()
         """
-    def SetIdTarget(self, arg2: pxr.Sdf.Path | str) -> bool:
+    def SetIdTarget(self, path: pxr.Sdf.Path | str) -> bool:
         """
         This primvar must be of String or StringArray type for this method to
         succeed.
@@ -8713,9 +9090,24 @@ class PrimvarsAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomPrimvarsAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomPrimvarsAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomPrimvarsAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomPrimvarsAPI (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     def BlockPrimvar(self, name: str | pxr.Ar.ResolvedPath) -> None:
         """
         Remove all time samples on the primvar and its associated indices
@@ -9052,9 +9444,24 @@ class Scope(Imageable):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomScope on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomScope::Get (prim.GetStage(), prim.GetPath()) for
+        a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomScope on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomScope (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     @staticmethod
     def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Scope:
         """
@@ -9121,9 +9528,24 @@ class Sphere(Gprim):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomSphere on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomSphere::Get (prim.GetStage(), prim.GetPath()) for
+        a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomSphere on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomSphere (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateExtentAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetExtentAttr() , and also Create vs Get Property Methods for when
@@ -9272,9 +9694,24 @@ class Subset(pxr.Usd.Typed):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomSubset on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomSubset::Get (prim.GetStage(), prim.GetPath()) for
+        a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomSubset on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomSubset (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateElementTypeAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetElementTypeAttr() , and also Create vs Get Property Methods for
@@ -9648,11 +10085,38 @@ class TetMesh(PointBased):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomTetMesh on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomTetMesh::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomTetMesh on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomTetMesh (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     @staticmethod
-    def ComputeSurfaceFaces(tetMesh: TetMesh, timeCode: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> Any: ...
+    def ComputeSurfaceFaces(tetMesh: TetMesh, timeCode: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> pxr.Vt.Vec3iArray:
+        """
+        ComputeSurfaceFaces determines the vertex indices of the surface faces
+        from tetVertexIndices.
+
+
+        The surface faces are the set of faces that occur only once when
+        traversing the faces of all the tetrahedra. The algorithm is O(nlogn)
+        in the number of tetrahedra. Method returns false if
+        surfaceFaceIndices argument is nullptr and returns true otherwise. The
+        algorithm can't be O(n) because we need to sort the resulting surface
+        faces for deterministic behavior across different compilers and OS.
+        """
     def CreateSurfaceFaceVertexIndicesAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetSurfaceFaceVertexIndicesAttr() , and also Create vs Get
@@ -10043,9 +10507,24 @@ class VisibilityAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomVisibilityAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomVisibilityAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomVisibilityAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomVisibilityAPI (schemaObj.GetPrim()),
+        as it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> VisibilityAPI:
         '''
@@ -10304,9 +10783,24 @@ class Xform(Xformable):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomXform on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomXform::Get (prim.GetStage(), prim.GetPath()) for
+        a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomXform on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomXform (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     @staticmethod
     def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Xform:
         """
@@ -10522,9 +11016,24 @@ class XformCommonAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomXformCommonAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomXformCommonAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomXformCommonAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomXformCommonAPI (schemaObj.GetPrim()),
+        as it preserves SchemaBase state.
+        """
     @staticmethod
     def CanConvertOpTypeToRotationOrder(opType: XformOp.Type) -> bool:
         """
@@ -10828,7 +11337,7 @@ class XformOp(Boost.Python.instance):
 
         This will be empty for an invalid xformOp.
         '''
-    def GetOpTransform(self, arg2: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> pxr.Gf.Matrix4d:
+    def GetOpTransform(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> pxr.Gf.Matrix4d:
         """
         Return the 4x4 matrix that applies the transformation encoded in this
         op at C{time}.
@@ -10845,12 +11354,12 @@ class XformOp(Boost.Python.instance):
         Return the operation type of this op, one of UsdGeomXformOp::Type.
         """
     @staticmethod
-    def GetOpTypeEnum(arg1: str | pxr.Ar.ResolvedPath) -> pxr.Tf.Type:
+    def GetOpTypeEnum(opTypeToken: str | pxr.Ar.ResolvedPath) -> pxr.Tf.Type:
         """
         Returns the Type enum associated with the given C{opTypeToken}.
         """
     @staticmethod
-    def GetOpTypeToken(arg1: pxr.Tf.Type) -> str:
+    def GetOpTypeToken(opType: pxr.Tf.Type) -> str:
         """
         Returns the TfToken used to encode the given C{opType}.
 
@@ -10866,7 +11375,7 @@ class XformOp(Boost.Python.instance):
         Populates the list of time samples at which the associated attribute
         is authored.
         """
-    def GetTimeSamplesInInterval(self, arg2: pxr.Gf.Interval) -> list[float]:
+    def GetTimeSamplesInInterval(self, interval: pxr.Gf.Interval) -> list[float]:
         """
         Populates the list of time samples within the given C{interval}, at
         which the associated attribute is authored.
@@ -11226,9 +11735,24 @@ class Xformable(Imageable):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdGeomXformable on UsdPrim C{prim}.
+
+
+        Equivalent to UsdGeomXformable::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdGeomXformable on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdGeomXformable (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def AddOrientOp(self, precision: XformOp.Precision = ..., opSuffix: str | pxr.Ar.ResolvedPath = ..., isInverseOp: bool = ...) -> XformOp:
         """
         Add a orient op (arbitrary axis/angle rotation) to the local stack
@@ -11638,7 +12162,7 @@ class Xformable(Imageable):
 
         UsdAttribute::GetTimeSamples
         """
-    def GetTimeSamplesInInterval(self, arg2: pxr.Gf.Interval) -> list[float]:
+    def GetTimeSamplesInInterval(self, interval: pxr.Gf.Interval) -> list[float]:
         """
         Sets C{times} to the union of all the timesamples in the interval,
         C{interval}, at which xformOps that are included in the xformOpOrder
@@ -11723,7 +12247,7 @@ class Xformable(Imageable):
         SdfVariabilityUniform
         """
     @staticmethod
-    def IsTransformationAffectedByAttrNamed(arg1: str | pxr.Ar.ResolvedPath) -> bool:
+    def IsTransformationAffectedByAttrNamed(attrName: str | pxr.Ar.ResolvedPath) -> bool:
         """
         Returns true if the attribute named C{attrName} could affect the local
         transformation of an xformable prim.
@@ -11793,7 +12317,7 @@ class Xformable(Imageable):
         further authoring.
         """
     @overload
-    def TransformMightBeTimeVarying(self, arg2: typing.Iterable[XformOp]) -> bool:
+    def TransformMightBeTimeVarying(self, ops: typing.Iterable[XformOp]) -> bool:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.

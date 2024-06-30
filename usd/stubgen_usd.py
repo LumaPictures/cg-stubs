@@ -177,7 +177,7 @@ class SimpleDocstringWriter(doxygenlib.cdWriterDocstring.Writer):
         lines = self._Writer__getDocumentation(fullname, None, doxy)
         if not lines:
             return None
-        text = '\n'.join(lines)
+        text = "\n".join(lines)
         indent = "    " * (len(fullname.split(".")) - len(module_name.split(".")))
         return self._indent_docstring(text, indent)
 
@@ -808,8 +808,8 @@ def get_sigs_from_cpp_overloads(
     The first set of sigs is a straight conversion from C++ to python.
     The second set of sigs has pointer args converted into return types.
     """
-    sigs_with_ptrs: list[FunctionSig] = []
-    sigs_without_ptrs: list[FunctionSig] = []
+    cpp_sigs_with_ptrs: list[FunctionSig] = []
+    cpp_sigs_without_ptrs: list[FunctionSig] = []
     for cpp_sig in cpp_overloads:
         args_ptr: list[ArgSig] = []
         args_no_ptr: list[ArgSig] = []
@@ -831,7 +831,9 @@ def get_sigs_from_cpp_overloads(
             else None
         )
         py_ret_type = type_info.cpp_arg_to_py_type(cpp_sig.returnType, is_result=True)
-        sigs_with_ptrs.append(FunctionSig(ctx.name, args_ptr, py_ret_type, docstring))
+        cpp_sigs_with_ptrs.append(
+            FunctionSig(ctx.name, args_ptr, py_ret_type, docstring)
+        )
 
         if ptr_results:
             # if ctx.name in ("GetKind", "GetConnectedSource"):
@@ -844,10 +846,10 @@ def get_sigs_from_cpp_overloads(
                 py_ret_type = "tuple[{}]".format(", ".join(results))
             else:
                 py_ret_type = results[0]
-        sigs_without_ptrs.append(
+        cpp_sigs_without_ptrs.append(
             FunctionSig(ctx.name, args_no_ptr, py_ret_type, docstring)
         )
-    return sigs_with_ptrs, sigs_without_ptrs
+    return cpp_sigs_with_ptrs, cpp_sigs_without_ptrs
 
 
 class UsdBoostDocstringSignatureGenerator(
@@ -948,7 +950,7 @@ class UsdBoostDocstringSignatureGenerator(
     def _infer_type(
         self,
         boost_py_type: str | None,
-        converted_py_type: str,
+        converted_py_type: str | None,
         ctx: FunctionContext,
         is_result: bool = False,
     ) -> str | None:
@@ -962,8 +964,11 @@ class UsdBoostDocstringSignatureGenerator(
         boost_py_type : python type inferred by boost
         converted_py_type : python type converted from c++ type scraped from the docs
         """
-        if boost_py_type in (None, "object", "list"):
+        if boost_py_type is None or boost_py_type in ("object", "list"):
+            # None is important here, though I don't remember why.
             # boost is reliable with most other types, such as int, bool, dict, tuple
+            if converted_py_type is None:
+                return None
             return self.cleanup_type(converted_py_type, ctx, is_result)
         elif boost_py_type is not None:
             return self.cleanup_type(
@@ -977,15 +982,25 @@ class UsdBoostDocstringSignatureGenerator(
         ctx,
         sigs: list[FunctionSig],
         cpp_overloads: list[DocElement],
+        cpp_sigs_with_ptrs=None,
+        cpp_sigs_without_ptrs=None,
         corrected=False,
     ):
         summary = ""
         for sig in sigs:
-            summary += "   py   ({})\n".format(format_py_args(sig))
+            summary += "   py            ({})\n".format(format_py_args(sig))
+        if cpp_sigs_with_ptrs:
+            assert len(cpp_sigs_with_ptrs) == len(cpp_overloads)
+            for sig in cpp_sigs_with_ptrs:
+                summary += "   cpp_ptrs      ({})\n".format(format_py_args(sig))
+        if cpp_sigs_without_ptrs:
+            assert len(cpp_sigs_without_ptrs) == len(cpp_overloads)
+            for sig in cpp_sigs_without_ptrs:
+                summary += "   cpp_no_ptrs   ({})\n".format(format_py_args(sig))
         for cpp_sig in cpp_overloads:
-            summary += "   cpp  ({}) [static={}]\n".format(
+            summary += "   cpp           ({}){}\n".format(
                 format_cpp_args(cpp_sig),
-                cpp_sig.isStatic(),
+                "[static]" if cpp_sig.isStatic() else "",
             )
 
         notifier.warn(
@@ -998,40 +1013,7 @@ class UsdBoostDocstringSignatureGenerator(
         )
         return summary
 
-    def _summary_sig_mismatch(
-        self,
-        ctx: FunctionContext,
-        overload_num: int,
-        sigs: list[FunctionSig],
-        py_sig: FunctionSig,
-        cpp_sig: FunctionSig,
-        sig_ptr: FunctionSig,
-        sig_no_ptr: FunctionSig,
-        num_ptr_matches: int,
-        num_no_ptr_matches: int,
-    ):
-        # C++ and python arg lists doesn't match: use the python sig
-        py_summary = "   py   ({})".format(format_py_args(py_sig))
-        cpp_summary = "   cpp  ({})".format(format_py_args(cpp_sig))
-        cpp_summary1 = " {} cpp! ({})".format(
-            num_no_ptr_matches,
-            format_py_args(sig_no_ptr),
-        )
-        cpp_summary2 = " {} cpp* ({})".format(
-            num_ptr_matches,
-            format_py_args(sig_ptr),
-        )
-        num_sigs = len(sigs)
-        curr_overload = overload_num + 1
-        notifier.warn(
-            "Number of args between python and C++ signature differs (using python)",
-            ctx.module_name,
-            (
-                f"({curr_overload} of {num_sigs}): {ctx.fullname}\n{py_summary}\n{cpp_summary}\n{cpp_summary1}\n{cpp_summary2}"
-            ),
-        )
-
-    def _find_matching_overloads(
+    def _find_matching_overloads_by_arg_names(
         self, ctx, py_sigs: list[FunctionSig], cpp_overloads: list[DocElement]
     ) -> list[DocElement] | None:
         """Use the argument names of boost-python signatures to find matching C++
@@ -1064,6 +1046,38 @@ class UsdBoostDocstringSignatureGenerator(
         # no change
         return None
 
+    def _find_matching_overloads_by_types(
+        self, ctx, py_sigs: list[FunctionSig], cpp_sigs: list[FunctionSig]
+    ) -> list[FunctionSig] | None:
+        """Use the argument types of boost-python signatures to find matching C++
+        signatures
+        """
+
+        def make_key(sig):
+            return tuple(arg.type for arg in sig.args)
+
+        cpp_sigs_by_types: DefaultDict[
+            tuple[tuple[str, bool], ...], list[DocElement]
+        ] = defaultdict(list)
+        for cpp_sig in cpp_sigs:
+            sigs = cpp_sigs_by_types[make_key(cpp_sig)]
+            if cpp_sig not in sigs:
+                sigs.append(cpp_sig)
+
+        found = False
+        new_cpp_sigs = []
+        for py_sig in py_sigs:
+            py_sig = self.cleanup_sig_types(py_sig, ctx)
+            cpp_sigs = cpp_sigs_by_types[make_key(py_sig)]
+            # if there is more than one match the answer is ambiguous
+            if len(cpp_sigs) == 1:
+                new_cpp_sigs.append(cpp_sigs[0])
+                found = True
+            else:
+                new_cpp_sigs.append(py_sig)
+
+        return new_cpp_sigs if found else None
+
     def _set_class_docstring(self, ctx: FunctionContext) -> None:
         if not ctx.class_info:
             return
@@ -1090,6 +1104,76 @@ class UsdBoostDocstringSignatureGenerator(
                 full_class_name, ctx.module_name, cls_info.overloads[0]
             )
 
+    def _choose_overload_set(
+        self,
+        ctx: FunctionContext,
+        py_sigs: list[FunctionSig],
+        cpp_sigs_with_ptrs: list[FunctionSig],
+        cpp_sigs_without_ptrs: list[FunctionSig],
+    ) -> tuple[list[FunctionSig], list[FunctionSig]]:
+        def matches(sigs1: list[FunctionSig], sigs2: list[FunctionSig]) -> int:
+            """
+            Compare the two sets of overloads, by returning the number of signatures
+            with matching arg length.
+            """
+            return sum(
+                len(sig1.args) == len(sig2.args) for (sig1, sig2) in zip(sigs1, sigs2)
+            )
+
+        # the order of overloads between boost and doxygen do not match.
+        # before we compare them we need to sort all of them based on
+        # the list of args. Remembrer: we've already determined boost/python
+        # and C++ have the same number of overloads.
+
+        # boost python signatures:
+        py_sigs = sorted(py_sigs, key=sig_sort_key)
+
+        # determine whether to use overloads that return-by-ptr or not.
+        # USD code is not consistent about one approach over the other.
+
+        # direct conversion of C++ info to python signatures:
+        cpp_sigs_with_ptrs = sorted(cpp_sigs_with_ptrs, key=sig_sort_key)
+        # conversion of C++ info to python signatures, with ptr args converted to results
+        cpp_sigs_without_ptrs = sorted(cpp_sigs_without_ptrs, key=sig_sort_key)
+
+        # compare the two sets of sigs that were generated from parsed C++ info
+        # and determine which set of overloads has the most correspondence to the
+        # boost signatures, which is our source of truth.
+        num_no_ptr_matches = matches(py_sigs, cpp_sigs_without_ptrs)
+        num_ptr_matches = matches(py_sigs, cpp_sigs_with_ptrs)
+
+        # use the set with the most matches
+        if num_no_ptr_matches > num_ptr_matches:
+            cpp_sigs = cpp_sigs_without_ptrs
+        else:
+            cpp_sigs = cpp_sigs_with_ptrs
+
+        # loop through and cleanup types
+        for overload_num, (py_sig, cpp_sig) in enumerate(zip(py_sigs, cpp_sigs)):
+            if len(py_sig.args) != len(cpp_sig.args):
+                # arg lists between C++ docs and boost-python don't match: use the boost-python sig
+                # C++ and python arg lists doesn't match: use the python sig
+                py_summary = "   py   ({})".format(format_py_args(py_sig))
+                cpp_summary = "   cpp  ({})".format(format_py_args(cpp_sig))
+                cpp_summary1 = " {} cpp! ({})".format(
+                    num_no_ptr_matches,
+                    format_py_args(cpp_sigs_without_ptrs[overload_num]),
+                )
+                cpp_summary2 = " {} cpp* ({})".format(
+                    num_ptr_matches,
+                    format_py_args(cpp_sigs_with_ptrs[overload_num]),
+                )
+                num_sigs = len(py_sigs)
+                curr_overload = overload_num + 1
+                notifier.warn(
+                    "Number of args between python and C++ signature differs (using python)",
+                    ctx.module_name,
+                    (
+                        f"({curr_overload} of {num_sigs}): {ctx.fullname}\n{py_summary}\n{cpp_summary}\n{cpp_summary1}\n{cpp_summary2}"
+                    ),
+                )
+        return py_sigs, cpp_sigs
+
     def _processs_sigs(
         self, sigs: list[FunctionSig], ctx: FunctionContext
     ) -> list[FunctionSig]:
@@ -1113,93 +1197,56 @@ class UsdBoostDocstringSignatureGenerator(
 
         cpp_overloads, is_static = get_filtered_cpp_overloads(ctx.module_name, fullname)
 
+        if not is_static and not use_cpp_only:
+            sigs = [self._fix_self_arg(sig, ctx) for sig in sigs]
+
         if use_cpp_only:
             assert cpp_overloads is not None
             sigs = get_sigs_from_cpp_overloads(ctx, cpp_overloads, add_docstrings=True)[
                 0
             ]
+        elif cpp_overloads is None:
+            # We only have python signatures:
+            # apply fixes that don't rely on c++ docs:
+            sigs = [self.cleanup_sig_types(sig, ctx) for sig in sigs]
         else:
-            if not is_static:
-                sigs = [self._fix_self_arg(sig, ctx) for sig in sigs]
-
-            if cpp_overloads is not None and len(sigs) != len(cpp_overloads):
+            if len(sigs) < len(cpp_overloads):
                 # Number of overload does not match between boost-python and C++.
                 # This would normally mean we throw out the C++ sigs, but before we do,
                 # see if we can match cleanly on argument names.
                 cpp_overloads = (
-                    self._find_matching_overloads(ctx, sigs, cpp_overloads)
+                    self._find_matching_overloads_by_arg_names(ctx, sigs, cpp_overloads)
                     or cpp_overloads
                 )
 
-            if cpp_overloads is None or len(sigs) != len(cpp_overloads):
-                # We only have python signatures:
-
-                # apply fixes that don't rely on c++ docs:
-                sigs = [self.cleanup_sig_types(sig, ctx) for sig in sigs]
-
-                if cpp_overloads is not None:
-                    # summarize the C++ <> python incompatibilties
-                    self._summarize_overload_mismatch(ctx, sigs, cpp_overloads)
-            else:
+            (cpp_sigs_with_ptrs, cpp_sigs_without_ptrs) = get_sigs_from_cpp_overloads(
+                ctx, cpp_overloads, add_docstrings=True
+            )
+            cpp_sigs: list[FunctionSig] | None
+            if len(sigs) == len(cpp_overloads):
                 # C++ and boost-python signatures exist and number of overloads is equal:
-
-                (sigs_with_ptrs, sigs_without_ptrs) = get_sigs_from_cpp_overloads(
-                    ctx, cpp_overloads, add_docstrings=True
+                # choose between the set of overloads with pointers as args or pointers are results.
+                sigs, cpp_sigs = self._choose_overload_set(
+                    ctx, sigs, cpp_sigs_with_ptrs, cpp_sigs_without_ptrs
+                )
+            else:
+                cpp_sigs_with_ptrs = self.cleanup_sigs_types(cpp_sigs_with_ptrs, ctx)
+                cpp_sigs_without_ptrs = self.cleanup_sigs_types(
+                    cpp_sigs_without_ptrs, ctx
                 )
 
-                def matches(sigs1: list[FunctionSig], sigs2: list[FunctionSig]) -> int:
-                    """
-                    Compare the two sets of overloads, by returning the number of signatures
-                    with matching arg length.
-                    """
-                    return sum(
-                        len(sig1.args) == len(sig2.args)
-                        for (sig1, sig2) in zip(sigs1, sigs2)
-                    )
+                # they don't match: try to find sparse matches
+                cpp_sigs = self._find_matching_overloads_by_types(
+                    ctx, sigs, cpp_sigs_with_ptrs + cpp_sigs_without_ptrs
+                )
 
-                # the order of overloads between boost and doxygen do not match.
-                # before we compare them we need to sort all of them based on
-                # the list of args. Remembrer: we've already determined boost/python
-                # and C++ have the same number of overloads.
-
-                # boost python signatures:
-                sigs = sorted(sigs, key=sig_sort_key)
-
-                # determine whether to use overloads that return-by-ptr or not.
-                # USD code is not consistent about one approach over the other.
-
-                # direct conversion of C++ info to python signatures:
-                sigs_with_ptrs = sorted(sigs_with_ptrs, key=sig_sort_key)
-                # conversion of C++ info to python signatures, with ptr args converted to results
-                sigs_without_ptrs = sorted(sigs_without_ptrs, key=sig_sort_key)
-
-                # compare the two sets of sigs that were generated from parsed C++ info
-                # and determine which set of overloads has the most correspondence to the
-                # boost signatures, which is our source of truth.
-                num_no_ptr_matches = matches(sigs, sigs_without_ptrs)
-                num_ptr_matches = matches(sigs, sigs_with_ptrs)
-
-                # use the set with the most matches
-                if num_no_ptr_matches > num_ptr_matches:
-                    cpp_sigs = sigs_without_ptrs
-                else:
-                    cpp_sigs = sigs_with_ptrs
-
+            if cpp_sigs is not None:
+                assert len(sigs) == len(cpp_sigs)
                 # loop through and cleanup types
                 for overload_num, (py_sig, cpp_sig) in enumerate(zip(sigs, cpp_sigs)):
                     if len(py_sig.args) != len(cpp_sig.args):
-                        # arg lists between C++ docs and boost-python don't match: use the boost-python sig
-                        self._summary_sig_mismatch(
-                            ctx,
-                            overload_num,
-                            sigs,
-                            py_sig,
-                            cpp_sig,
-                            sigs_with_ptrs[overload_num],
-                            sigs_without_ptrs[overload_num],
-                            num_ptr_matches,
-                            num_no_ptr_matches,
-                        )
+                        # arg lists between C++ docs and boost-python don't match:
+                        # use the boost-python sig
                         sigs[overload_num] = self.cleanup_sig_types(
                             py_sig, ctx, docstring=cpp_sig.docstring
                         )
@@ -1209,7 +1256,13 @@ class UsdBoostDocstringSignatureGenerator(
                         for py_arg, cpp_arg in zip(py_sig.args, cpp_sig.args):
                             py_type = self._infer_type(py_arg.type, cpp_arg.type, ctx)
                             args.append(
-                                ArgSig(py_arg.name, py_type, default=py_arg.default)
+                                ArgSig(
+                                    cpp_arg.name
+                                    if py_arg.name.startswith("arg")
+                                    else py_arg.name,
+                                    py_type,
+                                    default=py_arg.default,
+                                )
                             )
                         return_type = self._infer_type(
                             py_sig.ret_type, cpp_sig.ret_type, ctx, is_result=True
@@ -1219,13 +1272,24 @@ class UsdBoostDocstringSignatureGenerator(
                             and return_type
                             and not return_type.startswith("list[")
                         ):
-                            # c++ info attempted to change the result type. trust boost over the c++ docs in
-                            # this case. It's probably a ptr result.
+                            # c++ info attempted to change the result type.
+                            # trust boost over the c++ docs in this case. It's probably a ptr result.
                             return_type = py_sig.ret_type
 
                         sigs[overload_num] = FunctionSig(
-                            py_sig.name, args, return_type, docstring=cpp_sig.docstring
+                            py_sig.name,
+                            args,
+                            return_type,
+                            docstring=cpp_sig.docstring,
                         )
+            else:
+                # apply fixes that don't rely on c++ docs:
+                sigs = self.cleanup_sigs_types(sigs, ctx)
+
+                # summarize the C++ <> python incompatibilties
+                self._summarize_overload_mismatch(
+                    ctx, sigs, cpp_overloads, cpp_sigs_with_ptrs, cpp_sigs_without_ptrs
+                )
 
         if (
             ctx.class_info is not None
@@ -1381,8 +1445,8 @@ def main(outdir: str) -> None:
     notifier.set_modules(
         [
             # "pxr.UsdGeom",
-            # "pxr.Sdf",
-            'pxr.Ar',
+            "pxr.Sdf",
+            # "pxr.Ar",
         ]
     )
 

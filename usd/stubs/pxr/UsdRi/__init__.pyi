@@ -31,11 +31,29 @@ class MaterialAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdRiMaterialAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdRiMaterialAPI::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdRiMaterialAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdRiMaterialAPI (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     @overload
-    def __init__(self, material: pxr.UsdShade.Material) -> None: ...
+    def __init__(self, material: pxr.UsdShade.Material) -> None:
+        """
+        A constructor for creating a MaterialAPI object from a material prim.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> MaterialAPI:
         '''
@@ -236,9 +254,9 @@ class MaterialAPI(pxr.Usd.APISchemaBase):
         '''
         Returns the"volume"output associated with the material.
         '''
-    def SetDisplacementSource(self, arg2: pxr.Sdf.Path | str) -> bool: ...
-    def SetSurfaceSource(self, arg2: pxr.Sdf.Path | str) -> bool: ...
-    def SetVolumeSource(self, arg2: pxr.Sdf.Path | str) -> bool: ...
+    def SetDisplacementSource(self, displacementPath: pxr.Sdf.Path | str) -> bool: ...
+    def SetSurfaceSource(self, surfacePath: pxr.Sdf.Path | str) -> bool: ...
+    def SetVolumeSource(self, volumePath: pxr.Sdf.Path | str) -> bool: ...
     @staticmethod
     def _GetStaticTfType() -> pxr.Tf.Type: ...
     def __bool__(self) -> bool: ...
@@ -266,9 +284,24 @@ class RenderPassAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdRiRenderPassAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdRiRenderPassAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdRiRenderPassAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdRiRenderPassAPI (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> RenderPassAPI:
         '''
@@ -385,9 +418,24 @@ class SplineAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdRiSplineAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdRiSplineAPI::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdRiSplineAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdRiSplineAPI (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     @overload
     def __init__(self, arg2: pxr.Usd.Prim, arg3: object, arg4: pxr.Sdf.ValueTypeName, arg5: bool) -> None: ...
     @overload
@@ -569,9 +617,24 @@ class StatementsAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdRiStatementsAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdRiStatementsAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdRiStatementsAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdRiStatementsAPI (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> StatementsAPI:
         '''
@@ -846,23 +909,23 @@ class _CanApplyResult(Boost.Python.instance):
     @property
     def whyNot(self): ...
 
-def ConvertFromRManFaceVaryingLinearInterpolation(arg1: int) -> str:
+def ConvertFromRManFaceVaryingLinearInterpolation(i: int) -> str:
     """
     Given the integer C{i} that corresponds to an rman enum for face-
     varying interpolate boundary condition, returns the equivalent UsdGeom
     token.
     """
-def ConvertFromRManInterpolateBoundary(arg1: int) -> str:
+def ConvertFromRManInterpolateBoundary(i: int) -> str:
     """
     Given the integer C{i} that corresponds to an rman enum for
     interpolate boundary condition, returns the equivalent UsdGeom token.
     """
-def ConvertToRManFaceVaryingLinearInterpolation(arg1: str | pxr.Ar.ResolvedPath) -> int:
+def ConvertToRManFaceVaryingLinearInterpolation(token: str | pxr.Ar.ResolvedPath) -> int:
     """
     Given a C{token} representing a UsdGeom face-varying interpolate
     boundary value, returns corresponding rman enum (converted to int).
     """
-def ConvertToRManInterpolateBoundary(arg1: str | pxr.Ar.ResolvedPath) -> int:
+def ConvertToRManInterpolateBoundary(token: str | pxr.Ar.ResolvedPath) -> int:
     """
     Given a C{token} representing a UsdGeom interpolate boundary value,
     returns corresponding rman enum (converted to int).

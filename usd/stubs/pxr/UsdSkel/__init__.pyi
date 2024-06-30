@@ -16,11 +16,24 @@ __MFB_FULL_PACKAGE_NAME: str
 
 class AnimMapper(Boost.Python.instance):
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """
+        Construct a null mapper.
+        """
     @overload
-    def __init__(self, arg2: int) -> None: ...
+    def __init__(self, size: int) -> None:
+        """
+        Construct an identity mapper for remapping a range of C{size} elems.
+
+
+        An identity mapper is used to indicate that no remapping is required.
+        """
     @overload
-    def __init__(self, sourceOrder: pxr.Vt.TokenArray | typing.Iterable[str], targetOrder: pxr.Vt.TokenArray | typing.Iterable[str]) -> None: ...
+    def __init__(self, sourceOrder: pxr.Vt.TokenArray | typing.Iterable[str], targetOrder: pxr.Vt.TokenArray | typing.Iterable[str]) -> None:
+        """
+        Construct a mapper for mapping data from C{sourceOrder} to
+        C{targetOrder}.
+        """
     def IsIdentity(self) -> bool:
         """
         Returns true if this is an identity map.
@@ -176,9 +189,24 @@ class Animation(pxr.Usd.Typed):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdSkelAnimation on UsdPrim C{prim}.
+
+
+        Equivalent to UsdSkelAnimation::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdSkelAnimation on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdSkelAnimation (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateBlendShapeWeightsAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetBlendShapeWeightsAttr() , and also Create vs Get Property
@@ -452,7 +480,7 @@ class Binding(Boost.Python.instance):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, arg2: Skeleton, arg3: pxr.Vt.Array[SkinningQuery]) -> None: ...
+    def __init__(self, skel: Skeleton, skinningQueries: pxr.Vt.Array[SkinningQuery]) -> None: ...
     def GetSkeleton(self) -> Skeleton:
         """
         Returns the bound skeleton.
@@ -481,9 +509,24 @@ class BindingAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdSkelBindingAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdSkelBindingAPI::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdSkelBindingAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdSkelBindingAPI (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> BindingAPI:
         '''
@@ -905,9 +948,24 @@ class BlendShape(pxr.Usd.Typed):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdSkelBlendShape on UsdPrim C{prim}.
+
+
+        Equivalent to UsdSkelBlendShape::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdSkelBlendShape on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdSkelBlendShape (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     def CreateInbetween(self, name: str | pxr.Ar.ResolvedPath) -> InbetweenShape:
         """
         Author scene description to create an attribute on this prim that will
@@ -1139,7 +1197,7 @@ class BlendShapeQuery(Boost.Python.instance):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, arg2: BindingAPI) -> None: ...
+    def __init__(self, binding: BindingAPI) -> None: ...
     def ComputeBlendShapePointIndices(self) -> list[pxr.Vt.IntArray]:
         """
         Compute an array holding the point indices of all shapes.
@@ -1170,7 +1228,7 @@ class BlendShapeQuery(Boost.Python.instance):
         indexed by the *subShapeIndices* returned by ComputeSubShapeWeights()
         .
         """
-    def ComputeSubShapeWeights(self, arg2: pxr.Vt.FloatArray | typing.Iterable[float]) -> tuple:
+    def ComputeSubShapeWeights(self, weights: pxr.Vt.FloatArray | typing.Iterable[float]) -> tuple:
         """
         Compute the resolved weights for all sub-shapes bound to this prim.
 
@@ -1184,15 +1242,15 @@ class BlendShapeQuery(Boost.Python.instance):
         identify which sub-shape of which blend shape a given weight value is
         mapped to.
         """
-    def GetBlendShape(self, arg2: int) -> BlendShape:
+    def GetBlendShape(self, blendShapeIndex: int) -> BlendShape:
         """
         Returns the blend shape corresponding to C{blendShapeIndex}.
         """
-    def GetBlendShapeIndex(self, arg2: int) -> int:
+    def GetBlendShapeIndex(self, subShapeIndex: int) -> int:
         """
         Returns the blend shape index corresponding to the C{i'th} sub-shape.
         """
-    def GetInbetween(self, arg2: int) -> InbetweenShape:
+    def GetInbetween(self, subShapeIndex: int) -> InbetweenShape:
         """
         Returns the inbetween shape corresponding to sub-shape C{i}, if any.
         """
@@ -1246,14 +1304,14 @@ class Cache(Boost.Python.instance):
 
         Deprecated
         """
-    def GetSkelQuery(self, arg2: Skeleton) -> SkeletonQuery:
+    def GetSkelQuery(self, skel: Skeleton) -> SkeletonQuery:
         """
         Get a skel query for computing properties of C{skel}.
 
 
         This does not require Populate() to be called on the cache.
         """
-    def GetSkinningQuery(self, arg2: pxr.Usd.Prim) -> SkinningQuery:
+    def GetSkinningQuery(self, prim: pxr.Usd.Prim) -> SkinningQuery:
         """
         Get a skinning query at C{prim}.
 
@@ -1313,7 +1371,7 @@ class InbetweenShape(Boost.Python.instance):
         same truth value as this constructor, but if you plan to subsequently
         use the Inbetween anyways, just use this constructor.
         """
-    def CreateNormalOffsetsAttr(self, arg2: Any) -> pxr.Usd.Attribute:
+    def CreateNormalOffsetsAttr(self, defaultValue: Any) -> pxr.Usd.Attribute:
         """
         Returns the existing normal offsets attribute if the shape has normal
         offsets, or creates a new one.
@@ -1402,9 +1460,24 @@ class Root(pxr.UsdGeom.Boundable):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdSkelRoot on UsdPrim C{prim}.
+
+
+        Equivalent to UsdSkelRoot::Get (prim.GetStage(), prim.GetPath()) for a
+        *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdSkelRoot on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdSkelRoot (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     @staticmethod
     def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Root:
         """
@@ -1432,7 +1505,7 @@ class Root(pxr.UsdGeom.Boundable):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Find(arg1: pxr.Usd.Prim) -> Root:
+    def Find(prim: pxr.Usd.Prim) -> Root:
         """
         Returns the skel root at or above C{prim}, or an invalid schema object
         if no ancestor prim is defined as a skel root.
@@ -1476,9 +1549,24 @@ class Skeleton(pxr.UsdGeom.Boundable):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdSkelSkeleton on UsdPrim C{prim}.
+
+
+        Equivalent to UsdSkelSkeleton::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdSkelSkeleton on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdSkelSkeleton (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateBindTransformsAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetBindTransformsAttr() , and also Create vs Get Property Methods
@@ -1919,7 +2007,7 @@ class SkinningQuery(Boost.Python.instance):
 
         UsdAttribute::GetTimeSamples
         """
-    def GetTimeSamplesInInterval(self, arg2: pxr.Gf.Interval) -> list[float]:
+    def GetTimeSamplesInInterval(self, interval: pxr.Gf.Interval) -> list[float]:
         """
         Populate C{times} with the union of time samples within C{interval},
         for all properties that affect skinning, independent of joint
@@ -1995,15 +2083,22 @@ class Topology(Boost.Python.instance):
     @overload
     def __init__(self, arg2: pxr.Vt.TokenArray | typing.Iterable[str]) -> None: ...
     @overload
-    def __init__(self, arg2: pxr.Vt.IntArray | typing.Iterable[int]) -> None: ...
+    def __init__(self, parentIndices: pxr.Vt.IntArray | typing.Iterable[int]) -> None:
+        """
+        Construct a skel topology from an array of parent indices.
+
+
+        For each joint, this provides the parent index of that joint, or -1 if
+        none.
+        """
     def GetNumJoints(self) -> int: ...
-    def GetParent(self, arg2: int) -> int:
+    def GetParent(self, index: int) -> int:
         """
         Returns the parent joint of the C{index'th} joint, Returns -1 for
         joints with no parent (roots).
         """
     def GetParentIndices(self) -> pxr.Vt.IntArray: ...
-    def IsRoot(self, arg2: int) -> bool:
+    def IsRoot(self, index: int) -> bool:
         """
         Returns true if the C{index'th} joint is a root joint.
         """
@@ -2064,15 +2159,42 @@ def BakeSkinning(root: Root, interval: pxr.Gf.Interval = ...) -> bool:
     result.
     """
 @overload
-def ComputeJointLocalTransforms(topology: Topology, xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], inverseXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], jointLocalXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], rootInverseXform: pxr.Gf.Matrix4d = ...) -> bool: ...
+def ComputeJointLocalTransforms(topology: Topology, xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], inverseXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], jointLocalXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], rootInverseXform: pxr.Gf.Matrix4d = ...) -> bool:
+    """
+    This is an overloaded member function, provided for convenience. It
+    differs from the above function only in what argument(s) it accepts.
+
+
+    Deprecated
+
+    Use form that takes TfSpan arguments.
+    """
 @overload
-def ComputeJointLocalTransforms(topology: Topology, xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], jointLocalXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], rootInverseXform: pxr.Gf.Matrix4d = ...) -> bool: ...
+def ComputeJointLocalTransforms(topology: Topology, xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], jointLocalXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], rootInverseXform: pxr.Gf.Matrix4d = ...) -> bool:
+    """
+    This is an overloaded member function, provided for convenience. It
+    differs from the above function only in what argument(s) it accepts.
+
+
+    Deprecated
+
+    Use form that takes TfSpan arguments.
+    """
 @overload
 def ComputeJointLocalTransforms(topology: Topology, xforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], inverseXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], jointLocalXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], rootInverseXform: pxr.Gf.Matrix4f = ...) -> bool: ...
 @overload
 def ComputeJointLocalTransforms(topology: Topology, xforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], jointLocalXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], rootInverseXform: pxr.Gf.Matrix4f = ...) -> bool: ...
 @overload
-def ComputeJointLocalTransforms(topology: Topology, xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], inverseXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], rootInverseXform: pxr.Gf.Matrix4d = ...) -> pxr.Vt.Matrix4dArray: ...
+def ComputeJointLocalTransforms(topology: Topology, xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], inverseXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], rootInverseXform: pxr.Gf.Matrix4d = ...) -> pxr.Vt.Matrix4dArray:
+    """
+    This is an overloaded member function, provided for convenience. It
+    differs from the above function only in what argument(s) it accepts.
+
+
+    Deprecated
+
+    Use form that takes TfSpan arguments.
+    """
 @overload
 def ComputeJointLocalTransforms(topology: Topology, xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], rootInverseXform: pxr.Gf.Matrix4d = ...) -> pxr.Vt.Matrix4dArray: ...
 @overload
@@ -2080,13 +2202,22 @@ def ComputeJointsExtent(xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Ma
 @overload
 def ComputeJointsExtent(xforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], pad: float = ..., rootXform: pxr.Gf.Matrix4f = ...) -> pxr.Gf.Range3f: ...
 @overload
-def ConcatJointTransforms(arg1: Topology, topology: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], jointLocalXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], rootXform: pxr.Gf.Matrix4d = ...) -> bool: ...
+def ConcatJointTransforms(topology: Topology, topology: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], jointLocalXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], rootXform: pxr.Gf.Matrix4d = ...) -> bool:
+    """
+    This is an overloaded member function, provided for convenience. It
+    differs from the above function only in what argument(s) it accepts.
+
+
+    Deprecated
+
+    Use the function form that takes TfSpan arguments.
+    """
 @overload
 def ConcatJointTransforms(arg1: Topology, topology: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], jointLocalXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], rootXform: pxr.Gf.Matrix4f = ...) -> bool: ...
 @overload
 def ConcatJointTransforms(topology: Topology, jointLocalXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], rootXform: pxr.Gf.Matrix4d = ...) -> pxr.Vt.Matrix4dArray: ...
 @overload
-def DecomposeTransform(arg1: pxr.Gf.Matrix4d) -> tuple:
+def DecomposeTransform(xform: pxr.Gf.Matrix4d) -> tuple:
     """
     Decompose a transform into translate/rotate/scale components.
 
@@ -2094,17 +2225,22 @@ def DecomposeTransform(arg1: pxr.Gf.Matrix4d) -> tuple:
     The transform order for decomposition is scale, rotate, translate.
     """
 @overload
-def DecomposeTransform(arg1: pxr.Gf.Matrix4f) -> tuple:
+def DecomposeTransform(xform: pxr.Gf.Matrix4f) -> tuple:
     """
     This is an overloaded member function, provided for convenience. It
     differs from the above function only in what argument(s) it accepts.
     """
 @overload
-def DecomposeTransforms(arg1: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d]) -> tuple:
-    """    Decompose a transform array into a (translations,rotations,scales) tuple.
+def DecomposeTransforms(xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d]) -> tuple:
+    """
+    This is an overloaded member function, provided for convenience. It
+    differs from the above function only in what argument(s) it accepts.
 
-    DecomposeTransforms( (Matrix4fArray)arg1) -> tuple :
-        Decompose a transform array into a (translations,rotations,scales) tuple."""
+
+    Deprecated
+
+    Use form that takes TfSpan arguments.
+    """
 @overload
 def DecomposeTransforms(arg1: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f]) -> tuple:
     """    Decompose a transform array into a (translations,rotations,scales) tuple.
@@ -2147,8 +2283,21 @@ def IsSkinnablePrim(prim: pxr.Usd.Prim) -> bool:
     whether or not the prim has a bound skeleton, and prop joint
     influences.
     """
-def MakeTransform(translate: pxr.Gf.Vec3f | list[float] | tuple[float, float, float], rotate: pxr.Gf.Quatf | pxr.Gf.Quath, scale: pxr.Gf.Vec3h | list[float] | tuple[float, float, float]) -> pxr.Gf.Matrix4d: ...
-def MakeTransforms(translations: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], rotations: pxr.Vt.QuatfArray | typing.Iterable[pxr.Gf.Quatf], scales: pxr.Vt.Vec3hArray | typing.Iterable[pxr.Gf.Vec3h]) -> pxr.Vt.Matrix4dArray: ...
+def MakeTransform(translate: pxr.Gf.Vec3f | list[float] | tuple[float, float, float], rotate: pxr.Gf.Quatf | pxr.Gf.Quath, scale: pxr.Gf.Vec3h | list[float] | tuple[float, float, float]) -> pxr.Gf.Matrix4d:
+    """
+    This is an overloaded member function, provided for convenience. It
+    differs from the above function only in what argument(s) it accepts.
+    """
+def MakeTransforms(translations: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], rotations: pxr.Vt.QuatfArray | typing.Iterable[pxr.Gf.Quatf], scales: pxr.Vt.Vec3hArray | typing.Iterable[pxr.Gf.Vec3h]) -> pxr.Vt.Matrix4dArray:
+    """
+    This is an overloaded member function, provided for convenience. It
+    differs from the above function only in what argument(s) it accepts.
+
+
+    Deprecated
+
+    Use form that takes TfSpan arguments.
+    """
 def NormalizeWeights(weights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerComponent: int, eps: float = ...) -> bool:
     """
     Helper method to normalize weight values across each consecutive run
@@ -2262,4 +2411,13 @@ def SkinTransformLBS(geomBindTransform: pxr.Gf.Matrix4d, jointXforms: pxr.Vt.Mat
 def SkinTransformLBS(geomBindTransform: pxr.Gf.Matrix4f, jointXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], influences: pxr.Vt.Vec2fArray | typing.Iterable[pxr.Gf.Vec2f]) -> pxr.Gf.Matrix4f: ...
 @overload
 def SkinTransformLBS(geomBindTransform: pxr.Gf.Matrix4f, jointXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float]) -> pxr.Gf.Matrix4f: ...
-def SortInfluences(indices: pxr.Vt.IntArray | typing.Iterable[int], weights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerComponent: int) -> bool: ...
+def SortInfluences(indices: pxr.Vt.IntArray | typing.Iterable[int], weights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerComponent: int) -> bool:
+    """
+    This is an overloaded member function, provided for convenience. It
+    differs from the above function only in what argument(s) it accepts.
+
+
+    Deprecated
+
+    Use form that takes TfSpan arguments.
+    """

@@ -42,9 +42,24 @@ class Backdrop(pxr.Usd.Typed):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdUIBackdrop on UsdPrim C{prim}.
+
+
+        Equivalent to UsdUIBackdrop::Get (prim.GetStage(), prim.GetPath()) for
+        a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdUIBackdrop on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdUIBackdrop (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateDescriptionAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetDescriptionAttr() , and also Create vs Get Property Methods for
@@ -146,9 +161,24 @@ class NodeGraphNodeAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdUINodeGraphNodeAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdUINodeGraphNodeAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdUINodeGraphNodeAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdUINodeGraphNodeAPI (schemaObj.GetPrim()),
+        as it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> NodeGraphNodeAPI:
         '''
@@ -462,9 +492,24 @@ class SceneGraphPrimAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdUISceneGraphPrimAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdUISceneGraphPrimAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdUISceneGraphPrimAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdUISceneGraphPrimAPI (schemaObj.GetPrim()),
+        as it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> SceneGraphPrimAPI:
         '''

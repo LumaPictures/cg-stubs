@@ -26,9 +26,24 @@ class DenoisePass(pxr.Usd.Typed):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdRenderDenoisePass on UsdPrim C{prim}.
+
+
+        Equivalent to UsdRenderDenoisePass::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdRenderDenoisePass on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdRenderDenoisePass (schemaObj.GetPrim()),
+        as it preserves SchemaBase state.
+        """
     @staticmethod
     def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> DenoisePass:
         """
@@ -124,9 +139,24 @@ class Pass(pxr.Usd.Typed):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdRenderPass on UsdPrim C{prim}.
+
+
+        Equivalent to UsdRenderPass::Get (prim.GetStage(), prim.GetPath()) for
+        a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdRenderPass on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdRenderPass (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateCommandAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetCommandAttr() , and also Create vs Get Property Methods for
@@ -410,9 +440,24 @@ class Product(SettingsBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdRenderProduct on UsdPrim C{prim}.
+
+
+        Equivalent to UsdRenderProduct::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdRenderProduct on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdRenderProduct (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateOrderedVarsRel(self) -> pxr.Usd.Relationship:
         """
         See GetOrderedVarsRel() , and also Create vs Get Property Methods for
@@ -566,9 +611,24 @@ class Settings(SettingsBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdRenderSettings on UsdPrim C{prim}.
+
+
+        Equivalent to UsdRenderSettings::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdRenderSettings on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdRenderSettings (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     def CreateIncludedPurposesAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetIncludedPurposesAttr() , and also Create vs Get Property
@@ -743,7 +803,7 @@ class Settings(SettingsBase):
         methods of the schemas involved.
         """
     @staticmethod
-    def GetStageRenderSettings(arg1: pxr.Usd.Stage) -> Settings:
+    def GetStageRenderSettings(stage: pxr.Usd.Stage) -> Settings:
         """
         Fetch and return C{stage} 's render settings, as indicated by root
         layer metadata.
@@ -772,9 +832,24 @@ class SettingsBase(pxr.Usd.Typed):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdRenderSettingsBase on UsdPrim C{prim}.
+
+
+        Equivalent to UsdRenderSettingsBase::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdRenderSettingsBase on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdRenderSettingsBase (schemaObj.GetPrim()),
+        as it preserves SchemaBase state.
+        """
     def CreateAspectRatioConformPolicyAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetAspectRatioConformPolicyAttr() , and also Create vs Get
@@ -1181,9 +1256,24 @@ class Var(pxr.Usd.Typed):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdRenderVar on UsdPrim C{prim}.
+
+
+        Equivalent to UsdRenderVar::Get (prim.GetStage(), prim.GetPath()) for
+        a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdRenderVar on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdRenderVar (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateDataTypeAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetDataTypeAttr() , and also Create vs Get Property Methods for

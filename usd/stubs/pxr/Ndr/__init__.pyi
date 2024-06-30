@@ -95,9 +95,15 @@ class DiscoveryPlugin(Boost.Python.instance):
     @overload
     def DiscoverNodes(self, arg2: DiscoveryPluginContext) -> None: ...
     @overload
-    def GetSearchURIs(self) -> Any: ...
+    def GetSearchURIs(self) -> list[str]:
+        """
+        Gets the URIs that this plugin is searching for nodes in.
+        """
     @overload
-    def GetSearchURIs(self) -> None: ...
+    def GetSearchURIs(self) -> None:
+        """
+        Gets the URIs that this plugin is searching for nodes in.
+        """
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
     def __lt__(self, other: object) -> bool: ...
@@ -204,7 +210,7 @@ class Node(Boost.Python.instance):
 
         Helpful for things like adding this node to a log.
         """
-    def GetInput(self, arg2: str | pxr.Ar.ResolvedPath) -> Property:
+    def GetInput(self, inputName: str | pxr.Ar.ResolvedPath) -> Property:
         """
         Get an input property by name.
 
@@ -228,7 +234,7 @@ class Node(Boost.Python.instance):
         """
         Gets the name of the node.
         """
-    def GetOutput(self, arg2: str | pxr.Ar.ResolvedPath) -> Property:
+    def GetOutput(self, outputName: str | pxr.Ar.ResolvedPath) -> Property:
         """
         Get an output property by name.
 
@@ -377,7 +383,7 @@ class Property(Boost.Python.instance):
         """Raises an exception
         This class cannot be instantiated from Python
         """
-    def CanConnectTo(self, arg2: Property) -> bool:
+    def CanConnectTo(self, other: Property) -> bool:
         """
         Determines if this property can be connected to the specified
         property.
@@ -667,7 +673,7 @@ class Registry(Boost.Python.instance):
         filesystem paths.
         """
     def SetExtraDiscoveryPlugins(self, arg2: list) -> None: ...
-    def SetExtraParserPlugins(self, arg2: typing.Iterable[pxr.Tf.Type]) -> None:
+    def SetExtraParserPlugins(self, pluginTypes: typing.Iterable[pxr.Tf.Type]) -> None:
         """
         Allows the client to set any additional parser plugins that would
         otherwise NOT be found through the plugin system.
@@ -685,7 +691,7 @@ class Version(Boost.Python.instance):
         Create an invalid version.
         """
     @overload
-    def __init__(self, arg2: int) -> None:
+    def __init__(self, x: int) -> None:
         """
         Create a version from a string.
 
@@ -702,7 +708,7 @@ class Version(Boost.Python.instance):
         failure generates an error and yields an invalid version.
         """
     @overload
-    def __init__(self, arg2: int, arg3: int) -> None: ...
+    def __init__(self, x: int, : int) -> None: ...
     def GetAsDefault(self) -> Version:
         """
         Return an equal version marked as default.

@@ -27,9 +27,24 @@ class Field3DAsset(FieldAsset):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdVolField3DAsset on UsdPrim C{prim}.
+
+
+        Equivalent to UsdVolField3DAsset::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdVolField3DAsset on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdVolField3DAsset (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     def CreateFieldDataTypeAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetFieldDataTypeAttr() , and also Create vs Get Property Methods
@@ -164,9 +179,24 @@ class FieldAsset(FieldBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdVolFieldAsset on UsdPrim C{prim}.
+
+
+        Equivalent to UsdVolFieldAsset::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdVolFieldAsset on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdVolFieldAsset (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateFieldDataTypeAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetFieldDataTypeAttr() , and also Create vs Get Property Methods
@@ -362,9 +392,24 @@ class FieldBase(pxr.UsdGeom.Xformable):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdVolFieldBase on UsdPrim C{prim}.
+
+
+        Equivalent to UsdVolFieldBase::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdVolFieldBase on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdVolFieldBase (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     @staticmethod
     def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> FieldBase:
         """
@@ -410,9 +455,24 @@ class OpenVDBAsset(FieldAsset):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdVolOpenVDBAsset on UsdPrim C{prim}.
+
+
+        Equivalent to UsdVolOpenVDBAsset::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdVolOpenVDBAsset on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdVolOpenVDBAsset (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     def CreateFieldClassAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetFieldClassAttr() , and also Create vs Get Property Methods for
@@ -613,9 +673,24 @@ class Volume(pxr.UsdGeom.Gprim):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdVolVolume on UsdPrim C{prim}.
+
+
+        Equivalent to UsdVolVolume::Get (prim.GetStage(), prim.GetPath()) for
+        a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdVolVolume on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdVolVolume (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def BlockFieldRelationship(self, name: str | pxr.Ar.ResolvedPath) -> bool:
         """
         Blocks an existing field relationship on this volume, ensuring it will

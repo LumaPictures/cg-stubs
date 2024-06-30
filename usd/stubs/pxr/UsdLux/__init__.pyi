@@ -25,9 +25,24 @@ class BoundableLightBase(pxr.UsdGeom.Boundable):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxBoundableLightBase on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxBoundableLightBase::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxBoundableLightBase on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxBoundableLightBase
+        (schemaObj.GetPrim()), as it preserves SchemaBase state.
+        """
     def CreateColorAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See UsdLuxLightAPI::CreateColorAttr() .
@@ -144,9 +159,24 @@ class CylinderLight(BoundableLightBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxCylinderLight on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxCylinderLight::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxCylinderLight on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxCylinderLight (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     def CreateLengthAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetLengthAttr() , and also Create vs Get Property Methods for when
@@ -300,9 +330,24 @@ class DiskLight(BoundableLightBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxDiskLight on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxDiskLight::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxDiskLight on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxDiskLight (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateRadiusAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetRadiusAttr() , and also Create vs Get Property Methods for when
@@ -396,9 +441,24 @@ class DistantLight(NonboundableLightBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxDistantLight on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxDistantLight::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxDistantLight on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxDistantLight (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     def CreateAngleAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetAngleAttr() , and also Create vs Get Property Methods for when
@@ -521,9 +581,24 @@ class DomeLight(NonboundableLightBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxDomeLight on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxDomeLight::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxDomeLight on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxDomeLight (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateGuideRadiusAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetGuideRadiusAttr() , and also Create vs Get Property Methods for
@@ -759,9 +834,24 @@ class DomeLight_1(NonboundableLightBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxDomeLight_1 on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxDomeLight_1::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxDomeLight_1 on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxDomeLight_1 (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     def CreateGuideRadiusAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetGuideRadiusAttr() , and also Create vs Get Property Methods for
@@ -987,9 +1077,24 @@ class GeometryLight(NonboundableLightBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxGeometryLight on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxGeometryLight::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxGeometryLight on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxGeometryLight (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     def CreateGeometryRel(self) -> pxr.Usd.Relationship:
         """
         See GetGeometryRel() , and also Create vs Get Property Methods for
@@ -1089,11 +1194,33 @@ class LightAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxLightAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxLightAPI::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxLightAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxLightAPI (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     @overload
-    def __init__(self, connectable: pxr.UsdShade.ConnectableAPI) -> None: ...
+    def __init__(self, connectable: pxr.UsdShade.ConnectableAPI) -> None:
+        """
+        Constructor that takes a ConnectableAPI object.
+
+
+        Allow implicit conversion of a UsdShadeConnectableAPI to
+        UsdLuxLightAPI
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> LightAPI:
         '''
@@ -1679,11 +1806,33 @@ class LightFilter(pxr.UsdGeom.Xformable):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxLightFilter on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxLightFilter::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxLightFilter on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxLightFilter (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     @overload
-    def __init__(self, connectable: pxr.UsdShade.ConnectableAPI) -> None: ...
+    def __init__(self, connectable: pxr.UsdShade.ConnectableAPI) -> None:
+        """
+        Constructor that takes a ConnectableAPI object.
+
+
+        Allow implicit conversion of UsdShadeConnectableAPI to
+        UsdLuxLightFilter.
+        """
     def ConnectableAPI(self) -> pxr.UsdShade.ConnectableAPI:
         """
         Contructs and returns a UsdShadeConnectableAPI object with this light
@@ -2034,9 +2183,24 @@ class LightListAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxLightListAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxLightListAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxLightListAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxLightListAPI (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> LightListAPI:
         '''
@@ -2086,7 +2250,7 @@ class LightListAPI(pxr.Usd.APISchemaBase):
 
         UsdPrim::RemoveAPI()
         """
-    def ComputeLightList(self, arg2: LightListAPI.ComputeMode) -> list[pxr.Sdf.Path]:
+    def ComputeLightList(self, mode: LightListAPI.ComputeMode) -> list[pxr.Sdf.Path]:
         """
         Computes and returns the list of lights and light filters in the
         stage, optionally consulting a cached result.
@@ -2189,7 +2353,7 @@ class LightListAPI(pxr.Usd.APISchemaBase):
         Mark any stored lightlist as invalid, by setting the
         lightList:cacheBehavior attribute to ignore.
         """
-    def StoreLightList(self, arg2: typing.Iterable[pxr.Sdf.Path | str]) -> None:
+    def StoreLightList(self, : typing.Iterable[pxr.Sdf.Path | str]) -> None:
         '''
         Store the given paths as the lightlist for this prim.
 
@@ -2229,9 +2393,24 @@ class ListAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxListAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxListAPI::Get (prim.GetStage(), prim.GetPath()) for
+        a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxListAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxListAPI (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> ListAPI:
         '''
@@ -2281,7 +2460,7 @@ class ListAPI(pxr.Usd.APISchemaBase):
 
         UsdPrim::RemoveAPI()
         """
-    def ComputeLightList(self, arg2: LightListAPI.ComputeMode) -> list[pxr.Sdf.Path]:
+    def ComputeLightList(self, mode: LightListAPI.ComputeMode) -> list[pxr.Sdf.Path]:
         """
         Computes and returns the list of lights and light filters in the
         stage, optionally consulting a cached result.
@@ -2384,7 +2563,7 @@ class ListAPI(pxr.Usd.APISchemaBase):
         Mark any stored lightlist as invalid, by setting the
         lightList:cacheBehavior attribute to ignore.
         """
-    def StoreLightList(self, arg2: typing.Iterable[pxr.Sdf.Path | str]) -> None:
+    def StoreLightList(self, : typing.Iterable[pxr.Sdf.Path | str]) -> None:
         '''
         Store the given paths as the lightlist for this prim.
 
@@ -2416,9 +2595,24 @@ class MeshLightAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxMeshLightAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxMeshLightAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxMeshLightAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxMeshLightAPI (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> MeshLightAPI:
         '''
@@ -2508,9 +2702,25 @@ class NonboundableLightBase(pxr.UsdGeom.Xformable):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxNonboundableLightBase on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxNonboundableLightBase::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxNonboundableLightBase on the prim held by
+        C{schemaObj}.
+
+
+        Should be preferred over UsdLuxNonboundableLightBase
+        (schemaObj.GetPrim()), as it preserves SchemaBase state.
+        """
     def CreateColorAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See UsdLuxLightAPI::CreateColorAttr() .
@@ -2630,9 +2840,24 @@ class PluginLight(pxr.UsdGeom.Xformable):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxPluginLight on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxPluginLight::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxPluginLight on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxPluginLight (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     @staticmethod
     def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> PluginLight:
         """
@@ -2710,9 +2935,24 @@ class PluginLightFilter(LightFilter):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxPluginLightFilter on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxPluginLightFilter::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxPluginLightFilter on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxPluginLightFilter
+        (schemaObj.GetPrim()), as it preserves SchemaBase state.
+        """
     @staticmethod
     def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> PluginLightFilter:
         """
@@ -2788,9 +3028,24 @@ class PortalLight(BoundableLightBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxPortalLight on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxPortalLight::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxPortalLight on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxPortalLight (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     def CreateHeightAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetHeightAttr() , and also Create vs Get Property Methods for when
@@ -2915,9 +3170,24 @@ class RectLight(BoundableLightBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxRectLight on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxRectLight::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxRectLight on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxRectLight (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     def CreateHeightAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetHeightAttr() , and also Create vs Get Property Methods for when
@@ -3068,11 +3338,33 @@ class ShadowAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxShadowAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxShadowAPI::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxShadowAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxShadowAPI (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     @overload
-    def __init__(self, connectable: pxr.UsdShade.ConnectableAPI) -> None: ...
+    def __init__(self, connectable: pxr.UsdShade.ConnectableAPI) -> None:
+        """
+        Constructor that takes a ConnectableAPI object.
+
+
+        Allow implicit conversion of UsdShadeConnectableAPI to
+        UsdLuxShadowAPI.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> ShadowAPI:
         '''
@@ -3362,11 +3654,33 @@ class ShapingAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxShapingAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxShapingAPI::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxShapingAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxShapingAPI (schemaObj.GetPrim()), as it
+        preserves SchemaBase state.
+        """
     @overload
-    def __init__(self, connectable: pxr.UsdShade.ConnectableAPI) -> None: ...
+    def __init__(self, connectable: pxr.UsdShade.ConnectableAPI) -> None:
+        """
+        Constructor that takes a ConnectableAPI object.
+
+
+        Allow implicit conversion of UsdShadeConnectableAPI to
+        UsdLuxShapingAPI.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> ShapingAPI:
         '''
@@ -3708,9 +4022,24 @@ class SphereLight(BoundableLightBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxSphereLight on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxSphereLight::Get (prim.GetStage(), prim.GetPath())
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxSphereLight on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxSphereLight (schemaObj.GetPrim()), as
+        it preserves SchemaBase state.
+        """
     def CreateRadiusAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetRadiusAttr() , and also Create vs Get Property Methods for when
@@ -3931,9 +4260,24 @@ class VolumeLightAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim) -> None:
+        """
+        Construct a UsdLuxVolumeLightAPI on UsdPrim C{prim}.
+
+
+        Equivalent to UsdLuxVolumeLightAPI::Get (prim.GetStage(),
+        prim.GetPath()) for a *valid* C{prim}, but will not immediately throw
+        an error for an invalid C{prim}
+        """
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase) -> None:
+        """
+        Construct a UsdLuxVolumeLightAPI on the prim held by C{schemaObj}.
+
+
+        Should be preferred over UsdLuxVolumeLightAPI (schemaObj.GetPrim()),
+        as it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> VolumeLightAPI:
         '''
@@ -4023,7 +4367,7 @@ class _CanApplyResult(Boost.Python.instance):
     @property
     def whyNot(self): ...
 
-def BlackbodyTemperatureAsRgb(arg1: float) -> pxr.Gf.Vec3f:
+def BlackbodyTemperatureAsRgb(colorTemp: float) -> pxr.Gf.Vec3f:
     """
     Compute the RGB equivalent of the spectrum emitted by a blackbody with
     the given temperature in degrees Kelvin, with normalized luminance.

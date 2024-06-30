@@ -131,6 +131,13 @@ class BaseSigFixer:
         """Override this to implement logic to fix a type"""
         return type_name
 
+    def cleanup_sigs_types(
+        self,
+        sigs: list[FunctionSig],
+        ctx: FunctionContext,
+    ) -> list[FunctionSig]:
+        return [self.cleanup_sig_types(sig, ctx) for sig in sigs]
+
     def cleanup_sig_types(
         self, sig: FunctionSig, ctx: FunctionContext, docstring: str | None = None
     ) -> FunctionSig:
