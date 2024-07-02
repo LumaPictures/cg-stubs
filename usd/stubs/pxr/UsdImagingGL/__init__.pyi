@@ -58,7 +58,7 @@ class Engine(Boost.Python.instance):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, arg2: Engine.Parameters) -> None:
+    def __init__(self, driver: pxr.Sdf.Path | str, rendererPluginId: str | pxr.Ar.ResolvedPath, gpuEnabled: bool) -> None:
         """
         An HdDriver, containing the Hgi of your choice, can be optionally
         passed in during construction.
@@ -73,7 +73,7 @@ class Engine(Boost.Python.instance):
         use the GPU to produce images.
         """
     @overload
-    def __init__(self, arg2: pxr.Sdf.Path | str, arg3: object, arg4: object) -> None: ...
+    def __init__(self, params: Engine.Parameters) -> None: ...
     def AddSelected(self, path: pxr.Sdf.Path | str, instanceIndex: int) -> None:
         """
         Add a path with instanceIndex to the list of prim paths that should be
@@ -236,7 +236,16 @@ class Engine(Boost.Python.instance):
         the render buffer and what pixels of the render buffer will be
         rendered into.
         """
-    def SetLightingState(self, arg2: object, arg3: pxr.Glf.SimpleMaterial, arg4: pxr.Gf.Vec4f | list[float] | tuple[float, float, float, float]) -> None: ...
+    def SetLightingState(self, lights: list[pxr.Glf.SimpleLight], material: pxr.Glf.SimpleMaterial, sceneAmbient: pxr.Gf.Vec4f | list[float] | tuple[float, float, float, float]) -> None:
+        """
+        Set lighting state Derived classes should ensure that passing an empty
+        lights vector disables lighting.
+
+
+        lights
+
+        is the set of lights to use, or empty to disable lighting.
+        """
     def SetOverrideWindowPolicy(self, policy: pxr.CameraUtil.ConformWindowPolicy | None) -> None:
         """
         Specifies whether to force a window policy when conforming the frustum

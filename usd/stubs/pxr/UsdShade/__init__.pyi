@@ -123,7 +123,15 @@ class ConnectableAPI(pxr.Usd.APISchemaBase):
         """
     @overload
     @staticmethod
-    def ConnectToSource(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, source: ConnectableAPI, sourceName: object, sourceType: AttributeType = ..., typeName: pxr.Sdf.ValueTypeName = ...) -> bool: ...
+    def ConnectToSource(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, source: ConnectableAPI, sourceName: str | pxr.Ar.ResolvedPath, sourceType: AttributeType = ..., typeName: pxr.Sdf.ValueTypeName = ...) -> bool:
+        """
+        Deprecated
+
+        Please use the versions that take a UsdShadeConnectionSourceInfo to
+        describe the upstream source This is an overloaded member function,
+        provided for convenience. It differs from the above function only in
+        what argument(s) it accepts.
+        """
     @overload
     @staticmethod
     def ConnectToSource(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, sourcePath: pxr.Sdf.Path | str) -> bool:
@@ -440,6 +448,8 @@ class ConnectionSourceInfo(Boost.Python.instance):
     @overload
     def __init__(self) -> None: ...
     @overload
+    def __init__(self, source: ConnectableAPI, sourceName: str | pxr.Ar.ResolvedPath, sourceType: AttributeType, typeName: pxr.Sdf.ValueTypeName = ...) -> None: ...
+    @overload
     def __init__(self, input: Input) -> None: ...
     @overload
     def __init__(self, output: Output) -> None: ...
@@ -453,8 +463,6 @@ class ConnectionSourceInfo(Boost.Python.instance):
         needs to have a valid prefix to identify the sourceType. The source
         prim needs to exist and be UsdShadeConnectableAPI compatible
         """
-    @overload
-    def __init__(self, source: ConnectableAPI, sourceName: str | pxr.Ar.ResolvedPath, sourceType: AttributeType, typeName: pxr.Sdf.ValueTypeName = ...) -> None: ...
     def IsValid(self) -> bool:
         """
         Return true if this source info is valid for setting up a connection.
@@ -493,9 +501,27 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim, name: object) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim, name: str | pxr.Ar.ResolvedPath) -> None:
+        '''
+        Construct a UsdShadeCoordSysAPI on UsdPrim C{prim} with name C{name}.
+
+
+        Equivalent to UsdShadeCoordSysAPI::Get ( prim.GetStage(),
+        prim.GetPath().AppendProperty("coordSys:name"));
+
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        '''
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase, name: object) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase, name: str | pxr.Ar.ResolvedPath) -> None:
+        """
+        Construct a UsdShadeCoordSysAPI on the prim held by C{schemaObj} with
+        name C{name}.
+
+
+        Should be preferred over UsdShadeCoordSysAPI (schemaObj.GetPrim(),
+        name), as it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim, name: str | pxr.Ar.ResolvedPath) -> CoordSysAPI:
         '''
@@ -534,15 +560,6 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
         Deprecated
         """
     @overload
-    def Bind(self, path: pxr.Sdf.Path | str) -> bool:
-        """
-        Bind the name to the given path.
-
-
-        The prim at the given path is expected to be UsdGeomXformable, in
-        order for the binding to be succesfully resolved.
-        """
-    @overload
     def Bind(self, name: str | pxr.Ar.ResolvedPath, path: pxr.Sdf.Path | str) -> bool:
         """
         Bind the name to the given path.
@@ -560,6 +577,15 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
         set to Warn, try to also bind to multi-apply API compliant
         relationship for the prim, along with backward compatible deprecated
         behavior.
+        """
+    @overload
+    def Bind(self, path: pxr.Sdf.Path | str) -> bool:
+        """
+        Bind the name to the given path.
+
+
+        The prim at the given path is expected to be UsdGeomXformable, in
+        order for the binding to be succesfully resolved.
         """
     def BlockBinding(self, name: str | pxr.Ar.ResolvedPath = ...) -> bool:
         """
@@ -609,18 +635,6 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
         Test whether a given C{name} contains the"coordSys:"prefix.
         '''
     @overload
-    def ClearBinding(self, removeSpec: bool) -> bool:
-        """
-        Clear the coordinate system binding on the prim corresponding to the
-        instanceName of this UsdShadeCoordSysAPI, from the current edit
-        target.
-
-
-        Only remove the spec if C{removeSpec} is true (leave the spec to
-        preserve meta-data we may have intentionally authored on the
-        relationship)
-        """
-    @overload
     def ClearBinding(self, name: str | pxr.Ar.ResolvedPath, removeSpec: bool) -> bool:
         """
         Clear the indicated coordinate system binding on this prim from the
@@ -640,6 +654,18 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
         set to Warn, try to also clear binding for multi-apply API compliant
         relationship for the prim, along with backward compatible deprecated
         behavior.
+        """
+    @overload
+    def ClearBinding(self, removeSpec: bool) -> bool:
+        """
+        Clear the coordinate system binding on the prim corresponding to the
+        instanceName of this UsdShadeCoordSysAPI, from the current edit
+        target.
+
+
+        Only remove the spec if C{removeSpec} is true (leave the spec to
+        preserve meta-data we may have intentionally authored on the
+        relationship)
         """
     def CreateBindingRel(self) -> pxr.Usd.Relationship:
         """
@@ -705,16 +731,6 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
         """
     @overload
     @staticmethod
-    def Get(prim: pxr.Usd.Prim, name: str | pxr.Ar.ResolvedPath) -> CoordSysAPI:
-        """
-        Return a UsdShadeCoordSysAPI with name C{name} holding the prim
-        C{prim}.
-
-
-        Shorthand for UsdShadeCoordSysAPI(prim, name);
-        """
-    @overload
-    @staticmethod
     def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> CoordSysAPI:
         """
         Return a UsdShadeCoordSysAPI holding the prim adhering to this schema
@@ -731,6 +747,16 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
           UsdShadeCoordSysAPI(
               stage->GetPrimAtPath(path.GetPrimPath()), name);
 
+        """
+    @overload
+    @staticmethod
+    def Get(prim: pxr.Usd.Prim, name: str | pxr.Ar.ResolvedPath) -> CoordSysAPI:
+        """
+        Return a UsdShadeCoordSysAPI with name C{name} holding the prim
+        C{prim}.
+
+
+        Shorthand for UsdShadeCoordSysAPI(prim, name);
         """
     @staticmethod
     def GetAll(prim: pxr.Usd.Prim) -> list[CoordSysAPI]:
@@ -918,33 +944,6 @@ class Input(Boost.Python.instance):
         UsdShadeConnectableAPI::ClearSources
         """
     @overload
-    def ConnectToSource(self, input: Input) -> bool:
-        """
-        Connects this Input to the given input, C{sourceInput}.
-
-
-
-        UsdShadeConnectableAPI::ConnectToSource
-        """
-    @overload
-    def ConnectToSource(self, output: Output) -> bool:
-        """
-        Connects this Input to the given output, C{sourceOutput}.
-
-
-
-        UsdShadeConnectableAPI::ConnectToSource
-        """
-    @overload
-    def ConnectToSource(self, sourcePath: pxr.Sdf.Path | str) -> bool:
-        """
-        Authors a connection for this Input to the source at the given path.
-
-
-
-        UsdShadeConnectableAPI::ConnectToSource
-        """
-    @overload
     def ConnectToSource(self, source: ConnectionSourceInfo, mod: ConnectionModification = ...) -> bool:
         """
         Authors a connection for this Input.
@@ -976,6 +975,33 @@ class Input(Boost.Python.instance):
 
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
+        """
+    @overload
+    def ConnectToSource(self, sourcePath: pxr.Sdf.Path | str) -> bool:
+        """
+        Authors a connection for this Input to the source at the given path.
+
+
+
+        UsdShadeConnectableAPI::ConnectToSource
+        """
+    @overload
+    def ConnectToSource(self, input: Input) -> bool:
+        """
+        Connects this Input to the given input, C{sourceInput}.
+
+
+
+        UsdShadeConnectableAPI::ConnectToSource
+        """
+    @overload
+    def ConnectToSource(self, output: Output) -> bool:
+        """
+        Connects this Input to the given output, C{sourceOutput}.
+
+
+
+        UsdShadeConnectableAPI::ConnectToSource
         """
     def DisconnectSource(self, sourceAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output = ...) -> bool:
         """
@@ -1317,9 +1343,24 @@ class Material(NodeGraph):
         """
         Clear the base Material of this Material.
         """
-    def ComputeDisplacementSource(self, renderContext: object = ...) -> Any: ...
-    def ComputeSurfaceSource(self, renderContext: object = ...) -> Any: ...
-    def ComputeVolumeSource(self, renderContext: object = ...) -> Any: ...
+    def ComputeDisplacementSource(self, renderContext: str | pxr.Ar.ResolvedPath = ...) -> tuple[Shader, str, AttributeType]:
+        """
+        Deprecated
+
+        Use the form that takes a TfTokenVector or renderContexts
+        """
+    def ComputeSurfaceSource(self, renderContext: str | pxr.Ar.ResolvedPath = ...) -> tuple[Shader, str, AttributeType]:
+        """
+        Deprecated
+
+        Use the form that takes a TfTokenVector or renderContexts.
+        """
+    def ComputeVolumeSource(self, renderContext: str | pxr.Ar.ResolvedPath = ...) -> tuple[Shader, str, AttributeType]:
+        """
+        Deprecated
+
+        Use the form that takes a TfTokenVector or renderContexts
+        """
     def CreateDisplacementAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetDisplacementAttr() , and also Create vs Get Property Methods
@@ -2932,33 +2973,6 @@ class Output(Boost.Python.instance):
         UsdShadeConnectableAPI::ClearSources
         """
     @overload
-    def ConnectToSource(self, sourceInput: Input) -> bool:
-        """
-        Connects this Output to the given input, C{sourceInput}.
-
-
-
-        UsdShadeConnectableAPI::ConnectToSource
-        """
-    @overload
-    def ConnectToSource(self, sourceOutput: Output) -> bool:
-        """
-        Connects this Output to the given output, C{sourceOutput}.
-
-
-
-        UsdShadeConnectableAPI::ConnectToSource
-        """
-    @overload
-    def ConnectToSource(self, sourcePath: pxr.Sdf.Path | str) -> bool:
-        """
-        Authors a connection for this Output to the source at the given path.
-
-
-
-        UsdShadeConnectableAPI::ConnectToSource
-        """
-    @overload
     def ConnectToSource(self, source: ConnectionSourceInfo, mod: ConnectionModification = ...) -> bool:
         """
         Authors a connection for this Output.
@@ -2990,6 +3004,33 @@ class Output(Boost.Python.instance):
 
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
+        """
+    @overload
+    def ConnectToSource(self, sourcePath: pxr.Sdf.Path | str) -> bool:
+        """
+        Authors a connection for this Output to the source at the given path.
+
+
+
+        UsdShadeConnectableAPI::ConnectToSource
+        """
+    @overload
+    def ConnectToSource(self, sourceInput: Input) -> bool:
+        """
+        Connects this Output to the given input, C{sourceInput}.
+
+
+
+        UsdShadeConnectableAPI::ConnectToSource
+        """
+    @overload
+    def ConnectToSource(self, sourceOutput: Output) -> bool:
+        """
+        Connects this Output to the given output, C{sourceOutput}.
+
+
+
+        UsdShadeConnectableAPI::ConnectToSource
         """
     def DisconnectSource(self, sourceAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output = ...) -> bool:
         """

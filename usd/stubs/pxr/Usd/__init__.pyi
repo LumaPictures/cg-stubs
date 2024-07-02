@@ -682,7 +682,7 @@ class AttributeQuery(Boost.Python.instance):
         C{attrNames}.
         """
     def Get(self, time: TimeCode | float | pxr.Sdf.TimeCode = ...) -> Any: ...
-    def GetAttribute(self) -> Attribute:
+    def GetAttribute(self) -> PrimDefinition.Attribute:
         """
         Return the attribute associated with this query.
         """
@@ -1695,11 +1695,37 @@ class CollectionAPI(APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: Prim, name: object) -> None: ...
+    def __init__(self, prim: Prim, name: str | pxr.Ar.ResolvedPath) -> None:
+        '''
+        Construct a UsdCollectionAPI on UsdPrim C{prim} with name C{name}.
+
+
+        Equivalent to UsdCollectionAPI::Get ( prim.GetStage(),
+        prim.GetPath().AppendProperty("collection:name"));
+
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        '''
     @overload
-    def __init__(self, schemaObj: SchemaBase, name: object) -> None: ...
+    def __init__(self, schemaObj: SchemaBase, name: str | pxr.Ar.ResolvedPath) -> None:
+        """
+        Construct a UsdCollectionAPI on the prim held by C{schemaObj} with
+        name C{name}.
+
+
+        Should be preferred over UsdCollectionAPI (schemaObj.GetPrim(), name),
+        as it preserves SchemaBase state.
+        """
     @overload
-    def __init__(self, arg2: Prim, arg3: object) -> None: ...
+    def __init__(self, schemaObj: Prim, name: str | pxr.Ar.ResolvedPath) -> None:
+        """
+        Construct a UsdCollectionAPI on the prim held by C{schemaObj} with
+        name C{name}.
+
+
+        Should be preferred over UsdCollectionAPI (schemaObj.GetPrim(), name),
+        as it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: Prim, name: str | pxr.Ar.ResolvedPath) -> CollectionAPI:
         '''
@@ -1793,7 +1819,7 @@ class CollectionAPI(APISchemaBase):
         Computes and returns a UsdCollectionMembershipQuery object which can
         be used to query inclusion or exclusion of paths in the collection.
         """
-    def CreateCollectionAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> Attribute:
+    def CreateCollectionAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> PrimDefinition.Attribute:
         """
         See GetCollectionAttr() , and also Create vs Get Property Methods for
         when to use Get vs Create.
@@ -1803,12 +1829,12 @@ class CollectionAPI(APISchemaBase):
         sparsely (when it makes sense to do so) if C{writeSparsely} is C{true}
         - the default for C{writeSparsely} is C{false}.
         """
-    def CreateExcludesRel(self) -> Relationship:
+    def CreateExcludesRel(self) -> PrimDefinition.Relationship:
         """
         See GetExcludesRel() , and also Create vs Get Property Methods for
         when to use Get vs Create.
         """
-    def CreateExpansionRuleAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> Attribute:
+    def CreateExpansionRuleAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> PrimDefinition.Attribute:
         """
         See GetExpansionRuleAttr() , and also Create vs Get Property Methods
         for when to use Get vs Create.
@@ -1818,7 +1844,7 @@ class CollectionAPI(APISchemaBase):
         sparsely (when it makes sense to do so) if C{writeSparsely} is C{true}
         - the default for C{writeSparsely} is C{false}.
         """
-    def CreateIncludeRootAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> Attribute:
+    def CreateIncludeRootAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> PrimDefinition.Attribute:
         """
         See GetIncludeRootAttr() , and also Create vs Get Property Methods for
         when to use Get vs Create.
@@ -1828,12 +1854,12 @@ class CollectionAPI(APISchemaBase):
         sparsely (when it makes sense to do so) if C{writeSparsely} is C{true}
         - the default for C{writeSparsely} is C{false}.
         """
-    def CreateIncludesRel(self) -> Relationship:
+    def CreateIncludesRel(self) -> PrimDefinition.Relationship:
         """
         See GetIncludesRel() , and also Create vs Get Property Methods for
         when to use Get vs Create.
         """
-    def CreateMembershipExpressionAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> Attribute:
+    def CreateMembershipExpressionAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> PrimDefinition.Attribute:
         """
         See GetMembershipExpressionAttr() , and also Create vs Get Property
         Methods for when to use Get vs Create.
@@ -1862,15 +1888,6 @@ class CollectionAPI(APISchemaBase):
         """
     @overload
     @staticmethod
-    def Get(prim: Prim, name: str | pxr.Ar.ResolvedPath) -> CollectionAPI:
-        """
-        Return a UsdCollectionAPI with name C{name} holding the prim C{prim}.
-
-
-        Shorthand for UsdCollectionAPI(prim, name);
-        """
-    @overload
-    @staticmethod
     def Get(stage: Stage, path: pxr.Sdf.Path | str) -> CollectionAPI:
         """
         Return a UsdCollectionAPI holding the prim adhering to this schema at
@@ -1887,6 +1904,15 @@ class CollectionAPI(APISchemaBase):
           UsdCollectionAPI(
               stage->GetPrimAtPath(path.GetPrimPath()), name);
 
+        """
+    @overload
+    @staticmethod
+    def Get(prim: Prim, name: str | pxr.Ar.ResolvedPath) -> CollectionAPI:
+        """
+        Return a UsdCollectionAPI with name C{name} holding the prim C{prim}.
+
+
+        Shorthand for UsdCollectionAPI(prim, name);
         """
     @staticmethod
     def GetAll(prim: Prim) -> list[CollectionAPI]:
@@ -1918,7 +1944,7 @@ class CollectionAPI(APISchemaBase):
         Returns the collection represented by the given collection path,
         C{collectionPath} on the given USD stage.
         """
-    def GetCollectionAttr(self) -> Attribute:
+    def GetCollectionAttr(self) -> PrimDefinition.Attribute:
         """
         This property represents the collection for the purpose of allowing
         another collection to include it.
@@ -1955,7 +1981,7 @@ class CollectionAPI(APISchemaBase):
 
         GetCollectionAttr()
         '''
-    def GetExcludesRel(self) -> Relationship:
+    def GetExcludesRel(self) -> PrimDefinition.Relationship:
         '''
         Specifies a list of targets that are excluded below the included paths
         in this collection.
@@ -1972,7 +1998,7 @@ class CollectionAPI(APISchemaBase):
         the objects belonging to the collection (see
         UsdCollectionAPI::GetIncludedObjects).
         '''
-    def GetExpansionRuleAttr(self) -> Attribute:
+    def GetExpansionRuleAttr(self) -> PrimDefinition.Attribute:
         '''
         Specifies how the paths that are included in the collection must be
         expanded to determine its members.
@@ -1999,7 +2025,7 @@ class CollectionAPI(APISchemaBase):
 
         explicitOnly, expandPrims, expandPrimsAndProperties
         '''
-    def GetIncludeRootAttr(self) -> Attribute:
+    def GetIncludeRootAttr(self) -> PrimDefinition.Attribute:
         """
         Boolean attribute indicating whether the pseudo-root path</>should be
         counted as one of the included target paths.
@@ -2024,7 +2050,7 @@ class CollectionAPI(APISchemaBase):
 
         SdfVariabilityUniform
         """
-    def GetIncludesRel(self) -> Relationship:
+    def GetIncludesRel(self) -> PrimDefinition.Relationship:
         """
         Specifies a list of targets that are included in the collection.
 
@@ -2034,7 +2060,7 @@ class CollectionAPI(APISchemaBase):
         target the B{collection:{collectionName}} property on the owning prim
         of the collection to be included
         """
-    def GetMembershipExpressionAttr(self) -> Attribute:
+    def GetMembershipExpressionAttr(self) -> PrimDefinition.Attribute:
         """
         Specifies a path expression that determines membership in this
         collection.
@@ -3639,6 +3665,12 @@ class Payloads(Boost.Python.instance):
         listOps.
         """
     @overload
+    def AddPayload(self, assetPath: str | pxr.Ar.ResolvedPath, primPath: pxr.Sdf.Path | str, layerOffset: pxr.Sdf.LayerOffset = ..., position: ListPosition = ...) -> bool:
+        """
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
+        """
+    @overload
     def AddPayload(self, assetPath: str | pxr.Ar.ResolvedPath, layerOffset: pxr.Sdf.LayerOffset = ..., position: ListPosition = ...) -> bool:
         """
         This is an overloaded member function, provided for convenience. It
@@ -3647,12 +3679,6 @@ class Payloads(Boost.Python.instance):
 
 
         Payloads Without Prim Paths
-        """
-    @overload
-    def AddPayload(self, assetPath: str | pxr.Ar.ResolvedPath, primPath: pxr.Sdf.Path | str, layerOffset: pxr.Sdf.LayerOffset = ..., position: ListPosition = ...) -> bool:
-        """
-        This is an overloaded member function, provided for convenience. It
-        differs from the above function only in what argument(s) it accepts.
         """
     def ClearPayloads(self) -> bool:
         '''
@@ -3788,23 +3814,23 @@ class Prim(Object):
              applying valid API schemas.
         """
     @overload
-    def ApplyAPI(self, schemaIdentifier: str | pxr.Ar.ResolvedPath) -> bool:
-        """
-        This is an overload of ApplyAPI that takes a C{schemaIdentifier} to
-        determine the schema type.
-
-
-        """
-    @overload
     def ApplyAPI(self, schemaType: pxr.Tf.Type) -> bool:
         """
         This is an overload of ApplyAPI that takes a TfType C{schemaType}.
         """
     @overload
-    def ApplyAPI(self, schemaFamily: str | pxr.Ar.ResolvedPath, schemaVersion: int) -> bool:
+    def ApplyAPI(self, schemaType: pxr.Tf.Type, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
         """
-        This is an overload of ApplyAPI that takes a C{schemaFamily} and
-        C{schemaVersion} to determine the schema type.
+        This is an overload of ApplyAPI with C{instanceName} that takes a
+        TfType C{schemaType}.
+
+
+        """
+    @overload
+    def ApplyAPI(self, schemaIdentifier: str | pxr.Ar.ResolvedPath) -> bool:
+        """
+        This is an overload of ApplyAPI that takes a C{schemaIdentifier} to
+        determine the schema type.
 
 
         """
@@ -3817,10 +3843,10 @@ class Prim(Object):
 
         """
     @overload
-    def ApplyAPI(self, schemaType: pxr.Tf.Type, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
+    def ApplyAPI(self, schemaFamily: str | pxr.Ar.ResolvedPath, schemaVersion: int) -> bool:
         """
-        This is an overload of ApplyAPI with C{instanceName} that takes a
-        TfType C{schemaType}.
+        This is an overload of ApplyAPI that takes a C{schemaFamily} and
+        C{schemaVersion} to determine the schema type.
 
 
         """
@@ -3840,15 +3866,45 @@ class Prim(Object):
 
         """
     @overload
-    def CanApplyAPI(self, schemaType: pxr.Tf.Type, instanceName: object) -> _CanApplyAPIResult: ...
+    def CanApplyAPI(self, schemaType: pxr.Tf.Type, instanceName: str | pxr.Ar.ResolvedPath) -> _CanApplyAPIResult:
+        """
+        This is an overload of CanApplyAPI with C{instanceName} that takes a
+        TfType C{schemaType}.
+
+
+        """
     @overload
-    def CanApplyAPI(self, schemaIdentifier: object) -> _CanApplyAPIResult: ...
+    def CanApplyAPI(self, schemaIdentifier: str | pxr.Ar.ResolvedPath) -> _CanApplyAPIResult:
+        """
+        This is an overload of CanApplyAPI that takes a C{schemaIdentifier} to
+        determine the schema type.
+
+
+        """
     @overload
-    def CanApplyAPI(self, schemaIdentifier: object, instanceName: object) -> _CanApplyAPIResult: ...
+    def CanApplyAPI(self, schemaIdentifier: str | pxr.Ar.ResolvedPath, instanceName: str | pxr.Ar.ResolvedPath) -> _CanApplyAPIResult:
+        """
+        This is an overload of CanApplyAPI with C{instanceName} that takes a
+        C{schemaIdentifier} to determine the schema type.
+
+
+        """
     @overload
-    def CanApplyAPI(self, schemaFamily: object, schemaVersion: int) -> _CanApplyAPIResult: ...
+    def CanApplyAPI(self, schemaFamily: str | pxr.Ar.ResolvedPath, schemaVersion: int) -> _CanApplyAPIResult:
+        """
+        This is an overload of CanApplyAPI that takes a C{schemaFamily} and
+        C{schemaVersion} to determine the schema type.
+
+
+        """
     @overload
-    def CanApplyAPI(self, schemaFamily: object, schemaVersion: int, instanceName: object) -> _CanApplyAPIResult: ...
+    def CanApplyAPI(self, schemaFamily: str | pxr.Ar.ResolvedPath, schemaVersion: int, instanceName: str | pxr.Ar.ResolvedPath) -> _CanApplyAPIResult:
+        """
+        This is an overload of CanApplyAPI with C{instanceName} that takes a
+        C{schemaFamily} and C{schemaVersion} to determine the schema type.
+
+
+        """
     def ClearActive(self) -> bool:
         '''
         Remove the authored\'active\'opinion at the current EditTarget.
@@ -3912,7 +3968,7 @@ class Prim(Object):
         unless the additional site information is truly needed.
         """
     @overload
-    def CreateAttribute(self, name: str | pxr.Ar.ResolvedPath, typeName: pxr.Sdf.ValueTypeName, custom: bool = ..., variability: pxr.Sdf.Variability = ...) -> Attribute:
+    def CreateAttribute(self, name: str | pxr.Ar.ResolvedPath, typeName: pxr.Sdf.ValueTypeName, custom: bool = ..., variability: pxr.Sdf.Variability = ...) -> PrimDefinition.Attribute:
         """
         Author scene description for the attribute named *attrName* at the
         current EditTarget if none already exists.
@@ -3957,7 +4013,7 @@ class Prim(Object):
 
         """
     @overload
-    def CreateAttribute(self, nameElts: typing.Iterable[str | pxr.Ar.ResolvedPath], typeName: pxr.Sdf.ValueTypeName, custom: bool = ..., variability: pxr.Sdf.Variability = ...) -> Attribute:
+    def CreateAttribute(self, nameElts: typing.Iterable[str | pxr.Ar.ResolvedPath], typeName: pxr.Sdf.ValueTypeName, custom: bool = ..., variability: pxr.Sdf.Variability = ...) -> PrimDefinition.Attribute:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -3968,7 +4024,9 @@ class Prim(Object):
         For details, see Names, Namespace Ordering, and Property Namespaces
         """
     @overload
-    def CreateRelationship(self, name: typing.Iterable[str | pxr.Ar.ResolvedPath], custom: bool = ...) -> Relationship:
+    def CreateRelationship(self, name: object, custom: bool = ...) -> PrimDefinition.Relationship: ...
+    @overload
+    def CreateRelationship(self, nameElts: typing.Iterable[str | pxr.Ar.ResolvedPath], custom: bool = ...) -> PrimDefinition.Relationship:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -3977,48 +4035,6 @@ class Prim(Object):
 
 
         For details, see Names, Namespace Ordering, and Property Namespaces
-        """
-    @overload
-    def CreateRelationship(self, nameElts: str | pxr.Ar.ResolvedPath, custom: bool = ...) -> Relationship:
-        """
-        Author scene description for the relationship named *relName* at the
-        current EditTarget if none already exists.
-
-
-        Return a valid relationship if scene description was successfully
-        authored or if it already existed, return an invalid relationship
-        otherwise.
-
-        Suggested use: ::
-
-          if (UsdRelationship myRel = prim.CreateRelationship(...)) {
-             // success. 
-          }
-
-        To call this, GetPrim() must return a valid prim.
-
-           - If a spec for this relationship already exists at the current
-             edit target, do nothing.
-
-           - If a spec for *relName* of a different spec type (e.g. an
-             attribute) exists at the current EditTarget, issue an error.
-
-           - If *name* refers to a builtin relationship according to the
-             prim's definition, author a relationship spec with required metadata
-             from the definition.
-
-           - If *name* refers to a builtin attribute, issue an error.
-
-           - If there exists an absolute strongest authored relationship spec
-             for *relName*, author a relationship spec at the current EditTarget by
-             copying required metadata from that strongest spec.
-
-           - If there exists an absolute strongest authored attribute spec for
-             *relName*, issue an error.
-
-           - Otherwise author a uniform relationship spec at the current
-             EditTarget, honoring C{custom}.
-
         """
     @overload
     def FindAllAttributeConnectionPaths(self, predicate: typing.Callable[[Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | pxr.UsdShade.Input | pxr.UsdShade.Output], bool] = ..., recurseOnSources: bool = ...) -> list[pxr.Sdf.Path]:
@@ -4085,7 +4101,7 @@ class Prim(Object):
         definition. To get only the authored API schemas use GetPrimTypeInfo
         instead.
         """
-    def GetAttribute(self, attrName: str | pxr.Ar.ResolvedPath) -> Attribute:
+    def GetAttribute(self, attrName: str | pxr.Ar.ResolvedPath) -> PrimDefinition.Attribute:
         '''
         Return a UsdAttribute with the name *attrName*.
 
@@ -4101,7 +4117,7 @@ class Prim(Object):
           }
 
         '''
-    def GetAttributeAtPath(self, path: pxr.Sdf.Path | str) -> Attribute:
+    def GetAttributeAtPath(self, path: pxr.Sdf.Path | str) -> PrimDefinition.Attribute:
         """
         Returns the attribute at C{path} on the same stage as this prim.
 
@@ -4542,7 +4558,7 @@ class Prim(Object):
         If C{namespaces} is empty, this method is equivalent to
         GetProperties() .
         """
-    def GetProperty(self, propName: str | pxr.Ar.ResolvedPath) -> Property:
+    def GetProperty(self, propName: str | pxr.Ar.ResolvedPath) -> PrimDefinition.Property:
         '''
         Return a UsdProperty with the name *propName*.
 
@@ -4558,7 +4574,7 @@ class Prim(Object):
           }
 
         '''
-    def GetPropertyAtPath(self, path: pxr.Sdf.Path | str) -> Property:
+    def GetPropertyAtPath(self, path: pxr.Sdf.Path | str) -> PrimDefinition.Property:
         """
         Returns the property at C{path} on the same stage as this prim.
 
@@ -4615,7 +4631,7 @@ class Prim(Object):
 
         UsdPrimCompositionQuery::GetDirectReferences
         """
-    def GetRelationship(self, relName: str | pxr.Ar.ResolvedPath) -> Relationship:
+    def GetRelationship(self, relName: str | pxr.Ar.ResolvedPath) -> PrimDefinition.Relationship:
         '''
         Return a UsdRelationship with the name *relName*.
 
@@ -4631,7 +4647,7 @@ class Prim(Object):
           }
 
         '''
-    def GetRelationshipAtPath(self, path: pxr.Sdf.Path | str) -> Relationship:
+    def GetRelationshipAtPath(self, path: pxr.Sdf.Path | str) -> PrimDefinition.Relationship:
         """
         Returns the relationship at C{path} on the same stage as this prim.
 
@@ -4714,20 +4730,21 @@ class Prim(Object):
         will be populated in C{schemaVersion}.
         """
     @overload
-    def GetVersionIfHasAPIInFamily(self, schemaFamily: str | pxr.Ar.ResolvedPath, instanceName: str | pxr.Ar.ResolvedPath) -> int:
+    def GetVersionIfHasAPIInFamily(self, schemaFamily: str | pxr.Ar.ResolvedPath, schemaVersion: int) -> bool:
         """
-        Return true if the prim has a specific instance C{instanceName} of an
-        applied multiple-apply API schema that is any version the schemas in
-        the given C{schemaFamily} and if so, populates C{schemaVersion} with
-        the version of the schema that this prim HasAPI.
+        Return true if the prim has an applied API schema that is any version
+        the schemas in the given C{schemaFamily} and if so, populates
+        C{schemaVersion} with the version of the schema that this prim HasAPI.
 
 
-        C{instanceName} must be non-empty, otherwise it is a coding error.
+        This function will consider both single-apply and multiple-apply API
+        schemas in the schema family. For the multiple-apply API schemas is a
+        this will return true if any instance of one of the schemas has been
+        applied.
 
         Note that if more than one version of the schemas in C{schemaFamily}
-        is multiple-apply and applied to this prim with the given
-        C{instanceName}, the highest version number of these schemas will be
-        populated in C{schemaVersion}.
+        are applied to this prim, the highest version number of these schemas
+        will be populated in C{schemaVersion}.
         """
     def GetVersionIfIsInFamily(self, schemaFamily: str | pxr.Ar.ResolvedPath) -> int:
         """
@@ -4737,23 +4754,23 @@ class Prim(Object):
         prim IsA.
         """
     @overload
-    def HasAPI(self, schemaIdentifier: str | pxr.Ar.ResolvedPath) -> bool:
-        """
-        This is an overload of HasAPI that takes a C{schemaIdentifier} to
-        determine the schema type.
-
-
-        """
-    @overload
     def HasAPI(self, schemaType: pxr.Tf.Type) -> bool:
         """
         This is an overload of HasAPI that takes a TfType C{schemaType}.
         """
     @overload
-    def HasAPI(self, schemaFamily: str | pxr.Ar.ResolvedPath, schemaVersion: int) -> bool:
+    def HasAPI(self, schemaType: pxr.Tf.Type, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
         """
-        This is an overload of HasAPI that takes a C{schemaFamily} and
-        C{schemaVersion} to determine the schema type.
+        This is an overload of HasAPI with C{instanceName} that takes a TfType
+        C{schemaType}.
+
+
+        """
+    @overload
+    def HasAPI(self, schemaIdentifier: str | pxr.Ar.ResolvedPath) -> bool:
+        """
+        This is an overload of HasAPI that takes a C{schemaIdentifier} to
+        determine the schema type.
 
 
         """
@@ -4766,10 +4783,10 @@ class Prim(Object):
 
         """
     @overload
-    def HasAPI(self, schemaType: pxr.Tf.Type, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
+    def HasAPI(self, schemaFamily: str | pxr.Ar.ResolvedPath, schemaVersion: int) -> bool:
         """
-        This is an overload of HasAPI with C{instanceName} that takes a TfType
-        C{schemaType}.
+        This is an overload of HasAPI that takes a C{schemaFamily} and
+        C{schemaVersion} to determine the schema type.
 
 
         """
@@ -4780,6 +4797,20 @@ class Prim(Object):
         C{schemaFamily} and C{schemaVersion} to determine the schema type.
 
 
+        """
+    @overload
+    def HasAPIInFamily(self, schemaType: pxr.Tf.Type, versionPolicy: SchemaRegistry.VersionPolicy) -> bool:
+        """
+        Overload for convenience of HasAPIInFamily that finds a registered
+        schema for the given C{schemaType} and uses that schema's family and
+        version.
+        """
+    @overload
+    def HasAPIInFamily(self, schemaType: pxr.Tf.Type, versionPolicy: SchemaRegistry.VersionPolicy, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
+        """
+        Overload for convenience of HasAPIInFamily that finds a registered
+        schema for the given C{schemaType} and uses that schema's family and
+        version.
         """
     @overload
     def HasAPIInFamily(self, schemaFamily: str | pxr.Ar.ResolvedPath) -> bool:
@@ -4804,24 +4835,6 @@ class Prim(Object):
         C{instanceName} must be non-empty, otherwise it is a coding error.
         """
     @overload
-    def HasAPIInFamily(self, schemaIdentifier: str | pxr.Ar.ResolvedPath, versionPolicy: SchemaRegistry.VersionPolicy) -> bool:
-        """
-        Overload for convenience of HasAPIInFamily that parses the schema
-        family and version to use from the given C{schemaIdentifier}.
-
-
-        Note that the schema identifier is not required to be a registered
-        schema as it only parsed to get what its family and version would be
-        See UsdSchemaRegistry::ParseSchemaFamilyAndVersionFromIdentifier.
-        """
-    @overload
-    def HasAPIInFamily(self, schemaType: pxr.Tf.Type, versionPolicy: SchemaRegistry.VersionPolicy) -> bool:
-        """
-        Overload for convenience of HasAPIInFamily that finds a registered
-        schema for the given C{schemaType} and uses that schema's family and
-        version.
-        """
-    @overload
     def HasAPIInFamily(self, schemaFamily: str | pxr.Ar.ResolvedPath, schemaVersion: int, versionPolicy: SchemaRegistry.VersionPolicy) -> bool:
         """
         Return true if the prim has an applied API schema that is a schema in
@@ -4835,7 +4848,18 @@ class Prim(Object):
         has been applied.
         """
     @overload
-    def HasAPIInFamily(self, schemaIdentifier: str | pxr.Ar.ResolvedPath, versionPolicy: SchemaRegistry.VersionPolicy, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
+    def HasAPIInFamily(self, schemaFamily: str | pxr.Ar.ResolvedPath, schemaVersion: int, versionPolicy: SchemaRegistry.VersionPolicy, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
+        """
+        Return true if the prim has a specific instance C{instanceName} of an
+        applied multiple-apply API schema in the given C{schemaFamily} that
+        matches the version filter provided by C{schemaVersion} and
+        C{versionPolicy}.
+
+
+        C{instanceName} must be non-empty, otherwise it is a coding error.
+        """
+    @overload
+    def HasAPIInFamily(self, schemaIdentifier: str | pxr.Ar.ResolvedPath, versionPolicy: SchemaRegistry.VersionPolicy) -> bool:
         """
         Overload for convenience of HasAPIInFamily that parses the schema
         family and version to use from the given C{schemaIdentifier}.
@@ -4846,22 +4870,15 @@ class Prim(Object):
         See UsdSchemaRegistry::ParseSchemaFamilyAndVersionFromIdentifier.
         """
     @overload
-    def HasAPIInFamily(self, schemaType: pxr.Tf.Type, versionPolicy: SchemaRegistry.VersionPolicy, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
+    def HasAPIInFamily(self, schemaIdentifier: str | pxr.Ar.ResolvedPath, versionPolicy: SchemaRegistry.VersionPolicy, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
         """
-        Overload for convenience of HasAPIInFamily that finds a registered
-        schema for the given C{schemaType} and uses that schema's family and
-        version.
-        """
-    @overload
-    def HasAPIInFamily(self, schemaFamily: str | pxr.Ar.ResolvedPath, schemaVersion: int, versionPolicy: SchemaRegistry.VersionPolicy, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
-        """
-        Return true if the prim has a specific instance C{instanceName} of an
-        applied multiple-apply API schema in the given C{schemaFamily} that
-        matches the version filter provided by C{schemaVersion} and
-        C{versionPolicy}.
+        Overload for convenience of HasAPIInFamily that parses the schema
+        family and version to use from the given C{schemaIdentifier}.
 
 
-        C{instanceName} must be non-empty, otherwise it is a coding error.
+        Note that the schema identifier is not required to be a registered
+        schema as it only parsed to get what its family and version would be
+        See UsdSchemaRegistry::ParseSchemaFamilyAndVersionFromIdentifier.
         """
     def HasAttribute(self, attrName: str | pxr.Ar.ResolvedPath) -> bool:
         """
@@ -4945,9 +4962,21 @@ class Prim(Object):
         This is an overload of IsA that takes a TfType C{schemaType}.
         """
     @overload
-    def IsA(self, schemaIdentifier: object) -> bool: ...
+    def IsA(self, schemaIdentifier: str | pxr.Ar.ResolvedPath) -> bool:
+        """
+        This is an overload of IsA that takes a C{schemaIdentifier} to
+        determine the schema type.
+
+
+        """
     @overload
-    def IsA(self, schemaFamily: object, version: int) -> bool: ...
+    def IsA(self, schemaFamily: str | pxr.Ar.ResolvedPath, version: int) -> bool:
+        """
+        This is an overload of IsA that takes a C{schemaFamily} and
+        C{schemaVersion} to determine the schema type.
+
+
+        """
     def IsAbstract(self) -> bool:
         """
         Return true if this prim or any of its ancestors is a class.
@@ -4992,9 +5021,18 @@ class Prim(Object):
         hierarchy rules), even though it cannot have a kind.
         """
     @overload
-    def IsInFamily(self, schemaFamily: object) -> bool: ...
+    def IsInFamily(self, schemaFamily: str | pxr.Ar.ResolvedPath) -> bool:
+        """
+        Return true if the prim's schema type is or inherits from the schema
+        type of any version of the schemas in the given C{schemaFamily}.
+        """
     @overload
-    def IsInFamily(self, schemaFamily: object, version: int, versionPolicy: SchemaRegistry.VersionPolicy) -> bool: ...
+    def IsInFamily(self, schemaFamily: str | pxr.Ar.ResolvedPath, version: int, versionPolicy: SchemaRegistry.VersionPolicy) -> bool:
+        """
+        Return true if the prim's schema type, is or inherits from the schema
+        type of any schema in the given C{schemaFamily} that matches the
+        version filter provided by C{schemaVersion} and C{versionPolicy}.
+        """
     @overload
     def IsInFamily(self, schemaType: pxr.Tf.Type, versionPolicy: SchemaRegistry.VersionPolicy) -> bool:
         """
@@ -5002,7 +5040,16 @@ class Prim(Object):
         for the given C{schemaType} and uses that schema's family and version.
         """
     @overload
-    def IsInFamily(self, schemaIdentifier: object, versionPolicy: SchemaRegistry.VersionPolicy) -> bool: ...
+    def IsInFamily(self, schemaIdentifier: str | pxr.Ar.ResolvedPath, versionPolicy: SchemaRegistry.VersionPolicy) -> bool:
+        """
+        Overload for convenience of IsInFamily that parses the schema family
+        and version to use from the given C{schemaIdentifier}.
+
+
+        Note that the schema identifier is not required to be a registered
+        schema as it only parsed to get what its family and version would be
+        See UsdSchemaRegistry::ParseSchemaFamilyAndVersionFromIdentifier.
+        """
     def IsInPrototype(self) -> bool:
         """
         Return true if this prim is a prototype prim or a descendant of a
@@ -5135,23 +5182,23 @@ class Prim(Object):
         this prim, a null resolve target is returned.
         """
     @overload
-    def RemoveAPI(self, schemaIdentifier: str | pxr.Ar.ResolvedPath) -> bool:
-        """
-        This is an overload of RemoveAPI that takes a C{schemaIdentifier} to
-        determine the schema type.
-
-
-        """
-    @overload
     def RemoveAPI(self, schemaType: pxr.Tf.Type) -> bool:
         """
         This is an overload of RemoveAPI that takes a TfType C{schemaType}.
         """
     @overload
-    def RemoveAPI(self, schemaFamily: str | pxr.Ar.ResolvedPath, schemaVersion: int) -> bool:
+    def RemoveAPI(self, schemaType: pxr.Tf.Type, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
         """
-        This is an overload of RemoveAPI that takes a C{schemaFamily} and
-        C{schemaVersion} to determine the schema type.
+        This is an overload of RemoveAPI with C{instanceName} that takes a
+        TfType C{schemaType}.
+
+
+        """
+    @overload
+    def RemoveAPI(self, schemaIdentifier: str | pxr.Ar.ResolvedPath) -> bool:
+        """
+        This is an overload of RemoveAPI that takes a C{schemaIdentifier} to
+        determine the schema type.
 
 
         """
@@ -5164,10 +5211,10 @@ class Prim(Object):
 
         """
     @overload
-    def RemoveAPI(self, schemaType: pxr.Tf.Type, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
+    def RemoveAPI(self, schemaFamily: str | pxr.Ar.ResolvedPath, schemaVersion: int) -> bool:
         """
-        This is an overload of RemoveAPI with C{instanceName} that takes a
-        TfType C{schemaType}.
+        This is an overload of RemoveAPI that takes a C{schemaFamily} and
+        C{schemaVersion} to determine the schema type.
 
 
         """
@@ -5589,6 +5636,15 @@ class PrimDefinition(Boost.Python.instance):
         current edit target for the given C{prim}.
         """
     @overload
+    def FlattenTo(self, parent: Prim, name: str | pxr.Ar.ResolvedPath, newSpecSpecifier: pxr.Sdf.Specifier = ...) -> Prim:
+        """
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
+        Copies the contents of this prim definition to a prim spec at the
+        current edit target for a prim with the given C{name} under the prim
+        C{parent}.
+        """
+    @overload
     def FlattenTo(self, layer: pxr.Sdf.Layer, path: pxr.Sdf.Path | str, newSpecSpecifier: pxr.Sdf.Specifier = ...) -> bool:
         '''
         Copies the contents of this prim definition to a prim spec on the
@@ -5616,15 +5672,6 @@ class PrimDefinition(Boost.Python.instance):
         properties and schema allowed metadata are cleared before it is
         populated from the prim definition.
         '''
-    @overload
-    def FlattenTo(self, parent: Prim, name: str | pxr.Ar.ResolvedPath, newSpecSpecifier: pxr.Sdf.Specifier = ...) -> Prim:
-        """
-        This is an overloaded member function, provided for convenience. It
-        differs from the above function only in what argument(s) it accepts.
-        Copies the contents of this prim definition to a prim spec at the
-        current edit target for a prim with the given C{name} under the prim
-        C{parent}.
-        """
     def GetAppliedAPISchemas(self) -> list[str]:
         """
         Return the list of names of the API schemas that have been applied to
@@ -6093,18 +6140,6 @@ class Property(Object):
         UsdStage::Flatten
         """
     @overload
-    def FlattenTo(self, property: Property | pxr.UsdGeom.XformOp) -> Property:
-        """
-        This is an overloaded member function, provided for convenience. It
-        differs from the above function only in what argument(s) it accepts.
-        Flattens this property to a property spec for the given C{property} in
-        the edit target of its owning prim's stage.
-
-
-        The C{property} owning prim may belong to a different stage than this
-        property's owning stage.
-        """
-    @overload
     def FlattenTo(self, parent: Prim, propName: str | pxr.Ar.ResolvedPath) -> Property:
         """
         This is an overloaded member function, provided for convenience. It
@@ -6115,6 +6150,18 @@ class Property(Object):
 
 
         The C{parent} prim may belong to a different stage than this
+        property's owning stage.
+        """
+    @overload
+    def FlattenTo(self, property: Property | pxr.UsdGeom.XformOp) -> Property:
+        """
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
+        Flattens this property to a property spec for the given C{property} in
+        the edit target of its owning prim's stage.
+
+
+        The C{property} owning prim may belong to a different stage than this
         property's owning stage.
         """
     def GetBaseName(self) -> str:
@@ -6488,6 +6535,12 @@ class References(Boost.Python.instance):
         List Editing for details on list editing and composition of listOps.
         """
     @overload
+    def AddReference(self, assetPath: str | pxr.Ar.ResolvedPath, primPath: pxr.Sdf.Path | str, layerOffset: pxr.Sdf.LayerOffset = ..., position: ListPosition = ...) -> bool:
+        """
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
+        """
+    @overload
     def AddReference(self, assetPath: str | pxr.Ar.ResolvedPath, layerOffset: pxr.Sdf.LayerOffset = ..., position: ListPosition = ...) -> bool:
         """
         This is an overloaded member function, provided for convenience. It
@@ -6496,12 +6549,6 @@ class References(Boost.Python.instance):
 
 
         References Without Prim Paths
-        """
-    @overload
-    def AddReference(self, assetPath: str | pxr.Ar.ResolvedPath, primPath: pxr.Sdf.Path | str, layerOffset: pxr.Sdf.LayerOffset = ..., position: ListPosition = ...) -> bool:
-        """
-        This is an overloaded member function, provided for convenience. It
-        differs from the above function only in what argument(s) it accepts.
         """
     def ClearReferences(self) -> bool:
         '''
@@ -7048,6 +7095,16 @@ class SchemaRegistry(Boost.Python.instance):
         """
     @overload
     @staticmethod
+    def FindSchemaInfo(schemaType: pxr.Tf.Type) -> SchemaRegistry.SchemaInfo:
+        """
+        Finds and returns the schema info for a registered schema with the
+        given C{schemaType}.
+
+
+        Returns null if no registered schema with the schema type exists.
+        """
+    @overload
+    @staticmethod
     def FindSchemaInfo(schemaIdentifier: str | pxr.Ar.ResolvedPath) -> SchemaRegistry.SchemaInfo:
         """
         Finds and returns the schema info for a registered schema with the
@@ -7056,16 +7113,6 @@ class SchemaRegistry(Boost.Python.instance):
 
         Returns null if no registered schema with the schema identifier
         exists.
-        """
-    @overload
-    @staticmethod
-    def FindSchemaInfo(schemaType: pxr.Tf.Type) -> SchemaRegistry.SchemaInfo:
-        """
-        Finds and returns the schema info for a registered schema with the
-        given C{schemaType}.
-
-
-        Returns null if no registered schema with the schema type exists.
         """
     @overload
     @staticmethod
@@ -7199,15 +7246,7 @@ class SchemaRegistry(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def GetSchemaKind(primType: str | pxr.Ar.ResolvedPath) -> SchemaKind:
-        """
-        Returns the kind of the schema the given C{typeName} represents.
-
-
-        This returns UsdSchemaKind::Invalid if C{typeName} is not a valid
-        schema type name or if the kind cannot be determined from type's
-        plugin information.
-        """
+    def GetSchemaKind(primType: object) -> SchemaKind: ...
     @staticmethod
     def GetSchemaTypeName(schemaType: pxr.Tf.Type) -> str:
         """
@@ -7283,11 +7322,7 @@ class SchemaRegistry(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def IsAbstract(primType: str | pxr.Ar.ResolvedPath) -> bool:
-        """
-        Returns true if the prim type C{primType} is an abstract schema type
-        and, unlike a concrete type, is not instantiable in scene description.
-        """
+    def IsAbstract(primType: object) -> bool: ...
     @staticmethod
     def IsAllowedAPISchemaInstanceName(apiSchemaName: str | pxr.Ar.ResolvedPath, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
         """
@@ -7331,10 +7366,7 @@ class SchemaRegistry(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def IsAppliedAPISchema(apiSchemaType: str | pxr.Ar.ResolvedPath) -> bool:
-        """
-        Returns true if C{apiSchemaType} is an applied API schema type.
-        """
+    def IsAppliedAPISchema(apiSchemaType: object) -> bool: ...
     @overload
     @staticmethod
     def IsConcrete(primType: pxr.Tf.Type) -> bool:
@@ -7344,11 +7376,7 @@ class SchemaRegistry(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def IsConcrete(primType: str | pxr.Ar.ResolvedPath) -> bool:
-        """
-        Returns true if the prim type C{primType} is instantiable in scene
-        description.
-        """
+    def IsConcrete(primType: object) -> bool: ...
     @staticmethod
     def IsDisallowedField(fieldName: str | pxr.Ar.ResolvedPath) -> bool:
         """
@@ -7369,10 +7397,7 @@ class SchemaRegistry(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def IsMultipleApplyAPISchema(apiSchemaType: str | pxr.Ar.ResolvedPath) -> bool:
-        """
-        Returns true if C{apiSchemaType} is a multiple-apply API schema type.
-        """
+    def IsMultipleApplyAPISchema(apiSchemaType: object) -> bool: ...
     @staticmethod
     def IsMultipleApplyNameTemplate(nameTemplate: str | pxr.Ar.ResolvedPath) -> bool:
         '''
@@ -7746,14 +7771,14 @@ class Stage(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def CreateNew(identifier: str | pxr.Ar.ResolvedPath, pathResolverContext: pxr.Ar.ResolverContext, load: Stage.InitialLoadSet = ...) -> Stage:
+    def CreateNew(identifier: str | pxr.Ar.ResolvedPath, sessionLayer: pxr.Sdf.Layer, load: Stage.InitialLoadSet = ...) -> Stage:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
         """
     @overload
     @staticmethod
-    def CreateNew(identifier: str | pxr.Ar.ResolvedPath, sessionLayer: pxr.Sdf.Layer, load: Stage.InitialLoadSet = ...) -> Stage:
+    def CreateNew(identifier: str | pxr.Ar.ResolvedPath, pathResolverContext: pxr.Ar.ResolverContext, load: Stage.InitialLoadSet = ...) -> Stage:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -7889,7 +7914,7 @@ class Stage(Boost.Python.instance):
 
         Finally, any deactivated prims will be pruned from the result.
         """
-    def GetAttributeAtPath(self, path: pxr.Sdf.Path | str) -> Attribute:
+    def GetAttributeAtPath(self, path: pxr.Sdf.Path | str) -> PrimDefinition.Attribute:
         """
         Return the UsdAttribute at C{path}, or an invalid UsdAttribute if none
         exists.
@@ -8091,7 +8116,7 @@ class Stage(Boost.Python.instance):
         scene description, and therefore is safe to use as a"reader"in the Usd
         multi-threading model.
         '''
-    def GetPropertyAtPath(self, path: pxr.Sdf.Path | str) -> Property:
+    def GetPropertyAtPath(self, path: pxr.Sdf.Path | str) -> PrimDefinition.Property:
         """
         Return the UsdProperty at C{path}, or an invalid UsdProperty if none
         exists.
@@ -8120,7 +8145,7 @@ class Stage(Boost.Python.instance):
         opening or creating the stage, in which case this method returns an
         invalid UsdPrim.
         '''
-    def GetRelationshipAtPath(self, path: pxr.Sdf.Path | str) -> Relationship:
+    def GetRelationshipAtPath(self, path: pxr.Sdf.Path | str) -> PrimDefinition.Relationship:
         """
         Return the UsdAttribute at C{path}, or an invalid UsdAttribute if none
         exists.
@@ -8377,6 +8402,13 @@ class Stage(Boost.Python.instance):
         """
     @overload
     @staticmethod
+    def Open(filePath: str | pxr.Ar.ResolvedPath, pathResolverContext: pxr.Ar.ResolverContext, load: Stage.InitialLoadSet = ...) -> Stage:
+        """
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
+        """
+    @overload
+    @staticmethod
     def Open(rootLayer: pxr.Sdf.Layer, load: Stage.InitialLoadSet = ...) -> Stage:
         """
         Open a stage rooted at C{rootLayer}.
@@ -8413,7 +8445,7 @@ class Stage(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def Open(filePath: str | pxr.Ar.ResolvedPath, pathResolverContext: pxr.Ar.ResolverContext, load: Stage.InitialLoadSet = ...) -> Stage:
+    def Open(rootLayer: pxr.Sdf.Layer, sessionLayer: pxr.Sdf.Layer, load: Stage.InitialLoadSet = ...) -> Stage:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -8421,13 +8453,6 @@ class Stage(Boost.Python.instance):
     @overload
     @staticmethod
     def Open(rootLayer: pxr.Sdf.Layer, pathResolverContext: pxr.Ar.ResolverContext, load: Stage.InitialLoadSet = ...) -> Stage:
-        """
-        This is an overloaded member function, provided for convenience. It
-        differs from the above function only in what argument(s) it accepts.
-        """
-    @overload
-    @staticmethod
-    def Open(rootLayer: pxr.Sdf.Layer, sessionLayer: pxr.Sdf.Layer, load: Stage.InitialLoadSet = ...) -> Stage:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -8465,6 +8490,13 @@ class Stage(Boost.Python.instance):
         """
     @overload
     @staticmethod
+    def OpenMasked(filePath: str | pxr.Ar.ResolvedPath, pathResolverContext: pxr.Ar.ResolverContext, mask: StagePopulationMask, load: Stage.InitialLoadSet = ...) -> Stage:
+        """
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
+        """
+    @overload
+    @staticmethod
     def OpenMasked(rootLayer: pxr.Sdf.Layer, mask: StagePopulationMask, load: Stage.InitialLoadSet = ...) -> Stage:
         """
         Open a stage rooted at C{rootLayer} and with limited population
@@ -8492,7 +8524,7 @@ class Stage(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def OpenMasked(filePath: str | pxr.Ar.ResolvedPath, pathResolverContext: pxr.Ar.ResolverContext, mask: StagePopulationMask, load: Stage.InitialLoadSet = ...) -> Stage:
+    def OpenMasked(rootLayer: pxr.Sdf.Layer, sessionLayer: pxr.Sdf.Layer, mask: StagePopulationMask, load: Stage.InitialLoadSet = ...) -> Stage:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -8500,13 +8532,6 @@ class Stage(Boost.Python.instance):
     @overload
     @staticmethod
     def OpenMasked(rootLayer: pxr.Sdf.Layer, pathResolverContext: pxr.Ar.ResolverContext, mask: StagePopulationMask, load: Stage.InitialLoadSet = ...) -> Stage:
-        """
-        This is an overloaded member function, provided for convenience. It
-        differs from the above function only in what argument(s) it accepts.
-        """
-    @overload
-    @staticmethod
-    def OpenMasked(rootLayer: pxr.Sdf.Layer, sessionLayer: pxr.Sdf.Layer, mask: StagePopulationMask, load: Stage.InitialLoadSet = ...) -> Stage:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -8974,14 +8999,14 @@ class StageCache(Boost.Python.instance):
         referring to it.
         """
     @overload
-    def Contains(self, id: StageCache.Id) -> bool:
-        """
-        Return true if C{id} is present in this cache, false otherwise.
-        """
-    @overload
     def Contains(self, stage: Stage) -> bool:
         """
         Return true if C{stage} is present in this cache, false otherwise.
+        """
+    @overload
+    def Contains(self, id: StageCache.Id) -> bool:
+        """
+        Return true if C{id} is present in this cache, false otherwise.
         """
     @overload
     def Erase(self, id: StageCache.Id) -> bool:
@@ -9056,18 +9081,18 @@ class StageCache(Boost.Python.instance):
         If there is no matching stage in this cache, return an empty vector.
         """
     @overload
-    def FindAllMatching(self, rootLayer: pxr.Sdf.Layer, pathResolverContext: pxr.Ar.ResolverContext) -> list[Stage]:
+    def FindAllMatching(self, rootLayer: pxr.Sdf.Layer, sessionLayer: pxr.Sdf.Layer) -> list[Stage]:
         """
-        Find all stages in this cache with C{rootLayer} and
-        C{pathResolverContext}.
+        Find all stages in this cache with C{rootLayer} and C{sessionLayer}.
 
 
         If there is no matching stage in this cache, return an empty vector.
         """
     @overload
-    def FindAllMatching(self, rootLayer: pxr.Sdf.Layer, sessionLayer: pxr.Sdf.Layer) -> list[Stage]:
+    def FindAllMatching(self, rootLayer: pxr.Sdf.Layer, pathResolverContext: pxr.Ar.ResolverContext) -> list[Stage]:
         """
-        Find all stages in this cache with C{rootLayer} and C{sessionLayer}.
+        Find all stages in this cache with C{rootLayer} and
+        C{pathResolverContext}.
 
 
         If there is no matching stage in this cache, return an empty vector.
@@ -9094,6 +9119,16 @@ class StageCache(Boost.Python.instance):
         matching one. See also FindAllMatching() .
         """
     @overload
+    def FindOneMatching(self, rootLayer: pxr.Sdf.Layer, sessionLayer: pxr.Sdf.Layer) -> Stage:
+        """
+        Find a stage in this cache with C{rootLayer} and C{sessionLayer}.
+
+
+        If there is no matching stage in this cache, return null. If there is
+        more than one matching stage in this cache, return an arbitrary
+        matching one. See also FindAllMatching() .
+        """
+    @overload
     def FindOneMatching(self, rootLayer: pxr.Sdf.Layer, pathResolverContext: pxr.Ar.ResolverContext) -> Stage:
         """
         Find a stage in this cache with C{rootLayer} and
@@ -9105,16 +9140,6 @@ class StageCache(Boost.Python.instance):
         matching one.
 
         FindAllMatching()
-        """
-    @overload
-    def FindOneMatching(self, rootLayer: pxr.Sdf.Layer, sessionLayer: pxr.Sdf.Layer) -> Stage:
-        """
-        Find a stage in this cache with C{rootLayer} and C{sessionLayer}.
-
-
-        If there is no matching stage in this cache, return null. If there is
-        more than one matching stage in this cache, return an arbitrary
-        matching one. See also FindAllMatching() .
         """
     @overload
     def FindOneMatching(self, rootLayer: pxr.Sdf.Layer, sessionLayer: pxr.Sdf.Layer, pathResolverContext: pxr.Ar.ResolverContext) -> Stage:
@@ -9225,25 +9250,14 @@ class StageCacheContext(Boost.Python.instance):
     influence calls to UsdStage::Open() from a different thread.
     """
     @overload
-    def __init__(self, blockType: _NonPopulatingStageCacheWrapper) -> None:
-        """
-        Disable cache use completely (with UsdBlockStageCaches) or only for
-        writing (with UsdBlockStageCacheWrites).
-        """
+    def __init__(self, arg2: _NonPopulatingStageCacheWrapper) -> None: ...
     @overload
     def __init__(self, cache: StageCache) -> None:
         """
         Bind a cache for calls to UsdStage::Open() to read from and write to.
         """
     @overload
-    def __init__(self, holder: _NonPopulatingStageCacheWrapper) -> None:
-        """
-        Bind a cache for calls to UsdStage::Open() to read from.
-
-
-
-        UsdUseButDoNotPopulateCache()
-        """
+    def __init__(self, arg2: object) -> None: ...
     def __enter__(self) -> None: ...
     def __exit__(self, type: type[BaseException] | None, value: BaseException | None, traceback: types.TracebackType | None) -> None: ...
 
@@ -9390,7 +9404,10 @@ class StageLoadRules(Boost.Python.instance):
         Remove any redundant rules to make the set of rules as small as
         possible without changing behavior.
         """
-    def SetRules(self, rules: object) -> None: ...
+    def SetRules(self, rules: typing.Iterable[tuple[pxr.Sdf.Path | str, StageLoadRules.Rule]]) -> None:
+        """
+        Set literal rules, must be sorted by SdfPath::operator< .
+        """
     def Unload(self, path: pxr.Sdf.Path | str) -> None:
         """
         Add a rule indicating that C{path} and all its descendants shall be
@@ -9617,7 +9634,10 @@ class TimeCode(Boost.Python.instance):
         Construct with optional time value. Impilicitly convert from double.
         """
     @overload
-    def __init__(self, arg2: TimeCode | float | pxr.Sdf.TimeCode) -> None: ...
+    def __init__(self, timeCode: TimeCode | float | pxr.Sdf.TimeCode) -> None:
+        """
+        Construct and implicitly cast from SdfTimeCode.
+        """
     @staticmethod
     def Default() -> TimeCode:
         """
@@ -10301,7 +10321,37 @@ def Describe(: StageCache) -> str:
     differs from the above function only in what argument(s) it accepts.
     """
 @overload
-def FlattenLayerStack(layerStack: object, tag: object = ...) -> pxr.Sdf.Layer: ...
+def FlattenLayerStack(layerStack: pxr.Pcp.LayerStack, tag: str | pxr.Ar.ResolvedPath = ...) -> pxr.Sdf.Layer:
+    '''
+    Flatten C{layerStack} into a single layer with the given optional
+    C{tag}.
+
+
+    A composed UsdStage created from this flattened layer will be the same
+    as a composed UsdStage whose root layer stack is the original layer
+    stack.
+
+    Unlike UsdStage::Flatten() , this function does not flatten
+    composition arcs, such as references, payloads, inherits, specializes,
+    or variants.
+
+    Sublayer time offsets on the sublayers will be applied to remap any
+    time-keyed scene description, such as timeSamples and clips.
+
+    Asset paths will be resolved to absolute form, to ensure that they
+    continue to identify the same asset from the output layer.
+
+    Asset paths containing stage variable expressions will be evaluated
+    using the variables from the root and session layer of C{layerStack}
+    before being resolved.
+
+    UsdFlattenLayerStackResolveAssetPath A few historical scene
+    description features cannot be flattened into a single opinion because
+    they unfortunately encode operations that are not closed under
+    composition. Specifically, the SdfListOp
+    operations"add"and"reorder"cannot be flattened. Instead,"add"will be
+    converted to"append", and"reorder"will be discarded.
+    '''
 @overload
 def FlattenLayerStack(layerStack: object, resolveAssetPathFn: object, tag: object = ...) -> pxr.Sdf.Layer: ...
 def FlattenLayerStackAdvanced(layerStack: object, resolveAssetPathFn: object, tag: object = ...) -> pxr.Sdf.Layer: ...

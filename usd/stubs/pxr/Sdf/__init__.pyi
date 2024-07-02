@@ -82,11 +82,36 @@ class AssetPath(Boost.Python.instance):
         Construct an empty asset path.
         """
     @overload
-    def __init__(self, arg2: AssetPath | str) -> None: ...
+    def __init__(self, path: AssetPath | str) -> None:
+        """
+        Construct an asset path with C{path} and no associated resolved path.
+
+
+        If the passed C{path} is not valid UTF-8 or contains C0 or C1 control
+        characters, raise a TfError and return the default-constructed empty
+        asset path.
+        """
     @overload
-    def __init__(self, arg2: object) -> None: ...
+    def __init__(self, path: str | pxr.Ar.ResolvedPath) -> None:
+        """
+        Construct an asset path with C{path} and no associated resolved path.
+
+
+        If the passed C{path} is not valid UTF-8 or contains C0 or C1 control
+        characters, raise a TfError and return the default-constructed empty
+        asset path.
+        """
     @overload
-    def __init__(self, arg2: object, arg3: object) -> None: ...
+    def __init__(self, path: str | pxr.Ar.ResolvedPath, resolvedPath: str | pxr.Ar.ResolvedPath) -> None:
+        """
+        Construct an asset path with C{path} and an associated
+        C{resolvedPath}.
+
+
+        If either the passed \\path or C{resolvedPath} are not valid UTF-8 or
+        either contain C0 or C1 control characters, raise a TfError and return
+        the default-constructed empty asset path.
+        """
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool:
         """
@@ -269,9 +294,9 @@ class BatchNamespaceEdit(Boost.Python.instance):
         Create an empty sequence of edits.
         """
     @overload
-    def __init__(self, : BatchNamespaceEdit) -> None: ...
+    def __init__(self, arg2: BatchNamespaceEdit) -> None: ...
     @overload
-    def __init__(self, : list[NamespaceEdit]) -> None: ...
+    def __init__(self, arg2: object) -> None: ...
     @overload
     def Add(self, edit: NamespaceEdit) -> None:
         """
@@ -280,7 +305,10 @@ class BatchNamespaceEdit(Boost.Python.instance):
     @overload
     def Add(self, arg2: Path | str, arg3: Path | str) -> None: ...
     @overload
-    def Add(self, arg2: Path | str, arg3: Path | str, arg4: int) -> None: ...
+    def Add(self, currentPath: Path | str, newPath: Path | str, index: int) -> None:
+        """
+        Add a namespace edit.
+        """
     def Process(self, hasObjectAtPath: HasObjectAtPath, canEdit: CanEdit, fixBackpointers: bool = ...) -> tuple:
         """
         Validate the edits and generate a possibly more efficient edit
@@ -801,19 +829,6 @@ class FileFormat(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def FindByExtension(extension: str | pxr.Ar.ResolvedPath, args: dict[str | pxr.Ar.ResolvedPath, str | pxr.Ar.ResolvedPath]) -> FileFormat:
-        """
-        Returns a file format instance that supports the extension for C{path}
-        and whose target matches one of those specified by the given C{args}.
-
-
-        If the C{args} specify no target, then the file format that is
-        registered as the primary plugin will be returned. If a format with a
-        matching extension is not found, this returns a null file format
-        pointer.
-        """
-    @overload
-    @staticmethod
     def FindByExtension(extension: str | pxr.Ar.ResolvedPath, target: str | pxr.Ar.ResolvedPath = ...) -> FileFormat:
         """
         Returns the file format instance that supports the extension for
@@ -828,6 +843,19 @@ class FileFormat(Boost.Python.instance):
         file format that is registered as the primary plugin will be returned.
         Otherwise, the file format whose target matches C{target} will be
         returned.
+        """
+    @overload
+    @staticmethod
+    def FindByExtension(extension: str | pxr.Ar.ResolvedPath, args: dict[str | pxr.Ar.ResolvedPath, str | pxr.Ar.ResolvedPath]) -> FileFormat:
+        """
+        Returns a file format instance that supports the extension for C{path}
+        and whose target matches one of those specified by the given C{args}.
+
+
+        If the C{args} specify no target, then the file format that is
+        registered as the primary plugin will be returned. If a format with a
+        matching extension is not found, this returns a null file format
+        pointer.
         """
     @staticmethod
     def FindById(formatId: str | pxr.Ar.ResolvedPath) -> FileFormat:
@@ -2007,7 +2035,7 @@ class LayerTree(Boost.Python.instance):
     @overload
     def __init__(self, arg2: Layer, arg3: object) -> None: ...
     @overload
-    def __init__(self, arg2: Layer, arg3: object, arg4: LayerOffset) -> None: ...
+    def __init__(self, layer: Layer, childTrees: list[LayerTree], cumulativeOffset: LayerOffset) -> None: ...
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
     def __lt__(self, other: object) -> bool: ...
@@ -3290,7 +3318,15 @@ class Path(Boost.Python.instance):
     def JoinIdentifier(arg1: object) -> str: ...
     @overload
     @staticmethod
-    def JoinIdentifier(arg1: object, arg2: object) -> str: ...
+    def JoinIdentifier(lhs: str | pxr.Ar.ResolvedPath, rhs: str | pxr.Ar.ResolvedPath) -> str:
+        """
+        Join C{lhs} and C{rhs} into a single identifier using the namespace
+        delimiter.
+
+
+        Returns C{lhs} if C{rhs} is empty and vice verse. Returns an empty
+        string if both C{lhs} and C{rhs} are empty.
+        """
     def MakeAbsolutePath(self, anchor: Path | str) -> Path:
         """
         Returns the absolute form of this path using C{anchor} as the relative
@@ -3406,7 +3442,14 @@ class Path(Boost.Python.instance):
         of this path, leaving a path with no embedded variant selections.
         """
     @staticmethod
-    def StripNamespace(arg1: object) -> str: ...
+    def StripNamespace(name: str | pxr.Ar.ResolvedPath) -> str:
+        """
+        Returns C{name} stripped of any namespaces.
+
+
+        This does not check the validity of the name; it just attempts to
+        remove anything that looks like a namespace.
+        """
     @staticmethod
     def StripPrefixNamespace(name: str | pxr.Ar.ResolvedPath, matchNamespace: str | pxr.Ar.ResolvedPath) -> tuple:
         """
@@ -3675,7 +3718,15 @@ class PathExpression(Boost.Python.instance):
     @overload
     def __init__(self, arg2: PathExpression) -> None: ...
     @overload
-    def __init__(self, patternString: object, parseContext: object = ...) -> None: ...
+    def __init__(self, patternString: str | pxr.Ar.ResolvedPath, parseContext: str | pxr.Ar.ResolvedPath = ...) -> None:
+        """
+        Construct an expression by parsing C{expr}.
+
+
+        If provided, C{parseContext} appears in a parse error, if one is
+        generated. See GetParseError() . See the class documentation for
+        details on expression syntax.
+        """
     def ComposeOver(self, weaker: PathExpression) -> PathExpression: ...
     def ContainsExpressionReferences(self) -> bool:
         """
@@ -3847,7 +3898,15 @@ class Payload(Boost.Python.instance):
     layerOffset: LayerOffset
     primPath: Path
     @overload
-    def __init__(self, assetPath: object = ..., primPath: Path | str = ..., layerOffset: LayerOffset = ...) -> None: ...
+    def __init__(self, assetPath: str | pxr.Ar.ResolvedPath = ..., primPath: Path | str = ..., layerOffset: LayerOffset = ...) -> None:
+        """
+        Create a payload.
+
+
+        See SdfAssetPath for what characters are valid in C{assetPath}. If
+        C{assetPath} contains invalid characters, issue an error and set this
+        payload's asset path to the empty asset path.
+        """
     @overload
     def __init__(self, arg2: Payload) -> None: ...
     def __eq__(self, other: object) -> bool:
@@ -4060,7 +4119,15 @@ class PredicateExpression(Boost.Python.instance):
     @overload
     def __init__(self, arg2: PredicateExpression) -> None: ...
     @overload
-    def __init__(self, exprString: object, context: object = ...) -> None: ...
+    def __init__(self, exprString: str | pxr.Ar.ResolvedPath, context: str | pxr.Ar.ResolvedPath = ...) -> None:
+        """
+        Construct an expression by parsing C{expr}.
+
+
+        If provided, C{context} appears in a parse error, if one is generated.
+        See GetParseError() . See the class documentation for details on
+        expression syntax.
+        """
     def GetParseError(self) -> str:
         """
         Return parsing errors as a string if this function was constructed
@@ -4674,7 +4741,16 @@ class Reference(Boost.Python.instance):
     """
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self, assetPath: object = ..., primPath: Path | str = ..., layerOffset: LayerOffset = ..., customData: object = ...) -> None: ...
+    def __init__(self, assetPath: str | pxr.Ar.ResolvedPath = ..., primPath: Path | str = ..., layerOffset: LayerOffset = ..., customData: dict = ...) -> None:
+        """
+        Creates a reference with all its meta data.
+
+
+        The default reference is an internal reference to the default prim.
+        See SdfAssetPath for what characters are valid in C{assetPath}. If
+        C{assetPath} contains invalid characters, issue an error and set this
+        reference's asset path to the empty asset path.
+        """
     @overload
     def __init__(self, arg2: Reference) -> None: ...
     def IsInternal(self) -> bool:
@@ -5555,7 +5631,14 @@ class VariableExpression(Boost.Python.instance):
         Construct an object representing an invalid expression.
         """
     @overload
-    def __init__(self, expression: object) -> None: ...
+    def __init__(self, expression: str | pxr.Ar.ResolvedPath) -> None:
+        """
+        Construct using the expression C{expr}.
+
+
+        If the expression cannot be parsed, this object represents an invalid
+        expression. Parsing errors will be accessible via GetErrors.
+        """
     def Evaluate(self, vars: dict) -> VariableExpression.Result:
         """
         Evaluates this expression using the variables in C{variables} and

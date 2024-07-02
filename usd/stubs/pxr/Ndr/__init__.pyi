@@ -91,9 +91,17 @@ class DiscoveryPlugin(Boost.Python.instance):
         This class cannot be instantiated from Python
         """
     @overload
-    def DiscoverNodes(self, arg2: DiscoveryPluginContext) -> Any: ...
+    def DiscoverNodes(self, : DiscoveryPluginContext) -> NodeDiscoveryResultVec:
+        """
+        Finds and returns all nodes that the implementing plugin should be
+        aware of.
+        """
     @overload
-    def DiscoverNodes(self, arg2: DiscoveryPluginContext) -> None: ...
+    def DiscoverNodes(self, : DiscoveryPluginContext) -> None:
+        """
+        Finds and returns all nodes that the implementing plugin should be
+        aware of.
+        """
     @overload
     def GetSearchURIs(self) -> list[str]:
         """
@@ -124,9 +132,21 @@ class DiscoveryPluginContext(Boost.Python.instance):
         This class cannot be instantiated from Python
         """
     @overload
-    def GetSourceType(self, arg2: object) -> Any: ...
+    def GetSourceType(self, discoveryType: str | pxr.Ar.ResolvedPath) -> str:
+        """
+        Returns the source type associated with the discovery type.
+
+
+        This may return an empty token if there is no such association.
+        """
     @overload
-    def GetSourceType(self, arg2: object) -> None: ...
+    def GetSourceType(self, discoveryType: str | pxr.Ar.ResolvedPath) -> None:
+        """
+        Returns the source type associated with the discovery type.
+
+
+        This may return an empty token if there is no such association.
+        """
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
     def __lt__(self, other: object) -> bool: ...
@@ -699,7 +719,7 @@ class Version(Boost.Python.instance):
         On failure generates an error and yields an invalid version.
         """
     @overload
-    def __init__(self, arg2: object) -> None:
+    def __init__(self, major: int, minor: int) -> None:
         """
         Create a version with the given major and minor numbers.
 
@@ -708,7 +728,13 @@ class Version(Boost.Python.instance):
         failure generates an error and yields an invalid version.
         """
     @overload
-    def __init__(self, x: int, : int) -> None: ...
+    def __init__(self, x: str | pxr.Ar.ResolvedPath) -> None:
+        """
+        Create a version from a string.
+
+
+        On failure generates an error and yields an invalid version.
+        """
     def GetAsDefault(self) -> Version:
         """
         Return an equal version marked as default.

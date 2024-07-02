@@ -152,13 +152,6 @@ class AssetPreviewsAPI(pxr.Usd.APISchemaBase):
         """
     @overload
     @staticmethod
-    def GetAssetDefaultPreviews(layer: pxr.Sdf.Layer) -> AssetPreviewsAPI:
-        """
-        This is an overloaded member function, provided for convenience. It
-        differs from the above function only in what argument(s) it accepts.
-        """
-    @overload
-    @staticmethod
     def GetAssetDefaultPreviews(layerPath: str | pxr.Ar.ResolvedPath) -> AssetPreviewsAPI:
         """
         Return a schema object that can be used to interrogate previews for
@@ -168,6 +161,13 @@ class AssetPreviewsAPI(pxr.Usd.APISchemaBase):
         The schema object will create and retain a minimal stage required for
         interrogation. This is equivalent to:
         C{GetAssetDefaultPreviews(SdfLayer::FindOrOpen(layerPath))}
+        """
+    @overload
+    @staticmethod
+    def GetAssetDefaultPreviews(layer: pxr.Sdf.Layer) -> AssetPreviewsAPI:
+        """
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
         """
     def GetDefaultThumbnails(self) -> AssetPreviewsAPI.Thumbnails:
         """

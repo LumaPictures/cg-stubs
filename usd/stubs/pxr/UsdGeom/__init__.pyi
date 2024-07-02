@@ -1336,7 +1336,7 @@ class Camera(Xformable):
           UsdGeomCamera(stage->GetPrimAtPath(path));
 
         """
-    def GetCamera(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> pxr.Gf.Camera:
+    def GetCamera(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> Camera:
         """
         Creates a GfCamera object from the attribute values at C{time}.
         """
@@ -2680,7 +2680,20 @@ class Curves(PointBased):
         preserves SchemaBase state.
         """
     @staticmethod
-    def ComputeExtent(points: object, widths: object) -> Any: ...
+    def ComputeExtent(points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], widths: pxr.Vt.FloatArray | typing.Iterable[float]) -> pxr.Vt.Vec3fArray:
+        """
+        Compute the extent for the curves defined by points and widths.
+
+
+
+        true upon success, false if unable to calculate extent. On success,
+        extent will contain an approximate axis-aligned bounding box of the
+        curve defined by points with the given widths.
+
+        This function is to provide easy authoring of extent for usd authoring
+        tools, hence it is static and acts outside a specific prim (as in
+        attribute based methods).
+        """
     def CreateCurveVertexCountsAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetCurveVertexCountsAttr() , and also Create vs Get Property
@@ -3772,7 +3785,7 @@ class Imageable(pxr.Usd.Typed):
         @overload
         def __init__(self) -> None: ...
         @overload
-        def __init__(self, arg2: object, arg3: bool) -> None: ...
+        def __init__(self, purpose_: str | pxr.Ar.ResolvedPath, isInheritable_: bool) -> None: ...
         def GetInheritablePurpose(self) -> str:
             """
             Returns the purpose if it's inheritable, returns empty if it is not.
@@ -7083,7 +7096,20 @@ class PointBased(Gprim):
         it preserves SchemaBase state.
         """
     @staticmethod
-    def ComputeExtent(points: object) -> Any: ...
+    def ComputeExtent(points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f]) -> pxr.Vt.Vec3fArray:
+        """
+        Compute the extent for the point cloud defined by points.
+
+
+
+        true on success, false if extents was unable to be calculated. On
+        success, extent will contain the axis-aligned bounding box of the
+        point cloud defined by points.
+
+        This function is to provide easy authoring of extent for usd authoring
+        tools, hence it is static and acts outside a specific prim (as in
+        attribute based methods).
+        """
     def ComputePointsAtTime(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode, baseTime: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> pxr.Vt.Vec3fArray:
         """
         Compute points given the positions, velocities and accelerations at
@@ -7680,7 +7706,25 @@ class PointInstancer(Boundable):
         does for C{time}. When C{baseTime} is less than or equal to C{time},
         we will choose the lower bracketing timeSample.
         '''
-    def ComputeExtentAtTimes(self, times: object, baseTime: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> Any: ...
+    def ComputeExtentAtTimes(self, times: typing.Iterable[pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode], baseTime: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> list[pxr.Vt.Vec3fArray]:
+        """
+        Compute the extent of the point instancer as in ComputeExtentAtTime,
+        but across multiple C{times}.
+
+
+        This is equivalent to, but more efficient than, calling
+        ComputeExtentAtTime several times. Each element in C{extents} is the
+        computed extent at the corresponding time in C{times}.
+
+        As in ComputeExtentAtTime, if there is no error, we return C{true} and
+        C{extents} will be the tightest bounds we can compute efficiently. If
+        an error occurs computing the extent at any time, C{false} will be
+        returned and C{extents} will be left untouched.
+
+        times
+
+        - A vector containing the UsdTimeCodes at which we want to sample.
+        """
     def ComputeInstanceTransformsAtTime(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode, baseTime: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode, doProtoXforms: PointInstancer.ProtoXformInclusion = ..., applyMask: PointInstancer.MaskApplication = ...) -> pxr.Vt.Matrix4dArray:
         '''
         Compute the per-instance,"PointInstancer relative"transforms given the
@@ -8328,7 +8372,20 @@ class Points(PointBased):
         preserves SchemaBase state.
         """
     @staticmethod
-    def ComputeExtent(points: object, widths: object) -> Any: ...
+    def ComputeExtent(points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], widths: pxr.Vt.FloatArray | typing.Iterable[float]) -> pxr.Vt.Vec3fArray:
+        """
+        Compute the extent for the point cloud defined by points and widths.
+
+
+
+        true upon success, false if widths and points are different sized
+        arrays. On success, extent will contain the axis-aligned bounding box
+        of the point cloud defined by points with the given widths.
+
+        This function is to provide easy authoring of extent for usd authoring
+        tools, hence it is static and acts outside a specific prim (as in
+        attribute based methods).
+        """
     def CreateIdsAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> pxr.Usd.Attribute:
         """
         See GetIdsAttr() , and also Create vs Get Property Methods for when to
@@ -8743,7 +8800,14 @@ class Primvar(Boost.Python.instance):
         Returns the existing indices attribute if the primvar is indexed or
         creates a new one.
         """
-    def Get(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> Any: ...
+    def Get(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> T:
+        """
+        Get the attribute value of the Primvar at C{time}.
+
+
+
+        Usd_Handling_Indexed_Primvars for proper handling of indexed primvars
+        """
     def GetAttr(self) -> pxr.Usd.Attribute:
         """
         Explicit UsdAttribute extractor.
@@ -9973,18 +10037,6 @@ class Subset(pxr.Usd.Typed):
         """
     @overload
     @staticmethod
-    def GetUnassignedIndices(subsets: typing.Iterable[Subset], elementCount: int, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> pxr.Vt.IntArray:
-        """
-        Deprecated
-
-        Please use GetUnassignedIndices(geom, elementType,familyName, time)
-        instead. Utility for getting the list of indices that are not assigned
-        to any of the GeomSubsets in C{subsets} at the timeCode, C{time},
-        given the element count (total number of indices in the array being
-        subdivided), C{elementCount}.
-        """
-    @overload
-    @staticmethod
     def GetUnassignedIndices(geom: Imageable, elementType: str | pxr.Ar.ResolvedPath, familyName: str | pxr.Ar.ResolvedPath, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> pxr.Vt.IntArray:
         """
         Utility for getting the list of indices that are not assigned to any
@@ -10000,6 +10052,18 @@ class Subset(pxr.Usd.Typed):
 
         If the C{elementType} is not applicable to the given C{geom}, an empty
         array is returned and a coding error is issued.
+        """
+    @overload
+    @staticmethod
+    def GetUnassignedIndices(subsets: typing.Iterable[Subset], elementCount: int, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> pxr.Vt.IntArray:
+        """
+        Deprecated
+
+        Please use GetUnassignedIndices(geom, elementType,familyName, time)
+        instead. Utility for getting the list of indices that are not assigned
+        to any of the GeomSubsets in C{subsets} at the timeCode, C{time},
+        given the element count (total number of indices in the array being
+        subdivided), C{elementCount}.
         """
     @staticmethod
     def SetFamilyType(geom: Imageable, familyName: str | pxr.Ar.ResolvedPath, familyType: str | pxr.Ar.ResolvedPath) -> bool:
@@ -11065,19 +11129,6 @@ class XformCommonAPI(pxr.Usd.APISchemaBase):
         RotationOrder.
         """
     @overload
-    def CreateXformOps(self, op1: XformCommonAPI.OpFlags = ..., op2: XformCommonAPI.OpFlags = ..., op3: XformCommonAPI.OpFlags = ..., op4: XformCommonAPI.OpFlags = ...) -> tuple:
-        """
-        This is an overloaded member function, provided for convenience. It
-        differs from the above function only in what argument(s) it accepts.
-        This overload does not take a rotation order.
-
-
-        If you specify OpRotate, then this overload assumes RotationOrderXYZ
-        or the previously-authored rotation order. (If you do need to create a
-        rotate op, you might find it helpful to use the other overload that
-        explicitly takes a rotation order.)
-        """
-    @overload
     def CreateXformOps(self, rotationOrder: XformCommonAPI.RotationOrder, op1: XformCommonAPI.OpFlags = ..., op2: XformCommonAPI.OpFlags = ..., op3: XformCommonAPI.OpFlags = ..., op4: XformCommonAPI.OpFlags = ...) -> tuple:
         """
         Creates the specified XformCommonAPI-compatible xform ops, or returns
@@ -11092,6 +11143,19 @@ class XformCommonAPI(pxr.Usd.APISchemaBase):
         The C{rotOrder} is only used if OpRotate is specified. Otherwise, it
         is ignored. (If you don't need to create a rotate op, you might find
         it helpful to use the other overload that takes no rotation order.)
+        """
+    @overload
+    def CreateXformOps(self, op1: XformCommonAPI.OpFlags = ..., op2: XformCommonAPI.OpFlags = ..., op3: XformCommonAPI.OpFlags = ..., op4: XformCommonAPI.OpFlags = ...) -> tuple:
+        """
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
+        This overload does not take a rotation order.
+
+
+        If you specify OpRotate, then this overload assumes RotationOrderXYZ
+        or the previously-authored rotation order. (If you do need to create a
+        rotate op, you might find it helpful to use the other overload that
+        explicitly takes a rotation order.)
         """
     @staticmethod
     def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> XformCommonAPI:

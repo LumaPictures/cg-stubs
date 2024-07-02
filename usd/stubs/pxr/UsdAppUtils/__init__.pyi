@@ -25,7 +25,21 @@ class FrameRecorder(Boost.Python.instance):
     underlying HGI device. This is not required for Metal or Vulkan.
     """
     __instance_size__: ClassVar[int] = ...
-    def __init__(self, rendererPluginId: object = ..., gpuEnabled: bool = ..., renderSettingsPrimPath: pxr.Sdf.Path | str = ...) -> None: ...
+    def __init__(self, rendererPluginId: str | pxr.Ar.ResolvedPath = ..., gpuEnabled: bool = ..., renderSettingsPrimPath: pxr.Sdf.Path | str = ...) -> None:
+        """
+        The C{rendererPluginId} argument indicates the renderer plugin that
+        Hyrda should use.
+
+
+        If the empty token is passed in, a default renderer plugin will be
+        chosen depending on the value of C{gpuEnabled}. The C{gpuEnabled}
+        argument determines if the UsdAppUtilsFrameRecorder instance will
+        allow Hydra to use the GPU to produce images. The
+        C{renderSettingsPrimPath} argument is used to set the active render
+        settings prim path in Hydra. The C{defaultLights} argument determines
+        if the UsdAppUtilsFrameRecorder will add a default set of lights, in
+        addition to any present in the scene.
+        """
     def GetCurrentRendererId(self) -> str:
         """
         Gets the ID of the Hydra renderer plugin that will be used for

@@ -3,7 +3,6 @@
 import Boost.Python
 import pxr.Ar
 import pxr.Tf
-import typing
 from typing import overload
 
 __MFB_FULL_PACKAGE_NAME: str
@@ -480,14 +479,7 @@ class Registry(Boost.Python.instance):
         plugins.
         """
     @overload
-    def RegisterPlugins(self, pathsToPlugInfo: typing.Iterable[str | pxr.Ar.ResolvedPath]) -> list[Plugin]:
-        """
-        Registers all plug-ins discovered in any of *pathsToPlugInfo*.
-
-
-        Sends PlugNotice::DidRegisterPlugins with any newly registered
-        plugins.
-        """
+    def RegisterPlugins(self, arg2: object) -> list: ...
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
     def __lt__(self, other: object) -> bool: ...

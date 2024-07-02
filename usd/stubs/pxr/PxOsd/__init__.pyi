@@ -40,11 +40,17 @@ class MeshTopology(Boost.Python.instance):
     """
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self, arg2: object, arg3: object, arg4: pxr.Vt.IntArray | typing.Iterable[int], arg5: pxr.Vt.IntArray | typing.Iterable[int]) -> None: ...
+    def __init__(self, scheme: str | pxr.Ar.ResolvedPath, orientation: str | pxr.Ar.ResolvedPath, faceVertexCounts: pxr.Vt.IntArray | typing.Iterable[int], faceVertexIndices: pxr.Vt.IntArray | typing.Iterable[int]) -> None:
+        """
+        Construct a topology without holes or subdiv tags.
+        """
     @overload
     def __init__(self, arg2: object, arg3: object, arg4: pxr.Vt.IntArray | typing.Iterable[int], arg5: pxr.Vt.IntArray | typing.Iterable[int], arg6: pxr.Vt.IntArray | typing.Iterable[int]) -> None: ...
     @overload
-    def __init__(self, arg2: object, arg3: object, arg4: pxr.Vt.IntArray | typing.Iterable[int], arg5: pxr.Vt.IntArray | typing.Iterable[int], arg6: pxr.Vt.IntArray | typing.Iterable[int], arg7: SubdivTags) -> None: ...
+    def __init__(self, scheme: str | pxr.Ar.ResolvedPath, orientation: str | pxr.Ar.ResolvedPath, faceVertexCounts: pxr.Vt.IntArray | typing.Iterable[int], faceVertexIndices: pxr.Vt.IntArray | typing.Iterable[int], holeIndices: pxr.Vt.IntArray | typing.Iterable[int], subdivTags: SubdivTags) -> None:
+        """
+        Construct a topology with holes and subdiv tags.
+        """
     @overload
     def __init__(self, arg2: object, arg3: object, arg4: pxr.Vt.IntArray | typing.Iterable[int], arg5: pxr.Vt.IntArray | typing.Iterable[int], arg6: SubdivTags) -> None: ...
     @overload
@@ -221,7 +227,7 @@ class SubdivTags(Boost.Python.instance):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, arg2: object, arg3: object, arg4: object, arg5: object, arg6: pxr.Vt.IntArray | typing.Iterable[int], arg7: pxr.Vt.IntArray | typing.Iterable[int], arg8: pxr.Vt.FloatArray | typing.Iterable[float], arg9: pxr.Vt.IntArray | typing.Iterable[int], arg10: pxr.Vt.FloatArray | typing.Iterable[float]) -> None: ...
+    def __init__(self, vertexInterpolationRule: str | pxr.Ar.ResolvedPath, faceVaryingInterpolationRule: str | pxr.Ar.ResolvedPath, creaseMethod: str | pxr.Ar.ResolvedPath, triangleSubdivision: str | pxr.Ar.ResolvedPath, creaseIndices: pxr.Vt.IntArray | typing.Iterable[int], creaseLengths: pxr.Vt.IntArray | typing.Iterable[int], creaseWeights: pxr.Vt.FloatArray | typing.Iterable[float], cornerIndices: pxr.Vt.IntArray | typing.Iterable[int], cornerWeights: pxr.Vt.FloatArray | typing.Iterable[float]) -> None: ...
     def ComputeHash(self) -> int:
         """
         Returns the hash value of this topology to be used for instancing.

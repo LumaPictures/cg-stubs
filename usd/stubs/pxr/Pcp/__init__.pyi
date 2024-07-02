@@ -1151,14 +1151,6 @@ class MapFunction(Boost.Python.instance):
         Returns an identity path mapping.
         """
     @overload
-    def MapSourceToTarget(self, path: pxr.Sdf.Path | str) -> pxr.Sdf.Path:
-        """
-        Map a path in the source namespace to the target.
-
-
-        If the path is not in the domain, returns an empty path.
-        """
-    @overload
     def MapSourceToTarget(self, pathExpr: pxr.Sdf.PathExpression) -> pxr.Sdf.PathExpression:
         """
         Map all path pattern prefix paths and expression reference paths in
@@ -1179,12 +1171,12 @@ class MapFunction(Boost.Python.instance):
         translated and were replaced with SdfPathPattern::Nothing().
         """
     @overload
-    def MapTargetToSource(self, path: pxr.Sdf.Path | str) -> pxr.Sdf.Path:
+    def MapSourceToTarget(self, path: pxr.Sdf.Path | str) -> pxr.Sdf.Path:
         """
-        Map a path in the target namespace to the source.
+        Map a path in the source namespace to the target.
 
 
-        If the path is not in the co-domain, returns an empty path.
+        If the path is not in the domain, returns an empty path.
         """
     @overload
     def MapTargetToSource(self, pathExpr: pxr.Sdf.PathExpression) -> pxr.Sdf.PathExpression:
@@ -1205,6 +1197,14 @@ class MapFunction(Boost.Python.instance):
         If C{excludedPatterns} and/or C{excludedReferences} are supplied, they
         are populated with those patterns & references that could not be
         translated and were replaced with SdfPathPattern::Nothing().
+        """
+    @overload
+    def MapTargetToSource(self, path: pxr.Sdf.Path | str) -> pxr.Sdf.Path:
+        """
+        Map a path in the target namespace to the source.
+
+
+        If the path is not in the co-domain, returns an empty path.
         """
     def __eq__(self, other: object) -> bool:
         """

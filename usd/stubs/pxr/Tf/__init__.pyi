@@ -572,7 +572,7 @@ class Notice(Boost.Python.instance):
             Revoke interest by a notice listener.  This function revokes interest in the particular notice type and call-back method that its Listener object was registered for."""
     def __init__(self) -> None: ...
     @staticmethod
-    def Register(arg1: Type, arg2: object, arg3: object) -> Listener:
+    def Register(listener: Type, method: Method, sender: Sender) -> Listener:
         """    Register a listener as being interested in a TfNotice  type from a specific sender.  Notice listener will get sender  as an argument.     Registration of interest in a notice class N automatically  registers interest in all classes derived from N.  When a  notice of appropriate type is received, the listening object's  member-function method is called with the notice.     To reverse the registration, call Revoke() on the Listener object returned by this call. 
 
         Register( (Type)arg1, (object)arg2, (object)arg3) -> Listener"""
@@ -580,23 +580,43 @@ class Notice(Boost.Python.instance):
     def RegisterGlobally(arg1: Type, arg2: object) -> Listener:
         """Register a listener as being interested in a TfNotice type from any sender.  The notice listener does not get sender as an argument."""
     @overload
-    def Send(self, arg2: object) -> int:
-        """    Send(sender) 
+    def Send(self, s: Sender) -> int:
+        """
+        Deliver the notice to interested listeners, returning the number of
+        interested listeners.
 
-            sender : object 
 
-            Deliver the notice to interested listeners, returning the number of interested listeners. This is the recommended form of Send.  It takes the sender as an argument. Listeners that registered for the given sender AND listeners that registered globally will get the notice. 
+        This is the recommended form of Send. It takes the sender as an
+        argument.
 
-        Send( (Notice)arg1, (object)arg2) -> int"""
+        Listeners that registered for the given sender AND listeners that
+        registered globally will get the notice.
+
+        Listeners are invoked synchronously and in arbitrary order. The value
+        returned is the total number of times the notice was sent to
+        listeners. Note that a listener is called in the thread in which
+        C{Send()} is called and *not* necessarily in the thread that
+        C{Register()} was called in.
+        """
     @overload
-    def Send(self, sender) -> typing.Any:
-        """    Send(sender) 
+    def Send(self, sender: Sender) -> typing.Any:
+        """
+        Deliver the notice to interested listeners, returning the number of
+        interested listeners.
 
-            sender : object 
 
-            Deliver the notice to interested listeners, returning the number of interested listeners. This is the recommended form of Send.  It takes the sender as an argument. Listeners that registered for the given sender AND listeners that registered globally will get the notice. 
+        This is the recommended form of Send. It takes the sender as an
+        argument.
 
-        Send( (Notice)arg1, (object)arg2) -> int"""
+        Listeners that registered for the given sender AND listeners that
+        registered globally will get the notice.
+
+        Listeners are invoked synchronously and in arbitrary order. The value
+        returned is the total number of times the notice was sent to
+        listeners. Note that a listener is called in the thread in which
+        C{Send()} is called and *not* necessarily in the thread that
+        C{Register()} was called in.
+        """
     @overload
     def SendGlobally(self) -> int:
         """SendGlobally() 
@@ -701,7 +721,7 @@ class ScopeDescription(Boost.Python.instance):
     essentially a TLS lookup plus a couple of atomic operations.
     """
     __instance_size__: ClassVar[int] = ...
-    def __init__(self, arg2: str | pxr.Ar.ResolvedPath) -> None: ...
+    def __init__(self, : str | pxr.Ar.ResolvedPath) -> None: ...
     def SetDescription(self, arg2: str | pxr.Ar.ResolvedPath) -> None: ...
     def __enter__(self) -> ScopeDescription: ...
     def __exit__(self, type: type[BaseException] | None, value: BaseException | None, traceback: types.TracebackType | None) -> None: ...
@@ -1532,8 +1552,10 @@ def MakeValidIdentifier(_in: str | pxr.Ar.ResolvedPath) -> str:
 
     If C{in} is empty, return"_".
     '''
-def PrintStackTrace(arg1: object, arg2: str | pxr.Ar.ResolvedPath) -> None:
-    """Prints both the C++ and the python stack to the file provided."""
+def PrintStackTrace(out: typing.TextIO, reason: str | pxr.Ar.ResolvedPath) -> None:
+    """
+    Prints both the C++ and the python stack to the *stream* provided.
+    """
 def RealPath(path: str | pxr.Ar.ResolvedPath, allowInaccessibleSuffix: bool = ..., raiseOnError: bool = ...) -> str:
     """
     Returns the canonical path of the specified filename, eliminating any
@@ -1573,7 +1595,27 @@ def StringSplit(src: str | pxr.Ar.ResolvedPath, separator: str | pxr.Ar.Resolved
     word is delimited by the string C{separator}. This function behaves
     like pythons string split method.
     """
-def StringToDouble(arg1: str | pxr.Ar.ResolvedPath) -> float: ...
+def StringToDouble(txt: str | pxr.Ar.ResolvedPath) -> float:
+    '''
+    Converts text string to double.
+
+
+    This method converts strings to floating point numbers. It is similar
+    to libc\'s atof(), but performs the conversion much more quickly.
+
+    It expects somewhat valid input: it will continue parsing the input
+    until it hits an unrecognized character, as described by the regexp
+    below, and at that point will return the results up to that point.
+
+    (-?[0-9]+(.[0-9]*)?|-?.[0-9]+)([eE][-+]?[0-9]+)?
+
+    It will not check to see if there is any input at all, or whitespace
+    after the digits. Ie: TfStringToDouble("") == 0.0
+    TfStringToDouble("blah") == 0.0 TfStringToDouble("-") == -0.0
+    TfStringToDouble("1.2foo") == 1.2
+
+    C{TfStringToDouble} is a wrapper around the extern-c TfStringToDouble
+    '''
 def StringToLong(txt: str | pxr.Ar.ResolvedPath) -> int:
     """
     Convert a sequence of digits in C{txt} to a long int value.

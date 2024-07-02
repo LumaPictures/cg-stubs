@@ -624,9 +624,27 @@ class DriveAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim, name: object) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim, name: str | pxr.Ar.ResolvedPath) -> None:
+        '''
+        Construct a UsdPhysicsDriveAPI on UsdPrim C{prim} with name C{name}.
+
+
+        Equivalent to UsdPhysicsDriveAPI::Get ( prim.GetStage(),
+        prim.GetPath().AppendProperty("drive:name"));
+
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        '''
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase, name: object) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase, name: str | pxr.Ar.ResolvedPath) -> None:
+        """
+        Construct a UsdPhysicsDriveAPI on the prim held by C{schemaObj} with
+        name C{name}.
+
+
+        Should be preferred over UsdPhysicsDriveAPI (schemaObj.GetPrim(),
+        name), as it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim, name: str | pxr.Ar.ResolvedPath) -> DriveAPI:
         '''
@@ -741,16 +759,6 @@ class DriveAPI(pxr.Usd.APISchemaBase):
         """
     @overload
     @staticmethod
-    def Get(prim: pxr.Usd.Prim, name: str | pxr.Ar.ResolvedPath) -> DriveAPI:
-        """
-        Return a UsdPhysicsDriveAPI with name C{name} holding the prim
-        C{prim}.
-
-
-        Shorthand for UsdPhysicsDriveAPI(prim, name);
-        """
-    @overload
-    @staticmethod
     def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> DriveAPI:
         """
         Return a UsdPhysicsDriveAPI holding the prim adhering to this schema
@@ -767,6 +775,16 @@ class DriveAPI(pxr.Usd.APISchemaBase):
           UsdPhysicsDriveAPI(
               stage->GetPrimAtPath(path.GetPrimPath()), name);
 
+        """
+    @overload
+    @staticmethod
+    def Get(prim: pxr.Usd.Prim, name: str | pxr.Ar.ResolvedPath) -> DriveAPI:
+        """
+        Return a UsdPhysicsDriveAPI with name C{name} holding the prim
+        C{prim}.
+
+
+        Shorthand for UsdPhysicsDriveAPI(prim, name);
         """
     @staticmethod
     def GetAll(prim: pxr.Usd.Prim) -> list[DriveAPI]:
@@ -1522,9 +1540,27 @@ class LimitAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, prim: pxr.Usd.Prim, name: object) -> None: ...
+    def __init__(self, prim: pxr.Usd.Prim, name: str | pxr.Ar.ResolvedPath) -> None:
+        '''
+        Construct a UsdPhysicsLimitAPI on UsdPrim C{prim} with name C{name}.
+
+
+        Equivalent to UsdPhysicsLimitAPI::Get ( prim.GetStage(),
+        prim.GetPath().AppendProperty("limit:name"));
+
+        for a *valid* C{prim}, but will not immediately throw an error for an
+        invalid C{prim}
+        '''
     @overload
-    def __init__(self, schemaObj: pxr.Usd.SchemaBase, name: object) -> None: ...
+    def __init__(self, schemaObj: pxr.Usd.SchemaBase, name: str | pxr.Ar.ResolvedPath) -> None:
+        """
+        Construct a UsdPhysicsLimitAPI on the prim held by C{schemaObj} with
+        name C{name}.
+
+
+        Should be preferred over UsdPhysicsLimitAPI (schemaObj.GetPrim(),
+        name), as it preserves SchemaBase state.
+        """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim, name: str | pxr.Ar.ResolvedPath) -> LimitAPI:
         '''
@@ -1599,16 +1635,6 @@ class LimitAPI(pxr.Usd.APISchemaBase):
         """
     @overload
     @staticmethod
-    def Get(prim: pxr.Usd.Prim, name: str | pxr.Ar.ResolvedPath) -> LimitAPI:
-        """
-        Return a UsdPhysicsLimitAPI with name C{name} holding the prim
-        C{prim}.
-
-
-        Shorthand for UsdPhysicsLimitAPI(prim, name);
-        """
-    @overload
-    @staticmethod
     def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> LimitAPI:
         """
         Return a UsdPhysicsLimitAPI holding the prim adhering to this schema
@@ -1625,6 +1651,16 @@ class LimitAPI(pxr.Usd.APISchemaBase):
           UsdPhysicsLimitAPI(
               stage->GetPrimAtPath(path.GetPrimPath()), name);
 
+        """
+    @overload
+    @staticmethod
+    def Get(prim: pxr.Usd.Prim, name: str | pxr.Ar.ResolvedPath) -> LimitAPI:
+        """
+        Return a UsdPhysicsLimitAPI with name C{name} holding the prim
+        C{prim}.
+
+
+        Shorthand for UsdPhysicsLimitAPI(prim, name);
         """
     @staticmethod
     def GetAll(prim: pxr.Usd.Prim) -> list[LimitAPI]:

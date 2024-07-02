@@ -457,7 +457,14 @@ class ResolverContextBinder(Boost.Python.instance):
     Asset Resolver Context Operations
     """
     __instance_size__: ClassVar[int] = ...
-    def __init__(self, arg2: ResolverContext) -> None: ...
+    def __init__(self, context: ResolverContext) -> None:
+        """
+        Bind the given C{context} with the asset resolver.
+
+
+        Calls ArResolver::BindContext on the configured asset resolver and
+        saves the bindingData populated by that function.
+        """
     def __enter__(self) -> None: ...
     def __exit__(self, type: type[BaseException] | None, value: BaseException | None, traceback: types.TracebackType | None) -> bool: ...
 
@@ -506,7 +513,10 @@ class Timestamp(Boost.Python.instance):
         Create a timestamp at C{time}, which must be a Unix time value.
         """
     @overload
-    def __init__(self, arg2: Timestamp) -> None: ...
+    def __init__(self, time: Timestamp) -> None:
+        """
+        Create a timestamp at C{time}, which must be a Unix time value.
+        """
     def GetTime(self) -> float:
         """
         Return the time represented by this timestamp as a double.
@@ -594,29 +604,7 @@ def IsPackageRelativePath(path: str | ResolvedPath) -> bool:
     Return true if C{path} is a package-relative path, false otherwise.
     """
 @overload
-def JoinPackageRelativePath(paths: typing.Iterable[str | ResolvedPath]) -> str:
-    '''
-    Combines the given C{paths} into a single package-relative path,
-    nesting paths as necessary.
-
-    ::
-
-      ArJoinPackageRelativePath(["a.pack", "b.pack"])
-         => "a.pack[b.pack]"
-  
-      ArJoinPackageRelativePath(["a.pack", "b.pack", "c.pack"])
-         => "a.pack[b.pack[c.pack]]"
-  
-      ArJoinPackageRelativePath(["a.pack[b.pack]", "c.pack"])
-         => "a.pack[b.pack[c.pack]]"
-
-    '''
-@overload
-def JoinPackageRelativePath(paths: tuple[str | ResolvedPath, str | ResolvedPath]) -> str:
-    """
-    This is an overloaded member function, provided for convenience. It
-    differs from the above function only in what argument(s) it accepts.
-    """
+def JoinPackageRelativePath(paths: object) -> str: ...
 @overload
 def JoinPackageRelativePath(packagePath: str | ResolvedPath, packagedPath: str | ResolvedPath) -> str:
     """

@@ -77,7 +77,11 @@ class Framing(Boost.Python.instance):
         Creates an invalid framing, i.e., with empty display and data window.
         """
     @overload
-    def __init__(self, arg2: Framing) -> None: ...
+    def __init__(self, dataWindow: Framing) -> None:
+        """
+        Creates a framing with equal display and data window (and assuming
+        square pixels).
+        """
     @overload
     def __init__(self, displayWindow: pxr.Gf.Range2f | list[float] | tuple[float, float], dataWindow: pxr.Gf.Rect2i, pixelAspectRatio: float = ...) -> None:
         """

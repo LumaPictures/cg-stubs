@@ -15,7 +15,7 @@ from pxr.UsdUtils.complianceChecker import ComplianceChecker as ComplianceChecke
 from pxr.UsdUtils.fixBrokenPixarSchemas import FixBrokenPixarSchemas as FixBrokenPixarSchemas
 from pxr.UsdUtils.updateSchemaWithSdrNode import PropertyDefiningKeys as PropertyDefiningKeys, SchemaDefiningKeys as SchemaDefiningKeys, SchemaDefiningMiscConstants as SchemaDefiningMiscConstants, UpdateSchemaWithSdrNode as UpdateSchemaWithSdrNode
 from pxr.UsdUtils.usdzUtils import ExtractUsdzPackage as ExtractUsdzPackage, UsdzAssetIterator as UsdzAssetIterator
-from typing import ClassVar, overload
+from typing import Any, ClassVar, overload
 
 __MFB_FULL_PACKAGE_NAME: str
 
@@ -145,9 +145,9 @@ class ConditionalAbortDiagnosticDelegateErrorFilters(Boost.Python.instance):
     """
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self) -> None: ...
-    @overload
     def __init__(self, stringFilters: typing.Iterable[str | pxr.Ar.ResolvedPath], codePathFilters: typing.Iterable[str | pxr.Ar.ResolvedPath]) -> None: ...
+    @overload
+    def __init__(self) -> None: ...
     def GetCodePathFilters(self) -> list[str]: ...
     def GetStringFilters(self) -> list[str]: ...
     def SetCodePathFilters(self, codePathFilters: typing.Iterable[str | pxr.Ar.ResolvedPath]) -> None: ...
@@ -168,11 +168,11 @@ class DependencyInfo(Boost.Python.instance):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, arg2: DependencyInfo) -> None: ...
+    def __init__(self, assetPath: DependencyInfo) -> None: ...
     @overload
-    def __init__(self, arg2: object) -> None: ...
+    def __init__(self, assetPath: str | pxr.Ar.ResolvedPath) -> None: ...
     @overload
-    def __init__(self, arg2: object, arg3: object) -> None: ...
+    def __init__(self, assetPath: str | pxr.Ar.ResolvedPath, dependencies: typing.Iterable[str | pxr.Ar.ResolvedPath]) -> None: ...
     @property
     def assetPath(self) -> str:
         """
@@ -287,8 +287,36 @@ class SparseAttrValueWriter(Boost.Python.instance):
     increasing time values. If not, a coding error is issued and the
     authored animation may be incorrect.
     '''
-    def __init__(self, attr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | pxr.UsdShade.Input | pxr.UsdShade.Output, defaultValue: object = ...) -> None: ...
-    def SetTimeSample(self, value: object, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> bool: ...
+    def __init__(self, attr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | pxr.UsdShade.Input | pxr.UsdShade.Output, defaultValue: Any = ...) -> None:
+        """
+        The constructor initializes the data required for run-length encoding
+        of time-samples.
+
+
+        It also sets the default value of C{attr} to C{defaultValue}, if
+        C{defaultValue} is non-empty and different from the existing default
+        value of C{attr}.
+
+        C{defaultValue} can be unspecified (or left empty) if you don't care
+        about authoring a default value. In this case, the sparse authoring
+        logic is initialized with the existing authored default value or the
+        fallback value, if C{attr} has one.
+        """
+    def SetTimeSample(self, value: Any, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> bool:
+        """
+        Sets a new time-sample on the attribute with given C{value} at the
+        given C{time}.
+
+
+        The time-sample is only authored if it's different from the previously
+        set time-sample, in which case the previous time-sample is also
+        authored, in order to to end the previous run of contiguous identical
+        values and start a new run.
+
+        This incurs a copy of C{value}. Also, the value will be held in memory
+        at least until the next time-sample is written or until the
+        SparseAttrValueWriter instance is destroyed.
+        """
 
 class SparseValueWriter(Boost.Python.instance):
     '''
@@ -381,7 +409,7 @@ class StageCache(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
     def __init__(self) -> None: ...
     @staticmethod
-    def Get() -> pxr.Usd.StageCache:
+    def Get() -> StageCache:
         """
         Returns the singleton stage cache.
         """

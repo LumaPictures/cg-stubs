@@ -71,13 +71,21 @@ class KeyFrame(Boost.Python.instance):
         Constructs a keyframe by duplicating an existing TsKeyFrame.
         """
     @overload
-    def CanSetKnotType(self, arg2: object) -> _AnnotatedBoolResult:
-        """Returns true if the given knot type can be set on this key frame. If it returns false, it also returns the reason why not. The reason can be accessed like this: anim.CanSetKnotType(kf).reasonWhyNot."""
+    def CanSetKnotType(self, : KnotType) -> _AnnotatedBoolResult:
+        """
+        Checks whether the key frame's value type supports the given knot
+        type.
+        """
     @overload
-    def CanSetKnotType(self, kf) -> typing.Any:
-        """Returns true if the given knot type can be set on this key frame. If it returns false, it also returns the reason why not. The reason can be accessed like this: anim.CanSetKnotType(kf).reasonWhyNot."""
-    def GetValue(self, arg2: object) -> Any:
-        """Gets the value at this keyframe on the given side."""
+    def CanSetKnotType(self, kf: KnotType) -> typing.Any:
+        """
+        Checks whether the key frame's value type supports the given knot
+        type.
+        """
+    def GetValue(self, side: Side) -> Any:
+        """
+        Gets the value at this keyframe on the given side.
+        """
     def IsEquivalentAtSide(self, keyFrame: KeyFrame, side: Side) -> bool:
         """
         Gets whether this key frame is at the same time and is equivalent to
@@ -88,8 +96,10 @@ class KeyFrame(Boost.Python.instance):
         will have no effect on how the spline evaluates for any time on the
         given C{side} of this key frame.
         """
-    def SetValue(self, arg2: object, arg3: object) -> None:
-        """Sets the value at this keyframe on the given side."""
+    def SetValue(self, val: Any, side: Side) -> None:
+        """
+        Sets the value at this keyframe on the given side.
+        """
     def __eq__(self, other: object) -> bool:
         """
         Compare this keyframe with another.
@@ -182,17 +192,9 @@ class Spline(Boost.Python.instance):
         Copy construct.
         """
     @overload
-    def __init__(self, arg2: object, arg3: object) -> None:
-        """
-        Constructs a spline with the key frames *keyFrames*, and optionally
-        given extrapolation and looping parameters.
-        """
+    def __init__(self, arg2: object, arg3: object = ..., arg4: object = ..., arg5: LoopParams = ...) -> None: ...
     @overload
-    def __init__(self, keyFrames: typing.Iterable[KeyFrame], leftExtrapolation: ExtrapolationType = ..., rightExtrapolation: ExtrapolationType = ..., loopParams: LoopParams = ...) -> None:
-        """
-        Constructs a spline with the key frames *keyFrames*, and optionally
-        given extrapolation and looping parameters.
-        """
+    def __init__(self, arg2: object, arg3: object) -> None: ...
     def BakeSplineLoops(self) -> None: ...
     @overload
     def Breakdown(self, arg2: object, arg3: object, arg4: bool, arg5: float) -> dict:
@@ -275,19 +277,17 @@ class Spline(Boost.Python.instance):
         returning the reason if it cannot.
         """
     @overload
-    def CanSetKeyFrame(self, kf) -> bool:
-        """CanSetKeyFrame(kf) -> bool
-
-        kf : TsKeyFrame
-
-        Returns true if the given keyframe can be set on this spline. If it returns false, it also returns the reason why not. The reason can be accessed like this: anim.CanSetKeyFrame(kf).reasonWhyNot."""
+    def CanSetKeyFrame(self, kf: KeyFrame) -> bool:
+        """
+        Checks if the given keyframe is a valid candidate to set, optionally
+        returning the reason if it cannot.
+        """
     @overload
-    def CanSetKeyFrame(self, kf) -> typing.Any:
-        """CanSetKeyFrame(kf) -> bool
-
-        kf : TsKeyFrame
-
-        Returns true if the given keyframe can be set on this spline. If it returns false, it also returns the reason why not. The reason can be accessed like this: anim.CanSetKeyFrame(kf).reasonWhyNot."""
+    def CanSetKeyFrame(self, kf: KeyFrame) -> typing.Any:
+        """
+        Checks if the given keyframe is a valid candidate to set, optionally
+        returning the reason if it cannot.
+        """
     def ClearRedundantKeyFrames(self, defaultValue: Any = ..., intervals: pxr.Gf.MultiInterval = ...) -> bool:
         """
         Removes redundant keyframes from the spline in the specified multi-
@@ -361,12 +361,14 @@ class Spline(Boost.Python.instance):
         configured to have dual values.
         """
     @overload
-    def Eval(self, time: float, side: object = ...) -> Any:
-        """Eval(times) -> sequence<VtValue>
+    def Eval(self, time: float, side: Side = ...) -> Any:
+        """
+        Evaluates the value of the spline at the given time, interpolating the
+        keyframes.
 
-        times : tuple<Time>
 
-        Evaluates this spline at a tuple or list of times, returning a tuple of results."""
+        If there are no keyframes, an empty VtValue is returned.
+        """
     @overload
     def Eval(self, arg2: object) -> tuple:
         """Eval(times) -> sequence<VtValue>
@@ -427,23 +429,29 @@ class Spline(Boost.Python.instance):
         Returns whether spline represents a simple linear relationship.
         """
     @overload
-    def IsSegmentFlat(self, kf1: float, kf2: float) -> bool:
+    def IsSegmentFlat(self, arg2: float, arg3: float) -> bool:
+        """    True if the segment between the two provided TsTimes is flat.
+
+            If either TsTime does not refer to a knot then an exception is thrown.
+
+        IsSegmentFlat( (Spline)arg1, (KeyFrame)arg2, (KeyFrame)arg3) -> bool :
+            True if the segment between the two provided TsKeyFrames isflat."""
+    @overload
+    def IsSegmentFlat(self, kf1: KeyFrame, kf2: KeyFrame) -> bool:
         """
         Returns true if the segment between the given (adjacent) key frames is
         flat.
         """
     @overload
-    def IsSegmentFlat(self, startTime: KeyFrame, endTime: KeyFrame) -> bool:
-        """
-        Returns true if the segment between the given (adjacent) key frames is
-        flat.
+    def IsSegmentValueMonotonic(self, arg2: float, arg3: float) -> bool:
+        """    True if the segment between the two provided TsTimes is monotonically increasing or monotonically decreasing, i.e. no extremes are present
 
+            If either TsTime does not refer to a knot then an exception is thrown.
 
-        This function will log a TF_CODING_ERROR if there is no key frame at
-        either of the indicated times.
-        """
+        IsSegmentValueMonotonic( (Spline)arg1, (KeyFrame)arg2, (KeyFrame)arg3) -> bool :
+            True if the segment between the two provided TsKeyFrames is monotonically increasing or monotonically decreasing, i.e. no extremes are present"""
     @overload
-    def IsSegmentValueMonotonic(self, kf1: float, kf2: float) -> bool:
+    def IsSegmentValueMonotonic(self, kf1: KeyFrame, kf2: KeyFrame) -> bool:
         """
         Returns true if the segment between the given (adjacent) key frames is
         monotonic (i.e.
@@ -453,18 +461,6 @@ class Spline(Boost.Python.instance):
 
         This function will log a TF_CODING_ERROR if kf1>= kf2 TODO describe
         the preconditions
-        """
-    @overload
-    def IsSegmentValueMonotonic(self, startTime: KeyFrame, endTime: KeyFrame) -> bool:
-        """
-        Returns true if the segment between the given (adjacent) key frames is
-        monotonic (i.e.
-
-
-        no extremes).
-
-        Given times must correspond to key frames. see also
-        IsSegmentValueMonotonic(kf1, kf2)
         """
     def IsTimeLooped(self, time: float) -> bool:
         '''
