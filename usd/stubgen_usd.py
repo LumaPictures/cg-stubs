@@ -856,9 +856,15 @@ def get_sigs_from_cpp_overloads(
 
 
 @dataclass
+class MatchInfo:
+    kind: str
+    source_overload: int
+
+
+@dataclass
 class SigTracker:
     matches: dict[int, FunctionSig] = field(default_factory=dict)
-    match_kind: dict[int, str] = field(default_factory=dict)
+    successes: dict[int, MatchInfo] = field(default_factory=dict)
     failures: defaultdict[int, list[str]] = field(
         default_factory=lambda: defaultdict(list)
     )
@@ -885,16 +891,22 @@ class SignatureMatcher(Generic[T]):
         py_sigs: list[FunctionSig],
         cpp_sigs: list[FunctionSig],
         tracker: SigTracker,
+        skip=None,
     ) -> set[int]:
         """Use the argument types of boost-python signatures to find matching C++
         signatures
         """
 
         cpp_sigs_map: DefaultDict[T, list[FunctionSig]] = defaultdict(list)
-        for cpp_sig in cpp_sigs:
-            sigs = cpp_sigs_map[self.make_key(cpp_sig)]
+        cpp_overload_map: DefaultDict[T, list[int]] = defaultdict(list)
+        for i, cpp_sig in enumerate(cpp_sigs):
+            if skip is not None and skip(i, cpp_sig):
+                continue
+            key = self.make_key(cpp_sig)
+            sigs = cpp_sigs_map[key]
             if cpp_sig not in sigs:
                 sigs.append(cpp_sig)
+                cpp_overload_map[key].append(i)
 
         found = set()
         for i, py_sig in enumerate(py_sigs):
@@ -907,8 +919,12 @@ class SignatureMatcher(Generic[T]):
                     if self.validate:
                         self._validate_match(tracker.matches[i], cpp_sigs[0])
                 else:
+                    overloads = cpp_overload_map[key]
+                    assert len(overloads) == 1
                     tracker.matches[i] = cpp_sigs[0]
-                    tracker.match_kind[i] = self.name
+                    tracker.successes[i] = MatchInfo(
+                        kind=self.name, source_overload=overloads[0]
+                    )
                     found.add(i)
             elif len(cpp_sigs) > 1:
                 tracker.failures[i].append(f"{self.name}: More than one match: {key}")
@@ -1086,18 +1102,20 @@ class UsdBoostDocstringSignatureGenerator(
         sigs: list[FunctionSig],
         cpp_overloads: list[DocElement],
         overload_num: int | None = None,
+        match: FunctionSig | None = None,
         **other_sigs: list[FunctionSig],
     ):
         failures_str = "\n".join(failures)
         summary = ""
         for i, sig in enumerate(sigs):
-            summary += "{}  py            {}\n".format(
-                "*" if overload_num == i else " ", format_py_args(sig)
-            )
+            marker = "*" if overload_num == i else " "
+            signame = "py"
+            summary += f"{marker}  {signame:<14}{format_py_args(sig)}\n"
 
         for signame, sigs in other_sigs.items():
             for sig in sigs:
-                summary += f"   {signame:<14}{format_py_args(sig)}\n"
+                marker = "*" if sig == match else " "
+                summary += f"{marker}  {signame:<14}{format_py_args(sig)}\n"
 
         for cpp_sig in cpp_overloads:
             summary += "   cpp           {}{}\n".format(
@@ -1260,20 +1278,28 @@ class UsdBoostDocstringSignatureGenerator(
             arg_nums1 = ArgNumAndDefaultMatcher(validate=False)
             arg_nums2 = ArgNumMatcher(validate=False)
 
+            def skip_used(overload: int, sig: FunctionSig) -> bool:
+                """
+                we use this to introduce some mutual exclusivity, because it's possible
+                for two different overloads to match the same C++ overload w/ and w/out pointers.
+                see: GetVersionIfHasAPIInFamily.  conceptually, once a C++ overload has been matched,
+                its corresonding ptr/noptr overload should no longer be an option.
+                """
+                return overload in [
+                    x.source_overload for x in tracker.successes.values()
+                ]
+
             arg_names.match(
                 ctx, sigs, cpp_sigs_with_ptrs + cpp_sigs_without_ptrs, tracker
             )
-            # FIXME: we need to introduce some mutual exclusivity, because it's possible
-            #  for two different overloads to match the same C++ overload w/ and w/out pointers.
-            #  see: GetVersionIfHasAPIInFamily.  conceptually, once a C++ overload has been matched
-            #  its corresonding ptr/noptr overload should no longer be an option.
-            arg_types.match(ctx, sigs, cpp_sigs_with_ptrs, tracker)
             arg_types.match(ctx, sigs, cpp_sigs_without_ptrs, tracker)
-            arg_nums1.match(
-                ctx, sigs, cpp_sigs_with_ptrs + cpp_sigs_without_ptrs, tracker
-            )
-            arg_nums2.match(ctx, sigs, cpp_sigs_with_ptrs, tracker)
-            arg_nums2.match(ctx, sigs, cpp_sigs_without_ptrs, tracker)
+            arg_types.match(ctx, sigs, cpp_sigs_with_ptrs, tracker)
+
+            arg_nums1.match(ctx, sigs, cpp_sigs_without_ptrs, tracker)
+            arg_nums1.match(ctx, sigs, cpp_sigs_with_ptrs, tracker, skip=skip_used)
+
+            arg_nums2.match(ctx, sigs, cpp_sigs_without_ptrs, tracker, skip=skip_used)
+            arg_nums2.match(ctx, sigs, cpp_sigs_with_ptrs, tracker, skip=skip_used)
 
             # special case
             if not tracker.matches and len(sigs) == len(cpp_overloads):
@@ -1282,7 +1308,9 @@ class UsdBoostDocstringSignatureGenerator(
                 )
                 for i, sig in enumerate(cpp_sigs):
                     tracker.matches[i] = sig
-                    tracker.match_kind[i] = "fallback for unmatched"
+                    tracker.successes[i] = MatchInfo(
+                        kind="fallback for unmatched", source_overload=i
+                    )
 
             if "GetVersionIfHasAPIInFamily" in ctx.fullname:
                 # we picked a new overload and it's unclear why
@@ -1290,11 +1318,11 @@ class UsdBoostDocstringSignatureGenerator(
                     self._summarize_overload_mismatch(
                         "Match reason",
                         ctx,
-                        [tracker.match_kind[overload]],
+                        [tracker.successes[overload].kind],
                         sigs,
                         cpp_overloads,
                         overload,
-                        match=[sig],
+                        match=sig,
                         cpp_ptrs=cpp_sigs_with_ptrs,
                         cpp_no_ptrs=cpp_sigs_without_ptrs,
                     )

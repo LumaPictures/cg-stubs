@@ -429,13 +429,15 @@ class Spline(Boost.Python.instance):
         Returns whether spline represents a simple linear relationship.
         """
     @overload
-    def IsSegmentFlat(self, arg2: float, arg3: float) -> bool:
-        """    True if the segment between the two provided TsTimes is flat.
+    def IsSegmentFlat(self, startTime: float, endTime: float) -> bool:
+        """
+        Returns true if the segment between the given (adjacent) key frames is
+        flat.
 
-            If either TsTime does not refer to a knot then an exception is thrown.
 
-        IsSegmentFlat( (Spline)arg1, (KeyFrame)arg2, (KeyFrame)arg3) -> bool :
-            True if the segment between the two provided TsKeyFrames isflat."""
+        This function will log a TF_CODING_ERROR if there is no key frame at
+        either of the indicated times.
+        """
     @overload
     def IsSegmentFlat(self, kf1: KeyFrame, kf2: KeyFrame) -> bool:
         """
@@ -443,13 +445,17 @@ class Spline(Boost.Python.instance):
         flat.
         """
     @overload
-    def IsSegmentValueMonotonic(self, arg2: float, arg3: float) -> bool:
-        """    True if the segment between the two provided TsTimes is monotonically increasing or monotonically decreasing, i.e. no extremes are present
+    def IsSegmentValueMonotonic(self, startTime: float, endTime: float) -> bool:
+        """
+        Returns true if the segment between the given (adjacent) key frames is
+        monotonic (i.e.
 
-            If either TsTime does not refer to a knot then an exception is thrown.
 
-        IsSegmentValueMonotonic( (Spline)arg1, (KeyFrame)arg2, (KeyFrame)arg3) -> bool :
-            True if the segment between the two provided TsKeyFrames is monotonically increasing or monotonically decreasing, i.e. no extremes are present"""
+        no extremes).
+
+        Given times must correspond to key frames. see also
+        IsSegmentValueMonotonic(kf1, kf2)
+        """
     @overload
     def IsSegmentValueMonotonic(self, kf1: KeyFrame, kf2: KeyFrame) -> bool:
         """

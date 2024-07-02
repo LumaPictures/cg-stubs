@@ -5383,7 +5383,13 @@ class ValueTypeName(Boost.Python.instance):
         Converts to C{true} if this is a valid, non-empty type, C{false}
         otherwise.
         """
-    def __eq__(self, other: object) -> bool: ...
+    def __eq__(self, other: object) -> bool:
+        """
+        Returns C{true} if this type name is equal to C{rhs}.
+
+
+        Aliases compare equal. Avoid relying on this overload.
+        """
     def __hash__(self) -> int: ...
     def __ne__(self, other: object) -> bool: ...
     @property

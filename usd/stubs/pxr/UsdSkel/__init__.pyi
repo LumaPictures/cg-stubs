@@ -2308,11 +2308,16 @@ def DecomposeTransforms(xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Ma
     Use form that takes TfSpan arguments.
     """
 @overload
-def DecomposeTransforms(arg1: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f]) -> tuple:
-    """    Decompose a transform array into a (translations,rotations,scales) tuple.
+def DecomposeTransforms(count: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f]) -> tuple:
+    """
+    This is an overloaded member function, provided for convenience. It
+    differs from the above function only in what argument(s) it accepts.
 
-    DecomposeTransforms( (Matrix4fArray)arg1) -> tuple :
-        Decompose a transform array into a (translations,rotations,scales) tuple."""
+
+    Deprecated
+
+    Use form that takes TfSpan arguments.
+    """
 @overload
 def ExpandConstantInfluencesToVarying(array: pxr.Vt.IntArray | typing.Iterable[int], size: int) -> bool:
     """

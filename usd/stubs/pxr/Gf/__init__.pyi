@@ -460,7 +460,10 @@ class DualQuatf(Boost.Python.instance):
         The default constructor leaves the dual quaternion undefined.
         """
     @overload
-    def __init__(self, arg2: DualQuatf | DualQuath) -> None: ...
+    def __init__(self, other: DualQuatf | DualQuath) -> None:
+        """
+        Implicitly convert from GfDualQuath.
+        """
     @overload
     def __init__(self, realVal: float) -> None:
         """
@@ -3450,9 +3453,15 @@ class MultiInterval(Boost.Python.instance):
         Constructs an multi-interval with the single given interval.
         """
     @overload
-    def __init__(self, arg2: MultiInterval) -> None: ...
+    def __init__(self, intervals: MultiInterval) -> None:
+        """
+        Constructs an multi-interval containing the given input intervals.
+        """
     @overload
-    def __init__(self, arg2: object) -> None: ...
+    def __init__(self, intervals: typing.Iterable[Interval]) -> None:
+        """
+        Constructs an multi-interval containing the given input intervals.
+        """
     @overload
     def Add(self, i: Interval) -> None:
         """
@@ -3999,7 +4008,10 @@ class Quatf(Boost.Python.instance):
         Default constructor leaves the quaternion undefined.
         """
     @overload
-    def __init__(self, arg2: Quatf | Quath) -> None: ...
+    def __init__(self, other: Quatf | Quath) -> None:
+        """
+        Implicitly convert from GfQuath.
+        """
     @overload
     def __init__(self, real: float) -> None:
         """
@@ -4141,9 +4153,27 @@ class Quath(Boost.Python.instance):
         Default constructor leaves the quaternion undefined.
         """
     @overload
-    def __init__(self, arg2: Quath) -> None: ...
+    def __init__(self, realVal: Quath) -> None:
+        """
+        Initialize the real coefficient to C{realVal} and the imaginary
+        coefficients to zero.
+
+
+        Since quaternions typically must be normalized, reasonable values for
+        C{realVal} are -1, 0, or 1. Other values are legal but are likely to
+        be meaningless.
+        """
     @overload
-    def __init__(self, real: object) -> None: ...
+    def __init__(self, real: float) -> None:
+        """
+        Initialize the real coefficient to C{realVal} and the imaginary
+        coefficients to zero.
+
+
+        Since quaternions typically must be normalized, reasonable values for
+        C{realVal} are -1, 0, or 1. Other values are legal but are likely to
+        be meaningless.
+        """
     @overload
     def __init__(self, real: float, imaginary: Vec3h | list[float] | tuple[float, float, float]) -> None:
         """
@@ -5961,7 +5991,10 @@ class Vec2d(Boost.Python.instance):
         Implicitly convert from GfVec2i.
         """
     @overload
-    def __init__(self, arg2: Vec2d | list[float] | tuple[float, float]) -> None: ...
+    def __init__(self, p: Vec2d | list[float] | tuple[float, float]) -> None:
+        """
+        Construct with pointer to values.
+        """
     @overload
     def __init__(self, value: float) -> None:
         """
@@ -6095,7 +6128,10 @@ class Vec2f(Boost.Python.instance):
         Implicitly convert from GfVec2i.
         """
     @overload
-    def __init__(self, arg2: Vec2f | list[float] | tuple[float, float]) -> None: ...
+    def __init__(self, p: Vec2f | list[float] | tuple[float, float]) -> None:
+        """
+        Construct with pointer to values.
+        """
     @overload
     def __init__(self, value: float) -> None:
         """
@@ -6229,9 +6265,15 @@ class Vec2h(Boost.Python.instance):
         Implicitly convert from GfVec2i.
         """
     @overload
-    def __init__(self, arg2: Vec2h | list[float] | tuple[float, float]) -> None: ...
+    def __init__(self, value: Vec2h | list[float] | tuple[float, float]) -> None:
+        """
+        Initialize all elements to a single value.
+        """
     @overload
-    def __init__(self, arg2: object) -> None: ...
+    def __init__(self, value: float) -> None:
+        """
+        Initialize all elements to a single value.
+        """
     @overload
     def __init__(self, s0: float, s1: float) -> None:
         """
@@ -6447,7 +6489,10 @@ class Vec3d(Boost.Python.instance):
         Implicitly convert from GfVec3i.
         """
     @overload
-    def __init__(self, arg2: Vec3d | list[float] | tuple[float, float, float]) -> None: ...
+    def __init__(self, p: Vec3d | list[float] | tuple[float, float, float]) -> None:
+        """
+        Construct with pointer to values.
+        """
     @overload
     def __init__(self, value: float) -> None:
         """
@@ -6613,7 +6658,10 @@ class Vec3f(Boost.Python.instance):
         Implicitly convert from GfVec3i.
         """
     @overload
-    def __init__(self, arg2: Vec3f | list[float] | tuple[float, float, float]) -> None: ...
+    def __init__(self, p: Vec3f | list[float] | tuple[float, float, float]) -> None:
+        """
+        Construct with pointer to values.
+        """
     @overload
     def __init__(self, value: float) -> None:
         """
@@ -6779,9 +6827,15 @@ class Vec3h(Boost.Python.instance):
         Implicitly convert from GfVec3i.
         """
     @overload
-    def __init__(self, arg2: Vec3h | list[float] | tuple[float, float, float]) -> None: ...
+    def __init__(self, value: Vec3h | list[float] | tuple[float, float, float]) -> None:
+        """
+        Initialize all elements to a single value.
+        """
     @overload
-    def __init__(self, arg2: object) -> None: ...
+    def __init__(self, value: float) -> None:
+        """
+        Initialize all elements to a single value.
+        """
     @overload
     def __init__(self, s0: float, s1: float, s2: float) -> None:
         """
@@ -7034,7 +7088,10 @@ class Vec4d(Boost.Python.instance):
         Implicitly convert from GfVec4i.
         """
     @overload
-    def __init__(self, arg2: Vec4d | list[float] | tuple[float, float, float, float]) -> None: ...
+    def __init__(self, p: Vec4d | list[float] | tuple[float, float, float, float]) -> None:
+        """
+        Construct with pointer to values.
+        """
     @overload
     def __init__(self, value: float) -> None:
         """
@@ -7178,7 +7235,10 @@ class Vec4f(Boost.Python.instance):
         Implicitly convert from GfVec4i.
         """
     @overload
-    def __init__(self, arg2: Vec4f | list[float] | tuple[float, float, float, float]) -> None: ...
+    def __init__(self, p: Vec4f | list[float] | tuple[float, float, float, float]) -> None:
+        """
+        Construct with pointer to values.
+        """
     @overload
     def __init__(self, value: float) -> None:
         """
@@ -7322,9 +7382,15 @@ class Vec4h(Boost.Python.instance):
         Implicitly convert from GfVec4i.
         """
     @overload
-    def __init__(self, arg2: Vec4h | list[float] | tuple[float, float, float, float]) -> None: ...
+    def __init__(self, value: Vec4h | list[float] | tuple[float, float, float, float]) -> None:
+        """
+        Initialize all elements to a single value.
+        """
     @overload
-    def __init__(self, arg2: object) -> None: ...
+    def __init__(self, value: float) -> None:
+        """
+        Initialize all elements to a single value.
+        """
     @overload
     def __init__(self, s0: float, s1: float, s2: float, s3: float) -> None:
         """

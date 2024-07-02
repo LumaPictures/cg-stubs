@@ -660,7 +660,11 @@ class AttributeQuery(Boost.Python.instance):
         Construct a new query for the attribute C{attr}.
         """
     @overload
-    def __init__(self, prim: Prim, attributeName: object) -> None: ...
+    def __init__(self, prim: Prim, attributeName: str | pxr.Ar.ResolvedPath) -> None:
+        """
+        Construct a new query for the attribute named C{attrName} under the
+        prim C{prim}.
+        """
     @overload
     def __init__(self, attribute: Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | pxr.UsdShade.Input | pxr.UsdShade.Output, resolveTarget: ResolveTarget) -> None:
         """
@@ -4024,7 +4028,47 @@ class Prim(Object):
         For details, see Names, Namespace Ordering, and Property Namespaces
         """
     @overload
-    def CreateRelationship(self, name: object, custom: bool = ...) -> PrimDefinition.Relationship: ...
+    def CreateRelationship(self, name: str | pxr.Ar.ResolvedPath, custom: bool = ...) -> PrimDefinition.Relationship:
+        """
+        Author scene description for the relationship named *relName* at the
+        current EditTarget if none already exists.
+
+
+        Return a valid relationship if scene description was successfully
+        authored or if it already existed, return an invalid relationship
+        otherwise.
+
+        Suggested use: ::
+
+          if (UsdRelationship myRel = prim.CreateRelationship(...)) {
+             // success. 
+          }
+
+        To call this, GetPrim() must return a valid prim.
+
+           - If a spec for this relationship already exists at the current
+             edit target, do nothing.
+
+           - If a spec for *relName* of a different spec type (e.g. an
+             attribute) exists at the current EditTarget, issue an error.
+
+           - If *name* refers to a builtin relationship according to the
+             prim's definition, author a relationship spec with required metadata
+             from the definition.
+
+           - If *name* refers to a builtin attribute, issue an error.
+
+           - If there exists an absolute strongest authored relationship spec
+             for *relName*, author a relationship spec at the current EditTarget by
+             copying required metadata from that strongest spec.
+
+           - If there exists an absolute strongest authored attribute spec for
+             *relName*, issue an error.
+
+           - Otherwise author a uniform relationship spec at the current
+             EditTarget, honoring C{custom}.
+
+        """
     @overload
     def CreateRelationship(self, nameElts: typing.Iterable[str | pxr.Ar.ResolvedPath], custom: bool = ...) -> PrimDefinition.Relationship:
         """
@@ -4730,21 +4774,20 @@ class Prim(Object):
         will be populated in C{schemaVersion}.
         """
     @overload
-    def GetVersionIfHasAPIInFamily(self, schemaFamily: str | pxr.Ar.ResolvedPath, schemaVersion: int) -> bool:
+    def GetVersionIfHasAPIInFamily(self, schemaFamily: str | pxr.Ar.ResolvedPath, instanceName: str | pxr.Ar.ResolvedPath) -> int:
         """
-        Return true if the prim has an applied API schema that is any version
-        the schemas in the given C{schemaFamily} and if so, populates
-        C{schemaVersion} with the version of the schema that this prim HasAPI.
+        Return true if the prim has a specific instance C{instanceName} of an
+        applied multiple-apply API schema that is any version the schemas in
+        the given C{schemaFamily} and if so, populates C{schemaVersion} with
+        the version of the schema that this prim HasAPI.
 
 
-        This function will consider both single-apply and multiple-apply API
-        schemas in the schema family. For the multiple-apply API schemas is a
-        this will return true if any instance of one of the schemas has been
-        applied.
+        C{instanceName} must be non-empty, otherwise it is a coding error.
 
         Note that if more than one version of the schemas in C{schemaFamily}
-        are applied to this prim, the highest version number of these schemas
-        will be populated in C{schemaVersion}.
+        is multiple-apply and applied to this prim with the given
+        C{instanceName}, the highest version number of these schemas will be
+        populated in C{schemaVersion}.
         """
     def GetVersionIfIsInFamily(self, schemaFamily: str | pxr.Ar.ResolvedPath) -> int:
         """
@@ -7246,7 +7289,15 @@ class SchemaRegistry(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def GetSchemaKind(primType: object) -> SchemaKind: ...
+    def GetSchemaKind(primType: str | pxr.Ar.ResolvedPath) -> SchemaKind:
+        """
+        Returns the kind of the schema the given C{typeName} represents.
+
+
+        This returns UsdSchemaKind::Invalid if C{typeName} is not a valid
+        schema type name or if the kind cannot be determined from type's
+        plugin information.
+        """
     @staticmethod
     def GetSchemaTypeName(schemaType: pxr.Tf.Type) -> str:
         """
@@ -7322,7 +7373,11 @@ class SchemaRegistry(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def IsAbstract(primType: object) -> bool: ...
+    def IsAbstract(primType: str | pxr.Ar.ResolvedPath) -> bool:
+        """
+        Returns true if the prim type C{primType} is an abstract schema type
+        and, unlike a concrete type, is not instantiable in scene description.
+        """
     @staticmethod
     def IsAllowedAPISchemaInstanceName(apiSchemaName: str | pxr.Ar.ResolvedPath, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
         """
@@ -7366,7 +7421,10 @@ class SchemaRegistry(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def IsAppliedAPISchema(apiSchemaType: object) -> bool: ...
+    def IsAppliedAPISchema(apiSchemaType: str | pxr.Ar.ResolvedPath) -> bool:
+        """
+        Returns true if C{apiSchemaType} is an applied API schema type.
+        """
     @overload
     @staticmethod
     def IsConcrete(primType: pxr.Tf.Type) -> bool:
@@ -7376,7 +7434,11 @@ class SchemaRegistry(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def IsConcrete(primType: object) -> bool: ...
+    def IsConcrete(primType: str | pxr.Ar.ResolvedPath) -> bool:
+        """
+        Returns true if the prim type C{primType} is instantiable in scene
+        description.
+        """
     @staticmethod
     def IsDisallowedField(fieldName: str | pxr.Ar.ResolvedPath) -> bool:
         """
@@ -7397,7 +7459,10 @@ class SchemaRegistry(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def IsMultipleApplyAPISchema(apiSchemaType: object) -> bool: ...
+    def IsMultipleApplyAPISchema(apiSchemaType: str | pxr.Ar.ResolvedPath) -> bool:
+        """
+        Returns true if C{apiSchemaType} is a multiple-apply API schema type.
+        """
     @staticmethod
     def IsMultipleApplyNameTemplate(nameTemplate: str | pxr.Ar.ResolvedPath) -> bool:
         '''
