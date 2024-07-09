@@ -1262,6 +1262,24 @@ class UsdBoostDocstringSignatureGenerator(
 
         return py_sig._replace(args=args)
 
+    def _fix_schema_init(
+        self, ctx: FunctionContext, sigs: list[FunctionSig]
+    ) -> list[FunctionSig]:
+        """
+        Many schema classes have the same arguments, and the python bindings have a subtle difference
+        that prevents the matcher classes from successfully matching
+        """
+        if ctx.name == "__init__" and len(sigs) >= 2:
+            all_args = [sig.args for sig in sigs]
+            args1 = [ArgSig("prim", "pxr.Usd.Prim", default=True)]
+            args2 = [ArgSig("schemaObj", "pxr.Usd.SchemaBase")]
+            if args1 in all_args and args2 in all_args:
+                index1 = all_args.index(args1)
+                # replace the use of a default argument with an empty overload
+                sigs[index1].args[0].default = False
+                return [FunctionSig("__init__", [], None)] + sigs
+        return sigs
+
     def _processs_sigs(
         self, sigs: list[FunctionSig], ctx: FunctionContext
     ) -> list[FunctionSig]:
@@ -1311,11 +1329,12 @@ class UsdBoostDocstringSignatureGenerator(
             )
 
             sigs = self.cleanup_sigs_types(sigs, ctx)
-            cpp_sigs_with_ptrs = reduce_overloads(
-                self.cleanup_sigs_types(cpp_sigs_with_ptrs, ctx)
+            cpp_sigs_with_ptrs = self._fix_schema_init(
+                ctx, reduce_overloads(self.cleanup_sigs_types(cpp_sigs_with_ptrs, ctx))
             )
-            cpp_sigs_without_ptrs = reduce_overloads(
-                self.cleanup_sigs_types(cpp_sigs_without_ptrs, ctx)
+            cpp_sigs_without_ptrs = self._fix_schema_init(
+                ctx,
+                reduce_overloads(self.cleanup_sigs_types(cpp_sigs_without_ptrs, ctx)),
             )
 
             tracker = SigTracker()
@@ -1374,6 +1393,7 @@ class UsdBoostDocstringSignatureGenerator(
                     )
 
             # loop through and cleanup types
+            orig_sigs = sigs[:]
             for overload_num, py_sig in enumerate(sigs):
                 cpp_sig = tracker.matches.get(overload_num)
                 if cpp_sig is None:
@@ -1382,7 +1402,7 @@ class UsdBoostDocstringSignatureGenerator(
                         "Could not find C++ info for overload",
                         ctx,
                         tracker.failures[overload_num],
-                        sigs,
+                        orig_sigs,
                         cpp_overloads,
                         overload_num,
                         cpp_ptrs=cpp_sigs_with_ptrs,
@@ -1613,9 +1633,18 @@ def main(outdir: str) -> None:
     # Change this to only see errors for particular modules:
     notifier.set_modules(
         [
-            # "pxr.UsdGeom",
+            "pxr.Sdf",
+            "pxr.Sdr",
+            "pxr.UsdGeom",
+            "pxr.UsdLux",
             "pxr.Usd",
-            # "pxr.Ar",
+            "pxr.Ar",
+            "pxr.Tf",
+        ]
+    )
+    notifier.set_keys(
+        [
+            "Could not find C++ info for overload",
         ]
     )
 

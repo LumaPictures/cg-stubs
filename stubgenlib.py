@@ -34,13 +34,19 @@ class Notifier:
         self._seen_msgs: defaultdict[tuple[str, str, str], int] = defaultdict(int)
         self._seen_keys: defaultdict[str, int] = defaultdict(int)
         self._modules: list[str] | None = None
+        self._keys: list[str] | None = None
 
     def set_modules(self, modules: list[str]) -> None:
         self._modules = modules
 
+    def set_keys(self, keys: list[str]) -> None:
+        self._keys = keys
+
     def warn(self, key: str, module: str, msg: str) -> None:
         if (key, module, msg) not in self._seen_msgs:
-            if self._modules is None or module in self._modules:
+            if (self._modules is None or module in self._modules) and (
+                self._keys is None or key in self._keys
+            ):
                 print(f"({module}) {key}: {msg}")
         self._seen_msgs[(key, module, msg)] += 1
         self._seen_keys[key] += 1
