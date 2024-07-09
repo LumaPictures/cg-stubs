@@ -77,7 +77,7 @@ class Framing(Boost.Python.instance):
         Creates an invalid framing, i.e., with empty display and data window.
         """
     @overload
-    def __init__(self, dataWindow: Framing) -> None:
+    def __init__(self, dataWindow: Framing, /) -> None:
         """
         Creates a framing with equal display and data window (and assuming
         square pixels).
@@ -136,7 +136,7 @@ class ScreenWindowParameters(Boost.Python.instance):
     Given a camera object, compute parameters suitable for setting up
     RenderMan.
     """
-    def __init__(self, arg2: pxr.Gf.Camera) -> None:
+    def __init__(self, arg2: pxr.Gf.Camera, /) -> None:
         """
         Constructs screenwindow parameter.
 

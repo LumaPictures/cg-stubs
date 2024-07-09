@@ -2250,7 +2250,7 @@ class LightListAPI(pxr.Usd.APISchemaBase):
 
         UsdPrim::RemoveAPI()
         """
-    def ComputeLightList(self, mode: LightListAPI.ComputeMode) -> list[pxr.Sdf.Path]:
+    def ComputeLightList(self, mode: LightListAPI.ComputeMode, /) -> list[pxr.Sdf.Path]:
         """
         Computes and returns the list of lights and light filters in the
         stage, optionally consulting a cached result.
@@ -2353,7 +2353,7 @@ class LightListAPI(pxr.Usd.APISchemaBase):
         Mark any stored lightlist as invalid, by setting the
         lightList:cacheBehavior attribute to ignore.
         """
-    def StoreLightList(self, : typing.Iterable[pxr.Sdf.Path | str]) -> None:
+    def StoreLightList(self, : typing.Iterable[pxr.Sdf.Path | str], /) -> None:
         '''
         Store the given paths as the lightlist for this prim.
 
@@ -2460,7 +2460,7 @@ class ListAPI(pxr.Usd.APISchemaBase):
 
         UsdPrim::RemoveAPI()
         """
-    def ComputeLightList(self, mode: LightListAPI.ComputeMode) -> list[pxr.Sdf.Path]:
+    def ComputeLightList(self, mode: LightListAPI.ComputeMode, /) -> list[pxr.Sdf.Path]:
         """
         Computes and returns the list of lights and light filters in the
         stage, optionally consulting a cached result.
@@ -2563,7 +2563,7 @@ class ListAPI(pxr.Usd.APISchemaBase):
         Mark any stored lightlist as invalid, by setting the
         lightList:cacheBehavior attribute to ignore.
         """
-    def StoreLightList(self, : typing.Iterable[pxr.Sdf.Path | str]) -> None:
+    def StoreLightList(self, : typing.Iterable[pxr.Sdf.Path | str], /) -> None:
         '''
         Store the given paths as the lightlist for this prim.
 
@@ -4357,17 +4357,15 @@ class VolumeLightAPI(pxr.Usd.APISchemaBase):
 
 class _CanApplyResult(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    def __init__(self, arg2: bool, arg3: object) -> None: ...
+    def __init__(self, arg2: bool, arg3: object, /) -> None: ...
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
-    def __getitem__(self, arg2: int) -> Any: ...
-    def __iter__(self) -> typing.Iterator[Any]:
-        """def __iter__(self) -> typing.Iterator[Any]"""
+    def __getitem__(self, arg2: int, /) -> Any: ...
     def __ne__(self, other: object) -> bool: ...
     @property
     def whyNot(self): ...
 
-def BlackbodyTemperatureAsRgb(colorTemp: float) -> pxr.Gf.Vec3f:
+def BlackbodyTemperatureAsRgb(colorTemp: float, /) -> pxr.Gf.Vec3f:
     """
     Compute the RGB equivalent of the spectrum emitted by a blackbody with
     the given temperature in degrees Kelvin, with normalized luminance.

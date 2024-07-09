@@ -557,7 +557,7 @@ class Attribute(Property):
         to these objects.
         """
     def Set(self, value: object, time: TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool: ...
-    def SetColorSpace(self, colorSpace: str | pxr.Ar.ResolvedPath) -> None:
+    def SetColorSpace(self, colorSpace: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Sets the color space of the attribute to C{colorSpace}.
 
@@ -1721,7 +1721,7 @@ class CollectionAPI(APISchemaBase):
         as it preserves SchemaBase state.
         """
     @overload
-    def __init__(self, schemaObj: Prim, name: str | pxr.Ar.ResolvedPath) -> None:
+    def __init__(self, schemaObj: Prim, name: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Construct a UsdCollectionAPI on the prim held by C{schemaObj} with
         name C{name}.
@@ -2114,7 +2114,7 @@ class CollectionAPI(APISchemaBase):
         """
     @overload
     @staticmethod
-    def GetSchemaAttributeNames(includeInherited: bool, includeInherited: str | pxr.Ar.ResolvedPath) -> list[str]:
+    def GetSchemaAttributeNames(includeInherited: bool, /, includeInherited: str | pxr.Ar.ResolvedPath) -> list[str]:
         """
         Return a vector of names of all pre-declared attributes for this
         schema class and all its ancestor classes for a given instance name.
@@ -2150,7 +2150,7 @@ class CollectionAPI(APISchemaBase):
         UsdCollectionAPI::ExcludePath()
         """
     @staticmethod
-    def IsCollectionAPIPath(path: pxr.Sdf.Path | str) -> bool:
+    def IsCollectionAPIPath(path: pxr.Sdf.Path | str, /) -> bool:
         """
         Checks if the given path C{path} is of an API schema of type
         CollectionAPI.
@@ -2500,7 +2500,7 @@ class Inherits(Boost.Python.instance):
         Removes the specified path from the inheritPaths listOp at the current
         EditTarget.
         """
-    def SetInherits(self, items: typing.Iterable[pxr.Sdf.Path | str]) -> bool:
+    def SetInherits(self, items: typing.Iterable[pxr.Sdf.Path | str], /) -> bool:
         """
         Explicitly set the inherited paths, potentially blocking weaker
         opinions that add or remove items, returning true on success, false if
@@ -2710,7 +2710,7 @@ class ModelAPI(APISchemaBase):
         Return true if this prim represents a model, based on its kind
         metadata.
         """
-    def SetAssetIdentifier(self, identifier: pxr.Sdf.AssetPath | str) -> None:
+    def SetAssetIdentifier(self, identifier: pxr.Sdf.AssetPath | str, /) -> None:
         """
         Sets the model's asset identifier to the given asset path,
         C{identifier}.
@@ -2719,12 +2719,12 @@ class ModelAPI(APISchemaBase):
 
         GetAssetIdentifier()
         """
-    def SetAssetInfo(self, info: dict) -> None:
+    def SetAssetInfo(self, info: dict, /) -> None:
         """
         Sets the model's assetInfo dictionary to C{info} in the current edit
         target.
         """
-    def SetAssetName(self, assetName: str | pxr.Ar.ResolvedPath) -> None:
+    def SetAssetName(self, assetName: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Sets the model's asset name to C{assetName}.
 
@@ -2732,7 +2732,7 @@ class ModelAPI(APISchemaBase):
 
         GetAssetName()
         """
-    def SetAssetVersion(self, version: str | pxr.Ar.ResolvedPath) -> None:
+    def SetAssetVersion(self, version: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Sets the model's asset version string.
 
@@ -2750,7 +2750,7 @@ class ModelAPI(APISchemaBase):
 
         UsdPrim::SetKind
         """
-    def SetPayloadAssetDependencies(self, assetDeps: pxr.Sdf.AssetPathArray) -> None:
+    def SetPayloadAssetDependencies(self, assetDeps: pxr.Sdf.AssetPathArray, /) -> None:
         """
         Sets the list of external asset dependencies referenced inside the
         payload of a model.
@@ -2770,7 +2770,7 @@ class NamespaceEditor(Boost.Python.instance):
     scenarios. It is currently not feature-complete and subject to change.
     Provides namespace editing operations
     """
-    def __init__(self, stage: Stage) -> None: ...
+    def __init__(self, stage: Stage, /) -> None: ...
     def ApplyEdits(self) -> bool:
         """
         Applies all the added namespace edits stored in this to namespace
@@ -2793,7 +2793,7 @@ class NamespaceEditor(Boost.Python.instance):
         is provided, the reasons ApplyEdits would fail will be copied to
         whyNot.
         """
-    def DeletePrim(self, prim: Prim) -> bool:
+    def DeletePrim(self, prim: Prim, /) -> bool:
         """
         Adds an edit operation to delete the composed prim at the path of
         C{prim} from this namespace editor's stage.
@@ -2804,7 +2804,7 @@ class NamespaceEditor(Boost.Python.instance):
         Returns true if the prim provides a valid possible composed prim path;
         returns false and emits a coding error if not.
         """
-    def DeletePrimAtPath(self, path: pxr.Sdf.Path | str) -> bool:
+    def DeletePrimAtPath(self, path: pxr.Sdf.Path | str, /) -> bool:
         """
         Adds an edit operation to delete the composed prim at the given
         C{path} from this namespace editor's stage.
@@ -2813,7 +2813,7 @@ class NamespaceEditor(Boost.Python.instance):
         Returns true if the path is a valid possible composed prim path;
         returns false and emits a coding error if not.
         """
-    def DeleteProperty(self, property: Property | pxr.UsdGeom.XformOp) -> bool:
+    def DeleteProperty(self, property: Property | pxr.UsdGeom.XformOp, /) -> bool:
         """
         Adds an edit operation to delete the composed property at the path of
         C{property} from this namespace editor's stage.
@@ -2824,7 +2824,7 @@ class NamespaceEditor(Boost.Python.instance):
         Returns true if the property provides a valid possible composed
         property path; returns false and emits a coding error if not.
         """
-    def DeletePropertyAtPath(self, path: pxr.Sdf.Path | str) -> bool:
+    def DeletePropertyAtPath(self, path: pxr.Sdf.Path | str, /) -> bool:
         """
         Adds an edit operation to delete the composed property at the given
         C{path} from this namespace editor's stage.
@@ -2833,7 +2833,7 @@ class NamespaceEditor(Boost.Python.instance):
         Returns true if the path is a valid possible composed property path;
         returns false and emits a coding error if not.
         """
-    def MovePrimAtPath(self, path: pxr.Sdf.Path | str, newPath: pxr.Sdf.Path | str) -> bool:
+    def MovePrimAtPath(self, path: pxr.Sdf.Path | str, newPath: pxr.Sdf.Path | str, /) -> bool:
         """
         Adds an edit operation to move the composed prim at the given C{path}
         on this namespace editor's stage to instead be at the path C{newPath}.
@@ -2843,7 +2843,7 @@ class NamespaceEditor(Boost.Python.instance):
         Returns true if both paths are valid possible composed prim path;
         returns false and emits a coding error if not.
         """
-    def MovePropertyAtPath(self, path: pxr.Sdf.Path | str, newPath: pxr.Sdf.Path | str) -> bool:
+    def MovePropertyAtPath(self, path: pxr.Sdf.Path | str, newPath: pxr.Sdf.Path | str, /) -> bool:
         """
         Adds an edit operation to move the composed property at the given
         C{path} on this namespace editor's stage to instead be at the path
@@ -2853,7 +2853,7 @@ class NamespaceEditor(Boost.Python.instance):
         Returns true if both paths are valid possible composed property path;
         returns false and emits a coding error if not.
         """
-    def RenamePrim(self, prim: Prim, newName: str | pxr.Ar.ResolvedPath) -> bool:
+    def RenamePrim(self, prim: Prim, newName: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Adds an edit operation to rename the composed prim at the path of
         C{prim} on this namespace editor's stage to instead have the name
@@ -2864,7 +2864,7 @@ class NamespaceEditor(Boost.Python.instance):
         and the new name is a valid possible prim name; returns false and
         emits a coding error if not.
         """
-    def RenameProperty(self, property: Property | pxr.UsdGeom.XformOp, newName: str | pxr.Ar.ResolvedPath) -> bool:
+    def RenameProperty(self, property: Property | pxr.UsdGeom.XformOp, newName: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Adds an edit operation to rename the composed property at the path of
         C{property} on this namespace editor's stage to instead have the name
@@ -2876,7 +2876,7 @@ class NamespaceEditor(Boost.Python.instance):
         returns false and emits a coding error if not.
         """
     @overload
-    def ReparentPrim(self, prim: Prim, newParent: Prim) -> bool:
+    def ReparentPrim(self, prim: Prim, newParent: Prim, /) -> bool:
         """
         Adds an edit operation to reparent the composed prim at the path of
         C{prim} on this namespace editor's stage to instead be a namespace
@@ -2888,7 +2888,7 @@ class NamespaceEditor(Boost.Python.instance):
         error if not.
         """
     @overload
-    def ReparentPrim(self, prim: Prim, newParent: Prim, newName: str | pxr.Ar.ResolvedPath) -> bool:
+    def ReparentPrim(self, prim: Prim, newParent: Prim, newName: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Adds an edit operation to reparent the composed prim at the path of
         C{prim} on this namespace editor's stage to instead be a prim named
@@ -2901,7 +2901,7 @@ class NamespaceEditor(Boost.Python.instance):
         name; returns false and emits a coding error if not.
         """
     @overload
-    def ReparentProperty(self, property: Property | pxr.UsdGeom.XformOp, newParent: Prim) -> bool:
+    def ReparentProperty(self, property: Property | pxr.UsdGeom.XformOp, newParent: Prim, /) -> bool:
         """
         Adds an edit operation to reparent the composed property at the path
         of C{property} on this namespace editor's stage to instead be a
@@ -2913,7 +2913,7 @@ class NamespaceEditor(Boost.Python.instance):
         error if not.
         """
     @overload
-    def ReparentProperty(self, property: Property | pxr.UsdGeom.XformOp, newParent: Prim, newName: str | pxr.Ar.ResolvedPath) -> bool:
+    def ReparentProperty(self, property: Property | pxr.UsdGeom.XformOp, newParent: Prim, newName: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Adds an edit operation to reparent the composed property at the path
         of C{property} on this namespace editor's stage to instead be a
@@ -3015,7 +3015,7 @@ class Notice(Boost.Python.instance):
             """Raises an exception
             This class cannot be instantiated from Python
             """
-        def AffectedObject(self, obj: Object | pxr.UsdGeom.XformOp) -> bool:
+        def AffectedObject(self, obj: Object | pxr.UsdGeom.XformOp, /) -> bool:
             """
             Return true if C{obj} was possibly affected by the layer changes that
             generated this notice.
@@ -3027,7 +3027,7 @@ class Notice(Boost.Python.instance):
               ResyncedObject(obj) || ResolvedAssetPathsResynced(obj) || ChangedInfoOnly(obj)
 
             """
-        def ChangedInfoOnly(self, obj: Object | pxr.UsdGeom.XformOp) -> bool:
+        def ChangedInfoOnly(self, obj: Object | pxr.UsdGeom.XformOp, /) -> bool:
             """
             Return true if C{obj} was changed but not resynced by the layer
             changes that generated this notice.
@@ -3037,7 +3037,7 @@ class Notice(Boost.Python.instance):
             GetChangedInfoOnlyPaths() .
             """
         @overload
-        def GetChangedFields(self, obj: Object | pxr.UsdGeom.XformOp) -> list[str]:
+        def GetChangedFields(self, obj: Object | pxr.UsdGeom.XformOp, /) -> list[str]:
             """
             Return the set of changed fields in layers that affected C{obj}.
 
@@ -3053,7 +3053,7 @@ class Notice(Boost.Python.instance):
             composed value returned by GetMetadata() will not have changed.
             """
         @overload
-        def GetChangedFields(self, path: pxr.Sdf.Path | str) -> list[str]:
+        def GetChangedFields(self, path: pxr.Sdf.Path | str, /) -> list[str]:
             """
             This is an overloaded member function, provided for convenience. It
             differs from the above function only in what argument(s) it accepts.
@@ -3115,7 +3115,7 @@ class Notice(Boost.Python.instance):
             to'/foo/bar.x'is implied by the resync of'/foo'.
             """
         @overload
-        def HasChangedFields(self, obj: Object | pxr.UsdGeom.XformOp) -> bool:
+        def HasChangedFields(self, obj: Object | pxr.UsdGeom.XformOp, /) -> bool:
             """
             Return true if there are any changed fields that affected C{obj},
             false otherwise.
@@ -3124,12 +3124,12 @@ class Notice(Boost.Python.instance):
             See GetChangedFields for more details.
             """
         @overload
-        def HasChangedFields(self, path: pxr.Sdf.Path | str) -> bool:
+        def HasChangedFields(self, path: pxr.Sdf.Path | str, /) -> bool:
             """
             This is an overloaded member function, provided for convenience. It
             differs from the above function only in what argument(s) it accepts.
             """
-        def ResolvedAssetPathsResynced(self, obj: Object | pxr.UsdGeom.XformOp) -> bool:
+        def ResolvedAssetPathsResynced(self, obj: Object | pxr.UsdGeom.XformOp, /) -> bool:
             """
             Return true if asset path values in C{obj} were resynced by the layer
             changes that generated this notice.
@@ -3138,7 +3138,7 @@ class Notice(Boost.Python.instance):
             This is the case if the object's path or an ancestor path is present
             in GetResolvedAssetPathsResyncedPaths() .
             """
-        def ResyncedObject(self, obj: Object | pxr.UsdGeom.XformOp) -> bool:
+        def ResyncedObject(self, obj: Object | pxr.UsdGeom.XformOp, /) -> bool:
             """
             Return true if C{obj} was resynced by the layer changes that generated
             this notice.
@@ -3708,7 +3708,7 @@ class Payloads(Boost.Python.instance):
 
         ListOps and List Editing
         """
-    def SetPayloads(self, items: list[pxr.Sdf.Payload]) -> bool:
+    def SetPayloads(self, items: list[pxr.Sdf.Payload], /) -> bool:
         """
         Explicitly set the payloads, potentially blocking weaker opinions that
         add or remove items.
@@ -3788,7 +3788,7 @@ class Prim(Object):
         """
         Construct an invalid prim.
         """
-    def AddAppliedSchema(self, appliedSchemaName: str | pxr.Ar.ResolvedPath) -> bool:
+    def AddAppliedSchema(self, appliedSchemaName: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Adds the applied API schema name token C{appliedSchemaName} to the
         *apiSchemas* metadata for this prim at the current edit target.
@@ -4323,14 +4323,14 @@ class Prim(Object):
         See Prim predicate flags and UsdPrimDefaultPredicate for more
         information.
         """
-    def GetFilteredChildrenNames(self, predicate: _PrimFlagsPredicate | _Term) -> list[str]:
+    def GetFilteredChildrenNames(self, predicate: _PrimFlagsPredicate | _Term, /) -> list[str]:
         """
         Return the names of the child prims in the order they appear when
         iterating over GetFilteredChildren( C{predicate}).
 
 
         """
-    def GetFilteredNextSibling(self, predicate: _PrimFlagsPredicate | _Term) -> Prim:
+    def GetFilteredNextSibling(self, predicate: _PrimFlagsPredicate | _Term, /) -> Prim:
         """
         Return this prim's next sibling that matches C{predicate} if it has
         one, otherwise return the invalid UsdPrim.
@@ -4736,7 +4736,7 @@ class Prim(Object):
         actual type of the prim, use GetPrimTypeInfo instead as it accounts
         for recognized schemas, applied API schemas, fallback types, etc.
         """
-    def GetVariantSet(self, variantSetName: str | pxr.Ar.ResolvedPath) -> VariantSet:
+    def GetVariantSet(self, variantSetName: str | pxr.Ar.ResolvedPath, /) -> VariantSet:
         """
         Retrieve a specifically named VariantSet for editing or constructing a
         UsdEditTarget.
@@ -4757,7 +4757,7 @@ class Prim(Object):
         to the prim.
         """
     @overload
-    def GetVersionIfHasAPIInFamily(self, schemaFamily: str | pxr.Ar.ResolvedPath) -> int:
+    def GetVersionIfHasAPIInFamily(self, schemaFamily: str | pxr.Ar.ResolvedPath, /) -> int:
         """
         Return true if the prim has an applied API schema that is any version
         the schemas in the given C{schemaFamily} and if so, populates
@@ -4774,7 +4774,7 @@ class Prim(Object):
         will be populated in C{schemaVersion}.
         """
     @overload
-    def GetVersionIfHasAPIInFamily(self, schemaFamily: str | pxr.Ar.ResolvedPath, instanceName: str | pxr.Ar.ResolvedPath) -> int:
+    def GetVersionIfHasAPIInFamily(self, schemaFamily: str | pxr.Ar.ResolvedPath, instanceName: str | pxr.Ar.ResolvedPath, /) -> int:
         """
         Return true if the prim has a specific instance C{instanceName} of an
         applied multiple-apply API schema that is any version the schemas in
@@ -4789,7 +4789,7 @@ class Prim(Object):
         C{instanceName}, the highest version number of these schemas will be
         populated in C{schemaVersion}.
         """
-    def GetVersionIfIsInFamily(self, schemaFamily: str | pxr.Ar.ResolvedPath) -> int:
+    def GetVersionIfIsInFamily(self, schemaFamily: str | pxr.Ar.ResolvedPath, /) -> int:
         """
         Return true if the prim's schema type, is or inherits from the schema
         type of any version the schema in the given C{schemaFamily} and if so,
@@ -5201,7 +5201,7 @@ class Prim(Object):
 
         See UsdStage::Load for additional details.
         """
-    def MakeResolveTargetStrongerThanEditTarget(self, editTarget: EditTarget | pxr.Sdf.Layer) -> ResolveTarget:
+    def MakeResolveTargetStrongerThanEditTarget(self, editTarget: EditTarget | pxr.Sdf.Layer, /) -> ResolveTarget:
         """
         Creates and returns a resolve target that, when passed to a
         UsdAttributeQuery for one of this prim's attributes, causes value
@@ -5212,7 +5212,7 @@ class Prim(Object):
         If the edit target would not affect any specs that could contribute to
         this prim, a null resolve target is returned.
         """
-    def MakeResolveTargetUpToEditTarget(self, editTarget: EditTarget | pxr.Sdf.Layer) -> ResolveTarget:
+    def MakeResolveTargetUpToEditTarget(self, editTarget: EditTarget | pxr.Sdf.Layer, /) -> ResolveTarget:
         """
         Creates and returns a resolve target that, when passed to a
         UsdAttributeQuery for one of this prim's attributes, causes value
@@ -5269,7 +5269,7 @@ class Prim(Object):
 
 
         """
-    def RemoveAppliedSchema(self, appliedSchemaName: str | pxr.Ar.ResolvedPath) -> bool:
+    def RemoveAppliedSchema(self, appliedSchemaName: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Removes the applied API schema name token C{appliedSchemaName} from
         the *apiSchemas* metadata for this prim at the current edit target.
@@ -5473,19 +5473,19 @@ class PrimCompositionQuery(Boost.Python.instance):
         weakest regardless of the filter.
         """
     @staticmethod
-    def GetDirectInherits(prim: Prim) -> PrimCompositionQuery:
+    def GetDirectInherits(prim: Prim, /) -> PrimCompositionQuery:
         """
         Returns a prim composition query for the given C{prim} with a preset
         filter that only returns inherit arcs that are not ancestral.
         """
     @staticmethod
-    def GetDirectReferences(prim: Prim) -> PrimCompositionQuery:
+    def GetDirectReferences(prim: Prim, /) -> PrimCompositionQuery:
         """
         Returns a prim composition query for the given C{prim} with a preset
         filter that only returns reference arcs that are not ancestral.
         """
     @staticmethod
-    def GetDirectRootLayerArcs(prim: Prim) -> PrimCompositionQuery:
+    def GetDirectRootLayerArcs(prim: Prim, /) -> PrimCompositionQuery:
         """
         Returns a prim composition query for the given C{prim} with a preset
         filter that only returns direct arcs that were introduced by opinions
@@ -5858,7 +5858,7 @@ class PrimDefinition(Boost.Python.instance):
         Returns the list of names of metadata fields that are defined by this
         prim definition for the prim itself.
         """
-    def ListPropertyMetadataFields(self, propName: str | pxr.Ar.ResolvedPath) -> list[str]:
+    def ListPropertyMetadataFields(self, propName: str | pxr.Ar.ResolvedPath, /) -> list[str]:
         """
         Returns the list of names of metadata fields that are defined by this
         prim definition for property C{propName} if a property named
@@ -6617,7 +6617,7 @@ class References(Boost.Python.instance):
 
         ListOps and List Editing
         """
-    def SetReferences(self, items: list[pxr.Sdf.Reference]) -> bool:
+    def SetReferences(self, items: list[pxr.Sdf.Reference], /) -> bool:
         """
         Explicitly set the references, potentially blocking weaker opinions
         that add or remove items.
@@ -7111,7 +7111,7 @@ class SchemaRegistry(Boost.Python.instance):
         names: ClassVar[dict] = ...
         values: ClassVar[dict] = ...
     def __init__(self) -> None: ...
-    def BuildComposedPrimDefinition(self, primType: str | pxr.Ar.ResolvedPath, appliedAPISchemas: list[str] | list[pxr.Ar.ResolvedPath]) -> PrimDefinition:
+    def BuildComposedPrimDefinition(self, primType: str | pxr.Ar.ResolvedPath, appliedAPISchemas: list[str] | list[pxr.Ar.ResolvedPath], /) -> PrimDefinition:
         """
         Composes and returns a new UsdPrimDefinition from the given
         C{primType} and list of C{appliedSchemas}.
@@ -7481,7 +7481,7 @@ class SchemaRegistry(Boost.Python.instance):
         Returns true if the prim type C{primType} inherits from UsdTyped.
         """
     @staticmethod
-    def MakeMultipleApplyNameInstance(nameTemplate: str | pxr.Ar.ResolvedPath, nameTemplate: str | pxr.Ar.ResolvedPath) -> str:
+    def MakeMultipleApplyNameInstance(nameTemplate: str | pxr.Ar.ResolvedPath, /, nameTemplate: str | pxr.Ar.ResolvedPath) -> str:
         '''
         Returns an instance of a multiple apply schema name from the given
         C{nameTemplate} for the given C{instanceName}.
@@ -7499,7 +7499,7 @@ class SchemaRegistry(Boost.Python.instance):
         treated as a placeholder and substituted with the instance name.
         '''
     @staticmethod
-    def MakeMultipleApplyNameTemplate(namespacePrefix: str | pxr.Ar.ResolvedPath, namespacePrefix: str | pxr.Ar.ResolvedPath) -> str:
+    def MakeMultipleApplyNameTemplate(namespacePrefix: str | pxr.Ar.ResolvedPath, /, namespacePrefix: str | pxr.Ar.ResolvedPath) -> str:
         '''
         Creates a name template that can represent a property or API schema
         that belongs to a multiple apply schema and will therefore have
@@ -7599,7 +7599,7 @@ class Specializes(Boost.Python.instance):
         Removes the specified path from the specializes listOp at the current
         EditTarget.
         """
-    def SetSpecializes(self, items: typing.Iterable[pxr.Sdf.Path | str]) -> bool:
+    def SetSpecializes(self, items: typing.Iterable[pxr.Sdf.Path | str], /) -> bool:
         """
         Explicitly set specializes paths, potentially blocking weaker opinions
         that add or remove items, returning true on success, false if the edit
@@ -7711,7 +7711,7 @@ class Stage(Boost.Python.instance):
          Note that this function always authors to the stage's root layer. To
         author to a different layer, use the SdfLayer::SetDefaultPrim() API.
         """
-    def ClearMetadata(self, key: str | pxr.Ar.ResolvedPath) -> bool:
+    def ClearMetadata(self, key: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Clear the value of stage metadatum C{key}, if the stage's current
         UsdEditTarget is the root or session layer.
@@ -7724,7 +7724,7 @@ class Stage(Boost.Python.instance):
 
         General Metadata in USD
         """
-    def ClearMetadataByDictKey(self, key: str | pxr.Ar.ResolvedPath, keyPath: str | pxr.Ar.ResolvedPath) -> bool:
+    def ClearMetadataByDictKey(self, key: str | pxr.Ar.ResolvedPath, keyPath: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Clear any authored value identified by C{key} and C{keyPath} at the
         current EditTarget.
@@ -8039,7 +8039,7 @@ class Stage(Boost.Python.instance):
         Return the stage's EditTarget.
         """
     @overload
-    def GetEditTargetForLocalLayer(self, i: int) -> EditTarget:
+    def GetEditTargetForLocalLayer(self, i: int, /) -> EditTarget:
         """
         Return a UsdEditTarget for editing the layer at index *i* in the layer
         stack.
@@ -8049,7 +8049,7 @@ class Stage(Boost.Python.instance):
         to the sublayer.
         """
     @overload
-    def GetEditTargetForLocalLayer(self, layer: pxr.Sdf.Layer) -> EditTarget:
+    def GetEditTargetForLocalLayer(self, layer: pxr.Sdf.Layer, /) -> EditTarget:
         """
         Return a UsdEditTarget for editing the given local *layer*.
 
@@ -8121,8 +8121,8 @@ class Stage(Boost.Python.instance):
 
         See Working Set Management for more information.
         """
-    def GetMetadata(self, arg2: object) -> Any: ...
-    def GetMetadataByDictKey(self, arg2: object, arg3: object) -> Any: ...
+    def GetMetadata(self, arg2: object, /) -> Any: ...
+    def GetMetadataByDictKey(self, arg2: object, arg3: object, /) -> Any: ...
     def GetMutedLayers(self) -> list[str]:
         """
         Returns a vector of all layers that have been muted on this stage.
@@ -8277,7 +8277,7 @@ class Stage(Boost.Python.instance):
         of the layers that this stage has had to open so far to perform value
         resolution of attributes affected by Value Clips
         """
-    def HasAuthoredMetadata(self, key: str | pxr.Ar.ResolvedPath) -> bool:
+    def HasAuthoredMetadata(self, key: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Returns C{true} if the *key* has an authored value, C{false} if no
         value was authored or the only value available is the SdfSchema 's
@@ -8290,7 +8290,7 @@ class Stage(Boost.Python.instance):
         or use of certain low-level API's), this method will still return
         C{false}.
         """
-    def HasAuthoredMetadataDictKey(self, key: str | pxr.Ar.ResolvedPath, keyPath: str | pxr.Ar.ResolvedPath) -> bool:
+    def HasAuthoredMetadataDictKey(self, key: str | pxr.Ar.ResolvedPath, keyPath: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Return true if there exists any authored opinion (excluding fallbacks)
         for C{key} and C{keyPath}.
@@ -8326,7 +8326,7 @@ class Stage(Boost.Python.instance):
         Return true if *layer* is one of the layers in this stage's local,
         root layerStack.
         """
-    def HasMetadata(self, key: str | pxr.Ar.ResolvedPath) -> bool:
+    def HasMetadata(self, key: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Returns true if the *key* has a meaningful value, that is, if
         GetMetadata() will provide a value, either because it was authored or
@@ -8336,7 +8336,7 @@ class Stage(Boost.Python.instance):
 
         Returns false if C{key} is not allowed as layer metadata.
         """
-    def HasMetadataDictKey(self, key: str | pxr.Ar.ResolvedPath, keyPath: str | pxr.Ar.ResolvedPath) -> bool:
+    def HasMetadataDictKey(self, key: str | pxr.Ar.ResolvedPath, keyPath: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Return true if there exists any authored or fallback opinion for
         C{key} and C{keyPath}.
@@ -8727,7 +8727,7 @@ class Stage(Boost.Python.instance):
 
         GetColorConfigFallbacks() Color Configuration API
         """
-    def SetColorConfiguration(self, colorConfig: pxr.Sdf.AssetPath | str) -> None:
+    def SetColorConfiguration(self, colorConfig: pxr.Sdf.AssetPath | str, /) -> None:
         """
         Sets the default color configuration to be used to interpret the per-
         attribute color-spaces in the composed USD stage.
@@ -8738,7 +8738,7 @@ class Stage(Boost.Python.instance):
 
         Color Configuration API
         """
-    def SetColorManagementSystem(self, cms: str | pxr.Ar.ResolvedPath) -> None:
+    def SetColorManagementSystem(self, cms: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Sets the name of the color management system used to interpret the
         color configuration file pointed at by the colorConfiguration
@@ -8771,7 +8771,7 @@ class Stage(Boost.Python.instance):
         EditTarget and send UsdNotice::StageChangedEditTarget. Otherwise do
         nothing.
         """
-    def SetEndTimeCode(self, : float) -> None:
+    def SetEndTimeCode(self, : float, /) -> None:
         """
         Sets the stage's end timeCode.
 
@@ -8781,7 +8781,7 @@ class Stage(Boost.Python.instance):
         the current EditTarget is neither, a warning is issued and the end
         timeCode is not set.
         """
-    def SetFramesPerSecond(self, framesPerSecond: float) -> None:
+    def SetFramesPerSecond(self, framesPerSecond: float, /) -> None:
         """
         Sets the stage's framesPerSecond value.
 
@@ -8794,7 +8794,7 @@ class Stage(Boost.Python.instance):
         GetFramesPerSecond()
         """
     @staticmethod
-    def SetGlobalVariantFallbacks(fallbacks: dict) -> None:
+    def SetGlobalVariantFallbacks(fallbacks: dict, /) -> None:
         """
         Set the global variant fallback preferences used in new UsdStages.
 
@@ -8804,7 +8804,7 @@ class Stage(Boost.Python.instance):
 
         This does not affect existing UsdStages.
         """
-    def SetInterpolationType(self, interpolationType: InterpolationType) -> None:
+    def SetInterpolationType(self, interpolationType: InterpolationType, /) -> None:
         """
         Sets the interpolation type used during value resolution for all
         attributes on this stage.
@@ -8827,13 +8827,13 @@ class Stage(Boost.Python.instance):
 
         See Working Set Management for more information.
         """
-    def SetMetadata(self, arg2: object, arg3: object) -> bool: ...
-    def SetMetadataByDictKey(self, arg2: object, arg3: object, arg4: object) -> bool: ...
+    def SetMetadata(self, arg2: object, arg3: object, /) -> bool: ...
+    def SetMetadataByDictKey(self, arg2: object, arg3: object, arg4: object, /) -> bool: ...
     def SetPopulationMask(self, mask: StagePopulationMask) -> None:
         """
         Set this stage's population mask and recompose the stage.
         """
-    def SetStartTimeCode(self, : float) -> None:
+    def SetStartTimeCode(self, : float, /) -> None:
         """
         Sets the stage's start timeCode.
 
@@ -8843,7 +8843,7 @@ class Stage(Boost.Python.instance):
         the current EditTarget is neither, a warning is issued and the start
         timeCode is not set.
         """
-    def SetTimeCodesPerSecond(self, timeCodesPerSecond: float) -> None:
+    def SetTimeCodesPerSecond(self, timeCodesPerSecond: float, /) -> None:
         """
         Sets the stage's timeCodesPerSecond value.
 
@@ -9049,7 +9049,7 @@ class StageCache(Boost.Python.instance):
         Default construct an empty cache.
         """
     @overload
-    def __init__(self, other: StageCache) -> None:
+    def __init__(self, other: StageCache, /) -> None:
         """
         Construct a new cache as a copy of C{other}.
         """
@@ -9249,7 +9249,7 @@ class StageCache(Boost.Python.instance):
         """
         Return true if this cache holds no stages, false otherwise.
         """
-    def SetDebugName(self, debugName: str | pxr.Ar.ResolvedPath) -> None:
+    def SetDebugName(self, debugName: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Assign a debug name to this cache.
 
@@ -9262,7 +9262,7 @@ class StageCache(Boost.Python.instance):
         """
         Return the number of stages present in this cache.
         """
-    def swap(self, arg2: StageCache) -> None: ...
+    def swap(self, arg2: StageCache, /) -> None: ...
 
 class StageCacheContext(Boost.Python.instance):
     """
@@ -9315,14 +9315,14 @@ class StageCacheContext(Boost.Python.instance):
     influence calls to UsdStage::Open() from a different thread.
     """
     @overload
-    def __init__(self, arg2: _NonPopulatingStageCacheWrapper) -> None: ...
+    def __init__(self, arg2: _NonPopulatingStageCacheWrapper, /) -> None: ...
     @overload
-    def __init__(self, cache: StageCache) -> None:
+    def __init__(self, cache: StageCache, /) -> None:
         """
         Bind a cache for calls to UsdStage::Open() to read from and write to.
         """
     @overload
-    def __init__(self, arg2: object) -> None: ...
+    def __init__(self, arg2: object, /) -> None: ...
     def __enter__(self) -> None: ...
     def __exit__(self, type: type[BaseException] | None, value: BaseException | None, traceback: types.TracebackType | None) -> None: ...
 
@@ -9377,7 +9377,7 @@ class StageLoadRules(Boost.Python.instance):
         Construct rules that load all payloads.
         """
     @overload
-    def __init__(self, : StageLoadRules) -> None: ...
+    def __init__(self, : StageLoadRules, /) -> None: ...
     def AddRule(self, path: pxr.Sdf.Path | str, rule: StageLoadRules.Rule) -> None:
         """
         Add a literal rule. If there's already a rule for C{path}, replace it.
@@ -9536,15 +9536,15 @@ class StagePopulationMask(Boost.Python.instance):
         Construct an empty mask that includes no paths.
         """
     @overload
-    def __init__(self, arg2: object) -> None: ...
+    def __init__(self, arg2: object, /) -> None: ...
     @overload
-    def Add(self, other: StagePopulationMask) -> StagePopulationMask:
+    def Add(self, other: StagePopulationMask, /) -> StagePopulationMask:
         """
         Assign this mask to be its union with C{other} and return a reference
         to this mask.
         """
     @overload
-    def Add(self, path: pxr.Sdf.Path | str) -> StagePopulationMask:
+    def Add(self, path: pxr.Sdf.Path | str, /) -> StagePopulationMask:
         """
         Assign this mask to be its union with C{path} and return a reference
         to this mask.
@@ -9620,7 +9620,7 @@ class StagePopulationMask(Boost.Python.instance):
 
         """
     @staticmethod
-    def Intersection(l: StagePopulationMask, r: StagePopulationMask) -> StagePopulationMask:
+    def Intersection(l: StagePopulationMask, r: StagePopulationMask, /) -> StagePopulationMask:
         """
         Return a mask that is the intersection of C{l} and C{r}.
         """
@@ -9632,7 +9632,7 @@ class StagePopulationMask(Boost.Python.instance):
         Empty masks include no paths.
         """
     @staticmethod
-    def Union(l: StagePopulationMask, r: StagePopulationMask) -> StagePopulationMask:
+    def Union(l: StagePopulationMask, r: StagePopulationMask, /) -> StagePopulationMask:
         """
         Return a mask that is the union of C{l} and C{r}.
         """
@@ -9694,12 +9694,12 @@ class TimeCode(Boost.Python.instance):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, t: float) -> None:
+    def __init__(self, t: float, /) -> None:
         """
         Construct with optional time value. Impilicitly convert from double.
         """
     @overload
-    def __init__(self, timeCode: TimeCode | float | pxr.Sdf.TimeCode) -> None:
+    def __init__(self, timeCode: TimeCode | float | pxr.Sdf.TimeCode, /) -> None:
         """
         Construct and implicitly cast from SdfTimeCode.
         """
@@ -9910,7 +9910,7 @@ class UsdFileFormat(pxr.Sdf.FileFormat):
         This class cannot be instantiated from Python
         """
     @staticmethod
-    def GetUnderlyingFormatForLayer(layer: pxr.Sdf.Layer) -> str:
+    def GetUnderlyingFormatForLayer(layer: pxr.Sdf.Layer, /) -> str:
         '''
         Returns the value of the"format"argument to be used in the
         FileFormatArguments when exporting or saving the given layer.
@@ -10036,7 +10036,7 @@ class VariantSet(Boost.Python.instance):
 
         If there is no selection, return the empty string.
         """
-    def HasAuthoredVariant(self, variantName: str | pxr.Ar.ResolvedPath) -> bool:
+    def HasAuthoredVariant(self, variantName: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Returns true if this VariantSet already possesses a variant.
         """
@@ -10264,24 +10264,20 @@ class ZipFileWriter(Boost.Python.instance):
 
 class _CanApplyAPIResult(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    def __init__(self, arg2: bool, arg3: object) -> None: ...
+    def __init__(self, arg2: bool, arg3: object, /) -> None: ...
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
-    def __getitem__(self, arg2: int) -> Any: ...
-    def __iter__(self) -> typing.Iterator[Any]:
-        """def __iter__(self) -> typing.Iterator[Any]"""
+    def __getitem__(self, arg2: int, /) -> Any: ...
     def __ne__(self, other: object) -> bool: ...
     @property
     def whyNot(self): ...
 
 class _CanApplyResult(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    def __init__(self, arg2: bool, arg3: object) -> None: ...
+    def __init__(self, arg2: bool, arg3: object, /) -> None: ...
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
-    def __getitem__(self, arg2: int) -> Any: ...
-    def __iter__(self) -> typing.Iterator[Any]:
-        """def __iter__(self) -> typing.Iterator[Any]"""
+    def __getitem__(self, arg2: int, /) -> Any: ...
     def __ne__(self, other: object) -> bool: ...
     @property
     def whyNot(self): ...
@@ -10297,10 +10293,10 @@ class _PrimFlagsConjunction(_PrimFlagsPredicate):
         """Raises an exception
         This class cannot be instantiated from Python
         """
-    def __and__(self, arg2: _Term) -> Any: ...
-    def __iand__(self, arg2: _Term) -> Any: ...
+    def __and__(self, arg2: _Term, /) -> Any: ...
+    def __iand__(self, arg2: _Term, /) -> Any: ...
     def __invert__(self) -> Any: ...
-    def __rand__(self, arg2: _Term) -> Any: ...
+    def __rand__(self, arg2: _Term, /) -> Any: ...
 
 class _PrimFlagsDisjunction(_PrimFlagsPredicate):
     def __init__(self, *args, **kwargs) -> None:
@@ -10308,9 +10304,9 @@ class _PrimFlagsDisjunction(_PrimFlagsPredicate):
         This class cannot be instantiated from Python
         """
     def __invert__(self) -> Any: ...
-    def __ior__(self, arg2: _Term) -> Any: ...
-    def __or__(self, arg2: _Term) -> Any: ...
-    def __ror__(self, arg2: _Term) -> Any: ...
+    def __ior__(self, arg2: _Term, /) -> Any: ...
+    def __or__(self, arg2: _Term, /) -> Any: ...
+    def __ror__(self, arg2: _Term, /) -> Any: ...
 
 class _PrimFlagsPredicate(Boost.Python.instance):
     def __init__(self, *args, **kwargs) -> None:
@@ -10321,7 +10317,7 @@ class _PrimFlagsPredicate(Boost.Python.instance):
     def Contradiction() -> _PrimFlagsPredicate: ...
     @staticmethod
     def Tautology() -> _PrimFlagsPredicate: ...
-    def __call__(self, arg2: Prim) -> bool: ...
+    def __call__(self, arg2: Prim, /) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
     def __ne__(self, other: object) -> bool: ...
@@ -10331,21 +10327,19 @@ class _Term(Boost.Python.instance):
         """Raises an exception
         This class cannot be instantiated from Python
         """
-    def __and__(self, arg2: _Term) -> Any: ...
+    def __and__(self, arg2: _Term, /) -> Any: ...
     def __eq__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
     def __invert__(self) -> Any: ...
     def __ne__(self, other: object) -> bool: ...
-    def __or__(self, arg2: _Term) -> Any: ...
+    def __or__(self, arg2: _Term, /) -> Any: ...
 
 class _UsdNamespaceEditorCanEditResult(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    def __init__(self, arg2: bool, arg3: object) -> None: ...
+    def __init__(self, arg2: bool, arg3: object, /) -> None: ...
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
-    def __getitem__(self, arg2: int) -> Any: ...
-    def __iter__(self) -> typing.Iterator[Any]:
-        """def __iter__(self) -> typing.Iterator[Any]"""
+    def __getitem__(self, arg2: int, /) -> Any: ...
     def __ne__(self, other: object) -> bool: ...
     @property
     def whyNot(self): ...
@@ -10369,18 +10363,18 @@ def ComputeIncludedPathsFromCollection(query: UsdCollectionMembershipQuery, stag
     The result depends on the load state of the UsdStage, C{stage}.
     """
 @overload
-def Describe(: Object | pxr.UsdGeom.XformOp) -> str:
+def Describe(: Object | pxr.UsdGeom.XformOp, /) -> str:
     """
     Return a human-readable description.
     """
 @overload
-def Describe(: Stage) -> str:
+def Describe(: Stage, /) -> str:
     """
     This is an overloaded member function, provided for convenience. It
     differs from the above function only in what argument(s) it accepts.
     """
 @overload
-def Describe(: StageCache) -> str:
+def Describe(: StageCache, /) -> str:
     """
     This is an overloaded member function, provided for convenience. It
     differs from the above function only in what argument(s) it accepts.
@@ -10502,7 +10496,7 @@ def TraverseInstanceProxies(predicate: _PrimFlagsPredicate | _Term) -> _PrimFlag
     a prim traversal function with a default-constructed tautology
     predicate.
     """
-def UseButDoNotPopulateCache(cache: StageCache) -> _NonPopulatingStageCacheWrapper:
+def UseButDoNotPopulateCache(cache: StageCache, /) -> _NonPopulatingStageCacheWrapper:
     """
     Indicate that a UsdStageCacheContext should be bound in a read-only
     fashion.
@@ -10512,5 +10506,5 @@ def UseButDoNotPopulateCache(cache: StageCache) -> _NonPopulatingStageCacheWrapp
     a UsdStageCacheContext is present on the stack. See
     UsdStageCacheContext for more details and example use.
     """
-def _TestPrimRangeRoundTrip(arg1: object) -> Any: ...
-def _UnsafeGetStageForTesting(arg1: Object | pxr.UsdGeom.XformOp) -> Stage: ...
+def _TestPrimRangeRoundTrip(arg1: object, /) -> Any: ...
+def _UnsafeGetStageForTesting(arg1: Object | pxr.UsdGeom.XformOp, /) -> Stage: ...

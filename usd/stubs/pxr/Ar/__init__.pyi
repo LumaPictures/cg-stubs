@@ -158,7 +158,7 @@ class ResolvedPath(Boost.Python.instance):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, arg2: object) -> None: ...
+    def __init__(self, arg2: object, /) -> None: ...
     def GetPathString(self) -> str:
         """
         Return the resolved path held by this object as a string.
@@ -331,7 +331,7 @@ class Resolver(Boost.Python.instance):
         resolved paths. In this case, the assets'resolved paths must be
         consulted to determine if they are the same.
         """
-    def RefreshContext(self, context: ResolverContext) -> None:
+    def RefreshContext(self, context: ResolverContext, /) -> None:
         """
         Refresh any caches associated with the given context.
 
@@ -421,7 +421,7 @@ class ResolverContext(Boost.Python.instance):
         Construct an empty asset resolver context.
         """
     @overload
-    def __init__(self, arg2: object) -> None: ...
+    def __init__(self, arg2: object, /) -> None: ...
     def Get(self) -> list:
         """
         Returns pointer to the context object of the given type held in this
@@ -457,7 +457,7 @@ class ResolverContextBinder(Boost.Python.instance):
     Asset Resolver Context Operations
     """
     __instance_size__: ClassVar[int] = ...
-    def __init__(self, context: ResolverContext) -> None:
+    def __init__(self, context: ResolverContext, /) -> None:
         """
         Bind the given C{context} with the asset resolver.
 
@@ -508,12 +508,12 @@ class Timestamp(Boost.Python.instance):
         Create an invalid timestamp.
         """
     @overload
-    def __init__(self, time: float) -> None:
+    def __init__(self, time: float, /) -> None:
         """
         Create a timestamp at C{time}, which must be a Unix time value.
         """
     @overload
-    def __init__(self, time: Timestamp) -> None:
+    def __init__(self, time: Timestamp, /) -> None:
         """
         Create a timestamp at C{time}, which must be a Unix time value.
         """
@@ -539,12 +539,10 @@ class Timestamp(Boost.Python.instance):
 
 class _PyAnnotatedBoolResult(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    def __init__(self, arg2: bool, arg3: object) -> None: ...
+    def __init__(self, arg2: bool, arg3: object, /) -> None: ...
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
-    def __getitem__(self, arg2: int) -> Any: ...
-    def __iter__(self) -> typing.Iterator[Any]:
-        """def __iter__(self) -> typing.Iterator[Any]"""
+    def __getitem__(self, arg2: int, /) -> Any: ...
     def __ne__(self, other: object) -> bool: ...
     @property
     def whyNot(self): ...
@@ -660,4 +658,4 @@ def SplitPackageRelativePathOuter(path: str | ResolvedPath) -> tuple[str, str]:
          => ("a.pack", "b.pack[c.pack]")
 
     '''
-def _TestImplicitConversion(arg1: ResolverContext) -> ResolverContext: ...
+def _TestImplicitConversion(arg1: ResolverContext, /) -> ResolverContext: ...

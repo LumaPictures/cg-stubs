@@ -36,7 +36,7 @@ def HasConcurrency() -> bool:
     greater than 1 and PXR_WORK_THREAD_LIMIT was not set in an attempt to
     limit the process to a single thread, false otherwise.
     """
-def SetConcurrencyLimit(n: int) -> None:
+def SetConcurrencyLimit(n: int, /) -> None:
     """
     Set the concurrency limit to C{n}, if C{n} is a non-zero value.
 
@@ -51,7 +51,7 @@ def SetConcurrencyLimit(n: int) -> None:
     by a hosting environment. Lower-level module code should never call
     this function.
     """
-def SetConcurrencyLimitArgument(n: int) -> None:
+def SetConcurrencyLimitArgument(n: int, /) -> None:
     """
     Sanitize C{n} as described below and set the concurrency limit
     accordingly.

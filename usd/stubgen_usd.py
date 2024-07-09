@@ -1226,6 +1226,31 @@ class UsdBoostDocstringSignatureGenerator(
                 )
         return py_sigs, cpp_sigs
 
+    def _add_positional_only_args(
+        self, ctx: FunctionContext, py_sig: FunctionSig
+    ) -> FunctionSig:
+        args = []
+        requires_pos_only: bool | None = None
+        for arg_num, py_arg in enumerate(py_sig.args):
+            if self.is_default_boost_arg(py_arg.name):
+                if requires_pos_only is False:
+                    raise ValueError(
+                        f"{ctx.fullname}: Unnamed argument appears after named one: {py_sig.format_sig()}"
+                    )
+                requires_pos_only = True
+            else:
+                if requires_pos_only:
+                    # force arguments before this to be positional only
+                    args.append(ArgSig("/"))
+                requires_pos_only = False
+            args.append(py_arg)
+
+        if requires_pos_only:
+            # force arguments before this to be positional only
+            args.append(ArgSig("/"))
+
+        return py_sig._replace(args=args)
+
     def _processs_sigs(
         self, sigs: list[FunctionSig], ctx: FunctionContext
     ) -> list[FunctionSig]:
@@ -1256,13 +1281,19 @@ class UsdBoostDocstringSignatureGenerator(
 
         if use_cpp_only:
             assert cpp_overloads is not None
-            sigs = get_sigs_from_cpp_overloads(ctx, cpp_overloads, add_docstrings=True)[
-                0
+            sigs = [
+                self._add_positional_only_args(ctx, sig)
+                for sig in get_sigs_from_cpp_overloads(
+                    ctx, cpp_overloads, add_docstrings=True
+                )[0]
             ]
         elif cpp_overloads is None:
             # We only have python signatures:
             # apply fixes that don't rely on c++ docs:
-            sigs = [self.cleanup_sig_types(sig, ctx) for sig in sigs]
+            sigs = [
+                self._add_positional_only_args(ctx, self.cleanup_sig_types(sig, ctx))
+                for sig in sigs
+            ]
         else:
             (cpp_sigs_with_ptrs, cpp_sigs_without_ptrs) = get_sigs_from_cpp_overloads(
                 ctx, cpp_overloads, add_docstrings=True
@@ -1301,7 +1332,7 @@ class UsdBoostDocstringSignatureGenerator(
             arg_nums2.match(ctx, sigs, cpp_sigs_without_ptrs, tracker, skip=skip_used)
             arg_nums2.match(ctx, sigs, cpp_sigs_with_ptrs, tracker, skip=skip_used)
 
-            # special case
+            # special case where we found no matches, so we just take one full set of overloads
             if not tracker.matches and len(sigs) == len(cpp_overloads):
                 sigs, cpp_sigs = self._choose_overload_set(
                     ctx, sigs, cpp_sigs_with_ptrs, cpp_sigs_without_ptrs
@@ -1342,6 +1373,7 @@ class UsdBoostDocstringSignatureGenerator(
                         cpp_ptrs=cpp_sigs_with_ptrs,
                         cpp_no_ptrs=cpp_sigs_without_ptrs,
                     )
+                    sigs[overload_num] = self._add_positional_only_args(ctx, py_sig)
                 elif len(py_sig.args) != len(cpp_sig.args):
                     # arg lists between C++ docs and boost-python don't match:
                     # use the boost-python sig. In practice, I don't think this ever happens
@@ -1356,23 +1388,39 @@ class UsdBoostDocstringSignatureGenerator(
                         cpp_ptrs=cpp_sigs_with_ptrs,
                         cpp_no_ptrs=cpp_sigs_without_ptrs,
                     )
-                    sigs[overload_num] = py_sig._replace(docstring=cpp_sig.docstring)
+                    sigs[overload_num] = self._add_positional_only_args(
+                        ctx, py_sig
+                    )._replace(docstring=cpp_sig.docstring)
                 else:
                     # create best guesses for python types.
                     args = []
-                    for py_arg, cpp_arg in zip(py_sig.args, cpp_sig.args):
+                    arg_num = 0
+                    fixed_py_sig = self._add_positional_only_args(ctx, py_sig)
+                    for py_arg in fixed_py_sig.args:
+                        if py_arg.name == "/":
+                            args.append(py_arg)
+                            continue
+
+                        cpp_arg = cpp_sig.args[arg_num]
+
                         py_type = self._infer_type(
                             py_arg.type, cpp_arg.type, ctx, already_cleaned=True
                         )
+
+                        if self.is_default_boost_arg(py_arg.name):
+                            arg_name = cpp_arg.name
+                        else:
+                            arg_name = py_arg.name
+
                         args.append(
                             ArgSig(
-                                cpp_arg.name
-                                if py_arg.name.startswith("arg")
-                                else py_arg.name,
+                                arg_name,
                                 py_type,
                                 default=py_arg.default,
                             )
                         )
+                        arg_num += 1
+
                     return_type = self._infer_type(
                         py_sig.ret_type,
                         cpp_sig.ret_type,
@@ -1380,6 +1428,7 @@ class UsdBoostDocstringSignatureGenerator(
                         is_result=True,
                         already_cleaned=True,
                     )
+
                     if (
                         py_sig.ret_type == "list"
                         and return_type

@@ -77,7 +77,7 @@ class Collector(Boost.Python.instance):
     enabled: Incomplete
     pythonTracingEnabled: Incomplete
     def __init__(self) -> None: ...
-    def BeginEvent(self, key: str | pxr.Ar.ResolvedPath) -> int:
+    def BeginEvent(self, key: str | pxr.Ar.ResolvedPath, /) -> int:
         """
         Record a begin event with *key* if C{Category} is enabled.
 
@@ -93,7 +93,7 @@ class Collector(Boost.Python.instance):
 
         Scope
         """
-    def BeginEventAtTime(self, key: str | pxr.Ar.ResolvedPath, ms: float) -> None:
+    def BeginEventAtTime(self, key: str | pxr.Ar.ResolvedPath, ms: float, /) -> None:
         """
         Record a begin event with *key* at a specified time if C{Category} is
         enabled.
@@ -110,7 +110,7 @@ class Collector(Boost.Python.instance):
 
         No TraceCollection will be made for these events.
         """
-    def EndEvent(self, key: str | pxr.Ar.ResolvedPath) -> int:
+    def EndEvent(self, key: str | pxr.Ar.ResolvedPath, /) -> int:
         """
         Record an end event with *key* if C{Category} is enabled.
 
@@ -126,7 +126,7 @@ class Collector(Boost.Python.instance):
 
         Scope
         """
-    def EndEventAtTime(self, key: str | pxr.Ar.ResolvedPath, ms: float) -> None:
+    def EndEventAtTime(self, key: str | pxr.Ar.ResolvedPath, ms: float, /) -> None:
         """
         Record an end event with *key* at a specified time if C{Category} is
         enabled.
@@ -156,7 +156,7 @@ class Reporter(Boost.Python.instance):
     foldRecursiveCalls: bool
     groupByFunction: bool
     shouldAdjustForOverheadAndNoise: Incomplete
-    def __init__(self, arg2: str | pxr.Ar.ResolvedPath) -> None: ...
+    def __init__(self, arg2: str | pxr.Ar.ResolvedPath, /) -> None: ...
     def ClearTree(self) -> None:
         """
         Clears event tree and counters.
@@ -168,13 +168,13 @@ class Reporter(Boost.Python.instance):
     @overload
     def Report(self, iterationCount: int = ...) -> None: ...
     @overload
-    def Report(self, arg2: str | pxr.Ar.ResolvedPath, iterationCount: int = ..., append: bool = ...) -> None: ...
+    def Report(self, arg2: str | pxr.Ar.ResolvedPath, /, iterationCount: int = ..., append: bool = ...) -> None: ...
     def ReportChromeTracing(self) -> None:
         """
         Generates a timeline trace report suitable for viewing in Chrome's
         trace viewer.
         """
-    def ReportChromeTracingToFile(self, arg2: str | pxr.Ar.ResolvedPath) -> None: ...
+    def ReportChromeTracingToFile(self, arg2: str | pxr.Ar.ResolvedPath, /) -> None: ...
     def ReportTimes(self) -> None:
         """
         Generates a report of the times to the ostream *s*.
@@ -206,9 +206,9 @@ class Reporter(Boost.Python.instance):
     @property
     def expired(self): ...
 
-def GetElapsedSeconds(arg1: int, arg2: int) -> float: ...
+def GetElapsedSeconds(arg1: int, arg2: int, /) -> float: ...
 def GetTestEventName() -> str: ...
-def PythonGarbageCollectionCallback(arg1: str | pxr.Ar.ResolvedPath, arg2: object) -> None: ...
+def PythonGarbageCollectionCallback(arg1: str | pxr.Ar.ResolvedPath, arg2: object, /) -> None: ...
 def TestAuto() -> None: ...
 def TestCreateEvents() -> None: ...
 def TestNesting() -> None: ...

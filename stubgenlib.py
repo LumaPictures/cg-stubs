@@ -389,6 +389,10 @@ class BoostDocstringSignatureGenerator(SignatureGenerator):
             return infer_sig_from_boost_docstring(ctx.docstring, ctx.name)
         return None
 
+    @classmethod
+    def is_default_boost_arg(cls, arg_name: str) -> bool:
+        return bool(re.match("^arg[0-9]+$", arg_name))
+
 
 class CFunctionStub:
     """

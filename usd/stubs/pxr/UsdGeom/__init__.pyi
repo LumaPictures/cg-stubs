@@ -705,7 +705,7 @@ class BasisCurves(Curves):
         Should be preferred over UsdGeomBasisCurves (schemaObj.GetPrim()), as
         it preserves SchemaBase state.
         """
-    def ComputeInterpolationForSize(self, n: int, timeCode: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> tuple[str, list[tuple[str, int]]]:
+    def ComputeInterpolationForSize(self, n: int, timeCode: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode, /) -> tuple[str, list[tuple[str, int]]]:
         """
         Computes interpolation token for C{n}.
 
@@ -715,7 +715,7 @@ class BasisCurves(Curves):
 
         The topology is determined using C{timeCode}.
         """
-    def ComputeUniformDataSize(self, timeCode: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> int:
+    def ComputeUniformDataSize(self, timeCode: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode, /) -> int:
         '''
         Computes the expected size for data with"uniform"interpolation.
 
@@ -723,7 +723,7 @@ class BasisCurves(Curves):
         If you\'re trying to determine what interpolation to use, it is more
         efficient to use C{ComputeInterpolationForSize}
         '''
-    def ComputeVaryingDataSize(self, timeCode: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> int:
+    def ComputeVaryingDataSize(self, timeCode: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode, /) -> int:
         '''
         Computes the expected size for data with"varying"interpolation.
 
@@ -731,7 +731,7 @@ class BasisCurves(Curves):
         If you\'re trying to determine what interpolation to use, it is more
         efficient to use C{ComputeInterpolationForSize}
         '''
-    def ComputeVertexDataSize(self, timeCode: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> int:
+    def ComputeVertexDataSize(self, timeCode: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode, /) -> int:
         '''
         Computes the expected size for data with"vertex"interpolation.
 
@@ -2430,7 +2430,7 @@ class ConstraintTarget(Boost.Python.instance):
         use UsdGeomConstraintTarget::Get() , since the authored values must
         already be in model-space.
         """
-    def Get(self, value: pxr.Gf.Matrix4d, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
+    def Get(self, value: pxr.Gf.Matrix4d, /, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
         """
         Get the attribute value of the ConstraintTarget at C{time}.
         """
@@ -2439,7 +2439,7 @@ class ConstraintTarget(Boost.Python.instance):
         Explicit UsdAttribute extractor.
         """
     @staticmethod
-    def GetConstraintAttrName(constraintName: str | pxr.Ar.ResolvedPath) -> str:
+    def GetConstraintAttrName(constraintName: str | pxr.Ar.ResolvedPath, /) -> str:
         """
         Returns the fully namespaced constraint attribute name, given the
         constraint name.
@@ -2459,7 +2459,7 @@ class ConstraintTarget(Boost.Python.instance):
         the attribute is identified as a ConstraintTarget.
         """
     @classmethod
-    def IsValid(cls, attr: pxr.Usd.Attribute | ConstraintTarget | Primvar | XformOp | pxr.UsdShade.Input | pxr.UsdShade.Output) -> bool:
+    def IsValid(cls, attr: pxr.Usd.Attribute | ConstraintTarget | Primvar | XformOp | pxr.UsdShade.Input | pxr.UsdShade.Output, /) -> bool:
         """
         Test whether a given UsdAttribute represents valid ConstraintTarget,
         which implies that creating a UsdGeomConstraintTarget from the
@@ -3602,7 +3602,7 @@ class HermiteCurves(Curves):
             Construct empty points and tangents arrays.
             """
         @overload
-        def __init__(self, points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], tangents: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f]) -> None:
+        def __init__(self, points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], tangents: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], /) -> None:
             """
             Initializes C{points} and C{tangents} if they are the same size.
 
@@ -3628,7 +3628,7 @@ class HermiteCurves(Curves):
             Returns true if the containers are empty.
             """
         @staticmethod
-        def Separate(interleaved: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f]) -> HermiteCurves.PointAndTangentArrays:
+        def Separate(interleaved: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], /) -> HermiteCurves.PointAndTangentArrays:
             """
             Given an C{interleaved} points and tangents arrays (P0, T0, ..., Pn,
             Tn), separates them into two arrays (P0, ..., PN) and (T0, ..., Tn).
@@ -3785,7 +3785,7 @@ class Imageable(pxr.Usd.Typed):
         @overload
         def __init__(self) -> None: ...
         @overload
-        def __init__(self, purpose_: str | pxr.Ar.ResolvedPath, isInheritable_: bool) -> None: ...
+        def __init__(self, purpose_: str | pxr.Ar.ResolvedPath, isInheritable_: bool, /) -> None: ...
         def GetInheritablePurpose(self) -> str:
             """
             Returns the purpose if it's inheritable, returns empty if it is not.
@@ -5167,7 +5167,7 @@ class ModelAPI(pxr.Usd.APISchemaBase):
 
         GetModelDrawModeAttr()
         '''
-    def CreateConstraintTarget(self, constraintName: str | pxr.Ar.ResolvedPath) -> ConstraintTarget:
+    def CreateConstraintTarget(self, constraintName: str | pxr.Ar.ResolvedPath, /) -> ConstraintTarget:
         """
         Creates a new constraint target with the given name,
         C{constraintName}.
@@ -5290,7 +5290,7 @@ class ModelAPI(pxr.Usd.APISchemaBase):
           UsdGeomModelAPI(stage->GetPrimAtPath(path));
 
         """
-    def GetConstraintTarget(self, constraintName: str | pxr.Ar.ResolvedPath) -> ConstraintTarget:
+    def GetConstraintTarget(self, constraintName: str | pxr.Ar.ResolvedPath, /) -> ConstraintTarget:
         """
         Get the constraint target with the given name, C{constraintName}.
 
@@ -8910,7 +8910,7 @@ class Primvar(Boost.Python.instance):
 
         UsdAttribute::GetTimeSamples
         '''
-    def GetTimeSamplesInInterval(self, interval: pxr.Gf.Interval) -> list[float]:
+    def GetTimeSamplesInInterval(self, interval: pxr.Gf.Interval, /) -> list[float]:
         '''
         Populates a vector with authored sample times in C{interval}.
 
@@ -9035,7 +9035,7 @@ class Primvar(Boost.Python.instance):
 
         GetElementSize()
         """
-    def SetIdTarget(self, path: pxr.Sdf.Path | str) -> bool:
+    def SetIdTarget(self, path: pxr.Sdf.Path | str, /) -> bool:
         """
         This primvar must be of String or StringArray type for this method to
         succeed.
@@ -11401,7 +11401,7 @@ class XformOp(Boost.Python.instance):
 
         This will be empty for an invalid xformOp.
         '''
-    def GetOpTransform(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> pxr.Gf.Matrix4d:
+    def GetOpTransform(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode, /) -> pxr.Gf.Matrix4d:
         """
         Return the 4x4 matrix that applies the transformation encoded in this
         op at C{time}.
@@ -11418,12 +11418,12 @@ class XformOp(Boost.Python.instance):
         Return the operation type of this op, one of UsdGeomXformOp::Type.
         """
     @staticmethod
-    def GetOpTypeEnum(opTypeToken: str | pxr.Ar.ResolvedPath) -> pxr.Tf.Type:
+    def GetOpTypeEnum(opTypeToken: str | pxr.Ar.ResolvedPath, /) -> pxr.Tf.Type:
         """
         Returns the Type enum associated with the given C{opTypeToken}.
         """
     @staticmethod
-    def GetOpTypeToken(opType: pxr.Tf.Type) -> str:
+    def GetOpTypeToken(opType: pxr.Tf.Type, /) -> str:
         """
         Returns the TfToken used to encode the given C{opType}.
 
@@ -11439,7 +11439,7 @@ class XformOp(Boost.Python.instance):
         Populates the list of time samples at which the associated attribute
         is authored.
         """
-    def GetTimeSamplesInInterval(self, interval: pxr.Gf.Interval) -> list[float]:
+    def GetTimeSamplesInInterval(self, interval: pxr.Gf.Interval, /) -> list[float]:
         """
         Populates the list of time samples within the given C{interval}, at
         which the associated attribute is authored.
@@ -12226,7 +12226,7 @@ class Xformable(Imageable):
 
         UsdAttribute::GetTimeSamples
         """
-    def GetTimeSamplesInInterval(self, interval: pxr.Gf.Interval) -> list[float]:
+    def GetTimeSamplesInInterval(self, interval: pxr.Gf.Interval, /) -> list[float]:
         """
         Sets C{times} to the union of all the timesamples in the interval,
         C{interval}, at which xformOps that are included in the xformOpOrder
@@ -12311,7 +12311,7 @@ class Xformable(Imageable):
         SdfVariabilityUniform
         """
     @staticmethod
-    def IsTransformationAffectedByAttrNamed(attrName: str | pxr.Ar.ResolvedPath) -> bool:
+    def IsTransformationAffectedByAttrNamed(attrName: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Returns true if the attribute named C{attrName} could affect the local
         transformation of an xformable prim.
@@ -12381,7 +12381,7 @@ class Xformable(Imageable):
         further authoring.
         """
     @overload
-    def TransformMightBeTimeVarying(self, ops: typing.Iterable[XformOp]) -> bool:
+    def TransformMightBeTimeVarying(self, ops: typing.Iterable[XformOp], /) -> bool:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -12400,12 +12400,10 @@ class Xformable(Imageable):
 
 class _CanApplyResult(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    def __init__(self, arg2: bool, arg3: object) -> None: ...
+    def __init__(self, arg2: bool, arg3: object, /) -> None: ...
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
-    def __getitem__(self, arg2: int) -> Any: ...
-    def __iter__(self) -> typing.Iterator[Any]:
-        """def __iter__(self) -> typing.Iterator[Any]"""
+    def __getitem__(self, arg2: int, /) -> Any: ...
     def __ne__(self, other: object) -> bool: ...
     @property
     def whyNot(self): ...

@@ -124,7 +124,7 @@ class ConditionalAbortDiagnosticDelegate(Boost.Python.instance):
 
     '''
     __instance_size__: ClassVar[int] = ...
-    def __init__(self, includeFilters: ConditionalAbortDiagnosticDelegateErrorFilters, excludeFilters: ConditionalAbortDiagnosticDelegateErrorFilters) -> None:
+    def __init__(self, includeFilters: ConditionalAbortDiagnosticDelegateErrorFilters, excludeFilters: ConditionalAbortDiagnosticDelegateErrorFilters, /) -> None:
         """
         Constructor to initialize conditionalAbortDiagnosticDelegate.
 
@@ -145,7 +145,7 @@ class ConditionalAbortDiagnosticDelegateErrorFilters(Boost.Python.instance):
     """
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self, stringFilters: typing.Iterable[str | pxr.Ar.ResolvedPath], codePathFilters: typing.Iterable[str | pxr.Ar.ResolvedPath]) -> None: ...
+    def __init__(self, stringFilters: typing.Iterable[str | pxr.Ar.ResolvedPath], codePathFilters: typing.Iterable[str | pxr.Ar.ResolvedPath], /) -> None: ...
     @overload
     def __init__(self) -> None: ...
     def GetCodePathFilters(self) -> list[str]: ...
@@ -168,11 +168,11 @@ class DependencyInfo(Boost.Python.instance):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, assetPath: DependencyInfo) -> None: ...
+    def __init__(self, assetPath: DependencyInfo, /) -> None: ...
     @overload
-    def __init__(self, assetPath: str | pxr.Ar.ResolvedPath) -> None: ...
+    def __init__(self, assetPath: str | pxr.Ar.ResolvedPath, /) -> None: ...
     @overload
-    def __init__(self, assetPath: str | pxr.Ar.ResolvedPath, dependencies: typing.Iterable[str | pxr.Ar.ResolvedPath]) -> None: ...
+    def __init__(self, assetPath: str | pxr.Ar.ResolvedPath, dependencies: typing.Iterable[str | pxr.Ar.ResolvedPath], /) -> None: ...
     @property
     def assetPath(self) -> str:
         """
@@ -414,7 +414,7 @@ class StageCache(Boost.Python.instance):
         Returns the singleton stage cache.
         """
     @staticmethod
-    def GetSessionLayerForVariantSelections(modelName: str | pxr.Ar.ResolvedPath, variantSelections: typing.Iterable[tuple[str | pxr.Ar.ResolvedPath, str | pxr.Ar.ResolvedPath]]) -> pxr.Sdf.Layer:
+    def GetSessionLayerForVariantSelections(modelName: str | pxr.Ar.ResolvedPath, variantSelections: typing.Iterable[tuple[str | pxr.Ar.ResolvedPath, str | pxr.Ar.ResolvedPath]], /) -> pxr.Sdf.Layer:
         """
         Given variant selections as a vector of pairs (vector in case order
         matters to the client), constructs a session layer with overs on the
@@ -504,7 +504,7 @@ class TimeCodeRange(Boost.Python.instance):
         issued and an invalid empty range will be returned.
         """
     @staticmethod
-    def CreateFromFrameSpec(frameSpec: str | pxr.Ar.ResolvedPath) -> TimeCodeRange:
+    def CreateFromFrameSpec(frameSpec: str | pxr.Ar.ResolvedPath, /) -> TimeCodeRange:
         """
         Create a time code range from C{frameSpec}.
 
@@ -674,7 +674,7 @@ def ComputeCollectionIncludesAndExcludes(includedRootPaths: typing.Iterable[pxr.
     lists (pathsToInclude, pathsToExclude).
     '''
 @overload
-def ComputeUsdStageStats(rootLayerPath: str | pxr.Ar.ResolvedPath) -> tuple[pxr.Usd.Stage, dict]:
+def ComputeUsdStageStats(rootLayerPath: str | pxr.Ar.ResolvedPath, /) -> tuple[pxr.Usd.Stage, dict]:
     '''
     Opens the given layer on a USD stage and collects various stats.
 
@@ -735,7 +735,7 @@ def ComputeUsdStageStats(rootLayerPath: str | pxr.Ar.ResolvedPath) -> tuple[pxr.
     in\'modelCount\'and\'instancedModelCount\'.
     '''
 @overload
-def ComputeUsdStageStats(stage: pxr.Usd.Stage) -> tuple[int, dict]:
+def ComputeUsdStageStats(stage: pxr.Usd.Stage, /) -> tuple[int, dict]:
     """
     This is an overloaded member function, provided for convenience. It
     differs from the above function only in what argument(s) it accepts.
@@ -1052,7 +1052,7 @@ def GetMaterialsScopeName(forceDefault: bool = ...) -> str:
     primarily used for unit testing purposes as a way to ignore any site-
     based configuration.
     '''
-def GetModelNameFromRootLayer(rootLayer: pxr.Sdf.Layer) -> str:
+def GetModelNameFromRootLayer(rootLayer: pxr.Sdf.Layer, /) -> str:
     """
     Returns the model name associated with a given root layer.
 

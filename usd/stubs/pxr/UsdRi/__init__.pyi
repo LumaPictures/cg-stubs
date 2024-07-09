@@ -7,7 +7,6 @@ import pxr.Tf
 import pxr.Usd
 import pxr.UsdGeom
 import pxr.UsdShade
-import typing
 from typing import Any, ClassVar, overload
 
 __MFB_FULL_PACKAGE_NAME: str
@@ -254,9 +253,9 @@ class MaterialAPI(pxr.Usd.APISchemaBase):
         '''
         Returns the"volume"output associated with the material.
         '''
-    def SetDisplacementSource(self, displacementPath: pxr.Sdf.Path | str) -> bool: ...
-    def SetSurfaceSource(self, surfacePath: pxr.Sdf.Path | str) -> bool: ...
-    def SetVolumeSource(self, volumePath: pxr.Sdf.Path | str) -> bool: ...
+    def SetDisplacementSource(self, displacementPath: pxr.Sdf.Path | str, /) -> bool: ...
+    def SetSurfaceSource(self, surfacePath: pxr.Sdf.Path | str, /) -> bool: ...
+    def SetVolumeSource(self, volumePath: pxr.Sdf.Path | str, /) -> bool: ...
     @staticmethod
     def _GetStaticTfType() -> pxr.Tf.Type: ...
     def __bool__(self) -> bool: ...
@@ -437,9 +436,9 @@ class SplineAPI(pxr.Usd.APISchemaBase):
         preserves SchemaBase state.
         """
     @overload
-    def __init__(self, arg2: pxr.Usd.Prim, arg3: object, arg4: pxr.Sdf.ValueTypeName, arg5: bool) -> None: ...
+    def __init__(self, arg2: pxr.Usd.Prim, arg3: object, arg4: pxr.Sdf.ValueTypeName, arg5: bool, /) -> None: ...
     @overload
-    def __init__(self, arg2: pxr.Usd.SchemaBase, arg3: object, arg4: pxr.Sdf.ValueTypeName, arg5: bool) -> None: ...
+    def __init__(self, arg2: pxr.Usd.SchemaBase, arg3: object, arg4: pxr.Sdf.ValueTypeName, arg5: bool, /) -> None: ...
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> SplineAPI:
         '''
@@ -899,33 +898,31 @@ class Tokens(Boost.Python.instance):
 
 class _CanApplyResult(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    def __init__(self, arg2: bool, arg3: object) -> None: ...
+    def __init__(self, arg2: bool, arg3: object, /) -> None: ...
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
-    def __getitem__(self, arg2: int) -> Any: ...
-    def __iter__(self) -> typing.Iterator[Any]:
-        """def __iter__(self) -> typing.Iterator[Any]"""
+    def __getitem__(self, arg2: int, /) -> Any: ...
     def __ne__(self, other: object) -> bool: ...
     @property
     def whyNot(self): ...
 
-def ConvertFromRManFaceVaryingLinearInterpolation(i: int) -> str:
+def ConvertFromRManFaceVaryingLinearInterpolation(i: int, /) -> str:
     """
     Given the integer C{i} that corresponds to an rman enum for face-
     varying interpolate boundary condition, returns the equivalent UsdGeom
     token.
     """
-def ConvertFromRManInterpolateBoundary(i: int) -> str:
+def ConvertFromRManInterpolateBoundary(i: int, /) -> str:
     """
     Given the integer C{i} that corresponds to an rman enum for
     interpolate boundary condition, returns the equivalent UsdGeom token.
     """
-def ConvertToRManFaceVaryingLinearInterpolation(token: str | pxr.Ar.ResolvedPath) -> int:
+def ConvertToRManFaceVaryingLinearInterpolation(token: str | pxr.Ar.ResolvedPath, /) -> int:
     """
     Given a C{token} representing a UsdGeom face-varying interpolate
     boundary value, returns corresponding rman enum (converted to int).
     """
-def ConvertToRManInterpolateBoundary(token: str | pxr.Ar.ResolvedPath) -> int:
+def ConvertToRManInterpolateBoundary(token: str | pxr.Ar.ResolvedPath, /) -> int:
     """
     Given a C{token} representing a UsdGeom interpolate boundary value,
     returns corresponding rman enum (converted to int).

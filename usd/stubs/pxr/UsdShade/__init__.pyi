@@ -405,7 +405,7 @@ class ConnectableAPI(pxr.Usd.APISchemaBase):
         encapsulation rules are respected or not.
         """
     @staticmethod
-    def SetConnectedSources(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, sourceInfos: typing.Iterable[ConnectionSourceInfo]) -> bool:
+    def SetConnectedSources(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, sourceInfos: typing.Iterable[ConnectionSourceInfo], /) -> bool:
         """
         Authors a list of connections for a given shading attribute
         C{shadingAttr}.
@@ -454,7 +454,7 @@ class ConnectionSourceInfo(Boost.Python.instance):
     @overload
     def __init__(self, output: Output) -> None: ...
     @overload
-    def __init__(self, stage: pxr.Usd.Stage, sourcePath: pxr.Sdf.Path | str) -> None:
+    def __init__(self, stage: pxr.Usd.Stage, sourcePath: pxr.Sdf.Path | str, /) -> None:
         """
         Construct the information for this struct from a property path.
 
@@ -713,7 +713,7 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
         the prim, if none fallback to backward compatible deprecated behavior.
         """
     @staticmethod
-    def FindBindingsWithInheritanceForPrim(prim: pxr.Usd.Prim) -> list[pxr.UsdSkel.Binding]:
+    def FindBindingsWithInheritanceForPrim(prim: pxr.Usd.Prim, /) -> list[pxr.UsdSkel.Binding]:
         """
         Find the list of coordinate system bindings that apply to this prim,
         including inherited bindings.
@@ -835,7 +835,7 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
         """
     @overload
     @staticmethod
-    def GetSchemaAttributeNames(includeInherited: bool, includeInherited: str | pxr.Ar.ResolvedPath) -> list[str]:
+    def GetSchemaAttributeNames(includeInherited: bool, /, includeInherited: str | pxr.Ar.ResolvedPath) -> list[str]:
         """
         Return a vector of names of all pre-declared attributes for this
         schema class and all its ancestor classes for a given instance name.
@@ -869,7 +869,7 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
         Which implies it has the appropriate binding relationship(s).
         """
     @staticmethod
-    def IsCoordSysAPIPath(path: pxr.Sdf.Path | str) -> bool:
+    def IsCoordSysAPIPath(path: pxr.Sdf.Path | str, /) -> bool:
         """
         Checks if the given path C{path} is of an API schema of type
         CoordSysAPI.
@@ -1158,7 +1158,7 @@ class Input(Boost.Python.instance):
         the composed"sdrMetadata"dictionary.
         '''
     @staticmethod
-    def IsInput(attr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output) -> bool:
+    def IsInput(attr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, /) -> bool:
         """
         Test whether a given UsdAttribute represents a valid Input, which
         implies that creating a UsdShadeInput from the attribute will succeed.
@@ -1167,7 +1167,7 @@ class Input(Boost.Python.instance):
         Success implies that C{attr.IsDefined()} is true.
         """
     @staticmethod
-    def IsInterfaceInputName(name: str | pxr.Ar.ResolvedPath) -> bool:
+    def IsInterfaceInputName(name: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Test if this name has a namespace that indicates it could be an input.
         """
@@ -1182,7 +1182,7 @@ class Input(Boost.Python.instance):
         UsdShadeConnectableAPI::IsSourceConnectionFromBaseMaterial
         """
     def Set(self, value: object, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool: ...
-    def SetConnectability(self, connectability: str | pxr.Ar.ResolvedPath) -> bool:
+    def SetConnectability(self, connectability: str | pxr.Ar.ResolvedPath, /) -> bool:
         '''
         Set the connectability of the Input.
 
@@ -1207,7 +1207,7 @@ class Input(Boost.Python.instance):
 
         SetConnectability()
         '''
-    def SetConnectedSources(self, sourceInfos: typing.Iterable[ConnectionSourceInfo]) -> bool:
+    def SetConnectedSources(self, sourceInfos: typing.Iterable[ConnectionSourceInfo], /) -> bool:
         """
         Connects this Input to the given sources, C{sourceInfos}.
 
@@ -1215,7 +1215,7 @@ class Input(Boost.Python.instance):
 
         UsdShadeConnectableAPI::SetConnectedSources
         """
-    def SetDisplayGroup(self, displayGroup: str | pxr.Ar.ResolvedPath) -> bool:
+    def SetDisplayGroup(self, displayGroup: str | pxr.Ar.ResolvedPath, /) -> bool:
         '''
         Set the displayGroup metadata for this Input, i.e.
 
@@ -1229,7 +1229,7 @@ class Input(Boost.Python.instance):
 
         SdrShaderProperty::GetPage()
         '''
-    def SetDocumentation(self, docs: str | pxr.Ar.ResolvedPath) -> bool:
+    def SetDocumentation(self, docs: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Set documentation string for this Input.
 
@@ -2266,7 +2266,7 @@ class MaterialBindingAPI(pxr.Usd.APISchemaBase):
         UsdGeomSubset::SetFamilyType**
         '''
     @staticmethod
-    def SetMaterialBindingStrength(bindingRel: pxr.Usd.Relationship, bindingRel: str | pxr.Ar.ResolvedPath) -> bool:
+    def SetMaterialBindingStrength(bindingRel: pxr.Usd.Relationship, /, bindingRel: str | pxr.Ar.ResolvedPath) -> bool:
         """
         Sets the'bindMaterialAs'token-valued metadata on the given binding
         relationship.
@@ -2658,7 +2658,7 @@ class NodeDefAPI(pxr.Usd.APISchemaBase):
 
         GetImplementationSource()
         """
-    def SetShaderId(self, id: str | pxr.Ar.ResolvedPath) -> bool:
+    def SetShaderId(self, id: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Sets the shader's ID value.
 
@@ -3158,7 +3158,7 @@ class Output(Boost.Python.instance):
         the composed"sdrMetadata"dictionary.
         '''
     @staticmethod
-    def IsOutput(attr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output) -> bool:
+    def IsOutput(attr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, /) -> bool:
         """
         Test whether a given UsdAttribute represents a valid Output, which
         implies that creating a UsdShadeOutput from the attribute will
@@ -3178,7 +3178,7 @@ class Output(Boost.Python.instance):
         UsdShadeConnectableAPI::IsSourceConnectionFromBaseMaterial
         """
     def Set(self, value: object, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool: ...
-    def SetConnectedSources(self, sourceInfos: typing.Iterable[ConnectionSourceInfo]) -> bool:
+    def SetConnectedSources(self, sourceInfos: typing.Iterable[ConnectionSourceInfo], /) -> bool:
         """
         Connects this Output to the given sources, C{sourceInfos}.
 
@@ -3472,7 +3472,7 @@ class Shader(pxr.Usd.Typed):
         Sets the value corresponding to C{key} to the given string C{value},
         in the shader\'s"sdrMetadata"dictionary at the current EditTarget.
         '''
-    def SetShaderId(self, id: str | pxr.Ar.ResolvedPath) -> bool:
+    def SetShaderId(self, id: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Forwards to UsdShadeNodeDefAPI(prim).
         """
@@ -3520,7 +3520,7 @@ class ShaderDefParserPlugin(Boost.Python.instance):
         declared under C{GetDiscoveryTypes()} , and those types are
         collectively identified as one"source type".
         '''
-    def Parse(self, discoveryResult: pxr.Ndr.NodeDiscoveryResult) -> pxr.Sdr.ShaderNode:
+    def Parse(self, discoveryResult: pxr.Ndr.NodeDiscoveryResult, /) -> pxr.Sdr.ShaderNode:
         """
         Takes the specified C{NdrNodeDiscoveryResult} instance, which was a
         result of the discovery process, and generates a new C{NdrNode}.
@@ -3668,7 +3668,7 @@ class Utils(Boost.Python.instance):
         This class cannot be instantiated from Python
         """
     @staticmethod
-    def GetBaseNameAndType(fullName: str | pxr.Ar.ResolvedPath) -> tuple[str, AttributeType]:
+    def GetBaseNameAndType(fullName: str | pxr.Ar.ResolvedPath, /) -> tuple[str, AttributeType]:
         """
         Given the full name of a shading attribute, returns it's base name and
         shading attribute type.
@@ -3680,7 +3680,7 @@ class Utils(Boost.Python.instance):
         the source property; otherwise the empty path.
         """
     @staticmethod
-    def GetFullName(baseName: str | pxr.Ar.ResolvedPath, type: AttributeType) -> str:
+    def GetFullName(baseName: str | pxr.Ar.ResolvedPath, type: AttributeType, /) -> str:
         """
         Returns the full shading attribute name given the basename and the
         shading attribute type.
@@ -3690,13 +3690,13 @@ class Utils(Boost.Python.instance):
         C{type} is the UsdShadeAttributeType of the shading attribute.
         """
     @staticmethod
-    def GetPrefixForAttributeType(sourceType: AttributeType) -> str:
+    def GetPrefixForAttributeType(sourceType: AttributeType, /) -> str:
         """
         Returns the namespace prefix of the USD attribute associated with the
         given shading attribute type.
         """
     @staticmethod
-    def GetType(fullName: str | pxr.Ar.ResolvedPath) -> AttributeType:
+    def GetType(fullName: str | pxr.Ar.ResolvedPath, /) -> AttributeType:
         """
         Given the full name of a shading attribute, returns its shading
         attribute type.
@@ -3761,12 +3761,10 @@ class Utils(Boost.Python.instance):
 
 class _CanApplyResult(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    def __init__(self, arg2: bool, arg3: object) -> None: ...
+    def __init__(self, arg2: bool, arg3: object, /) -> None: ...
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
-    def __getitem__(self, arg2: int) -> Any: ...
-    def __iter__(self) -> typing.Iterator[Any]:
-        """def __iter__(self) -> typing.Iterator[Any]"""
+    def __getitem__(self, arg2: int, /) -> Any: ...
     def __ne__(self, other: object) -> bool: ...
     @property
     def whyNot(self): ...

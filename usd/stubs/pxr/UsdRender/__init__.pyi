@@ -803,7 +803,7 @@ class Settings(SettingsBase):
         methods of the schemas involved.
         """
     @staticmethod
-    def GetStageRenderSettings(stage: pxr.Usd.Stage) -> Settings:
+    def GetStageRenderSettings(stage: pxr.Usd.Stage, /) -> Settings:
         """
         Fetch and return C{stage} 's render settings, as indicated by root
         layer metadata.

@@ -66,12 +66,12 @@ class KeyFrame(Boost.Python.instance):
     @overload
     def __init__(self, time: float, leftValue: object, rightValue: object, knotType: object, leftSlope: object = ..., rightSlope: object = ..., leftLen: float = ..., rightLen: float = ...) -> None: ...
     @overload
-    def __init__(self, kf: KeyFrame) -> None:
+    def __init__(self, kf: KeyFrame, /) -> None:
         """
         Constructs a keyframe by duplicating an existing TsKeyFrame.
         """
     @overload
-    def CanSetKnotType(self, : KnotType) -> _AnnotatedBoolResult:
+    def CanSetKnotType(self, : KnotType, /) -> _AnnotatedBoolResult:
         """
         Checks whether the key frame's value type supports the given knot
         type.
@@ -82,11 +82,11 @@ class KeyFrame(Boost.Python.instance):
         Checks whether the key frame's value type supports the given knot
         type.
         """
-    def GetValue(self, side: Side) -> Any:
+    def GetValue(self, side: Side, /) -> Any:
         """
         Gets the value at this keyframe on the given side.
         """
-    def IsEquivalentAtSide(self, keyFrame: KeyFrame, side: Side) -> bool:
+    def IsEquivalentAtSide(self, keyFrame: KeyFrame, side: Side, /) -> bool:
         """
         Gets whether this key frame is at the same time and is equivalent to
         C{keyFrame} on the given C{side}.
@@ -96,7 +96,7 @@ class KeyFrame(Boost.Python.instance):
         will have no effect on how the spline evaluates for any time on the
         given C{side} of this key frame.
         """
-    def SetValue(self, val: Any, side: Side) -> None:
+    def SetValue(self, val: Any, side: Side, /) -> None:
         """
         Sets the value at this keyframe on the given side.
         """
@@ -132,7 +132,7 @@ class LoopParams(Boost.Python.instance):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, looping: bool, start: float, period: float, preRepeatFrames: float, repeatFrames: float, valueOffset: float) -> None: ...
+    def __init__(self, looping: bool, start: float, period: float, preRepeatFrames: float, repeatFrames: float, valueOffset: float, /) -> None: ...
     def GetLoopedInterval(self) -> pxr.Gf.Interval: ...
     def GetMasterInterval(self) -> pxr.Gf.Interval: ...
     def IsValid(self) -> bool: ...
@@ -187,17 +187,17 @@ class Spline(Boost.Python.instance):
         Constructs a spline with no key frames and held extrapolation.
         """
     @overload
-    def __init__(self, other: Spline) -> None:
+    def __init__(self, other: Spline, /) -> None:
         """
         Copy construct.
         """
     @overload
-    def __init__(self, arg2: object, arg3: object = ..., arg4: object = ..., arg5: LoopParams = ...) -> None: ...
+    def __init__(self, arg2: object, arg3: object = ..., arg4: object = ..., arg5: LoopParams = ..., /) -> None: ...
     @overload
-    def __init__(self, arg2: object, arg3: object) -> None: ...
+    def __init__(self, arg2: object, arg3: object, /) -> None: ...
     def BakeSplineLoops(self) -> None: ...
     @overload
-    def Breakdown(self, arg2: object, arg3: object, arg4: bool, arg5: float) -> dict:
+    def Breakdown(self, arg2: object, arg3: object, arg4: bool, arg5: float, /) -> dict:
         """
         Breaks down simultaneously at several times.
 
@@ -218,7 +218,7 @@ class Spline(Boost.Python.instance):
         existing key frames at the given times.
         """
     @overload
-    def Breakdown(self, times: float, type: KnotType, flatTangents: bool, tangentLength: float, values: typing.Iterable[Any] = ...) -> tuple[None, pxr.Gf.Interval, KeyFrameMap]:
+    def Breakdown(self, times: float, type: KnotType, flatTangents: bool, tangentLength: float, values: typing.Iterable[Any] = ..., /) -> tuple[None, pxr.Gf.Interval, KeyFrameMap]:
         """
         Breaks down simultaneously at several times.
 
@@ -232,7 +232,7 @@ class Spline(Boost.Python.instance):
         existing key frames at the given times.
         """
     @overload
-    def Breakdown(self, times: typing.Iterable[float], types: typing.Iterable[KnotType], flatTangents: bool, tangentLength: float, values: typing.Iterable[Any]) -> dict:
+    def Breakdown(self, times: typing.Iterable[float], types: typing.Iterable[KnotType], flatTangents: bool, tangentLength: float, values: typing.Iterable[Any], /) -> dict:
         """
         Breaks down simultaneously at several times with knot types specified
         for each time.
@@ -249,7 +249,7 @@ class Spline(Boost.Python.instance):
         existing key frames at the given times.
         """
     @overload
-    def Breakdown(self, x: float, type: KnotType, flatTangents: bool, tangentLength: float, value: Any) -> dict:
+    def Breakdown(self, x: float, type: KnotType, flatTangents: bool, tangentLength: float, value: Any, /) -> dict:
         """
         Breakdown at time *x*.
 
@@ -271,7 +271,7 @@ class Spline(Boost.Python.instance):
         empty value may be returned.
         """
     @overload
-    def CanSetKeyFrame(self, kf: KeyFrame) -> _AnnotatedBoolResult:
+    def CanSetKeyFrame(self, kf: KeyFrame, /) -> _AnnotatedBoolResult:
         """
         Checks if the given keyframe is a valid candidate to set, optionally
         returning the reason if it cannot.
@@ -305,7 +305,7 @@ class Spline(Boost.Python.instance):
         all keyframes will be considered in computing what is redundant.
         """
     @overload
-    def ClosestKeyFrame(self, arg2: float) -> Any:
+    def ClosestKeyFrame(self, arg2: float, /) -> Any:
         """ClosestKeyFrame(time) -> TsKeyFrame
 
         time : Time
@@ -319,7 +319,7 @@ class Spline(Boost.Python.instance):
 
         Finds the keyframe closest to the given time. Returns None if there are no keyframes."""
     @overload
-    def ClosestKeyFrameAfter(self, arg2: float) -> Any:
+    def ClosestKeyFrameAfter(self, arg2: float, /) -> Any:
         """ClosestKeyFrameAfter(time) -> TsKeyFrame
 
         time : Time
@@ -333,7 +333,7 @@ class Spline(Boost.Python.instance):
 
         Finds the closest keyframe after the given time. Returns None if no such keyframe exists."""
     @overload
-    def ClosestKeyFrameBefore(self, arg2: float) -> Any:
+    def ClosestKeyFrameBefore(self, arg2: float, /) -> Any:
         """ClosestKeyFrameBefore(time) -> TsKeyFrame
 
         time : Time
@@ -370,13 +370,13 @@ class Spline(Boost.Python.instance):
         If there are no keyframes, an empty VtValue is returned.
         """
     @overload
-    def Eval(self, arg2: object) -> tuple:
+    def Eval(self, arg2: object, /) -> tuple:
         """Eval(times) -> sequence<VtValue>
 
         times : tuple<Time>
 
         Evaluates this spline at a tuple or list of times, returning a tuple of results."""
-    def EvalDerivative(self, time: float, side: Side = ...) -> Any:
+    def EvalDerivative(self, time: float, /, side: Side = ...) -> Any:
         """
         Evaluates the derivative of the spline at the given time,
         interpolating the keyframes.
@@ -384,7 +384,7 @@ class Spline(Boost.Python.instance):
 
         If there are no keyframes, an empty VtValue is returned.
         """
-    def EvalHeld(self, time: float, side: Side = ...) -> Any:
+    def EvalHeld(self, time: float, /, side: Side = ...) -> Any:
         '''
         Evaluates the value of the spline at the given time without any
         interpolation, as if all keyframes and extrapolation modes were of
@@ -393,7 +393,7 @@ class Spline(Boost.Python.instance):
 
         If there are no keyframes, an empty VtValue is returned.
         '''
-    def GetKeyFramesInMultiInterval(self, : pxr.Gf.MultiInterval) -> list[KeyFrame]:
+    def GetKeyFramesInMultiInterval(self, : pxr.Gf.MultiInterval, /) -> list[KeyFrame]:
         """
         Returns the keyframes contained in the given GfMultiInterval.
         """
@@ -402,7 +402,7 @@ class Spline(Boost.Python.instance):
         Returns true if any of this spline's key frames are redundant.
         """
     @overload
-    def IsKeyFrameRedundant(self, keyFrame: float, defaultValue: Any = ...) -> bool:
+    def IsKeyFrameRedundant(self, keyFrame: float, defaultValue: Any = ..., /) -> bool:
         """
         Returns true if the given key frame is redundant.
 
@@ -415,7 +415,7 @@ class Spline(Boost.Python.instance):
         considered redundant.
         """
     @overload
-    def IsKeyFrameRedundant(self, keyFrameTime: KeyFrame, defaultValue: Any = ...) -> bool:
+    def IsKeyFrameRedundant(self, keyFrameTime: KeyFrame, defaultValue: Any = ..., /) -> bool:
         """
         Returns true if the key frame at the given time is redundant.
 
@@ -429,7 +429,7 @@ class Spline(Boost.Python.instance):
         Returns whether spline represents a simple linear relationship.
         """
     @overload
-    def IsSegmentFlat(self, startTime: float, endTime: float) -> bool:
+    def IsSegmentFlat(self, startTime: float, endTime: float, /) -> bool:
         """
         Returns true if the segment between the given (adjacent) key frames is
         flat.
@@ -439,13 +439,13 @@ class Spline(Boost.Python.instance):
         either of the indicated times.
         """
     @overload
-    def IsSegmentFlat(self, kf1: KeyFrame, kf2: KeyFrame) -> bool:
+    def IsSegmentFlat(self, kf1: KeyFrame, kf2: KeyFrame, /) -> bool:
         """
         Returns true if the segment between the given (adjacent) key frames is
         flat.
         """
     @overload
-    def IsSegmentValueMonotonic(self, startTime: float, endTime: float) -> bool:
+    def IsSegmentValueMonotonic(self, startTime: float, endTime: float, /) -> bool:
         """
         Returns true if the segment between the given (adjacent) key frames is
         monotonic (i.e.
@@ -457,7 +457,7 @@ class Spline(Boost.Python.instance):
         IsSegmentValueMonotonic(kf1, kf2)
         """
     @overload
-    def IsSegmentValueMonotonic(self, kf1: KeyFrame, kf2: KeyFrame) -> bool:
+    def IsSegmentValueMonotonic(self, kf1: KeyFrame, kf2: KeyFrame, /) -> bool:
         """
         Returns true if the segment between the given (adjacent) key frames is
         monotonic (i.e.
@@ -468,7 +468,7 @@ class Spline(Boost.Python.instance):
         This function will log a TF_CODING_ERROR if kf1>= kf2 TODO describe
         the preconditions
         """
-    def IsTimeLooped(self, time: float) -> bool:
+    def IsTimeLooped(self, time: float, /) -> bool:
         '''
         Is the given time in the"unrolled"region of a spline that is looping;
         i.e.
@@ -491,14 +491,14 @@ class Spline(Boost.Python.instance):
         Like IsVarying() , but for splines of type double, allows tiny value
         differences.
         """
-    def Range(self, arg2: float, arg3: float) -> tuple:
+    def Range(self, arg2: float, arg3: float, /) -> tuple:
         """Range(startTime, endTime) -> tuple<VtValue>
 
         startTime : Time
         endTime : Time
 
         The minimum and maximum of this spline returned as a tuple pair over the given time domain."""
-    def Sample(self, startTime: float, endTime: float, timeScale: float, valueScale: float, tolerance: float) -> tuple:
+    def Sample(self, startTime: float, endTime: float, timeScale: float, valueScale: float, tolerance: float, /) -> tuple:
         '''
         Evaluates the value of the spline over the given time interval.
 
@@ -523,7 +523,7 @@ class Spline(Boost.Python.instance):
 
         Samples may be returned outside the given time interval.
         '''
-    def SetKeyFrame(self, kf: KeyFrame) -> None:
+    def SetKeyFrame(self, kf: KeyFrame, /) -> None:
         """
         Sets a keyframe, optionally returning the time range affected.
 
@@ -533,7 +533,7 @@ class Spline(Boost.Python.instance):
         emitted; to avoid this, call CanSetKeyFrame() first.
         """
     @overload
-    def SetKeyFrames(self, arg2: object) -> None:
+    def SetKeyFrames(self, arg2: object, /) -> None:
         """SetKeyFrames(keyFrames)
 
         keyFrames : sequence<TsKeyFrame>
@@ -547,22 +547,22 @@ class Spline(Boost.Python.instance):
 
         Replaces all of the specified keyframes. Keyframes may be specified using any type of Python sequence, such as a list or tuple."""
     def clear(self) -> None: ...
-    def has_key(self, arg2: float) -> bool: ...
+    def has_key(self, arg2: float, /) -> bool: ...
     def keys(self) -> list: ...
     def values(self) -> list: ...
-    def __contains__(self, arg2: float) -> bool: ...
+    def __contains__(self, arg2: float, /) -> bool: ...
     @overload
-    def __delitem__(self, arg2: float) -> None: ...
+    def __delitem__(self, arg2: float, /) -> None: ...
     @overload
-    def __delitem__(self, arg2: object) -> None: ...
+    def __delitem__(self, arg2: object, /) -> None: ...
     def __eq__(self, other: object) -> bool:
         """
         Equality operator.
         """
     @overload
-    def __getitem__(self, arg2: float) -> KeyFrame: ...
+    def __getitem__(self, arg2: float, /) -> KeyFrame: ...
     @overload
-    def __getitem__(self, arg2: object) -> list: ...
+    def __getitem__(self, arg2: object, /) -> list: ...
     def __iter__(self) -> Any: ...
     def __len__(self) -> int: ...
     def __ne__(self, other: object) -> bool: ...
@@ -622,9 +622,9 @@ class TsTest_Sample(Boost.Python.instance):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, arg2: float, arg3: float) -> None: ...
+    def __init__(self, arg2: float, arg3: float, /) -> None: ...
     @overload
-    def __init__(self, arg2: TsTest_Sample) -> None: ...
+    def __init__(self, arg2: TsTest_Sample, /) -> None: ...
 
 class TsTest_SampleTimes(Boost.Python.instance):
     class SampleTime(Boost.Python.instance):
@@ -634,22 +634,22 @@ class TsTest_SampleTimes(Boost.Python.instance):
         @overload
         def __init__(self) -> None: ...
         @overload
-        def __init__(self, arg2: float) -> None: ...
+        def __init__(self, arg2: float, /) -> None: ...
         @overload
-        def __init__(self, arg2: float, arg3: bool) -> None: ...
+        def __init__(self, arg2: float, arg3: bool, /) -> None: ...
         @overload
-        def __init__(self, arg2: SampleTime) -> None: ...
+        def __init__(self, arg2: SampleTime, /) -> None: ...
         def __eq__(self, other: object) -> bool: ...
         def __lt__(self, other: object) -> bool: ...
         def __ne__(self, other: object) -> bool: ...
     @overload
     def __init__(self, times: object = ...) -> None: ...
     @overload
-    def __init__(self, arg2: TsTest_SplineData) -> None: ...
+    def __init__(self, arg2: TsTest_SplineData, /) -> None: ...
     def AddExtrapolationTimes(self, extrapolationFactor: float) -> None: ...
     def AddKnotTimes(self) -> None: ...
     def AddStandardTimes(self) -> None: ...
-    def AddTimes(self, arg2: object) -> None: ...
+    def AddTimes(self, arg2: object, /) -> None: ...
     def AddUniformInterpolationTimes(self, numSamples: int) -> None: ...
     def GetTimes(self) -> list: ...
 
@@ -669,7 +669,7 @@ class TsTest_SplineData(Boost.Python.instance):
         method: Incomplete
         slope: Incomplete
         @overload
-        def __init__(self, arg2: Extrapolation) -> None: ...
+        def __init__(self, arg2: Extrapolation, /) -> None: ...
         @overload
         def __init__(self, method: object = ..., slope: float = ..., loopMode: object = ...) -> None: ...
         def __eq__(self, other: object) -> bool: ...
@@ -694,7 +694,7 @@ class TsTest_SplineData(Boost.Python.instance):
         protoStart: Incomplete
         valueOffset: Incomplete
         @overload
-        def __init__(self, arg2: InnerLoopParams) -> None: ...
+        def __init__(self, arg2: InnerLoopParams, /) -> None: ...
         @overload
         def __init__(self, enabled: object = ..., protoStart: object = ..., protoEnd: object = ..., preLoopStart: object = ..., postLoopEnd: object = ..., closedEnd: object = ..., valueOffset: object = ...) -> None: ...
         def IsValid(self) -> bool: ...
@@ -724,7 +724,7 @@ class TsTest_SplineData(Boost.Python.instance):
         time: Incomplete
         value: Incomplete
         @overload
-        def __init__(self, arg2: Knot) -> None: ...
+        def __init__(self, arg2: Knot, /) -> None: ...
         @overload
         def __init__(self, time: object = ..., nextSegInterpMethod: object = ..., value: object = ..., preValue: object = ..., preSlope: object = ..., postSlope: object = ..., preLen: object = ..., postLen: object = ..., preAuto: object = ..., postAuto: object = ...) -> None: ...
         def __eq__(self, other: object) -> bool: ...
@@ -806,17 +806,15 @@ class ValueSample(Boost.Python.instance):
 
 class _AnnotatedBoolResult(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    def __init__(self, arg2: bool, arg3: object) -> None: ...
+    def __init__(self, arg2: bool, arg3: object, /) -> None: ...
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
-    def __getitem__(self, arg2: int) -> Any: ...
-    def __iter__(self) -> typing.Iterator[Any]:
-        """def __iter__(self) -> typing.Iterator[Any]"""
+    def __getitem__(self, arg2: int, /) -> Any: ...
     def __ne__(self, other: object) -> bool: ...
     @property
     def reasonWhyNot(self): ...
 
-def SimplifySpline(intervals: Spline, maxErrorFraction: pxr.Gf.MultiInterval, extremeMaxErrFract: float) -> None:
+def SimplifySpline(intervals: Spline, maxErrorFraction: pxr.Gf.MultiInterval, extremeMaxErrFract: float, /) -> None:
     """
     Remove as many knots as possible from spline without introducing error
     greater than maxErrorFraction, where maxErrorFraction is a percentage
@@ -826,7 +824,7 @@ def SimplifySpline(intervals: Spline, maxErrorFraction: pxr.Gf.MultiInterval, ex
 
     Only remove knots in intervals.
     """
-def SimplifySplinesInParallel(intervals: typing.Iterable[pxr.Gf.MultiInterval], maxErrorFraction: float, extremeMaxErrFract: float) -> None:
+def SimplifySplinesInParallel(intervals: typing.Iterable[pxr.Gf.MultiInterval], maxErrorFraction: float, extremeMaxErrFract: float, /) -> None:
     """
     Run TsSimplifySpline() on a vector of splines in parallel.
 

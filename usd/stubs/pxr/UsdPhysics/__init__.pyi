@@ -6,7 +6,6 @@ import pxr.Sdf
 import pxr.Tf
 import pxr.Usd
 import pxr.UsdGeom
-import typing
 from _typeshed import Incomplete
 from typing import Any, ClassVar, overload
 
@@ -459,7 +458,7 @@ class CollisionGroupTable(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
     def __init__(self) -> None: ...
     def GetGroups(self) -> list: ...
-    def IsCollisionEnabled(self, arg2: object, arg3: object) -> bool: ...
+    def IsCollisionEnabled(self, arg2: object, arg3: object, /) -> bool: ...
 
 class DistanceJoint(Joint):
     """
@@ -846,7 +845,7 @@ class DriveAPI(pxr.Usd.APISchemaBase):
         """
     @overload
     @staticmethod
-    def GetSchemaAttributeNames(includeInherited: bool, includeInherited: str | pxr.Ar.ResolvedPath) -> list[str]:
+    def GetSchemaAttributeNames(includeInherited: bool, /, includeInherited: str | pxr.Ar.ResolvedPath) -> list[str]:
         """
         Return a vector of names of all pre-declared attributes for this
         schema class and all its ancestor classes for a given instance name.
@@ -943,7 +942,7 @@ class DriveAPI(pxr.Usd.APISchemaBase):
         force, acceleration
         '''
     @staticmethod
-    def IsPhysicsDriveAPIPath(path: pxr.Sdf.Path | str) -> bool:
+    def IsPhysicsDriveAPIPath(path: pxr.Sdf.Path | str, /) -> bool:
         """
         Checks if the given path C{path} is of an API schema of type
         PhysicsDriveAPI.
@@ -1721,7 +1720,7 @@ class LimitAPI(pxr.Usd.APISchemaBase):
         """
     @overload
     @staticmethod
-    def GetSchemaAttributeNames(includeInherited: bool, includeInherited: str | pxr.Ar.ResolvedPath) -> list[str]:
+    def GetSchemaAttributeNames(includeInherited: bool, /, includeInherited: str | pxr.Ar.ResolvedPath) -> list[str]:
         """
         Return a vector of names of all pre-declared attributes for this
         schema class and all its ancestor classes for a given instance name.
@@ -1732,7 +1731,7 @@ class LimitAPI(pxr.Usd.APISchemaBase):
         proper namespace prefix.
         """
     @staticmethod
-    def IsPhysicsLimitAPIPath(path: pxr.Sdf.Path | str) -> bool:
+    def IsPhysicsLimitAPIPath(path: pxr.Sdf.Path | str, /) -> bool:
         """
         Checks if the given path C{path} is of an API schema of type
         PhysicsLimitAPI.
@@ -2866,7 +2865,7 @@ class RigidBodyAPI(pxr.Usd.APISchemaBase):
 
         UsdPrim::RemoveAPI()
         """
-    def ComputeMassProperties(self, massInfoFn: MassInformationFn) -> tuple:
+    def ComputeMassProperties(self, massInfoFn: MassInformationFn, /) -> tuple:
         """
         Compute mass properties of the rigid body C{diagonalInertia} Computed
         diagonal of the inertial tensor for the rigid body.
@@ -3492,12 +3491,10 @@ class Tokens(Boost.Python.instance):
 
 class _CanApplyResult(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
-    def __init__(self, arg2: bool, arg3: object) -> None: ...
+    def __init__(self, arg2: bool, arg3: object, /) -> None: ...
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
-    def __getitem__(self, arg2: int) -> Any: ...
-    def __iter__(self) -> typing.Iterator[Any]:
-        """def __iter__(self) -> typing.Iterator[Any]"""
+    def __getitem__(self, arg2: int, /) -> Any: ...
     def __ne__(self, other: object) -> bool: ...
     @property
     def whyNot(self): ...
