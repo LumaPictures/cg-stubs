@@ -395,7 +395,17 @@ class SparseValueWriter(Boost.Python.instance):
         Returns a new vector of UsdUtilsSparseAttrValueWriter populated from
         the attrValueWriter map.
         """
-    def SetAttribute(self, attr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | pxr.UsdShade.Input | pxr.UsdShade.Output, value: object, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool: ...
+    def SetAttribute(self, attr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | pxr.UsdShade.Input | pxr.UsdShade.Output, value: Any, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
+        """
+        Sets the value of C{attr} to C{value} at time C{time}.
+
+
+        The value is written sparsely, i.e., the default value is authored
+        only if it is different from the fallback value or the existing
+        default value, and any redundant time-samples are skipped when the
+        attribute value does not change significantly between consecutive
+        time-samples.
+        """
 
 class StageCache(Boost.Python.instance):
     """

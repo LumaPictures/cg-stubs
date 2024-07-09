@@ -722,7 +722,14 @@ class ScopeDescription(Boost.Python.instance):
     """
     __instance_size__: ClassVar[int] = ...
     def __init__(self, : str | pxr.Ar.ResolvedPath, /) -> None: ...
-    def SetDescription(self, arg2: str | pxr.Ar.ResolvedPath, /) -> None: ...
+    def SetDescription(self, description: str | pxr.Ar.ResolvedPath, /) -> None:
+        """
+        Replace the description stack entry for this scope description.
+
+
+        Caller guarantees that the string C{description} lives at least as
+        long as this TfScopeDescription object.
+        """
     def __enter__(self) -> ScopeDescription: ...
     def __exit__(self, type: type[BaseException] | None, value: BaseException | None, traceback: types.TracebackType | None) -> None: ...
 
@@ -1499,7 +1506,7 @@ def GetCurrentScopeDescriptionStack() -> list[str]:
     The most recently pushed description is at back(), and the least
     recently pushed description is at front().
     '''
-def GetEnvSetting(setting: str | pxr.Ar.ResolvedPath, /) -> T:
+def GetEnvSetting(setting: str | pxr.Ar.ResolvedPath, /) -> Any:
     """
     Returns the value of the specified env setting, registered using
     C{TF_DEFINE_ENV_SETTING}.

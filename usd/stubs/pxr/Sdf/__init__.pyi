@@ -150,7 +150,15 @@ class AssetPath(Boost.Python.instance):
     @property
     def path(self): ...
     @property
-    def resolvedPath(self): ...
+    def resolvedPath(self) -> str:
+        """
+        Return the resolved asset path, if any.
+
+
+        Note that SdfAssetPath carries a resolved path only if its creator
+        passed one to the constructor. SdfAssetPath never performs resolution
+        itself.
+        """
 
 class AssetPathArray(Boost.Python.instance):
     """An array of type SdfAssetPath."""
@@ -3669,14 +3677,44 @@ class PathExpression(Boost.Python.instance):
             Construct the empty pattern whose bool-conversion operator returns
             false.
             """
-        def AppendChild(self, text: object, predExpr: PredicateExpression = ...) -> None: ...
-        def AppendProperty(self, text: object, predExpr: PredicateExpression = ...) -> None: ...
-        def GetPrefix(self) -> Path: ...
+        def AppendChild(self, text: str | pxr.Ar.ResolvedPath, predExpr: PredicateExpression = ...) -> None:
+            """
+            Append a prim child component to this pattern, with optional predicate
+            expression C{predExpr}.
+
+
+            If this pattern does not yet contain any wildcards or components with
+            predicate expressions, and the input text does not contain wildcards,
+            and C{predExpr} is empty, then append a child component to this
+            pattern's prefix path (see GetPrefix() ). Otherwise append this
+            component to the sequence of components.
+            """
+        def AppendProperty(self, text: str | pxr.Ar.ResolvedPath, predExpr: PredicateExpression = ...) -> None:
+            """
+            Append a prim property component to this pattern, with optional
+            predicate expression C{predExpr}.
+
+
+            If this pattern does not yet contain any wildcards or components with
+            predicate expressions, and the input text does not contain wildcards,
+            and C{predExpr} is empty, then append a property component to this
+            pattern's prefix path (see GetPrefix() ). Otherwise append this
+            component to the sequence of components.
+            """
+        def GetPrefix(self) -> Path:
+            """
+            Return this pattern's non-speculative prefix (leading path components
+            with no wildcards and no predicates).
+            """
         def GetText(self) -> str:
             """
             Return the string representation of this pattern.
             """
-        def SetPrefix(self, prefix: Path | str) -> None: ...
+        def SetPrefix(self, prefix: Path | str) -> None:
+            """
+            Set this pattern's non-speculative prefix (leading path components
+            with no wildcards and no predicates).
+            """
         def __bool__(self) -> bool:
             """
             Return true if this pattern is not empty, false if it is.
@@ -3713,7 +3751,17 @@ class PathExpression(Boost.Python.instance):
         generated. See GetParseError() . See the class documentation for
         details on expression syntax.
         """
-    def ComposeOver(self, weaker: PathExpression) -> PathExpression: ...
+    def ComposeOver(self, weaker: PathExpression) -> PathExpression:
+        '''
+        Return a new expression created by replacing references to
+        the"weakerexpression"(i.e."%_") in this expression with C{weaker}.
+
+
+        This is a restricted form of ResolveReferences() that only
+        resolves"weaker"references, replacing them by C{weaker}, leaving other
+        references unmodified. As a special case, if this expression IsEmpty()
+        , return C{weaker}.
+        '''
     def ContainsExpressionReferences(self) -> bool:
         """
         Return true if this expression contains any references to other
@@ -3773,14 +3821,31 @@ class PathExpression(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def MakeAtom(ref: PathExpression.ExpressionReference) -> PathExpression: ...
+    def MakeAtom(ref: PathExpression.ExpressionReference) -> PathExpression:
+        """
+        Produce a new expression containing only the reference C{ref}.
+        """
     @overload
     @staticmethod
-    def MakeAtom(pattern: PathExpression.PathPattern) -> PathExpression: ...
+    def MakeAtom(pattern: PathExpression.PathPattern) -> PathExpression:
+        """
+        Produce a new expression containing only the pattern C{pattern}.
+        """
     @staticmethod
-    def MakeComplement(right: PathExpression) -> PathExpression: ...
+    def MakeComplement(right: PathExpression) -> PathExpression:
+        """
+        Produce a new expression representing the set-complement of C{right}.
+        """
     @staticmethod
-    def MakeOp(op: object, left: PathExpression, right: PathExpression) -> PathExpression: ...
+    def MakeOp(op: PathExpression.Op, left: PathExpression, right: PathExpression) -> PathExpression:
+        """
+        Produce a new expression representing the set-algebraic operation
+        C{op} with operands C{left} and C{right}.
+
+
+        The C{op} must be one of ImpliedUnion, Union, Intersection, or
+        Difference.
+        """
     @staticmethod
     def Nothing() -> PathExpression:
         """
@@ -3794,7 +3859,17 @@ class PathExpression(Boost.Python.instance):
         Return a new expression created by replacing literal path prefixes
         that start with C{oldPrefix} with C{newPrefix}.
         """
-    def ResolveReferences(self, resolve: object) -> PathExpression: ...
+    def ResolveReferences(self, resolve: pxr.Tf.FunctionRef[None]) -> PathExpression:
+        '''
+        Return a new expression created by resolving collection references in
+        this expression.
+
+
+        This function calls C{resolve} to produce a subexpression from a"%"
+        ExpressionReference. To leave an expression reference unchanged,
+        return an expression containing the passed argument by calling
+        MakeAtom() .
+        '''
     def Walk(self, logic: pxr.Tf.FunctionRef[None], ref: pxr.Tf.FunctionRef[None], pattern: pxr.Tf.FunctionRef[None]) -> None:
         '''
         Walk this expression\'s syntax tree in depth-first order, calling
@@ -4103,7 +4178,10 @@ class PredicateExpression(Boost.Python.instance):
         Construct the empty expression whose bool-operator returns false.
         """
     @overload
-    def __init__(self, arg2: PredicateExpression, /) -> None: ...
+    def __init__(self, : PredicateExpression, /) -> None:
+        """
+        Copy construct from another expression.
+        """
     @overload
     def __init__(self, exprString: str | pxr.Ar.ResolvedPath, context: str | pxr.Ar.ResolvedPath = ...) -> None:
         """

@@ -38,7 +38,7 @@ import re
 import pydoc
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Any, DefaultDict, Generic, NamedTuple, TypeVar
+from typing import Any, Callable, DefaultDict, Generic, NamedTuple, TypeVar
 from functools import lru_cache
 
 import mypy.stubgen
@@ -820,6 +820,9 @@ def get_sigs_from_cpp_overloads(
         for param in cpp_sig.params:
             has_default = param.default is not None
             py_arg_type = type_info.cpp_arg_to_py_type(param.type, is_result=False)
+            # FIXME: develop a better strategy for templates
+            if py_arg_type == "T":
+                py_arg_type = "Any"
             args_ptr.append(ArgSig(param.name, py_arg_type, default=has_default))
 
             if "*" in param.type:
@@ -834,6 +837,9 @@ def get_sigs_from_cpp_overloads(
             else None
         )
         py_ret_type = type_info.cpp_arg_to_py_type(cpp_sig.returnType, is_result=True)
+        # FIXME: develop a better strategy for templates
+        if py_ret_type == "T":
+            py_ret_type = "Any"
         cpp_sigs_with_ptrs.append(
             FunctionSig(ctx.name, args_ptr, py_ret_type, docstring)
         )
@@ -873,16 +879,21 @@ class SigTracker:
 class SignatureMatcher(Generic[T]):
     name: str
 
-    def __init__(self, validate=True):
+    def __init__(self, validate: bool = True):
+        """
+        validate: If this matcher finds a match, ensure that it agrees with previous matches.
+        """
         self.validate = validate
 
     def make_key(self, sig: FunctionSig) -> T:
         raise NotImplementedError
 
     def _validate_match(self, sig1: FunctionSig, sig2: FunctionSig) -> None:
-        if sig1 != sig2:
-            print("Existing", format_py_args(sig1))
-            print("New     ", format_py_args(sig2))
+        """Ensure signatures are equal"""
+        # compare using format_sig because it doesn't include the docstring by default
+        if sig1.format_sig() != sig2.format_sig():
+            print("Existing", sig1.format_sig())
+            print("New     ", sig2.format_sig())
             raise TypeError("Sigs not equal")
 
     def match(
@@ -891,7 +902,7 @@ class SignatureMatcher(Generic[T]):
         py_sigs: list[FunctionSig],
         cpp_sigs: list[FunctionSig],
         tracker: SigTracker,
-        skip=None,
+        skip: Callable[[int, FunctionSig], bool] | None = None,
     ) -> set[int]:
         """Use the argument types of boost-python signatures to find matching C++
         signatures
@@ -1105,7 +1116,7 @@ class UsdBoostDocstringSignatureGenerator(
         match: FunctionSig | None = None,
         **other_sigs: list[FunctionSig],
     ):
-        failures_str = "\n".join(failures)
+        failures_str = "\n".join(f" - {line}" for line in failures)
         summary = ""
         for i, sig in enumerate(sigs):
             marker = "*" if overload_num == i else " "
@@ -1300,8 +1311,12 @@ class UsdBoostDocstringSignatureGenerator(
             )
 
             sigs = self.cleanup_sigs_types(sigs, ctx)
-            cpp_sigs_with_ptrs = self.cleanup_sigs_types(cpp_sigs_with_ptrs, ctx)
-            cpp_sigs_without_ptrs = self.cleanup_sigs_types(cpp_sigs_without_ptrs, ctx)
+            cpp_sigs_with_ptrs = reduce_overloads(
+                self.cleanup_sigs_types(cpp_sigs_with_ptrs, ctx)
+            )
+            cpp_sigs_without_ptrs = reduce_overloads(
+                self.cleanup_sigs_types(cpp_sigs_without_ptrs, ctx)
+            )
 
             tracker = SigTracker()
             arg_names = ArgNameMatcher()
@@ -1623,3 +1638,7 @@ def main(outdir: str) -> None:
         ]
     )
     notifier.print_summary()
+    percent = notifier.get_key_count(
+        "Could not find C++ info for overload"
+    ) / notifier.get_key_count("*Total overloads*")
+    print("Overload coverage {:.2f}%".format((1 - percent) * 100))

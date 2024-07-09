@@ -311,7 +311,45 @@ class Attribute(Property):
         """
         Shorthand for ClearAtTime(UsdTimeCode::Default()).
         """
-    def Get(self, time: TimeCode | float | pxr.Sdf.TimeCode = ...) -> Any: ...
+    def Get(self, time: TimeCode | float | pxr.Sdf.TimeCode = ...) -> Any:
+        """
+        Perform value resolution to fetch the value of this attribute at the
+        requested UsdTimeCode C{time}, which defaults to *default*.
+
+
+        If no value is authored at C{time} but values are authored at other
+        times, this function will return an interpolated value based on the
+        stage's interpolation type. See Attribute Value Interpolation.
+
+        If no value is authored and no fallback value is provided by the
+        schema for this attribute, this function will return false. If the
+        consumer's use-case requires a default value, the consumer will need
+        to provide one, possibly using GetTypeName() .GetDefaultValue().
+
+        This templated accessor is designed for high performance data-
+        streaming applications, allowing one to fetch data into the same
+        container repeatedly, avoiding memory allocations when possible
+        (VtArray containers will be resized as necessary to conform to the
+        size of data being read).
+
+        This template is only instantiated for the valid scene description
+        value types and their corresponding VtArray containers. See Basic
+        Datatypes for Scene Description Provided by Sdf for the complete list
+        of types.
+
+        Values are retrieved without regard to this attribute's variability.
+        For example, a uniform attribute may retrieve time sample values if
+        any are authored. However, the USD_VALIDATE_VARIABILITY TF_DEBUG code
+        will cause debug information to be output if values that are
+        inconsistent with this attribute's variability are retrieved. See
+        UsdAttribute::GetVariability for more details.
+
+        true if there was a value to be read, it was of the type T requested,
+        and we read it successfully - false otherwise. For more details, see
+        TimeSamples, Defaults, and Value Resolution, and also Attributes of
+        type SdfAssetPath and UsdAttribute::Get() for information on how to
+        retrieve resolved asset paths from SdfAssetPath-valued attributes.
+        """
     def GetBracketingTimeSamples(self, desiredTime: float) -> tuple[float, float, bool]:
         """
         Populate *lower* and *upper* with the next greater and lesser value
@@ -556,7 +594,23 @@ class Attribute(Property):
         descendant to a prototype prim. It is not valid to author connections
         to these objects.
         """
-    def Set(self, value: object, time: TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool: ...
+    def Set(self, value: Any, time: TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
+        """
+        Set the value of this attribute in the current UsdEditTarget to
+        C{value} at UsdTimeCode C{time}, which defaults to *default*.
+
+
+        Values are authored without regard to this attribute's variability.
+        For example, time sample values may be authored on a uniform
+        attribute. However, the USD_VALIDATE_VARIABILITY TF_DEBUG code will
+        cause debug information to be output if values that are inconsistent
+        with this attribute's variability are authored. See
+        UsdAttribute::GetVariability for more details.
+
+        false and generate an error if type C{T} does not match this
+        attribute's defined scene description type B{exactly}, or if there is
+        no existing definition for the attribute.
+        """
     def SetColorSpace(self, colorSpace: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Sets the color space of the attribute to C{colorSpace}.
@@ -685,7 +739,15 @@ class AttributeQuery(Boost.Python.instance):
         The objects in the returned vector will line up 1-to-1 with
         C{attrNames}.
         """
-    def Get(self, time: TimeCode | float | pxr.Sdf.TimeCode = ...) -> Any: ...
+    def Get(self, time: TimeCode | float | pxr.Sdf.TimeCode = ...) -> Any:
+        """
+        Perform value resolution to fetch the value of the attribute
+        associated with this query at the requested UsdTimeCode C{time}.
+
+
+
+        UsdAttribute::Get
+        """
     def GetAttribute(self) -> PrimDefinition.Attribute:
         """
         Return the attribute associated with this query.
@@ -2364,7 +2426,14 @@ class EditTarget(Boost.Python.instance):
         A null EditTarget will return paths unchanged when asked to map paths.
         """
     @overload
-    def __init__(self, layer: pxr.Sdf.Layer, node: pxr.Pcp.NodeRef = ...) -> None: ...
+    def __init__(self, layer: pxr.Sdf.Layer, node: pxr.Pcp.NodeRef = ...) -> None:
+        """
+        Construct an EditTarget with *layer* and *node*.
+
+
+        The mapping will be used to map paths from the scene into the
+        *layer's* namespace given the *PcpNodeRef* *node's* mapping.
+        """
     def ComposeOver(self, weaker: EditTarget | pxr.Sdf.Layer) -> EditTarget:
         '''
         Return a new EditTarget composed over *weaker*.
@@ -2389,7 +2458,10 @@ class EditTarget(Boost.Python.instance):
         The C{varSelPath} must be a prim variant selection path (see
         SdfPath::IsPrimVariantSelectionPath() ).
         """
-    def GetLayer(self) -> pxr.Sdf.Layer: ...
+    def GetLayer(self) -> pxr.Sdf.Layer:
+        """
+        Return the layer this EditTarget contains.
+        """
     def GetMapFunction(self) -> pxr.Pcp.MapFunction:
         """
         Returns the PcpMapFunction representing the map from source specs
@@ -2494,7 +2566,10 @@ class Inherits(Boost.Python.instance):
         paths on the stage. This returns all the potential places that such
         opinions could appear.
         """
-    def GetPrim(self) -> Prim: ...
+    def GetPrim(self) -> Prim:
+        """
+        Return the prim this object is bound to.
+        """
     def RemoveInherit(self, primPath: pxr.Sdf.Path | str) -> bool:
         """
         Removes the specified path from the inheritPaths listOp at the current
@@ -3399,8 +3474,43 @@ class Object(Boost.Python.instance):
 
         SetDocumentation()
         """
-    def GetMetadata(self, key: object) -> Any: ...
-    def GetMetadataByDictKey(self, key: object, keyPath: object) -> Any: ...
+    def GetMetadata(self, key: str | pxr.Ar.ResolvedPath) -> Any:
+        """
+        Resolve the requested metadatum named C{key} into C{value}, returning
+        true on success.
+
+
+
+        false if C{key} was not resolvable, or if C{value's} type C{T}
+        differed from that of the resolved metadatum.
+
+        For any composition-related metadata, as enumerated in
+        GetAllMetadata() , this method will return only the strongest opinion
+        found, not applying the composition rules used by Pcp to process the
+        data. For more processed/composed views of composition data, please
+        refer to the specific interface classes, such as UsdReferences,
+        UsdInherits, UsdVariantSets, etc.
+
+        General Metadata in USD
+        """
+    def GetMetadataByDictKey(self, key: str | pxr.Ar.ResolvedPath, keyPath: str | pxr.Ar.ResolvedPath) -> Any:
+        """
+        Resolve the requested dictionary sub-element C{keyPath} of dictionary-
+        valued metadatum named C{key} into C{value}, returning true on
+        success.
+
+
+        If you know you neeed just a small number of elements from a
+        dictionary, accessing them element-wise using this method can be much
+        less expensive than fetching the entire dictionary with
+        GetMetadata(key).
+
+        false if C{key} was not resolvable, or if C{value's} type C{T}
+        differed from that of the resolved metadatum. The C{keyPath} is
+        a':'-separated path addressing an element in subdictionaries.
+
+        Dictionary-valued Metadata
+        """
     def GetName(self) -> str:
         """
         Return the full name of this object, i.e.
@@ -3624,8 +3734,28 @@ class Object(Boost.Python.instance):
 
         See IsHidden() for details.
         """
-    def SetMetadata(self, key: object, value: object) -> bool: ...
-    def SetMetadataByDictKey(self, key: object, keyPath: object, value: object) -> bool: ...
+    def SetMetadata(self, key: str | pxr.Ar.ResolvedPath, value: Any) -> bool:
+        """
+        Set metadatum C{key's} value to C{value}.
+
+
+
+        false if C{value's} type does not match the schema type for C{key}.
+
+        General Metadata in USD
+        """
+    def SetMetadataByDictKey(self, key: str | pxr.Ar.ResolvedPath, keyPath: str | pxr.Ar.ResolvedPath, value: Any) -> bool:
+        """
+        Author C{value} to the field identified by C{key} and C{keyPath} at
+        the current EditTarget.
+
+
+        The C{keyPath} is a':'-separated path identifying a value in
+        subdictionaries stored in the metadata field at C{key}. Return true if
+        the value is authored successfully, false otherwise.
+
+        Dictionary-valued Metadata
+        """
     def __bool__(self) -> bool:
         """
         Returns C{true} if this object is valid, C{false} otherwise.
@@ -3695,7 +3825,10 @@ class Payloads(Boost.Python.instance):
 
         ListOps and List Editing
         '''
-    def GetPrim(self) -> Prim: ...
+    def GetPrim(self) -> Prim:
+        """
+        Return the prim this object is bound to.
+        """
     def RemovePayload(self, payload: pxr.Sdf.Payload) -> bool:
         """
         Removes the specified payload from the payloads listOp at the current
@@ -5527,8 +5660,11 @@ class PrimDefinition(Boost.Python.instance):
             Default constructor returns an invalid attribute.
             """
         @overload
-        def __init__(self, property: PrimDefinition.Property) -> None: ...
-        def GetFallbackValue(self) -> T:
+        def __init__(self, property: PrimDefinition.Property) -> None:
+            """
+            Copy constructor from a Property to allow implicit conversion.
+            """
+        def GetFallbackValue(self) -> Any:
             """
             Retrieves the fallback value of type C{T} for this attribute and
             stores it in C{value} if possible.
@@ -5576,7 +5712,7 @@ class PrimDefinition(Boost.Python.instance):
             Returns the documentation metadata defined by the prim definition for
             this property.
             """
-        def GetMetadata(self, key: str | pxr.Ar.ResolvedPath) -> T:
+        def GetMetadata(self, key: str | pxr.Ar.ResolvedPath) -> Any:
             """
             Retrieves the fallback value for the metadata field named C{key}, that
             is defined for this property in the prim definition, and stores it in
@@ -5586,7 +5722,7 @@ class PrimDefinition(Boost.Python.instance):
             Returns true if a value is defined for the given metadata C{key} for
             this property. Returns false otherwise.
             """
-        def GetMetadataByDictKey(self, key: str | pxr.Ar.ResolvedPath, keyPath: str | pxr.Ar.ResolvedPath) -> T:
+        def GetMetadataByDictKey(self, key: str | pxr.Ar.ResolvedPath, keyPath: str | pxr.Ar.ResolvedPath) -> Any:
             """
             Retrieves the value at C{keyPath} from the dictionary value for the
             dictionary metadata field named C{key}, that is defined for this
@@ -5660,7 +5796,10 @@ class PrimDefinition(Boost.Python.instance):
             Default constructor returns an invalid relationship.
             """
         @overload
-        def __init__(self, property: PrimDefinition.Property) -> None: ...
+        def __init__(self, property: PrimDefinition.Property) -> None:
+            """
+            Copy constructor from a Property to allow implicit conversion.
+            """
         def __bool__(self) -> bool:
             """
             Conversion to bool returns true if this represents a valid property in
@@ -5729,7 +5868,7 @@ class PrimDefinition(Boost.Python.instance):
         If a property with the given name doesn't exist or exists but isn't an
         attribute, this will return an invalid Attribute.
         """
-    def GetAttributeFallbackValue(self, attrName: str | pxr.Ar.ResolvedPath) -> T:
+    def GetAttributeFallbackValue(self, attrName: str | pxr.Ar.ResolvedPath) -> Any:
         """
         Retrieves the fallback value for the attribute named C{attrName} and
         stores it in C{value} if possible.
@@ -5743,7 +5882,7 @@ class PrimDefinition(Boost.Python.instance):
         Returns the documentation metadata defined by the prim definition for
         the prim itself.
         """
-    def GetMetadata(self, key: str | pxr.Ar.ResolvedPath) -> T:
+    def GetMetadata(self, key: str | pxr.Ar.ResolvedPath) -> Any:
         """
         Retrieves the fallback value for the metadata field named C{key}, that
         is defined by this prim definition for the prim itself and stores it
@@ -5753,7 +5892,7 @@ class PrimDefinition(Boost.Python.instance):
         Returns true if a fallback value is defined for the given metadata
         C{key}. Returns false otherwise.
         """
-    def GetMetadataByDictKey(self, key: str | pxr.Ar.ResolvedPath, keyPath: str | pxr.Ar.ResolvedPath) -> T:
+    def GetMetadataByDictKey(self, key: str | pxr.Ar.ResolvedPath, keyPath: str | pxr.Ar.ResolvedPath) -> Any:
         """
         Retrieves the value at C{keyPath} from the fallback dictionary value
         for the dictionary metadata field named C{key}, that is defined by
@@ -5779,7 +5918,7 @@ class PrimDefinition(Boost.Python.instance):
         Returns the documentation metadata defined by the prim definition for
         the property named C{propName} if it exists.
         """
-    def GetPropertyMetadata(self, propName: str | pxr.Ar.ResolvedPath, key: str | pxr.Ar.ResolvedPath) -> T:
+    def GetPropertyMetadata(self, propName: str | pxr.Ar.ResolvedPath, key: str | pxr.Ar.ResolvedPath) -> Any:
         """
         Retrieves the fallback value for the metadata field named C{key}, that
         is defined by this prim definition for the property named C{propName},
@@ -5789,7 +5928,7 @@ class PrimDefinition(Boost.Python.instance):
         Returns true if a fallback value is defined for the given metadata
         C{key} for the named property. Returns false otherwise.
         """
-    def GetPropertyMetadataByDictKey(self, propName: str | pxr.Ar.ResolvedPath, key: str | pxr.Ar.ResolvedPath, keyPath: str | pxr.Ar.ResolvedPath) -> T:
+    def GetPropertyMetadataByDictKey(self, propName: str | pxr.Ar.ResolvedPath, key: str | pxr.Ar.ResolvedPath, keyPath: str | pxr.Ar.ResolvedPath) -> Any:
         """
         Retrieves the value at C{keyPath} from the fallback dictionary value
         for the dictionary metadata field named C{key}, that is defined by
@@ -6604,7 +6743,10 @@ class References(Boost.Python.instance):
 
         ListOps and List Editing
         '''
-    def GetPrim(self) -> Prim: ...
+    def GetPrim(self) -> Prim:
+        """
+        Return the prim this object is bound to.
+        """
     def RemoveReference(self, ref: pxr.Sdf.Reference) -> bool:
         """
         Removes the specified reference from the references listOp at the
@@ -7593,7 +7735,10 @@ class Specializes(Boost.Python.instance):
         Removes the authored specializes listOp edits at the current edit
         target.
         """
-    def GetPrim(self) -> Prim: ...
+    def GetPrim(self) -> Prim:
+        """
+        Return the prim this object is bound to.
+        """
     def RemoveSpecialize(self, primPath: pxr.Sdf.Path | str) -> bool:
         """
         Removes the specified path from the specializes listOp at the current
@@ -8121,8 +8266,40 @@ class Stage(Boost.Python.instance):
 
         See Working Set Management for more information.
         """
-    def GetMetadata(self, arg2: object, /) -> Any: ...
-    def GetMetadataByDictKey(self, arg2: object, arg3: object, /) -> Any: ...
+    def GetMetadata(self, key: str | pxr.Ar.ResolvedPath, /) -> Any:
+        """
+        Return in C{value} an authored or fallback value (if one was defined
+        for the given metadatum) for Stage metadatum C{key}.
+
+
+        Order of resolution is session layer, followed by root layer, else
+        fallback to the SdfSchema.
+
+        true if we successfully retrieved a value of the requested type; false
+        if C{key} is not allowed as layer metadata or no value was found.
+        Generates a coding error if we retrieved a stored value of a type
+        other than the requested type
+
+        General Metadata in USD
+        """
+    def GetMetadataByDictKey(self, key: str | pxr.Ar.ResolvedPath, keyPath: str | pxr.Ar.ResolvedPath, /) -> Any:
+        """
+        Resolve the requested dictionary sub-element C{keyPath} of dictionary-
+        valued metadatum named C{key}, returning the resolved value.
+
+
+        If you know you need just a small number of elements from a
+        dictionary, accessing them element-wise using this method can be much
+        less expensive than fetching the entire dictionary with
+        GetMetadata(key).
+
+        true if we successfully retrieved a value of the requested type; false
+        if C{key} is not allowed as layer metadata or no value was found.
+        Generates a coding error if we retrieved a stored value of a type
+        other than the requested type The C{keyPath} is a':'-separated path
+        addressing an element in subdictionaries. If C{keyPath} is empty,
+        returns an empty VtValue.
+        """
     def GetMutedLayers(self) -> list[str]:
         """
         Returns a vector of all layers that have been muted on this stage.
@@ -8827,8 +9004,34 @@ class Stage(Boost.Python.instance):
 
         See Working Set Management for more information.
         """
-    def SetMetadata(self, arg2: object, arg3: object, /) -> bool: ...
-    def SetMetadataByDictKey(self, arg2: object, arg3: object, arg4: object, /) -> bool: ...
+    def SetMetadata(self, key: str | pxr.Ar.ResolvedPath, value: Any, /) -> bool:
+        """
+        Set the value of Stage metadatum C{key} to C{value}, if the stage's
+        current UsdEditTarget is the root or session layer.
+
+
+        If the current EditTarget is any other layer, raise a coding error.
+
+        true if authoring was successful, false otherwise. Generates a coding
+        error if C{key} is not allowed as layer metadata.
+
+        General Metadata in USD
+        """
+    def SetMetadataByDictKey(self, key: str | pxr.Ar.ResolvedPath, keyPath: str | pxr.Ar.ResolvedPath, value: Any, /) -> bool:
+        """
+        Author C{value} to the field identified by C{key} and C{keyPath} at
+        the current EditTarget.
+
+
+        The C{keyPath} is a':'-separated path identifying a value in
+        subdictionaries stored in the metadata field at C{key}. If C{keyPath}
+        is empty, no action is taken.
+
+        true if the value is authored successfully, false otherwise. Generates
+        a coding error if C{key} is not allowed as layer metadata.
+
+        Dictionary-valued Metadata
+        """
     def SetPopulationMask(self, mask: StagePopulationMask) -> None:
         """
         Set this stage's population mask and recompose the stage.
@@ -10111,7 +10314,12 @@ class VariantSets(Boost.Python.instance):
         """
     def GetNames(self) -> list[str]:
         """
-        Return a list of all VariantSets authored on the originating UsdPrim.
+        Compute the list of all VariantSets authored on the originating
+        UsdPrim.
+
+
+        Always return true. Clear the contents of C{names} and store the
+        result there.
         """
     def GetVariantSelection(self, variantSetName: str | pxr.Ar.ResolvedPath) -> str:
         """

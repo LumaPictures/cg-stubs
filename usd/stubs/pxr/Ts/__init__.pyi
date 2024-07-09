@@ -62,9 +62,15 @@ class KeyFrame(Boost.Python.instance):
     time: Time
     value: Any
     @overload
-    def __init__(self, time: float = ..., value: object = ..., knotType: object = ..., leftSlope: object = ..., rightSlope: object = ..., leftLen: float = ..., rightLen: float = ...) -> None: ...
+    def __init__(self, time: float = ..., value: Any = ..., knotType: KnotType = ..., leftSlope: Any = ..., rightSlope: Any = ..., leftLen: float = ..., rightLen: float = ...) -> None:
+        """
+        Constructs a single-valued keyframe.
+        """
     @overload
-    def __init__(self, time: float, leftValue: object, rightValue: object, knotType: object, leftSlope: object = ..., rightSlope: object = ..., leftLen: float = ..., rightLen: float = ...) -> None: ...
+    def __init__(self, time: float, leftValue: Any, rightValue: Any, knotType: KnotType, leftSlope: Any = ..., rightSlope: Any = ..., leftLen: float = ..., rightLen: float = ...) -> None:
+        """
+        Constructs a dual-valued keyframe.
+        """
     @overload
     def __init__(self, kf: KeyFrame, /) -> None:
         """

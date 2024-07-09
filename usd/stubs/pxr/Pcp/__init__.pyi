@@ -255,7 +255,16 @@ class Cache(Boost.Python.instance):
 
 
         """
-    def HasRootLayerStack(self, arg2: LayerStack, /) -> bool: ...
+    def HasRootLayerStack(self, layerStack: LayerStack, /) -> bool:
+        """
+        Return true if this cache's root layer stack is C{layerStack}, false
+        otherwise.
+
+
+        This is functionally equivalent to comparing against the result of
+        GetLayerStack() , but does not require constructing a TfWeakPtr or any
+        refcount operations.
+        """
     def IsInvalidAssetPath(self, resolvedAssetPath: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Returns true if C{resolvedAssetPath} was used by a prim (e.g.

@@ -55,6 +55,9 @@ class Notifier:
             count = self._seen_keys[key]
             print(f"  {key}: {count}")
 
+    def get_key_count(self, key):
+        return self._seen_keys[key]
+
 
 def merge_signatures(
     dest: FunctionSig, other: FunctionSig, force: bool = False

@@ -832,7 +832,10 @@ class Frustum(Boost.Python.instance):
 
         '''
     @overload
-    def __init__(self, arg2: Frustum, /) -> None: ...
+    def __init__(self, o: Frustum, /) -> None:
+        """
+        Copy constructor.
+        """
     @overload
     def __init__(self, position: Vec3d | list[float] | tuple[float, float, float], rotation: Rotation, window: Range2d | list[float] | tuple[float, float], nearFar: Range1d, projectionType: Frustum.ProjectionType, viewDistance: float = ...) -> None:
         """
@@ -2531,7 +2534,16 @@ class Matrix4d(Boost.Python.instance):
     @overload
     def __init__(self, arg2: object, /) -> None: ...
     @overload
-    def __init__(self, arg2: object, arg3: object, arg4: object, arg5: object, /) -> None: ...
+    def __init__(self, r0: typing.Iterable[float], r1: typing.Iterable[float], r2: typing.Iterable[float], r3: typing.Iterable[float], /) -> None:
+        """
+        Constructor.
+
+
+        Initialize the matrix from 4 row vectors of double. Each vector is
+        expected to length 4. If it is too big, only the first 4 items will be
+        used. If it is too small, uninitialized elements will be filled in
+        with the corresponding elements from an identity matrix.
+        """
     @overload
     def __init__(self, rotmx: Matrix3d, translate: Vec3d | list[float] | tuple[float, float, float], /) -> None:
         """
@@ -3017,7 +3029,16 @@ class Matrix4f(Boost.Python.instance):
     @overload
     def __init__(self, arg2: object, /) -> None: ...
     @overload
-    def __init__(self, arg2: object, arg3: object, arg4: object, arg5: object, /) -> None: ...
+    def __init__(self, r0: typing.Iterable[float], r1: typing.Iterable[float], r2: typing.Iterable[float], r3: typing.Iterable[float], /) -> None:
+        """
+        Constructor.
+
+
+        Initialize the matrix from 4 row vectors of double. Each vector is
+        expected to length 4. If it is too big, only the first 4 items will be
+        used. If it is too small, uninitialized elements will be filled in
+        with the corresponding elements from an identity matrix.
+        """
     @overload
     def __init__(self, rotmx: Matrix3f, translate: Vec3f | list[float] | tuple[float, float, float], /) -> None:
         """
@@ -5715,7 +5736,10 @@ class Size2(Boost.Python.instance):
         """
         Component-wise equality.
         """
-    def __getitem__(self, arg2: int, /) -> int: ...
+    def __getitem__(self, i: int, /) -> int:
+        """
+        Array operator.
+        """
     def __iadd__(self, arg2: Size2 | list[float] | tuple[float, float], /) -> Any: ...
     def __idiv__(self, arg2: int, /) -> Any: ...
     def __imul__(self, arg2: int, /) -> Any: ...
@@ -5777,7 +5801,10 @@ class Size3(Boost.Python.instance):
         """
         Component-wise equality.
         """
-    def __getitem__(self, arg2: int, /) -> int: ...
+    def __getitem__(self, i: int, /) -> int:
+        """
+        Array operator.
+        """
     def __iadd__(self, arg2: Size3 | list[float] | tuple[float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: int, /) -> Any: ...
     def __imul__(self, arg2: int, /) -> Any: ...
@@ -5975,9 +6002,9 @@ class Vec2d(Boost.Python.instance):
         Implicitly convert from GfVec2i.
         """
     @overload
-    def __init__(self, p: Vec2d | list[float] | tuple[float, float], /) -> None:
+    def __init__(self, other: Vec2d | list[float] | tuple[float, float], /) -> None:
         """
-        Construct with pointer to values.
+        Implicitly convert from GfVec2i.
         """
     @overload
     def __init__(self, value: float, /) -> None:
@@ -6056,7 +6083,10 @@ class Vec2d(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, i: int, /) -> list: ...
+    def __getitem__(self, i: int, /) -> list:
+        """
+        Indexing.
+        """
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec2d | list[float] | tuple[float, float], /) -> Any: ...
     def __idiv__(self, arg2: float, /) -> Any: ...
@@ -6110,9 +6140,9 @@ class Vec2f(Boost.Python.instance):
         Implicitly convert from GfVec2i.
         """
     @overload
-    def __init__(self, p: Vec2f | list[float] | tuple[float, float], /) -> None:
+    def __init__(self, other: Vec2f | list[float] | tuple[float, float], /) -> None:
         """
-        Construct with pointer to values.
+        Implicitly convert from GfVec2i.
         """
     @overload
     def __init__(self, value: float, /) -> None:
@@ -6191,7 +6221,10 @@ class Vec2f(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, i: int, /) -> list: ...
+    def __getitem__(self, i: int, /) -> list:
+        """
+        Indexing.
+        """
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec2f | list[float] | tuple[float, float], /) -> Any: ...
     def __idiv__(self, arg2: float, /) -> Any: ...
@@ -6326,7 +6359,10 @@ class Vec2h(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, i: int, /) -> list: ...
+    def __getitem__(self, i: int, /) -> list:
+        """
+        Indexing.
+        """
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec2h | list[float] | tuple[float, float], /) -> Any: ...
     def __idiv__(self, arg2: object, /) -> Any: ...
@@ -6411,7 +6447,10 @@ class Vec2i(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, i: int, /) -> list: ...
+    def __getitem__(self, i: int, /) -> list:
+        """
+        Indexing.
+        """
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec2i | list[int] | Size2 | tuple[int, int], /) -> Any: ...
     def __idiv__(self, arg2: int, /) -> Any: ...
@@ -6465,9 +6504,9 @@ class Vec3d(Boost.Python.instance):
         Implicitly convert from GfVec3i.
         """
     @overload
-    def __init__(self, p: Vec3d | list[float] | tuple[float, float, float], /) -> None:
+    def __init__(self, other: Vec3d | list[float] | tuple[float, float, float], /) -> None:
         """
-        Construct with pointer to values.
+        Implicitly convert from GfVec3i.
         """
     @overload
     def __init__(self, value: float, /) -> None:
@@ -6577,7 +6616,10 @@ class Vec3d(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, i: int, /) -> list: ...
+    def __getitem__(self, i: int, /) -> list:
+        """
+        Indexing.
+        """
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec3d | list[float] | tuple[float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: float, /) -> Any: ...
@@ -6632,9 +6674,9 @@ class Vec3f(Boost.Python.instance):
         Implicitly convert from GfVec3i.
         """
     @overload
-    def __init__(self, p: Vec3f | list[float] | tuple[float, float, float], /) -> None:
+    def __init__(self, other: Vec3f | list[float] | tuple[float, float, float], /) -> None:
         """
-        Construct with pointer to values.
+        Implicitly convert from GfVec3i.
         """
     @overload
     def __init__(self, value: float, /) -> None:
@@ -6744,7 +6786,10 @@ class Vec3f(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, i: int, /) -> list: ...
+    def __getitem__(self, i: int, /) -> list:
+        """
+        Indexing.
+        """
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec3f | list[float] | tuple[float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: float, /) -> Any: ...
@@ -6911,7 +6956,10 @@ class Vec3h(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, i: int, /) -> list: ...
+    def __getitem__(self, i: int, /) -> list:
+        """
+        Indexing.
+        """
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: object, /) -> Any: ...
@@ -7002,7 +7050,10 @@ class Vec3i(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, i: int, /) -> list: ...
+    def __getitem__(self, i: int, /) -> list:
+        """
+        Indexing.
+        """
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec3i | list[int] | Size3 | tuple[int, int, int], /) -> Any: ...
     def __idiv__(self, arg2: int, /) -> Any: ...
@@ -7056,9 +7107,9 @@ class Vec4d(Boost.Python.instance):
         Implicitly convert from GfVec4i.
         """
     @overload
-    def __init__(self, p: Vec4d | list[float] | tuple[float, float, float, float], /) -> None:
+    def __init__(self, other: Vec4d | list[float] | tuple[float, float, float, float], /) -> None:
         """
-        Construct with pointer to values.
+        Implicitly convert from GfVec4i.
         """
     @overload
     def __init__(self, value: float, /) -> None:
@@ -7147,7 +7198,10 @@ class Vec4d(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, i: int, /) -> list: ...
+    def __getitem__(self, i: int, /) -> list:
+        """
+        Indexing.
+        """
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec4d | list[float] | tuple[float, float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: float, /) -> Any: ...
@@ -7201,9 +7255,9 @@ class Vec4f(Boost.Python.instance):
         Implicitly convert from GfVec4i.
         """
     @overload
-    def __init__(self, p: Vec4f | list[float] | tuple[float, float, float, float], /) -> None:
+    def __init__(self, other: Vec4f | list[float] | tuple[float, float, float, float], /) -> None:
         """
-        Construct with pointer to values.
+        Implicitly convert from GfVec4i.
         """
     @overload
     def __init__(self, value: float, /) -> None:
@@ -7292,7 +7346,10 @@ class Vec4f(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, i: int, /) -> list: ...
+    def __getitem__(self, i: int, /) -> list:
+        """
+        Indexing.
+        """
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec4f | list[float] | tuple[float, float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: float, /) -> Any: ...
@@ -7437,7 +7494,10 @@ class Vec4h(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, i: int, /) -> list: ...
+    def __getitem__(self, i: int, /) -> list:
+        """
+        Indexing.
+        """
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec4h | list[float] | tuple[float, float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: object, /) -> Any: ...
@@ -7532,7 +7592,10 @@ class Vec4i(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, i: int, /) -> list: ...
+    def __getitem__(self, i: int, /) -> list:
+        """
+        Indexing.
+        """
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec4i | list[int] | tuple[int, int, int, int], /) -> Any: ...
     def __idiv__(self, arg2: int, /) -> Any: ...
@@ -7618,7 +7681,14 @@ def Ceilf(f) -> float:
     f : float
 
     Use instead of Ceil() to return the ceiling of f as a float instead of a double."""
-def Clamp(arg1: float, arg2: float, arg3: float, /) -> float: ...
+def Clamp(value: float, min: float, max: float, /) -> float:
+    """
+    Return the resulting of clamping C{value} to lie between C{min} and
+    C{max}.
+
+
+    This function is also defined for GfVecs.
+    """
 @overload
 def Clampf(arg1: float, arg2: float, arg3: float, /) -> float:
     """Clampf(f) -> float

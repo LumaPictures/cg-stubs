@@ -8800,7 +8800,7 @@ class Primvar(Boost.Python.instance):
         Returns the existing indices attribute if the primvar is indexed or
         creates a new one.
         """
-    def Get(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> T:
+    def Get(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> Any:
         """
         Get the attribute value of the Primvar at C{time}.
 
@@ -9022,7 +9022,7 @@ class Primvar(Boost.Python.instance):
         namespaces in their names, for ease of translating to other systems
         that do not allow namespaces.
         '''
-    def Set(self, value: T, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
+    def Set(self, value: Any, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
         """
         Set the attribute value of the Primvar at C{time}.
         """
@@ -9187,7 +9187,7 @@ class PrimvarsAPI(pxr.Usd.APISchemaBase):
         '''
         Test whether a given C{name} contains the"primvars:"prefix.
         '''
-    def CreateIndexedPrimvar(self, name: str | pxr.Ar.ResolvedPath, typeName: pxr.Sdf.ValueTypeName, value: T, indices: pxr.Vt.IntArray | typing.Iterable[int], interpolation: str | pxr.Ar.ResolvedPath = ..., elementSize: int = ..., time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> Primvar:
+    def CreateIndexedPrimvar(self, name: str | pxr.Ar.ResolvedPath, typeName: pxr.Sdf.ValueTypeName, value: Any, indices: pxr.Vt.IntArray | typing.Iterable[int], interpolation: str | pxr.Ar.ResolvedPath = ..., elementSize: int = ..., time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> Primvar:
         """
         Author scene description to create an attribute and authoring a
         C{value} on this prim that will be recognized as an indexed Primvar
@@ -9204,7 +9204,7 @@ class PrimvarsAPI(pxr.Usd.APISchemaBase):
         CreatePrimvar() , CreateNonIndexedPrimvar() ,
         UsdPrim::CreateAttribute() , UsdGeomPrimvar::IsPrimvar()
         """
-    def CreateNonIndexedPrimvar(self, name: str | pxr.Ar.ResolvedPath, typeName: pxr.Sdf.ValueTypeName, value: T, interpolation: str | pxr.Ar.ResolvedPath = ..., elementSize: int = ..., time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> Primvar:
+    def CreateNonIndexedPrimvar(self, name: str | pxr.Ar.ResolvedPath, typeName: pxr.Sdf.ValueTypeName, value: Any, interpolation: str | pxr.Ar.ResolvedPath = ..., elementSize: int = ..., time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> Primvar:
         """
         Author scene description to create an attribute and authoring a
         C{value} on this prim that will be recognized as a Primvar (i.e.
@@ -11359,7 +11359,7 @@ class XformOp(Boost.Python.instance):
         AddXformOp API (or one of Add*Op convenience API) to create and retain
         a copy of an UsdGeomXformOp object.
         """
-    def Get(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> T:
+    def Get(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> Any:
         """
         Get the attribute value of the XformOp at C{time}.
 
@@ -11467,7 +11467,7 @@ class XformOp(Boost.Python.instance):
         The determination is based on a snapshot of the authored state of the
         op, and may become invalid in the face of further authoring.
         """
-    def Set(self, value: T, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
+    def Set(self, value: Any, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
         """
         Set the attribute value of the XformOp at C{time}.
 

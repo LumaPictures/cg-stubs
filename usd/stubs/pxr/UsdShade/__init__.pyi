@@ -1013,7 +1013,10 @@ class Input(Boost.Python.instance):
 
         UsdShadeConnectableAPI::DisconnectSource
         """
-    def Get(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> Any: ...
+    def Get(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> Any:
+        """
+        Convenience wrapper for the templated UsdAttribute::Get() .
+        """
     def GetAttr(self) -> pxr.Usd.Attribute:
         """
         Explicit UsdAttribute extractor.
@@ -1181,7 +1184,10 @@ class Input(Boost.Python.instance):
 
         UsdShadeConnectableAPI::IsSourceConnectionFromBaseMaterial
         """
-    def Set(self, value: object, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool: ...
+    def Set(self, value: Any, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
+        """
+        Set a value for the Input at C{time}.
+        """
     def SetConnectability(self, connectability: str | pxr.Ar.ResolvedPath, /) -> bool:
         '''
         Set the connectability of the Input.
@@ -3177,7 +3183,15 @@ class Output(Boost.Python.instance):
 
         UsdShadeConnectableAPI::IsSourceConnectionFromBaseMaterial
         """
-    def Set(self, value: object, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool: ...
+    def Set(self, value: Any, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
+        """
+        Set a value for the output.
+
+
+        It's unusual to be setting a value on an output since it represents an
+        externally computed value. The Set API is provided here just for the
+        sake of completeness and uniformity with other property schema.
+        """
     def SetConnectedSources(self, sourceInfos: typing.Iterable[ConnectionSourceInfo], /) -> bool:
         """
         Connects this Output to the given sources, C{sourceInfos}.
