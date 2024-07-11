@@ -40,14 +40,14 @@ class MeshTopology(Boost.Python.instance):
     """
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self, scheme: str | pxr.Ar.ResolvedPath, orientation: str | pxr.Ar.ResolvedPath, faceVertexCounts: pxr.Vt.IntArray | typing.Iterable[int], faceVertexIndices: pxr.Vt.IntArray | typing.Iterable[int], /) -> None:
+    def __init__(self, _scheme: str | pxr.Ar.ResolvedPath, _orientation: str | pxr.Ar.ResolvedPath, _faceVertexCounts: pxr.Vt.IntArray | typing.Iterable[int], _faceVertexIndices: pxr.Vt.IntArray | typing.Iterable[int], /) -> None:
         """
         Construct a topology without holes or subdiv tags.
         """
     @overload
     def __init__(self, arg2: object, arg3: object, arg4: pxr.Vt.IntArray | typing.Iterable[int], arg5: pxr.Vt.IntArray | typing.Iterable[int], arg6: pxr.Vt.IntArray | typing.Iterable[int], /) -> None: ...
     @overload
-    def __init__(self, scheme: str | pxr.Ar.ResolvedPath, orientation: str | pxr.Ar.ResolvedPath, faceVertexCounts: pxr.Vt.IntArray | typing.Iterable[int], faceVertexIndices: pxr.Vt.IntArray | typing.Iterable[int], holeIndices: pxr.Vt.IntArray | typing.Iterable[int], subdivTags: SubdivTags, /) -> None:
+    def __init__(self, _scheme: str | pxr.Ar.ResolvedPath, _orientation: str | pxr.Ar.ResolvedPath, _faceVertexCounts: pxr.Vt.IntArray | typing.Iterable[int], _faceVertexIndices: pxr.Vt.IntArray | typing.Iterable[int], _holeIndices: pxr.Vt.IntArray | typing.Iterable[int], _subdivTags: SubdivTags, /) -> None:
         """
         Construct a topology with holes and subdiv tags.
         """
@@ -103,11 +103,11 @@ class MeshTopology(Boost.Python.instance):
         Internally caches the result of the validation if the topology is
         valid
         '''
-    def WithHoleIndices(self, holeIndices: pxr.Vt.IntArray | typing.Iterable[int], /) -> MeshTopology:
+    def WithHoleIndices(self, _holeIndices: pxr.Vt.IntArray | typing.Iterable[int], /) -> MeshTopology:
         """
         Return a copy of the topology, changing only the hole indices.
         """
-    def WithScheme(self, scheme: str | pxr.Ar.ResolvedPath, /) -> MeshTopology:
+    def WithScheme(self, _scheme: str | pxr.Ar.ResolvedPath, /) -> MeshTopology:
         '''
         Return a copy of the topology, changing only the scheme.
 
@@ -117,7 +117,7 @@ class MeshTopology(Boost.Python.instance):
         Note that the token"catmark"is also supported for backward
         compatibility, but has been deprecated.
         '''
-    def WithSubdivTags(self, tags: SubdivTags, /) -> MeshTopology:
+    def WithSubdivTags(self, _tags: SubdivTags, /) -> MeshTopology:
         """
         Return a copy of the topology, changing only the subdiv tags.
         """
@@ -182,7 +182,7 @@ class MeshTopologyValidation(Boost.Python.instance):
         def GetValueFromName(name: object) -> Any: ...
 
     class Invalidation(Boost.Python.instance):
-    """
+        """
         A tuple containing a code describing an invalidation and a descriptive
         message.
         """
@@ -227,7 +227,7 @@ class SubdivTags(Boost.Python.instance):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, vertexInterpolationRule: str | pxr.Ar.ResolvedPath, faceVaryingInterpolationRule: str | pxr.Ar.ResolvedPath, creaseMethod: str | pxr.Ar.ResolvedPath, triangleSubdivision: str | pxr.Ar.ResolvedPath, creaseIndices: pxr.Vt.IntArray | typing.Iterable[int], creaseLengths: pxr.Vt.IntArray | typing.Iterable[int], creaseWeights: pxr.Vt.FloatArray | typing.Iterable[float], cornerIndices: pxr.Vt.IntArray | typing.Iterable[int], cornerWeights: pxr.Vt.FloatArray | typing.Iterable[float], /) -> None: ...
+    def __init__(self, _vertexInterpolationRule: str | pxr.Ar.ResolvedPath, _faceVaryingInterpolationRule: str | pxr.Ar.ResolvedPath, _creaseMethod: str | pxr.Ar.ResolvedPath, _triangleSubdivision: str | pxr.Ar.ResolvedPath, _creaseIndices: pxr.Vt.IntArray | typing.Iterable[int], _creaseLengths: pxr.Vt.IntArray | typing.Iterable[int], _creaseWeights: pxr.Vt.FloatArray | typing.Iterable[float], _cornerIndices: pxr.Vt.IntArray | typing.Iterable[int], _cornerWeights: pxr.Vt.FloatArray | typing.Iterable[float], /) -> None: ...
     def ComputeHash(self) -> int:
         """
         Returns the hash value of this topology to be used for instancing.
@@ -268,39 +268,39 @@ class SubdivTags(Boost.Python.instance):
         """
         Returns the vertex boundary interpolation rule.
         """
-    def SetCornerIndices(self, cornerIndices: pxr.Vt.IntArray | typing.Iterable[int], /) -> None:
+    def SetCornerIndices(self, _cornerIndices: pxr.Vt.IntArray | typing.Iterable[int], /) -> None:
         """
         Set the edge corner indices.
         """
-    def SetCornerWeights(self, cornerWeights: pxr.Vt.FloatArray | typing.Iterable[float], /) -> None:
+    def SetCornerWeights(self, _cornerWeights: pxr.Vt.FloatArray | typing.Iterable[float], /) -> None:
         """
         Set the edge corner weights.
         """
-    def SetCreaseIndices(self, creaseIndices: pxr.Vt.IntArray | typing.Iterable[int], /) -> None:
+    def SetCreaseIndices(self, _creaseIndices: pxr.Vt.IntArray | typing.Iterable[int], /) -> None:
         """
         Set the edge crease indices.
         """
-    def SetCreaseLengths(self, creaseLengths: pxr.Vt.IntArray | typing.Iterable[int], /) -> None:
+    def SetCreaseLengths(self, _creaseLengths: pxr.Vt.IntArray | typing.Iterable[int], /) -> None:
         """
         Set the edge crease loop lengths.
         """
-    def SetCreaseMethod(self, creaseMethod: str | pxr.Ar.ResolvedPath, /) -> None:
+    def SetCreaseMethod(self, _creaseMethod: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Set the creasing method.
         """
-    def SetCreaseWeights(self, creaseWeights: pxr.Vt.FloatArray | typing.Iterable[float], /) -> None:
+    def SetCreaseWeights(self, _creaseWeights: pxr.Vt.FloatArray | typing.Iterable[float], /) -> None:
         """
         Set the edge crease weights.
         """
-    def SetFaceVaryingInterpolationRule(self, fvarInterp: str | pxr.Ar.ResolvedPath, /) -> None:
+    def SetFaceVaryingInterpolationRule(self, _fvarInterp: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Set the face-varying boundary interpolation rule.
         """
-    def SetTriangleSubdivision(self, triangleSubdivision: str | pxr.Ar.ResolvedPath, /) -> None:
+    def SetTriangleSubdivision(self, _triangleSubdivision: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Set the triangle subdivision method.
         """
-    def SetVertexInterpolationRule(self, vtxInterp: str | pxr.Ar.ResolvedPath, /) -> None:
+    def SetVertexInterpolationRule(self, _vtxInterp: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Set the vertex boundary interpolation rule.
         """

@@ -21,7 +21,7 @@ class AnimMapper(Boost.Python.instance):
         Construct a null mapper.
         """
     @overload
-    def __init__(self, size: int, /) -> None:
+    def __init__(self, _size: int, /) -> None:
         """
         Construct an identity mapper for remapping a range of C{size} elems.
 
@@ -494,12 +494,12 @@ class Binding(Boost.Python.instance):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, skel: Skeleton, skinningQueries: pxr.Vt.Array[SkinningQuery], /) -> None: ...
+    def __init__(self, _skel: Skeleton, _skinningQueries: list[SkinningQuery], /) -> None: ...
     def GetSkeleton(self) -> Skeleton:
         """
         Returns the bound skeleton.
         """
-    def GetSkinningTargets(self) -> list:
+    def GetSkinningTargets(self) -> list[SkinningQuery]:
         """
         Returns the set skinning targets.
         """
@@ -1211,7 +1211,7 @@ class BlendShapeQuery(Boost.Python.instance):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, binding: BindingAPI, /) -> None: ...
+    def __init__(self, _binding: BindingAPI, /) -> None: ...
     def ComputeBlendShapePointIndices(self) -> list[pxr.Vt.IntArray]:
         """
         Compute an array holding the point indices of all shapes.
@@ -1242,7 +1242,7 @@ class BlendShapeQuery(Boost.Python.instance):
         indexed by the *subShapeIndices* returned by ComputeSubShapeWeights()
         .
         """
-    def ComputeSubShapeWeights(self, weights: pxr.Vt.FloatArray | typing.Iterable[float], /) -> tuple:
+    def ComputeSubShapeWeights(self, _weights: pxr.Vt.FloatArray | typing.Iterable[float], /) -> tuple:
         """
         Compute the resolved weights for all sub-shapes bound to this prim.
 
@@ -1256,15 +1256,15 @@ class BlendShapeQuery(Boost.Python.instance):
         identify which sub-shape of which blend shape a given weight value is
         mapped to.
         """
-    def GetBlendShape(self, blendShapeIndex: int, /) -> BlendShape:
+    def GetBlendShape(self, _blendShapeIndex: int, /) -> BlendShape:
         """
         Returns the blend shape corresponding to C{blendShapeIndex}.
         """
-    def GetBlendShapeIndex(self, subShapeIndex: int, /) -> int:
+    def GetBlendShapeIndex(self, _subShapeIndex: int, /) -> int:
         """
         Returns the blend shape index corresponding to the C{i'th} sub-shape.
         """
-    def GetInbetween(self, subShapeIndex: int, /) -> InbetweenShape:
+    def GetInbetween(self, _subShapeIndex: int, /) -> InbetweenShape:
         """
         Returns the inbetween shape corresponding to sub-shape C{i}, if any.
         """
@@ -1318,14 +1318,14 @@ class Cache(Boost.Python.instance):
 
         This does not require Populate() to be called on the cache.
         """
-    def GetSkelQuery(self, skel: Skeleton, /) -> SkeletonQuery:
+    def GetSkelQuery(self, _skel: Skeleton, /) -> SkeletonQuery:
         """
         Get a skel query for computing properties of C{skel}.
 
 
         This does not require Populate() to be called on the cache.
         """
-    def GetSkinningQuery(self, prim: pxr.Usd.Prim, /) -> SkinningQuery:
+    def GetSkinningQuery(self, _prim: pxr.Usd.Prim, /) -> SkinningQuery:
         """
         Get a skinning query at C{prim}.
 
@@ -1385,7 +1385,7 @@ class InbetweenShape(Boost.Python.instance):
         same truth value as this constructor, but if you plan to subsequently
         use the Inbetween anyways, just use this constructor.
         """
-    def CreateNormalOffsetsAttr(self, defaultValue: Any, /) -> pxr.Usd.Attribute:
+    def CreateNormalOffsetsAttr(self, _defaultValue: Any, /) -> pxr.Usd.Attribute:
         """
         Returns the existing normal offsets attribute if the shape has normal
         offsets, or creates a new one.
@@ -1519,7 +1519,7 @@ class Root(pxr.UsdGeom.Boundable):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Find(prim: pxr.Usd.Prim, /) -> Root:
+    def Find(_prim: pxr.Usd.Prim, /) -> Root:
         """
         Returns the skel root at or above C{prim}, or an invalid schema object
         if no ancestor prim is defined as a skel root.
@@ -2073,7 +2073,7 @@ class SkinningQuery(Boost.Python.instance):
 
         UsdAttribute::GetTimeSamples
         """
-    def GetTimeSamplesInInterval(self, interval: pxr.Gf.Interval, /) -> list[float]:
+    def GetTimeSamplesInInterval(self, _interval: pxr.Gf.Interval, /) -> list[float]:
         """
         Populate C{times} with the union of time samples within C{interval},
         for all properties that affect skinning, independent of joint
@@ -2149,7 +2149,7 @@ class Topology(Boost.Python.instance):
     @overload
     def __init__(self, arg2: pxr.Vt.TokenArray | typing.Iterable[str], /) -> None: ...
     @overload
-    def __init__(self, parentIndices: pxr.Vt.IntArray | typing.Iterable[int], /) -> None:
+    def __init__(self, _parentIndices: pxr.Vt.IntArray | typing.Iterable[int], /) -> None:
         """
         Construct a skel topology from an array of parent indices.
 
@@ -2158,13 +2158,13 @@ class Topology(Boost.Python.instance):
         none.
         """
     def GetNumJoints(self) -> int: ...
-    def GetParent(self, index: int, /) -> int:
+    def GetParent(self, _index: int, /) -> int:
         """
         Returns the parent joint of the C{index'th} joint, Returns -1 for
         joints with no parent (roots).
         """
     def GetParentIndices(self) -> pxr.Vt.IntArray: ...
-    def IsRoot(self, index: int, /) -> bool:
+    def IsRoot(self, _index: int, /) -> bool:
         """
         Returns true if the C{index'th} joint is a root joint.
         """
@@ -2266,7 +2266,7 @@ def ComputeJointsExtent(xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Ma
 @overload
 def ComputeJointsExtent(xforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], pad: float = ..., rootXform: pxr.Gf.Matrix4f = ...) -> pxr.Gf.Range3f: ...
 @overload
-def ConcatJointTransforms(topology: Topology, /, topology: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], jointLocalXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], rootXform: pxr.Gf.Matrix4d = ...) -> bool:
+def ConcatJointTransforms(_topology: Topology, /, topology: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], jointLocalXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], rootXform: pxr.Gf.Matrix4d = ...) -> bool:
     """
     This is an overloaded member function, provided for convenience. It
     differs from the above function only in what argument(s) it accepts.
@@ -2281,7 +2281,7 @@ def ConcatJointTransforms(arg1: Topology, /, topology: pxr.Vt.Matrix4fArray | ty
 @overload
 def ConcatJointTransforms(topology: Topology, jointLocalXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], rootXform: pxr.Gf.Matrix4d = ...) -> pxr.Vt.Matrix4dArray: ...
 @overload
-def DecomposeTransform(xform: pxr.Gf.Matrix4d, /) -> tuple:
+def DecomposeTransform(_xform: pxr.Gf.Matrix4d, /) -> tuple:
     """
     Decompose a transform into translate/rotate/scale components.
 
@@ -2289,13 +2289,13 @@ def DecomposeTransform(xform: pxr.Gf.Matrix4d, /) -> tuple:
     The transform order for decomposition is scale, rotate, translate.
     """
 @overload
-def DecomposeTransform(xform: pxr.Gf.Matrix4f, /) -> tuple:
+def DecomposeTransform(_xform: pxr.Gf.Matrix4f, /) -> tuple:
     """
     This is an overloaded member function, provided for convenience. It
     differs from the above function only in what argument(s) it accepts.
     """
 @overload
-def DecomposeTransforms(xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], /) -> tuple:
+def DecomposeTransforms(_xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], /) -> tuple:
     """
     This is an overloaded member function, provided for convenience. It
     differs from the above function only in what argument(s) it accepts.
@@ -2306,7 +2306,7 @@ def DecomposeTransforms(xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Ma
     Use form that takes TfSpan arguments.
     """
 @overload
-def DecomposeTransforms(count: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], /) -> tuple:
+def DecomposeTransforms(_count: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], /) -> tuple:
     """
     This is an overloaded member function, provided for convenience. It
     differs from the above function only in what argument(s) it accepts.

@@ -131,7 +131,7 @@ class Cache(Boost.Python.instance):
         C{allErrors} will contain any errors encountered while performing this
         operation.
         """
-    def ComputeLayerStack(self, identifier: LayerStackIdentifier, /) -> tuple:
+    def ComputeLayerStack(self, _identifier: LayerStackIdentifier, /) -> tuple:
         """
         Returns the layer stack for C{identifier} if it exists, otherwise
         creates a new layer stack for C{identifier}.
@@ -142,7 +142,7 @@ class Cache(Boost.Python.instance):
         creating a new layer stack. It'll be unchanged if the layer stack
         already existed.
         """
-    def ComputePrimIndex(self, primPath: pxr.Sdf.Path | str, /) -> tuple:
+    def ComputePrimIndex(self, _primPath: pxr.Sdf.Path | str, /) -> tuple:
         """
         Compute and return a reference to the cached result for the prim index
         for the given path.
@@ -151,7 +151,7 @@ class Cache(Boost.Python.instance):
         C{allErrors} will contain any errors encountered while performing this
         operation.
         """
-    def ComputePropertyIndex(self, propPath: pxr.Sdf.Path | str, /) -> tuple:
+    def ComputePropertyIndex(self, _propPath: pxr.Sdf.Path | str, /) -> tuple:
         """
         Compute and return a reference to the cached result for the property
         index for the given path.
@@ -174,22 +174,22 @@ class Cache(Boost.Python.instance):
         contributed to the computed result. C{allErrors} will contain any
         errors encountered while performing this operation.
         """
-    def FindAllLayerStacksUsingLayer(self, layer: pxr.Sdf.Layer, /) -> list[LayerStack]:
+    def FindAllLayerStacksUsingLayer(self, _layer: pxr.Sdf.Layer, /) -> list[LayerStack]:
         """
         Returns every computed & cached layer stack that includes C{layer}.
         """
-    def FindPrimIndex(self, primPath: pxr.Sdf.Path | str, /) -> PrimIndex:
+    def FindPrimIndex(self, _primPath: pxr.Sdf.Path | str, /) -> PrimIndex:
         """
         Returns a pointer to the cached computed prim index for the given
         path, or None if it has not been computed.
         """
-    def FindPropertyIndex(self, propPath: pxr.Sdf.Path | str, /) -> PropertyIndex:
+    def FindPropertyIndex(self, _propPath: pxr.Sdf.Path | str, /) -> PropertyIndex:
         """
         Returns a pointer to the cached computed property index for the given
         path, or None if it has not been computed.
         """
     def FindSiteDependencies(self, siteLayerStack: LayerStack, sitePath: pxr.Sdf.Path | str, dependencyType: int = ..., recurseOnSite: bool = ..., recurseOnIndex: bool = ..., filterForExistingCachesOnly: bool = ...) -> list: ...
-    def GetDynamicFileFormatArgumentDependencyData(self, primIndexPath: pxr.Sdf.Path | str, /) -> DynamicFileFormatDependencyData:
+    def GetDynamicFileFormatArgumentDependencyData(self, _primIndexPath: pxr.Sdf.Path | str, /) -> DynamicFileFormatDependencyData:
         """
         Returns the dynamic file format dependency data object for the prim
         index with the given C{primIndexPath}.
@@ -255,7 +255,7 @@ class Cache(Boost.Python.instance):
 
 
         """
-    def HasRootLayerStack(self, layerStack: LayerStack, /) -> bool:
+    def HasRootLayerStack(self, _layerStack: LayerStack, /) -> bool:
         """
         Return true if this cache's root layer stack is C{layerStack}, false
         otherwise.
@@ -265,7 +265,7 @@ class Cache(Boost.Python.instance):
         GetLayerStack() , but does not require constructing a TfWeakPtr or any
         refcount operations.
         """
-    def IsInvalidAssetPath(self, resolvedAssetPath: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def IsInvalidAssetPath(self, _resolvedAssetPath: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Returns true if C{resolvedAssetPath} was used by a prim (e.g.
 
@@ -274,7 +274,7 @@ class Cache(Boost.Python.instance):
         functionally equivalent to examining the values in the map returned by
         GetInvalidAssetPaths, but more efficient.
         """
-    def IsInvalidSublayerIdentifier(self, identifier: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def IsInvalidSublayerIdentifier(self, _identifier: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Returns true if C{identifier} was used as a sublayer path in a layer
         stack but did not identify a valid layer.
@@ -293,11 +293,11 @@ class Cache(Boost.Python.instance):
         this cache's root layer. See documentation on RequestLayerMuting for
         more details.
         """
-    def IsPayloadIncluded(self, path: pxr.Sdf.Path | str, /) -> bool:
+    def IsPayloadIncluded(self, _path: pxr.Sdf.Path | str, /) -> bool:
         """
         Return true if the payload is included for the given path.
         """
-    def IsPossibleDynamicFileFormatArgumentAttribute(self, attributeName: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def IsPossibleDynamicFileFormatArgumentAttribute(self, _attributeName: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Returns true if the given C{attributeName} is the name of an attribute
         whose default value field was composed while generating dynamic file
@@ -305,7 +305,7 @@ class Cache(Boost.Python.instance):
 
 
         """
-    def IsPossibleDynamicFileFormatArgumentField(self, field: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def IsPossibleDynamicFileFormatArgumentField(self, _field: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Returns true if the given C{field} is the name of a field that was
         composed while generating dynamic file format arguments for any prim
@@ -364,7 +364,7 @@ class Cache(Boost.Python.instance):
         of layers which are muted or unmuted by this call to
         RequestLayerMuting.
         """
-    def RequestPayloads(self, pathsToInclude: typing.Iterable[pxr.Sdf.Path | str], pathsToExclude: typing.Iterable[pxr.Sdf.Path | str], /) -> None:
+    def RequestPayloads(self, _pathsToInclude: typing.Iterable[pxr.Sdf.Path | str], _pathsToExclude: typing.Iterable[pxr.Sdf.Path | str], /) -> None:
         """
         Request payloads to be included or excluded from composition.
 
@@ -384,7 +384,7 @@ class Cache(Boost.Python.instance):
         If a path is listed in both pathsToInclude and pathsToExclude, it will
         be treated as an inclusion only.
         """
-    def SetVariantFallbacks(self, map: dict, /) -> None:
+    def SetVariantFallbacks(self, _map: dict, /) -> None:
         """
         Set the list of fallbacks to attempt to use when evaluating variant
         sets that lack an authored selection.
@@ -394,7 +394,7 @@ class Cache(Boost.Python.instance):
         necessary to see the change in standin preferences, otherwise those
         changes are applied immediately.
         """
-    def UsesLayerStack(self, layerStack: LayerStack, /) -> bool:
+    def UsesLayerStack(self, _layerStack: LayerStack, /) -> bool:
         """
         Return true if C{layerStack} is used by this cache in its composition,
         false otherwise.
@@ -453,14 +453,14 @@ class DynamicFileFormatDependencyData(Boost.Python.instance):
         """Raises an exception
         This class cannot be instantiated from Python
         """
-    def CanAttributeDefaultValueChangeAffectFileFormatArguments(self, attributeName: str | pxr.Ar.ResolvedPath, oldValue: Any, newValue: Any, /) -> bool:
+    def CanAttributeDefaultValueChangeAffectFileFormatArguments(self, _attributeName: str | pxr.Ar.ResolvedPath, _oldValue: Any, _newValue: Any, /) -> bool:
         """
         Given an C{attributeName} and the changed attribute default values in
         C{oldValue} and C{newValue}, this returns whether this default value
         change can affect any of the file format arguments generated by any of
         the contexts stored in this dependency.
         """
-    def CanFieldChangeAffectFileFormatArguments(self, fieldName: str | pxr.Ar.ResolvedPath, oldValue: Any, newValue: Any, /) -> bool:
+    def CanFieldChangeAffectFileFormatArguments(self, _fieldName: str | pxr.Ar.ResolvedPath, _oldValue: Any, _newValue: Any, /) -> bool:
         """
         Given a C{field} name and the changed field values in C{oldValue} and
         C{newValue}, this returns whether this change can affect any of the
@@ -690,7 +690,7 @@ class ExpressionVariables(Boost.Python.instance):
         the root layer stack.
         """
     @overload
-    def __init__(self, source: ExpressionVariablesSource, expressionVariables: dict, /) -> None:
+    def __init__(self, _source: ExpressionVariablesSource, _expressionVariables: dict, /) -> None:
         """
         Creates a new object for C{source} with the given
         C{expressionVariables}.
@@ -1008,13 +1008,13 @@ class MapExpression(Boost.Python.instance):
         Return a new expression representing this expression with an added (if
         necessary) mapping from</>to</>.
         """
-    def Compose(self, f: MapExpression, /) -> MapExpression:
+    def Compose(self, _f: MapExpression, /) -> MapExpression:
         """
         Create a new PcpMapExpression representing the application of f's
         value, followed by the application of this expression's value.
         """
     @staticmethod
-    def Constant(constValue: MapFunction, /) -> MapExpression:
+    def Constant(_constValue: MapFunction, /) -> MapExpression:
         """
         Create a new constant.
         """
@@ -1124,7 +1124,7 @@ class MapFunction(Boost.Python.instance):
     def __init__(self, arg2: MapFunction, /) -> None: ...
     @overload
     def __init__(self, sourceToTargetMap: dict, timeOffset: pxr.Sdf.LayerOffset = ...) -> None: ...
-    def Compose(self, f: MapFunction, /) -> MapFunction:
+    def Compose(self, _f: MapFunction, /) -> MapFunction:
         """
         Compose this map over the given map function.
 
@@ -1481,7 +1481,7 @@ class PrimIndex(Boost.Python.instance):
 
         If no such node exists, returns an invalid PcpNodeRef.
         """
-    def GetSelectionAppliedForVariantSet(self, variantSet: str | pxr.Ar.ResolvedPath, /) -> str:
+    def GetSelectionAppliedForVariantSet(self, _variantSet: str | pxr.Ar.ResolvedPath, /) -> str:
         """
         Return the variant selection applied for the named variant set.
 
@@ -1567,14 +1567,14 @@ class _TestChangeProcessor(Boost.Python.instance):
     def __enter__(self) -> typing_extensions.Self: ...
     def __exit__(self, type: type[BaseException] | None, value: BaseException | None, traceback: types.TracebackType | None) -> None: ...
 
-def BuildPrimPropertyIndex(propertyPath: pxr.Sdf.Path | str, cache: Cache, owningPrimIndex: PrimIndex, /) -> tuple:
+def BuildPrimPropertyIndex(_propertyPath: pxr.Sdf.Path | str, _cache: Cache, _owningPrimIndex: PrimIndex, /) -> tuple:
     """
     Builds a prim property index for the property at C{propertyPath}.
 
 
     C{allErrors} will contain any errors encountered.
     """
-def TranslatePathFromNodeToRoot(sourceNode: NodeRef, /, sourceNode: pxr.Sdf.Path | str) -> pxr.Sdf.Path:
+def TranslatePathFromNodeToRoot(_sourceNode: NodeRef, /, sourceNode: pxr.Sdf.Path | str) -> pxr.Sdf.Path:
     """
     Translates C{pathInNodeNamespace} from the namespace of the prim index
     node C{sourceNode} to the namespace of the prim index's root node.
@@ -1594,7 +1594,7 @@ def TranslatePathFromNodeToRoot(sourceNode: NodeRef, /, sourceNode: pxr.Sdf.Path
     namespace of the prim spec represented by C{sourceNode} to the
     composed scene namespace.
     """
-def TranslatePathFromRootToNode(destNode: NodeRef, /, destNode: pxr.Sdf.Path | str) -> pxr.Sdf.Path:
+def TranslatePathFromRootToNode(_destNode: NodeRef, /, destNode: pxr.Sdf.Path | str) -> pxr.Sdf.Path:
     """
     Translates C{pathInRootNamespace} from the namespace of the root of
     the prim index that C{destNode} belongs to to the namespace of

@@ -65,7 +65,7 @@ class FrameRecorder(Boost.Python.instance):
         Returns true if the image was generated and written successfully, or
         false otherwise.
         """
-    def SetCameraLightEnabled(self, cameraLightEnabled: bool, /) -> None:
+    def SetCameraLightEnabled(self, _cameraLightEnabled: bool, /) -> None:
         '''
         Turns the built-in camera light on or off.
 
@@ -73,21 +73,21 @@ class FrameRecorder(Boost.Python.instance):
         When on, this will add a light at the camera\'s origin. This is
         sometimes called a"headlight".
         '''
-    def SetColorCorrectionMode(self, colorCorrectionMode: str | pxr.Ar.ResolvedPath, /) -> None:
+    def SetColorCorrectionMode(self, _colorCorrectionMode: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Sets the color correction mode to be used for recording.
 
 
         By default, color correction is disabled.
         """
-    def SetComplexity(self, complexity: float, /) -> None:
+    def SetComplexity(self, _complexity: float, /) -> None:
         '''
         Sets the level of refinement complexity.
 
 
         The default complexity is"low"(1.0).
         '''
-    def SetImageWidth(self, imageWidth: int, /) -> None:
+    def SetImageWidth(self, _imageWidth: int, /) -> None:
         """
         Sets the width of the recorded image.
 
@@ -107,7 +107,7 @@ class FrameRecorder(Boost.Python.instance):
         enumerate an alternate set of purposes to be included along
         with"default".
         '''
-    def SetRendererPlugin(self, id: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def SetRendererPlugin(self, _id: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Sets the Hydra renderer plugin to be used for recording.
 

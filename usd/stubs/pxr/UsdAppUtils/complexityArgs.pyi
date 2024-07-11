@@ -8,7 +8,7 @@ class RefinementComplexities:
     """
 
     class _RefinementComplexity:
-    """
+        """
         Class which represents a level of mesh refinement complexity. Each
         level has a string identifier, a display name, and a float complexity
         value.

@@ -91,13 +91,13 @@ class DiscoveryPlugin(Boost.Python.instance):
         This class cannot be instantiated from Python
         """
     @overload
-    def DiscoverNodes(self, : DiscoveryPluginContext, /) -> NodeDiscoveryResultVec:
+    def DiscoverNodes(self, _unknownArg1: DiscoveryPluginContext, /) -> NodeDiscoveryResultVec:
         """
         Finds and returns all nodes that the implementing plugin should be
         aware of.
         """
     @overload
-    def DiscoverNodes(self, : DiscoveryPluginContext, /) -> None:
+    def DiscoverNodes(self, _unknownArg1: DiscoveryPluginContext, /) -> None:
         """
         Finds and returns all nodes that the implementing plugin should be
         aware of.
@@ -132,7 +132,7 @@ class DiscoveryPluginContext(Boost.Python.instance):
         This class cannot be instantiated from Python
         """
     @overload
-    def GetSourceType(self, discoveryType: str | pxr.Ar.ResolvedPath, /) -> str:
+    def GetSourceType(self, _discoveryType: str | pxr.Ar.ResolvedPath, /) -> str:
         """
         Returns the source type associated with the discovery type.
 
@@ -140,7 +140,7 @@ class DiscoveryPluginContext(Boost.Python.instance):
         This may return an empty token if there is no such association.
         """
     @overload
-    def GetSourceType(self, discoveryType: str | pxr.Ar.ResolvedPath, /) -> None:
+    def GetSourceType(self, _discoveryType: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Returns the source type associated with the discovery type.
 
@@ -230,7 +230,7 @@ class Node(Boost.Python.instance):
 
         Helpful for things like adding this node to a log.
         """
-    def GetInput(self, inputName: str | pxr.Ar.ResolvedPath, /) -> Property:
+    def GetInput(self, _inputName: str | pxr.Ar.ResolvedPath, /) -> Property:
         """
         Get an input property by name.
 
@@ -254,7 +254,7 @@ class Node(Boost.Python.instance):
         """
         Gets the name of the node.
         """
-    def GetOutput(self, outputName: str | pxr.Ar.ResolvedPath, /) -> Property:
+    def GetOutput(self, _outputName: str | pxr.Ar.ResolvedPath, /) -> Property:
         """
         Get an output property by name.
 
@@ -403,7 +403,7 @@ class Property(Boost.Python.instance):
         """Raises an exception
         This class cannot be instantiated from Python
         """
-    def CanConnectTo(self, other: Property, /) -> bool:
+    def CanConnectTo(self, _other: Property, /) -> bool:
         """
         Determines if this property can be connected to the specified
         property.
@@ -693,7 +693,7 @@ class Registry(Boost.Python.instance):
         filesystem paths.
         """
     def SetExtraDiscoveryPlugins(self, arg2: list, /) -> None: ...
-    def SetExtraParserPlugins(self, pluginTypes: typing.Iterable[pxr.Tf.Type], /) -> None:
+    def SetExtraParserPlugins(self, _pluginTypes: typing.Iterable[pxr.Tf.Type], /) -> None:
         """
         Allows the client to set any additional parser plugins that would
         otherwise NOT be found through the plugin system.
@@ -711,7 +711,7 @@ class Version(Boost.Python.instance):
         Create an invalid version.
         """
     @overload
-    def __init__(self, x: int, /) -> None:
+    def __init__(self, _x: int, /) -> None:
         """
         Create a version from a string.
 
@@ -719,7 +719,7 @@ class Version(Boost.Python.instance):
         On failure generates an error and yields an invalid version.
         """
     @overload
-    def __init__(self, major: int, minor: int, /) -> None:
+    def __init__(self, _major: int, _minor: int, /) -> None:
         """
         Create a version with the given major and minor numbers.
 
@@ -728,7 +728,7 @@ class Version(Boost.Python.instance):
         failure generates an error and yields an invalid version.
         """
     @overload
-    def __init__(self, x: str | pxr.Ar.ResolvedPath, /) -> None:
+    def __init__(self, _x: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Create a version from a string.
 

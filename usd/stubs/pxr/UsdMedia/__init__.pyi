@@ -51,7 +51,7 @@ class AssetPreviewsAPI(pxr.Usd.APISchemaBase):
     '''
 
     class Thumbnails(Boost.Python.instance):
-    '''
+        '''
         Thumbnails is a value type that serves as schema to aid in
         serialization and deserialization of thumbnail images in the
         assetInfo["thumbnails"] dictionary.

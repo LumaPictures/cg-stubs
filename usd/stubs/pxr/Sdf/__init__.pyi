@@ -82,7 +82,7 @@ class AssetPath(Boost.Python.instance):
         Construct an empty asset path.
         """
     @overload
-    def __init__(self, path: AssetPath | str, /) -> None:
+    def __init__(self, _path: AssetPath | str, /) -> None:
         """
         Construct an asset path with C{path} and no associated resolved path.
 
@@ -92,7 +92,7 @@ class AssetPath(Boost.Python.instance):
         asset path.
         """
     @overload
-    def __init__(self, path: str | pxr.Ar.ResolvedPath, /) -> None:
+    def __init__(self, _path: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Construct an asset path with C{path} and no associated resolved path.
 
@@ -102,7 +102,7 @@ class AssetPath(Boost.Python.instance):
         asset path.
         """
     @overload
-    def __init__(self, path: str | pxr.Ar.ResolvedPath, resolvedPath: str | pxr.Ar.ResolvedPath, /) -> None:
+    def __init__(self, _path: str | pxr.Ar.ResolvedPath, _resolvedPath: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Construct an asset path with C{path} and an associated
         C{resolvedPath}.
@@ -306,14 +306,14 @@ class BatchNamespaceEdit(Boost.Python.instance):
     @overload
     def __init__(self, arg2: object, /) -> None: ...
     @overload
-    def Add(self, edit: NamespaceEdit, /) -> None:
+    def Add(self, _edit: NamespaceEdit, /) -> None:
         """
         Add a namespace edit.
         """
     @overload
     def Add(self, arg2: Path | str, arg3: Path | str, /) -> None: ...
     @overload
-    def Add(self, currentPath: Path | str, newPath: Path | str, index: int, /) -> None:
+    def Add(self, _currentPath: Path | str, _newPath: Path | str, _index: int, /) -> None:
         """
         Add a namespace edit.
         """
@@ -816,12 +816,12 @@ class FileFormat(Boost.Python.instance):
         """Raises an exception
         This class cannot be instantiated from Python
         """
-    def CanRead(self, file: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def CanRead(self, _file: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Returns true if C{file} can be read by this format.
         """
     @staticmethod
-    def FindAllDerivedFileFormatExtensions(baseType: pxr.Tf.Type, /) -> list[str]:
+    def FindAllDerivedFileFormatExtensions(_baseType: pxr.Tf.Type, /) -> list[str]:
         """
         Returns a set containing the extension(s) corresponding to all
         registered file formats that derive from C{baseType}.
@@ -866,7 +866,7 @@ class FileFormat(Boost.Python.instance):
         pointer.
         """
     @staticmethod
-    def FindById(formatId: str | pxr.Ar.ResolvedPath, /) -> FileFormat:
+    def FindById(_formatId: str | pxr.Ar.ResolvedPath, /) -> FileFormat:
         """
         Returns the file format instance with the specified C{formatId}
         identifier.
@@ -921,7 +921,7 @@ class FileFormat(Boost.Python.instance):
         FormatSupportsEditing
         """
     @staticmethod
-    def GetFileExtension(s: str | pxr.Ar.ResolvedPath, /) -> str:
+    def GetFileExtension(_s: str | pxr.Ar.ResolvedPath, /) -> str:
         """
         Returns the file extension for path or file name C{s}, without the
         leading dot character.
@@ -934,7 +934,7 @@ class FileFormat(Boost.Python.instance):
         """
         Returns true if this file format is a package containing other assets.
         """
-    def IsSupportedExtension(self, extension: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def IsSupportedExtension(self, _extension: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Returns true if C{extension} matches one of the extensions returned by
         GetFileExtensions.
@@ -1084,7 +1084,7 @@ class Layer(Boost.Python.instance):
     '''
 
     class DetachedLayerRules(Boost.Python.instance):
-    '''
+        '''
         Object used to specify detached layers.
 
 
@@ -1107,14 +1107,14 @@ class Layer(Boost.Python.instance):
             A default constructed rules object Excludes all layers from the
             detached layer set.
             """
-        def Exclude(self, patterns: typing.Iterable[str | pxr.Ar.ResolvedPath], /) -> Layer.DetachedLayerRules:
+        def Exclude(self, _patterns: typing.Iterable[str | pxr.Ar.ResolvedPath], /) -> Layer.DetachedLayerRules:
             """
             Exclude layers whose identifiers contain any of the strings in
             C{patterns} from the detached layer set.
             """
         def GetExcluded(self) -> list[str]: ...
         def GetIncluded(self) -> list[str]: ...
-        def Include(self, patterns: typing.Iterable[str | pxr.Ar.ResolvedPath], /) -> Layer.DetachedLayerRules:
+        def Include(self, _patterns: typing.Iterable[str | pxr.Ar.ResolvedPath], /) -> Layer.DetachedLayerRules:
             """
             Include layers whose identifiers contain any of the strings in
             C{patterns} in the detached layer set.
@@ -1124,7 +1124,7 @@ class Layer(Boost.Python.instance):
             Include all layers in the detached layer set.
             """
         def IncludedAll(self) -> bool: ...
-        def IsIncluded(self, identifier: str | pxr.Ar.ResolvedPath, /) -> bool:
+        def IsIncluded(self, _identifier: str | pxr.Ar.ResolvedPath, /) -> bool:
             """
             Returns true if C{identifier} is included in the detached layer set,
             false otherwise.
@@ -1174,11 +1174,11 @@ class Layer(Boost.Python.instance):
         This class cannot be instantiated from Python
         """
     @staticmethod
-    def AddToMutedLayers(mutedPath: str | pxr.Ar.ResolvedPath, /) -> None:
+    def AddToMutedLayers(_mutedPath: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Add the specified path to the muted layers set.
         """
-    def Apply(self, : BatchNamespaceEdit, /) -> bool:
+    def Apply(self, _unknownArg1: BatchNamespaceEdit, /) -> bool:
         """
         Performs a batch of namespace edits.
 
@@ -1186,7 +1186,7 @@ class Layer(Boost.Python.instance):
         Returns C{true} on success and C{false} on failure. On failure, no
         namespace edits will have occurred.
         """
-    def ApplyRootPrimOrder(self, vec: list[str] | list[pxr.Ar.ResolvedPath], /) -> list:
+    def ApplyRootPrimOrder(self, _vec: list[str] | list[pxr.Ar.ResolvedPath], /) -> list:
         """
         Reorders the given list of prim names according to the reorder
         rootPrims statement for this layer.
@@ -1195,7 +1195,7 @@ class Layer(Boost.Python.instance):
         This routine employs the standard list editing operations for ordered
         items in a ListEditor.
         """
-    def CanApply(self, : BatchNamespaceEdit, /) -> tuple[NamespaceEditDetail.Result, list[NamespaceEditDetail]]:
+    def CanApply(self, _unknownArg1: BatchNamespaceEdit, /) -> tuple[NamespaceEditDetail.Result, list[NamespaceEditDetail]]:
         """
         Check if a batch of namespace edits will succeed.
 
@@ -1293,7 +1293,7 @@ class Layer(Boost.Python.instance):
         """
         Clear the timeCodesPerSecond opinion.
         """
-    def ComputeAbsolutePath(self, assetPath: str | pxr.Ar.ResolvedPath, /) -> str:
+    def ComputeAbsolutePath(self, _assetPath: str | pxr.Ar.ResolvedPath, /) -> str:
         '''
         Returns the path to the asset specified by C{assetPath} using this
         layer to anchor the path if necessary.
@@ -1341,7 +1341,7 @@ class Layer(Boost.Python.instance):
         Create an anonymous layer with a specific C{format}.
         """
     @staticmethod
-    def CreateIdentifier(layerPath: str | pxr.Ar.ResolvedPath, arguments: dict[str | pxr.Ar.ResolvedPath, str | pxr.Ar.ResolvedPath], /) -> str:
+    def CreateIdentifier(_layerPath: str | pxr.Ar.ResolvedPath, _arguments: dict[str | pxr.Ar.ResolvedPath, str | pxr.Ar.ResolvedPath], /) -> str:
         """
         Joins the given layer path and arguments into an identifier.
         """
@@ -1358,7 +1358,7 @@ class Layer(Boost.Python.instance):
     def DumpLayerInfo() -> None:
         """Debug helper to examine content of the current layer registry and
         the asset/real path of all layers in the registry."""
-    def EraseTimeSample(self, path: Path | str, time: float, /) -> None: ...
+    def EraseTimeSample(self, _path: Path | str, _time: float, /) -> None: ...
     def Export(self, filename: str | pxr.Ar.ResolvedPath, comment: str | pxr.Ar.ResolvedPath = ..., args: dict = ...) -> bool:
         """
         Exports this layer to a file.
@@ -1451,7 +1451,7 @@ class Layer(Boost.Python.instance):
         """
         Returns the asset name associated with this layer.
         """
-    def GetAttributeAtPath(self, path: Path | str, /) -> AttributeSpec:
+    def GetAttributeAtPath(self, _path: Path | str, /) -> AttributeSpec:
         """
         Returns an attribute at the given C{path}.
 
@@ -1459,8 +1459,8 @@ class Layer(Boost.Python.instance):
         Returns C{None} if there is no attribute at C{path}. This is simply a
         more specifically typed version of C{GetObjectAtPath()} .
         """
-    def GetBracketingTimeSamples(self, time: float, /) -> tuple: ...
-    def GetBracketingTimeSamplesForPath(self, path: Path | str, time: float, /) -> tuple: ...
+    def GetBracketingTimeSamples(self, _time: float, /) -> tuple: ...
+    def GetBracketingTimeSamplesForPath(self, _path: Path | str, _time: float, /) -> tuple: ...
     def GetCompositionAssetDependencies(self) -> list[str]:
         """
         Return paths of all assets this layer depends on due to composition
@@ -1486,7 +1486,7 @@ class Layer(Boost.Python.instance):
         The display name is the base filename of the identifier.
         """
     @staticmethod
-    def GetDisplayNameFromIdentifier(identifier: str | pxr.Ar.ResolvedPath, /) -> str:
+    def GetDisplayNameFromIdentifier(_identifier: str | pxr.Ar.ResolvedPath, /) -> str:
         """
         Returns the display name for the given C{identifier}, using the same
         rules as GetDisplayName.
@@ -1528,8 +1528,8 @@ class Layer(Boost.Python.instance):
         """
         Returns the set of muted layer paths.
         """
-    def GetNumTimeSamplesForPath(self, path: Path | str, /) -> int: ...
-    def GetObjectAtPath(self, path: Path | str, /) -> Spec:
+    def GetNumTimeSamplesForPath(self, _path: Path | str, /) -> int: ...
+    def GetObjectAtPath(self, _path: Path | str, /) -> Spec:
         """
         Returns the object at the given C{path}.
 
@@ -1539,7 +1539,7 @@ class Layer(Boost.Python.instance):
 
         Returns C{None} if there is no object at C{path}.
         """
-    def GetPrimAtPath(self, path: Path | str, /) -> PrimSpec:
+    def GetPrimAtPath(self, _path: Path | str, /) -> PrimSpec:
         """
         Returns the prim at the given C{path}.
 
@@ -1547,7 +1547,7 @@ class Layer(Boost.Python.instance):
         Returns C{None} if there is no prim at C{path}. This is simply a more
         specifically typed version of C{GetObjectAtPath()} .
         """
-    def GetPropertyAtPath(self, path: Path | str, /) -> PropertySpec:
+    def GetPropertyAtPath(self, _path: Path | str, /) -> PropertySpec:
         """
         Returns a property at the given C{path}.
 
@@ -1555,7 +1555,7 @@ class Layer(Boost.Python.instance):
         Returns C{None} if there is no property at C{path}. This is simply a
         more specifically typed version of C{GetObjectAtPath()} .
         """
-    def GetRelationshipAtPath(self, path: Path | str, /) -> RelationshipSpec:
+    def GetRelationshipAtPath(self, _path: Path | str, /) -> RelationshipSpec:
         """
         Returns a relationship at the given C{path}.
 
@@ -1631,7 +1631,7 @@ class Layer(Boost.Python.instance):
         """
         Returns true if the layer has a timeCodesPerSecond opinion.
         """
-    def Import(self, layerPath: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def Import(self, _layerPath: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Imports the content of the given layer path, replacing the content of
         the current layer.
@@ -1641,7 +1641,7 @@ class Layer(Boost.Python.instance):
         no action is taken (and a warning occurs). For this case use Reload()
         .
         """
-    def ImportFromString(self, string: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def ImportFromString(self, _string: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Reads this layer from the given string.
 
@@ -1649,7 +1649,7 @@ class Layer(Boost.Python.instance):
         Returns C{true} if successful, otherwise returns C{false}.
         """
     @staticmethod
-    def IsAnonymousLayerIdentifier(identifier: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def IsAnonymousLayerIdentifier(_identifier: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Returns true if the C{identifier} is an anonymous layer unique
         identifier.
@@ -1664,7 +1664,7 @@ class Layer(Boost.Python.instance):
         data.
         """
     @staticmethod
-    def IsIncludedByDetachedLayerRules(identifier: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def IsIncludedByDetachedLayerRules(_identifier: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Returns whether the given layer identifier is included in the current
         rules for the detached layer set.
@@ -1677,7 +1677,7 @@ class Layer(Boost.Python.instance):
         Returns C{true} if the current layer is muted.
         """
     def ListAllTimeSamples(self) -> list[float]: ...
-    def ListTimeSamplesForPath(self, path: Path | str, /) -> list[float]: ...
+    def ListTimeSamplesForPath(self, _path: Path | str, /) -> list[float]: ...
     @staticmethod
     def New(fileFormat: FileFormat, identifier: str | pxr.Ar.ResolvedPath, args: dict = ...) -> Layer:
         """
@@ -1734,7 +1734,7 @@ class Layer(Boost.Python.instance):
         has changed.
         """
     @staticmethod
-    def ReloadLayers(layers: typing.Iterable[Layer], /, force: bool = ...) -> bool:
+    def ReloadLayers(_layers: typing.Iterable[Layer], /, force: bool = ...) -> bool:
         """
         Reloads the specified layers.
 
@@ -1744,7 +1744,7 @@ class Layer(Boost.Python.instance):
         See C{Reload()} for a description of the C{force} flag.
         """
     @staticmethod
-    def RemoveFromMutedLayers(mutedPath: str | pxr.Ar.ResolvedPath, /) -> None:
+    def RemoveFromMutedLayers(_mutedPath: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Remove the specified path from the muted layers set.
         """
@@ -1766,13 +1766,13 @@ class Layer(Boost.Python.instance):
         type cannot be saved. The layer will not be overwritten if the file
         exists and the layer is not dirty unless C{force} is true.
         """
-    def ScheduleRemoveIfInert(self, spec: Spec, /) -> None:
+    def ScheduleRemoveIfInert(self, _spec: Spec, /) -> None:
         """
         Cause C{spec} to be removed if it no longer affects the scene when the
         last change block is closed, or now if there are no change blocks.
         """
     @staticmethod
-    def SetDetachedLayerRules(mask: Layer.DetachedLayerRules, /) -> None:
+    def SetDetachedLayerRules(_mask: Layer.DetachedLayerRules, /) -> None:
         '''
         Sets the rules specifying detached layers.
 
@@ -1798,22 +1798,22 @@ class Layer(Boost.Python.instance):
         See SdfLayer::DetachedLayerRules::IsIncluded for details on how the
         rules are applied to layer identifiers.
         '''
-    def SetMuted(self, muted: bool, /) -> None:
+    def SetMuted(self, _muted: bool, /) -> None:
         """
         Mutes the current layer if C{muted} is C{true}, and unmutes it
         otherwise.
         """
-    def SetPermissionToEdit(self, allow: bool, /) -> None:
+    def SetPermissionToEdit(self, _allow: bool, /) -> None:
         """
         Sets permission to edit.
         """
-    def SetPermissionToSave(self, allow: bool, /) -> None:
+    def SetPermissionToSave(self, _allow: bool, /) -> None:
         """
         Sets permission to save.
         """
     def SetTimeSample(self, arg2: Path | str, arg3: float, arg4: object, /) -> None: ...
     @staticmethod
-    def SplitIdentifier(identifier: str | pxr.Ar.ResolvedPath, /) -> tuple:
+    def SplitIdentifier(_identifier: str | pxr.Ar.ResolvedPath, /) -> tuple:
         """
         Splits the given layer identifier into its constituent layer path and
         arguments.
@@ -1829,7 +1829,7 @@ class Layer(Boost.Python.instance):
         perform fine-grained change notification, since doing so would require
         the full contents of the layer to be loaded.
         """
-    def TransferContent(self, layer: Layer, /) -> None:
+    def TransferContent(self, _layer: Layer, /) -> None:
         """
         Copies the content of the given layer into this layer.
 
@@ -1847,7 +1847,7 @@ class Layer(Boost.Python.instance):
         info. This may be used to update the layer after external changes to
         the underlying asset system.
         """
-    def UpdateCompositionAssetDependency(self, oldAssetPath: str | pxr.Ar.ResolvedPath, newAssetPath: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def UpdateCompositionAssetDependency(self, _oldAssetPath: str | pxr.Ar.ResolvedPath, _newAssetPath: str | pxr.Ar.ResolvedPath, /) -> bool:
         '''
         Updates the asset path of a composation dependency in this layer.
 
@@ -1860,7 +1860,7 @@ class Layer(Boost.Python.instance):
         removing all occurrences of C{oldAssetPath} from all reference,
         payload, and sublayer fields.
         '''
-    def UpdateExternalReference(self, oldAssetPath: str | pxr.Ar.ResolvedPath, newAssetPath: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def UpdateExternalReference(self, _oldAssetPath: str | pxr.Ar.ResolvedPath, _newAssetPath: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Deprecated
 
@@ -2043,7 +2043,7 @@ class LayerTree(Boost.Python.instance):
     @overload
     def __init__(self, arg2: Layer, arg3: object, /) -> None: ...
     @overload
-    def __init__(self, layer: Layer, childTrees: list[LayerTree], cumulativeOffset: LayerOffset, /) -> None: ...
+    def __init__(self, _layer: Layer, _childTrees: list[LayerTree], _cumulativeOffset: LayerOffset, /) -> None: ...
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
     def __lt__(self, other: object) -> bool: ...
@@ -2639,35 +2639,35 @@ class NamespaceEdit(Boost.Python.instance):
         The default edit maps the empty path to the empty path.
         """
     @overload
-    def __init__(self, currentPath_: Path | str, newPath_: Path | str, index_: int = ..., /) -> None:
+    def __init__(self, _currentPath_: Path | str, _newPath_: Path | str, _index_: int = ..., /) -> None:
         """
         The fully general edit.
         """
     @staticmethod
-    def Remove(currentPath: Path | str, /) -> NamespaceEdit:
+    def Remove(_currentPath: Path | str, /) -> NamespaceEdit:
         """
         Returns a namespace edit that removes the object at C{currentPath}.
         """
     @staticmethod
-    def Rename(currentPath: Path | str, name: str | pxr.Ar.ResolvedPath, /) -> NamespaceEdit:
+    def Rename(_currentPath: Path | str, _name: str | pxr.Ar.ResolvedPath, /) -> NamespaceEdit:
         """
         Returns a namespace edit that renames the prim or property at
         C{currentPath} to C{name}.
         """
     @staticmethod
-    def Reorder(currentPath: Path | str, index: int, /) -> NamespaceEdit:
+    def Reorder(_currentPath: Path | str, _index: int, /) -> NamespaceEdit:
         """
         Returns a namespace edit to reorder the prim or property at
         C{currentPath} to index C{index}.
         """
     @staticmethod
-    def Reparent(currentPath: Path | str, newParentPath: Path | str, index: int, /) -> NamespaceEdit:
+    def Reparent(_currentPath: Path | str, _newParentPath: Path | str, _index: int, /) -> NamespaceEdit:
         """
         Returns a namespace edit to reparent the prim or property at
         C{currentPath} to be under C{newParentPath} at index C{index}.
         """
     @staticmethod
-    def ReparentAndRename(currentPath: Path | str, newParentPath: Path | str, name: str | pxr.Ar.ResolvedPath, index: int, /) -> NamespaceEdit:
+    def ReparentAndRename(_currentPath: Path | str, _newParentPath: Path | str, _name: str | pxr.Ar.ResolvedPath, _index: int, /) -> NamespaceEdit:
         """
         Returns a namespace edit to reparent the prim or property at
         C{currentPath} to be under C{newParentPath} at index C{index} with the
@@ -2699,7 +2699,7 @@ class NamespaceEditDetail(Boost.Python.instance):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, : VariableExpression.Result, edit: NamespaceEdit, reason: str | pxr.Ar.ResolvedPath, /) -> None: ...
+    def __init__(self, _unknownArg1: VariableExpression.Result, _edit: NamespaceEdit, _reason: str | pxr.Ar.ResolvedPath, /) -> None: ...
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
 
@@ -2729,7 +2729,7 @@ class Notice(Boost.Python.instance):
             """
 
     class LayerIdentifierDidChange(Notice.Base):
-    """
+        """
         Sent when the identifier of a layer has changed.
         """
         def __init__(self, *args, **kwargs) -> None:
@@ -2748,7 +2748,7 @@ class Notice(Boost.Python.instance):
             """
 
     class LayerInfoDidChange(Notice.Base):
-    """
+        """
         Sent when the (scene spec) info of a layer have changed.
         """
         def __init__(self, *args, **kwargs) -> None:
@@ -2758,7 +2758,7 @@ class Notice(Boost.Python.instance):
         def key(self) -> Any: ...
 
     class LayerMutenessChanged(Notice.Base):
-    """
+        """
         Sent after a layer has been added or removed from the set of muted
         layers.
 
@@ -2779,7 +2779,7 @@ class Notice(Boost.Python.instance):
         def wasMuted(self): ...
 
     class LayersDidChange(Notice.Base):
-    """
+        """
         Global notice sent to indicate that layer contents have changed.
         """
         def __init__(self, *args, **kwargs) -> None:
@@ -2790,7 +2790,7 @@ class Notice(Boost.Python.instance):
         def GetSerialNumber(self) -> int: ...
 
     class LayersDidChangeSentPerLayer(Notice.Base):
-    """
+        """
         Notice sent per-layer indicating all layers whose contents have
         changed within a single round of change processing.
 
@@ -2965,7 +2965,7 @@ class Path(Boost.Python.instance):
     def __init__(self, arg2: object, /) -> None: ...
     @overload
     def __init__(self, arg2: Path | str = ..., /) -> None: ...
-    def AppendChild(self, childName: str | pxr.Ar.ResolvedPath, /) -> Path:
+    def AppendChild(self, _childName: str | pxr.Ar.ResolvedPath, /) -> Path:
         """
         Creates a path by appending an element for C{childName} to this path.
 
@@ -2973,7 +2973,7 @@ class Path(Boost.Python.instance):
         This path must be a prim path, the AbsoluteRootPath or the
         ReflexiveRelativePath.
         """
-    def AppendElementString(self, element: str | pxr.Ar.ResolvedPath, /) -> Path:
+    def AppendElementString(self, _element: str | pxr.Ar.ResolvedPath, /) -> Path:
         """
         Creates a path by extracting and appending an element from the given
         ascii element encoding.
@@ -2993,21 +2993,21 @@ class Path(Boost.Python.instance):
 
         This path must be a prim property or relational attribute path.
         """
-    def AppendMapper(self, targetPath: Path | str, /) -> Path:
+    def AppendMapper(self, _targetPath: Path | str, /) -> Path:
         """
         Creates a path by appending a mapper element for C{targetPath}.
 
 
         This path must be a prim property or relational attribute path.
         """
-    def AppendMapperArg(self, argName: str | pxr.Ar.ResolvedPath, /) -> Path:
+    def AppendMapperArg(self, _argName: str | pxr.Ar.ResolvedPath, /) -> Path:
         """
         Creates a path by appending an element for C{argName}.
 
 
         This path must be a mapper path.
         """
-    def AppendPath(self, newSuffix: Path | str, /) -> Path:
+    def AppendPath(self, _newSuffix: Path | str, /) -> Path:
         """
         Creates a path by appending a given relative path to this path.
 
@@ -3018,28 +3018,28 @@ class Path(Boost.Python.instance):
         If the newSuffix is a prim property path, then this path must be a
         prim path or the ReflexiveRelativePath.
         """
-    def AppendProperty(self, propName: str | pxr.Ar.ResolvedPath, /) -> Path:
+    def AppendProperty(self, _propName: str | pxr.Ar.ResolvedPath, /) -> Path:
         """
         Creates a path by appending an element for C{propName} to this path.
 
 
         This path must be a prim path or the ReflexiveRelativePath.
         """
-    def AppendRelationalAttribute(self, attrName: str | pxr.Ar.ResolvedPath, /) -> Path:
+    def AppendRelationalAttribute(self, _attrName: str | pxr.Ar.ResolvedPath, /) -> Path:
         """
         Creates a path by appending an element for C{attrName} to this path.
 
 
         This path must be a target path.
         """
-    def AppendTarget(self, targetPath: Path | str, /) -> Path:
+    def AppendTarget(self, _targetPath: Path | str, /) -> Path:
         """
         Creates a path by appending an element for C{targetPath}.
 
 
         This path must be a prim property or relational attribute path.
         """
-    def AppendVariantSelection(self, variantSet: str | pxr.Ar.ResolvedPath, variant: str | pxr.Ar.ResolvedPath, /) -> Path:
+    def AppendVariantSelection(self, _variantSet: str | pxr.Ar.ResolvedPath, _variant: str | pxr.Ar.ResolvedPath, /) -> Path:
         """
         Creates a path by appending an element for C{variantSet} and
         C{variant} to this path.
@@ -3114,13 +3114,13 @@ class Path(Boost.Python.instance):
         longest to shortest (the opposite of the order of the prefixes
         returned by GetPrefixes).
         """
-    def GetCommonPrefix(self, path: Path | str, /) -> Path:
+    def GetCommonPrefix(self, _path: Path | str, /) -> Path:
         """
         Returns a path with maximal length that is a prefix path of both this
         path and C{path}.
         """
     @staticmethod
-    def GetConciseRelativePaths(paths: typing.Iterable[Path | str], /) -> list[Path]:
+    def GetConciseRelativePaths(_paths: typing.Iterable[Path | str], /) -> list[Path]:
         """
         Given some vector of paths, get a vector of concise unambiguous
         relative paths.
@@ -3200,7 +3200,7 @@ class Path(Boost.Python.instance):
         Returns a pair of empty strings if this path is not a variant
         selection path.
         """
-    def HasPrefix(self, prefix: Path | str, /) -> bool:
+    def HasPrefix(self, _prefix: Path | str, /) -> bool:
         """
         Return true if both this path and *prefix* are not the empty path and
         this path has *prefix* as a prefix.
@@ -3284,12 +3284,12 @@ class Path(Boost.Python.instance):
         target.
         """
     @staticmethod
-    def IsValidIdentifier(name: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def IsValidIdentifier(_name: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Returns whether C{name} is a legal identifier for any path component.
         """
     @staticmethod
-    def IsValidNamespacedIdentifier(name: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def IsValidNamespacedIdentifier(_name: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Returns whether C{name} is a legal namespaced identifier.
 
@@ -3297,7 +3297,7 @@ class Path(Boost.Python.instance):
         This returns C{true} if IsValidIdentifier() does.
         """
     @staticmethod
-    def IsValidPathString(pathString: str | pxr.Ar.ResolvedPath, /) -> _IsValidPathStringResult:
+    def IsValidPathString(_pathString: str | pxr.Ar.ResolvedPath, /) -> _IsValidPathStringResult:
         """
         Return true if C{pathString} is a valid path string, meaning that
         passing the string to the *SdfPath* constructor will result in a
@@ -3312,7 +3312,7 @@ class Path(Boost.Python.instance):
     def JoinIdentifier(arg1: object, /) -> str: ...
     @overload
     @staticmethod
-    def JoinIdentifier(lhs: str | pxr.Ar.ResolvedPath, rhs: str | pxr.Ar.ResolvedPath, /) -> str:
+    def JoinIdentifier(_lhs: str | pxr.Ar.ResolvedPath, _rhs: str | pxr.Ar.ResolvedPath, /) -> str:
         """
         Join C{lhs} and C{rhs} into a single identifier using the namespace
         delimiter.
@@ -3321,7 +3321,7 @@ class Path(Boost.Python.instance):
         Returns C{lhs} if C{rhs} is empty and vice verse. Returns an empty
         string if both C{lhs} and C{rhs} are empty.
         """
-    def MakeAbsolutePath(self, anchor: Path | str, /) -> Path:
+    def MakeAbsolutePath(self, _anchor: Path | str, /) -> Path:
         """
         Returns the absolute form of this path using C{anchor} as the relative
         basis.
@@ -3334,7 +3334,7 @@ class Path(Boost.Python.instance):
 
         If this path is already an absolute path, just return a copy.
         """
-    def MakeRelativePath(self, anchor: Path | str, /) -> Path:
+    def MakeRelativePath(self, _anchor: Path | str, /) -> Path:
         """
         Returns the relative form of this path using C{anchor} as the relative
         basis.
@@ -3351,14 +3351,14 @@ class Path(Boost.Python.instance):
         dots.
         """
     @staticmethod
-    def RemoveAncestorPaths(paths: list[Path] | list[str], /) -> list:
+    def RemoveAncestorPaths(_paths: list[Path] | list[str], /) -> list:
         """
         Remove all elements of *paths* that prefix other elements in *paths*.
 
 
         As a side-effect, the result is left in sorted order.
         """
-    def RemoveCommonSuffix(self, otherPath: Path | str, /, stopAtRootPrim: bool = ...) -> tuple:
+    def RemoveCommonSuffix(self, _otherPath: Path | str, /, stopAtRootPrim: bool = ...) -> tuple:
         """
         Find and remove the longest common suffix from two paths.
 
@@ -3377,7 +3377,7 @@ class Path(Boost.Python.instance):
         and /B if C{stopAtRootPrim} is C{true} but /A and / if it's C{false}.
         """
     @staticmethod
-    def RemoveDescendentPaths(paths: list[Path] | list[str], /) -> list:
+    def RemoveDescendentPaths(_paths: list[Path] | list[str], /) -> list:
         """
         Remove all elements of *paths* that are prefixed by other elements in
         *paths*.
@@ -3385,7 +3385,7 @@ class Path(Boost.Python.instance):
 
         As a side-effect, the result is left in sorted order.
         """
-    def ReplaceName(self, newName: str | pxr.Ar.ResolvedPath, /) -> Path:
+    def ReplaceName(self, _newName: str | pxr.Ar.ResolvedPath, /) -> Path:
         """
         Return a copy of this path with its final component changed to
         *newName*.
@@ -3423,7 +3423,7 @@ class Path(Boost.Python.instance):
         do zero or one path prefix replacements, if not the number of
         replacements can be greater than one.
         """
-    def ReplaceTargetPath(self, newTargetPath: Path | str, /) -> Path:
+    def ReplaceTargetPath(self, _newTargetPath: Path | str, /) -> Path:
         """
         Replaces the relational attribute's target path.
 
@@ -3436,7 +3436,7 @@ class Path(Boost.Python.instance):
         of this path, leaving a path with no embedded variant selections.
         """
     @staticmethod
-    def StripNamespace(name: str | pxr.Ar.ResolvedPath, /) -> str:
+    def StripNamespace(_name: str | pxr.Ar.ResolvedPath, /) -> str:
         """
         Returns C{name} stripped of any namespaces.
 
@@ -3445,7 +3445,7 @@ class Path(Boost.Python.instance):
         remove anything that looks like a namespace.
         """
     @staticmethod
-    def StripPrefixNamespace(name: str | pxr.Ar.ResolvedPath, matchNamespace: str | pxr.Ar.ResolvedPath, /) -> tuple:
+    def StripPrefixNamespace(_name: str | pxr.Ar.ResolvedPath, _matchNamespace: str | pxr.Ar.ResolvedPath, /) -> tuple:
         """
         Returns ( C{name}, C{true}) where C{name} is stripped of the prefix
         specified by C{matchNamespace} if C{name} indeed starts with
@@ -3458,7 +3458,7 @@ class Path(Boost.Python.instance):
         contains the trailing namespace delimiter':'or not.
         """
     @staticmethod
-    def TokenizeIdentifier(name: str | pxr.Ar.ResolvedPath, /) -> list[str]:
+    def TokenizeIdentifier(_name: str | pxr.Ar.ResolvedPath, /) -> list[str]:
         """
         Tokenizes C{name} by the namespace delimiter.
 
@@ -3631,7 +3631,7 @@ class PathExpression(Boost.Python.instance):
     '''
 
     class ExpressionReference(Boost.Python.instance):
-    """
+        """
         Objects of this class represent references to other path expressions,
         which will be resolved later by a call to ResolveReferences() or
         ComposeOver() .
@@ -3665,7 +3665,7 @@ class PathExpression(Boost.Python.instance):
         def GetValueFromName(name: object) -> Any: ...
 
     class PathPattern(Boost.Python.instance):
-    """
+        """
         Objects of this class represent SdfPath matching patterns, consisting
         of an SdfPath prefix followed by a sequence of components, which may
         contain wildcards and optional embedded predicate expressions (see
@@ -4094,7 +4094,7 @@ class PredicateExpression(Boost.Python.instance):
     '''
 
     class FnArg(Boost.Python.instance):
-    """
+        """
         Represents a function argument name and value.
 
 
@@ -4116,7 +4116,7 @@ class PredicateExpression(Boost.Python.instance):
         def __ne__(self, other: object) -> bool: ...
 
     class FnCall(Boost.Python.instance):
-    """
+        """
         Represents a function call in an expression with calling style,
         function name, and arguments.
         """
@@ -4178,7 +4178,7 @@ class PredicateExpression(Boost.Python.instance):
         Construct the empty expression whose bool-operator returns false.
         """
     @overload
-    def __init__(self, : PredicateExpression, /) -> None:
+    def __init__(self, _unknownArg1: PredicateExpression, /) -> None:
         """
         Copy construct from another expression.
         """
@@ -4285,7 +4285,7 @@ class PredicateFunctionResult(Boost.Python.instance):
         that'MayVaryOverDescendants'.
         """
     @overload
-    def __init__(self, value: PredicateFunctionResult, /) -> None:
+    def __init__(self, _value: PredicateFunctionResult, /) -> None:
         """
         Construct with C{value} and C{MayVaryOverDescendants} constancy.
         """
@@ -4316,7 +4316,7 @@ class PredicateFunctionResult(Boost.Python.instance):
         """
         Create with C{value} and'MayVaryOverDescendants'.
         """
-    def SetAndPropagateConstancy(self, other: PredicateFunctionResult, /) -> None:
+    def SetAndPropagateConstancy(self, _other: PredicateFunctionResult, /) -> None:
         """
         Set this result's value to C{other's} value, and propagate constancy;
         if both this and C{other} are ConstantOverDescendants, this object's
@@ -4427,7 +4427,7 @@ class PrimSpec(Spec):
         SdfCreatePrimInLayer() to create a PrimSpec with all required ancestor
         specs as SdfSpecifierOver.
         """
-    def ApplyNameChildrenOrder(self, vec: list[str] | list[pxr.Ar.ResolvedPath], /) -> list:
+    def ApplyNameChildrenOrder(self, _vec: list[str] | list[pxr.Ar.ResolvedPath], /) -> list:
         """
         Reorders the given list of child names according to the reorder
         nameChildren statement for this prim.
@@ -4436,7 +4436,7 @@ class PrimSpec(Spec):
         This routine employs the standard list editing operation for ordered
         items in a ListEditor.
         """
-    def ApplyPropertyOrder(self, vec: list[str] | list[pxr.Ar.ResolvedPath], /) -> list:
+    def ApplyPropertyOrder(self, _vec: list[str] | list[pxr.Ar.ResolvedPath], /) -> list:
         """
         Reorders the given list of property names according to the reorder
         properties statement for this prim.
@@ -4445,12 +4445,12 @@ class PrimSpec(Spec):
         This routine employs the standard list editing operation for ordered
         items in a ListEditor.
         """
-    def BlockVariantSelection(self, variantSetName: str | pxr.Ar.ResolvedPath, /) -> None:
+    def BlockVariantSelection(self, _variantSetName: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Blocks the variant selected for the given variant set by setting the
         variant selection to empty.
         """
-    def CanSetName(self, newName: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def CanSetName(self, _newName: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Returns true if setting the prim spec's name to C{newName} will
         succeed.
@@ -4479,7 +4479,7 @@ class PrimSpec(Spec):
         """
         Clears the references for this prim.
         """
-    def GetAttributeAtPath(self, path: Path | str, /) -> AttributeSpec:
+    def GetAttributeAtPath(self, _path: Path | str, /) -> AttributeSpec:
         """
         Returns an attribute given its C{path}.
 
@@ -4487,7 +4487,7 @@ class PrimSpec(Spec):
         Returns invalid handle if there is no attribute at C{path}. This is
         simply a more specifically typed version of GetObjectAtPath.
         """
-    def GetObjectAtPath(self, path: Path | str, /) -> Spec:
+    def GetObjectAtPath(self, _path: Path | str, /) -> Spec:
         """
         Returns the object for the given C{path}.
 
@@ -4498,7 +4498,7 @@ class PrimSpec(Spec):
 
         Returns invalid handle if there is no object at C{path}.
         """
-    def GetPrimAtPath(self, path: Path | str, /) -> PrimSpec:
+    def GetPrimAtPath(self, _path: Path | str, /) -> PrimSpec:
         """
         Returns a prim given its C{path}.
 
@@ -4506,7 +4506,7 @@ class PrimSpec(Spec):
         Returns invalid handle if there is no prim at C{path}. This is simply
         a more specifically typed version of GetObjectAtPath.
         """
-    def GetPropertyAtPath(self, path: Path | str, /) -> PropertySpec:
+    def GetPropertyAtPath(self, _path: Path | str, /) -> PropertySpec:
         """
         Returns a property given its C{path}.
 
@@ -4514,7 +4514,7 @@ class PrimSpec(Spec):
         Returns invalid handle if there is no property at C{path}. This is
         simply a more specifically typed version of GetObjectAtPath.
         """
-    def GetRelationshipAtPath(self, path: Path | str, /) -> RelationshipSpec:
+    def GetRelationshipAtPath(self, _path: Path | str, /) -> RelationshipSpec:
         """
         Returns a relationship given its C{path}.
 
@@ -4522,7 +4522,7 @@ class PrimSpec(Spec):
         Returns invalid handle if there is no relationship at C{path}. This is
         simply a more specifically typed version of GetObjectAtPath.
         """
-    def GetVariantNames(self, name: str | pxr.Ar.ResolvedPath, /) -> list[str]:
+    def GetVariantNames(self, _name: str | pxr.Ar.ResolvedPath, /) -> list[str]:
         """
         Returns list of variant names for the given variant set.
         """
@@ -4539,7 +4539,7 @@ class PrimSpec(Spec):
         """
         Returns true if this prim spec has an opinion about kind.
         """
-    def RemoveProperty(self, property: PropertySpec, /) -> None:
+    def RemoveProperty(self, _property: PropertySpec, /) -> None:
         """
         Removes the property.
         """
@@ -4935,7 +4935,7 @@ class RelationshipSpec(PropertySpec):
         Creates and returns a new relationship for the given prim. The
         C{owner} will own the newly created relationship.
         """
-    def RemoveTargetPath(self, path: Path | str, /, preserveTargetOrder: bool = ...) -> None:
+    def RemoveTargetPath(self, _path: Path | str, /, preserveTargetOrder: bool = ...) -> None:
         """
         Removes the specified target path.
 
@@ -4945,7 +4945,7 @@ class RelationshipSpec(PropertySpec):
         called on the list editor instead of RemoveItemEdits(). This preserves
         the ordered items list.
         """
-    def ReplaceTargetPath(self, oldPath: Path | str, newPath: Path | str, /) -> None:
+    def ReplaceTargetPath(self, _oldPath: Path | str, _newPath: Path | str, /) -> None:
         """
         Updates the specified target path.
 
@@ -4993,11 +4993,11 @@ class Spec(Boost.Python.instance):
         immediate specific need (like the Inspector) should use this API.
         """
     def GetAsText(self) -> str: ...
-    def GetFallbackForInfo(self, key: str | pxr.Ar.ResolvedPath, /) -> Any:
+    def GetFallbackForInfo(self, _key: str | pxr.Ar.ResolvedPath, /) -> Any:
         """
         Returns the fallback for the info with the given *key*.
         """
-    def GetInfo(self, key: str | pxr.Ar.ResolvedPath, /) -> Any:
+    def GetInfo(self, _key: str | pxr.Ar.ResolvedPath, /) -> Any:
         """
         Gets the value for the given metadata key.
 
@@ -5005,7 +5005,7 @@ class Spec(Boost.Python.instance):
         This is interim API which is likely to change. Only editors with an
         immediate specific need (like the Inspector) should use this API.
         """
-    def GetMetaDataDisplayGroup(self, key: str | pxr.Ar.ResolvedPath, /) -> str:
+    def GetMetaDataDisplayGroup(self, _key: str | pxr.Ar.ResolvedPath, /) -> str:
         """
         Returns this metadata key's displayGroup.
         """
@@ -5020,11 +5020,11 @@ class Spec(Boost.Python.instance):
         This is interim API which is likely to change. Only editors with an
         immediate specific need (like the Inspector) should use this API.
         """
-    def GetTypeForInfo(self, key: str | pxr.Ar.ResolvedPath, /) -> pxr.Tf.Type:
+    def GetTypeForInfo(self, _key: str | pxr.Ar.ResolvedPath, /) -> pxr.Tf.Type:
         """
         Returns the data type for the info with the given *key*.
         """
-    def HasInfo(self, key: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def HasInfo(self, _key: str | pxr.Ar.ResolvedPath, /) -> bool:
         '''
         Returns whether there is a setting for the scene spec info with the
         given key.
@@ -5063,7 +5063,7 @@ class Spec(Boost.Python.instance):
 
         This does not include fields that represent names of children.
         """
-    def SetInfo(self, key: str | pxr.Ar.ResolvedPath, value: Any, /) -> None:
+    def SetInfo(self, _key: str | pxr.Ar.ResolvedPath, _value: Any, /) -> None:
         """
         Sets the value for the given metadata key.
 
@@ -5074,7 +5074,7 @@ class Spec(Boost.Python.instance):
         This is interim API which is likely to change. Only editors with an
         immediate specific need (like the Inspector) should use this API.
         """
-    def SetInfoDictionaryValue(self, dictionaryKey: str | pxr.Ar.ResolvedPath, entryKey: str | pxr.Ar.ResolvedPath, value: Any, /) -> None:
+    def SetInfoDictionaryValue(self, _dictionaryKey: str | pxr.Ar.ResolvedPath, _entryKey: str | pxr.Ar.ResolvedPath, _value: Any, /) -> None:
         """
         Sets the value for C{entryKey} to C{value} within the dictionary with
         the given metadata key C{dictionaryKey}.
@@ -5172,7 +5172,7 @@ class TimeCode(Boost.Python.instance):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, time: float, /) -> None:
+    def __init__(self, _time: float, /) -> None:
         """
         Construct a time code with the given time.
 
@@ -5744,7 +5744,7 @@ class VariableExpression(Boost.Python.instance):
         expression.
         """
     @staticmethod
-    def IsExpression(s: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def IsExpression(_s: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Returns true if C{s} is a variable expression, false otherwise.
 
@@ -5756,7 +5756,7 @@ class VariableExpression(Boost.Python.instance):
         determine if a string should be considered as an expression.
         """
     @staticmethod
-    def IsValidVariableType(value: Any, /) -> bool:
+    def IsValidVariableType(_value: Any, /) -> bool:
         """
         Returns true if C{value} holds a type that is supported by variable
         expressions, false otherwise.
@@ -5810,7 +5810,7 @@ class VariantSetSpec(Spec):
         """
         Constructs a new instance.
         """
-    def RemoveVariant(self, variant: VariantSpec, /) -> None:
+    def RemoveVariant(self, _variant: VariantSpec, /) -> None:
         """
         Removes C{variant} from the list of variants.
 
@@ -5864,7 +5864,7 @@ class VariantSpec(Spec):
         """
         Constructs a new instance.
         """
-    def GetVariantNames(self, name: str | pxr.Ar.ResolvedPath, /) -> list[str]:
+    def GetVariantNames(self, _name: str | pxr.Ar.ResolvedPath, /) -> list[str]:
         """
         Returns list of variant names for the given variant set.
         """
@@ -5972,7 +5972,7 @@ def ConvertToValidMetadataDictionary(arg1: object, /) -> tuple:
     elements and add a message to C{errMsg} indicating which values were
     omitted.
     """
-def ConvertUnit(fromUnit: pxr.Tf.Enum, toUnit: pxr.Tf.Enum, /) -> float:
+def ConvertUnit(_fromUnit: pxr.Tf.Enum, _toUnit: pxr.Tf.Enum, /) -> float:
     """
     Converts from one unit of measure to another.
 
@@ -6040,7 +6040,7 @@ def CopySpec(srcLayer: Layer, srcPath: Path | str, dstLayer: Layer, dstPath: Pat
     relationship targets and connections to be specified as prepended,
     appended, deleted, and/or ordered, as needed.
     """
-def CreatePrimInLayer(layer: Layer, primPath: Path | str, /) -> PrimSpec:
+def CreatePrimInLayer(_layer: Layer, _primPath: Path | str, /) -> PrimSpec:
     """
     Convenience function to create a prim at the given path, and any
     necessary parent prims, in the given layer.
@@ -6052,7 +6052,7 @@ def CreatePrimInLayer(layer: Layer, primPath: Path | str, /) -> PrimSpec:
     The new specs are created with SdfSpecifierOver and an empty type.
     primPath must be a valid prim path.
     """
-def CreateVariantInLayer(layer: Layer, primPath: Path | str, variantSetName: str | pxr.Ar.ResolvedPath, variantName: str | pxr.Ar.ResolvedPath, /) -> VariantSpec:
+def CreateVariantInLayer(_layer: Layer, _primPath: Path | str, _variantSetName: str | pxr.Ar.ResolvedPath, _variantName: str | pxr.Ar.ResolvedPath, /) -> VariantSpec:
     """
     Convenience function to create a variant spec for a given variant set
     and a prim at the given path with.
@@ -6068,12 +6068,12 @@ def CreateVariantInLayer(layer: Layer, primPath: Path | str, variantSetName: str
     variant set if it doesn't already exist.
     """
 @overload
-def DefaultUnit(typeName: str | pxr.Ar.ResolvedPath, /) -> pxr.Tf.Enum:
+def DefaultUnit(_typeName: str | pxr.Ar.ResolvedPath, /) -> pxr.Tf.Enum:
     """
     Gets the show default unit for the given /a typeName.
     """
 @overload
-def DefaultUnit(unit: pxr.Tf.Enum, /) -> pxr.Tf.Enum:
+def DefaultUnit(_unit: pxr.Tf.Enum, /) -> pxr.Tf.Enum:
     """
     Gets the show default unit for the given /a unit.
     """
@@ -6119,20 +6119,20 @@ def Equal(arg1: tuple, arg2: TimeCodeArray, /) -> pxr.Vt.BoolArray: ...
 def Equal(arg1: TimeCodeArray, arg2: list, /) -> pxr.Vt.BoolArray: ...
 @overload
 def Equal(arg1: list, arg2: TimeCodeArray, /) -> pxr.Vt.BoolArray: ...
-def GetNameForUnit(unit: pxr.Tf.Enum, /) -> str:
+def GetNameForUnit(_unit: pxr.Tf.Enum, /) -> str:
     """
     Gets the name for a given /a unit.
     """
-def GetTypeForValueTypeName(name: str | pxr.Ar.ResolvedPath, /) -> pxr.Tf.Type:
+def GetTypeForValueTypeName(_name: str | pxr.Ar.ResolvedPath, /) -> pxr.Tf.Type:
     """
     Given an sdf valueType name, produce TfType if the type name specifies
     a valid sdf value type.
     """
-def GetUnitFromName(name: str | pxr.Ar.ResolvedPath, /) -> pxr.Tf.Enum:
+def GetUnitFromName(_name: str | pxr.Ar.ResolvedPath, /) -> pxr.Tf.Enum:
     """
     Gets a unit for the given /a name.
     """
-def GetValueTypeNameForValue(value: Any, /) -> ValueTypeName:
+def GetValueTypeNameForValue(_value: Any, /) -> ValueTypeName:
     """
     Given a value, produce the sdf valueType name.
 
@@ -6156,7 +6156,7 @@ def JustCreatePrimAttributeInLayer(layer: Layer, attrPath: Path | str, typeName:
     false and issue an error if we fail to author the required scene
     description.
     """
-def JustCreatePrimInLayer(layer: Layer, primPath: Path | str, /) -> bool:
+def JustCreatePrimInLayer(_layer: Layer, _primPath: Path | str, /) -> bool:
     """
     Convenience function to create a prim at the given path, and any
     necessary parent prims, in the given layer.
@@ -6211,11 +6211,11 @@ def NotEqual(arg1: tuple, arg2: TimeCodeArray, /) -> pxr.Vt.BoolArray: ...
 def NotEqual(arg1: TimeCodeArray, arg2: list, /) -> pxr.Vt.BoolArray: ...
 @overload
 def NotEqual(arg1: list, arg2: TimeCodeArray, /) -> pxr.Vt.BoolArray: ...
-def UnitCategory(unit: pxr.Tf.Enum, /) -> str:
+def UnitCategory(_unit: pxr.Tf.Enum, /) -> str:
     """
     Gets the unit category for a given /a unit.
     """
-def ValueHasValidType(value: Any, /) -> bool:
+def ValueHasValidType(_value: Any, /) -> bool:
     """
     Given a value, returns if there is a valid corresponding valueType.
     """

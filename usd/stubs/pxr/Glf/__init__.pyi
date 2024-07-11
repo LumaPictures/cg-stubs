@@ -26,10 +26,10 @@ class DrawTarget(Boost.Python.instance):
     internalFormat to GL_DEPTH24_STENCIL8)
     """
     @overload
-    def __init__(self, drawtarget: pxr.Gf.Vec2i | list[int] | pxr.Gf.Size2 | tuple[int, int], /) -> None: ...
+    def __init__(self, _drawtarget: pxr.Gf.Vec2i | list[int] | pxr.Gf.Size2 | tuple[int, int], /) -> None: ...
     @overload
-    def __init__(self, size: int, requestMSAA: int, /) -> None: ...
-    def AddAttachment(self, name: str | pxr.Ar.ResolvedPath, format: int, type: int, internalFormat: int, /) -> None:
+    def __init__(self, _size: int, _requestMSAA: int, /) -> None: ...
+    def AddAttachment(self, _name: str | pxr.Ar.ResolvedPath, _format: int, _type: int, _internalFormat: int, /) -> None:
         """
         Add an attachment to the DrawTarget.
         """
@@ -58,7 +58,7 @@ class GLQueryObject(Boost.Python.instance):
     """
     __instance_size__: ClassVar[int] = ...
     def __init__(self) -> None: ...
-    def Begin(self, target: int, /) -> None:
+    def Begin(self, _target: int, /) -> None:
         """
         Begin query for the given C{target} target has to be one of
         GL_SAMPLES_PASSED, GL_ANY_SAMPLES_PASSED,

@@ -41,7 +41,7 @@ class Engine(Boost.Python.instance):
     """
 
     class Parameters(Boost.Python.instance):
-    """
+        """
         Parameters to construct UsdImagingGLEngine.
         """
         __instance_size__: ClassVar[int] = ...
@@ -58,7 +58,7 @@ class Engine(Boost.Python.instance):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, driver: pxr.Sdf.Path | str, rendererPluginId: str | pxr.Ar.ResolvedPath, gpuEnabled: bool, /) -> None:
+    def __init__(self, _driver: pxr.Sdf.Path | str, _rendererPluginId: str | pxr.Ar.ResolvedPath, _gpuEnabled: bool, /) -> None:
         """
         An HdDriver, containing the Hgi of your choice, can be optionally
         passed in during construction.
@@ -73,8 +73,8 @@ class Engine(Boost.Python.instance):
         use the GPU to produce images.
         """
     @overload
-    def __init__(self, params: Engine.Parameters, /) -> None: ...
-    def AddSelected(self, path: pxr.Sdf.Path | str, instanceIndex: int, /) -> None:
+    def __init__(self, _params: Engine.Parameters, /) -> None: ...
+    def AddSelected(self, _path: pxr.Sdf.Path | str, _instanceIndex: int, /) -> None:
         """
         Add a path with instanceIndex to the list of prim paths that should be
         included in selection highlighting.
@@ -89,7 +89,7 @@ class Engine(Boost.Python.instance):
         highlighting.
         """
     @staticmethod
-    def GetAvailableRenderSettingsPrimPaths(root: pxr.Usd.Prim, /) -> list[pxr.Sdf.Path]:
+    def GetAvailableRenderSettingsPrimPaths(_root: pxr.Usd.Prim, /) -> list[pxr.Sdf.Path]:
         """
         Utility method to query available render settings prims.
         """
@@ -115,7 +115,7 @@ class Engine(Boost.Python.instance):
         render delegate.
         """
     @staticmethod
-    def GetRendererDisplayName(id: str | pxr.Ar.ResolvedPath, /) -> str:
+    def GetRendererDisplayName(_id: str | pxr.Ar.ResolvedPath, /) -> str:
         """
         Return the user-friendly description of a renderer plugin.
         """
@@ -124,7 +124,7 @@ class Engine(Boost.Python.instance):
         """
         Return the vector of available render-graph delegate plugins.
         """
-    def GetRendererSetting(self, id: str | pxr.Ar.ResolvedPath, /) -> Any:
+    def GetRendererSetting(self, _id: str | pxr.Ar.ResolvedPath, /) -> Any:
         """
         Gets a renderer setting's current value.
         """
@@ -179,7 +179,7 @@ class Engine(Boost.Python.instance):
         A return value of true indicates that the scene has changed and the
         render should be updated.
         """
-    def Render(self, root: pxr.Usd.Prim, params: RenderParams, /) -> None:
+    def Render(self, _root: pxr.Usd.Prim, _params: RenderParams, /) -> None:
         """
         Entry point for kicking off a render.
         """
@@ -197,15 +197,15 @@ class Engine(Boost.Python.instance):
 
         Returns C{true} if successful.
         """
-    def SetActiveRenderSettingsPrimPath(self, : pxr.Sdf.Path | str, /) -> None:
+    def SetActiveRenderSettingsPrimPath(self, _unknownArg1: pxr.Sdf.Path | str, /) -> None:
         """
         Set active render settings prim to use to drive rendering.
         """
-    def SetCameraPath(self, id: pxr.Sdf.Path | str, /) -> None:
+    def SetCameraPath(self, _id: pxr.Sdf.Path | str, /) -> None:
         """
         Scene camera API Set the scene camera path to use for rendering.
         """
-    def SetCameraState(self, viewMatrix: pxr.Gf.Matrix4d, projectionMatrix: pxr.Gf.Matrix4d, /) -> None:
+    def SetCameraState(self, _viewMatrix: pxr.Gf.Matrix4d, _projectionMatrix: pxr.Gf.Matrix4d, /) -> None:
         """
         Free camera API Set camera framing state directly (without pointing to
         a camera on the USD stage).
@@ -214,7 +214,7 @@ class Engine(Boost.Python.instance):
         The projection matrix is expected to be pre-adjusted for the window
         policy.
         """
-    def SetColorCorrectionSettings(self, ccType: str | pxr.Ar.ResolvedPath, ocioDisplay: str | pxr.Ar.ResolvedPath, ocioView: str | pxr.Ar.ResolvedPath, ocioColorSpace: str | pxr.Ar.ResolvedPath, ocioLook: str | pxr.Ar.ResolvedPath, /) -> None:
+    def SetColorCorrectionSettings(self, _ccType: str | pxr.Ar.ResolvedPath, _ocioDisplay: str | pxr.Ar.ResolvedPath, _ocioView: str | pxr.Ar.ResolvedPath, _ocioColorSpace: str | pxr.Ar.ResolvedPath, _ocioLook: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Set C{ccType} to one of the HdxColorCorrectionTokens: {disabled, sRGB,
         openColorIO}.
@@ -230,13 +230,13 @@ class Engine(Boost.Python.instance):
         displays: rec709g22: !<View>{name: studio, colorspace: linear, looks:
         studio_65_lg2}
         """
-    def SetFraming(self, framing: pxr.CameraUtil.Framing, /) -> None:
+    def SetFraming(self, _framing: pxr.CameraUtil.Framing, /) -> None:
         """
         Determines how the filmback of the camera is mapped into the pixels of
         the render buffer and what pixels of the render buffer will be
         rendered into.
         """
-    def SetLightingState(self, lights: list[pxr.Glf.SimpleLight], material: pxr.Glf.SimpleMaterial, sceneAmbient: pxr.Gf.Vec4f | list[float] | tuple[float, float, float, float], /) -> None:
+    def SetLightingState(self, _lights: list[pxr.Glf.SimpleLight], _material: pxr.Glf.SimpleMaterial, _sceneAmbient: pxr.Gf.Vec4f | list[float] | tuple[float, float, float, float], /) -> None:
         """
         Set lighting state Derived classes should ensure that passing an empty
         lights vector disables lighting.
@@ -246,7 +246,7 @@ class Engine(Boost.Python.instance):
 
         is the set of lights to use, or empty to disable lighting.
         """
-    def SetOverrideWindowPolicy(self, policy: pxr.CameraUtil.ConformWindowPolicy | None, /) -> None:
+    def SetOverrideWindowPolicy(self, _policy: pxr.CameraUtil.ConformWindowPolicy | None, /) -> None:
         """
         Specifies whether to force a window policy when conforming the frustum
         of the camera to match the display window of the camera framing.
@@ -258,14 +258,14 @@ class Engine(Boost.Python.instance):
         Note: std::pair<bool, ...>is used instead of std::optional<...>because
         the latter is only available in C++17 or later.
         """
-    def SetRenderBufferSize(self, size: pxr.Gf.Vec2i | list[int] | pxr.Gf.Size2 | tuple[int, int], /) -> None:
+    def SetRenderBufferSize(self, _size: pxr.Gf.Vec2i | list[int] | pxr.Gf.Size2 | tuple[int, int], /) -> None:
         """
         Set the size of the render buffers baking the AOVs.
 
 
         GUI applications should set this to the size of the window.
         """
-    def SetRenderViewport(self, viewport: pxr.Gf.Vec4d | list[float] | tuple[float, float, float, float], /) -> None:
+    def SetRenderViewport(self, _viewport: pxr.Gf.Vec4d | list[float] | tuple[float, float, float, float], /) -> None:
         """
         Set the viewport to use for rendering as (x,y,w,h), where (x,y)
         represents the lower left corner of the viewport rectangle, and (w,h)
@@ -276,22 +276,22 @@ class Engine(Boost.Python.instance):
 
         Use SetFraming and SetRenderBufferSize instead.
         """
-    def SetRendererAov(self, id: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def SetRendererAov(self, _id: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Set the current renderer AOV to C{id}.
         """
-    def SetRendererPlugin(self, id: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def SetRendererPlugin(self, _id: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Set the current render-graph delegate to C{id}.
 
 
         the plugin will be loaded if it's not yet.
         """
-    def SetRendererSetting(self, id: str | pxr.Ar.ResolvedPath, value: Any, /) -> None:
+    def SetRendererSetting(self, _id: str | pxr.Ar.ResolvedPath, _value: Any, /) -> None:
         """
         Sets a renderer setting's value.
         """
-    def SetSelected(self, paths: typing.Iterable[pxr.Sdf.Path | str], /) -> None:
+    def SetSelected(self, _paths: typing.Iterable[pxr.Sdf.Path | str], /) -> None:
         """
         Sets (replaces) the list of prim paths that should be included in
         selection highlighting.
@@ -299,11 +299,11 @@ class Engine(Boost.Python.instance):
 
         These paths may include root paths which will be expanded internally.
         """
-    def SetSelectionColor(self, color: pxr.Gf.Vec4f | list[float] | tuple[float, float, float, float], /) -> None:
+    def SetSelectionColor(self, _color: pxr.Gf.Vec4f | list[float] | tuple[float, float, float, float], /) -> None:
         """
         Sets the selection highlighting color.
         """
-    def SetWindowPolicy(self, policy: pxr.CameraUtil.ConformWindowPolicy, /) -> None:
+    def SetWindowPolicy(self, _policy: pxr.CameraUtil.ConformWindowPolicy, /) -> None:
         """
         Set the window policy to use.
 
@@ -318,7 +318,7 @@ class Engine(Boost.Python.instance):
 
         Returns C{true} if successful.
         """
-    def TestIntersection(self, viewMatrix: pxr.Gf.Matrix4d, projectionMatrix: pxr.Gf.Matrix4d, root: pxr.Usd.Prim, params: RenderParams, /) -> tuple:
+    def TestIntersection(self, _viewMatrix: pxr.Gf.Matrix4d, _projectionMatrix: pxr.Gf.Matrix4d, _root: pxr.Usd.Prim, _params: RenderParams, /) -> tuple:
         """
         Finds closest point of intersection with a frustum by rendering.
 

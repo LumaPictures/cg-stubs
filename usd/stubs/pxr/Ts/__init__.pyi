@@ -72,12 +72,12 @@ class KeyFrame(Boost.Python.instance):
         Constructs a dual-valued keyframe.
         """
     @overload
-    def __init__(self, kf: KeyFrame, /) -> None:
+    def __init__(self, _kf: KeyFrame, /) -> None:
         """
         Constructs a keyframe by duplicating an existing TsKeyFrame.
         """
     @overload
-    def CanSetKnotType(self, : KnotType, /) -> _AnnotatedBoolResult:
+    def CanSetKnotType(self, _unknownArg1: KnotType, /) -> _AnnotatedBoolResult:
         """
         Checks whether the key frame's value type supports the given knot
         type.
@@ -88,11 +88,11 @@ class KeyFrame(Boost.Python.instance):
         Checks whether the key frame's value type supports the given knot
         type.
         """
-    def GetValue(self, side: Side, /) -> Any:
+    def GetValue(self, _side: Side, /) -> Any:
         """
         Gets the value at this keyframe on the given side.
         """
-    def IsEquivalentAtSide(self, keyFrame: KeyFrame, side: Side, /) -> bool:
+    def IsEquivalentAtSide(self, _keyFrame: KeyFrame, _side: Side, /) -> bool:
         """
         Gets whether this key frame is at the same time and is equivalent to
         C{keyFrame} on the given C{side}.
@@ -102,7 +102,7 @@ class KeyFrame(Boost.Python.instance):
         will have no effect on how the spline evaluates for any time on the
         given C{side} of this key frame.
         """
-    def SetValue(self, val: Any, side: Side, /) -> None:
+    def SetValue(self, _val: Any, _side: Side, /) -> None:
         """
         Sets the value at this keyframe on the given side.
         """
@@ -138,7 +138,7 @@ class LoopParams(Boost.Python.instance):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, looping: bool, start: float, period: float, preRepeatFrames: float, repeatFrames: float, valueOffset: float, /) -> None: ...
+    def __init__(self, _looping: bool, _start: float, _period: float, _preRepeatFrames: float, _repeatFrames: float, _valueOffset: float, /) -> None: ...
     def GetLoopedInterval(self) -> pxr.Gf.Interval: ...
     def GetMasterInterval(self) -> pxr.Gf.Interval: ...
     def IsValid(self) -> bool: ...
@@ -193,7 +193,7 @@ class Spline(Boost.Python.instance):
         Constructs a spline with no key frames and held extrapolation.
         """
     @overload
-    def __init__(self, other: Spline, /) -> None:
+    def __init__(self, _other: Spline, /) -> None:
         """
         Copy construct.
         """
@@ -224,7 +224,7 @@ class Spline(Boost.Python.instance):
         existing key frames at the given times.
         """
     @overload
-    def Breakdown(self, times: float, type: KnotType, flatTangents: bool, tangentLength: float, values: typing.Iterable[Any] = ..., /) -> tuple[None, pxr.Gf.Interval, KeyFrameMap]:
+    def Breakdown(self, _times: float, _type: KnotType, _flatTangents: bool, _tangentLength: float, _values: typing.Iterable[Any] = ..., /) -> tuple[None, pxr.Gf.Interval, KeyFrameMap]:
         """
         Breaks down simultaneously at several times.
 
@@ -238,7 +238,7 @@ class Spline(Boost.Python.instance):
         existing key frames at the given times.
         """
     @overload
-    def Breakdown(self, times: typing.Iterable[float], types: typing.Iterable[KnotType], flatTangents: bool, tangentLength: float, values: typing.Iterable[Any], /) -> dict:
+    def Breakdown(self, _times: typing.Iterable[float], _types: typing.Iterable[KnotType], _flatTangents: bool, _tangentLength: float, _values: typing.Iterable[Any], /) -> dict:
         """
         Breaks down simultaneously at several times with knot types specified
         for each time.
@@ -255,7 +255,7 @@ class Spline(Boost.Python.instance):
         existing key frames at the given times.
         """
     @overload
-    def Breakdown(self, x: float, type: KnotType, flatTangents: bool, tangentLength: float, value: Any, /) -> dict:
+    def Breakdown(self, _x: float, _type: KnotType, _flatTangents: bool, _tangentLength: float, _value: Any, /) -> dict:
         """
         Breakdown at time *x*.
 
@@ -277,7 +277,7 @@ class Spline(Boost.Python.instance):
         empty value may be returned.
         """
     @overload
-    def CanSetKeyFrame(self, kf: KeyFrame, /) -> _AnnotatedBoolResult:
+    def CanSetKeyFrame(self, _kf: KeyFrame, /) -> _AnnotatedBoolResult:
         """
         Checks if the given keyframe is a valid candidate to set, optionally
         returning the reason if it cannot.
@@ -382,7 +382,7 @@ class Spline(Boost.Python.instance):
         times : tuple<Time>
 
         Evaluates this spline at a tuple or list of times, returning a tuple of results."""
-    def EvalDerivative(self, time: float, /, side: Side = ...) -> Any:
+    def EvalDerivative(self, _time: float, /, side: Side = ...) -> Any:
         """
         Evaluates the derivative of the spline at the given time,
         interpolating the keyframes.
@@ -390,7 +390,7 @@ class Spline(Boost.Python.instance):
 
         If there are no keyframes, an empty VtValue is returned.
         """
-    def EvalHeld(self, time: float, /, side: Side = ...) -> Any:
+    def EvalHeld(self, _time: float, /, side: Side = ...) -> Any:
         '''
         Evaluates the value of the spline at the given time without any
         interpolation, as if all keyframes and extrapolation modes were of
@@ -399,7 +399,7 @@ class Spline(Boost.Python.instance):
 
         If there are no keyframes, an empty VtValue is returned.
         '''
-    def GetKeyFramesInMultiInterval(self, : pxr.Gf.MultiInterval, /) -> list[KeyFrame]:
+    def GetKeyFramesInMultiInterval(self, _unknownArg1: pxr.Gf.MultiInterval, /) -> list[KeyFrame]:
         """
         Returns the keyframes contained in the given GfMultiInterval.
         """
@@ -408,7 +408,7 @@ class Spline(Boost.Python.instance):
         Returns true if any of this spline's key frames are redundant.
         """
     @overload
-    def IsKeyFrameRedundant(self, keyFrame: float, defaultValue: Any = ..., /) -> bool:
+    def IsKeyFrameRedundant(self, _keyFrame: float, _defaultValue: Any = ..., /) -> bool:
         """
         Returns true if the given key frame is redundant.
 
@@ -421,7 +421,7 @@ class Spline(Boost.Python.instance):
         considered redundant.
         """
     @overload
-    def IsKeyFrameRedundant(self, keyFrameTime: KeyFrame, defaultValue: Any = ..., /) -> bool:
+    def IsKeyFrameRedundant(self, _keyFrameTime: KeyFrame, _defaultValue: Any = ..., /) -> bool:
         """
         Returns true if the key frame at the given time is redundant.
 
@@ -435,7 +435,7 @@ class Spline(Boost.Python.instance):
         Returns whether spline represents a simple linear relationship.
         """
     @overload
-    def IsSegmentFlat(self, startTime: float, endTime: float, /) -> bool:
+    def IsSegmentFlat(self, _startTime: float, _endTime: float, /) -> bool:
         """
         Returns true if the segment between the given (adjacent) key frames is
         flat.
@@ -445,13 +445,13 @@ class Spline(Boost.Python.instance):
         either of the indicated times.
         """
     @overload
-    def IsSegmentFlat(self, kf1: KeyFrame, kf2: KeyFrame, /) -> bool:
+    def IsSegmentFlat(self, _kf1: KeyFrame, _kf2: KeyFrame, /) -> bool:
         """
         Returns true if the segment between the given (adjacent) key frames is
         flat.
         """
     @overload
-    def IsSegmentValueMonotonic(self, startTime: float, endTime: float, /) -> bool:
+    def IsSegmentValueMonotonic(self, _startTime: float, _endTime: float, /) -> bool:
         """
         Returns true if the segment between the given (adjacent) key frames is
         monotonic (i.e.
@@ -463,7 +463,7 @@ class Spline(Boost.Python.instance):
         IsSegmentValueMonotonic(kf1, kf2)
         """
     @overload
-    def IsSegmentValueMonotonic(self, kf1: KeyFrame, kf2: KeyFrame, /) -> bool:
+    def IsSegmentValueMonotonic(self, _kf1: KeyFrame, _kf2: KeyFrame, /) -> bool:
         """
         Returns true if the segment between the given (adjacent) key frames is
         monotonic (i.e.
@@ -474,7 +474,7 @@ class Spline(Boost.Python.instance):
         This function will log a TF_CODING_ERROR if kf1>= kf2 TODO describe
         the preconditions
         """
-    def IsTimeLooped(self, time: float, /) -> bool:
+    def IsTimeLooped(self, _time: float, /) -> bool:
         '''
         Is the given time in the"unrolled"region of a spline that is looping;
         i.e.
@@ -504,7 +504,7 @@ class Spline(Boost.Python.instance):
         endTime : Time
 
         The minimum and maximum of this spline returned as a tuple pair over the given time domain."""
-    def Sample(self, startTime: float, endTime: float, timeScale: float, valueScale: float, tolerance: float, /) -> tuple:
+    def Sample(self, _startTime: float, _endTime: float, _timeScale: float, _valueScale: float, _tolerance: float, /) -> tuple:
         '''
         Evaluates the value of the spline over the given time interval.
 
@@ -529,7 +529,7 @@ class Spline(Boost.Python.instance):
 
         Samples may be returned outside the given time interval.
         '''
-    def SetKeyFrame(self, kf: KeyFrame, /) -> None:
+    def SetKeyFrame(self, _kf: KeyFrame, /) -> None:
         """
         Sets a keyframe, optionally returning the time range affected.
 
@@ -820,7 +820,7 @@ class _AnnotatedBoolResult(Boost.Python.instance):
     @property
     def reasonWhyNot(self): ...
 
-def SimplifySpline(intervals: Spline, maxErrorFraction: pxr.Gf.MultiInterval, extremeMaxErrFract: float, /) -> None:
+def SimplifySpline(_intervals: Spline, _maxErrorFraction: pxr.Gf.MultiInterval, _extremeMaxErrFract: float, /) -> None:
     """
     Remove as many knots as possible from spline without introducing error
     greater than maxErrorFraction, where maxErrorFraction is a percentage
@@ -830,7 +830,7 @@ def SimplifySpline(intervals: Spline, maxErrorFraction: pxr.Gf.MultiInterval, ex
 
     Only remove knots in intervals.
     """
-def SimplifySplinesInParallel(intervals: typing.Iterable[pxr.Gf.MultiInterval], maxErrorFraction: float, extremeMaxErrFract: float, /) -> None:
+def SimplifySplinesInParallel(_intervals: typing.Iterable[pxr.Gf.MultiInterval], _maxErrorFraction: float, _extremeMaxErrFract: float, /) -> None:
     """
     Run TsSimplifySpline() on a vector of splines in parallel.
 

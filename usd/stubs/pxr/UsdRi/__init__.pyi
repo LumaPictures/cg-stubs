@@ -253,9 +253,9 @@ class MaterialAPI(pxr.Usd.APISchemaBase):
         '''
         Returns the"volume"output associated with the material.
         '''
-    def SetDisplacementSource(self, displacementPath: pxr.Sdf.Path | str, /) -> bool: ...
-    def SetSurfaceSource(self, surfacePath: pxr.Sdf.Path | str, /) -> bool: ...
-    def SetVolumeSource(self, volumePath: pxr.Sdf.Path | str, /) -> bool: ...
+    def SetDisplacementSource(self, _displacementPath: pxr.Sdf.Path | str, /) -> bool: ...
+    def SetSurfaceSource(self, _surfacePath: pxr.Sdf.Path | str, /) -> bool: ...
+    def SetVolumeSource(self, _volumePath: pxr.Sdf.Path | str, /) -> bool: ...
     @staticmethod
     def _GetStaticTfType() -> pxr.Tf.Type: ...
     def __bool__(self) -> bool: ...
@@ -906,23 +906,23 @@ class _CanApplyResult(Boost.Python.instance):
     @property
     def whyNot(self): ...
 
-def ConvertFromRManFaceVaryingLinearInterpolation(i: int, /) -> str:
+def ConvertFromRManFaceVaryingLinearInterpolation(_i: int, /) -> str:
     """
     Given the integer C{i} that corresponds to an rman enum for face-
     varying interpolate boundary condition, returns the equivalent UsdGeom
     token.
     """
-def ConvertFromRManInterpolateBoundary(i: int, /) -> str:
+def ConvertFromRManInterpolateBoundary(_i: int, /) -> str:
     """
     Given the integer C{i} that corresponds to an rman enum for
     interpolate boundary condition, returns the equivalent UsdGeom token.
     """
-def ConvertToRManFaceVaryingLinearInterpolation(token: str | pxr.Ar.ResolvedPath, /) -> int:
+def ConvertToRManFaceVaryingLinearInterpolation(_token: str | pxr.Ar.ResolvedPath, /) -> int:
     """
     Given a C{token} representing a UsdGeom face-varying interpolate
     boundary value, returns corresponding rman enum (converted to int).
     """
-def ConvertToRManInterpolateBoundary(token: str | pxr.Ar.ResolvedPath, /) -> int:
+def ConvertToRManInterpolateBoundary(_token: str | pxr.Ar.ResolvedPath, /) -> int:
     """
     Given a C{token} representing a UsdGeom interpolate boundary value,
     returns corresponding rman enum (converted to int).

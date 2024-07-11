@@ -77,7 +77,7 @@ class Collector(Boost.Python.instance):
     enabled: Incomplete
     pythonTracingEnabled: Incomplete
     def __init__(self) -> None: ...
-    def BeginEvent(self, key: str | pxr.Ar.ResolvedPath, /) -> int:
+    def BeginEvent(self, _key: str | pxr.Ar.ResolvedPath, /) -> int:
         """
         Record a begin event with *key* if C{Category} is enabled.
 
@@ -93,7 +93,7 @@ class Collector(Boost.Python.instance):
 
         Scope
         """
-    def BeginEventAtTime(self, key: str | pxr.Ar.ResolvedPath, ms: float, /) -> None:
+    def BeginEventAtTime(self, _key: str | pxr.Ar.ResolvedPath, _ms: float, /) -> None:
         """
         Record a begin event with *key* at a specified time if C{Category} is
         enabled.
@@ -110,7 +110,7 @@ class Collector(Boost.Python.instance):
 
         No TraceCollection will be made for these events.
         """
-    def EndEvent(self, key: str | pxr.Ar.ResolvedPath, /) -> int:
+    def EndEvent(self, _key: str | pxr.Ar.ResolvedPath, /) -> int:
         """
         Record an end event with *key* if C{Category} is enabled.
 
@@ -126,7 +126,7 @@ class Collector(Boost.Python.instance):
 
         Scope
         """
-    def EndEventAtTime(self, key: str | pxr.Ar.ResolvedPath, ms: float, /) -> None:
+    def EndEventAtTime(self, _key: str | pxr.Ar.ResolvedPath, _ms: float, /) -> None:
         """
         Record an end event with *key* at a specified time if C{Category} is
         enabled.

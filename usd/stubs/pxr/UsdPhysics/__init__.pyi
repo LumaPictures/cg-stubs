@@ -845,7 +845,7 @@ class DriveAPI(pxr.Usd.APISchemaBase):
         """
     @overload
     @staticmethod
-    def GetSchemaAttributeNames(includeInherited: bool, /, includeInherited: str | pxr.Ar.ResolvedPath) -> list[str]:
+    def GetSchemaAttributeNames(_includeInherited: bool, /, includeInherited: str | pxr.Ar.ResolvedPath) -> list[str]:
         """
         Return a vector of names of all pre-declared attributes for this
         schema class and all its ancestor classes for a given instance name.
@@ -942,7 +942,7 @@ class DriveAPI(pxr.Usd.APISchemaBase):
         force, acceleration
         '''
     @staticmethod
-    def IsPhysicsDriveAPIPath(path: pxr.Sdf.Path | str, /) -> bool:
+    def IsPhysicsDriveAPIPath(_path: pxr.Sdf.Path | str, /) -> bool:
         """
         Checks if the given path C{path} is of an API schema of type
         PhysicsDriveAPI.
@@ -1720,7 +1720,7 @@ class LimitAPI(pxr.Usd.APISchemaBase):
         """
     @overload
     @staticmethod
-    def GetSchemaAttributeNames(includeInherited: bool, /, includeInherited: str | pxr.Ar.ResolvedPath) -> list[str]:
+    def GetSchemaAttributeNames(_includeInherited: bool, /, includeInherited: str | pxr.Ar.ResolvedPath) -> list[str]:
         """
         Return a vector of names of all pre-declared attributes for this
         schema class and all its ancestor classes for a given instance name.
@@ -1731,7 +1731,7 @@ class LimitAPI(pxr.Usd.APISchemaBase):
         proper namespace prefix.
         """
     @staticmethod
-    def IsPhysicsLimitAPIPath(path: pxr.Sdf.Path | str, /) -> bool:
+    def IsPhysicsLimitAPIPath(_path: pxr.Sdf.Path | str, /) -> bool:
         """
         Checks if the given path C{path} is of an API schema of type
         PhysicsLimitAPI.
@@ -2783,7 +2783,7 @@ class RigidBodyAPI(pxr.Usd.APISchemaBase):
     """
 
     class MassInformation(Boost.Python.instance):
-    """
+        """
         Mass information for a collision, used in ComputeMassProperties
         MassInformationFn callback.
         """
@@ -2865,7 +2865,7 @@ class RigidBodyAPI(pxr.Usd.APISchemaBase):
 
         UsdPrim::RemoveAPI()
         """
-    def ComputeMassProperties(self, massInfoFn: MassInformationFn, /) -> tuple:
+    def ComputeMassProperties(self, _massInfoFn: MassInformationFn, /) -> tuple:
         """
         Compute mass properties of the rigid body C{diagonalInertia} Computed
         diagonal of the inertial tensor for the rigid body.

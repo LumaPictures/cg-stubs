@@ -16,7 +16,7 @@ class Notice(Boost.Python.instance):
             """
 
     class DidRegisterPlugins(Notice.Base):
-    """
+        """
         Notice sent after new plugins have been registered with the Plug
         registry.
         """
@@ -62,7 +62,7 @@ class Plugin(Boost.Python.instance):
         If verification fails an empty path is returned. Relative paths are
         relative to the plugin's resource path.
         """
-    def GetMetadataForType(self, type: pxr.Tf.Type, /) -> dict:
+    def GetMetadataForType(self, _type: pxr.Tf.Type, /) -> dict:
         """
         Returns the metadata sub-dictionary for a particular type.
         """
@@ -73,7 +73,7 @@ class Plugin(Boost.Python.instance):
 
         This is a noop if the plugin is already loaded.
         """
-    def MakeResourcePath(self, path: str | pxr.Ar.ResolvedPath, /) -> str:
+    def MakeResourcePath(self, _path: str | pxr.Ar.ResolvedPath, /) -> str:
         """
         Build a plugin resource path by returning a given absolute path or
         combining the plugin's resource path with a given relative path.
@@ -389,7 +389,7 @@ class Registry(Boost.Python.instance):
     '''
     def __init__(self) -> None: ...
     @staticmethod
-    def FindDerivedTypeByName(base: pxr.Tf.Type, typeName: str | pxr.Ar.ResolvedPath, /) -> pxr.Tf.Type:
+    def FindDerivedTypeByName(_base: pxr.Tf.Type, _typeName: str | pxr.Ar.ResolvedPath, /) -> pxr.Tf.Type:
         """
         Retrieve the C{TfType} that derives from C{base} and has the given
         alias or type name C{typeName}.
@@ -405,7 +405,7 @@ class Registry(Boost.Python.instance):
         Plug-In Discovery & Registration
         """
     @staticmethod
-    def FindTypeByName(typeName: str | pxr.Ar.ResolvedPath, /) -> pxr.Tf.Type:
+    def FindTypeByName(_typeName: str | pxr.Ar.ResolvedPath, /) -> pxr.Tf.Type:
         """
         Retrieve the C{TfType} corresponding to the given C{name}.
 
@@ -420,7 +420,7 @@ class Registry(Boost.Python.instance):
         Plug-In Discovery & Registration
         """
     @staticmethod
-    def GetAllDerivedTypes(base: pxr.Tf.Type, /) -> tuple:
+    def GetAllDerivedTypes(_base: pxr.Tf.Type, /) -> tuple:
         """
         Return the set of all types derived (directly or indirectly) from
         *base*.
@@ -443,7 +443,7 @@ class Registry(Boost.Python.instance):
         Plug-In Discovery & Registration
         """
     @staticmethod
-    def GetDirectlyDerivedTypes(base: pxr.Tf.Type, /) -> tuple:
+    def GetDirectlyDerivedTypes(_base: pxr.Tf.Type, /) -> tuple:
         """
         Return a vector of types derived directly from *base*.
 
@@ -451,12 +451,12 @@ class Registry(Boost.Python.instance):
         Use this function if you expect that plugins may provide types derived
         from *base*. Otherwise, use *TfType::GetDirectlyDerivedTypes*.
         """
-    def GetPluginForType(self, t: pxr.Tf.Type, /) -> Plugin:
+    def GetPluginForType(self, _t: pxr.Tf.Type, /) -> Plugin:
         """
         Returns the plug-in for the given type, or a null pointer if there is
         no registered plug-in.
         """
-    def GetPluginWithName(self, name: str | pxr.Ar.ResolvedPath, /) -> Plugin:
+    def GetPluginWithName(self, _name: str | pxr.Ar.ResolvedPath, /) -> Plugin:
         """
         Returns a plugin with the specified module name.
 
@@ -465,13 +465,13 @@ class Registry(Boost.Python.instance):
 
         Plug-In Discovery & Registration
         """
-    def GetStringFromPluginMetaData(self, type: pxr.Tf.Type, key: str | pxr.Ar.ResolvedPath, /) -> str:
+    def GetStringFromPluginMetaData(self, _type: pxr.Tf.Type, _key: str | pxr.Ar.ResolvedPath, /) -> str:
         """
         Looks for a string associated with *type* and *key* and returns it, or
         an empty string if *type* or *key* are not found.
         """
     @overload
-    def RegisterPlugins(self, pathToPlugInfo: str | pxr.Ar.ResolvedPath, /) -> list[Plugin]:
+    def RegisterPlugins(self, _pathToPlugInfo: str | pxr.Ar.ResolvedPath, /) -> list[Plugin]:
         """
         Registers all plug-ins discovered at *pathToPlugInfo*.
 
@@ -480,7 +480,7 @@ class Registry(Boost.Python.instance):
         plugins.
         """
     @overload
-    def RegisterPlugins(self, pathsToPlugInfo: typing.Iterable[str | pxr.Ar.ResolvedPath], /) -> list[Plugin]:
+    def RegisterPlugins(self, _pathsToPlugInfo: typing.Iterable[str | pxr.Ar.ResolvedPath], /) -> list[Plugin]:
         """
         Registers all plug-ins discovered in any of *pathsToPlugInfo*.
 

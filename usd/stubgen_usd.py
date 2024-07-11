@@ -229,7 +229,7 @@ class TypeInfo(CppTypeConverter):
     ]
     TYPE_MAP = CppTypeConverter.TYPE_MAP + [
         (r"\bstd::optional\b", "typing.Optional"),
-        (r"\bVtArray<\s*SdfAssetPath\s*>", "SdfAssetPathArray"),
+        # (r"\bVtArray<\s*SdfAssetPath\s*>", "prx.Sdf.AssetPathArray"),
         (r"\bint64_t\b", "int"),
         (r"\bUsdSchemaVersion\b", "int"),
         (r"\bGfHalf\b", "float"),
@@ -239,6 +239,7 @@ class TypeInfo(CppTypeConverter):
         # this gets a lot of things right, but does produce a few errors, like list[Error] for PcpErrorVector, instead of list[ErrorBase]
         (r"\b" + CppTypeConverter.IDENTIFIER + r"Vector\b", r"list[\1]"),
         (r"\bTfToken\b", "str"),
+        (r"\bVtArray\b", "list"),
         (r"\bVtDictionary\b", "dict"),
         (r"\bUsdMetadataValueMap\b", "dict"),
         # strip suffixes
@@ -813,23 +814,34 @@ def get_sigs_from_cpp_overloads(
     """
     cpp_sigs_with_ptrs: list[FunctionSig] = []
     cpp_sigs_without_ptrs: list[FunctionSig] = []
+
     for cpp_sig in cpp_overloads:
         args_ptr: list[ArgSig] = []
         args_no_ptr: list[ArgSig] = []
         ptr_results = []
-        for param in cpp_sig.params:
+        for i, param in enumerate(cpp_sig.params):
             has_default = param.default is not None
+            if not param.name:
+                param_name = f"unknownArg{i + 1}"
+                notifier.warn(
+                    "C++ argument missing name",
+                    ctx.module_name,
+                    f"{ctx.fullname}: argument index {i}",
+                )
+            else:
+                param_name = param.name
+
             py_arg_type = type_info.cpp_arg_to_py_type(param.type, is_result=False)
             # FIXME: develop a better strategy for templates
             if py_arg_type == "T":
                 py_arg_type = "Any"
-            args_ptr.append(ArgSig(param.name, py_arg_type, default=has_default))
+            args_ptr.append(ArgSig(param_name, py_arg_type, default=has_default))
 
             if "*" in param.type:
                 # a pointer result
                 ptr_results.append(py_arg_type)
             else:
-                args_no_ptr.append(ArgSig(param.name, py_arg_type, default=has_default))
+                args_no_ptr.append(ArgSig(param_name, py_arg_type, default=has_default))
 
         docstring = (
             writer.get_overload_docstring(ctx.fullname, ctx.module_name, cpp_sig)
@@ -865,6 +877,7 @@ def get_sigs_from_cpp_overloads(
 class MatchInfo:
     kind: str
     source_overload: int
+    key: Any
 
 
 @dataclass
@@ -888,13 +901,17 @@ class SignatureMatcher(Generic[T]):
     def make_key(self, sig: FunctionSig) -> T:
         raise NotImplementedError
 
-    def _validate_match(self, sig1: FunctionSig, sig2: FunctionSig) -> None:
+    def _validate_match(
+        self, sig1: FunctionSig, sig2: FunctionSig, info: MatchInfo, key: T
+    ) -> None:
         """Ensure signatures are equal"""
         # compare using format_sig because it doesn't include the docstring by default
         if sig1.format_sig() != sig2.format_sig():
-            print("Existing", sig1.format_sig())
-            print("New     ", sig2.format_sig())
-            raise TypeError("Sigs not equal")
+            msg1 = (
+                f"  (prev:  kind={info.kind:<10}, key={info.key})  {sig1.format_sig()}"
+            )
+            msg2 = f"  (new:   kind={self.name:<10}, key={key})  {sig2.format_sig()}"
+            raise TypeError(f"Sigs not equal\n{msg1}\n{msg2}")
 
     def match(
         self,
@@ -928,13 +945,15 @@ class SignatureMatcher(Generic[T]):
                 if i in tracker.matches:
                     tracker.failures[i].append(f"{self.name}: Already matched: {key}")
                     if self.validate:
-                        self._validate_match(tracker.matches[i], cpp_sigs[0])
+                        self._validate_match(
+                            tracker.matches[i], cpp_sigs[0], tracker.successes[i], key
+                        )
                 else:
                     overloads = cpp_overload_map[key]
                     assert len(overloads) == 1
                     tracker.matches[i] = cpp_sigs[0]
                     tracker.successes[i] = MatchInfo(
-                        kind=self.name, source_overload=overloads[0]
+                        kind=self.name, source_overload=overloads[0], key=key
                     )
                     found.add(i)
             elif len(cpp_sigs) > 1:
@@ -977,7 +996,7 @@ class UsdBoostDocstringSignatureGenerator(
 ):
     def __init__(self):
         super().__init__()
-        self._processed_classes = set()
+        self._processed_classes: set[str] = set()
 
     def _fix_self_arg(self, sig: FunctionSig, ctx: FunctionContext) -> FunctionSig:
         """boost erroneously adds a self arg to some methods: remove it"""
@@ -1108,7 +1127,7 @@ class UsdBoostDocstringSignatureGenerator(
     def _summarize_overload_mismatch(
         self,
         msg: str,
-        ctx,
+        ctx: FunctionContext,
         failures: list[str],
         sigs: list[FunctionSig],
         cpp_overloads: list[DocElement],
@@ -1374,10 +1393,11 @@ class UsdBoostDocstringSignatureGenerator(
                 for i, sig in enumerate(cpp_sigs):
                     tracker.matches[i] = sig
                     tracker.successes[i] = MatchInfo(
-                        kind="fallback for unmatched", source_overload=i
+                        kind="fallback for unmatched", source_overload=i, key=None
                     )
 
-            if "GetVersionIfHasAPIInFamily" in ctx.fullname:
+            # if "ComputeClipAssetPaths" in ctx.fullname:
+            if "MakeMultipleApplyNameInstance" in ctx.fullname:
                 # we picked a new overload and it's unclear why
                 for overload, sig in tracker.matches.items():
                     self._summarize_overload_mismatch(
@@ -1442,8 +1462,20 @@ class UsdBoostDocstringSignatureGenerator(
                             py_arg.type, cpp_arg.type, ctx, already_cleaned=True
                         )
 
+                        # something appears to be wrong with wrapped static methods where
+                        # named arguments are offset by one.  For example, SchemaRegistry.MakeMultipleApplyNameInstance
+                        # is wrapped like this:
+                        #         .def("MakeMultipleApplyNameInstance",
+                        #              &This::MakeMultipleApplyNameInstance,
+                        #              arg("nameTemplate"),
+                        #              arg("instanceName"))
+                        #         .staticmethod("MakeMultipleApplyNameInstance")
+                        # And yet it produces this boost python signature:
+                        #         (arg1: object, nameTemplate: object) -> Any: ...
+                        # Notice that "nameTemplate" fills the arg2 spot.
                         if self.is_default_boost_arg(py_arg.name):
-                            arg_name = cpp_arg.name
+                            # this is safe because default args can only be passed positionally and not by name.
+                            arg_name = f"_{cpp_arg.name}"
                         else:
                             arg_name = py_arg.name
 
@@ -1633,20 +1665,20 @@ def main(outdir: str) -> None:
     # Change this to only see errors for particular modules:
     notifier.set_modules(
         [
-            "pxr.Sdf",
-            "pxr.Sdr",
-            "pxr.UsdGeom",
-            "pxr.UsdLux",
+            # "pxr.Sdf",
+            # "pxr.Sdr",
+            # "pxr.UsdGeom",
+            # "pxr.UsdLux",
             "pxr.Usd",
-            "pxr.Ar",
-            "pxr.Tf",
+            # "pxr.Ar",
+            # "pxr.Tf",
         ]
     )
-    notifier.set_keys(
-        [
-            "Could not find C++ info for overload",
-        ]
-    )
+    # notifier.set_keys(
+    #     [
+    #         "Could not find C++ info for overload",
+    #     ]
+    # )
 
     # Sadly, we don't have the ability to filter specific sub-packages, and
     # blindly ignoring all errors is too unsafe (resulted in real errors being

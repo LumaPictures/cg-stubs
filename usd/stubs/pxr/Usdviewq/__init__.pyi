@@ -104,7 +104,7 @@ class HydraObserver(Boost.Python.instance):
         """
         Clears any accumulated scene change notices.
         """
-    def GetChildPrimPaths(self, primPath: pxr.Sdf.Path | str, /) -> list[pxr.Sdf.Path]:
+    def GetChildPrimPaths(self, _primPath: pxr.Sdf.Path | str, /) -> list[pxr.Sdf.Path]:
         """
         Returns the paths of the immediate children of the specified
         C{primPath} for the actively observer scene index.
@@ -116,7 +116,7 @@ class HydraObserver(Boost.Python.instance):
 
         This display name is currently derived from the C++ typename.
         """
-    def GetInputDisplayNames(self, inputIndices: IndexList, /) -> list[str]:
+    def GetInputDisplayNames(self, _inputIndices: IndexList, /) -> list[str]:
         """
         Starting from the currently targeted HdSceneIndex, each value in the
         C{inputIndices} is treated as an index into the result of
@@ -134,7 +134,7 @@ class HydraObserver(Boost.Python.instance):
 
         Consumers of this follow a polling rather than callback pattern.
         """
-    def GetPrim(self, primPath: pxr.Sdf.Path | str, /) -> HdSceneIndexPrim:
+    def GetPrim(self, _primPath: pxr.Sdf.Path | str, /) -> HdSceneIndexPrim:
         """
         Returns the prim type and data source for the specified C{primPath}
         for the actively observer scene index.
@@ -156,7 +156,7 @@ class HydraObserver(Boost.Python.instance):
 
         Consumers of this follow a polling rather than callback pattern.
         """
-    def TargetToInputSceneIndex(self, inputIndices: IndexList, /) -> bool:
+    def TargetToInputSceneIndex(self, _inputIndices: IndexList, /) -> bool:
         """
         Starting from the currently targeted HdSceneIndex, each value in the
         C{inputIndices} is treated as an index into the result of
@@ -166,7 +166,7 @@ class HydraObserver(Boost.Python.instance):
         Returns true if each followed index maps to a valid index into the
         input scenes of the previous.
         """
-    def TargetToNamedSceneIndex(self, name: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def TargetToNamedSceneIndex(self, _name: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Target this observer to a scene index with the given name previously
         registered via HdSceneIndexNameRegistry.
@@ -214,7 +214,7 @@ class Utils(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
     def __init__(self) -> None: ...
     @staticmethod
-    def GetPrimInfo(prim: pxr.Usd.Prim, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode, /) -> tuple:
+    def GetPrimInfo(_prim: pxr.Usd.Prim, _time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode, /) -> tuple:
         """
         Fetch prim-related data in batch to to speed up Qt treeview item
         population.
@@ -224,7 +224,7 @@ class Utils(Boost.Python.instance):
         it is imageable.
         """
     @staticmethod
-    def _GetAllPrimsOfType(stage: pxr.Usd.Stage, schemaType: pxr.Tf.Type, /) -> list[pxr.Usd.Prim]:
+    def _GetAllPrimsOfType(_stage: pxr.Usd.Stage, _schemaType: pxr.Tf.Type, /) -> list[pxr.Usd.Prim]:
         """
         For the given C{stage} and C{schemaType}, return all active, defined
         prims that either match the schemaType exactly or are a descendant

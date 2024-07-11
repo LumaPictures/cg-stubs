@@ -126,7 +126,7 @@ class DefaultResolverContext(Boost.Python.instance):
 
 class Notice(Boost.Python.instance):
     class ResolverChanged(Notice.ResolverNotice):
-    """
+        """
         Notice sent when asset paths may resolve to a different path than
         before due to a change in the resolver.
         """
@@ -331,7 +331,7 @@ class Resolver(Boost.Python.instance):
         resolved paths. In this case, the assets'resolved paths must be
         consulted to determine if they are the same.
         """
-    def RefreshContext(self, context: ResolverContext, /) -> None:
+    def RefreshContext(self, _context: ResolverContext, /) -> None:
         """
         Refresh any caches associated with the given context.
 
@@ -457,7 +457,7 @@ class ResolverContextBinder(Boost.Python.instance):
     Asset Resolver Context Operations
     """
     __instance_size__: ClassVar[int] = ...
-    def __init__(self, context: ResolverContext, /) -> None:
+    def __init__(self, _context: ResolverContext, /) -> None:
         """
         Bind the given C{context} with the asset resolver.
 
@@ -508,12 +508,12 @@ class Timestamp(Boost.Python.instance):
         Create an invalid timestamp.
         """
     @overload
-    def __init__(self, time: float, /) -> None:
+    def __init__(self, _time: float, /) -> None:
         """
         Create a timestamp at C{time}, which must be a Unix time value.
         """
     @overload
-    def __init__(self, time: Timestamp, /) -> None:
+    def __init__(self, _time: Timestamp, /) -> None:
         """
         Create a timestamp at C{time}, which must be a Unix time value.
         """

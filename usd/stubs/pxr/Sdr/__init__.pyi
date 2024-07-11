@@ -263,7 +263,7 @@ class ShaderNode(pxr.Ndr.Node):
         C{GetAdditionalPrimvarProperties()} , provide the complete list of
         primvar requirements for the node.
         """
-    def GetPropertyNamesForPage(self, pageName: str | pxr.Ar.ResolvedPath, /) -> list[str]:
+    def GetPropertyNamesForPage(self, _pageName: str | pxr.Ar.ResolvedPath, /) -> list[str]:
         """
         Gets the names of the properties on a certain page (one that was
         returned by C{GetPages()} ).
@@ -284,14 +284,14 @@ class ShaderNode(pxr.Ndr.Node):
         extinction or scattering). This is done to identify resources used by
         a shading network.
         """
-    def GetShaderInput(self, inputName: str | pxr.Ar.ResolvedPath, /) -> ShaderProperty:
+    def GetShaderInput(self, _inputName: str | pxr.Ar.ResolvedPath, /) -> ShaderProperty:
         """
         Get a shader input property by name.
 
 
         C{nullptr} is returned if an input with the given name does not exist.
         """
-    def GetShaderOutput(self, outputName: str | pxr.Ar.ResolvedPath, /) -> ShaderProperty:
+    def GetShaderOutput(self, _outputName: str | pxr.Ar.ResolvedPath, /) -> ShaderProperty:
         """
         Get a shader output property by name.
 

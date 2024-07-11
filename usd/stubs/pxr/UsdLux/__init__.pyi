@@ -2250,7 +2250,7 @@ class LightListAPI(pxr.Usd.APISchemaBase):
 
         UsdPrim::RemoveAPI()
         """
-    def ComputeLightList(self, mode: LightListAPI.ComputeMode, /) -> list[pxr.Sdf.Path]:
+    def ComputeLightList(self, _mode: LightListAPI.ComputeMode, /) -> list[pxr.Sdf.Path]:
         """
         Computes and returns the list of lights and light filters in the
         stage, optionally consulting a cached result.
@@ -2353,7 +2353,7 @@ class LightListAPI(pxr.Usd.APISchemaBase):
         Mark any stored lightlist as invalid, by setting the
         lightList:cacheBehavior attribute to ignore.
         """
-    def StoreLightList(self, : typing.Iterable[pxr.Sdf.Path | str], /) -> None:
+    def StoreLightList(self, _unknownArg1: typing.Iterable[pxr.Sdf.Path | str], /) -> None:
         '''
         Store the given paths as the lightlist for this prim.
 
@@ -2460,7 +2460,7 @@ class ListAPI(pxr.Usd.APISchemaBase):
 
         UsdPrim::RemoveAPI()
         """
-    def ComputeLightList(self, mode: LightListAPI.ComputeMode, /) -> list[pxr.Sdf.Path]:
+    def ComputeLightList(self, _mode: LightListAPI.ComputeMode, /) -> list[pxr.Sdf.Path]:
         """
         Computes and returns the list of lights and light filters in the
         stage, optionally consulting a cached result.
@@ -2563,7 +2563,7 @@ class ListAPI(pxr.Usd.APISchemaBase):
         Mark any stored lightlist as invalid, by setting the
         lightList:cacheBehavior attribute to ignore.
         """
-    def StoreLightList(self, : typing.Iterable[pxr.Sdf.Path | str], /) -> None:
+    def StoreLightList(self, _unknownArg1: typing.Iterable[pxr.Sdf.Path | str], /) -> None:
         '''
         Store the given paths as the lightlist for this prim.
 
@@ -4365,7 +4365,7 @@ class _CanApplyResult(Boost.Python.instance):
     @property
     def whyNot(self): ...
 
-def BlackbodyTemperatureAsRgb(colorTemp: float, /) -> pxr.Gf.Vec3f:
+def BlackbodyTemperatureAsRgb(_colorTemp: float, /) -> pxr.Gf.Vec3f:
     """
     Compute the RGB equivalent of the spectrum emitted by a blackbody with
     the given temperature in degrees Kelvin, with normalized luminance.

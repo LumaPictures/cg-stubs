@@ -132,7 +132,7 @@ class Debug(Boost.Python.instance):
         This class cannot be instantiated from Python
         """
     @staticmethod
-    def GetDebugSymbolDescription(name: str | pxr.Ar.ResolvedPath, /) -> str:
+    def GetDebugSymbolDescription(_name: str | pxr.Ar.ResolvedPath, /) -> str:
         """
         Get a description for the specified debug symbol.
 
@@ -156,7 +156,7 @@ class Debug(Boost.Python.instance):
         Get a listing of all debug symbols.
         """
     @staticmethod
-    def IsDebugSymbolNameEnabled(name: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def IsDebugSymbolNameEnabled(_name: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         True if the specified debug symbol is set.
         """
@@ -172,7 +172,7 @@ class Debug(Boost.Python.instance):
         of all debug symbols set by this call are returned as a vector.
         """
     @staticmethod
-    def SetOutputFile(file: FILE, /) -> None:
+    def SetOutputFile(_file: FILE, /) -> None:
         """
         Direct debug output to *either* stdout or stderr.
 
@@ -202,7 +202,7 @@ class Enum(Boost.Python.instance):
         This class cannot be instantiated from Python
         """
     @staticmethod
-    def GetValueFromFullName(fullname: str | pxr.Ar.ResolvedPath, /) -> tuple[Enum, bool]:
+    def GetValueFromFullName(_fullname: str | pxr.Ar.ResolvedPath, /) -> tuple[Enum, bool]:
         '''
         Returns the enumerated value for a fully-qualified name.
 
@@ -262,7 +262,7 @@ class MallocTag(Boost.Python.instance):
     """
 
     class CallTree(Boost.Python.instance):
-    """
+        """
         Summary data structure for C{malloc} statistics.
 
 
@@ -272,7 +272,7 @@ class MallocTag(Boost.Python.instance):
         """
 
         class CallSite(Boost.Python.instance):
-    """
+            """
             Record of the bytes allocated under each different tag.
 
 
@@ -292,7 +292,7 @@ class MallocTag(Boost.Python.instance):
             def name(self): ...
 
         class PathNode(Boost.Python.instance):
-    '''
+            '''
             Node in the call tree structure.
 
 
@@ -415,7 +415,7 @@ class MallocTag(Boost.Python.instance):
         accounted for.
         """
     @staticmethod
-    def Initialize(errMsg: str | pxr.Ar.ResolvedPath, /) -> bool:
+    def Initialize(_errMsg: str | pxr.Ar.ResolvedPath, /) -> bool:
         """
         Initialize the memory tagging system.
 
@@ -440,7 +440,7 @@ class MallocTag(Boost.Python.instance):
         C{true}.
         """
     @staticmethod
-    def SetCapturedMallocStacksMatchList(matchList: str | pxr.Ar.ResolvedPath, /) -> None:
+    def SetCapturedMallocStacksMatchList(_matchList: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Sets the tags to trace.
 
@@ -466,7 +466,7 @@ class MallocTag(Boost.Python.instance):
         Use the empty string to disable stack capturing.
         """
     @staticmethod
-    def SetDebugMatchList(matchList: str | pxr.Ar.ResolvedPath, /) -> None:
+    def SetDebugMatchList(_matchList: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Sets the tags to trap in the debugger.
 
@@ -555,7 +555,7 @@ class Notice(Boost.Python.instance):
     """
 
     class Listener(Boost.Python.instance):
-    """Represents the Notice connection between senders and receivers of notices.  When a Listener object expires the connection is broken. You can also use the Revoke() function to break the connection. A Listener object is returned from the Register() and  RegisterGlobally() functions. """
+        """Represents the Notice connection between senders and receivers of notices.  When a Listener object expires the connection is broken. You can also use the Revoke() function to break the connection. A Listener object is returned from the Register() and  RegisterGlobally() functions. """
         def __init__(self, *args, **kwargs) -> None:
             """Raises an exception
             This class cannot be instantiated from Python
@@ -572,7 +572,7 @@ class Notice(Boost.Python.instance):
             Revoke interest by a notice listener.  This function revokes interest in the particular notice type and call-back method that its Listener object was registered for."""
     def __init__(self) -> None: ...
     @staticmethod
-    def Register(listener: Type, method: Method, sender: Sender, /) -> Listener:
+    def Register(_listener: Type, _method: Method, _sender: Sender, /) -> Listener:
         """    Register a listener as being interested in a TfNotice  type from a specific sender.  Notice listener will get sender  as an argument.     Registration of interest in a notice class N automatically  registers interest in all classes derived from N.  When a  notice of appropriate type is received, the listening object's  member-function method is called with the notice.     To reverse the registration, call Revoke() on the Listener object returned by this call. 
 
         Register( (Type)arg1, (object)arg2, (object)arg3) -> Listener"""
@@ -580,7 +580,7 @@ class Notice(Boost.Python.instance):
     def RegisterGlobally(arg1: Type, arg2: object, /) -> Listener:
         """Register a listener as being interested in a TfNotice type from any sender.  The notice listener does not get sender as an argument."""
     @overload
-    def Send(self, s: Sender, /) -> int:
+    def Send(self, _s: Sender, /) -> int:
         """
         Deliver the notice to interested listeners, returning the number of
         interested listeners.
@@ -721,8 +721,8 @@ class ScopeDescription(Boost.Python.instance):
     essentially a TLS lookup plus a couple of atomic operations.
     """
     __instance_size__: ClassVar[int] = ...
-    def __init__(self, : str | pxr.Ar.ResolvedPath, /) -> None: ...
-    def SetDescription(self, description: str | pxr.Ar.ResolvedPath, /) -> None:
+    def __init__(self, _unknownArg1: str | pxr.Ar.ResolvedPath, /) -> None: ...
+    def SetDescription(self, _description: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Replace the description stack entry for this scope description.
 
@@ -756,7 +756,7 @@ class ScriptModuleLoader(Boost.Python.instance):
         Return a python dict containing all currently known modules under
         their canonical names.
         """
-    def WriteDotFile(self, file: str | pxr.Ar.ResolvedPath, /) -> None:
+    def WriteDotFile(self, _file: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Write a graphviz dot-file for the dependency graph of all.
 
@@ -805,7 +805,7 @@ class Stopwatch(Boost.Python.instance):
     '''
     __instance_size__: ClassVar[int] = ...
     def __init__(self) -> None: ...
-    def AddFrom(self, t: Stopwatch, /) -> None:
+    def AddFrom(self, _t: Stopwatch, /) -> None:
         """
         Adds the accumulated time and sample count from C{t} into the
         C{TfStopwatch}.
@@ -915,7 +915,7 @@ class TemplateString(Boost.Python.instance):
         Constructs a new template string.
         """
     @overload
-    def __init__(self, template_: str | pxr.Ar.ResolvedPath, /) -> None:
+    def __init__(self, _template_: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Constructs a new template string.
         """
@@ -930,13 +930,13 @@ class TemplateString(Boost.Python.instance):
         """
         Returns any error messages generated during template parsing.
         """
-    def SafeSubstitute(self, : dict, /) -> str:
+    def SafeSubstitute(self, _unknownArg1: dict, /) -> str:
         """
         Like Substitute() , except that if placeholders are missing from the
         mapping, instead of raising a coding error, the original placeholder
         will appear in the resulting string intact.
         """
-    def Substitute(self, : dict, /) -> str:
+    def Substitute(self, _unknownArg1: dict, /) -> str:
         """
         Performs the template substitution, returning a new string.
 
@@ -1109,8 +1109,8 @@ class Type(Boost.Python.instance):
 
         """
     @overload
-    def __init__(self, info: Type, /) -> None: ...
-    def AddAlias(self, base: Type, name: str | pxr.Ar.ResolvedPath, /) -> None:
+    def __init__(self, _info: Type, /) -> None: ...
+    def AddAlias(self, _base: Type, _name: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Add an alias name for this type under the given base type.
 
@@ -1125,7 +1125,7 @@ class Type(Boost.Python.instance):
     @staticmethod
     def Find(arg1: object, /) -> Type: ...
     @staticmethod
-    def FindByName(name: str | pxr.Ar.ResolvedPath, /) -> Type:
+    def FindByName(_name: str | pxr.Ar.ResolvedPath, /) -> Type:
         """
         Retrieve the C{TfType} corresponding to the given C{name}.
 
@@ -1145,7 +1145,7 @@ class Type(Boost.Python.instance):
           Find(obj) == FindByName( Find(obj).GetTypeName() )
 
         """
-    def FindDerivedByName(self, name: str | pxr.Ar.ResolvedPath, /) -> Type:
+    def FindDerivedByName(self, _name: str | pxr.Ar.ResolvedPath, /) -> Type:
         """
         Retrieve the C{TfType} that derives from this type and has the given
         alias or typename.
@@ -1154,7 +1154,7 @@ class Type(Boost.Python.instance):
 
         AddAlias
         """
-    def GetAliases(self, derivedType: Type, /) -> tuple:
+    def GetAliases(self, _derivedType: Type, /) -> tuple:
         """
         Returns a vector of the aliases registered for the derivedType under
         this, the base type.
@@ -1203,7 +1203,7 @@ class Type(Boost.Python.instance):
         type is specified with no bases, it is implicitly considered to derive
         from the root type.
         """
-    def IsA(self, queryType: Type, /) -> bool:
+    def IsA(self, _queryType: Type, /) -> bool:
         """
         Return true if this type is the same as or derived from C{queryType}.
 
@@ -1470,7 +1470,7 @@ class _testStaticTokens(Boost.Python.instance):
 
 def DictionaryStrcmp(arg1: str | pxr.Ar.ResolvedPath, arg2: str | pxr.Ar.ResolvedPath, /) -> int: ...
 def DumpTokenStats() -> None: ...
-def FindLongestAccessiblePrefix(path: str | pxr.Ar.ResolvedPath, /) -> int:
+def FindLongestAccessiblePrefix(_path: str | pxr.Ar.ResolvedPath, /) -> int:
     """
     Return the index delimiting the longest accessible prefix of *path*.
 
@@ -1506,7 +1506,7 @@ def GetCurrentScopeDescriptionStack() -> list[str]:
     The most recently pushed description is at back(), and the least
     recently pushed description is at front().
     '''
-def GetEnvSetting(setting: str | pxr.Ar.ResolvedPath, /) -> Any:
+def GetEnvSetting(_setting: str | pxr.Ar.ResolvedPath, /) -> Any:
     """
     Returns the value of the specified env setting, registered using
     C{TF_DEFINE_ENV_SETTING}.
@@ -1529,7 +1529,7 @@ def InstallTerminateAndCrashHandlers() -> None:
     SIGSEGV, SIGBUS, SIGFPE, and SIGABRT.
     """
 def InvokeWithErrorHandling(tupleargs, dictkwds) -> typing.Any: ...
-def IsValidIdentifier(identifier: str | pxr.Ar.ResolvedPath, /) -> bool:
+def IsValidIdentifier(_identifier: str | pxr.Ar.ResolvedPath, /) -> bool:
     """
     Test whether *identifier* is valid.
 
@@ -1557,7 +1557,7 @@ def MakeValidIdentifier(_in: str | pxr.Ar.ResolvedPath, /) -> str:
 
     If C{in} is empty, return"_".
     '''
-def PrintStackTrace(out: typing.TextIO, reason: str | pxr.Ar.ResolvedPath, /) -> None:
+def PrintStackTrace(_out: typing.TextIO, _reason: str | pxr.Ar.ResolvedPath, /) -> None:
     """
     Prints both the C++ and the python stack to the *stream* provided.
     """
@@ -1591,7 +1591,7 @@ def ReportActiveErrorMarks() -> None:
     """
 def RepostErrors(exception: object) -> bool: ...
 def SetPythonExceptionDebugTracingEnabled(enabled: bool) -> None: ...
-def StringSplit(src: str | pxr.Ar.ResolvedPath, separator: str | pxr.Ar.ResolvedPath, /) -> list[str]:
+def StringSplit(_src: str | pxr.Ar.ResolvedPath, _separator: str | pxr.Ar.ResolvedPath, /) -> list[str]:
     """
     Breaks the given string apart, returning a vector of strings.
 
@@ -1600,7 +1600,7 @@ def StringSplit(src: str | pxr.Ar.ResolvedPath, separator: str | pxr.Ar.Resolved
     word is delimited by the string C{separator}. This function behaves
     like pythons string split method.
     """
-def StringToDouble(txt: str | pxr.Ar.ResolvedPath, /) -> float:
+def StringToDouble(_txt: str | pxr.Ar.ResolvedPath, /) -> float:
     '''
     Converts text string to double.
 
@@ -1621,7 +1621,7 @@ def StringToDouble(txt: str | pxr.Ar.ResolvedPath, /) -> float:
 
     C{TfStringToDouble} is a wrapper around the extern-c TfStringToDouble
     '''
-def StringToLong(txt: str | pxr.Ar.ResolvedPath, /) -> int:
+def StringToLong(_txt: str | pxr.Ar.ResolvedPath, /) -> int:
     """
     Convert a sequence of digits in C{txt} to a long int value.
 
@@ -1636,7 +1636,7 @@ def StringToLong(txt: str | pxr.Ar.ResolvedPath, /) -> int:
     std::numeric_limits<long>::min() or max(), whichever is closest to the
     true value.
     """
-def StringToULong(txt: str | pxr.Ar.ResolvedPath, /) -> int:
+def StringToULong(_txt: str | pxr.Ar.ResolvedPath, /) -> int:
     """
     Convert a sequence of digits in C{txt} to an unsigned long value.
 
