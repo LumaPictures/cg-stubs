@@ -1344,7 +1344,7 @@ class ClipsAPI(APISchemaBase):
         methods of the schemas involved.
         """
     @overload
-    def SetClipActive(self, activeClips: pxr.Vt.Vec2dArray | typing.Iterable[pxr.Gf.Vec2d]) -> None:
+    def SetClipActive(self, activeClips: pxr.Vt.Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]]) -> None:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -1355,7 +1355,7 @@ class ClipsAPI(APISchemaBase):
         UsdClipsAPISetNames
         """
     @overload
-    def SetClipActive(self, activeClips: pxr.Vt.Vec2dArray | typing.Iterable[pxr.Gf.Vec2d], clipSet: str | pxr.Ar.ResolvedPath) -> None:
+    def SetClipActive(self, activeClips: pxr.Vt.Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], clipSet: str | pxr.Ar.ResolvedPath) -> None:
         """
         Set the active clip metadata for the clip set named C{clipSet}.
 
@@ -1532,7 +1532,7 @@ class ClipsAPI(APISchemaBase):
         GetClipTemplateStride()
         """
     @overload
-    def SetClipTimes(self, clipTimes: pxr.Vt.Vec2dArray | typing.Iterable[pxr.Gf.Vec2d]) -> None:
+    def SetClipTimes(self, clipTimes: pxr.Vt.Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]]) -> None:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -1543,7 +1543,7 @@ class ClipsAPI(APISchemaBase):
         UsdClipsAPISetNames
         """
     @overload
-    def SetClipTimes(self, clipTimes: pxr.Vt.Vec2dArray | typing.Iterable[pxr.Gf.Vec2d], clipSet: str | pxr.Ar.ResolvedPath) -> None:
+    def SetClipTimes(self, clipTimes: pxr.Vt.Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], clipSet: str | pxr.Ar.ResolvedPath) -> None:
         """
         Set the clip times metadata for this prim.
 

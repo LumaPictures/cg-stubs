@@ -2680,7 +2680,7 @@ class Curves(PointBased):
         preserves SchemaBase state.
         """
     @staticmethod
-    def ComputeExtent(points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], widths: pxr.Vt.FloatArray | typing.Iterable[float]) -> pxr.Vt.Vec3fArray:
+    def ComputeExtent(points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], widths: pxr.Vt.FloatArray | typing.Iterable[float]) -> pxr.Vt.Vec3fArray:
         """
         Compute the extent for the curves defined by points and widths.
 
@@ -3602,7 +3602,7 @@ class HermiteCurves(Curves):
             Construct empty points and tangents arrays.
             """
         @overload
-        def __init__(self, _points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], _tangents: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], /) -> None:
+        def __init__(self, _points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], _tangents: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], /) -> None:
             """
             Initializes C{points} and C{tangents} if they are the same size.
 
@@ -3628,7 +3628,7 @@ class HermiteCurves(Curves):
             Returns true if the containers are empty.
             """
         @staticmethod
-        def Separate(_interleaved: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], /) -> HermiteCurves.PointAndTangentArrays:
+        def Separate(_interleaved: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], /) -> HermiteCurves.PointAndTangentArrays:
             """
             Given an C{interleaved} points and tangents arrays (P0, T0, ..., Pn,
             Tn), separates them into two arrays (P0, ..., PN) and (T0, ..., Tn).
@@ -5583,7 +5583,7 @@ class ModelAPI(pxr.Usd.APISchemaBase):
         Does not include attributes that may be authored by custom/extended
         methods of the schemas involved.
         """
-    def SetExtentsHint(self, extents: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
+    def SetExtentsHint(self, extents: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
         """
         Authors the extentsHint array for this model at the given time.
 
@@ -7096,7 +7096,7 @@ class PointBased(Gprim):
         it preserves SchemaBase state.
         """
     @staticmethod
-    def ComputeExtent(points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f]) -> pxr.Vt.Vec3fArray:
+    def ComputeExtent(points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]]) -> pxr.Vt.Vec3fArray:
         """
         Compute the extent for the point cloud defined by points.
 
@@ -8372,7 +8372,7 @@ class Points(PointBased):
         preserves SchemaBase state.
         """
     @staticmethod
-    def ComputeExtent(points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], widths: pxr.Vt.FloatArray | typing.Iterable[float]) -> pxr.Vt.Vec3fArray:
+    def ComputeExtent(points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], widths: pxr.Vt.FloatArray | typing.Iterable[float]) -> pxr.Vt.Vec3fArray:
         """
         Compute the extent for the point cloud defined by points and widths.
 

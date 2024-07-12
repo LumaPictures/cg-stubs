@@ -458,7 +458,11 @@ class TypeInfo(CppTypeConverter):
             for name, obj in inspect.getmembers(pxr.Vt):
                 sub_type = self.py_array_to_sub_type(name)
                 if sub_type:
-                    result[f"pxr.Vt.{name}"].add(f"typing.Iterable[{sub_type}]")
+                    sub_types = {sub_type}
+                    sub_types.update(result[sub_type])
+                    result[f"pxr.Vt.{name}"].update(
+                        f"typing.Iterable[{sub_type}]" for sub_type in sorted(sub_types)
+                    )
 
             self._implicitly_convertible_types = dict(result)
 
@@ -1074,6 +1078,7 @@ class UsdBoostDocstringSignatureGenerator(
                     sub_py_type
                 )
                 if other_types is not None:
+                    # other_types = set(self.cleanup_type(other_type, ctx, is_result) for other_type in other_types)
                     union_types = [sub_py_type] + sorted(other_types)
                     # special case for lists because they are invariant
                     # FIXME: what if the subtype was converted to a full path?
@@ -1397,7 +1402,8 @@ class UsdBoostDocstringSignatureGenerator(
                     )
 
             # if "ComputeClipAssetPaths" in ctx.fullname:
-            if "MakeMultipleApplyNameInstance" in ctx.fullname:
+            # if "MakeMultipleApplyNameInstance" in ctx.fullname:
+            if "GetAttributeAtPath" in ctx.fullname:
                 # we picked a new overload and it's unclear why
                 for overload, sig in tracker.matches.items():
                     self._summarize_overload_mismatch(

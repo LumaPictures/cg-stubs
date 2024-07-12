@@ -29,7 +29,7 @@ class AnimMapper(Boost.Python.instance):
         An identity mapper is used to indicate that no remapping is required.
         """
     @overload
-    def __init__(self, sourceOrder: pxr.Vt.TokenArray | typing.Iterable[str], targetOrder: pxr.Vt.TokenArray | typing.Iterable[str]) -> None:
+    def __init__(self, sourceOrder: pxr.Vt.TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], targetOrder: pxr.Vt.TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str]) -> None:
         """
         Construct a mapper for mapping data from C{sourceOrder} to
         C{targetOrder}.
@@ -1221,7 +1221,7 @@ class BlendShapeQuery(Boost.Python.instance):
         ComputeSubShapes(). Since the *pointIndices* property of blend shapes
         is optional, some of the arrays may be empty.
         """
-    def ComputeDeformedPoints(self, subShapeWeights: pxr.Vt.FloatArray | typing.Iterable[float], blendShapeIndices: pxr.Vt.UIntArray | typing.Iterable[int], subShapeIndices: pxr.Vt.UIntArray | typing.Iterable[int], blendShapePointIndices: typing.Iterable[pxr.Vt.IntArray | typing.Iterable[int]], subShapePointOffset: typing.Iterable[pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f]], points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f]) -> bool:
+    def ComputeDeformedPoints(self, subShapeWeights: pxr.Vt.FloatArray | typing.Iterable[float], blendShapeIndices: pxr.Vt.UIntArray | typing.Iterable[int], subShapeIndices: pxr.Vt.UIntArray | typing.Iterable[int], blendShapePointIndices: typing.Iterable[pxr.Vt.IntArray | typing.Iterable[int]], subShapePointOffset: typing.Iterable[pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]]], points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]]) -> bool:
         """
         Deform C{points} using the resolved sub-shapes given by
         C{subShapeWeights}, C{blendShapeIndices} and C{subShapeIndices}.
@@ -1440,11 +1440,11 @@ class InbetweenShape(Boost.Python.instance):
 
         Succes implies that C{attr.IsDefined()} is true.
         """
-    def SetNormalOffsets(self, offsets: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f]) -> bool:
+    def SetNormalOffsets(self, offsets: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]]) -> bool:
         """
         Set the normal offsets authored for this shape.
         """
-    def SetOffsets(self, offsets: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f]) -> bool:
+    def SetOffsets(self, offsets: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]]) -> bool:
         """
         Set the point offsets corresponding to this shape.
         """
@@ -1937,7 +1937,7 @@ class SkinningQuery(Boost.Python.instance):
         not validated.
         """
     @overload
-    def ComputeSkinnedPoints(self, xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
+    def ComputeSkinnedPoints(self, xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
         """
         Compute skinned points using specified skinning method attr (fallback
         to linear blend skinning if not specified) Both C{xforms} and
@@ -1951,7 +1951,7 @@ class SkinningQuery(Boost.Python.instance):
         UsdSkelSkeletonQuery::ComputeSkinningTransforms
         """
     @overload
-    def ComputeSkinnedPoints(self, xforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
+    def ComputeSkinnedPoints(self, xforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
         """
         Compute skinned points using specified skinning method attr (fallback
         to linear blend skinning if not specified) Both C{xforms} and
@@ -2147,7 +2147,7 @@ class Topology(Boost.Python.instance):
     @overload
     def __init__(self, arg2: object, /) -> None: ...
     @overload
-    def __init__(self, arg2: pxr.Vt.TokenArray | typing.Iterable[str], /) -> None: ...
+    def __init__(self, arg2: pxr.Vt.TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> None: ...
     @overload
     def __init__(self, _parentIndices: pxr.Vt.IntArray | typing.Iterable[int], /) -> None:
         """
@@ -2188,7 +2188,7 @@ class _CanApplyResult(Boost.Python.instance):
     @property
     def whyNot(self): ...
 
-def ApplyBlendShape(weight: float, offsets: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], indices: pxr.Vt.IntArray | typing.Iterable[int], points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f]) -> bool:
+def ApplyBlendShape(weight: float, offsets: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], indices: pxr.Vt.IntArray | typing.Iterable[int], points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]]) -> bool:
     """
     Apply a single blend shape to C{points}.
 
@@ -2334,7 +2334,7 @@ def ExpandConstantInfluencesToVarying(array: pxr.Vt.FloatArray | typing.Iterable
     This is an overloaded member function, provided for convenience. It
     differs from the above function only in what argument(s) it accepts.
     """
-def InterleaveInfluences(indices: pxr.Vt.IntArray | typing.Iterable[int], weights: pxr.Vt.FloatArray | typing.Iterable[float], interleavedInfluences: pxr.Vt.Vec2fArray | typing.Iterable[pxr.Gf.Vec2f]) -> bool:
+def InterleaveInfluences(indices: pxr.Vt.IntArray | typing.Iterable[int], weights: pxr.Vt.FloatArray | typing.Iterable[float], interleavedInfluences: pxr.Vt.Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]]) -> bool:
     """
     Combine arrays of joint indices and weights into interleaved
     (index,weight) vectors.
@@ -2357,7 +2357,7 @@ def MakeTransform(translate: pxr.Gf.Vec3f | list[float] | tuple[float, float, fl
     This is an overloaded member function, provided for convenience. It
     differs from the above function only in what argument(s) it accepts.
     """
-def MakeTransforms(translations: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], rotations: pxr.Vt.QuatfArray | typing.Iterable[pxr.Gf.Quatf], scales: pxr.Vt.Vec3hArray | typing.Iterable[pxr.Gf.Vec3h]) -> pxr.Vt.Matrix4dArray:
+def MakeTransforms(translations: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], rotations: pxr.Vt.QuatfArray | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], scales: pxr.Vt.Vec3hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3h] | typing.Iterable[tuple[float, float, float]]) -> pxr.Vt.Matrix4dArray:
     """
     This is an overloaded member function, provided for convenience. It
     differs from the above function only in what argument(s) it accepts.
@@ -2396,19 +2396,19 @@ def ResizeInfluences(array: pxr.Vt.FloatArray | typing.Iterable[float], srcNumIn
     differs from the above function only in what argument(s) it accepts.
     """
 @overload
-def SkinNormals(skinningMethod: str | pxr.Ar.ResolvedPath, geomBindTransform: pxr.Gf.Matrix3d, jointXforms: pxr.Vt.Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], influences: pxr.Vt.Vec2fArray | typing.Iterable[pxr.Gf.Vec2f], numInfluencesPerPoint: int, normals: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], inSerial: bool = ...) -> bool:
+def SkinNormals(skinningMethod: str | pxr.Ar.ResolvedPath, geomBindTransform: pxr.Gf.Matrix3d, jointXforms: pxr.Vt.Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], influences: pxr.Vt.Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], numInfluencesPerPoint: int, normals: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], inSerial: bool = ...) -> bool:
     """
     This is an overloaded member function, provided for convenience. It
     differs from the above function only in what argument(s) it accepts.
     """
 @overload
-def SkinNormals(skinningMethod: str | pxr.Ar.ResolvedPath, geomBindTransform: pxr.Gf.Matrix3f, jointXforms: pxr.Vt.Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], influences: pxr.Vt.Vec2fArray | typing.Iterable[pxr.Gf.Vec2f], numInfluencesPerPoint: int, normals: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], inSerial: bool = ...) -> bool:
+def SkinNormals(skinningMethod: str | pxr.Ar.ResolvedPath, geomBindTransform: pxr.Gf.Matrix3f, jointXforms: pxr.Vt.Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], influences: pxr.Vt.Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], numInfluencesPerPoint: int, normals: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], inSerial: bool = ...) -> bool:
     """
     This is an overloaded member function, provided for convenience. It
     differs from the above function only in what argument(s) it accepts.
     """
 @overload
-def SkinNormals(skinningMethod: str | pxr.Ar.ResolvedPath, geomBindTransform: pxr.Gf.Matrix3d, jointXforms: pxr.Vt.Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerPoint: int, normals: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], inSerial: bool = ...) -> bool:
+def SkinNormals(skinningMethod: str | pxr.Ar.ResolvedPath, geomBindTransform: pxr.Gf.Matrix3d, jointXforms: pxr.Vt.Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerPoint: int, normals: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], inSerial: bool = ...) -> bool:
     '''
     Skin normals using linear blend skinning (LBS) or dual quaternion
     skinning (DQS), for normals with *vertex* or *varying* interpolation.
@@ -2423,61 +2423,61 @@ def SkinNormals(skinningMethod: str | pxr.Ar.ResolvedPath, geomBindTransform: px
     were computed in.
     '''
 @overload
-def SkinNormals(skinningMethod: str | pxr.Ar.ResolvedPath, geomBindTransform: pxr.Gf.Matrix3f, jointXforms: pxr.Vt.Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerPoint: int, normals: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], inSerial: bool = ...) -> bool:
+def SkinNormals(skinningMethod: str | pxr.Ar.ResolvedPath, geomBindTransform: pxr.Gf.Matrix3f, jointXforms: pxr.Vt.Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerPoint: int, normals: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], inSerial: bool = ...) -> bool:
     """
     This is an overloaded member function, provided for convenience. It
     differs from the above function only in what argument(s) it accepts.
     """
 @overload
-def SkinNormalsLBS(geomBindTransform: pxr.Gf.Matrix3d, jointXforms: pxr.Vt.Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], influences: pxr.Vt.Vec2fArray | typing.Iterable[pxr.Gf.Vec2f], numInfluencesPerPoint: int, normals: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], inSerial: bool = ...) -> bool:
+def SkinNormalsLBS(geomBindTransform: pxr.Gf.Matrix3d, jointXforms: pxr.Vt.Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], influences: pxr.Vt.Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], numInfluencesPerPoint: int, normals: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], inSerial: bool = ...) -> bool:
     """
     This is an overloaded member function, provided for convenience. It
     differs from the above function only in what argument(s) it accepts.
     """
 @overload
-def SkinNormalsLBS(geomBindTransform: pxr.Gf.Matrix3f, jointXforms: pxr.Vt.Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], influences: pxr.Vt.Vec2fArray | typing.Iterable[pxr.Gf.Vec2f], numInfluencesPerPoint: int, normals: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], inSerial: bool = ...) -> bool:
+def SkinNormalsLBS(geomBindTransform: pxr.Gf.Matrix3f, jointXforms: pxr.Vt.Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], influences: pxr.Vt.Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], numInfluencesPerPoint: int, normals: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], inSerial: bool = ...) -> bool:
     """
     This is an overloaded member function, provided for convenience. It
     differs from the above function only in what argument(s) it accepts.
     """
 @overload
-def SkinNormalsLBS(geomBindTransform: pxr.Gf.Matrix3d, jointXforms: pxr.Vt.Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerPoint: int, normals: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], inSerial: bool = ...) -> bool: ...
+def SkinNormalsLBS(geomBindTransform: pxr.Gf.Matrix3d, jointXforms: pxr.Vt.Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerPoint: int, normals: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], inSerial: bool = ...) -> bool: ...
 @overload
-def SkinNormalsLBS(geomBindTransform: pxr.Gf.Matrix3f, jointXforms: pxr.Vt.Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerPoint: int, normals: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], inSerial: bool = ...) -> bool:
+def SkinNormalsLBS(geomBindTransform: pxr.Gf.Matrix3f, jointXforms: pxr.Vt.Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerPoint: int, normals: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], inSerial: bool = ...) -> bool:
     """
     This is an overloaded member function, provided for convenience. It
     differs from the above function only in what argument(s) it accepts.
     """
 @overload
-def SkinPoints(skinningMethod: object, geomBindTransform: pxr.Gf.Matrix4d, jointXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerPoint: int, points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], inSerial: bool = ...) -> bool: ...
+def SkinPoints(skinningMethod: object, geomBindTransform: pxr.Gf.Matrix4d, jointXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerPoint: int, points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], inSerial: bool = ...) -> bool: ...
 @overload
-def SkinPoints(skinningMethod: object, geomBindTransform: pxr.Gf.Matrix4d, jointXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], influences: pxr.Vt.Vec2fArray | typing.Iterable[pxr.Gf.Vec2f], numInfluencesPerPoint: int, points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], inSerial: bool = ...) -> bool: ...
+def SkinPoints(skinningMethod: object, geomBindTransform: pxr.Gf.Matrix4d, jointXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], influences: pxr.Vt.Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], numInfluencesPerPoint: int, points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], inSerial: bool = ...) -> bool: ...
 @overload
-def SkinPoints(skinningMethod: object, geomBindTransform: pxr.Gf.Matrix4f, jointXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerPoint: int, points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], inSerial: bool = ...) -> bool: ...
+def SkinPoints(skinningMethod: object, geomBindTransform: pxr.Gf.Matrix4f, jointXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerPoint: int, points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], inSerial: bool = ...) -> bool: ...
 @overload
-def SkinPoints(skinningMethod: object, geomBindTransform: pxr.Gf.Matrix4f, jointXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], influences: pxr.Vt.Vec2fArray | typing.Iterable[pxr.Gf.Vec2f], numInfluencesPerPoint: int, points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], inSerial: bool = ...) -> bool: ...
+def SkinPoints(skinningMethod: object, geomBindTransform: pxr.Gf.Matrix4f, jointXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], influences: pxr.Vt.Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], numInfluencesPerPoint: int, points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], inSerial: bool = ...) -> bool: ...
 @overload
-def SkinPointsLBS(geomBindTransform: pxr.Gf.Matrix4d, jointXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerPoint: int, points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], inSerial: bool = ...) -> bool: ...
+def SkinPointsLBS(geomBindTransform: pxr.Gf.Matrix4d, jointXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerPoint: int, points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], inSerial: bool = ...) -> bool: ...
 @overload
-def SkinPointsLBS(geomBindTransform: pxr.Gf.Matrix4d, jointXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], influences: pxr.Vt.Vec2fArray | typing.Iterable[pxr.Gf.Vec2f], numInfluencesPerPoint: int, points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], inSerial: bool = ...) -> bool: ...
+def SkinPointsLBS(geomBindTransform: pxr.Gf.Matrix4d, jointXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], influences: pxr.Vt.Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], numInfluencesPerPoint: int, points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], inSerial: bool = ...) -> bool: ...
 @overload
-def SkinPointsLBS(geomBindTransform: pxr.Gf.Matrix4f, jointXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerPoint: int, points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], inSerial: bool = ...) -> bool: ...
+def SkinPointsLBS(geomBindTransform: pxr.Gf.Matrix4f, jointXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerPoint: int, points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], inSerial: bool = ...) -> bool: ...
 @overload
-def SkinPointsLBS(geomBindTransform: pxr.Gf.Matrix4f, jointXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], influences: pxr.Vt.Vec2fArray | typing.Iterable[pxr.Gf.Vec2f], numInfluencesPerPoint: int, points: pxr.Vt.Vec3fArray | typing.Iterable[pxr.Gf.Vec3f], inSerial: bool = ...) -> bool: ...
+def SkinPointsLBS(geomBindTransform: pxr.Gf.Matrix4f, jointXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], influences: pxr.Vt.Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], numInfluencesPerPoint: int, points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], inSerial: bool = ...) -> bool: ...
 @overload
-def SkinTransform(skinningMethod: object, geomBindTransform: pxr.Gf.Matrix4d, jointXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], influences: pxr.Vt.Vec2fArray | typing.Iterable[pxr.Gf.Vec2f]) -> pxr.Gf.Matrix4d: ...
+def SkinTransform(skinningMethod: object, geomBindTransform: pxr.Gf.Matrix4d, jointXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], influences: pxr.Vt.Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]]) -> pxr.Gf.Matrix4d: ...
 @overload
 def SkinTransform(skinningMethod: object, geomBindTransform: pxr.Gf.Matrix4d, jointXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float]) -> pxr.Gf.Matrix4d: ...
 @overload
-def SkinTransform(skinningMethod: object, geomBindTransform: pxr.Gf.Matrix4f, jointXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], influences: pxr.Vt.Vec2fArray | typing.Iterable[pxr.Gf.Vec2f]) -> pxr.Gf.Matrix4f: ...
+def SkinTransform(skinningMethod: object, geomBindTransform: pxr.Gf.Matrix4f, jointXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], influences: pxr.Vt.Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]]) -> pxr.Gf.Matrix4f: ...
 @overload
 def SkinTransform(skinningMethod: object, geomBindTransform: pxr.Gf.Matrix4f, jointXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float]) -> pxr.Gf.Matrix4f: ...
 @overload
-def SkinTransformLBS(geomBindTransform: pxr.Gf.Matrix4d, jointXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], influences: pxr.Vt.Vec2fArray | typing.Iterable[pxr.Gf.Vec2f]) -> pxr.Gf.Matrix4d: ...
+def SkinTransformLBS(geomBindTransform: pxr.Gf.Matrix4d, jointXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], influences: pxr.Vt.Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]]) -> pxr.Gf.Matrix4d: ...
 @overload
 def SkinTransformLBS(geomBindTransform: pxr.Gf.Matrix4d, jointXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float]) -> pxr.Gf.Matrix4d: ...
 @overload
-def SkinTransformLBS(geomBindTransform: pxr.Gf.Matrix4f, jointXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], influences: pxr.Vt.Vec2fArray | typing.Iterable[pxr.Gf.Vec2f]) -> pxr.Gf.Matrix4f: ...
+def SkinTransformLBS(geomBindTransform: pxr.Gf.Matrix4f, jointXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], influences: pxr.Vt.Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]]) -> pxr.Gf.Matrix4f: ...
 @overload
 def SkinTransformLBS(geomBindTransform: pxr.Gf.Matrix4f, jointXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], jointIndices: pxr.Vt.IntArray | typing.Iterable[int], jointWeights: pxr.Vt.FloatArray | typing.Iterable[float]) -> pxr.Gf.Matrix4f: ...
 def SortInfluences(indices: pxr.Vt.IntArray | typing.Iterable[int], weights: pxr.Vt.FloatArray | typing.Iterable[float], numInfluencesPerComponent: int) -> bool:
