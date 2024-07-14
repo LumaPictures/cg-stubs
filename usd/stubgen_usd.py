@@ -1064,6 +1064,7 @@ class UsdBoostDocstringSignatureGenerator(
                 full_type is None
                 and is_result
                 and ctx.class_info
+                and ctx.class_info.parent is not None
                 and py_type == ctx.class_info.name
             ):
                 # this is a fix for nested classes that have methods that return themselves
@@ -1403,7 +1404,7 @@ class UsdBoostDocstringSignatureGenerator(
 
             # if "ComputeClipAssetPaths" in ctx.fullname:
             # if "MakeMultipleApplyNameInstance" in ctx.fullname:
-            if "GetAttributeAtPath" in ctx.fullname:
+            if "GetConnectedSources" in ctx.fullname:
                 # we picked a new overload and it's unclear why
                 for overload, sig in tracker.matches.items():
                     self._summarize_overload_mismatch(
