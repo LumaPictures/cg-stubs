@@ -38,7 +38,7 @@ import re
 import pydoc
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Any, Callable, DefaultDict, Generic, NamedTuple, TypeVar
+from typing import Any, Callable, DefaultDict, Iterator, Generic, NamedTuple, TypeVar
 from functools import lru_cache
 
 import mypy.stubgen
@@ -199,6 +199,24 @@ def maybe_result(parts: list[str]) -> bool:
     return "const" not in parts and ("*" in parts or "&" in parts)
 
 
+# pxr/usd/sdf/proxyTypes.h
+"""
+typedef SdfListProxy<SdfSubLayerTypePolicy> SdfSubLayerProxy;
+typedef SdfListEditorProxy<SdfPayloadTypePolicy> SdfPayloadEditorProxy;
+typedef SdfListEditorProxy<SdfReferenceTypePolicy> SdfReferenceEditorProxy;
+
+typedef SdfChildrenProxy<SdfVariantSetView> SdfVariantSetsProxy;
+
+typedef SdfPayloadEditorProxy SdfPayloadsProxy;
+typedef SdfReferenceEditorProxy SdfReferencesProxy;
+
+typedef SdfMapEditProxy<VtDictionary> SdfDictionaryProxy;
+typedef SdfMapEditProxy<SdfVariantSelectionMap> SdfVariantSelectionProxy;
+typedef SdfMapEditProxy<SdfRelocatesMap,
+                        SdfRelocatesMapProxyValuePolicy> SdfRelocatesMapProxy;
+"""
+
+
 class TypeInfo(CppTypeConverter):
     """Get info about types.
 
@@ -208,10 +226,12 @@ class TypeInfo(CppTypeConverter):
 
     # Used by CppTypeConverter,_get_typedefs()
     TYPE_DEF_INCLUDES = [
+        "pxr/usd/sdf/layer.h",
         "pxr/usd/sdf/types.h",
         "pxr/usd/sdf/path.h",
         "pxr/usd/sdf/fileFormat.h",
-        # "pxr/usd/sdf/proxyTypes.h",
+        "pxr/usd/sdf/primSpec.h",
+        "pxr/usd/sdf/proxyTypes.h",  # this gets special parsing treatment
         "pxr/usd/ndr/declare.h",
         "pxr/usd/usd/prim.h",
         "pxr/usd/usdGeom/basisCurves.h",
@@ -251,38 +271,48 @@ class TypeInfo(CppTypeConverter):
     ]
     RENAMES = [
         # simple renames:
-        (r"\bSdfBatchNamespaceEdit\b", "pxr.Sdf.NamespaceEdit"),
-        # Sdf mapping types:
-        (r"\bSdfDictionaryProxy\b", "pxr.Sdf.MapEditProxy_VtDictionary"),  # typedef
-        (r"\bSdfReferencesProxy\b", "pxr.Sdf.ReferenceTypePolicy"),  # typedef
-        (r"\bSdfSubLayerProxy\b", "pxr.Sdf.ListProxy_SdfSubLayerTypePolicy"),  # typedef
-        # pathKey
+        (r"SourceInfoVector", "pxr.UsdShade.ConnectionSourceInfo"),
+        (r"SdfBatchNamespaceEdit", "pxr.Sdf.NamespaceEdit"),
+        # # childViews --
         (
-            r"\bSdfInheritsProxy\b",
-            "pxr.Sdf.ListEditorProxy_SdfPathKeyPolicy",
-        ),  # typedef
+            # typedef SdfChildrenView<Sdf_AttributeChildPolicy, SdfAttributeViewPredicate> SdfAttributeSpecView;
+            "SdfChildrenView<Sdf_AttributeChildPolicy,SdfAttributeViewPredicate>",
+            "pxr.Sdf.ChildrenView_Sdf_AttributeChildPolicy_SdfAttributeViewPredicate",
+        ),
         (
-            r"\bSdfSpecializesProxy\b",
-            "pxr.Sdf.ListEditorProxy_SdfPathKeyPolicy",
-        ),  # typedef
-        # nameTokenKey
+            # typedef SdfChildrenView<Sdf_VariantChildPolicy> SdfVariantView;
+            "SdfChildrenView<Sdf_VariantChildPolicy>",
+            "pxr.Sdf.ChildrenView_Sdf_VariantChildPolicy_SdfChildrenViewTrivialPredicate_SdfHandle_SdfVariantSpec__",
+        ),
         (
-            r"\bSdfNameOrderProxy\b",
-            "pxr.Sdf.ListProxy_SdfNameTokenKeyPolicy",
-        ),  # typedef
+            # typedef SdfChildrenView<Sdf_PropertyChildPolicy> SdfPropertySpecView;
+            "SdfChildrenView<Sdf_PropertyChildPolicy>",
+            "pxr.Sdf.ChildrenView_Sdf_PropertyChildPolicy_SdfChildrenViewTrivialPredicate_SdfHandle_SdfPropertySpec__",
+        ),
         (
-            r"\bSdfNameChildrenOrderProxy\b",
-            "pxr.Sdf.ListProxy_SdfNameTokenKeyPolicy",
-        ),  # typedef
+            # typedef SdfChildrenView<Sdf_PrimChildPolicy> SdfPrimSpecView;
+            "SdfChildrenView<Sdf_PrimChildPolicy>",
+            "pxr.Sdf.ChildrenView_Sdf_PrimChildPolicy_SdfChildrenViewTrivialPredicate_SdfHandle_SdfPrimSpec__",
+        ),
         (
-            r"\bSdfPropertyOrderProxy\b",
-            "pxr.Sdf.ListProxy_SdfNameTokenKeyPolicy",
-        ),  # typedef
-        # nameKey
-        (
-            r"\bSdfVariantSetNamesProxy\b",
-            "pxr.Sdf.ListEditorProxy_SdfNameKeyPolicy",
-        ),  # typedef
+            # typedef SdfChildrenView<Sdf_RelationshipChildPolicy, SdfRelationshipViewPredicate> SdfRelationshipSpecView;
+            "SdfChildrenView<Sdf_RelationshipChildPolicy,SdfRelationshipViewPredicate>",
+            "pxr.Sdf.ChildrenView_Sdf_RelationshipChildPolicy_SdfRelationshipViewPredicate",
+        ),
+        # (
+        # typedef SdfChildrenView<Sdf_AttributeChildPolicy > SdfRelationalAttributeSpecView;
+        # typedef SdfChildrenView<Sdf_VariantSetChildPolicy> SdfVariantSetView;
+        # )
+    ]
+    # for types in this list we'll try to guess the python type from the template info
+    PROXY_TYPES = [
+        "SdfListProxy",
+        "SdfListEditorProxy",
+        # "SdfChildrenView",
+        "SdfChildrenProxy",
+        # note that some of the MapEditProxy classes have dynamically generated names like
+        # MapEditProxy___1_map_SdfPath__SdfPath____1_less_SdfPath_____1_allocator___1_pair_SdfPath_const__SdfPath___
+        "SdfMapEditProxy",
     ]
     ARRAY_TYPES = {
         "Bool": "bool",
@@ -356,6 +386,27 @@ class TypeInfo(CppTypeConverter):
     #             get_submodules(pxr.__path__),
     #             reverse=True)
     #     return self._valid_modules
+
+    def _parse_typedefs(self, include_file: pathlib.Path) -> Iterator[tuple[str, str]]:
+        it = super()._parse_typedefs(include_file)
+        if include_file.name == "proxyTypes.h":
+            renames = set(x[0] for x in self.RENAMES)
+            for alias, type in it:
+                if alias in renames:
+                    continue
+                for proxyType in self.PROXY_TYPES:
+                    if type.startswith(proxyType):
+                        type = (
+                            type.replace(" ", "")
+                            .replace("<", "_")
+                            .replace(",", "_")
+                            .replace(">", "")
+                        )
+                        break
+                print("proxy", alias, type)
+                yield alias, type
+        else:
+            yield from it
 
     @classmethod
     def py_array_to_sub_type(cls, py_type: str) -> str | None:
@@ -634,10 +685,6 @@ class TypeInfo(CppTypeConverter):
             results = []
         return results
 
-    def format_cpp_sig(self, doc_elem: DocElement) -> str:
-        params = ", ".join([f"{p[1]}: {p[0]}" for p in doc_elem.params])
-        return f"def {doc_elem.name}({params}) -> {doc_elem.returnType}: ..."
-
     def _get_cpp_sig_info(self, cpp_paths: list[CppPath]) -> CppSigInfo | None:
         """
         Given a list of possible C++ object paths, return the first matching
@@ -802,7 +849,7 @@ def format_py_args(sig: FunctionSig) -> str:
 
 def format_cpp_args(cpp_sig: DocElement) -> str:
     args = ", ".join(f"{param.name}: {param.type}" for param in cpp_sig.params)
-    return f"({args})"
+    return f"({args}) -> {cpp_sig.returnType}: ..."
 
 
 def get_sigs_from_cpp_overloads(
@@ -1404,7 +1451,8 @@ class UsdBoostDocstringSignatureGenerator(
 
             # if "ComputeClipAssetPaths" in ctx.fullname:
             # if "MakeMultipleApplyNameInstance" in ctx.fullname:
-            if "GetConnectedSources" in ctx.fullname:
+            # if "GetConnectedSources" in ctx.fullname:
+            if "PrimSpec.properties" in ctx.fullname:
                 # we picked a new overload and it's unclear why
                 for overload, sig in tracker.matches.items():
                     self._summarize_overload_mismatch(
@@ -1672,11 +1720,12 @@ def main(outdir: str) -> None:
     # Change this to only see errors for particular modules:
     notifier.set_modules(
         [
-            # "pxr.Sdf",
+            "pxr.Sdf",
             # "pxr.Sdr",
             # "pxr.UsdGeom",
             # "pxr.UsdLux",
-            "pxr.Usd",
+            "pxr.UsdShade",
+            # "pxr.Usd",
             # "pxr.Ar",
             # "pxr.Tf",
         ]

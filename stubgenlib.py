@@ -9,7 +9,8 @@ import re
 import tokenize
 from abc import abstractmethod
 from collections import defaultdict
-from typing import Any, NamedTuple, TypeVar
+from functools import lru_cache
+from typing import Any, NamedTuple, TypeVar, Iterator
 from typing_extensions import Final, Literal
 
 from mypy.stubdoc import infer_sig_from_docstring, _TYPE_RE, _ARG_NAME_RE, is_valid_type
@@ -1043,37 +1044,45 @@ class CppTypeConverter:
         self._typedefs: list[tuple[str, str]] | None = None
         self.verbose = verbose
 
+        self._typedef_reg = re.compile(r"\btypedef ([^;]+);")
+        self._using_reg = re.compile(
+            r"\busing\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*([^;]+);"
+        )
+
     def _get_typedefs(self) -> list[tuple[str, str]]:
         if not self.srcdir:
             return []
 
         if self._typedefs is None:
             self._typedefs = []
-            typedef_reg = re.compile(r"\btypedef ([^;]+);")
-            using_reg = re.compile(r"\busing\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*([^;]+);")
 
             srcdir = pathlib.Path(self.srcdir)
             for include_file in self.TYPE_DEF_INCLUDES:
-                text = srcdir.joinpath(include_file).read_text().replace("\n", " ")
-                for match in typedef_reg.finditer(text):
-                    typedef_str = match.group(1)
-                    type, alias = typedef_str.rsplit(" ", 1)
-                    alias = alias.replace(" ", "")
-                    type = type.strip()
-                    # fixup type.  kinda ugly, but it's easier to do it now before types are
-                    # full expanded
-                    if type.startswith("std::unordered_map<"):
-                        parts = type.split(",")
-                        if len(parts) == 3:
-                            type = ",".join(parts[:-1]) + ">"
+                for alias, type in self._parse_typedefs(srcdir.joinpath(include_file)):
                     self._typedefs.append((alias, type))
-                for match in using_reg.finditer(text):
-                    alias = match.group(1).strip()
-                    type = match.group(2).strip()
-                    print(include_file, "Found", alias, type)
-                    self._typedefs.append((alias, type))
+
         return self._typedefs
 
+    def _parse_typedefs(self, include_file: pathlib.Path) -> Iterator[tuple[str, str]]:
+        text = include_file.read_text().replace("\n", " ")
+        for match in self._typedef_reg.finditer(text):
+            typedef_str = match.group(1)
+            type, alias = typedef_str.rsplit(" ", 1)
+            alias = alias.replace(" ", "")
+            type = type.strip()
+            # fixup type.  kinda ugly, but it's easier to do it now before types are
+            # full expanded
+            if type.startswith("std::unordered_map<"):
+                parts = type.split(",")
+                if len(parts) == 3:
+                    type = ",".join(parts[:-1]) + ">"
+            yield alias, type
+        for match in self._using_reg.finditer(text):
+            alias = match.group(1).strip()
+            type = match.group(2).strip()
+            yield alias, type
+
+    @lru_cache
     def cpp_arg_to_py_type(self, cpp_type: str, is_result: bool) -> str:
         """
         Convert a c++ type string to a python type string
@@ -1088,11 +1097,16 @@ class CppTypeConverter:
                 typ = re.sub(rf"\b{alias}\b", replace, typ)
             return typ
 
+        replacements = [typestr]
         while True:
             new_typestr = replace_typedefs(typestr)
             if new_typestr == typestr:
                 break
+            replacements.append(new_typestr)
             typestr = new_typestr
+        if len(replacements) > 1:
+            chain = "  >>  ".join(repr(r) for r in replacements)
+            print(f"Typedef resolution: {chain}")
 
         parts = typestr.split()
 
@@ -1104,10 +1118,18 @@ class CppTypeConverter:
         parts = [x for x in parts if not self.should_strip_part(x)]
         typestr = "".join(parts)
 
-        for pattern, replace in self.RENAMES:
-            new_typestr = re.sub(pattern, replace, typestr)
-            if new_typestr != typestr:
-                return new_typestr
+        if "SdfChildrenView" in typestr:
+            print(repr(typestr))
+
+        renames = dict(self.RENAMES)
+        new_typestr = renames.get(typestr)
+        if new_typestr is not None:
+            return new_typestr
+
+        # for pattern, replace in self.RENAMES:
+        #     new_typestr = re.sub(rf"\b{pattern}\b", replace, typestr)
+        #     if new_typestr != typestr:
+        #         return new_typestr
 
         for pattern, replace in self.TYPE_MAP + (
             self.RESULT_TYPE_MAP if is_ptr or is_result else self.ARG_TYPE_MAP

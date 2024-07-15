@@ -235,7 +235,7 @@ class AttributeSpec(PropertySpec):
     def __lt__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     @property
-    def connectionPathList(self) -> ConnectionsProxy:
+    def connectionPathList(self) -> ListEditorProxy_SdfPathKeyPolicy:
         """
         Returns a proxy for editing the attribute's connection paths.
 
@@ -1836,7 +1836,7 @@ class Layer(Boost.Python.instance):
 
         Source layer is unmodified.
         """
-    def Traverse(self, path: Path | str, func: TraversalFunction) -> None: ...
+    def Traverse(self, path: Path | str, func: typing.Callable[[Path | str], None]) -> None: ...
     def UpdateAssetInfo(self) -> None:
         """
         Update layer asset information.
@@ -1940,7 +1940,7 @@ class Layer(Boost.Python.instance):
         Save() .
         """
     @property
-    def rootPrims(self) -> RootPrimsView:
+    def rootPrims(self) -> ChildrenView_Sdf_PrimChildPolicy_SdfChildrenViewTrivialPredicate_SdfHandle_SdfPrimSpec__:
         """
         Returns a vector of the layer's root prims.
         """
@@ -4398,7 +4398,7 @@ class PrimSpec(Spec):
     prefix: str
     prefixSubstitutions: dict
     propertyOrder: ListProxy_SdfNameTokenKeyPolicy
-    relocates: RelocatesMapProxy
+    relocates: MapEditProxy_SdfRelocatesMap_SdfRelocatesMapProxyValuePolicy
     specifier: Specifier
     suffix: str
     suffixSubstitutions: dict
@@ -4552,7 +4552,7 @@ class PrimSpec(Spec):
     def __lt__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     @property
-    def attributes(self) -> AttributeSpecView:
+    def attributes(self) -> ChildrenView_Sdf_AttributeChildPolicy_SdfAttributeViewPredicate:
         """
         Returns a view of the attributes of this prim.
         """
@@ -4571,7 +4571,7 @@ class PrimSpec(Spec):
         Inherit paths for this prim may be modified through the proxy.
         """
     @property
-    def nameChildren(self) -> NameChildrenView:
+    def nameChildren(self) -> ChildrenView_Sdf_PrimChildPolicy_SdfChildrenViewTrivialPredicate_SdfHandle_SdfPrimSpec__:
         """
         Returns a keyed vector view of the prim's namespace children.
         """
@@ -4592,7 +4592,7 @@ class PrimSpec(Spec):
         Returns the prim's namespace pseudo-root prim.
         """
     @property
-    def payloadList(self) -> PayloadsProxy:
+    def payloadList(self) -> ListEditorProxy_SdfPayloadTypePolicy:
         """
         Returns a proxy for the prim's payloads.
 
@@ -4600,7 +4600,7 @@ class PrimSpec(Spec):
         Payloads for this prim may be modified through the proxy.
         """
     @property
-    def properties(self) -> PropertySpecView:
+    def properties(self) -> ChildrenView_Sdf_PropertyChildPolicy_SdfChildrenViewTrivialPredicate_SdfHandle_SdfPropertySpec__:
         """
         Returns the prim's properties.
         """
@@ -4610,7 +4610,7 @@ class PrimSpec(Spec):
         Returns the prim's namespace parent.
         """
     @property
-    def referenceList(self) -> ReferenceTypePolicy:
+    def referenceList(self) -> ListEditorProxy_SdfReferenceTypePolicy:
         """
         Returns a proxy for the prim's references.
 
@@ -4618,7 +4618,7 @@ class PrimSpec(Spec):
         References for this prim may be modified through the proxy.
         """
     @property
-    def relationships(self) -> RelationshipSpecView:
+    def relationships(self) -> ChildrenView_Sdf_RelationshipChildPolicy_SdfRelationshipViewPredicate:
         """
         Returns a view of the relationships of this prim.
         """
@@ -4631,7 +4631,7 @@ class PrimSpec(Spec):
         Specializes for this prim may be modified through the proxy.
         """
     @property
-    def variantSelections(self) -> VariantSelectionProxy:
+    def variantSelections(self) -> MapEditProxy_SdfVariantSelectionMap:
         """
         Returns an editable map whose keys are variant set names and whose
         values are the variants selected for each set.
@@ -4645,7 +4645,7 @@ class PrimSpec(Spec):
         Variant sets for this prim may be modified through the proxy.
         """
     @property
-    def variantSets(self) -> VariantSetsProxy:
+    def variantSets(self) -> ChildrenProxy_SdfVariantSetView:
         """
         Returns the variant sets.
 
@@ -4964,7 +4964,7 @@ class RelationshipSpec(PropertySpec):
     @property
     def expired(self): ...
     @property
-    def targetPathList(self) -> TargetsProxy:
+    def targetPathList(self) -> ListEditorProxy_SdfPathKeyPolicy:
         """
         Returns the relationship's target path list editor.
 
@@ -5844,7 +5844,7 @@ class VariantSetSpec(Spec):
         Returns the variants as a vector.
         """
     @property
-    def variants(self) -> VariantView:
+    def variants(self) -> ChildrenView_Sdf_VariantChildPolicy_SdfChildrenViewTrivialPredicate_SdfHandle_SdfVariantSpec__:
         """
         Returns the variants as a map.
         """
@@ -5894,7 +5894,7 @@ class VariantSpec(Spec):
         Get the prim spec owned by this variant.
         """
     @property
-    def variantSets(self) -> VariantSetsProxy:
+    def variantSets(self) -> ChildrenProxy_SdfVariantSetView:
         """
         Returns the nested variant sets.
 
