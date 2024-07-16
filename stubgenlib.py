@@ -1028,7 +1028,11 @@ class CppTypeConverter:
         (r"\bstring\b", "str"),
         (r"\bsize_t\b", "int"),
         (r"\bchar\b", "str"),
-        (r"\bstd::function<(.+)\((.*)\)>", r"typing.Callable[[\2],\1]"),
+        # note that argname gets stripped. see stubgen_usd.test
+        (
+            r"\bstd::function<(?P<result>.+)\(\s*(?P<argtype>\w+)(?P<argname>.*)\)>",
+            r"typing.Callable[[\g<argtype>], \g<result>]",
+        ),
         (r"\bstd::pair\b", "tuple"),
         (r"\bdouble\b", "float"),
         (r"\bvoid\b", "None"),
@@ -1116,20 +1120,12 @@ class CppTypeConverter:
             for x in parts
         ]
         parts = [x for x in parts if not self.should_strip_part(x)]
-        typestr = "".join(parts)
-
-        if "SdfChildrenView" in typestr:
-            print(repr(typestr))
+        typestr = " ".join(parts)
 
         renames = dict(self.RENAMES)
-        new_typestr = renames.get(typestr)
+        new_typestr = renames.get(typestr.replace(" ", ""))
         if new_typestr is not None:
             return new_typestr
-
-        # for pattern, replace in self.RENAMES:
-        #     new_typestr = re.sub(rf"\b{pattern}\b", replace, typestr)
-        #     if new_typestr != typestr:
-        #         return new_typestr
 
         for pattern, replace in self.TYPE_MAP + (
             self.RESULT_TYPE_MAP if is_ptr or is_result else self.ARG_TYPE_MAP
@@ -1148,6 +1144,7 @@ class CppTypeConverter:
         typestr = typestr.replace(",", ", ")
         typestr = typestr.replace("::", ".")
 
+        typestr = typestr.replace(" ", "")
         return typestr
 
     @abstractmethod

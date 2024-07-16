@@ -3859,7 +3859,7 @@ class PathExpression(Boost.Python.instance):
         Return a new expression created by replacing literal path prefixes
         that start with C{oldPrefix} with C{newPrefix}.
         """
-    def ResolveReferences(self, resolve: pxr.Tf.FunctionRef[None]) -> PathExpression:
+    def ResolveReferences(self, resolve: typing.Callable) -> PathExpression:
         '''
         Return a new expression created by resolving collection references in
         this expression.
@@ -3870,7 +3870,7 @@ class PathExpression(Boost.Python.instance):
         return an expression containing the passed argument by calling
         MakeAtom() .
         '''
-    def Walk(self, logic: pxr.Tf.FunctionRef[None], ref: pxr.Tf.FunctionRef[None], pattern: pxr.Tf.FunctionRef[None]) -> None:
+    def Walk(self, logic: typing.Callable, ref: typing.Callable, pattern: typing.Callable) -> None:
         '''
         Walk this expression\'s syntax tree in depth-first order, calling
         C{pattern} with the current PathPattern when one is encountered,
@@ -4228,7 +4228,7 @@ class PredicateExpression(Boost.Python.instance):
 
         The C{op} must be one of ImpliedAnd, And, or Or.
         """
-    def Walk(self, logic: pxr.Tf.FunctionRef[None], call: pxr.Tf.FunctionRef[None]) -> None:
+    def Walk(self, logic: typing.Callable, call: typing.Callable) -> None:
         '''
         Walk this expression\'s syntax tree in depth-first order, calling
         C{call} with the current function call when a function call is

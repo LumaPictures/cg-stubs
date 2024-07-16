@@ -4321,7 +4321,7 @@ class Prim(Object):
 
         See UsdProperty::IsAuthored() .
         """
-    def GetAuthoredProperties(self, predicate: typing.Callable[[pxr.Tf.TokenpropertyName], bool] = ...) -> list[Property]:
+    def GetAuthoredProperties(self, predicate: typing.Callable[[str | pxr.Ar.ResolvedPath], bool] = ...) -> list[Property]:
         """
         Return this prim's properties (attributes and relationships) that have
         authored scene description, ordered by name according to the strongest
@@ -4364,7 +4364,7 @@ class Prim(Object):
         If C{namespaces} is empty, this method is equivalent to
         GetAuthoredProperties() .
         """
-    def GetAuthoredPropertyNames(self, predicate: typing.Callable[[pxr.Tf.TokenpropertyName], bool] = ...) -> list[str]:
+    def GetAuthoredPropertyNames(self, predicate: typing.Callable[[str | pxr.Ar.ResolvedPath], bool] = ...) -> list[str]:
         """
         Return this prim's property names (attributes and relationships) that
         have authored scene description, ordered according to the strongest
@@ -4661,7 +4661,7 @@ class Prim(Object):
 
         Fallback Prim Types
         '''
-    def GetProperties(self, predicate: typing.Callable[[pxr.Tf.TokenpropertyName], bool] = ...) -> list[Property]:
+    def GetProperties(self, predicate: typing.Callable[[str | pxr.Ar.ResolvedPath], bool] = ...) -> list[Property]:
         """
         Return all of this prim's properties (attributes and relationships),
         including all builtin properties, ordered by name according to the
@@ -4766,7 +4766,7 @@ class Prim(Object):
 
         UsdStage::GetPropertyAtPath(const SdfPath&) const
         """
-    def GetPropertyNames(self, predicate: typing.Callable[[pxr.Tf.TokenpropertyName], bool] = ...) -> list[str]:
+    def GetPropertyNames(self, predicate: typing.Callable[[str | pxr.Ar.ResolvedPath], bool] = ...) -> list[str]:
         """
         Return all of this prim's property names (attributes and
         relationships), including all builtin properties.

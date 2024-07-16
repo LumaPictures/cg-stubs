@@ -888,7 +888,7 @@ class LayerStack(Boost.Python.instance):
         any layers brought in by references inside prims.
         """
     @property
-    def localErrors(self) -> list[Error]:
+    def localErrors(self) -> list[ErrorBase]:
         """
         Return the list of errors local to this layer stack.
         """
@@ -1514,7 +1514,7 @@ class PrimIndex(Boost.Python.instance):
     @property
     def hasAnyPayloads(self): ...
     @property
-    def localErrors(self) -> list[Error]:
+    def localErrors(self) -> list[ErrorBase]:
         """
         Return the list of errors local to this prim.
         """
@@ -1537,7 +1537,7 @@ class PropertyIndex(Boost.Python.instance):
         This class cannot be instantiated from Python
         """
     @property
-    def localErrors(self) -> list[Error]:
+    def localErrors(self) -> list[ErrorBase]:
         """
         Return the list of errors local to this property.
         """

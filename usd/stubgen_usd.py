@@ -1,5 +1,7 @@
 from __future__ import absolute_import, annotations, division, print_function
 
+import sys
+
 import textwrap
 
 # FIXME:  maybe we can kill two birds with one stone if we change this code to inject
@@ -253,9 +255,11 @@ class TypeInfo(CppTypeConverter):
         (r"\bint64_t\b", "int"),
         (r"\bUsdSchemaVersion\b", "int"),
         (r"\bGfHalf\b", "float"),
+        (r"\bTfFunctionRef\s*<.*>", "typing.Callable"),
         (r"\bHalf\b", "float"),
         (r"\bboost::python::", ""),
         (r"\bVtValue\b", "Any"),
+        (r"\bPcpErrorVector\b", "list[ErrorBase]"),
         # this gets a lot of things right, but does produce a few errors, like list[Error] for PcpErrorVector, instead of list[ErrorBase]
         (r"\b" + CppTypeConverter.IDENTIFIER + r"Vector\b", r"list[\1]"),
         (r"\bTfToken\b", "str"),
@@ -269,6 +273,7 @@ class TypeInfo(CppTypeConverter):
         (r"Const\b", ""),
         (r"Handle\b", ""),
     ]
+    # exact find-and-replace (no regex)
     RENAMES = [
         # simple renames:
         (r"SourceInfoVector", "pxr.UsdShade.ConnectionSourceInfo"),
@@ -1452,8 +1457,7 @@ class UsdBoostDocstringSignatureGenerator(
             # if "ComputeClipAssetPaths" in ctx.fullname:
             # if "MakeMultipleApplyNameInstance" in ctx.fullname:
             # if "GetConnectedSources" in ctx.fullname:
-            if "PrimSpec.properties" in ctx.fullname:
-                # we picked a new overload and it's unclear why
+            if "ResolveReferences" in ctx.fullname:
                 for overload, sig in tracker.matches.items():
                     self._summarize_overload_mismatch(
                         "Match reason",
@@ -1704,13 +1708,23 @@ def test():
         type_info.cpp_arg_to_py_type("PCP_API SdfLayerHandleSet", is_result=True)
         == "list[pxr.Sdf.Layer]"
     )
+    print(
+        type_info.cpp_arg_to_py_type(
+            "std::function<bool (const TfToken &propertyName)>", is_result=True
+        )
+    )
     assert (
         type_info.cpp_arg_to_py_type(
             "std::function<bool( UsdAttribute const&)>const&", is_result=True
         )
-        == "Callable[[pxr.Usd.Attribute], bool]"
-        # `using` syntax is a bit different from `typedef`
-        "std::function<bool (const TfToken &propertyName)>"
+        == "typing.Callable[[pxr.Usd.Attribute], bool]"
+    )
+    # `using` syntax is a bit different from `typedef` because it includes the argument name
+    assert (
+        type_info.cpp_arg_to_py_type(
+            "std::function<bool (const TfToken &propertyName)>", is_result=True
+        )
+        == "typing.Callable[[str], bool]"
     )
 
 
@@ -1721,11 +1735,12 @@ def main(outdir: str) -> None:
     notifier.set_modules(
         [
             "pxr.Sdf",
+            "pxr.Pcp",
             # "pxr.Sdr",
             # "pxr.UsdGeom",
             # "pxr.UsdLux",
             "pxr.UsdShade",
-            # "pxr.Usd",
+            "pxr.Usd",
             # "pxr.Ar",
             # "pxr.Tf",
         ]
