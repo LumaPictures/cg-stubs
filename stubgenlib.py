@@ -1030,7 +1030,7 @@ class CppTypeConverter:
         (r"\bchar\b", "str"),
         # note that argname gets stripped. see stubgen_usd.test
         (
-            r"\bstd::function<(?P<result>.+)\(\s*(?P<argtype>\w+)(?P<argname>.*)\)>",
+            r"\bstd::function\s*<\s*(?P<result>.+)\(\s*(?P<argtype>\w+)(?P<argname>.*)\)>",
             r"typing.Callable[[\g<argtype>], \g<result>]",
         ),
         (r"\bstd::pair\b", "tuple"),

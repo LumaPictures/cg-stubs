@@ -249,7 +249,7 @@ class TypeInfo(CppTypeConverter):
         (r"\bSdfLayerHandleSet\b", "list[pxr.Sdf.Layer]"),
         # (r"\bSdfPathSet\b", "list[pxr.Sdf.Path]"),
     ]
-    TYPE_MAP = CppTypeConverter.TYPE_MAP + [
+    TYPE_MAP = [
         (r"\bstd::optional\b", "typing.Optional"),
         # (r"\bVtArray<\s*SdfAssetPath\s*>", "prx.Sdf.AssetPathArray"),
         (r"\bint64_t\b", "int"),
@@ -272,12 +272,20 @@ class TypeInfo(CppTypeConverter):
         (r"ConstHandle\b", ""),
         (r"Const\b", ""),
         (r"Handle\b", ""),
-    ]
+        # this is still too complicated for std::function parsing
+        (
+            # using UsdUtilsProcessingFunc = UsdUtilsDependencyInfo(
+            #     const SdfLayerHandle &layer,
+            #     const UsdUtilsDependencyInfo &dependencyInfo);
+            r"\bstd::function\s*<\s*UsdUtilsProcessingFunc\s*>",
+            "typing.Callable[[pxr.Sdf.Layer,  UsdUtilsDependencyInfo], UsdUtilsDependencyInfo]",
+        ),
+    ] + CppTypeConverter.TYPE_MAP
     # exact find-and-replace (no regex)
     RENAMES = [
         # simple renames:
-        (r"SourceInfoVector", "pxr.UsdShade.ConnectionSourceInfo"),
-        (r"SdfBatchNamespaceEdit", "pxr.Sdf.NamespaceEdit"),
+        ("SourceInfoVector", "pxr.UsdShade.ConnectionSourceInfo"),
+        ("SdfBatchNamespaceEdit", "pxr.Sdf.NamespaceEdit"),
         # # childViews --
         (
             # typedef SdfChildrenView<Sdf_AttributeChildPolicy, SdfAttributeViewPredicate> SdfAttributeSpecView;
@@ -1457,7 +1465,7 @@ class UsdBoostDocstringSignatureGenerator(
             # if "ComputeClipAssetPaths" in ctx.fullname:
             # if "MakeMultipleApplyNameInstance" in ctx.fullname:
             # if "GetConnectedSources" in ctx.fullname:
-            if "ResolveReferences" in ctx.fullname:
+            if "ComputeAllDependencies" in ctx.fullname:
                 for overload, sig in tracker.matches.items():
                     self._summarize_overload_mismatch(
                         "Match reason",
@@ -1740,6 +1748,7 @@ def main(outdir: str) -> None:
             # "pxr.UsdGeom",
             # "pxr.UsdLux",
             "pxr.UsdShade",
+            "pxr.UsdUtils",
             "pxr.Usd",
             # "pxr.Ar",
             # "pxr.Tf",

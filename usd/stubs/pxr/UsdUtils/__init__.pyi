@@ -7,7 +7,6 @@ import pxr.Tf
 import pxr.Usd
 import pxr.UsdGeom
 import pxr.UsdShade
-import std
 import typing
 import typing_extensions
 from . import complianceChecker as complianceChecker, constantsGroup as constantsGroup, fixBrokenPixarSchemas as fixBrokenPixarSchemas, toolPaths as toolPaths, updateSchemaWithSdrNode as updateSchemaWithSdrNode, usdzUtils as usdzUtils
@@ -612,7 +611,7 @@ def AuthorCollection(collectionName: str | pxr.Ar.ResolvedPath, usdPrim: pxr.Usd
     its data is appended to. The resulting collection will contain both
     the old paths and the newly included paths.
     """
-def ComputeAllDependencies(assetPath: pxr.Sdf.AssetPath | str, processingFunc: std.function[ProcessingFunc] = ...) -> tuple:
+def ComputeAllDependencies(assetPath: pxr.Sdf.AssetPath | str, processingFunc: typing.Callable[[pxr.Sdf.Layer, DependencyInfo], DependencyInfo] = ...) -> tuple:
     """
     Recursively computes all the dependencies of the given asset and
     populates C{layers} with all the dependencies that can be opened as an
@@ -1164,7 +1163,7 @@ def GetRegisteredVariantSets() -> list[RegisteredVariantSet]:
 
     UsdUtilsRegisterVariantSet
     '''
-def LocalizeAsset(assetPath: pxr.Sdf.AssetPath | str, localizationDirectory: str | pxr.Ar.ResolvedPath, editLayersInPlace: bool = ..., processingFunc: std.function[ProcessingFunc] = ...) -> bool:
+def LocalizeAsset(assetPath: pxr.Sdf.AssetPath | str, localizationDirectory: str | pxr.Ar.ResolvedPath, editLayersInPlace: bool = ..., processingFunc: typing.Callable[[pxr.Sdf.Layer, DependencyInfo], DependencyInfo] = ...) -> bool:
     """
     Creates a localized version of the asset identified by C{assetPath}
     and all of its external dependencies in the directory specified by
