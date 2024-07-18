@@ -273,7 +273,7 @@ class ConnectableAPI(pxr.Usd.APISchemaBase):
         sourceType) tuple if the parameter is connected, else C{None}
         """
     @staticmethod
-    def GetConnectedSources(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output) -> tuple[list[SourceInfo], list[pxr.Sdf.Path]]:
+    def GetConnectedSources(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output) -> tuple[list[ConnectionSourceInfo], list[pxr.Sdf.Path]]:
         """
         Finds the valid sources of connections for the given shading
         attribute.
@@ -1041,7 +1041,7 @@ class Input(Boost.Python.instance):
         """
         Deprecated
         """
-    def GetConnectedSources(self) -> tuple[ConnectionSourceInfo, list[pxr.Sdf.Path]]:
+    def GetConnectedSources(self) -> tuple[list[ConnectionSourceInfo], list[pxr.Sdf.Path]]:
         """
         Finds the valid sources of connections for the Input.
 
@@ -3066,7 +3066,7 @@ class Output(Boost.Python.instance):
 
         Please use GetConnectedSources instead
         """
-    def GetConnectedSources(self) -> tuple[ConnectionSourceInfo, list[pxr.Sdf.Path]]:
+    def GetConnectedSources(self) -> tuple[list[ConnectionSourceInfo], list[pxr.Sdf.Path]]:
         """
         Finds the valid sources of connections for the Output.
 

@@ -230,6 +230,8 @@ class TypeInfo(CppTypeConverter):
     TYPE_DEF_INCLUDES = [
         "pxr/usd/sdf/layer.h",
         "pxr/usd/sdf/types.h",
+        # "pxr/usd/usdShade/types.h",
+        # "pxr/usd/usdShade/input.h",
         "pxr/usd/sdf/path.h",
         "pxr/usd/sdf/fileFormat.h",
         "pxr/usd/sdf/primSpec.h",
@@ -260,6 +262,13 @@ class TypeInfo(CppTypeConverter):
         (r"\bboost::python::", ""),
         (r"\bVtValue\b", "Any"),
         (r"\bPcpErrorVector\b", "list[ErrorBase]"),
+        # this was intended to be used as a more general rule for SourceInfoVector, but
+        # add usdShade/input.h/source.h caused long hangs during typedef resolution.
+        # (
+        #    r"\bTfSmallVector\s*<\s*(?P<type>.+)\s*,\s*(?P<num>\d+)\s*>",
+        #    r"list[\g<type>]",
+        # ),
+        (r"\b(UsdShade)?SourceInfoVector\b", "list[UsdShadeConnectionSourceInfo]"),
         # this gets a lot of things right, but does produce a few errors, like list[Error] for PcpErrorVector, instead of list[ErrorBase]
         (r"\b" + CppTypeConverter.IDENTIFIER + r"Vector\b", r"list[\1]"),
         (r"\bTfToken\b", "str"),
@@ -284,7 +293,6 @@ class TypeInfo(CppTypeConverter):
     # exact find-and-replace (no regex)
     RENAMES = [
         # simple renames:
-        ("SourceInfoVector", "pxr.UsdShade.ConnectionSourceInfo"),
         ("SdfBatchNamespaceEdit", "pxr.Sdf.NamespaceEdit"),
         # # childViews --
         (
@@ -1464,8 +1472,8 @@ class UsdBoostDocstringSignatureGenerator(
 
             # if "ComputeClipAssetPaths" in ctx.fullname:
             # if "MakeMultipleApplyNameInstance" in ctx.fullname:
-            # if "GetConnectedSources" in ctx.fullname:
-            if "ComputeAllDependencies" in ctx.fullname:
+            if "GetConnectedSources" in ctx.fullname:
+                # if "ComputeAllDependencies" in ctx.fullname:
                 for overload, sig in tracker.matches.items():
                     self._summarize_overload_mismatch(
                         "Match reason",
