@@ -1336,7 +1336,7 @@ class Camera(Xformable):
           UsdGeomCamera(stage->GetPrimAtPath(path));
 
         """
-    def GetCamera(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> Camera:
+    def GetCamera(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> pxr.Gf.Camera:
         """
         Creates a GfCamera object from the attribute values at C{time}.
         """

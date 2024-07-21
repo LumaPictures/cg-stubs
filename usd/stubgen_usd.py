@@ -1189,7 +1189,21 @@ class UsdBoostDocstringSignatureGenerator(
                 else self.cleanup_type(cpp_py_type, ctx, is_result)
             )
         elif boost_py_type is not None:
-            if already_cleaned and not is_result:
+            if (
+                already_cleaned
+                and cpp_py_type
+                and cpp_py_type.startswith("pxr.")
+                and boost_py_type.startswith("pxr.")
+                and re.match("^" + PYPATH + "$", cpp_py_type)
+                and re.match("^" + PYPATH + "$", boost_py_type)
+                and cpp_py_type.split(".")[-1] == boost_py_type.split(".")[-1]
+            ):
+                # The boost type never includes module namespace, so it can be ambiguous. Currently
+                # this tool guesses that the type lives in the current module.
+                # The C++ type can be more accurate in this scenario, so use it.
+                # For example, pxr.Usd.PrimDefinition.Attribute vs pxr.Usd.Attribute
+                return cpp_py_type
+            elif already_cleaned and not is_result:
                 return boost_py_type
             else:
                 return self.cleanup_type(
@@ -1472,8 +1486,9 @@ class UsdBoostDocstringSignatureGenerator(
 
             # if "ComputeClipAssetPaths" in ctx.fullname:
             # if "MakeMultipleApplyNameInstance" in ctx.fullname:
-            if "GetConnectedSources" in ctx.fullname:
-                # if "ComputeAllDependencies" in ctx.fullname:
+            # if "GetAttributeAtPath" in ctx.fullname:
+            if "Notice.Register" in ctx.fullname:
+                # we picked a new overload and it's unclear why
                 for overload, sig in tracker.matches.items():
                     self._summarize_overload_mismatch(
                         "Match reason",
@@ -1492,7 +1507,7 @@ class UsdBoostDocstringSignatureGenerator(
             for overload_num, py_sig in enumerate(sigs):
                 cpp_sig = tracker.matches.get(overload_num)
                 if cpp_sig is None:
-                    # we use sigs from boost-python as-is (cleanup_sig_types has already been applied)
+                    # use sigs from boost-python as-is (cleanup_sig_types has already been applied)
                     self._summarize_overload_mismatch(
                         "Could not find C++ info for overload",
                         ctx,
@@ -1759,7 +1774,7 @@ def main(outdir: str) -> None:
             "pxr.UsdUtils",
             "pxr.Usd",
             # "pxr.Ar",
-            # "pxr.Tf",
+            "pxr.Tf",
         ]
     )
     # notifier.set_keys(

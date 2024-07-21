@@ -418,7 +418,7 @@ class StageCache(Boost.Python.instance):
     __instance_size__: ClassVar[int] = ...
     def __init__(self) -> None: ...
     @staticmethod
-    def Get() -> StageCache:
+    def Get() -> pxr.Usd.StageCache:
         """
         Returns the singleton stage cache.
         """

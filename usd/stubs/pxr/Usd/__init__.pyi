@@ -748,7 +748,7 @@ class AttributeQuery(Boost.Python.instance):
 
         UsdAttribute::Get
         """
-    def GetAttribute(self) -> PrimDefinition.Attribute:
+    def GetAttribute(self) -> Attribute:
         """
         Return the attribute associated with this query.
         """
@@ -1885,7 +1885,7 @@ class CollectionAPI(APISchemaBase):
         Computes and returns a UsdCollectionMembershipQuery object which can
         be used to query inclusion or exclusion of paths in the collection.
         """
-    def CreateCollectionAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> PrimDefinition.Attribute:
+    def CreateCollectionAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> Attribute:
         """
         See GetCollectionAttr() , and also Create vs Get Property Methods for
         when to use Get vs Create.
@@ -1895,12 +1895,12 @@ class CollectionAPI(APISchemaBase):
         sparsely (when it makes sense to do so) if C{writeSparsely} is C{true}
         - the default for C{writeSparsely} is C{false}.
         """
-    def CreateExcludesRel(self) -> PrimDefinition.Relationship:
+    def CreateExcludesRel(self) -> Relationship:
         """
         See GetExcludesRel() , and also Create vs Get Property Methods for
         when to use Get vs Create.
         """
-    def CreateExpansionRuleAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> PrimDefinition.Attribute:
+    def CreateExpansionRuleAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> Attribute:
         """
         See GetExpansionRuleAttr() , and also Create vs Get Property Methods
         for when to use Get vs Create.
@@ -1910,7 +1910,7 @@ class CollectionAPI(APISchemaBase):
         sparsely (when it makes sense to do so) if C{writeSparsely} is C{true}
         - the default for C{writeSparsely} is C{false}.
         """
-    def CreateIncludeRootAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> PrimDefinition.Attribute:
+    def CreateIncludeRootAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> Attribute:
         """
         See GetIncludeRootAttr() , and also Create vs Get Property Methods for
         when to use Get vs Create.
@@ -1920,12 +1920,12 @@ class CollectionAPI(APISchemaBase):
         sparsely (when it makes sense to do so) if C{writeSparsely} is C{true}
         - the default for C{writeSparsely} is C{false}.
         """
-    def CreateIncludesRel(self) -> PrimDefinition.Relationship:
+    def CreateIncludesRel(self) -> Relationship:
         """
         See GetIncludesRel() , and also Create vs Get Property Methods for
         when to use Get vs Create.
         """
-    def CreateMembershipExpressionAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> PrimDefinition.Attribute:
+    def CreateMembershipExpressionAttr(self, defaultValue: Any = ..., writeSparsely: bool = ...) -> Attribute:
         """
         See GetMembershipExpressionAttr() , and also Create vs Get Property
         Methods for when to use Get vs Create.
@@ -2010,7 +2010,7 @@ class CollectionAPI(APISchemaBase):
         Returns the collection represented by the given collection path,
         C{collectionPath} on the given USD stage.
         """
-    def GetCollectionAttr(self) -> PrimDefinition.Attribute:
+    def GetCollectionAttr(self) -> Attribute:
         """
         This property represents the collection for the purpose of allowing
         another collection to include it.
@@ -2047,7 +2047,7 @@ class CollectionAPI(APISchemaBase):
 
         GetCollectionAttr()
         '''
-    def GetExcludesRel(self) -> PrimDefinition.Relationship:
+    def GetExcludesRel(self) -> Relationship:
         '''
         Specifies a list of targets that are excluded below the included paths
         in this collection.
@@ -2064,7 +2064,7 @@ class CollectionAPI(APISchemaBase):
         the objects belonging to the collection (see
         UsdCollectionAPI::GetIncludedObjects).
         '''
-    def GetExpansionRuleAttr(self) -> PrimDefinition.Attribute:
+    def GetExpansionRuleAttr(self) -> Attribute:
         '''
         Specifies how the paths that are included in the collection must be
         expanded to determine its members.
@@ -2091,7 +2091,7 @@ class CollectionAPI(APISchemaBase):
 
         explicitOnly, expandPrims, expandPrimsAndProperties
         '''
-    def GetIncludeRootAttr(self) -> PrimDefinition.Attribute:
+    def GetIncludeRootAttr(self) -> Attribute:
         """
         Boolean attribute indicating whether the pseudo-root path</>should be
         counted as one of the included target paths.
@@ -2116,7 +2116,7 @@ class CollectionAPI(APISchemaBase):
 
         SdfVariabilityUniform
         """
-    def GetIncludesRel(self) -> PrimDefinition.Relationship:
+    def GetIncludesRel(self) -> Relationship:
         """
         Specifies a list of targets that are included in the collection.
 
@@ -2126,7 +2126,7 @@ class CollectionAPI(APISchemaBase):
         target the B{collection:{collectionName}} property on the owning prim
         of the collection to be included
         """
-    def GetMembershipExpressionAttr(self) -> PrimDefinition.Attribute:
+    def GetMembershipExpressionAttr(self) -> Attribute:
         """
         Specifies a path expression that determines membership in this
         collection.
@@ -4105,7 +4105,7 @@ class Prim(Object):
         unless the additional site information is truly needed.
         """
     @overload
-    def CreateAttribute(self, name: str | pxr.Ar.ResolvedPath, typeName: pxr.Sdf.ValueTypeName, custom: bool = ..., variability: pxr.Sdf.Variability = ...) -> PrimDefinition.Attribute:
+    def CreateAttribute(self, name: str | pxr.Ar.ResolvedPath, typeName: pxr.Sdf.ValueTypeName, custom: bool = ..., variability: pxr.Sdf.Variability = ...) -> Attribute:
         """
         Author scene description for the attribute named *attrName* at the
         current EditTarget if none already exists.
@@ -4150,7 +4150,7 @@ class Prim(Object):
 
         """
     @overload
-    def CreateAttribute(self, nameElts: typing.Iterable[str | pxr.Ar.ResolvedPath], typeName: pxr.Sdf.ValueTypeName, custom: bool = ..., variability: pxr.Sdf.Variability = ...) -> PrimDefinition.Attribute:
+    def CreateAttribute(self, nameElts: typing.Iterable[str | pxr.Ar.ResolvedPath], typeName: pxr.Sdf.ValueTypeName, custom: bool = ..., variability: pxr.Sdf.Variability = ...) -> Attribute:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -4161,7 +4161,7 @@ class Prim(Object):
         For details, see Names, Namespace Ordering, and Property Namespaces
         """
     @overload
-    def CreateRelationship(self, name: str | pxr.Ar.ResolvedPath, custom: bool = ...) -> PrimDefinition.Relationship:
+    def CreateRelationship(self, name: str | pxr.Ar.ResolvedPath, custom: bool = ...) -> Relationship:
         """
         Author scene description for the relationship named *relName* at the
         current EditTarget if none already exists.
@@ -4203,7 +4203,7 @@ class Prim(Object):
 
         """
     @overload
-    def CreateRelationship(self, nameElts: typing.Iterable[str | pxr.Ar.ResolvedPath], custom: bool = ...) -> PrimDefinition.Relationship:
+    def CreateRelationship(self, nameElts: typing.Iterable[str | pxr.Ar.ResolvedPath], custom: bool = ...) -> Relationship:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -4278,7 +4278,7 @@ class Prim(Object):
         definition. To get only the authored API schemas use GetPrimTypeInfo
         instead.
         """
-    def GetAttribute(self, attrName: str | pxr.Ar.ResolvedPath) -> PrimDefinition.Attribute:
+    def GetAttribute(self, attrName: str | pxr.Ar.ResolvedPath) -> Attribute:
         '''
         Return a UsdAttribute with the name *attrName*.
 
@@ -4294,7 +4294,7 @@ class Prim(Object):
           }
 
         '''
-    def GetAttributeAtPath(self, path: pxr.Sdf.Path | str) -> PrimDefinition.Attribute:
+    def GetAttributeAtPath(self, path: pxr.Sdf.Path | str) -> Attribute:
         """
         Returns the attribute at C{path} on the same stage as this prim.
 
@@ -4735,7 +4735,7 @@ class Prim(Object):
         If C{namespaces} is empty, this method is equivalent to
         GetProperties() .
         """
-    def GetProperty(self, propName: str | pxr.Ar.ResolvedPath) -> PrimDefinition.Property:
+    def GetProperty(self, propName: str | pxr.Ar.ResolvedPath) -> Property:
         '''
         Return a UsdProperty with the name *propName*.
 
@@ -4751,7 +4751,7 @@ class Prim(Object):
           }
 
         '''
-    def GetPropertyAtPath(self, path: pxr.Sdf.Path | str) -> PrimDefinition.Property:
+    def GetPropertyAtPath(self, path: pxr.Sdf.Path | str) -> Property:
         """
         Returns the property at C{path} on the same stage as this prim.
 
@@ -4808,7 +4808,7 @@ class Prim(Object):
 
         UsdPrimCompositionQuery::GetDirectReferences
         """
-    def GetRelationship(self, relName: str | pxr.Ar.ResolvedPath) -> PrimDefinition.Relationship:
+    def GetRelationship(self, relName: str | pxr.Ar.ResolvedPath) -> Relationship:
         '''
         Return a UsdRelationship with the name *relName*.
 
@@ -4824,7 +4824,7 @@ class Prim(Object):
           }
 
         '''
-    def GetRelationshipAtPath(self, path: pxr.Sdf.Path | str) -> PrimDefinition.Relationship:
+    def GetRelationshipAtPath(self, path: pxr.Sdf.Path | str) -> Relationship:
         """
         Returns the relationship at C{path} on the same stage as this prim.
 
@@ -8124,7 +8124,7 @@ class Stage(Boost.Python.instance):
 
         Finally, any deactivated prims will be pruned from the result.
         """
-    def GetAttributeAtPath(self, path: pxr.Sdf.Path | str) -> PrimDefinition.Attribute:
+    def GetAttributeAtPath(self, path: pxr.Sdf.Path | str) -> Attribute:
         """
         Return the UsdAttribute at C{path}, or an invalid UsdAttribute if none
         exists.
@@ -8358,7 +8358,7 @@ class Stage(Boost.Python.instance):
         scene description, and therefore is safe to use as a"reader"in the Usd
         multi-threading model.
         '''
-    def GetPropertyAtPath(self, path: pxr.Sdf.Path | str) -> PrimDefinition.Property:
+    def GetPropertyAtPath(self, path: pxr.Sdf.Path | str) -> Property:
         """
         Return the UsdProperty at C{path}, or an invalid UsdProperty if none
         exists.
@@ -8387,7 +8387,7 @@ class Stage(Boost.Python.instance):
         opening or creating the stage, in which case this method returns an
         invalid UsdPrim.
         '''
-    def GetRelationshipAtPath(self, path: pxr.Sdf.Path | str) -> PrimDefinition.Relationship:
+    def GetRelationshipAtPath(self, path: pxr.Sdf.Path | str) -> Relationship:
         """
         Return the UsdAttribute at C{path}, or an invalid UsdAttribute if none
         exists.
