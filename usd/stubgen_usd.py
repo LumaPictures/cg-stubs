@@ -69,9 +69,12 @@ from doxygenlib.cdUtils import SetDebugMode  # type: ignore[import]
 import doxygenlib.cdWriterDocstring
 
 from stubgenlib import (
+    insert_typevars,
     BaseSigFixer,
+    AdvancedSigMatcher,
+    AdvancedSignatureGenerator,
     BoostDocstringSignatureGenerator,
-    CFunctionStub,
+    infer_sig_from_boost_docstring,
     Notifier,
     CppTypeConverter,
     reduce_overloads,
@@ -994,7 +997,9 @@ class SignatureMatcher(Generic[T]):
         skip: Callable[[int, FunctionSig], bool] | None = None,
     ) -> set[int]:
         """Use the argument types of boost-python signatures to find matching C++
-        signatures
+        signatures.
+
+        Returns the indices of the matching signatures.
         """
 
         cpp_sigs_map: DefaultDict[T, list[FunctionSig]] = defaultdict(list)
@@ -1063,9 +1068,22 @@ class ArgNumAndDefaultMatcher(SignatureMatcher[tuple[int, tuple[bool, ...]]]):
         return len(sig.args), tuple(arg.default for arg in sig.args)
 
 
-class UsdBoostDocstringSignatureGenerator(
-    BoostDocstringSignatureGenerator, BaseSigFixer
-):
+class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, BaseSigFixer):
+    sig_matcher = AdvancedSigMatcher(
+        # Full signature replacements.
+        # The class name can be "*", in which case it will match any class
+        signature_overrides={
+            # these docstring sigs are malformed
+            # FIXME: revisit this. mypy 1.11 introduced support for python 3.12-style generics, but it must be
+            #   enabled using `enable_incomplete_feature = NewGenericSyntax`
+            # "pxr.Tf.Notice.Register": "[NoticeT: pxr.Tf.Notice, T](_listener: type[NoticeT], _method: Callable[[NoticeT, T], typing.Any], _sender: T, /) -> pxr.Tf.Listener",
+            # TypeVars are created using get_imports()
+            # FIXME: sig parser does not accept / arguments
+            "pxr.Tf.Notice.Register": "(_listener: type[NoticeT], _method: Callable[[NoticeT, T], typing.Any], _sender: T) -> pxr.Tf.Listener",
+            "pxr.Tf.Notice.RegisterGlobally": "(_listener: type[NoticeT], _method: Callable[[NoticeT, typing.Any], typing.Any]) -> pxr.Tf.Listener",
+        }
+    )
+
     def __init__(self):
         super().__init__()
         self._processed_classes: set[str] = set()
@@ -1084,6 +1102,8 @@ class UsdBoostDocstringSignatureGenerator(
         else:
             return sig
 
+    # override of BaseSigFixer.cleanup_type()
+    # called by BaseSigFixer.get_function_sig (via cleanup_sig_types)
     def cleanup_type(
         self,
         py_type: str,
@@ -1166,10 +1186,12 @@ class UsdBoostDocstringSignatureGenerator(
         cpp_py_type: str | None,
         ctx: FunctionContext,
         is_result: bool = False,
+        # FIXME: already_cleaned=False is never used
         already_cleaned: bool = False,
     ) -> str | None:
         """
-        Use multiple approaches to create a best guess at a python type name.
+        Given a python type guessed from boost and from Doxygen, use multiple
+        approaches to find the best.
 
         - Try to convert the c++ type to a python type.
         - Apply fixes for known types/functions.
@@ -1249,6 +1271,9 @@ class UsdBoostDocstringSignatureGenerator(
         return summary
 
     def _set_class_docstring(self, ctx: FunctionContext) -> None:
+        """
+        Find docstings parsed from Doxygen and set them on the context.
+        """
         if not ctx.class_info:
             return
 
@@ -1350,7 +1375,7 @@ class UsdBoostDocstringSignatureGenerator(
         args = []
         requires_pos_only: bool | None = None
         for arg_num, py_arg in enumerate(py_sig.args):
-            if self.is_default_boost_arg(py_arg.name):
+            if BoostDocstringSignatureGenerator.is_default_boost_arg(py_arg.name):
                 if requires_pos_only is False:
                     raise ValueError(
                         f"{ctx.fullname}: Unnamed argument appears after named one: {py_sig.format_sig()}"
@@ -1563,7 +1588,9 @@ class UsdBoostDocstringSignatureGenerator(
                         # And yet it produces this boost python signature:
                         #         (arg1: object, nameTemplate: object) -> Any: ...
                         # Notice that "nameTemplate" fills the arg2 spot.
-                        if self.is_default_boost_arg(py_arg.name):
+                        if BoostDocstringSignatureGenerator.is_default_boost_arg(
+                            py_arg.name
+                        ):
                             # this is safe because default args can only be passed positionally and not by name.
                             arg_name = f"_{cpp_arg.name}"
                         else:
@@ -1622,14 +1649,22 @@ class UsdBoostDocstringSignatureGenerator(
     ) -> list[FunctionSig] | None:
         if ctx.name == "__iter__":
             # stubgen has functionality to add __iter__ when __getitem__ is present to get
-            # around an issue with mypy, but we can't process it with UsdBoostDocstringSignatureGenerator
+            # around an issue with mypy, but we can't process it with infer_sig_from_boost_docstring
             # because it mangles generic types (replaces [] in types)
             new_sigs = infer_sig_from_docstring(ctx.docstring, ctx.name)
             if new_sigs and new_sigs[0].ret_type != "Any":
                 return new_sigs
 
-        sigs = super().get_function_sig(default_sig, ctx)
-        if not sigs:
+        results = self.get_overridden_signatures(ctx)
+        if results:
+            ctx.docstring = writer.strip_boost_docstring(ctx.docstring)
+            return results
+
+        if ctx.docstring:
+            sigs = infer_sig_from_boost_docstring(ctx.docstring, ctx.name)
+            if not sigs:
+                return None
+        else:
             return None
 
         # The cpp wrappers use a special no_init object which creates bogus signatures
@@ -1728,6 +1763,19 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
                 # this is a loose function that has been added as a staticmethod
                 return True
         return False
+
+    def get_imports(self) -> str:
+        imports = super().get_imports()
+        if self.module_name == "pxr.Tf":
+            return insert_typevars(
+                imports,
+                [
+                    "T = typing.TypeVar('T')",
+                    "NoticeT = typing.TypeVar('NoticeT', bound='Notice')",
+                ],
+            )
+        else:
+            return imports
 
 
 mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[misc]

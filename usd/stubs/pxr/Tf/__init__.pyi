@@ -6,6 +6,8 @@ import types
 import typing
 from typing import Any, Callable, ClassVar, overload
 
+T = typing.TypeVar('T')
+NoticeT = typing.TypeVar('NoticeT', bound='Notice')
 Fatal: Callable
 GetCodeLocation: Callable
 PrepareModule: Callable
@@ -572,12 +574,12 @@ class Notice(Boost.Python.instance):
             Revoke interest by a notice listener.  This function revokes interest in the particular notice type and call-back method that its Listener object was registered for."""
     def __init__(self) -> None: ...
     @staticmethod
-    def Register(_listener: Type, _method: Method, _sender: Sender, /) -> Listener:
+    def Register(_listener: type[NoticeT], _method: Callable[[NoticeT, T], typing.Any], _sender: T) -> Listener:
         """    Register a listener as being interested in a TfNotice  type from a specific sender.  Notice listener will get sender  as an argument.     Registration of interest in a notice class N automatically  registers interest in all classes derived from N.  When a  notice of appropriate type is received, the listening object's  member-function method is called with the notice.     To reverse the registration, call Revoke() on the Listener object returned by this call. 
 
         Register( (Type)arg1, (object)arg2, (object)arg3) -> Listener"""
     @staticmethod
-    def RegisterGlobally(arg1: Type, arg2: object, /) -> Listener:
+    def RegisterGlobally(_listener: type[NoticeT], _method: Callable[[NoticeT, typing.Any], typing.Any]) -> Listener:
         """Register a listener as being interested in a TfNotice type from any sender.  The notice listener does not get sender as an argument."""
     @overload
     def Send(self, _s: Sender, /) -> int:

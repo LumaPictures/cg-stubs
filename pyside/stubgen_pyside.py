@@ -27,7 +27,13 @@ from mypy.stubutil import (
     SignatureGenerator,
 )
 
-from stubgenlib import reduce_overloads, AdvancedSignatureGenerator, Optionality
+from stubgenlib import (
+    insert_typevars,
+    reduce_overloads,
+    AdvancedSignatureGenerator,
+    Optionality,
+    AdvancedSigMatcher,
+)
 
 from PySide2 import QtCore, QtWidgets
 
@@ -223,103 +229,171 @@ def short_name(type_name: str) -> str:
 
 
 class PySideSignatureGenerator(AdvancedSignatureGenerator):
-    # Full signature replacements.
-    # The class name can be "*", in which case it will match any class
-    signature_overrides: dict[str, str | list[str]] = {
-        # these docstring sigs are malformed
-        "*.VolatileBool.get": "(self) -> bool",
-        "*.VolatileBool.set": "(self, a: object) -> None",
-        # * Add all signals and make all new-style signal patterns work.  e.g.
-        # `myobject.mysignal.connect(func) and `myobject.mysignal[type].connect(func)`
-        "*.Signal.__get__": [
-            "(self, instance: None, owner: typing.Type[QObject]) -> Signal",
-            "(self, instance: QObject, owner: typing.Type[QObject]) -> SignalInstance",
-        ],
-        "*.Signal.__getitem__": "(self, index) -> SignalInstance",
-        "*.SignalInstance.__getitem__": "(self, index) -> SignalInstance",
-        # * Fix slot arg of `SignalInstance.connect()` to be `typing.Callable` instead of `object`
-        "*.SignalInstance.connect": "(self, slot: typing.Callable, type: typing.Union[type,None] = ...) -> bool",
-        "*.SignalInstance.disconnect": "(self, slot: typing.Union[typing.Callable,None] = ...) -> None",
-        "*.QObject.disconnect": [
-            "(cls, arg__1: PySide2.QtCore.QObject, arg__2: str = ..., arg__3: typing.Callable = ...) -> bool",
-            "(cls, arg__1: PySide2.QtCore.QMetaObject.Connection) -> bool",
-            "(cls, sender: PySide2.QtCore.QObject, signal: PySide2.QtCore.QMetaMethod, receiver: PySide2.QtCore.QObject = ..., member: PySide2.QtCore.QMetaMethod = ...) -> bool",
-        ],
-        "*.QWidget.setParent": "(self, parent: typing.Union[PySide2.QtCore.QObject,None], f: PySide2.QtCore.Qt.WindowFlags = ...) -> None",
-        # * Correct numerous annotations from `bytes` to `str`
-        "*.QObject.setProperty": "(self, name: str, value: typing.Any) -> bool",
-        "*.QObject.property": "(self, name: str) -> typing.Any",
-        "*.QState.assignProperty": "(self, object: QObject, name: str, value: typing.Any) -> None",
-        # ("*", 'propertyName'):
-        #     '(self) -> str',
-        "*.QCoreApplication.translate": "(cls, context: str, key: str, disambiguation: typing.Union[str,NoneType] = ..., n: int = ...) -> str",
-        # * Fix `QTreeWidgetItemIterator.__iter__()` to iterate over `QTreeWidgetItemIterator`
-        # Add result type
-        "*.QTreeWidgetItemIterator.__iter__": "(self) -> typing.Iterator[QTreeWidgetItemIterator]",
-        "*.QTreeWidgetItemIterator.__next__": "(self) -> QTreeWidgetItemIterator",
-        # * Make result optional
-        "*.QLayout.itemAt": "(self, index: int) -> typing.Optional[PySide2.QtWidgets.QLayoutItem]",
-        "*.QLayout.takeAt": "(self, index: int) -> typing.Optional[PySide2.QtWidgets.QLayoutItem]",
-        # * Fix QPolygon special methods
-        # first and third overloads should return QPolygon
-        "*.QPolygon.__lshift__": [
-            "(self, l: list[PySide2.QtCore.QPoint]) -> PySide2.QtGui.QPolygon",
-            "(self, stream: PySide2.QtCore.QDataStream) -> PySide2.QtCore.QDataStream",
-            "(self, t: PySide2.QtCore.QPoint) -> PySide2.QtGui.QPolygon",
-        ],
-        # should return QPolygon
-        "*.QPolygon.__iadd__": "(self, t: PySide2.QtCore.QPoint) -> PySide2.QtGui.QPolygon",
-        # * Fix `QByteArray(b'foo')[0]` to return `bytes`
-        # missing index and return.
-        "*.QByteArray.__getitem__": "(self, index: int) -> bytes",
-        # * Fix `QByteArray.__iter__()` to iterate over `bytes`
-        # * Fix support for `bytes(QByteArray(b'foo'))`
-        "*.QByteArray.__bytes__": "(self) -> bytes",
-        # FIXME: make this a general rule
-        # * Replace `object` with `typing.Any` in return types
-        "*.QSettings.value": (
-            "(self, arg__1: str, defaultValue: typing.Union[typing.Any, None] = ..., "
-            "type: typing.Union[typing.Any, None] = ...) -> typing.Any"
-        ),
-        "*.QModelIndex.internalPointer": "(self) -> typing.Any",
-        "*.QPersistentModelIndex.internalPointer": "(self) -> typing.Any",
-        # Fix other flags:
-        "*.QSortFilterProxyModel.filterRole": "(self) -> PySide2.QtCore.Qt.ItemDataRole",
-        "*.QStandardItem.type": "(self) -> PySide2.QtGui.QStandardItem.ItemType",
-        "*.QTableWidgetItem.setTextAlignment": "(self, alignment: PySide2.QtCore.Qt.Alignment) -> None",
-        "*.QFrame.setFrameStyle": "(self, arg__1: typing.Union[PySide2.QtWidgets.QFrame.Shape, PySide2.QtWidgets.QFrame.Shadow, typing.SupportsInt]) -> None",
-        # in PySide2 these take int, and in PySide6 it takes Weight, but both seem valid
-        "*.QFont.setWeight": "(self, arg__1: typing.Union[int, PySide2.QtGui.QFont.Weight]) -> None",
-        "*.QTextEdit.setFontWeight": "(self, w: typing.Union[int, PySide2.QtGui.QFont.Weight]) -> None",
-        # ('QFont', 'weight': pyside('(self) -> PySide2.QtGui.QFont.Weight'),  # fixed in PySide6
-        # * Fix arguments that accept `QModelIndex` which were typed as `int` in many places
-        # known offenders: QAbstractItemView, QItemSelectionModel, QTreeView, QListView
-        "*.selectedIndexes": "(self) -> list[PySide2.QtCore.QModelIndex]",
-        "*.QItemSelectionModel.selectedColumns": "(self, row: int = ...) -> list[PySide2.QtCore.QModelIndex]",
-        "*.QItemSelectionModel.selectedRows": "(self, column: int = ...) -> list[PySide2.QtCore.QModelIndex]",
-        "*.QItemSelection.indexes": "(self) -> list[PySide2.QtCore.QModelIndex]",
-        "*.QItemSelectionRange.indexes": "(self) -> list[PySide2.QtCore.QModelIndex]",
-        "*.QAbstractItemModel.mimeData": "(self, indexes: list[PySide2.QtCore.QModelIndex]) -> PySide2.QtCore.QMimeData",
-        "*.QStandardItemModel.mimeData": "(self, indexes: list[PySide2.QtCore.QModelIndex]) -> PySide2.QtCore.QMimeData",
-        # * Fix return type for `QApplication.instance()` and `QGuiApplication.instance()` :
-        "*.QCoreApplication.instance": "(cls: typing.Type[T]) -> T",
-        # * Fix return type for `QObject.findChild()` and `QObject.findChildren()` :
-        "*.QObject.findChild": "(self, arg__1: typing.Type[T], arg__2: str = ...) -> T",
-        "*.QObject.findChildren": [
-            "(self, arg__1: typing.Type[T], arg__2: QRegExp = ...) -> list[T]",
-            "(self, arg__1: typing.Type[T], arg__2: QRegularExpression = ...) -> list[T]",
-            "(self, arg__1: typing.Type[T], arg__2: str = ...) -> list[T]",
-        ],
-        "*.qVersion": "() -> str",
-        # FIXME: this can be handled by merging with the default sig
-        # signatures for these special methods include many inaccurate overloads
-        "*.__ne__": "(self, other: object) -> bool",
-        "*.__eq__": "(self, other: object) -> bool",
-        "*.__lt__": "(self, other: object) -> bool",
-        "*.__gt__": "(self, other: object) -> bool",
-        "*.__le__": "(self, other: object) -> bool",
-        "*.__ge__": "(self, other: object) -> bool",
-    }
+    sig_matcher = AdvancedSigMatcher(
+        # Full signature replacements.
+        # The class name can be "*", in which case it will match any class
+        signature_overrides={
+            # these docstring sigs are malformed
+            "*.VolatileBool.get": "(self) -> bool",
+            "*.VolatileBool.set": "(self, a: object) -> None",
+            # * Add all signals and make all new-style signal patterns work.  e.g.
+            # `myobject.mysignal.connect(func) and `myobject.mysignal[type].connect(func)`
+            "*.Signal.__get__": [
+                "(self, instance: None, owner: typing.Type[QObject]) -> Signal",
+                "(self, instance: QObject, owner: typing.Type[QObject]) -> SignalInstance",
+            ],
+            "*.Signal.__getitem__": "(self, index) -> SignalInstance",
+            "*.SignalInstance.__getitem__": "(self, index) -> SignalInstance",
+            # * Fix slot arg of `SignalInstance.connect()` to be `typing.Callable` instead of `object`
+            "*.SignalInstance.connect": "(self, slot: typing.Callable, type: typing.Union[type,None] = ...) -> bool",
+            "*.SignalInstance.disconnect": "(self, slot: typing.Union[typing.Callable,None] = ...) -> None",
+            "*.QObject.disconnect": [
+                "(cls, arg__1: PySide2.QtCore.QObject, arg__2: str = ..., arg__3: typing.Callable = ...) -> bool",
+                "(cls, arg__1: PySide2.QtCore.QMetaObject.Connection) -> bool",
+                "(cls, sender: PySide2.QtCore.QObject, signal: PySide2.QtCore.QMetaMethod, receiver: PySide2.QtCore.QObject = ..., member: PySide2.QtCore.QMetaMethod = ...) -> bool",
+            ],
+            "*.QWidget.setParent": "(self, parent: typing.Union[PySide2.QtCore.QObject,None], f: PySide2.QtCore.Qt.WindowFlags = ...) -> None",
+            # * Correct numerous annotations from `bytes` to `str`
+            "*.QObject.setProperty": "(self, name: str, value: typing.Any) -> bool",
+            "*.QObject.property": "(self, name: str) -> typing.Any",
+            "*.QState.assignProperty": "(self, object: QObject, name: str, value: typing.Any) -> None",
+            # ("*", 'propertyName'):
+            #     '(self) -> str',
+            "*.QCoreApplication.translate": "(cls, context: str, key: str, disambiguation: typing.Union[str,NoneType] = ..., n: int = ...) -> str",
+            # * Fix `QTreeWidgetItemIterator.__iter__()` to iterate over `QTreeWidgetItemIterator`
+            # Add result type
+            "*.QTreeWidgetItemIterator.__iter__": "(self) -> typing.Iterator[QTreeWidgetItemIterator]",
+            "*.QTreeWidgetItemIterator.__next__": "(self) -> QTreeWidgetItemIterator",
+            # * Make result optional
+            "*.QLayout.itemAt": "(self, index: int) -> typing.Optional[PySide2.QtWidgets.QLayoutItem]",
+            "*.QLayout.takeAt": "(self, index: int) -> typing.Optional[PySide2.QtWidgets.QLayoutItem]",
+            # * Fix QPolygon special methods
+            # first and third overloads should return QPolygon
+            "*.QPolygon.__lshift__": [
+                "(self, l: list[PySide2.QtCore.QPoint]) -> PySide2.QtGui.QPolygon",
+                "(self, stream: PySide2.QtCore.QDataStream) -> PySide2.QtCore.QDataStream",
+                "(self, t: PySide2.QtCore.QPoint) -> PySide2.QtGui.QPolygon",
+            ],
+            # should return QPolygon
+            "*.QPolygon.__iadd__": "(self, t: PySide2.QtCore.QPoint) -> PySide2.QtGui.QPolygon",
+            # * Fix `QByteArray(b'foo')[0]` to return `bytes`
+            # missing index and return.
+            "*.QByteArray.__getitem__": "(self, index: int) -> bytes",
+            # * Fix `QByteArray.__iter__()` to iterate over `bytes`
+            # * Fix support for `bytes(QByteArray(b'foo'))`
+            "*.QByteArray.__bytes__": "(self) -> bytes",
+            # FIXME: make this a general rule
+            # * Replace `object` with `typing.Any` in return types
+            "*.QSettings.value": (
+                "(self, arg__1: str, defaultValue: typing.Union[typing.Any, None] = ..., "
+                "type: typing.Union[typing.Any, None] = ...) -> typing.Any"
+            ),
+            "*.QModelIndex.internalPointer": "(self) -> typing.Any",
+            "*.QPersistentModelIndex.internalPointer": "(self) -> typing.Any",
+            # Fix other flags:
+            "*.QSortFilterProxyModel.filterRole": "(self) -> PySide2.QtCore.Qt.ItemDataRole",
+            "*.QStandardItem.type": "(self) -> PySide2.QtGui.QStandardItem.ItemType",
+            "*.QTableWidgetItem.setTextAlignment": "(self, alignment: PySide2.QtCore.Qt.Alignment) -> None",
+            "*.QFrame.setFrameStyle": "(self, arg__1: typing.Union[PySide2.QtWidgets.QFrame.Shape, PySide2.QtWidgets.QFrame.Shadow, typing.SupportsInt]) -> None",
+            # in PySide2 these take int, and in PySide6 it takes Weight, but both seem valid
+            "*.QFont.setWeight": "(self, arg__1: typing.Union[int, PySide2.QtGui.QFont.Weight]) -> None",
+            "*.QTextEdit.setFontWeight": "(self, w: typing.Union[int, PySide2.QtGui.QFont.Weight]) -> None",
+            # ('QFont', 'weight': pyside('(self) -> PySide2.QtGui.QFont.Weight'),  # fixed in PySide6
+            # * Fix arguments that accept `QModelIndex` which were typed as `int` in many places
+            # known offenders: QAbstractItemView, QItemSelectionModel, QTreeView, QListView
+            "*.selectedIndexes": "(self) -> list[PySide2.QtCore.QModelIndex]",
+            "*.QItemSelectionModel.selectedColumns": "(self, row: int = ...) -> list[PySide2.QtCore.QModelIndex]",
+            "*.QItemSelectionModel.selectedRows": "(self, column: int = ...) -> list[PySide2.QtCore.QModelIndex]",
+            "*.QItemSelection.indexes": "(self) -> list[PySide2.QtCore.QModelIndex]",
+            "*.QItemSelectionRange.indexes": "(self) -> list[PySide2.QtCore.QModelIndex]",
+            "*.QAbstractItemModel.mimeData": "(self, indexes: list[PySide2.QtCore.QModelIndex]) -> PySide2.QtCore.QMimeData",
+            "*.QStandardItemModel.mimeData": "(self, indexes: list[PySide2.QtCore.QModelIndex]) -> PySide2.QtCore.QMimeData",
+            # * Fix return type for `QApplication.instance()` and `QGuiApplication.instance()` :
+            "*.QCoreApplication.instance": "(cls: typing.Type[T]) -> T",
+            # * Fix return type for `QObject.findChild()` and `QObject.findChildren()` :
+            "*.QObject.findChild": "(self, arg__1: typing.Type[T], arg__2: str = ...) -> T",
+            "*.QObject.findChildren": [
+                "(self, arg__1: typing.Type[T], arg__2: QRegExp = ...) -> list[T]",
+                "(self, arg__1: typing.Type[T], arg__2: QRegularExpression = ...) -> list[T]",
+                "(self, arg__1: typing.Type[T], arg__2: str = ...) -> list[T]",
+            ],
+            "*.qVersion": "() -> str",
+            # FIXME: this can be handled by merging with the default sig
+            # signatures for these special methods include many inaccurate overloads
+            "*.__ne__": "(self, other: object) -> bool",
+            "*.__eq__": "(self, other: object) -> bool",
+            "*.__lt__": "(self, other: object) -> bool",
+            "*.__gt__": "(self, other: object) -> bool",
+            "*.__le__": "(self, other: object) -> bool",
+            "*.__ge__": "(self, other: object) -> bool",
+        },
+        # Types that have implicit alternatives.
+        implicit_arg_types={
+            "PySide2.QtGui.QKeySequence": ["str"],
+            "PySide2.QtGui.QColor": ["PySide2.QtCore.Qt.GlobalColor", "int"],
+            "PySide2.QtCore.QByteArray": ["bytes"],
+            "PySide2.QtGui.QBrush": [
+                "PySide2.QtGui.QColor",
+                "PySide2.QtCore.Qt.GlobalColor",
+                "PySide2.QtGui.QLinearGradient",
+            ],
+            "PySide2.QtGui.QCursor": ["PySide2.QtCore.Qt.CursorShape"],
+            "PySide2.QtCore.QEasingCurve": ["PySide2.QtCore.QEasingCurve.Type"],
+            "PySide2.QtCore.QDate": ["datetime.date"],
+            "PySide2.QtCore.QDateTime": ["datetime.datetime"],
+        },
+        # Override argument types
+        arg_type_overrides={
+            # (method, arg, type)
+            ("*", "flags", "int"): "typing.SupportsInt",
+            ("*", "weight", "int"): "typing.SupportsInt",
+            ("*", "format", "typing.Union[bytes,NoneType]"): "typing.Optional[str]",
+            ("*", "role", "int"): "PySide2.QtCore.Qt.ItemDataRole",
+            ("*.addAction", "*", "object"): "typing.Callable[[], typing.Any]",
+        },
+        # Find and replace argument names
+        # arg_name_replacements = {
+        #     # (method, arg, type)
+        # },
+        # Values which should be made Optional[].
+        optional_args={
+            # (method, arg, type)
+            ("*.QPainter.drawText", "br", "*"): Optionality(
+                accepts_none=True, has_default=True
+            ),
+            ("*.QPainter.drawPolygon", "arg__2", "*"): Optionality(
+                accepts_none=True, has_default=True
+            ),
+            ("*.QProgressDialog.setCancelButton", "button", "*"): Optionality(
+                accepts_none=True, has_default=False
+            ),
+            ("*.setModel", "model", "*"): Optionality(
+                accepts_none=True, has_default=False
+            ),
+            ("*.QLabel.setPixmap", "arg__1", "*"): Optionality(
+                accepts_none=True, has_default=False
+            ),
+            ("*", "parent", "PySide2.QtWidgets.QWidget"): Optionality(
+                accepts_none=True, has_default=False
+            ),
+            ("*", "parent", "PySide2.QtCore.QObject"): Optionality(
+                accepts_none=True, has_default=False
+            ),
+            ("*.QInputDialog.getText", "echo", "*"): Optionality(
+                accepts_none=False, has_default=True
+            ),
+        },
+        # Add new overloads to existing functions.
+        new_overloads={
+            # * Add `QSpacerItem.__init__/changeSize` overloads that use alternate names: `hData`->`hPolicy`, `vData`->`vPolicy`
+            "*.QSpacerItem.__init__": [
+                "(self, w:int, h:int, hPolicy:PySide2.QtWidgets.QSizePolicy.Policy=..., vPolicy:PySide2.QtWidgets.QSizePolicy.Policy=...) -> None"
+            ],
+            "*.QSpacerItem.changeSize": [
+                "(self, w:int, h:int, hPolicy:PySide2.QtWidgets.QSizePolicy.Policy=..., vPolicy:PySide2.QtWidgets.QSizePolicy.Policy=...) -> None"
+            ],
+        },
+    )
 
     # Special methods for flag enums.
     flag_overrides = {
@@ -340,76 +414,6 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
         "__rsub__": "(self, other: typing.SupportsInt) -> {}",
         "__invert__": "(self) -> {}",
     }
-
-    # Types that have implicit alternatives.
-    implicit_arg_types: dict[str, list[str]] = {
-        "PySide2.QtGui.QKeySequence": ["str"],
-        "PySide2.QtGui.QColor": ["PySide2.QtCore.Qt.GlobalColor", "int"],
-        "PySide2.QtCore.QByteArray": ["bytes"],
-        "PySide2.QtGui.QBrush": [
-            "PySide2.QtGui.QColor",
-            "PySide2.QtCore.Qt.GlobalColor",
-            "PySide2.QtGui.QLinearGradient",
-        ],
-        "PySide2.QtGui.QCursor": ["PySide2.QtCore.Qt.CursorShape"],
-        "PySide2.QtCore.QEasingCurve": ["PySide2.QtCore.QEasingCurve.Type"],
-        "PySide2.QtCore.QDate": ["datetime.date"],
-        "PySide2.QtCore.QDateTime": ["datetime.datetime"],
-    }
-
-    # Override argument types
-    arg_type_overrides: dict[tuple[str, str, str | None], str] = {
-        # (method, arg, type)
-        ("*", "flags", "int"): "typing.SupportsInt",
-        ("*", "weight", "int"): "typing.SupportsInt",
-        ("*", "format", "typing.Union[bytes,NoneType]"): "typing.Optional[str]",
-        ("*", "role", "int"): "PySide2.QtCore.Qt.ItemDataRole",
-        ("*.addAction", "*", "object"): "typing.Callable[[], typing.Any]",
-    }
-
-    # Find and replace argument names
-    arg_name_replacements: dict[tuple[str, str, str | None], str] = {
-        # (method, arg, type)
-    }
-
-    # Values which should be made Optional[].
-    optional_args: dict[tuple[str, str, str | None], Optionality] = {
-        # (method, arg, type)
-        ("*.QPainter.drawText", "br", "*"): Optionality(
-            accepts_none=True, has_default=True
-        ),
-        ("*.QPainter.drawPolygon", "arg__2", "*"): Optionality(
-            accepts_none=True, has_default=True
-        ),
-        ("*.QProgressDialog.setCancelButton", "button", "*"): Optionality(
-            accepts_none=True, has_default=False
-        ),
-        ("*.setModel", "model", "*"): Optionality(accepts_none=True, has_default=False),
-        ("*.QLabel.setPixmap", "arg__1", "*"): Optionality(
-            accepts_none=True, has_default=False
-        ),
-        ("*", "parent", "PySide2.QtWidgets.QWidget"): Optionality(
-            accepts_none=True, has_default=False
-        ),
-        ("*", "parent", "PySide2.QtCore.QObject"): Optionality(
-            accepts_none=True, has_default=False
-        ),
-        ("*.QInputDialog.getText", "echo", "*"): Optionality(
-            accepts_none=False, has_default=True
-        ),
-    }
-
-    # Add new overloads to existing functions.
-    new_overloads: dict[str, list[str]] = {
-        # * Add `QSpacerItem.__init__/changeSize` overloads that use alternate names: `hData`->`hPolicy`, `vData`->`vPolicy`
-        "*.QSpacerItem.__init__": [
-            "(self, w:int, h:int, hPolicy:PySide2.QtWidgets.QSizePolicy.Policy=..., vPolicy:PySide2.QtWidgets.QSizePolicy.Policy=...) -> None"
-        ],
-        "*.QSpacerItem.changeSize": [
-            "(self, w:int, h:int, hPolicy:PySide2.QtWidgets.QSizePolicy.Policy=..., vPolicy:PySide2.QtWidgets.QSizePolicy.Policy=...) -> None"
-        ],
-    }
-
     new_members = {
         # can use any method as a stand-in.  signatures will come from _signature_overrides
         "QByteArray": [
@@ -438,7 +442,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
             and ctx.name in self.flag_overrides
         )
 
-    def get_docstr(self, ctx: FunctionContext) -> str | list[str] | None:
+    def get_signature_str(self, ctx: FunctionContext) -> str | list[str] | None:
         if self.is_flag_type(ctx):
             assert ctx.class_info is not None
             typ = ctx.class_info.cls
@@ -451,7 +455,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                 return None
             return docstr_override.format(get_type_fullname(return_type))
         else:
-            return super().get_docstr(ctx)
+            return super().get_signature_str(ctx)
 
     def process_arg(self, ctx: FunctionContext, arg: ArgSig) -> None:
         """Update ArgSig in place"""
@@ -579,15 +583,8 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         return members
 
     def get_imports(self) -> str:
-        imports = super().get_imports().split("\n")
-
-        for i, line in enumerate(imports):
-            if line.startswith("import typing"):
-                imports = (
-                    imports[:i] + [line, "T = typing.TypeVar('T')"] + imports[i + 1 :]
-                )
-                break
-        return "\n".join(imports)
+        imports = super().get_imports()
+        return insert_typevars(imports, ["T = typing.TypeVar('T')"])
 
 
 mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[attr-defined,misc]

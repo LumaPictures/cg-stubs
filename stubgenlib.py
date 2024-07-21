@@ -9,6 +9,7 @@ import re
 import tokenize
 from abc import abstractmethod
 from collections import defaultdict
+from dataclasses import dataclass, field
 from functools import lru_cache
 from typing import Any, NamedTuple, TypeVar, Iterator
 from typing_extensions import Final, Literal
@@ -52,7 +53,7 @@ class Notifier:
         self._seen_msgs[(key, module, msg)] += 1
         self._seen_keys[key] += 1
 
-    def accumulate(self, key: str):
+    def accumulate(self, key: str) -> None:
         self._seen_keys[key] += 1
 
     def print_summary(self) -> None:
@@ -62,8 +63,15 @@ class Notifier:
             count = self._seen_keys[key]
             print(f"  {key}: {count}")
 
-    def get_key_count(self, key):
+    def get_key_count(self, key: str) -> int:
         return self._seen_keys[key]
+
+
+def insert_typevars(import_lines: str, typevars: list[str]) -> str:
+    imports = import_lines.split("\n")
+    if "import typing" not in imports:
+        imports.append("import typing")
+    return "\n".join(imports + typevars)
 
 
 def merge_signatures(
@@ -803,43 +811,48 @@ def get_mypy_ignore_directive(codes: list[str]) -> str:
 Optionality = NamedTuple("Optionality", [("accepts_none", bool), ("has_default", bool)])
 
 
-class AdvancedSignatureGenerator(SignatureGenerator):
+@dataclass
+class AdvancedSigMatcher(object):
     # Full signature replacements.
     #   name_pattern: sig_str
     #   e.g. "*.VolatileBool.set": "(self, a: object) -> None"
-    signature_overrides: dict[str, str | list[str]] = {}
+    signature_overrides: dict[str, str | list[str]] = field(default_factory=dict)
 
     # Override argument types
     #   (name_pattern, arg, type): arg_type
     #   e.g. ("*", "flags", "int"): "typing.SupportsInt"
-    arg_type_overrides: dict[tuple[str, str, str | None], str] = {}
+    arg_type_overrides: dict[tuple[str, str, str | None], str] = field(
+        default_factory=dict
+    )
 
     # Override argument types
     #   (name_pattern, type): arg_type
     #   e.g. ("*", "int"): "typing.SupportsInt"
-    result_type_overrides: dict[tuple[str, str | None], str] = {}
+    result_type_overrides: dict[tuple[str, str | None], str] = field(
+        default_factory=dict
+    )
 
     # Types that have implicit alternatives.
     #   type_str: list of types that can be used instead
     #   e.g. "PySide2.QtGui.QKeySequence": ["str"],
-    implicit_arg_types: dict[str, list[str]] = {}
+    implicit_arg_types: dict[str, list[str]] = field(default_factory=dict)
 
     # Args which should be made Optional[].
     #   (name_pattern, arg, type): Optionality
-    optional_args: dict[tuple[str, str, str | None], Optionality] = {}
+    optional_args: dict[tuple[str, str, str | None], Optionality] = field(
+        default_factory=dict
+    )
 
     # Results which should be made Optional[].
-    optional_result: list[str] = []
+    optional_result: list[str] = field(default_factory=list)
 
     # Add new overloads to existing functions.
     #   name_pattern: list of sig_str
     #   e.g. "*.VolatileBool.set": ["(self, a: object) -> None"]
-    new_overloads: dict[str, list[str]] = {}
+    new_overloads: dict[str, list[str]] = field(default_factory=dict)
 
-    def __init__(self, fallback_sig_gen=CDocstringSignatureGenerator()) -> None:
-        self.fallback_sig_gen = fallback_sig_gen
+    def __post_init__(self) -> None:
         # insert OptionalKeys
-        self.arg_type_overrides = self.arg_type_overrides.copy()
         self.arg_type_overrides.update(
             {
                 # method, arg name, type
@@ -873,8 +886,8 @@ class AdvancedSignatureGenerator(SignatureGenerator):
 
     def find_func_match(self, fullname: str, items: dict[str, T]) -> T | None:
         """Look for a match in the given dictionary of function/method overrides"""
-        for method_match, value in items.items():
-            if fnmatch.fnmatch(fullname, method_match):
+        for pattern, value in items.items():
+            if fnmatch.fnmatch(fullname, pattern):
                 return value
         return None
 
@@ -895,7 +908,8 @@ class AdvancedSignatureGenerator(SignatureGenerator):
     ) -> T | None:
         """Look for a match in the given dictionary of argument overrides
 
-        setting arg_type to None, means only replace if the type is unset (None).
+        arg_type : if None means only replace if the type is unset (None).
+        items : key is (name_pattern, arg, type). value is whatever we're trying to find.
         """
         for (method_match, arg_name_match, arg_type_match), value in items.items():
             if (
@@ -920,17 +934,26 @@ class AdvancedSignatureGenerator(SignatureGenerator):
                 return value
         return None
 
-    def get_docstr(self, ctx: FunctionContext) -> str | list[str] | None:
+
+class AdvancedSignatureGenerator(SignatureGenerator):
+    sig_matcher: AdvancedSigMatcher
+
+    def __init__(self, fallback_sig_gen=CDocstringSignatureGenerator()) -> None:
+        self.fallback_sig_gen = fallback_sig_gen
+
+    def get_signature_str(self, ctx: FunctionContext) -> str | list[str] | None:
         """Look for a docstring siganture in signature_overrides"""
-        return self.find_func_match(ctx.fullname, self.signature_overrides)
+        return self.sig_matcher.find_func_match(
+            ctx.fullname, self.sig_matcher.signature_overrides
+        )
 
     def process_arg(self, ctx: FunctionContext, arg: ArgSig) -> None:
         """Update ArgSig in place"""
         # if key in self.arg_name_replacements:
         #     arg.name = self.arg_name_replacements[key]
 
-        optionality = self.find_arg_match(
-            ctx.fullname, arg.name, arg.type, self.optional_args
+        optionality = self.sig_matcher.find_arg_match(
+            ctx.fullname, arg.name, arg.type, self.sig_matcher.optional_args
         )
         if optionality is not None:
             if optionality.has_default:
@@ -939,8 +962,8 @@ class AdvancedSignatureGenerator(SignatureGenerator):
                 arg.type = "typing.Union[{},NoneType]".format(arg.type)
 
         # FIXME: I think we want an else here, since arg.type is set, above
-        arg_type_override = self.find_arg_match(
-            ctx.fullname, arg.name, arg.type, self.arg_type_overrides
+        arg_type_override = self.sig_matcher.find_arg_match(
+            ctx.fullname, arg.name, arg.type, self.sig_matcher.arg_type_overrides
         )
         if arg_type_override is not None:
             arg.type = arg_type_override
@@ -948,11 +971,13 @@ class AdvancedSignatureGenerator(SignatureGenerator):
     def process_sig(self, ctx: FunctionContext, sig: FunctionSig) -> FunctionSig:
         for arg in sig.args:
             self.process_arg(ctx, arg)
-        if self.find_result_match(ctx.fullname, sig.ret_type, self._optional_result):
+        if self.sig_matcher.find_result_match(
+            ctx.fullname, sig.ret_type, self.sig_matcher._optional_result
+        ):
             sig = sig._replace(ret_type=f"typing.Optional[{sig.ret_type}]")
         else:
-            ret_override = self.find_result_match(
-                ctx.fullname, sig.ret_type, self.result_type_overrides
+            ret_override = self.sig_matcher.find_result_match(
+                ctx.fullname, sig.ret_type, self.sig_matcher.result_type_overrides
             )
             if ret_override:
                 sig = sig._replace(ret_type=ret_override)
@@ -964,7 +989,9 @@ class AdvancedSignatureGenerator(SignatureGenerator):
         for i, inferred in enumerate(results):
             results[i] = self.process_sig(ctx, inferred)
 
-        new_overloads = self.find_func_match(ctx.fullname, self.new_overloads)
+        new_overloads = self.sig_matcher.find_func_match(
+            ctx.fullname, self.sig_matcher.new_overloads
+        )
         if new_overloads:
             docstr = "\n".join(ctx.name + overload for overload in new_overloads)
             new_sigs = infer_sig_from_docstring(docstr, ctx.name)
@@ -972,13 +999,12 @@ class AdvancedSignatureGenerator(SignatureGenerator):
                 results.extend(new_sigs)
         return results
 
-    def get_function_sig(
-        self, default_sig: FunctionSig, ctx: FunctionContext
+    def get_overridden_signatures(
+        self, ctx: FunctionContext
     ) -> list[FunctionSig] | None:
-        name = ctx.name
-
-        docstr_override = self.get_docstr(ctx)
+        docstr_override = self.get_signature_str(ctx)
         if docstr_override:
+            name = ctx.name
             docstr = docstr_override
 
             def prep_doc(d: str) -> str:
@@ -991,8 +1017,15 @@ class AdvancedSignatureGenerator(SignatureGenerator):
                 docstr = "\n".join(prep_doc(d) for d in docstr)
             else:
                 docstr = prep_doc(docstr)
-            results = infer_sig_from_docstring(docstr, name)
+            return infer_sig_from_docstring(docstr, name)
         else:
+            return None
+
+    def get_function_sig(
+        self, default_sig: FunctionSig, ctx: FunctionContext
+    ) -> list[FunctionSig] | None:
+        results = self.get_overridden_signatures(ctx)
+        if not results:
             # call the standard docstring-based generator.
             results = self.fallback_sig_gen.get_function_sig(default_sig, ctx)
             if results is None:
@@ -1086,16 +1119,7 @@ class CppTypeConverter:
             type = match.group(2).strip()
             yield alias, type
 
-    @lru_cache
-    def cpp_arg_to_py_type(self, cpp_type: str, is_result: bool) -> str:
-        """
-        Convert a c++ type string to a python type string
-
-        Returns the new typestring and whether the type appears to be a return value
-        """
-        typestr = cpp_type
-        is_ptr = "*" in typestr
-
+    def _replace_typedefs(self, typestr: str) -> str:
         def replace_typedefs(typ: str) -> str:
             for alias, replace in self._get_typedefs():
                 typ = re.sub(rf"\b{alias}\b", replace, typ)
@@ -1111,6 +1135,19 @@ class CppTypeConverter:
         if len(replacements) > 1:
             chain = "  >>  ".join(repr(r) for r in replacements)
             print(f"Typedef resolution: {chain}")
+        return typestr
+
+    @lru_cache
+    def cpp_arg_to_py_type(self, cpp_type: str, is_result: bool) -> str:
+        """
+        Convert a c++ type string to a python type string
+
+        Returns the new typestring and whether the type appears to be a return value
+        """
+        typestr = cpp_type
+        is_ptr = "*" in typestr
+
+        typestr = self._replace_typedefs(typestr)
 
         parts = typestr.split()
 

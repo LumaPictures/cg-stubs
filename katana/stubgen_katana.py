@@ -14,6 +14,7 @@ from Callbacks.Callbacks import _TypeEnum  # type: ignore[import]
 
 from stubgenlib import (
     get_mypy_ignore_directive,
+    AdvancedSigMatcher,
     AdvancedSignatureGenerator,
     FixableCDocstringSigGen,
     FixableDocstringSigGen,
@@ -90,101 +91,110 @@ class KatanaCSignatureGenerator(KatanaDocstringTypeFixer, FixableCDocstringSigGe
 
 
 class KatanaSignatureGenerator(AdvancedSignatureGenerator):
-    signature_overrides: dict[str, str | list[str]] = {
-        # these docstring sigs are malformed
-        "NodegraphAPI_cmodule.GraphState.edit": "(self) -> GraphStateBuilder",
-        "NodegraphAPI_cmodule.GraphState.getDynamicEntry": "(self, path: str)",
-        "NodegraphAPI_cmodule.GraphState.getOpSystemArgs": "(self) -> GroupAttribute",
-        "NodegraphAPI_cmodule.GraphState.getStaticEntry": "(self, path: str)",
-        "NodegraphAPI_cmodule.Node.getInputPort": "(self, name: str) -> Port | None",
-        "NodegraphAPI_cmodule.Node.getOutputPort": "(self, name: str) -> Port | None",
-        "NodegraphAPI_cmodule.Node.getParameterValue": "(self, name: str, time: float)",
-    }
-    # FIXME: enabling these creates an explosion of errors to resolve.
-    # optional_result = [
-    #     "NodegraphAPI_cmodule.Node.getInputPortByIndex",
-    #     "NodegraphAPI_cmodule.Node.getOutputPortByIndex",
-    #     "NodegraphAPI_cmodule.Node.getParameter",
-    #     "NodegraphAPI_cmodule.GroupNode.getChild",
-    #     "NodegraphAPI_cmodule.Parameter.getChild",
-    #     "NodegraphAPI_cmodule.Parameter.getChildByIndex",
-    #     "NodegraphAPI_cmodule.Port.getPort",
-    #     "PyFnAttribute.GroupAttribute.getChildByIndex",
-    #     "PyFnAttribute.GroupAttribute.getChildByName",
-    #     "PyFnGeolibProducers.GeometryProducer.getAttribute",
-    #     "PyFnGeolibProducers.GeometryProducer.getChildByName",
-    #     "PyFnGeolibProducers.GeometryProducer.getDelimitedGlobalAttribute",
-    #     "PyFnGeolibProducers.GeometryProducer.getDelimitedLocalAttribute",
-    #     "PyFnGeolibProducers.GeometryProducer.getFirstChild",
-    #     "PyFnGeolibProducers.GeometryProducer.getFnAttribute",
-    #     "PyFnGeolibProducers.GeometryProducer.getGlobalAttribute",
-    #     "PyFnGeolibProducers.GeometryProducer.getNextSibling",
-    #     "PyFnGeolibProducers.GeometryProducer.getProducerByPath",
-    # ]
-    arg_type_overrides = {
-        # FIXME: I'm using typing.Optional here because " | None" is getting stripped
-        (
-            "*",
-            "graphState",
-            "Incomplete | None",
-        ): "typing.Optional[NodegraphAPI.GraphState]",
-        ("*", "graphState", None): "NodegraphAPI.GraphState",
-        ("*", "port", "Incomplete | None"): "typing.Optional[NodegraphAPI.Port]",
-        ("*", "port", None): "NodegraphAPI.Port",
-        ("*", "node", "Incomplete | None"): "typing.Optional[NodegraphAPI.Node]",
-        ("*", "node", None): "NodegraphAPI.Node",
-        (
-            "*",
-            "producer",
-            "Incomplete | None",
-        ): "typing.Optional[PyFnGeolibProducers.GeometryProducer]",
-        ("*", "producer", None): "PyFnGeolibProducers.GeometryProducer",
-        ("*", "*Callback", "Incomplete | None"): "typing.Optional[typing.Callable]",
-        ("*", "*Callback", None): "typing.Callable",
-        ("Nodes3DAPI.RenderNodeUtil.SyncOutputPorts", "node", "*"): "NodegraphAPI.Node",
-        (
-            "Nodes3DAPI.RenderNodeUtil.GetRenderNodeInfo",
-            "node",
-            "*",
-        ): "NodegraphAPI.Node",
-    }
-    result_type_overrides = {
-        # None means the type is unset/unknown
-        ("NodegraphAPI_cmodule.*.getNode", "Any"): "Node",
-        ("*.getNode", None): "NodegraphAPI.Node",
-        (
-            "NodegraphAPI_cmodule.Parameter.getValue",
-            "*",
-        ): "Any",
-        ("NodegraphAPI_cmodule.GroupNode.getChild", "*"): "Node",
-        ("NodegraphAPI_cmodule.GroupNode.getChildren", "*"): "list[Node]",
-        ("NodegraphAPI_cmodule.Parameter.getChildren", "*"): "list[Parameter]",
-        ("NodegraphAPI_cmodule.Port.getConnectedPorts", "*"): "list[Port]",
-        ("PyFnAttribute.GroupAttribute.childList", "*"): "list[tuple[str, Attribute]]",
-        (
-            "PyFnGeolibProducers.GeometryProducer_childIter.__next__",
-            "*",
-        ): "GeometryProducer",
-        (
-            "PyFnGeolibProducers.GeometryProducer.getFlattenedGlobalXform",
-            "*",
-        ): "tuple[float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float]",
-        (
-            "drawing_cmodule.nodeWorld_getBounds",
-            "*",
-        ): "tuple[float, float, float, float]",
-        (
-            "drawing_cmodule.nodeWorld_getBoundsOfListOfNodes",
-            "*",
-        ): "tuple[float, float, float, float]",
-    }
-    optional_args = {
-        (
-            "UI4.FormMaster.KatanaFactory.KatanaWidgetFactoryClass.buildWidget",
-            "policy",
-            "*",
-        ): Optionality(accepts_none=True, has_default=False),
-    }
+    sig_matcher = AdvancedSigMatcher(
+        signature_overrides={
+            # these docstring sigs are malformed
+            "NodegraphAPI_cmodule.GraphState.edit": "(self) -> GraphStateBuilder",
+            "NodegraphAPI_cmodule.GraphState.getDynamicEntry": "(self, path: str)",
+            "NodegraphAPI_cmodule.GraphState.getOpSystemArgs": "(self) -> GroupAttribute",
+            "NodegraphAPI_cmodule.GraphState.getStaticEntry": "(self, path: str)",
+            "NodegraphAPI_cmodule.Node.getInputPort": "(self, name: str) -> Port | None",
+            "NodegraphAPI_cmodule.Node.getOutputPort": "(self, name: str) -> Port | None",
+            "NodegraphAPI_cmodule.Node.getParameterValue": "(self, name: str, time: float)",
+        },
+        # FIXME: enabling these creates an explosion of errors to resolve.
+        # optional_result = [
+        #     "NodegraphAPI_cmodule.Node.getInputPortByIndex",
+        #     "NodegraphAPI_cmodule.Node.getOutputPortByIndex",
+        #     "NodegraphAPI_cmodule.Node.getParameter",
+        #     "NodegraphAPI_cmodule.GroupNode.getChild",
+        #     "NodegraphAPI_cmodule.Parameter.getChild",
+        #     "NodegraphAPI_cmodule.Parameter.getChildByIndex",
+        #     "NodegraphAPI_cmodule.Port.getPort",
+        #     "PyFnAttribute.GroupAttribute.getChildByIndex",
+        #     "PyFnAttribute.GroupAttribute.getChildByName",
+        #     "PyFnGeolibProducers.GeometryProducer.getAttribute",
+        #     "PyFnGeolibProducers.GeometryProducer.getChildByName",
+        #     "PyFnGeolibProducers.GeometryProducer.getDelimitedGlobalAttribute",
+        #     "PyFnGeolibProducers.GeometryProducer.getDelimitedLocalAttribute",
+        #     "PyFnGeolibProducers.GeometryProducer.getFirstChild",
+        #     "PyFnGeolibProducers.GeometryProducer.getFnAttribute",
+        #     "PyFnGeolibProducers.GeometryProducer.getGlobalAttribute",
+        #     "PyFnGeolibProducers.GeometryProducer.getNextSibling",
+        #     "PyFnGeolibProducers.GeometryProducer.getProducerByPath",
+        # ],
+        arg_type_overrides={
+            # FIXME: I'm using typing.Optional here because " | None" is getting stripped
+            (
+                "*",
+                "graphState",
+                "Incomplete | None",
+            ): "typing.Optional[NodegraphAPI.GraphState]",
+            ("*", "graphState", None): "NodegraphAPI.GraphState",
+            ("*", "port", "Incomplete | None"): "typing.Optional[NodegraphAPI.Port]",
+            ("*", "port", None): "NodegraphAPI.Port",
+            ("*", "node", "Incomplete | None"): "typing.Optional[NodegraphAPI.Node]",
+            ("*", "node", None): "NodegraphAPI.Node",
+            (
+                "*",
+                "producer",
+                "Incomplete | None",
+            ): "typing.Optional[PyFnGeolibProducers.GeometryProducer]",
+            ("*", "producer", None): "PyFnGeolibProducers.GeometryProducer",
+            ("*", "*Callback", "Incomplete | None"): "typing.Optional[typing.Callable]",
+            ("*", "*Callback", None): "typing.Callable",
+            (
+                "Nodes3DAPI.RenderNodeUtil.SyncOutputPorts",
+                "node",
+                "*",
+            ): "NodegraphAPI.Node",
+            (
+                "Nodes3DAPI.RenderNodeUtil.GetRenderNodeInfo",
+                "node",
+                "*",
+            ): "NodegraphAPI.Node",
+        },
+        result_type_overrides={
+            # None means the type is unset/unknown
+            ("NodegraphAPI_cmodule.*.getNode", "Any"): "Node",
+            ("*.getNode", None): "NodegraphAPI.Node",
+            (
+                "NodegraphAPI_cmodule.Parameter.getValue",
+                "*",
+            ): "Any",
+            ("NodegraphAPI_cmodule.GroupNode.getChild", "*"): "Node",
+            ("NodegraphAPI_cmodule.GroupNode.getChildren", "*"): "list[Node]",
+            ("NodegraphAPI_cmodule.Parameter.getChildren", "*"): "list[Parameter]",
+            ("NodegraphAPI_cmodule.Port.getConnectedPorts", "*"): "list[Port]",
+            (
+                "PyFnAttribute.GroupAttribute.childList",
+                "*",
+            ): "list[tuple[str, Attribute]]",
+            (
+                "PyFnGeolibProducers.GeometryProducer_childIter.__next__",
+                "*",
+            ): "GeometryProducer",
+            (
+                "PyFnGeolibProducers.GeometryProducer.getFlattenedGlobalXform",
+                "*",
+            ): "tuple[float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float]",
+            (
+                "drawing_cmodule.nodeWorld_getBounds",
+                "*",
+            ): "tuple[float, float, float, float]",
+            (
+                "drawing_cmodule.nodeWorld_getBoundsOfListOfNodes",
+                "*",
+            ): "tuple[float, float, float, float]",
+        },
+        optional_args={
+            (
+                "UI4.FormMaster.KatanaFactory.KatanaWidgetFactoryClass.buildWidget",
+                "policy",
+                "*",
+            ): Optionality(accepts_none=True, has_default=False),
+        },
+    )
 
     def get_property_type(
         self, default_type: str | None, ctx: FunctionContext

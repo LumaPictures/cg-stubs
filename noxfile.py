@@ -270,7 +270,7 @@ def check(
 
         # the result of @nox.session is a nox._decorators.Func. we bind the
         # options here so we can find them in precommit_gen.
-        wrapper.options = options
+        wrapper.options = options  # type: ignore[attr-defined]
 
         return wrapper
 
