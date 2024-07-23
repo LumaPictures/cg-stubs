@@ -3560,214 +3560,6 @@ class _ValueWrapper(Boost.Python.instance):
     def __ne__(self, other: object) -> bool: ...
 
 @overload
-def AllTrue(_a: DoubleArray | typing.Iterable[float], /) -> bool:
-    '''
-    Returns true if every element of input array is not VtZero, else
-    false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AllTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
-@overload
-def AllTrue(_a: FloatArray | typing.Iterable[float], /) -> bool:
-    '''
-    Returns true if every element of input array is not VtZero, else
-    false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AllTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
-@overload
-def AllTrue(_a: HalfArray | typing.Iterable[float], /) -> bool:
-    '''
-    Returns true if every element of input array is not VtZero, else
-    false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AllTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
-@overload
-def AllTrue(_a: BoolArray | typing.Iterable[bool], /) -> bool:
-    '''
-    Returns true if every element of input array is not VtZero, else
-    false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AllTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
-@overload
-def AllTrue(_a: CharArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> bool:
-    '''
-    Returns true if every element of input array is not VtZero, else
-    false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AllTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
-@overload
-def AllTrue(_a: UCharArray, /) -> bool:
-    '''
-    Returns true if every element of input array is not VtZero, else
-    false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AllTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
-@overload
-def AllTrue(_a: ShortArray | typing.Iterable[int], /) -> bool:
-    '''
-    Returns true if every element of input array is not VtZero, else
-    false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AllTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
-@overload
-def AllTrue(_a: UShortArray, /) -> bool:
-    '''
-    Returns true if every element of input array is not VtZero, else
-    false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AllTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
-@overload
-def AllTrue(_a: IntArray | typing.Iterable[int], /) -> bool:
-    '''
-    Returns true if every element of input array is not VtZero, else
-    false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AllTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
-@overload
-def AllTrue(_a: UIntArray | typing.Iterable[int], /) -> bool:
-    '''
-    Returns true if every element of input array is not VtZero, else
-    false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AllTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
-@overload
-def AllTrue(_a: Int64Array | typing.Iterable[int], /) -> bool:
-    '''
-    Returns true if every element of input array is not VtZero, else
-    false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AllTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
-@overload
-def AllTrue(_a: UInt64Array | typing.Iterable[int], /) -> bool:
-    '''
-    Returns true if every element of input array is not VtZero, else
-    false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AllTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
-@overload
-def AllTrue(_a: StringArray, /) -> bool:
-    '''
-    Returns true if every element of input array is not VtZero, else
-    false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AllTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
-@overload
 def AllTrue(_a: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> bool:
     '''
     Returns true if every element of input array is not VtZero, else
@@ -3784,200 +3576,31 @@ def AllTrue(_a: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Itera
     the strings, but on the results of the comparison).
     '''
 @overload
-def AnyTrue(_a: DoubleArray | typing.Iterable[float], /) -> bool:
-    '''
-    Returns true if any element of input array is not VtZero, else false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AnyTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
+def AllTrue(arg1: DoubleArray | typing.Iterable[float], /) -> bool: ...
 @overload
-def AnyTrue(_a: FloatArray | typing.Iterable[float], /) -> bool:
-    '''
-    Returns true if any element of input array is not VtZero, else false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AnyTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
+def AllTrue(arg1: FloatArray | typing.Iterable[float], /) -> bool: ...
 @overload
-def AnyTrue(_a: HalfArray | typing.Iterable[float], /) -> bool:
-    '''
-    Returns true if any element of input array is not VtZero, else false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AnyTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
+def AllTrue(arg1: HalfArray | typing.Iterable[float], /) -> bool: ...
 @overload
-def AnyTrue(_a: BoolArray | typing.Iterable[bool], /) -> bool:
-    '''
-    Returns true if any element of input array is not VtZero, else false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AnyTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
+def AllTrue(arg1: BoolArray | typing.Iterable[bool], /) -> bool: ...
 @overload
-def AnyTrue(_a: CharArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> bool:
-    '''
-    Returns true if any element of input array is not VtZero, else false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AnyTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
+def AllTrue(arg1: CharArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> bool: ...
 @overload
-def AnyTrue(_a: UCharArray, /) -> bool:
-    '''
-    Returns true if any element of input array is not VtZero, else false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AnyTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
+def AllTrue(arg1: UCharArray, /) -> bool: ...
 @overload
-def AnyTrue(_a: ShortArray | typing.Iterable[int], /) -> bool:
-    '''
-    Returns true if any element of input array is not VtZero, else false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AnyTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
+def AllTrue(arg1: ShortArray | typing.Iterable[int], /) -> bool: ...
 @overload
-def AnyTrue(_a: UShortArray, /) -> bool:
-    '''
-    Returns true if any element of input array is not VtZero, else false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AnyTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
+def AllTrue(arg1: UShortArray, /) -> bool: ...
 @overload
-def AnyTrue(_a: IntArray | typing.Iterable[int], /) -> bool:
-    '''
-    Returns true if any element of input array is not VtZero, else false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AnyTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
+def AllTrue(arg1: IntArray | typing.Iterable[int], /) -> bool: ...
 @overload
-def AnyTrue(_a: UIntArray | typing.Iterable[int], /) -> bool:
-    '''
-    Returns true if any element of input array is not VtZero, else false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AnyTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
+def AllTrue(arg1: UIntArray | typing.Iterable[int], /) -> bool: ...
 @overload
-def AnyTrue(_a: Int64Array | typing.Iterable[int], /) -> bool:
-    '''
-    Returns true if any element of input array is not VtZero, else false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AnyTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
+def AllTrue(arg1: Int64Array | typing.Iterable[int], /) -> bool: ...
 @overload
-def AnyTrue(_a: UInt64Array | typing.Iterable[int], /) -> bool:
-    '''
-    Returns true if any element of input array is not VtZero, else false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AnyTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
+def AllTrue(arg1: UInt64Array | typing.Iterable[int], /) -> bool: ...
 @overload
-def AnyTrue(_a: StringArray, /) -> bool:
-    '''
-    Returns true if any element of input array is not VtZero, else false.
-
-
-    Intended to be used to evaluate results of boolean operations on
-    arrays, e.g. ::
-
-      a = Vt.StringArray((3,),("foo","bar","baz"))
-      t = Vt.AnyTrue(Vt.Equal(a,"bar"))
-
-    (This example, if you look carefully, evaluates this function not on
-    the strings, but on the results of the comparison).
-    '''
+def AllTrue(arg1: StringArray, /) -> bool: ...
 @overload
 def AnyTrue(_a: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> bool:
     '''
@@ -3994,6 +3617,32 @@ def AnyTrue(_a: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Itera
     the strings, but on the results of the comparison).
     '''
 @overload
+def AnyTrue(arg1: DoubleArray | typing.Iterable[float], /) -> bool: ...
+@overload
+def AnyTrue(arg1: FloatArray | typing.Iterable[float], /) -> bool: ...
+@overload
+def AnyTrue(arg1: HalfArray | typing.Iterable[float], /) -> bool: ...
+@overload
+def AnyTrue(arg1: BoolArray | typing.Iterable[bool], /) -> bool: ...
+@overload
+def AnyTrue(arg1: CharArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> bool: ...
+@overload
+def AnyTrue(arg1: UCharArray, /) -> bool: ...
+@overload
+def AnyTrue(arg1: ShortArray | typing.Iterable[int], /) -> bool: ...
+@overload
+def AnyTrue(arg1: UShortArray, /) -> bool: ...
+@overload
+def AnyTrue(arg1: IntArray | typing.Iterable[int], /) -> bool: ...
+@overload
+def AnyTrue(arg1: UIntArray | typing.Iterable[int], /) -> bool: ...
+@overload
+def AnyTrue(arg1: Int64Array | typing.Iterable[int], /) -> bool: ...
+@overload
+def AnyTrue(arg1: UInt64Array | typing.Iterable[int], /) -> bool: ...
+@overload
+def AnyTrue(arg1: StringArray, /) -> bool: ...
+@overload
 def Bool(arg1: bool, /) -> _ValueWrapper:
     """Bool(value) -> _ValueWrapper
 
@@ -4009,11 +3658,7 @@ def Bool(value) -> _ValueWrapper:
     Use this function to specify a value with the explicit C++ type bool when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
 def BoolArrayFromBuffer(arg1: object, /) -> Any: ...
 @overload
-def Cat(arg1: DualQuathArray, /) -> DualQuathArray: ...
-@overload
-def Cat(arg1: DualQuathArray, arg2: DualQuathArray, /) -> DualQuathArray: ...
-@overload
-def Cat(_a0: DualQuathArray, _a1: DualQuathArray, _aN: DualQuathArray, /) -> DualQuathArray:
+def Cat(_a0: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], _a1: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], _aN: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], /) -> Vec2dArray:
     """
     Concatenates arrays.
 
@@ -4021,6 +3666,12 @@ def Cat(_a0: DualQuathArray, _a1: DualQuathArray, _aN: DualQuathArray, /) -> Dua
     The result is an array with length equal to the sum of the number of
     elements in the source arrays.
     """
+@overload
+def Cat(arg1: DualQuathArray, /) -> DualQuathArray: ...
+@overload
+def Cat(arg1: DualQuathArray, arg2: DualQuathArray, /) -> DualQuathArray: ...
+@overload
+def Cat(arg1: DualQuathArray, arg2: DualQuathArray, arg3: DualQuathArray, /) -> DualQuathArray: ...
 @overload
 def Cat(arg1: DualQuathArray, arg2: DualQuathArray, arg3: DualQuathArray, arg4: DualQuathArray, /) -> DualQuathArray: ...
 @overload
@@ -4030,14 +3681,7 @@ def Cat(arg1: DualQuatfArray, /) -> DualQuatfArray: ...
 @overload
 def Cat(arg1: DualQuatfArray, arg2: DualQuatfArray, /) -> DualQuatfArray: ...
 @overload
-def Cat(_a0: DualQuatfArray, _a1: DualQuatfArray, _aN: DualQuatfArray, /) -> DualQuatfArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: DualQuatfArray, arg2: DualQuatfArray, arg3: DualQuatfArray, /) -> DualQuatfArray: ...
 @overload
 def Cat(arg1: DualQuatfArray, arg2: DualQuatfArray, arg3: DualQuatfArray, arg4: DualQuatfArray, /) -> DualQuatfArray: ...
 @overload
@@ -4047,14 +3691,7 @@ def Cat(arg1: DualQuatdArray, /) -> DualQuatdArray: ...
 @overload
 def Cat(arg1: DualQuatdArray, arg2: DualQuatdArray, /) -> DualQuatdArray: ...
 @overload
-def Cat(_a0: DualQuatdArray, _a1: DualQuatdArray, _aN: DualQuatdArray, /) -> DualQuatdArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: DualQuatdArray, arg2: DualQuatdArray, arg3: DualQuatdArray, /) -> DualQuatdArray: ...
 @overload
 def Cat(arg1: DualQuatdArray, arg2: DualQuatdArray, arg3: DualQuatdArray, arg4: DualQuatdArray, /) -> DualQuatdArray: ...
 @overload
@@ -4064,14 +3701,7 @@ def Cat(arg1: DoubleArray | typing.Iterable[float], /) -> DoubleArray: ...
 @overload
 def Cat(arg1: DoubleArray | typing.Iterable[float], arg2: DoubleArray | typing.Iterable[float], /) -> DoubleArray: ...
 @overload
-def Cat(_a0: DoubleArray | typing.Iterable[float], _a1: DoubleArray | typing.Iterable[float], _aN: DoubleArray | typing.Iterable[float], /) -> DoubleArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: DoubleArray | typing.Iterable[float], arg2: DoubleArray | typing.Iterable[float], arg3: DoubleArray | typing.Iterable[float], /) -> DoubleArray: ...
 @overload
 def Cat(arg1: DoubleArray | typing.Iterable[float], arg2: DoubleArray | typing.Iterable[float], arg3: DoubleArray | typing.Iterable[float], arg4: DoubleArray | typing.Iterable[float], /) -> DoubleArray: ...
 @overload
@@ -4081,14 +3711,7 @@ def Cat(arg1: FloatArray | typing.Iterable[float], /) -> FloatArray: ...
 @overload
 def Cat(arg1: FloatArray | typing.Iterable[float], arg2: FloatArray | typing.Iterable[float], /) -> FloatArray: ...
 @overload
-def Cat(_a0: FloatArray | typing.Iterable[float], _a1: FloatArray | typing.Iterable[float], _aN: FloatArray | typing.Iterable[float], /) -> FloatArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: FloatArray | typing.Iterable[float], arg2: FloatArray | typing.Iterable[float], arg3: FloatArray | typing.Iterable[float], /) -> FloatArray: ...
 @overload
 def Cat(arg1: FloatArray | typing.Iterable[float], arg2: FloatArray | typing.Iterable[float], arg3: FloatArray | typing.Iterable[float], arg4: FloatArray | typing.Iterable[float], /) -> FloatArray: ...
 @overload
@@ -4098,14 +3721,7 @@ def Cat(arg1: HalfArray | typing.Iterable[float], /) -> HalfArray: ...
 @overload
 def Cat(arg1: HalfArray | typing.Iterable[float], arg2: HalfArray | typing.Iterable[float], /) -> HalfArray: ...
 @overload
-def Cat(_a0: HalfArray | typing.Iterable[float], _a1: HalfArray | typing.Iterable[float], _aN: HalfArray | typing.Iterable[float], /) -> HalfArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: HalfArray | typing.Iterable[float], arg2: HalfArray | typing.Iterable[float], arg3: HalfArray | typing.Iterable[float], /) -> HalfArray: ...
 @overload
 def Cat(arg1: HalfArray | typing.Iterable[float], arg2: HalfArray | typing.Iterable[float], arg3: HalfArray | typing.Iterable[float], arg4: HalfArray | typing.Iterable[float], /) -> HalfArray: ...
 @overload
@@ -4115,14 +3731,7 @@ def Cat(arg1: BoolArray | typing.Iterable[bool], /) -> BoolArray: ...
 @overload
 def Cat(arg1: BoolArray | typing.Iterable[bool], arg2: BoolArray | typing.Iterable[bool], /) -> BoolArray: ...
 @overload
-def Cat(_a0: BoolArray | typing.Iterable[bool], _a1: BoolArray | typing.Iterable[bool], _aN: BoolArray | typing.Iterable[bool], /) -> BoolArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: BoolArray | typing.Iterable[bool], arg2: BoolArray | typing.Iterable[bool], arg3: BoolArray | typing.Iterable[bool], /) -> BoolArray: ...
 @overload
 def Cat(arg1: BoolArray | typing.Iterable[bool], arg2: BoolArray | typing.Iterable[bool], arg3: BoolArray | typing.Iterable[bool], arg4: BoolArray | typing.Iterable[bool], /) -> BoolArray: ...
 @overload
@@ -4132,14 +3741,7 @@ def Cat(arg1: CharArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable
 @overload
 def Cat(arg1: CharArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], arg2: CharArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> CharArray: ...
 @overload
-def Cat(_a0: CharArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], _a1: CharArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], _aN: CharArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> CharArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: CharArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], arg2: CharArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], arg3: CharArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> CharArray: ...
 @overload
 def Cat(arg1: CharArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], arg2: CharArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], arg3: CharArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], arg4: CharArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> CharArray: ...
 @overload
@@ -4149,14 +3751,7 @@ def Cat(arg1: UCharArray, /) -> UCharArray: ...
 @overload
 def Cat(arg1: UCharArray, arg2: UCharArray, /) -> UCharArray: ...
 @overload
-def Cat(_a0: UCharArray, _a1: UCharArray, _aN: UCharArray, /) -> UCharArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: UCharArray, arg2: UCharArray, arg3: UCharArray, /) -> UCharArray: ...
 @overload
 def Cat(arg1: UCharArray, arg2: UCharArray, arg3: UCharArray, arg4: UCharArray, /) -> UCharArray: ...
 @overload
@@ -4166,14 +3761,7 @@ def Cat(arg1: ShortArray | typing.Iterable[int], /) -> ShortArray: ...
 @overload
 def Cat(arg1: ShortArray | typing.Iterable[int], arg2: ShortArray | typing.Iterable[int], /) -> ShortArray: ...
 @overload
-def Cat(_a0: ShortArray | typing.Iterable[int], _a1: ShortArray | typing.Iterable[int], _aN: ShortArray | typing.Iterable[int], /) -> ShortArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: ShortArray | typing.Iterable[int], arg2: ShortArray | typing.Iterable[int], arg3: ShortArray | typing.Iterable[int], /) -> ShortArray: ...
 @overload
 def Cat(arg1: ShortArray | typing.Iterable[int], arg2: ShortArray | typing.Iterable[int], arg3: ShortArray | typing.Iterable[int], arg4: ShortArray | typing.Iterable[int], /) -> ShortArray: ...
 @overload
@@ -4183,14 +3771,7 @@ def Cat(arg1: UShortArray, /) -> UShortArray: ...
 @overload
 def Cat(arg1: UShortArray, arg2: UShortArray, /) -> UShortArray: ...
 @overload
-def Cat(_a0: UShortArray, _a1: UShortArray, _aN: UShortArray, /) -> UShortArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: UShortArray, arg2: UShortArray, arg3: UShortArray, /) -> UShortArray: ...
 @overload
 def Cat(arg1: UShortArray, arg2: UShortArray, arg3: UShortArray, arg4: UShortArray, /) -> UShortArray: ...
 @overload
@@ -4200,14 +3781,7 @@ def Cat(arg1: IntArray | typing.Iterable[int], /) -> IntArray: ...
 @overload
 def Cat(arg1: IntArray | typing.Iterable[int], arg2: IntArray | typing.Iterable[int], /) -> IntArray: ...
 @overload
-def Cat(_a0: IntArray | typing.Iterable[int], _a1: IntArray | typing.Iterable[int], _aN: IntArray | typing.Iterable[int], /) -> IntArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: IntArray | typing.Iterable[int], arg2: IntArray | typing.Iterable[int], arg3: IntArray | typing.Iterable[int], /) -> IntArray: ...
 @overload
 def Cat(arg1: IntArray | typing.Iterable[int], arg2: IntArray | typing.Iterable[int], arg3: IntArray | typing.Iterable[int], arg4: IntArray | typing.Iterable[int], /) -> IntArray: ...
 @overload
@@ -4217,14 +3791,7 @@ def Cat(arg1: UIntArray | typing.Iterable[int], /) -> UIntArray: ...
 @overload
 def Cat(arg1: UIntArray | typing.Iterable[int], arg2: UIntArray | typing.Iterable[int], /) -> UIntArray: ...
 @overload
-def Cat(_a0: UIntArray | typing.Iterable[int], _a1: UIntArray | typing.Iterable[int], _aN: UIntArray | typing.Iterable[int], /) -> UIntArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: UIntArray | typing.Iterable[int], arg2: UIntArray | typing.Iterable[int], arg3: UIntArray | typing.Iterable[int], /) -> UIntArray: ...
 @overload
 def Cat(arg1: UIntArray | typing.Iterable[int], arg2: UIntArray | typing.Iterable[int], arg3: UIntArray | typing.Iterable[int], arg4: UIntArray | typing.Iterable[int], /) -> UIntArray: ...
 @overload
@@ -4234,14 +3801,7 @@ def Cat(arg1: Int64Array | typing.Iterable[int], /) -> Int64Array: ...
 @overload
 def Cat(arg1: Int64Array | typing.Iterable[int], arg2: Int64Array | typing.Iterable[int], /) -> Int64Array: ...
 @overload
-def Cat(_a0: Int64Array | typing.Iterable[int], _a1: Int64Array | typing.Iterable[int], _aN: Int64Array | typing.Iterable[int], /) -> Int64Array:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Int64Array | typing.Iterable[int], arg2: Int64Array | typing.Iterable[int], arg3: Int64Array | typing.Iterable[int], /) -> Int64Array: ...
 @overload
 def Cat(arg1: Int64Array | typing.Iterable[int], arg2: Int64Array | typing.Iterable[int], arg3: Int64Array | typing.Iterable[int], arg4: Int64Array | typing.Iterable[int], /) -> Int64Array: ...
 @overload
@@ -4251,14 +3811,7 @@ def Cat(arg1: UInt64Array | typing.Iterable[int], /) -> UInt64Array: ...
 @overload
 def Cat(arg1: UInt64Array | typing.Iterable[int], arg2: UInt64Array | typing.Iterable[int], /) -> UInt64Array: ...
 @overload
-def Cat(_a0: UInt64Array | typing.Iterable[int], _a1: UInt64Array | typing.Iterable[int], _aN: UInt64Array | typing.Iterable[int], /) -> UInt64Array:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: UInt64Array | typing.Iterable[int], arg2: UInt64Array | typing.Iterable[int], arg3: UInt64Array | typing.Iterable[int], /) -> UInt64Array: ...
 @overload
 def Cat(arg1: UInt64Array | typing.Iterable[int], arg2: UInt64Array | typing.Iterable[int], arg3: UInt64Array | typing.Iterable[int], arg4: UInt64Array | typing.Iterable[int], /) -> UInt64Array: ...
 @overload
@@ -4268,14 +3821,7 @@ def Cat(arg1: Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], /) -> Matrix4fAr
 @overload
 def Cat(arg1: Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], arg2: Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], /) -> Matrix4fArray: ...
 @overload
-def Cat(_a0: Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], _a1: Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], _aN: Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], /) -> Matrix4fArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], arg2: Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], arg3: Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], /) -> Matrix4fArray: ...
 @overload
 def Cat(arg1: Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], arg2: Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], arg3: Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], arg4: Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], /) -> Matrix4fArray: ...
 @overload
@@ -4285,14 +3831,7 @@ def Cat(arg1: Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], /) -> Matrix3fAr
 @overload
 def Cat(arg1: Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], arg2: Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], /) -> Matrix3fArray: ...
 @overload
-def Cat(_a0: Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], _a1: Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], _aN: Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], /) -> Matrix3fArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], arg2: Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], arg3: Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], /) -> Matrix3fArray: ...
 @overload
 def Cat(arg1: Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], arg2: Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], arg3: Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], arg4: Matrix3fArray | typing.Iterable[pxr.Gf.Matrix3f], /) -> Matrix3fArray: ...
 @overload
@@ -4302,14 +3841,7 @@ def Cat(arg1: Matrix2fArray | typing.Iterable[pxr.Gf.Matrix2f], /) -> Matrix2fAr
 @overload
 def Cat(arg1: Matrix2fArray | typing.Iterable[pxr.Gf.Matrix2f], arg2: Matrix2fArray | typing.Iterable[pxr.Gf.Matrix2f], /) -> Matrix2fArray: ...
 @overload
-def Cat(_a0: Matrix2fArray | typing.Iterable[pxr.Gf.Matrix2f], _a1: Matrix2fArray | typing.Iterable[pxr.Gf.Matrix2f], _aN: Matrix2fArray | typing.Iterable[pxr.Gf.Matrix2f], /) -> Matrix2fArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Matrix2fArray | typing.Iterable[pxr.Gf.Matrix2f], arg2: Matrix2fArray | typing.Iterable[pxr.Gf.Matrix2f], arg3: Matrix2fArray | typing.Iterable[pxr.Gf.Matrix2f], /) -> Matrix2fArray: ...
 @overload
 def Cat(arg1: Matrix2fArray | typing.Iterable[pxr.Gf.Matrix2f], arg2: Matrix2fArray | typing.Iterable[pxr.Gf.Matrix2f], arg3: Matrix2fArray | typing.Iterable[pxr.Gf.Matrix2f], arg4: Matrix2fArray | typing.Iterable[pxr.Gf.Matrix2f], /) -> Matrix2fArray: ...
 @overload
@@ -4319,14 +3851,7 @@ def Cat(arg1: Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], /) -> Matrix4dAr
 @overload
 def Cat(arg1: Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], arg2: Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], /) -> Matrix4dArray: ...
 @overload
-def Cat(_a0: Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], _a1: Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], _aN: Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], /) -> Matrix4dArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], arg2: Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], arg3: Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], /) -> Matrix4dArray: ...
 @overload
 def Cat(arg1: Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], arg2: Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], arg3: Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], arg4: Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], /) -> Matrix4dArray: ...
 @overload
@@ -4336,14 +3861,7 @@ def Cat(arg1: Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], /) -> Matrix3dAr
 @overload
 def Cat(arg1: Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], arg2: Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], /) -> Matrix3dArray: ...
 @overload
-def Cat(_a0: Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], _a1: Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], _aN: Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], /) -> Matrix3dArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], arg2: Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], arg3: Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], /) -> Matrix3dArray: ...
 @overload
 def Cat(arg1: Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], arg2: Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], arg3: Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], arg4: Matrix3dArray | typing.Iterable[pxr.Gf.Matrix3d], /) -> Matrix3dArray: ...
 @overload
@@ -4353,14 +3871,7 @@ def Cat(arg1: Matrix2dArray | typing.Iterable[pxr.Gf.Matrix2d], /) -> Matrix2dAr
 @overload
 def Cat(arg1: Matrix2dArray | typing.Iterable[pxr.Gf.Matrix2d], arg2: Matrix2dArray | typing.Iterable[pxr.Gf.Matrix2d], /) -> Matrix2dArray: ...
 @overload
-def Cat(_a0: Matrix2dArray | typing.Iterable[pxr.Gf.Matrix2d], _a1: Matrix2dArray | typing.Iterable[pxr.Gf.Matrix2d], _aN: Matrix2dArray | typing.Iterable[pxr.Gf.Matrix2d], /) -> Matrix2dArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Matrix2dArray | typing.Iterable[pxr.Gf.Matrix2d], arg2: Matrix2dArray | typing.Iterable[pxr.Gf.Matrix2d], arg3: Matrix2dArray | typing.Iterable[pxr.Gf.Matrix2d], /) -> Matrix2dArray: ...
 @overload
 def Cat(arg1: Matrix2dArray | typing.Iterable[pxr.Gf.Matrix2d], arg2: Matrix2dArray | typing.Iterable[pxr.Gf.Matrix2d], arg3: Matrix2dArray | typing.Iterable[pxr.Gf.Matrix2d], arg4: Matrix2dArray | typing.Iterable[pxr.Gf.Matrix2d], /) -> Matrix2dArray: ...
 @overload
@@ -4370,14 +3881,7 @@ def Cat(arg1: QuathArray | typing.Iterable[pxr.Gf.Quath], /) -> QuathArray: ...
 @overload
 def Cat(arg1: QuathArray | typing.Iterable[pxr.Gf.Quath], arg2: QuathArray | typing.Iterable[pxr.Gf.Quath], /) -> QuathArray: ...
 @overload
-def Cat(_a0: QuathArray | typing.Iterable[pxr.Gf.Quath], _a1: QuathArray | typing.Iterable[pxr.Gf.Quath], _aN: QuathArray | typing.Iterable[pxr.Gf.Quath], /) -> QuathArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: QuathArray | typing.Iterable[pxr.Gf.Quath], arg2: QuathArray | typing.Iterable[pxr.Gf.Quath], arg3: QuathArray | typing.Iterable[pxr.Gf.Quath], /) -> QuathArray: ...
 @overload
 def Cat(arg1: QuathArray | typing.Iterable[pxr.Gf.Quath], arg2: QuathArray | typing.Iterable[pxr.Gf.Quath], arg3: QuathArray | typing.Iterable[pxr.Gf.Quath], arg4: QuathArray | typing.Iterable[pxr.Gf.Quath], /) -> QuathArray: ...
 @overload
@@ -4387,14 +3891,7 @@ def Cat(arg1: QuatfArray | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.G
 @overload
 def Cat(arg1: QuatfArray | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], arg2: QuatfArray | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], /) -> QuatfArray: ...
 @overload
-def Cat(_a0: QuatfArray | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], _a1: QuatfArray | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], _aN: QuatfArray | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], /) -> QuatfArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: QuatfArray | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], arg2: QuatfArray | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], arg3: QuatfArray | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], /) -> QuatfArray: ...
 @overload
 def Cat(arg1: QuatfArray | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], arg2: QuatfArray | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], arg3: QuatfArray | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], arg4: QuatfArray | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], /) -> QuatfArray: ...
 @overload
@@ -4404,14 +3901,7 @@ def Cat(arg1: QuatdArray | typing.Iterable[pxr.Gf.Quatd] | typing.Iterable[pxr.G
 @overload
 def Cat(arg1: QuatdArray | typing.Iterable[pxr.Gf.Quatd] | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], arg2: QuatdArray | typing.Iterable[pxr.Gf.Quatd] | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], /) -> QuatdArray: ...
 @overload
-def Cat(_a0: QuatdArray | typing.Iterable[pxr.Gf.Quatd] | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], _a1: QuatdArray | typing.Iterable[pxr.Gf.Quatd] | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], _aN: QuatdArray | typing.Iterable[pxr.Gf.Quatd] | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], /) -> QuatdArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: QuatdArray | typing.Iterable[pxr.Gf.Quatd] | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], arg2: QuatdArray | typing.Iterable[pxr.Gf.Quatd] | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], arg3: QuatdArray | typing.Iterable[pxr.Gf.Quatd] | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], /) -> QuatdArray: ...
 @overload
 def Cat(arg1: QuatdArray | typing.Iterable[pxr.Gf.Quatd] | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], arg2: QuatdArray | typing.Iterable[pxr.Gf.Quatd] | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], arg3: QuatdArray | typing.Iterable[pxr.Gf.Quatd] | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], arg4: QuatdArray | typing.Iterable[pxr.Gf.Quatd] | typing.Iterable[pxr.Gf.Quatf] | typing.Iterable[pxr.Gf.Quath], /) -> QuatdArray: ...
 @overload
@@ -4421,14 +3911,7 @@ def Cat(arg1: QuaternionArray | typing.Iterable[pxr.Gf.Quaternion], /) -> Quater
 @overload
 def Cat(arg1: QuaternionArray | typing.Iterable[pxr.Gf.Quaternion], arg2: QuaternionArray | typing.Iterable[pxr.Gf.Quaternion], /) -> QuaternionArray: ...
 @overload
-def Cat(_a0: QuaternionArray | typing.Iterable[pxr.Gf.Quaternion], _a1: QuaternionArray | typing.Iterable[pxr.Gf.Quaternion], _aN: QuaternionArray | typing.Iterable[pxr.Gf.Quaternion], /) -> QuaternionArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: QuaternionArray | typing.Iterable[pxr.Gf.Quaternion], arg2: QuaternionArray | typing.Iterable[pxr.Gf.Quaternion], arg3: QuaternionArray | typing.Iterable[pxr.Gf.Quaternion], /) -> QuaternionArray: ...
 @overload
 def Cat(arg1: QuaternionArray | typing.Iterable[pxr.Gf.Quaternion], arg2: QuaternionArray | typing.Iterable[pxr.Gf.Quaternion], arg3: QuaternionArray | typing.Iterable[pxr.Gf.Quaternion], arg4: QuaternionArray | typing.Iterable[pxr.Gf.Quaternion], /) -> QuaternionArray: ...
 @overload
@@ -4438,14 +3921,7 @@ def Cat(arg1: Range3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.
 @overload
 def Cat(arg1: Range3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3f] | typing.Iterable[tuple[float, float, float]], arg2: Range3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3f] | typing.Iterable[tuple[float, float, float]], /) -> Range3fArray: ...
 @overload
-def Cat(_a0: Range3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3f] | typing.Iterable[tuple[float, float, float]], _a1: Range3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3f] | typing.Iterable[tuple[float, float, float]], _aN: Range3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3f] | typing.Iterable[tuple[float, float, float]], /) -> Range3fArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Range3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3f] | typing.Iterable[tuple[float, float, float]], arg2: Range3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3f] | typing.Iterable[tuple[float, float, float]], arg3: Range3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3f] | typing.Iterable[tuple[float, float, float]], /) -> Range3fArray: ...
 @overload
 def Cat(arg1: Range3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3f] | typing.Iterable[tuple[float, float, float]], arg2: Range3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3f] | typing.Iterable[tuple[float, float, float]], arg3: Range3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3f] | typing.Iterable[tuple[float, float, float]], arg4: Range3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3f] | typing.Iterable[tuple[float, float, float]], /) -> Range3fArray: ...
 @overload
@@ -4455,14 +3931,7 @@ def Cat(arg1: Range3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.
 @overload
 def Cat(arg1: Range3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3d] | typing.Iterable[tuple[float, float, float]], arg2: Range3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3d] | typing.Iterable[tuple[float, float, float]], /) -> Range3dArray: ...
 @overload
-def Cat(_a0: Range3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3d] | typing.Iterable[tuple[float, float, float]], _a1: Range3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3d] | typing.Iterable[tuple[float, float, float]], _aN: Range3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3d] | typing.Iterable[tuple[float, float, float]], /) -> Range3dArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Range3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3d] | typing.Iterable[tuple[float, float, float]], arg2: Range3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3d] | typing.Iterable[tuple[float, float, float]], arg3: Range3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3d] | typing.Iterable[tuple[float, float, float]], /) -> Range3dArray: ...
 @overload
 def Cat(arg1: Range3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3d] | typing.Iterable[tuple[float, float, float]], arg2: Range3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3d] | typing.Iterable[tuple[float, float, float]], arg3: Range3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3d] | typing.Iterable[tuple[float, float, float]], arg4: Range3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range3d] | typing.Iterable[tuple[float, float, float]], /) -> Range3dArray: ...
 @overload
@@ -4472,14 +3941,7 @@ def Cat(arg1: Range2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.
 @overload
 def Cat(arg1: Range2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2f] | typing.Iterable[tuple[float, float]], arg2: Range2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2f] | typing.Iterable[tuple[float, float]], /) -> Range2fArray: ...
 @overload
-def Cat(_a0: Range2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2f] | typing.Iterable[tuple[float, float]], _a1: Range2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2f] | typing.Iterable[tuple[float, float]], _aN: Range2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2f] | typing.Iterable[tuple[float, float]], /) -> Range2fArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Range2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2f] | typing.Iterable[tuple[float, float]], arg2: Range2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2f] | typing.Iterable[tuple[float, float]], arg3: Range2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2f] | typing.Iterable[tuple[float, float]], /) -> Range2fArray: ...
 @overload
 def Cat(arg1: Range2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2f] | typing.Iterable[tuple[float, float]], arg2: Range2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2f] | typing.Iterable[tuple[float, float]], arg3: Range2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2f] | typing.Iterable[tuple[float, float]], arg4: Range2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2f] | typing.Iterable[tuple[float, float]], /) -> Range2fArray: ...
 @overload
@@ -4489,14 +3951,7 @@ def Cat(arg1: Range2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.
 @overload
 def Cat(arg1: Range2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2d] | typing.Iterable[tuple[float, float]], arg2: Range2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2d] | typing.Iterable[tuple[float, float]], /) -> Range2dArray: ...
 @overload
-def Cat(_a0: Range2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2d] | typing.Iterable[tuple[float, float]], _a1: Range2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2d] | typing.Iterable[tuple[float, float]], _aN: Range2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2d] | typing.Iterable[tuple[float, float]], /) -> Range2dArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Range2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2d] | typing.Iterable[tuple[float, float]], arg2: Range2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2d] | typing.Iterable[tuple[float, float]], arg3: Range2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2d] | typing.Iterable[tuple[float, float]], /) -> Range2dArray: ...
 @overload
 def Cat(arg1: Range2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2d] | typing.Iterable[tuple[float, float]], arg2: Range2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2d] | typing.Iterable[tuple[float, float]], arg3: Range2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2d] | typing.Iterable[tuple[float, float]], arg4: Range2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Range2d] | typing.Iterable[tuple[float, float]], /) -> Range2dArray: ...
 @overload
@@ -4506,14 +3961,7 @@ def Cat(arg1: Range1fArray | typing.Iterable[pxr.Gf.Range1f], /) -> Range1fArray
 @overload
 def Cat(arg1: Range1fArray | typing.Iterable[pxr.Gf.Range1f], arg2: Range1fArray | typing.Iterable[pxr.Gf.Range1f], /) -> Range1fArray: ...
 @overload
-def Cat(_a0: Range1fArray | typing.Iterable[pxr.Gf.Range1f], _a1: Range1fArray | typing.Iterable[pxr.Gf.Range1f], _aN: Range1fArray | typing.Iterable[pxr.Gf.Range1f], /) -> Range1fArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Range1fArray | typing.Iterable[pxr.Gf.Range1f], arg2: Range1fArray | typing.Iterable[pxr.Gf.Range1f], arg3: Range1fArray | typing.Iterable[pxr.Gf.Range1f], /) -> Range1fArray: ...
 @overload
 def Cat(arg1: Range1fArray | typing.Iterable[pxr.Gf.Range1f], arg2: Range1fArray | typing.Iterable[pxr.Gf.Range1f], arg3: Range1fArray | typing.Iterable[pxr.Gf.Range1f], arg4: Range1fArray | typing.Iterable[pxr.Gf.Range1f], /) -> Range1fArray: ...
 @overload
@@ -4523,14 +3971,7 @@ def Cat(arg1: Range1dArray | typing.Iterable[pxr.Gf.Range1d], /) -> Range1dArray
 @overload
 def Cat(arg1: Range1dArray | typing.Iterable[pxr.Gf.Range1d], arg2: Range1dArray | typing.Iterable[pxr.Gf.Range1d], /) -> Range1dArray: ...
 @overload
-def Cat(_a0: Range1dArray | typing.Iterable[pxr.Gf.Range1d], _a1: Range1dArray | typing.Iterable[pxr.Gf.Range1d], _aN: Range1dArray | typing.Iterable[pxr.Gf.Range1d], /) -> Range1dArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Range1dArray | typing.Iterable[pxr.Gf.Range1d], arg2: Range1dArray | typing.Iterable[pxr.Gf.Range1d], arg3: Range1dArray | typing.Iterable[pxr.Gf.Range1d], /) -> Range1dArray: ...
 @overload
 def Cat(arg1: Range1dArray | typing.Iterable[pxr.Gf.Range1d], arg2: Range1dArray | typing.Iterable[pxr.Gf.Range1d], arg3: Range1dArray | typing.Iterable[pxr.Gf.Range1d], arg4: Range1dArray | typing.Iterable[pxr.Gf.Range1d], /) -> Range1dArray: ...
 @overload
@@ -4540,14 +3981,7 @@ def Cat(arg1: IntervalArray | typing.Iterable[pxr.Gf.Interval], /) -> IntervalAr
 @overload
 def Cat(arg1: IntervalArray | typing.Iterable[pxr.Gf.Interval], arg2: IntervalArray | typing.Iterable[pxr.Gf.Interval], /) -> IntervalArray: ...
 @overload
-def Cat(_a0: IntervalArray | typing.Iterable[pxr.Gf.Interval], _a1: IntervalArray | typing.Iterable[pxr.Gf.Interval], _aN: IntervalArray | typing.Iterable[pxr.Gf.Interval], /) -> IntervalArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: IntervalArray | typing.Iterable[pxr.Gf.Interval], arg2: IntervalArray | typing.Iterable[pxr.Gf.Interval], arg3: IntervalArray | typing.Iterable[pxr.Gf.Interval], /) -> IntervalArray: ...
 @overload
 def Cat(arg1: IntervalArray | typing.Iterable[pxr.Gf.Interval], arg2: IntervalArray | typing.Iterable[pxr.Gf.Interval], arg3: IntervalArray | typing.Iterable[pxr.Gf.Interval], arg4: IntervalArray | typing.Iterable[pxr.Gf.Interval], /) -> IntervalArray: ...
 @overload
@@ -4557,14 +3991,7 @@ def Cat(arg1: Rect2iArray | typing.Iterable[pxr.Gf.Rect2i], /) -> Rect2iArray: .
 @overload
 def Cat(arg1: Rect2iArray | typing.Iterable[pxr.Gf.Rect2i], arg2: Rect2iArray | typing.Iterable[pxr.Gf.Rect2i], /) -> Rect2iArray: ...
 @overload
-def Cat(_a0: Rect2iArray | typing.Iterable[pxr.Gf.Rect2i], _a1: Rect2iArray | typing.Iterable[pxr.Gf.Rect2i], _aN: Rect2iArray | typing.Iterable[pxr.Gf.Rect2i], /) -> Rect2iArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Rect2iArray | typing.Iterable[pxr.Gf.Rect2i], arg2: Rect2iArray | typing.Iterable[pxr.Gf.Rect2i], arg3: Rect2iArray | typing.Iterable[pxr.Gf.Rect2i], /) -> Rect2iArray: ...
 @overload
 def Cat(arg1: Rect2iArray | typing.Iterable[pxr.Gf.Rect2i], arg2: Rect2iArray | typing.Iterable[pxr.Gf.Rect2i], arg3: Rect2iArray | typing.Iterable[pxr.Gf.Rect2i], arg4: Rect2iArray | typing.Iterable[pxr.Gf.Rect2i], /) -> Rect2iArray: ...
 @overload
@@ -4574,14 +4001,7 @@ def Cat(arg1: StringArray, /) -> StringArray: ...
 @overload
 def Cat(arg1: StringArray, arg2: StringArray, /) -> StringArray: ...
 @overload
-def Cat(_a0: StringArray, _a1: StringArray, _aN: StringArray, /) -> StringArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: StringArray, arg2: StringArray, arg3: StringArray, /) -> StringArray: ...
 @overload
 def Cat(arg1: StringArray, arg2: StringArray, arg3: StringArray, arg4: StringArray, /) -> StringArray: ...
 @overload
@@ -4591,14 +4011,7 @@ def Cat(arg1: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterabl
 @overload
 def Cat(arg1: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], arg2: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> TokenArray: ...
 @overload
-def Cat(_a0: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], _a1: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], _aN: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> TokenArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], arg2: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], arg3: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> TokenArray: ...
 @overload
 def Cat(arg1: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], arg2: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], arg3: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], arg4: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> TokenArray: ...
 @overload
@@ -4608,14 +4021,7 @@ def Cat(arg1: Vec4iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.V
 @overload
 def Cat(arg1: Vec4iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Vec4i] | typing.Iterable[tuple[int, int, int, int]], arg2: Vec4iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Vec4i] | typing.Iterable[tuple[int, int, int, int]], /) -> Vec4iArray: ...
 @overload
-def Cat(_a0: Vec4iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Vec4i] | typing.Iterable[tuple[int, int, int, int]], _a1: Vec4iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Vec4i] | typing.Iterable[tuple[int, int, int, int]], _aN: Vec4iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Vec4i] | typing.Iterable[tuple[int, int, int, int]], /) -> Vec4iArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Vec4iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Vec4i] | typing.Iterable[tuple[int, int, int, int]], arg2: Vec4iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Vec4i] | typing.Iterable[tuple[int, int, int, int]], arg3: Vec4iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Vec4i] | typing.Iterable[tuple[int, int, int, int]], /) -> Vec4iArray: ...
 @overload
 def Cat(arg1: Vec4iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Vec4i] | typing.Iterable[tuple[int, int, int, int]], arg2: Vec4iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Vec4i] | typing.Iterable[tuple[int, int, int, int]], arg3: Vec4iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Vec4i] | typing.Iterable[tuple[int, int, int, int]], arg4: Vec4iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Vec4i] | typing.Iterable[tuple[int, int, int, int]], /) -> Vec4iArray: ...
 @overload
@@ -4625,14 +4031,7 @@ def Cat(arg1: Vec3iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.S
 @overload
 def Cat(arg1: Vec3iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size3] | typing.Iterable[pxr.Gf.Vec3i] | typing.Iterable[tuple[int, int, int]], arg2: Vec3iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size3] | typing.Iterable[pxr.Gf.Vec3i] | typing.Iterable[tuple[int, int, int]], /) -> Vec3iArray: ...
 @overload
-def Cat(_a0: Vec3iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size3] | typing.Iterable[pxr.Gf.Vec3i] | typing.Iterable[tuple[int, int, int]], _a1: Vec3iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size3] | typing.Iterable[pxr.Gf.Vec3i] | typing.Iterable[tuple[int, int, int]], _aN: Vec3iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size3] | typing.Iterable[pxr.Gf.Vec3i] | typing.Iterable[tuple[int, int, int]], /) -> Vec3iArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Vec3iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size3] | typing.Iterable[pxr.Gf.Vec3i] | typing.Iterable[tuple[int, int, int]], arg2: Vec3iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size3] | typing.Iterable[pxr.Gf.Vec3i] | typing.Iterable[tuple[int, int, int]], arg3: Vec3iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size3] | typing.Iterable[pxr.Gf.Vec3i] | typing.Iterable[tuple[int, int, int]], /) -> Vec3iArray: ...
 @overload
 def Cat(arg1: Vec3iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size3] | typing.Iterable[pxr.Gf.Vec3i] | typing.Iterable[tuple[int, int, int]], arg2: Vec3iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size3] | typing.Iterable[pxr.Gf.Vec3i] | typing.Iterable[tuple[int, int, int]], arg3: Vec3iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size3] | typing.Iterable[pxr.Gf.Vec3i] | typing.Iterable[tuple[int, int, int]], arg4: Vec3iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size3] | typing.Iterable[pxr.Gf.Vec3i] | typing.Iterable[tuple[int, int, int]], /) -> Vec3iArray: ...
 @overload
@@ -4642,14 +4041,7 @@ def Cat(arg1: Vec2iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.S
 @overload
 def Cat(arg1: Vec2iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size2] | typing.Iterable[pxr.Gf.Vec2i] | typing.Iterable[tuple[int, int]], arg2: Vec2iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size2] | typing.Iterable[pxr.Gf.Vec2i] | typing.Iterable[tuple[int, int]], /) -> Vec2iArray: ...
 @overload
-def Cat(_a0: Vec2iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size2] | typing.Iterable[pxr.Gf.Vec2i] | typing.Iterable[tuple[int, int]], _a1: Vec2iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size2] | typing.Iterable[pxr.Gf.Vec2i] | typing.Iterable[tuple[int, int]], _aN: Vec2iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size2] | typing.Iterable[pxr.Gf.Vec2i] | typing.Iterable[tuple[int, int]], /) -> Vec2iArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Vec2iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size2] | typing.Iterable[pxr.Gf.Vec2i] | typing.Iterable[tuple[int, int]], arg2: Vec2iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size2] | typing.Iterable[pxr.Gf.Vec2i] | typing.Iterable[tuple[int, int]], arg3: Vec2iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size2] | typing.Iterable[pxr.Gf.Vec2i] | typing.Iterable[tuple[int, int]], /) -> Vec2iArray: ...
 @overload
 def Cat(arg1: Vec2iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size2] | typing.Iterable[pxr.Gf.Vec2i] | typing.Iterable[tuple[int, int]], arg2: Vec2iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size2] | typing.Iterable[pxr.Gf.Vec2i] | typing.Iterable[tuple[int, int]], arg3: Vec2iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size2] | typing.Iterable[pxr.Gf.Vec2i] | typing.Iterable[tuple[int, int]], arg4: Vec2iArray | typing.Iterable[list[int]] | typing.Iterable[pxr.Gf.Size2] | typing.Iterable[pxr.Gf.Vec2i] | typing.Iterable[tuple[int, int]], /) -> Vec2iArray: ...
 @overload
@@ -4659,14 +4051,7 @@ def Cat(arg1: Vec4hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf
 @overload
 def Cat(arg1: Vec4hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4h] | typing.Iterable[tuple[float, float, float, float]], arg2: Vec4hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4h] | typing.Iterable[tuple[float, float, float, float]], /) -> Vec4hArray: ...
 @overload
-def Cat(_a0: Vec4hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4h] | typing.Iterable[tuple[float, float, float, float]], _a1: Vec4hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4h] | typing.Iterable[tuple[float, float, float, float]], _aN: Vec4hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4h] | typing.Iterable[tuple[float, float, float, float]], /) -> Vec4hArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Vec4hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4h] | typing.Iterable[tuple[float, float, float, float]], arg2: Vec4hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4h] | typing.Iterable[tuple[float, float, float, float]], arg3: Vec4hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4h] | typing.Iterable[tuple[float, float, float, float]], /) -> Vec4hArray: ...
 @overload
 def Cat(arg1: Vec4hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4h] | typing.Iterable[tuple[float, float, float, float]], arg2: Vec4hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4h] | typing.Iterable[tuple[float, float, float, float]], arg3: Vec4hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4h] | typing.Iterable[tuple[float, float, float, float]], arg4: Vec4hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4h] | typing.Iterable[tuple[float, float, float, float]], /) -> Vec4hArray: ...
 @overload
@@ -4676,14 +4061,7 @@ def Cat(arg1: Vec3hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf
 @overload
 def Cat(arg1: Vec3hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3h] | typing.Iterable[tuple[float, float, float]], arg2: Vec3hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3h] | typing.Iterable[tuple[float, float, float]], /) -> Vec3hArray: ...
 @overload
-def Cat(_a0: Vec3hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3h] | typing.Iterable[tuple[float, float, float]], _a1: Vec3hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3h] | typing.Iterable[tuple[float, float, float]], _aN: Vec3hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3h] | typing.Iterable[tuple[float, float, float]], /) -> Vec3hArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Vec3hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3h] | typing.Iterable[tuple[float, float, float]], arg2: Vec3hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3h] | typing.Iterable[tuple[float, float, float]], arg3: Vec3hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3h] | typing.Iterable[tuple[float, float, float]], /) -> Vec3hArray: ...
 @overload
 def Cat(arg1: Vec3hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3h] | typing.Iterable[tuple[float, float, float]], arg2: Vec3hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3h] | typing.Iterable[tuple[float, float, float]], arg3: Vec3hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3h] | typing.Iterable[tuple[float, float, float]], arg4: Vec3hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3h] | typing.Iterable[tuple[float, float, float]], /) -> Vec3hArray: ...
 @overload
@@ -4693,14 +4071,7 @@ def Cat(arg1: Vec2hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf
 @overload
 def Cat(arg1: Vec2hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2h] | typing.Iterable[tuple[float, float]], arg2: Vec2hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2h] | typing.Iterable[tuple[float, float]], /) -> Vec2hArray: ...
 @overload
-def Cat(_a0: Vec2hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2h] | typing.Iterable[tuple[float, float]], _a1: Vec2hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2h] | typing.Iterable[tuple[float, float]], _aN: Vec2hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2h] | typing.Iterable[tuple[float, float]], /) -> Vec2hArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Vec2hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2h] | typing.Iterable[tuple[float, float]], arg2: Vec2hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2h] | typing.Iterable[tuple[float, float]], arg3: Vec2hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2h] | typing.Iterable[tuple[float, float]], /) -> Vec2hArray: ...
 @overload
 def Cat(arg1: Vec2hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2h] | typing.Iterable[tuple[float, float]], arg2: Vec2hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2h] | typing.Iterable[tuple[float, float]], arg3: Vec2hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2h] | typing.Iterable[tuple[float, float]], arg4: Vec2hArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2h] | typing.Iterable[tuple[float, float]], /) -> Vec2hArray: ...
 @overload
@@ -4710,14 +4081,7 @@ def Cat(arg1: Vec4fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf
 @overload
 def Cat(arg1: Vec4fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4f] | typing.Iterable[tuple[float, float, float, float]], arg2: Vec4fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4f] | typing.Iterable[tuple[float, float, float, float]], /) -> Vec4fArray: ...
 @overload
-def Cat(_a0: Vec4fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4f] | typing.Iterable[tuple[float, float, float, float]], _a1: Vec4fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4f] | typing.Iterable[tuple[float, float, float, float]], _aN: Vec4fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4f] | typing.Iterable[tuple[float, float, float, float]], /) -> Vec4fArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Vec4fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4f] | typing.Iterable[tuple[float, float, float, float]], arg2: Vec4fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4f] | typing.Iterable[tuple[float, float, float, float]], arg3: Vec4fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4f] | typing.Iterable[tuple[float, float, float, float]], /) -> Vec4fArray: ...
 @overload
 def Cat(arg1: Vec4fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4f] | typing.Iterable[tuple[float, float, float, float]], arg2: Vec4fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4f] | typing.Iterable[tuple[float, float, float, float]], arg3: Vec4fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4f] | typing.Iterable[tuple[float, float, float, float]], arg4: Vec4fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4f] | typing.Iterable[tuple[float, float, float, float]], /) -> Vec4fArray: ...
 @overload
@@ -4727,14 +4091,7 @@ def Cat(arg1: Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf
 @overload
 def Cat(arg1: Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], arg2: Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], /) -> Vec3fArray: ...
 @overload
-def Cat(_a0: Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], _a1: Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], _aN: Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], /) -> Vec3fArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], arg2: Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], arg3: Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], /) -> Vec3fArray: ...
 @overload
 def Cat(arg1: Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], arg2: Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], arg3: Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], arg4: Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], /) -> Vec3fArray: ...
 @overload
@@ -4744,14 +4101,7 @@ def Cat(arg1: Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf
 @overload
 def Cat(arg1: Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], arg2: Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], /) -> Vec2fArray: ...
 @overload
-def Cat(_a0: Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], _a1: Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], _aN: Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], /) -> Vec2fArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], arg2: Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], arg3: Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], /) -> Vec2fArray: ...
 @overload
 def Cat(arg1: Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], arg2: Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], arg3: Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], arg4: Vec2fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2f] | typing.Iterable[tuple[float, float]], /) -> Vec2fArray: ...
 @overload
@@ -4761,14 +4111,7 @@ def Cat(arg1: Vec4dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf
 @overload
 def Cat(arg1: Vec4dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4d] | typing.Iterable[tuple[float, float, float, float]], arg2: Vec4dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4d] | typing.Iterable[tuple[float, float, float, float]], /) -> Vec4dArray: ...
 @overload
-def Cat(_a0: Vec4dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4d] | typing.Iterable[tuple[float, float, float, float]], _a1: Vec4dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4d] | typing.Iterable[tuple[float, float, float, float]], _aN: Vec4dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4d] | typing.Iterable[tuple[float, float, float, float]], /) -> Vec4dArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Vec4dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4d] | typing.Iterable[tuple[float, float, float, float]], arg2: Vec4dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4d] | typing.Iterable[tuple[float, float, float, float]], arg3: Vec4dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4d] | typing.Iterable[tuple[float, float, float, float]], /) -> Vec4dArray: ...
 @overload
 def Cat(arg1: Vec4dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4d] | typing.Iterable[tuple[float, float, float, float]], arg2: Vec4dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4d] | typing.Iterable[tuple[float, float, float, float]], arg3: Vec4dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4d] | typing.Iterable[tuple[float, float, float, float]], arg4: Vec4dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec4d] | typing.Iterable[tuple[float, float, float, float]], /) -> Vec4dArray: ...
 @overload
@@ -4778,14 +4121,7 @@ def Cat(arg1: Vec3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf
 @overload
 def Cat(arg1: Vec3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3d] | typing.Iterable[tuple[float, float, float]], arg2: Vec3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3d] | typing.Iterable[tuple[float, float, float]], /) -> Vec3dArray: ...
 @overload
-def Cat(_a0: Vec3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3d] | typing.Iterable[tuple[float, float, float]], _a1: Vec3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3d] | typing.Iterable[tuple[float, float, float]], _aN: Vec3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3d] | typing.Iterable[tuple[float, float, float]], /) -> Vec3dArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
+def Cat(arg1: Vec3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3d] | typing.Iterable[tuple[float, float, float]], arg2: Vec3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3d] | typing.Iterable[tuple[float, float, float]], arg3: Vec3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3d] | typing.Iterable[tuple[float, float, float]], /) -> Vec3dArray: ...
 @overload
 def Cat(arg1: Vec3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3d] | typing.Iterable[tuple[float, float, float]], arg2: Vec3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3d] | typing.Iterable[tuple[float, float, float]], arg3: Vec3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3d] | typing.Iterable[tuple[float, float, float]], arg4: Vec3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3d] | typing.Iterable[tuple[float, float, float]], /) -> Vec3dArray: ...
 @overload
@@ -4794,15 +4130,6 @@ def Cat(arg1: Vec3dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf
 def Cat(arg1: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], /) -> Vec2dArray: ...
 @overload
 def Cat(arg1: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], arg2: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], /) -> Vec2dArray: ...
-@overload
-def Cat(_a0: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], _a1: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], _aN: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], /) -> Vec2dArray:
-    """
-    Concatenates arrays.
-
-
-    The result is an array with length equal to the sum of the number of
-    elements in the source arrays.
-    """
 @overload
 def Cat(arg1: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], arg2: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], arg3: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], arg4: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], /) -> Vec2dArray: ...
 @overload

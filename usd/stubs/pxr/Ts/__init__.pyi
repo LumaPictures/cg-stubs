@@ -77,17 +77,14 @@ class KeyFrame(Boost.Python.instance):
         Constructs a keyframe by duplicating an existing TsKeyFrame.
         """
     @overload
-    def CanSetKnotType(self, _unknownArg1: KnotType, /) -> _AnnotatedBoolResult:
-        """
-        Checks whether the key frame's value type supports the given knot
-        type.
-        """
-    @overload
     def CanSetKnotType(self, kf: KnotType) -> typing.Any:
         """
         Checks whether the key frame's value type supports the given knot
         type.
         """
+    @overload
+    def CanSetKnotType(self, arg2: object, /) -> _AnnotatedBoolResult:
+        """Returns true if the given knot type can be set on this key frame. If it returns false, it also returns the reason why not. The reason can be accessed like this: anim.CanSetKnotType(kf).reasonWhyNot."""
     def GetValue(self, _side: Side, /) -> Any:
         """
         Gets the value at this keyframe on the given side.
@@ -136,9 +133,9 @@ class LoopParams(Boost.Python.instance):
     looping: bool
     valueOffset: float
     @overload
-    def __init__(self) -> None: ...
-    @overload
     def __init__(self, _looping: bool, _start: float, _period: float, _preRepeatFrames: float, _repeatFrames: float, _valueOffset: float, /) -> None: ...
+    @overload
+    def __init__(self) -> None: ...
     def GetLoopedInterval(self) -> pxr.Gf.Interval: ...
     def GetMasterInterval(self) -> pxr.Gf.Interval: ...
     def IsValid(self) -> bool: ...
@@ -283,17 +280,18 @@ class Spline(Boost.Python.instance):
         returning the reason if it cannot.
         """
     @overload
-    def CanSetKeyFrame(self, kf: KeyFrame) -> bool:
-        """
-        Checks if the given keyframe is a valid candidate to set, optionally
-        returning the reason if it cannot.
-        """
-    @overload
     def CanSetKeyFrame(self, kf: KeyFrame) -> typing.Any:
         """
         Checks if the given keyframe is a valid candidate to set, optionally
         returning the reason if it cannot.
         """
+    @overload
+    def CanSetKeyFrame(self, kf) -> bool:
+        """CanSetKeyFrame(kf) -> bool
+
+        kf : TsKeyFrame
+
+        Returns true if the given keyframe can be set on this spline. If it returns false, it also returns the reason why not. The reason can be accessed like this: anim.CanSetKeyFrame(kf).reasonWhyNot."""
     def ClearRedundantKeyFrames(self, defaultValue: Any = ..., intervals: pxr.Gf.MultiInterval = ...) -> bool:
         """
         Removes redundant keyframes from the spline in the specified multi-
@@ -435,6 +433,12 @@ class Spline(Boost.Python.instance):
         Returns whether spline represents a simple linear relationship.
         """
     @overload
+    def IsSegmentFlat(self, _kf1: KeyFrame, _kf2: KeyFrame, /) -> bool:
+        """
+        Returns true if the segment between the given (adjacent) key frames is
+        flat.
+        """
+    @overload
     def IsSegmentFlat(self, _startTime: float, _endTime: float, /) -> bool:
         """
         Returns true if the segment between the given (adjacent) key frames is
@@ -443,24 +447,6 @@ class Spline(Boost.Python.instance):
 
         This function will log a TF_CODING_ERROR if there is no key frame at
         either of the indicated times.
-        """
-    @overload
-    def IsSegmentFlat(self, _kf1: KeyFrame, _kf2: KeyFrame, /) -> bool:
-        """
-        Returns true if the segment between the given (adjacent) key frames is
-        flat.
-        """
-    @overload
-    def IsSegmentValueMonotonic(self, _startTime: float, _endTime: float, /) -> bool:
-        """
-        Returns true if the segment between the given (adjacent) key frames is
-        monotonic (i.e.
-
-
-        no extremes).
-
-        Given times must correspond to key frames. see also
-        IsSegmentValueMonotonic(kf1, kf2)
         """
     @overload
     def IsSegmentValueMonotonic(self, _kf1: KeyFrame, _kf2: KeyFrame, /) -> bool:
@@ -473,6 +459,18 @@ class Spline(Boost.Python.instance):
 
         This function will log a TF_CODING_ERROR if kf1>= kf2 TODO describe
         the preconditions
+        """
+    @overload
+    def IsSegmentValueMonotonic(self, _startTime: float, _endTime: float, /) -> bool:
+        """
+        Returns true if the segment between the given (adjacent) key frames is
+        monotonic (i.e.
+
+
+        no extremes).
+
+        Given times must correspond to key frames. see also
+        IsSegmentValueMonotonic(kf1, kf2)
         """
     def IsTimeLooped(self, _time: float, /) -> bool:
         '''

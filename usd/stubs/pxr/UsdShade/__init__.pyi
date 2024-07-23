@@ -123,6 +123,31 @@ class ConnectableAPI(pxr.Usd.APISchemaBase):
         """
     @overload
     @staticmethod
+    def ConnectToSource(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, source: ConnectionSourceInfo, mod: ConnectionModification = ...) -> bool:
+        """
+        Authors a connection for a given shading attribute C{shadingAttr}.
+
+
+        C{shadingAttr} can represent a parameter, an input or an output.
+        C{source} is a struct that describes the upstream source attribute
+        with all the information necessary to make a connection. See the
+        documentation for UsdShadeConnectionSourceInfo. C{mod} describes the
+        operation that should be applied to the list of connections. By
+        default the new connection will replace any existing connections, but
+        it can add to the list of connections to represent multiple input
+        connections.
+
+        C{true} if a connection was created successfully. C{false} if
+        C{shadingAttr} or C{source} is invalid.
+
+        This method does not verify the connectability of the shading
+        attribute to the source. Clients must invoke CanConnect() themselves
+        to ensure compatibility.
+
+        The source shading attribute is created if it doesn't exist already.
+        """
+    @overload
+    @staticmethod
     def ConnectToSource(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, source: ConnectableAPI, sourceName: str | pxr.Ar.ResolvedPath, sourceType: AttributeType = ..., typeName: pxr.Sdf.ValueTypeName = ...) -> bool:
         """
         Deprecated
@@ -165,31 +190,6 @@ class ConnectableAPI(pxr.Usd.APISchemaBase):
         differs from the above function only in what argument(s) it accepts.
 
         Connect the given shading attribute to the given source output.
-        """
-    @overload
-    @staticmethod
-    def ConnectToSource(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, source: ConnectionSourceInfo, mod: ConnectionModification = ...) -> bool:
-        """
-        Authors a connection for a given shading attribute C{shadingAttr}.
-
-
-        C{shadingAttr} can represent a parameter, an input or an output.
-        C{source} is a struct that describes the upstream source attribute
-        with all the information necessary to make a connection. See the
-        documentation for UsdShadeConnectionSourceInfo. C{mod} describes the
-        operation that should be applied to the list of connections. By
-        default the new connection will replace any existing connections, but
-        it can add to the list of connections to represent multiple input
-        connections.
-
-        C{true} if a connection was created successfully. C{false} if
-        C{shadingAttr} or C{source} is invalid.
-
-        This method does not verify the connectability of the shading
-        attribute to the source. Clients must invoke CanConnect() themselves
-        to ensure compatibility.
-
-        The source shading attribute is created if it doesn't exist already.
         """
     def CreateInput(self, name: str | pxr.Ar.ResolvedPath, type: pxr.Sdf.ValueTypeName) -> Input:
         '''
@@ -499,8 +499,6 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
     '''
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self) -> None: ...
-    @overload
     def __init__(self, prim: pxr.Usd.Prim, name: str | pxr.Ar.ResolvedPath) -> None:
         '''
         Construct a UsdShadeCoordSysAPI on UsdPrim C{prim} with name C{name}.
@@ -522,6 +520,8 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
         Should be preferred over UsdShadeCoordSysAPI (schemaObj.GetPrim(),
         name), as it preserves SchemaBase state.
         """
+    @overload
+    def __init__(self) -> None: ...
     @staticmethod
     def Apply(prim: pxr.Usd.Prim, name: str | pxr.Ar.ResolvedPath) -> CoordSysAPI:
         '''
@@ -889,14 +889,6 @@ class Input(Boost.Python.instance):
     """
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self) -> None:
-        """
-        Default constructor returns an invalid Input.
-
-
-        Exists for the sake of container classes
-        """
-    @overload
     def __init__(self, attr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output) -> None:
         """
         Speculative constructor that will produce a valid UsdShadeInput when
@@ -905,6 +897,14 @@ class Input(Boost.Python.instance):
 
 
         the explicit bool conversion operator will return false).
+        """
+    @overload
+    def __init__(self) -> None:
+        """
+        Default constructor returns an invalid Input.
+
+
+        Exists for the sake of container classes
         """
     def CanConnect(self, source: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output) -> bool:
         """
@@ -2926,14 +2926,6 @@ class Output(Boost.Python.instance):
     """
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self) -> None:
-        """
-        Default constructor returns an invalid Output.
-
-
-        Exists for container classes
-        """
-    @overload
     def __init__(self, attr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output) -> None:
         """
         Speculative constructor that will produce a valid UsdShadeOutput when
@@ -2942,6 +2934,14 @@ class Output(Boost.Python.instance):
 
 
         the explicit bool conversion operator will return false).
+        """
+    @overload
+    def __init__(self) -> None:
+        """
+        Default constructor returns an invalid Output.
+
+
+        Exists for container classes
         """
     def CanConnect(self, source: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output) -> bool:
         """
@@ -3266,6 +3266,19 @@ class Shader(pxr.Usd.Typed):
     @overload
     def __init__(self) -> None: ...
     @overload
+    def __init__(self, connectable: ConnectableAPI) -> None:
+        """
+        Constructor that takes a ConnectableAPI object.
+
+
+        Allow implicit (auto) conversion of UsdShadeConnectableAPI to
+        UsdShadeShader, so that a ConnectableAPI can be passed into any
+        function that accepts a Shader.
+
+        that the conversion may produce an invalid Shader object, because not
+        all UsdShadeConnectableAPI s are Shaders
+        """
+    @overload
     def __init__(self, prim: pxr.Usd.Prim) -> None:
         """
         Construct a UsdShadeShader on UsdPrim C{prim}.
@@ -3283,19 +3296,6 @@ class Shader(pxr.Usd.Typed):
 
         Should be preferred over UsdShadeShader (schemaObj.GetPrim()), as it
         preserves SchemaBase state.
-        """
-    @overload
-    def __init__(self, connectable: ConnectableAPI) -> None:
-        """
-        Constructor that takes a ConnectableAPI object.
-
-
-        Allow implicit (auto) conversion of UsdShadeConnectableAPI to
-        UsdShadeShader, so that a ConnectableAPI can be passed into any
-        function that accepts a Shader.
-
-        that the conversion may produce an invalid Shader object, because not
-        all UsdShadeConnectableAPI s are Shaders
         """
     def ClearSdrMetadata(self) -> None:
         '''

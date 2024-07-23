@@ -72,15 +72,12 @@ class BBox3d(Boost.Python.instance):
         This constructor takes a box and sets the matrix to identity.
         """
     @overload
-    def __init__(self, _box: Range3d | list[float] | tuple[float, float, float], /) -> None:
-        """
-        This constructor takes a box and sets the matrix to identity.
-        """
-    @overload
     def __init__(self, _box: Range3d | list[float] | tuple[float, float, float], _matrix: Matrix4d, /) -> None:
         """
         This constructor takes a box and a transformation matrix.
         """
+    @overload
+    def __init__(self, arg2: Range3d | list[float] | tuple[float, float, float], /) -> None: ...
     @staticmethod
     def Combine(_b1: BBox3d, _b2: BBox3d, /) -> BBox3d:
         """
@@ -145,10 +142,13 @@ class BBox3d(Boost.Python.instance):
         '''
         Returns the current state of the zero-area primitives flag".
         '''
+    @overload
     def Set(self, _box: Range3d | list[float] | tuple[float, float, float], _matrix: Matrix4d, /) -> BBox3d:
         """
         Sets the axis-aligned box and transformation matrix.
         """
+    @overload
+    def Set(self, arg2: Range3d | list[float] | tuple[float, float, float], arg3: Matrix4d, /) -> BBox3d: ...
     def SetHasZeroAreaPrimitives(self, _hasThem: bool, /) -> None:
         """
         Sets the zero-area primitives flag to the given value.
@@ -237,9 +237,9 @@ class Camera(Boost.Python.instance):
     verticalAperture: float
     verticalApertureOffset: float
     @overload
-    def __init__(self, arg2: Camera, /) -> None: ...
-    @overload
     def __init__(self, transform: Matrix4d = ..., projection: Camera.Projection = ..., horizontalAperture: float = ..., verticalAperture: float = ..., horizontalApertureOffset: float = ..., verticalApertureOffset: float = ..., focalLength: float = ..., clippingRange: Range1f = ..., clippingPlanes: typing.Iterable[Vec4f | list[float] | tuple[float, float, float, float]] = ..., fStop: float = ..., focusDistance: float = ...) -> None: ...
+    @overload
+    def __init__(self, arg2: Camera, /) -> None: ...
     def GetFieldOfView(self, _direction: Camera.FOVDirection, /) -> float:
         """
         Returns the horizontal or vertical field of view in degrees.
@@ -314,8 +314,6 @@ class DualQuatd(Boost.Python.instance):
         The default constructor leaves the dual quaternion undefined.
         """
     @overload
-    def __init__(self, arg2: DualQuatd | DualQuatf | DualQuath, /) -> None: ...
-    @overload
     def __init__(self, realVal: float) -> None:
         """
         Initialize the real part to C{realVal} and the imaginary part to zero
@@ -343,6 +341,8 @@ class DualQuatd(Boost.Python.instance):
         This constructor initializes from a rotation and a translation
         components.
         """
+    @overload
+    def __init__(self, arg2: DualQuatd | DualQuatf | DualQuath, /) -> None: ...
     def GetConjugate(self) -> DualQuatd:
         """
         Returns the conjugate of this dual quaternion.
@@ -460,11 +460,6 @@ class DualQuatf(Boost.Python.instance):
         The default constructor leaves the dual quaternion undefined.
         """
     @overload
-    def __init__(self, _other: DualQuatf | DualQuath, /) -> None:
-        """
-        Implicitly convert from GfDualQuath.
-        """
-    @overload
     def __init__(self, realVal: float) -> None:
         """
         Initialize the real part to C{realVal} and the imaginary part to zero
@@ -496,6 +491,11 @@ class DualQuatf(Boost.Python.instance):
     def __init__(self, _other: DualQuatd | DualQuatf | DualQuath, /) -> None:
         """
         Construct from GfDualQuatd.
+        """
+    @overload
+    def __init__(self, _other: DualQuatf | DualQuath, /) -> None:
+        """
+        Implicitly convert from GfDualQuath.
         """
     def GetConjugate(self) -> DualQuatf:
         """
@@ -614,8 +614,6 @@ class DualQuath(Boost.Python.instance):
         The default constructor leaves the dual quaternion undefined.
         """
     @overload
-    def __init__(self, arg2: DualQuath, /) -> None: ...
-    @overload
     def __init__(self, realVal: float) -> None:
         """
         Initialize the real part to C{realVal} and the imaginary part to zero
@@ -653,6 +651,8 @@ class DualQuath(Boost.Python.instance):
         """
         Construct from GfDualQuatf.
         """
+    @overload
+    def __init__(self, arg2: DualQuath, /) -> None: ...
     def GetConjugate(self) -> DualQuath:
         """
         Returns the conjugate of this dual quaternion.
@@ -1286,23 +1286,27 @@ class Interval(Boost.Python.instance):
         Construct an empty open interval, (0,0).
         """
     @overload
-    def __init__(self, _val: float, /) -> None:
+    def __init__(self, _val: Interval, /) -> None:
         """
         Construct a closed interval representing the single point, as
         [val,val].
         """
-    @overload
-    def __init__(self, arg2: float, arg3: float, /) -> None: ...
     @overload
     def __init__(self, _min: float, _max: float, _minClosed: bool, _maxClosed: bool, /) -> None:
         """
         Construct an interval with the given arguments.
         """
     @overload
-    def __init__(self, _val: Interval, /) -> None:
+    def __init__(self, arg2: float, /) -> None: ...
+    @overload
+    def __init__(self, arg2: float, arg3: float, /) -> None: ...
+    @overload
+    def Contains(self, _d: float, /) -> bool:
         """
-        Construct a closed interval representing the single point, as
-        [val,val].
+        Return true iff the value d is contained in the interval.
+
+
+        An empty interval contains no values.
         """
     @overload
     def Contains(self, _i: Interval, /) -> bool:
@@ -1312,14 +1316,6 @@ class Interval(Boost.Python.instance):
 
         An empty interval contains no intervals, not even other empty
         intervals.
-        """
-    @overload
-    def Contains(self, _d: float, /) -> bool:
-        """
-        Return true iff the value d is contained in the interval.
-
-
-        An empty interval contains no values.
         """
     @staticmethod
     def GetFullInterval() -> Interval:
@@ -1602,21 +1598,6 @@ class Matrix2d(Boost.Python.instance):
         Default constructor. Leaves the matrix component values undefined.
         """
     @overload
-    def __init__(self, arg2: Matrix2d, /) -> None: ...
-    @overload
-    def __init__(self, _m: Matrix2f, /) -> None:
-        '''
-        This explicit constructor converts a"float"matrix to a"double"matrix.
-        '''
-    @overload
-    def __init__(self, _s: int, /) -> None:
-        """
-        This explicit constructor initializes the matrix to C{s} times the
-        identity matrix.
-        """
-    @overload
-    def __init__(self, arg2: float, /) -> None: ...
-    @overload
     def __init__(self, _m00: float, _m01: float, _m10: float, _m11: float, /) -> None:
         """
         Constructor.
@@ -1627,6 +1608,12 @@ class Matrix2d(Boost.Python.instance):
         in row 1 and column 0.
         """
     @overload
+    def __init__(self, _s: int, /) -> None:
+        """
+        This explicit constructor initializes the matrix to C{s} times the
+        identity matrix.
+        """
+    @overload
     def __init__(self, _v: Vec2d | list[float] | tuple[float, float], /) -> None:
         """
         Constructor.
@@ -1635,6 +1622,15 @@ class Matrix2d(Boost.Python.instance):
         Explicitly initializes the matrix to diagonal form, with the *i* th
         element on the diagonal set to C{v[i]} .
         """
+    @overload
+    def __init__(self, _m: Matrix2f, /) -> None:
+        '''
+        This explicit constructor converts a"float"matrix to a"double"matrix.
+        '''
+    @overload
+    def __init__(self, arg2: Matrix2d, /) -> None: ...
+    @overload
+    def __init__(self, arg2: float, /) -> None: ...
     @overload
     def __init__(self, arg2: object, /) -> None: ...
     def GetColumn(self, _i: int, /) -> Vec2d:
@@ -1720,12 +1716,7 @@ class Matrix2d(Boost.Python.instance):
         correctly.
         """
     @overload
-    def __getitem__(self, _i: int, /) -> Vec2d:
-        """
-        Accesses an indexed row *i* of the matrix as an array of 2 C{double}
-        values so that standard indexing (such as C{m[0][1]} ) works
-        correctly.
-        """
+    def __getitem__(self, arg2: int, /) -> Vec2d: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Matrix2d, /) -> Any: ...
     @overload
@@ -1775,21 +1766,6 @@ class Matrix2f(Boost.Python.instance):
         Default constructor. Leaves the matrix component values undefined.
         """
     @overload
-    def __init__(self, _m: Matrix2d, /) -> None:
-        '''
-        This explicit constructor converts a"double"matrix to a"float"matrix.
-        '''
-    @overload
-    def __init__(self, arg2: Matrix2f, /) -> None: ...
-    @overload
-    def __init__(self, _s: int, /) -> None:
-        """
-        This explicit constructor initializes the matrix to C{s} times the
-        identity matrix.
-        """
-    @overload
-    def __init__(self, arg2: float, /) -> None: ...
-    @overload
     def __init__(self, _m00: float, _m01: float, _m10: float, _m11: float, /) -> None:
         """
         Constructor.
@@ -1800,6 +1776,12 @@ class Matrix2f(Boost.Python.instance):
         in row 1 and column 0.
         """
     @overload
+    def __init__(self, _s: int, /) -> None:
+        """
+        This explicit constructor initializes the matrix to C{s} times the
+        identity matrix.
+        """
+    @overload
     def __init__(self, _v: Vec2f | list[float] | tuple[float, float], /) -> None:
         """
         Constructor.
@@ -1808,6 +1790,15 @@ class Matrix2f(Boost.Python.instance):
         Explicitly initializes the matrix to diagonal form, with the *i* th
         element on the diagonal set to C{v[i]} .
         """
+    @overload
+    def __init__(self, _m: Matrix2d, /) -> None:
+        '''
+        This explicit constructor converts a"double"matrix to a"float"matrix.
+        '''
+    @overload
+    def __init__(self, arg2: Matrix2f, /) -> None: ...
+    @overload
+    def __init__(self, arg2: float, /) -> None: ...
     @overload
     def __init__(self, arg2: object, /) -> None: ...
     def GetColumn(self, _i: int, /) -> Vec2f:
@@ -1893,12 +1884,7 @@ class Matrix2f(Boost.Python.instance):
         correctly.
         """
     @overload
-    def __getitem__(self, _i: int, /) -> Vec2f:
-        """
-        Accesses an indexed row *i* of the matrix as an array of 2 C{float}
-        values so that standard indexing (such as C{m[0][1]} ) works
-        correctly.
-        """
+    def __getitem__(self, arg2: int, /) -> Vec2f: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Matrix2f, /) -> Any: ...
     @overload
@@ -1964,21 +1950,6 @@ class Matrix3d(Boost.Python.instance):
         Default constructor. Leaves the matrix component values undefined.
         """
     @overload
-    def __init__(self, arg2: Matrix3d, /) -> None: ...
-    @overload
-    def __init__(self, _m: Matrix3f, /) -> None:
-        '''
-        This explicit constructor converts a"float"matrix to a"double"matrix.
-        '''
-    @overload
-    def __init__(self, _s: int, /) -> None:
-        """
-        This explicit constructor initializes the matrix to C{s} times the
-        identity matrix.
-        """
-    @overload
-    def __init__(self, arg2: float, /) -> None: ...
-    @overload
     def __init__(self, _m00: float, _m01: float, _m02: float, _m10: float, _m11: float, _m12: float, _m20: float, _m21: float, _m22: float, /) -> None:
         """
         Constructor.
@@ -1987,6 +1958,12 @@ class Matrix3d(Boost.Python.instance):
         Initializes the matrix from 9 independent C{double} values, specified
         in row-major order. For example, parameter *m10* specifies the value
         in row 1 and column 0.
+        """
+    @overload
+    def __init__(self, _s: int, /) -> None:
+        """
+        This explicit constructor initializes the matrix to C{s} times the
+        identity matrix.
         """
     @overload
     def __init__(self, _v: Vec3d | list[float] | tuple[float, float, float], /) -> None:
@@ -1998,8 +1975,6 @@ class Matrix3d(Boost.Python.instance):
         element on the diagonal set to C{v[i]} .
         """
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
-    @overload
     def __init__(self, _rot: Rotation, /) -> None:
         """
         Constructor. Initialize matrix from rotation.
@@ -2009,6 +1984,17 @@ class Matrix3d(Boost.Python.instance):
         """
         Constructor. Initialize matrix from a quaternion.
         """
+    @overload
+    def __init__(self, _m: Matrix3f, /) -> None:
+        '''
+        This explicit constructor converts a"float"matrix to a"double"matrix.
+        '''
+    @overload
+    def __init__(self, arg2: Matrix3d, /) -> None: ...
+    @overload
+    def __init__(self, arg2: float, /) -> None: ...
+    @overload
+    def __init__(self, arg2: object, /) -> None: ...
     def ExtractRotation(self) -> Rotation:
         """
         Returns the rotation corresponding to this matrix.
@@ -2159,12 +2145,7 @@ class Matrix3d(Boost.Python.instance):
         correctly.
         """
     @overload
-    def __getitem__(self, _i: int, /) -> Vec3d:
-        """
-        Accesses an indexed row *i* of the matrix as an array of 3 C{double}
-        values so that standard indexing (such as C{m[0][1]} ) works
-        correctly.
-        """
+    def __getitem__(self, arg2: int, /) -> Vec3d: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Matrix3d, /) -> Any: ...
     @overload
@@ -2234,21 +2215,6 @@ class Matrix3f(Boost.Python.instance):
         Default constructor. Leaves the matrix component values undefined.
         """
     @overload
-    def __init__(self, _m: Matrix3d, /) -> None:
-        '''
-        This explicit constructor converts a"double"matrix to a"float"matrix.
-        '''
-    @overload
-    def __init__(self, arg2: Matrix3f, /) -> None: ...
-    @overload
-    def __init__(self, _s: int, /) -> None:
-        """
-        This explicit constructor initializes the matrix to C{s} times the
-        identity matrix.
-        """
-    @overload
-    def __init__(self, arg2: float, /) -> None: ...
-    @overload
     def __init__(self, _m00: float, _m01: float, _m02: float, _m10: float, _m11: float, _m12: float, _m20: float, _m21: float, _m22: float, /) -> None:
         """
         Constructor.
@@ -2257,6 +2223,12 @@ class Matrix3f(Boost.Python.instance):
         Initializes the matrix from 9 independent C{float} values, specified
         in row-major order. For example, parameter *m10* specifies the value
         in row 1 and column 0.
+        """
+    @overload
+    def __init__(self, _s: int, /) -> None:
+        """
+        This explicit constructor initializes the matrix to C{s} times the
+        identity matrix.
         """
     @overload
     def __init__(self, _v: Vec3f | list[float] | tuple[float, float, float], /) -> None:
@@ -2268,8 +2240,6 @@ class Matrix3f(Boost.Python.instance):
         element on the diagonal set to C{v[i]} .
         """
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
-    @overload
     def __init__(self, _rot: Rotation, /) -> None:
         """
         Constructor. Initialize matrix from rotation.
@@ -2279,6 +2249,17 @@ class Matrix3f(Boost.Python.instance):
         """
         Constructor. Initialize matrix from a quaternion.
         """
+    @overload
+    def __init__(self, _m: Matrix3d, /) -> None:
+        '''
+        This explicit constructor converts a"double"matrix to a"float"matrix.
+        '''
+    @overload
+    def __init__(self, arg2: Matrix3f, /) -> None: ...
+    @overload
+    def __init__(self, arg2: float, /) -> None: ...
+    @overload
+    def __init__(self, arg2: object, /) -> None: ...
     def ExtractRotation(self) -> Rotation:
         """
         Returns the rotation corresponding to this matrix.
@@ -2429,12 +2410,7 @@ class Matrix3f(Boost.Python.instance):
         correctly.
         """
     @overload
-    def __getitem__(self, _i: int, /) -> Vec3f:
-        """
-        Accesses an indexed row *i* of the matrix as an array of 3 C{float}
-        values so that standard indexing (such as C{m[0][1]} ) works
-        correctly.
-        """
+    def __getitem__(self, arg2: int, /) -> Vec3f: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Matrix3f, /) -> Any: ...
     @overload
@@ -2502,17 +2478,6 @@ class Matrix4d(Boost.Python.instance):
         Default constructor. Leaves the matrix component values undefined.
         """
     @overload
-    def __init__(self, arg2: Matrix4d, /) -> None: ...
-    @overload
-    def __init__(self, _m: Matrix4f, /) -> None:
-        '''
-        This explicit constructor converts a"float"matrix to a"double"matrix.
-        '''
-    @overload
-    def __init__(self, arg2: int, /) -> None: ...
-    @overload
-    def __init__(self, arg2: float, /) -> None: ...
-    @overload
     def __init__(self, _m00: float, _m01: float, _m02: float, _m03: float, _m10: float, _m11: float, _m12: float, _m13: float, _m20: float, _m21: float, _m22: float, _m23: float, _m30: float, _m31: float, _m32: float, _m33: float, /) -> None:
         """
         Constructor.
@@ -2532,8 +2497,6 @@ class Matrix4d(Boost.Python.instance):
         element on the diagonal set to C{v[i]} .
         """
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
-    @overload
     def __init__(self, _r0: typing.Iterable[float], _r1: typing.Iterable[float], _r2: typing.Iterable[float], _r3: typing.Iterable[float], /) -> None:
         """
         Constructor.
@@ -2545,6 +2508,15 @@ class Matrix4d(Boost.Python.instance):
         with the corresponding elements from an identity matrix.
         """
     @overload
+    def __init__(self, _rotate: Rotation, _translate: Vec3d | list[float] | tuple[float, float, float], /) -> None:
+        """
+        Constructor.
+
+
+        Initializes a transformation matrix to perform the indicated rotation
+        and translation.
+        """
+    @overload
     def __init__(self, _rotmx: Matrix3d, _translate: Vec3d | list[float] | tuple[float, float, float], /) -> None:
         """
         Constructor.
@@ -2554,14 +2526,20 @@ class Matrix4d(Boost.Python.instance):
         and translation.
         """
     @overload
-    def __init__(self, _rotate: Rotation, _translate: Vec3d | list[float] | tuple[float, float, float], /) -> None:
-        """
-        Constructor.
-
-
-        Initializes a transformation matrix to perform the indicated rotation
-        and translation.
-        """
+    def __init__(self, _m: Matrix4f, /) -> None:
+        '''
+        This explicit constructor converts a"float"matrix to a"double"matrix.
+        '''
+    @overload
+    def __init__(self, arg2: Matrix4d, /) -> None: ...
+    @overload
+    def __init__(self, arg2: int, /) -> None: ...
+    @overload
+    def __init__(self, arg2: float, /) -> None: ...
+    @overload
+    def __init__(self, arg2: object, /) -> None: ...
+    @overload
+    def __init__(self, arg2: object, arg3: object, arg4: object, arg5: object, /) -> None: ...
     def ExtractRotation(self) -> Rotation:
         """
         Returns the rotation corresponding to this matrix.
@@ -2839,16 +2817,6 @@ class Matrix4d(Boost.Python.instance):
         Sets the matrix to zero.
         """
     @overload
-    def Transform(self, _vec: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
-        """
-        Transforms the row vector *vec* by the matrix, returning the result.
-
-
-        This treats the vector as a 4-component vector whose fourth component
-        is 1. This is an overloaded method; it differs from the other version
-        in that it returns a different value type.
-        """
-    @overload
     def Transform(self, _vec: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
         """
         Transforms the row vector *vec* by the matrix, returning the result.
@@ -2858,14 +2826,14 @@ class Matrix4d(Boost.Python.instance):
         is 1.
         """
     @overload
-    def TransformAffine(self, _vec: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
+    def Transform(self, _vec: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
         """
         Transforms the row vector *vec* by the matrix, returning the result.
 
 
         This treats the vector as a 4-component vector whose fourth component
-        is 1 and ignores the fourth column of the matrix (i.e. assumes it is
-        (0, 0, 0, 1)).
+        is 1. This is an overloaded method; it differs from the other version
+        in that it returns a different value type.
         """
     @overload
     def TransformAffine(self, _vec: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
@@ -2878,16 +2846,14 @@ class Matrix4d(Boost.Python.instance):
         (0, 0, 0, 1)).
         """
     @overload
-    def TransformDir(self, _vec: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
+    def TransformAffine(self, _vec: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
         """
-        Transforms row vector *vec* by the matrix, returning the result.
+        Transforms the row vector *vec* by the matrix, returning the result.
 
 
-        This treats the vector as a direction vector, so the translation
-        information in the matrix is ignored. That is, it treats the vector as
-        a 4-component vector whose fourth component is 0. This is an
-        overloaded method; it differs from the other version in that it
-        returns a different value type.
+        This treats the vector as a 4-component vector whose fourth component
+        is 1 and ignores the fourth column of the matrix (i.e. assumes it is
+        (0, 0, 0, 1)).
         """
     @overload
     def TransformDir(self, _vec: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
@@ -2898,6 +2864,18 @@ class Matrix4d(Boost.Python.instance):
         This treats the vector as a direction vector, so the translation
         information in the matrix is ignored. That is, it treats the vector as
         a 4-component vector whose fourth component is 0.
+        """
+    @overload
+    def TransformDir(self, _vec: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
+        """
+        Transforms row vector *vec* by the matrix, returning the result.
+
+
+        This treats the vector as a direction vector, so the translation
+        information in the matrix is ignored. That is, it treats the vector as
+        a 4-component vector whose fourth component is 0. This is an
+        overloaded method; it differs from the other version in that it
+        returns a different value type.
         """
     def __add__(self, arg2: Matrix4d, /) -> Any: ...
     @overload
@@ -2920,12 +2898,7 @@ class Matrix4d(Boost.Python.instance):
         correctly.
         """
     @overload
-    def __getitem__(self, _i: int, /) -> Vec4d:
-        """
-        Accesses an indexed row *i* of the matrix as an array of 4 C{double}
-        values so that standard indexing (such as C{m[0][1]} ) works
-        correctly.
-        """
+    def __getitem__(self, arg2: int, /) -> Vec4d: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Matrix4d, /) -> Any: ...
     @overload
@@ -2997,17 +2970,6 @@ class Matrix4f(Boost.Python.instance):
         Default constructor. Leaves the matrix component values undefined.
         """
     @overload
-    def __init__(self, _m: Matrix4d, /) -> None:
-        '''
-        This explicit constructor converts a"double"matrix to a"float"matrix.
-        '''
-    @overload
-    def __init__(self, arg2: Matrix4f, /) -> None: ...
-    @overload
-    def __init__(self, arg2: int, /) -> None: ...
-    @overload
-    def __init__(self, arg2: float, /) -> None: ...
-    @overload
     def __init__(self, _m00: float, _m01: float, _m02: float, _m03: float, _m10: float, _m11: float, _m12: float, _m13: float, _m20: float, _m21: float, _m22: float, _m23: float, _m30: float, _m31: float, _m32: float, _m33: float, /) -> None:
         """
         Constructor.
@@ -3027,8 +2989,6 @@ class Matrix4f(Boost.Python.instance):
         element on the diagonal set to C{v[i]} .
         """
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
-    @overload
     def __init__(self, _r0: typing.Iterable[float], _r1: typing.Iterable[float], _r2: typing.Iterable[float], _r3: typing.Iterable[float], /) -> None:
         """
         Constructor.
@@ -3040,6 +3000,15 @@ class Matrix4f(Boost.Python.instance):
         with the corresponding elements from an identity matrix.
         """
     @overload
+    def __init__(self, _rotate: Rotation, _translate: Vec3f | list[float] | tuple[float, float, float], /) -> None:
+        """
+        Constructor.
+
+
+        Initializes a transformation matrix to perform the indicated rotation
+        and translation.
+        """
+    @overload
     def __init__(self, _rotmx: Matrix3f, _translate: Vec3f | list[float] | tuple[float, float, float], /) -> None:
         """
         Constructor.
@@ -3049,14 +3018,20 @@ class Matrix4f(Boost.Python.instance):
         and translation.
         """
     @overload
-    def __init__(self, _rotate: Rotation, _translate: Vec3f | list[float] | tuple[float, float, float], /) -> None:
-        """
-        Constructor.
-
-
-        Initializes a transformation matrix to perform the indicated rotation
-        and translation.
-        """
+    def __init__(self, _m: Matrix4d, /) -> None:
+        '''
+        This explicit constructor converts a"double"matrix to a"float"matrix.
+        '''
+    @overload
+    def __init__(self, arg2: Matrix4f, /) -> None: ...
+    @overload
+    def __init__(self, arg2: int, /) -> None: ...
+    @overload
+    def __init__(self, arg2: float, /) -> None: ...
+    @overload
+    def __init__(self, arg2: object, /) -> None: ...
+    @overload
+    def __init__(self, arg2: object, arg3: object, arg4: object, arg5: object, /) -> None: ...
     def ExtractRotation(self) -> Rotation:
         """
         Returns the rotation corresponding to this matrix.
@@ -3334,16 +3309,6 @@ class Matrix4f(Boost.Python.instance):
         Sets the matrix to zero.
         """
     @overload
-    def Transform(self, _vec: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
-        """
-        Transforms the row vector *vec* by the matrix, returning the result.
-
-
-        This treats the vector as a 4-component vector whose fourth component
-        is 1. This is an overloaded method; it differs from the other version
-        in that it returns a different value type.
-        """
-    @overload
     def Transform(self, _vec: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
         """
         Transforms the row vector *vec* by the matrix, returning the result.
@@ -3353,14 +3318,14 @@ class Matrix4f(Boost.Python.instance):
         is 1.
         """
     @overload
-    def TransformAffine(self, _vec: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
+    def Transform(self, _vec: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
         """
         Transforms the row vector *vec* by the matrix, returning the result.
 
 
         This treats the vector as a 4-component vector whose fourth component
-        is 1 and ignores the fourth column of the matrix (i.e. assumes it is
-        (0, 0, 0, 1)).
+        is 1. This is an overloaded method; it differs from the other version
+        in that it returns a different value type.
         """
     @overload
     def TransformAffine(self, _vec: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
@@ -3373,16 +3338,14 @@ class Matrix4f(Boost.Python.instance):
         (0, 0, 0, 1)).
         """
     @overload
-    def TransformDir(self, _vec: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
+    def TransformAffine(self, _vec: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
         """
-        Transforms row vector *vec* by the matrix, returning the result.
+        Transforms the row vector *vec* by the matrix, returning the result.
 
 
-        This treats the vector as a direction vector, so the translation
-        information in the matrix is ignored. That is, it treats the vector as
-        a 4-component vector whose fourth component is 0. This is an
-        overloaded method; it differs from the other version in that it
-        returns a different value type.
+        This treats the vector as a 4-component vector whose fourth component
+        is 1 and ignores the fourth column of the matrix (i.e. assumes it is
+        (0, 0, 0, 1)).
         """
     @overload
     def TransformDir(self, _vec: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
@@ -3393,6 +3356,18 @@ class Matrix4f(Boost.Python.instance):
         This treats the vector as a direction vector, so the translation
         information in the matrix is ignored. That is, it treats the vector as
         a 4-component vector whose fourth component is 0.
+        """
+    @overload
+    def TransformDir(self, _vec: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
+        """
+        Transforms row vector *vec* by the matrix, returning the result.
+
+
+        This treats the vector as a direction vector, so the translation
+        information in the matrix is ignored. That is, it treats the vector as
+        a 4-component vector whose fourth component is 0. This is an
+        overloaded method; it differs from the other version in that it
+        returns a different value type.
         """
     def __add__(self, arg2: Matrix4f, /) -> Any: ...
     @overload
@@ -3415,12 +3390,7 @@ class Matrix4f(Boost.Python.instance):
         correctly.
         """
     @overload
-    def __getitem__(self, _i: int, /) -> Vec4f:
-        """
-        Accesses an indexed row *i* of the matrix as an array of 4 C{float}
-        values so that standard indexing (such as C{m[0][1]} ) works
-        correctly.
-        """
+    def __getitem__(self, arg2: int, /) -> Vec4f: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Matrix4f, /) -> Any: ...
     @overload
@@ -3462,15 +3432,12 @@ class MultiInterval(Boost.Python.instance):
         Constructs an multi-interval with the single given interval.
         """
     @overload
-    def __init__(self, _intervals: MultiInterval, /) -> None:
-        """
-        Constructs an multi-interval containing the given input intervals.
-        """
-    @overload
     def __init__(self, _intervals: typing.Iterable[Interval], /) -> None:
         """
         Constructs an multi-interval containing the given input intervals.
         """
+    @overload
+    def __init__(self, arg2: MultiInterval, /) -> None: ...
     @overload
     def Add(self, _i: Interval, /) -> None:
         """
@@ -3494,6 +3461,11 @@ class MultiInterval(Boost.Python.instance):
         Clear the multi-interval.
         """
     @overload
+    def Contains(self, _d: float, /) -> bool:
+        """
+        Returns true if the multi-interval contains the given value.
+        """
+    @overload
     def Contains(self, _i: Interval, /) -> bool:
         """
         Returns true if the multi-interval contains the given interval.
@@ -3503,11 +3475,6 @@ class MultiInterval(Boost.Python.instance):
         """
         Returns true if the multi-interval contains all the intervals in the
         given multi-interval.
-        """
-    @overload
-    def Contains(self, _d: float, /) -> bool:
-        """
-        Returns true if the multi-interval contains the given value.
         """
     def GetBounds(self) -> Interval:
         """
@@ -3763,8 +3730,6 @@ class Quatd(Boost.Python.instance):
         Default constructor leaves the quaternion undefined.
         """
     @overload
-    def __init__(self, arg2: Quatd | Quatf | Quath, /) -> None: ...
-    @overload
     def __init__(self, real: float) -> None:
         """
         Initialize the real coefficient to C{realVal} and the imaginary
@@ -3776,15 +3741,17 @@ class Quatd(Boost.Python.instance):
         be meaningless.
         """
     @overload
+    def __init__(self, real: float, i: float, j: float, k: float) -> None:
+        """
+        Initialize the real and imaginary coefficients.
+        """
+    @overload
     def __init__(self, real: float, imaginary: Vec3d | list[float] | tuple[float, float, float]) -> None:
         """
         Initialize the real and imaginary coefficients.
         """
     @overload
-    def __init__(self, real: float, i: float, j: float, k: float) -> None:
-        """
-        Initialize the real and imaginary coefficients.
-        """
+    def __init__(self, arg2: Quatd | Quatf | Quath, /) -> None: ...
     def GetConjugate(self) -> Quatd:
         """
         Return this quaternion's conjugate, which is the quaternion with the
@@ -3906,7 +3873,7 @@ class Quaternion(Boost.Python.instance):
         The default constructor leaves the quaternion undefined.
         """
     @overload
-    def __init__(self, _realVal: int, /) -> None:
+    def __init__(self, _realVal: Quaternion, /) -> None:
         """
         This constructor initializes the real part to the argument and the
         imaginary parts to zero.
@@ -3922,16 +3889,7 @@ class Quaternion(Boost.Python.instance):
         This constructor initializes the real and imaginary parts.
         """
     @overload
-    def __init__(self, _realVal: Quaternion, /) -> None:
-        """
-        This constructor initializes the real part to the argument and the
-        imaginary parts to zero.
-
-
-        Since quaternions typically need to be normalized, the only reasonable
-        values for C{realVal} are -1, 0, or 1. Other values are legal but are
-        likely to be meaningless.
-        """
+    def __init__(self, arg2: int, /) -> None: ...
     @staticmethod
     def GetIdentity() -> Quaternion:
         """
@@ -4017,11 +3975,6 @@ class Quatf(Boost.Python.instance):
         Default constructor leaves the quaternion undefined.
         """
     @overload
-    def __init__(self, _other: Quatf | Quath, /) -> None:
-        """
-        Implicitly convert from GfQuath.
-        """
-    @overload
     def __init__(self, real: float) -> None:
         """
         Initialize the real coefficient to C{realVal} and the imaginary
@@ -4033,12 +3986,12 @@ class Quatf(Boost.Python.instance):
         be meaningless.
         """
     @overload
-    def __init__(self, real: float, imaginary: Vec3f | list[float] | tuple[float, float, float]) -> None:
+    def __init__(self, real: float, i: float, j: float, k: float) -> None:
         """
         Initialize the real and imaginary coefficients.
         """
     @overload
-    def __init__(self, real: float, i: float, j: float, k: float) -> None:
+    def __init__(self, real: float, imaginary: Vec3f | list[float] | tuple[float, float, float]) -> None:
         """
         Initialize the real and imaginary coefficients.
         """
@@ -4046,6 +3999,11 @@ class Quatf(Boost.Python.instance):
     def __init__(self, _other: Quatd | Quatf | Quath, /) -> None:
         """
         Construct from GfQuatd.
+        """
+    @overload
+    def __init__(self, _other: Quatf | Quath, /) -> None:
+        """
+        Implicitly convert from GfQuath.
         """
     def GetConjugate(self) -> Quatf:
         """
@@ -4162,17 +4120,6 @@ class Quath(Boost.Python.instance):
         Default constructor leaves the quaternion undefined.
         """
     @overload
-    def __init__(self, _realVal: Quath, /) -> None:
-        """
-        Initialize the real coefficient to C{realVal} and the imaginary
-        coefficients to zero.
-
-
-        Since quaternions typically must be normalized, reasonable values for
-        C{realVal} are -1, 0, or 1. Other values are legal but are likely to
-        be meaningless.
-        """
-    @overload
     def __init__(self, real: float) -> None:
         """
         Initialize the real coefficient to C{realVal} and the imaginary
@@ -4184,12 +4131,12 @@ class Quath(Boost.Python.instance):
         be meaningless.
         """
     @overload
-    def __init__(self, real: float, imaginary: Vec3h | list[float] | tuple[float, float, float]) -> None:
+    def __init__(self, real: float, i: float, j: float, k: float) -> None:
         """
         Initialize the real and imaginary coefficients.
         """
     @overload
-    def __init__(self, real: float, i: float, j: float, k: float) -> None:
+    def __init__(self, real: float, imaginary: Vec3h | list[float] | tuple[float, float, float]) -> None:
         """
         Initialize the real and imaginary coefficients.
         """
@@ -4203,6 +4150,8 @@ class Quath(Boost.Python.instance):
         """
         Construct from GfQuatf.
         """
+    @overload
+    def __init__(self, arg2: Quath, /) -> None: ...
     def GetConjugate(self) -> Quath:
         """
         Return this quaternion's conjugate, which is the quaternion with the
@@ -4325,20 +4274,17 @@ class Range1d(Boost.Python.instance):
         The default constructor creates an empty range.
         """
     @overload
-    def __init__(self, _other: Range1d, /) -> None:
-        """
-        Implicitly convert from GfRange1f.
-        """
-    @overload
     def __init__(self, _min: float, _max: float, /) -> None:
         """
         This constructor initializes the minimum and maximum points.
         """
     @overload
-    def __init__(self, _other: Range1f, /) -> None:
+    def __init__(self, _other: Range1d, /) -> None:
         """
         Implicitly convert from GfRange1f.
         """
+    @overload
+    def __init__(self, arg2: Range1f, /) -> None: ...
     @overload
     def Contains(self, _point: float, /) -> bool:
         """
@@ -4414,23 +4360,19 @@ class Range1d(Boost.Python.instance):
         Sets the minimum value of the range.
         """
     @overload
-    def UnionWith(self, _b: float, /) -> Range1d:
+    def UnionWith(self, _b: Range1d, /) -> Range1d:
         """
         Extend C{this} to include C{b}.
         """
     @overload
-    def UnionWith(self, _b: Range1d, /) -> Range1d:
+    def UnionWith(self, _b: float, /) -> Range1d:
         """
         Extend C{this} to include C{b}.
         """
     def __add__(self, arg2: Range1d, /) -> Any: ...
     def __eq__(self, other: object) -> bool:
         """
-        Compare this range to a GfRange1f.
-
-
-        The values must match exactly and it does exactly what you might
-        expect when comparing float and double values.
+        The min and max points must match exactly for equality.
         """
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Range1d, /) -> Any: ...
@@ -4464,20 +4406,17 @@ class Range1f(Boost.Python.instance):
         The default constructor creates an empty range.
         """
     @overload
-    def __init__(self, _other: Range1f, /) -> None:
-        """
-        Construct from GfRange1d.
-        """
-    @overload
     def __init__(self, _min: float, _max: float, /) -> None:
         """
         This constructor initializes the minimum and maximum points.
         """
     @overload
-    def __init__(self, _other: Range1d, /) -> None:
+    def __init__(self, _other: Range1f, /) -> None:
         """
         Construct from GfRange1d.
         """
+    @overload
+    def __init__(self, arg2: Range1d, /) -> None: ...
     @overload
     def Contains(self, _point: float, /) -> bool:
         """
@@ -4553,23 +4492,19 @@ class Range1f(Boost.Python.instance):
         Sets the minimum value of the range.
         """
     @overload
-    def UnionWith(self, _b: float, /) -> Range1f:
+    def UnionWith(self, _b: Range1f, /) -> Range1f:
         """
         Extend C{this} to include C{b}.
         """
     @overload
-    def UnionWith(self, _b: Range1f, /) -> Range1f:
+    def UnionWith(self, _b: float, /) -> Range1f:
         """
         Extend C{this} to include C{b}.
         """
     def __add__(self, arg2: Range1f, /) -> Any: ...
     def __eq__(self, other: object) -> bool:
         """
-        Compare this range to a GfRange1d.
-
-
-        The values must match exactly and it does exactly what you might
-        expect when comparing float and double values.
+        The min and max points must match exactly for equality.
         """
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Range1f, /) -> Any: ...
@@ -4604,20 +4539,17 @@ class Range2d(Boost.Python.instance):
         The default constructor creates an empty range.
         """
     @overload
-    def __init__(self, _other: Range2d | list[float] | tuple[float, float], /) -> None:
-        """
-        Implicitly convert from GfRange2f.
-        """
-    @overload
     def __init__(self, _min: Vec2d | list[float] | tuple[float, float], _max: Vec2d | list[float] | tuple[float, float], /) -> None:
         """
         This constructor initializes the minimum and maximum points.
         """
     @overload
-    def __init__(self, _other: Range2f | list[float] | tuple[float, float], /) -> None:
+    def __init__(self, _other: Range2d | list[float] | tuple[float, float], /) -> None:
         """
         Implicitly convert from GfRange2f.
         """
+    @overload
+    def __init__(self, arg2: Range2f | list[float] | tuple[float, float], /) -> None: ...
     @overload
     def Contains(self, _point: Vec2d | list[float] | tuple[float, float], /) -> bool:
         """
@@ -4703,23 +4635,19 @@ class Range2d(Boost.Python.instance):
         Sets the minimum value of the range.
         """
     @overload
-    def UnionWith(self, _b: Vec2d | list[float] | tuple[float, float], /) -> Range2d:
+    def UnionWith(self, _b: Range2d | list[float] | tuple[float, float], /) -> Range2d:
         """
         Extend C{this} to include C{b}.
         """
     @overload
-    def UnionWith(self, _b: Range2d | list[float] | tuple[float, float], /) -> Range2d:
+    def UnionWith(self, _b: Vec2d | list[float] | tuple[float, float], /) -> Range2d:
         """
         Extend C{this} to include C{b}.
         """
     def __add__(self, arg2: Range2d | list[float] | tuple[float, float], /) -> Any: ...
     def __eq__(self, other: object) -> bool:
         """
-        Compare this range to a GfRange2f.
-
-
-        The values must match exactly and it does exactly what you might
-        expect when comparing float and double values.
+        The min and max points must match exactly for equality.
         """
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Range2d | list[float] | tuple[float, float], /) -> Any: ...
@@ -4754,20 +4682,17 @@ class Range2f(Boost.Python.instance):
         The default constructor creates an empty range.
         """
     @overload
-    def __init__(self, _other: Range2f | list[float] | tuple[float, float], /) -> None:
-        """
-        Construct from GfRange2d.
-        """
-    @overload
     def __init__(self, _min: Vec2f | list[float] | tuple[float, float], _max: Vec2f | list[float] | tuple[float, float], /) -> None:
         """
         This constructor initializes the minimum and maximum points.
         """
     @overload
-    def __init__(self, _other: Range2d | list[float] | tuple[float, float], /) -> None:
+    def __init__(self, _other: Range2f | list[float] | tuple[float, float], /) -> None:
         """
         Construct from GfRange2d.
         """
+    @overload
+    def __init__(self, arg2: Range2d | list[float] | tuple[float, float], /) -> None: ...
     @overload
     def Contains(self, _point: Vec2f | list[float] | tuple[float, float], /) -> bool:
         """
@@ -4853,23 +4778,19 @@ class Range2f(Boost.Python.instance):
         Sets the minimum value of the range.
         """
     @overload
-    def UnionWith(self, _b: Vec2f | list[float] | tuple[float, float], /) -> Range2f:
+    def UnionWith(self, _b: Range2f | list[float] | tuple[float, float], /) -> Range2f:
         """
         Extend C{this} to include C{b}.
         """
     @overload
-    def UnionWith(self, _b: Range2f | list[float] | tuple[float, float], /) -> Range2f:
+    def UnionWith(self, _b: Vec2f | list[float] | tuple[float, float], /) -> Range2f:
         """
         Extend C{this} to include C{b}.
         """
     def __add__(self, arg2: Range2f | list[float] | tuple[float, float], /) -> Any: ...
     def __eq__(self, other: object) -> bool:
         """
-        Compare this range to a GfRange2d.
-
-
-        The values must match exactly and it does exactly what you might
-        expect when comparing float and double values.
+        The min and max points must match exactly for equality.
         """
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Range2f | list[float] | tuple[float, float], /) -> Any: ...
@@ -4904,20 +4825,17 @@ class Range3d(Boost.Python.instance):
         The default constructor creates an empty range.
         """
     @overload
-    def __init__(self, _other: Range3d | list[float] | tuple[float, float, float], /) -> None:
-        """
-        Implicitly convert from GfRange3f.
-        """
-    @overload
     def __init__(self, _min: Vec3d | list[float] | tuple[float, float, float], _max: Vec3d | list[float] | tuple[float, float, float], /) -> None:
         """
         This constructor initializes the minimum and maximum points.
         """
     @overload
-    def __init__(self, _other: Range3f | list[float] | tuple[float, float, float], /) -> None:
+    def __init__(self, _other: Range3d | list[float] | tuple[float, float, float], /) -> None:
         """
         Implicitly convert from GfRange3f.
         """
+    @overload
+    def __init__(self, arg2: Range3f | list[float] | tuple[float, float, float], /) -> None: ...
     @overload
     def Contains(self, _point: Vec3d | list[float] | tuple[float, float, float], /) -> bool:
         """
@@ -5009,23 +4927,19 @@ class Range3d(Boost.Python.instance):
         Sets the minimum value of the range.
         """
     @overload
-    def UnionWith(self, _b: Vec3d | list[float] | tuple[float, float, float], /) -> Range3d:
+    def UnionWith(self, _b: Range3d | list[float] | tuple[float, float, float], /) -> Range3d:
         """
         Extend C{this} to include C{b}.
         """
     @overload
-    def UnionWith(self, _b: Range3d | list[float] | tuple[float, float, float], /) -> Range3d:
+    def UnionWith(self, _b: Vec3d | list[float] | tuple[float, float, float], /) -> Range3d:
         """
         Extend C{this} to include C{b}.
         """
     def __add__(self, arg2: Range3d | list[float] | tuple[float, float, float], /) -> Any: ...
     def __eq__(self, other: object) -> bool:
         """
-        Compare this range to a GfRange3f.
-
-
-        The values must match exactly and it does exactly what you might
-        expect when comparing float and double values.
+        The min and max points must match exactly for equality.
         """
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Range3d | list[float] | tuple[float, float, float], /) -> Any: ...
@@ -5060,20 +4974,17 @@ class Range3f(Boost.Python.instance):
         The default constructor creates an empty range.
         """
     @overload
-    def __init__(self, _other: Range3f | list[float] | tuple[float, float, float], /) -> None:
-        """
-        Construct from GfRange3d.
-        """
-    @overload
     def __init__(self, _min: Vec3f | list[float] | tuple[float, float, float], _max: Vec3f | list[float] | tuple[float, float, float], /) -> None:
         """
         This constructor initializes the minimum and maximum points.
         """
     @overload
-    def __init__(self, _other: Range3d | list[float] | tuple[float, float, float], /) -> None:
+    def __init__(self, _other: Range3f | list[float] | tuple[float, float, float], /) -> None:
         """
         Construct from GfRange3d.
         """
+    @overload
+    def __init__(self, arg2: Range3d | list[float] | tuple[float, float, float], /) -> None: ...
     @overload
     def Contains(self, _point: Vec3f | list[float] | tuple[float, float, float], /) -> bool:
         """
@@ -5165,23 +5076,19 @@ class Range3f(Boost.Python.instance):
         Sets the minimum value of the range.
         """
     @overload
-    def UnionWith(self, _b: Vec3f | list[float] | tuple[float, float, float], /) -> Range3f:
+    def UnionWith(self, _b: Range3f | list[float] | tuple[float, float, float], /) -> Range3f:
         """
         Extend C{this} to include C{b}.
         """
     @overload
-    def UnionWith(self, _b: Range3f | list[float] | tuple[float, float, float], /) -> Range3f:
+    def UnionWith(self, _b: Vec3f | list[float] | tuple[float, float, float], /) -> Range3f:
         """
         Extend C{this} to include C{b}.
         """
     def __add__(self, arg2: Range3f | list[float] | tuple[float, float, float], /) -> Any: ...
     def __eq__(self, other: object) -> bool:
         """
-        Compare this range to a GfRange3d.
-
-
-        The values must match exactly and it does exactly what you might
-        expect when comparing float and double values.
+        The min and max points must match exactly for equality.
         """
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Range3f | list[float] | tuple[float, float, float], /) -> Any: ...
@@ -5236,19 +5143,6 @@ class Ray(Boost.Python.instance):
         along the direction vector, expressed in parametic distance.
         """
     @overload
-    def Intersect(self, _origin: Vec3d | list[float] | tuple[float, float, float], _axis: Vec3d | list[float] | tuple[float, float, float], _radius: Vec3d | list[float] | tuple[float, float, float], /) -> tuple:
-        """
-        Intersects the ray with an infinite cylinder, with axis C{axis},
-        centered at the C{origin}, with radius C{radius}.
-
-
-        Returns C{true} if the ray intersects it at all within bounds. If
-        there is an intersection, returns the parametric distance to the two
-        intersection points in C{enterDistance} and C{exitDistance}.
-
-        Note this method does not validate whether the radius is valid.
-        """
-    @overload
     def Intersect(self, _plane: Plane, /) -> tuple:
         """
         Intersects the ray with a plane, returning C{true} if the ray is not
@@ -5294,7 +5188,7 @@ class Ray(Boost.Python.instance):
         two intersection points in C{enterDistance} and C{exitDistance}.
         """
     @overload
-    def Intersect(self, _origin: Vec3d | list[float] | tuple[float, float, float], _axis: Vec3d | list[float] | tuple[float, float, float], _radius: float, /) -> tuple:
+    def Intersect(self, _origin: Vec3d | list[float] | tuple[float, float, float], _axis: Vec3d | list[float] | tuple[float, float, float], _radius: Vec3d | list[float] | tuple[float, float, float], /) -> tuple:
         """
         Intersects the ray with an infinite cylinder, with axis C{axis},
         centered at the C{origin}, with radius C{radius}.
@@ -5320,6 +5214,73 @@ class Ray(Boost.Python.instance):
         Note this method does not validate whether the radius are height are
         valid.
         """
+    @overload
+    def Intersect(self, arg2: Vec3d | list[float] | tuple[float, float, float], arg3: Vec3d | list[float] | tuple[float, float, float], arg4: float, /) -> tuple:
+        """    Intersects the ray with the triangle formed by points p0,
+            p1, and p2.  The first item in the tuple is true if the ray
+            intersects the triangle. dist is the the parametric
+            distance to the intersection point, the barycentric
+            coordinates of the intersection point, and the front-facing
+            flag. The barycentric coordinates are defined with respect
+            to the three vertices taken in order.  The front-facing
+            flag is True if the intersection hit the side of the
+            triangle that is formed when the vertices are ordered
+            counter-clockwise (right-hand rule).
+
+            Barycentric coordinates are defined to sum to 1 and satisfy
+            this relationsip:
+
+                intersectionPoint = (barycentricCoords[0] * p0 +
+                                     barycentricCoords[1] * p1 +
+                                     barycentricCoords[2] * p2);
+            ----------------------------------------------------------------------
+
+        Intersect( (Ray)arg1, (Plane)arg2) -> tuple :
+            Intersects the ray with the Gf.Plane.  The first item in
+            the returned tuple is true if the ray intersects the plane.
+            dist is the parametric distance to the intersection point
+            and frontfacing is true if the intersection is on the side
+            of the plane toward which the plane's normal points.
+            ----------------------------------------------------------------------
+
+        Intersect( (Ray)arg1, (Range3d)arg2) -> tuple :
+            Intersects the plane with an axis-aligned box in a
+            Gf.Range3d.  intersects is true if the ray intersects it at
+            all within bounds. If there is an intersection then enterDist
+            and exitDist will be the parametric distances to the two
+            intersection points.
+            ----------------------------------------------------------------------
+
+        Intersect( (Ray)arg1, (BBox3d)arg2) -> tuple :
+            Intersects the plane with an oriented box in a Gf.BBox3d.
+            intersects is true if the ray intersects it at all within
+            bounds. If there is an intersection then enterDist and
+            exitDist will be the parametric distances to the two
+            intersection points.
+            ----------------------------------------------------------------------
+
+        Intersect( (Ray)arg1, (Vec3d)arg2, (float)arg3) -> tuple :
+            Intersects the plane with an sphere. intersects is true if
+            the ray intersects it at all within the sphere. If there is
+            an intersection then enterDist and exitDist will be the
+            parametric distances to the two intersection points.
+            ----------------------------------------------------------------------
+
+        Intersect( (Ray)arg1, (Vec3d)arg2, (Vec3d)arg3, (float)arg4) -> tuple :
+            Intersects the plane with an infinite cylinder. intersects
+            is true if the ray intersects it at all within the
+            sphere. If there is an intersection then enterDist and
+            exitDist will be the parametric distances to the two
+            intersection points.
+            ----------------------------------------------------------------------
+
+        Intersect( (Ray)arg1, (Vec3d)arg2, (Vec3d)arg3, (float)arg4, (float)arg5) -> tuple :
+            Intersects the plane with an cylinder. intersects
+            is true if the ray intersects it at all within the
+            sphere. If there is an intersection then enterDist and
+            exitDist will be the parametric distances to the two
+            intersection points.
+            ----------------------------------------------------------------------"""
     def SetEnds(self, _startPoint: Vec3d | list[float] | tuple[float, float, float], _endPoint: Vec3d | list[float] | tuple[float, float, float], /) -> Ray:
         """
         Sets the ray by specifying a starting point and an ending point.
@@ -5376,8 +5337,6 @@ class Rect2i(Boost.Python.instance):
         Constructs an empty rectangle.
         """
     @overload
-    def __init__(self, arg2: Rect2i, /) -> None: ...
-    @overload
     def __init__(self, _min: Vec2i | list[int] | Size2 | tuple[int, int], _max: Vec2i | list[int] | Size2 | tuple[int, int], /) -> None:
         """
         Constructs a rectangle with C{min} and C{max} corners.
@@ -5388,6 +5347,8 @@ class Rect2i(Boost.Python.instance):
         Constructs a rectangle with C{min} corner and the indicated C{width}
         and C{height}.
         """
+    @overload
+    def __init__(self, arg2: Rect2i, /) -> None: ...
     def Contains(self, _p: Vec2i | list[int] | Size2 | tuple[int, int], /) -> bool:
         """
         Returns true if the specified point in the rectangle.
@@ -5861,15 +5822,6 @@ class Transform(Boost.Python.instance):
     scale: Vec3d
     translation: Vec3d
     @overload
-    def __init__(self, translation: Vec3d | list[float] | tuple[float, float, float] = ..., rotation: Rotation = ..., scale: Vec3d | list[float] | tuple[float, float, float] = ..., pivotPosition: Vec3d | list[float] | tuple[float, float, float] = ..., pivotOrientation: Rotation = ...) -> None:
-        """
-        This constructor initializes the transformation from all component
-        values.
-
-
-        This is the constructor used by 3x code.
-        """
-    @overload
     def __init__(self, scale: Vec3d | list[float] | tuple[float, float, float], pivotOrientation: Rotation, rotation: Rotation, pivotPosition: Vec3d | list[float] | tuple[float, float, float], translation: Vec3d | list[float] | tuple[float, float, float]) -> None:
         """
         This constructor initializes the transformation from all component
@@ -5877,6 +5829,15 @@ class Transform(Boost.Python.instance):
 
 
         This is the constructor used by 2x code.
+        """
+    @overload
+    def __init__(self, translation: Vec3d | list[float] | tuple[float, float, float] = ..., rotation: Rotation = ..., scale: Vec3d | list[float] | tuple[float, float, float] = ..., pivotPosition: Vec3d | list[float] | tuple[float, float, float] = ..., pivotOrientation: Rotation = ...) -> None:
+        """
+        This constructor initializes the transformation from all component
+        values.
+
+
+        This is the constructor used by 3x code.
         """
     @overload
     def __init__(self, _m: Matrix4d, /) -> None:
@@ -5911,20 +5872,20 @@ class Transform(Boost.Python.instance):
         Returns the translation component.
         """
     @overload
-    def Set(self, translation: Vec3d | list[float] | tuple[float, float, float] = ..., rotation: Rotation = ..., scale: Vec3d | list[float] | tuple[float, float, float] = ..., pivotPosition: Vec3d | list[float] | tuple[float, float, float] = ..., pivotOrientation: Rotation = ...) -> Transform:
-        """
-        Sets the transformation from all component values.
-
-
-        This constructor orders its arguments the way that 3x expects.
-        """
-    @overload
     def Set(self, scale: Vec3d | list[float] | tuple[float, float, float], pivotOrientation: Rotation, rotation: Rotation, pivotPosition: Vec3d | list[float] | tuple[float, float, float], translation: Vec3d | list[float] | tuple[float, float, float]) -> Transform:
         """
         Sets the transformation from all component values.
 
 
         This constructor orders its arguments the way that 2x expects.
+        """
+    @overload
+    def Set(self, translation: Vec3d | list[float] | tuple[float, float, float] = ..., rotation: Rotation = ..., scale: Vec3d | list[float] | tuple[float, float, float] = ..., pivotPosition: Vec3d | list[float] | tuple[float, float, float] = ..., pivotOrientation: Rotation = ...) -> Transform:
+        """
+        Sets the transformation from all component values.
+
+
+        This constructor orders its arguments the way that 3x expects.
         """
     def SetIdentity(self) -> Transform:
         """
@@ -5987,6 +5948,16 @@ class Vec2d(Boost.Python.instance):
         Default constructor does no initialization.
         """
     @overload
+    def __init__(self, _value: float, /) -> None:
+        """
+        Initialize all elements to a single value.
+        """
+    @overload
+    def __init__(self, _s0: float, _s1: float, /) -> None:
+        """
+        Initialize all elements with explicit arguments.
+        """
+    @overload
     def __init__(self, _other: Vec2f | list[float] | tuple[float, float], /) -> None:
         """
         Implicitly convert from GfVec2f.
@@ -6005,16 +5976,6 @@ class Vec2d(Boost.Python.instance):
     def __init__(self, _other: Vec2d | list[float] | tuple[float, float], /) -> None:
         """
         Implicitly convert from GfVec2i.
-        """
-    @overload
-    def __init__(self, _value: float, /) -> None:
-        """
-        Initialize all elements to a single value.
-        """
-    @overload
-    def __init__(self, _s0: float, _s1: float, /) -> None:
-        """
-        Initialize all elements with explicit arguments.
         """
     @staticmethod
     def Axis(_i: int, /) -> Vec2d:
@@ -6078,15 +6039,12 @@ class Vec2d(Boost.Python.instance):
         """
     def __getinitargs__(self) -> tuple: ...
     @overload
-    def __getitem__(self, _i: int, /) -> float:
-        """
-        Indexing.
-        """
-    @overload
     def __getitem__(self, _i: int, /) -> list:
         """
         Indexing.
         """
+    @overload
+    def __getitem__(self, arg2: int, /) -> float: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec2d | list[float] | tuple[float, float], /) -> Any: ...
     def __idiv__(self, arg2: float, /) -> Any: ...
@@ -6125,6 +6083,16 @@ class Vec2f(Boost.Python.instance):
         Default constructor does no initialization.
         """
     @overload
+    def __init__(self, _value: float, /) -> None:
+        """
+        Initialize all elements to a single value.
+        """
+    @overload
+    def __init__(self, _s0: float, _s1: float, /) -> None:
+        """
+        Initialize all elements with explicit arguments.
+        """
+    @overload
     def __init__(self, _other: Vec2d | list[float] | tuple[float, float], /) -> None:
         """
         Construct from GfVec2d.
@@ -6143,16 +6111,6 @@ class Vec2f(Boost.Python.instance):
     def __init__(self, _other: Vec2f | list[float] | tuple[float, float], /) -> None:
         """
         Implicitly convert from GfVec2i.
-        """
-    @overload
-    def __init__(self, _value: float, /) -> None:
-        """
-        Initialize all elements to a single value.
-        """
-    @overload
-    def __init__(self, _s0: float, _s1: float, /) -> None:
-        """
-        Initialize all elements with explicit arguments.
         """
     @staticmethod
     def Axis(_i: int, /) -> Vec2f:
@@ -6216,15 +6174,12 @@ class Vec2f(Boost.Python.instance):
         """
     def __getinitargs__(self) -> tuple: ...
     @overload
-    def __getitem__(self, _i: int, /) -> float:
-        """
-        Indexing.
-        """
-    @overload
     def __getitem__(self, _i: int, /) -> list:
         """
         Indexing.
         """
+    @overload
+    def __getitem__(self, arg2: int, /) -> float: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec2f | list[float] | tuple[float, float], /) -> Any: ...
     def __idiv__(self, arg2: float, /) -> Any: ...
@@ -6263,6 +6218,16 @@ class Vec2h(Boost.Python.instance):
         Default constructor does no initialization.
         """
     @overload
+    def __init__(self, _value: float, /) -> None:
+        """
+        Initialize all elements to a single value.
+        """
+    @overload
+    def __init__(self, _s0: float, _s1: float, /) -> None:
+        """
+        Initialize all elements with explicit arguments.
+        """
+    @overload
     def __init__(self, _other: Vec2d | list[float] | tuple[float, float], /) -> None:
         """
         Construct from GfVec2d.
@@ -6278,20 +6243,7 @@ class Vec2h(Boost.Python.instance):
         Implicitly convert from GfVec2i.
         """
     @overload
-    def __init__(self, _value: Vec2h | list[float] | tuple[float, float], /) -> None:
-        """
-        Initialize all elements to a single value.
-        """
-    @overload
-    def __init__(self, _value: float, /) -> None:
-        """
-        Initialize all elements to a single value.
-        """
-    @overload
-    def __init__(self, _s0: float, _s1: float, /) -> None:
-        """
-        Initialize all elements with explicit arguments.
-        """
+    def __init__(self, arg2: Vec2h | list[float] | tuple[float, float], /) -> None: ...
     @staticmethod
     def Axis(_i: int, /) -> Vec2h:
         """
@@ -6354,15 +6306,12 @@ class Vec2h(Boost.Python.instance):
         """
     def __getinitargs__(self) -> tuple: ...
     @overload
-    def __getitem__(self, _i: int, /) -> float:
-        """
-        Indexing.
-        """
-    @overload
     def __getitem__(self, _i: int, /) -> list:
         """
         Indexing.
         """
+    @overload
+    def __getitem__(self, arg2: int, /) -> Any: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec2h | list[float] | tuple[float, float], /) -> Any: ...
     def __idiv__(self, arg2: object, /) -> Any: ...
@@ -6406,15 +6355,12 @@ class Vec2i(Boost.Python.instance):
         Initialize all elements to a single value.
         """
     @overload
-    def __init__(self, _value: int, /) -> None:
-        """
-        Initialize all elements to a single value.
-        """
-    @overload
     def __init__(self, _s0: int, _s1: int, /) -> None:
         """
         Initialize all elements with explicit arguments.
         """
+    @overload
+    def __init__(self, arg2: int, /) -> None: ...
     @staticmethod
     def Axis(_i: int, /) -> Vec2i:
         """
@@ -6442,15 +6388,12 @@ class Vec2i(Boost.Python.instance):
         """
     def __getinitargs__(self) -> tuple: ...
     @overload
-    def __getitem__(self, _i: int, /) -> int:
-        """
-        Indexing.
-        """
-    @overload
     def __getitem__(self, _i: int, /) -> list:
         """
         Indexing.
         """
+    @overload
+    def __getitem__(self, arg2: int, /) -> int: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec2i | list[int] | Size2 | tuple[int, int], /) -> Any: ...
     def __idiv__(self, arg2: int, /) -> Any: ...
@@ -6489,6 +6432,16 @@ class Vec3d(Boost.Python.instance):
         Default constructor does no initialization.
         """
     @overload
+    def __init__(self, _value: float, /) -> None:
+        """
+        Initialize all elements to a single value.
+        """
+    @overload
+    def __init__(self, _s0: float, _s1: float, _s2: float, /) -> None:
+        """
+        Initialize all elements with explicit arguments.
+        """
+    @overload
     def __init__(self, _other: Vec3f | list[float] | tuple[float, float, float], /) -> None:
         """
         Implicitly convert from GfVec3f.
@@ -6507,16 +6460,6 @@ class Vec3d(Boost.Python.instance):
     def __init__(self, _other: Vec3d | list[float] | tuple[float, float, float], /) -> None:
         """
         Implicitly convert from GfVec3i.
-        """
-    @overload
-    def __init__(self, _value: float, /) -> None:
-        """
-        Initialize all elements to a single value.
-        """
-    @overload
-    def __init__(self, _s0: float, _s1: float, _s2: float, /) -> None:
-        """
-        Initialize all elements with explicit arguments.
         """
     @staticmethod
     def Axis(_i: int, /) -> Vec3d:
@@ -6611,15 +6554,12 @@ class Vec3d(Boost.Python.instance):
         """
     def __getinitargs__(self) -> tuple: ...
     @overload
-    def __getitem__(self, _i: int, /) -> float:
-        """
-        Indexing.
-        """
-    @overload
     def __getitem__(self, _i: int, /) -> list:
         """
         Indexing.
         """
+    @overload
+    def __getitem__(self, arg2: int, /) -> float: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec3d | list[float] | tuple[float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: float, /) -> Any: ...
@@ -6659,6 +6599,16 @@ class Vec3f(Boost.Python.instance):
         Default constructor does no initialization.
         """
     @overload
+    def __init__(self, _value: float, /) -> None:
+        """
+        Initialize all elements to a single value.
+        """
+    @overload
+    def __init__(self, _s0: float, _s1: float, _s2: float, /) -> None:
+        """
+        Initialize all elements with explicit arguments.
+        """
+    @overload
     def __init__(self, _other: Vec3d | list[float] | tuple[float, float, float], /) -> None:
         """
         Construct from GfVec3d.
@@ -6677,16 +6627,6 @@ class Vec3f(Boost.Python.instance):
     def __init__(self, _other: Vec3f | list[float] | tuple[float, float, float], /) -> None:
         """
         Implicitly convert from GfVec3i.
-        """
-    @overload
-    def __init__(self, _value: float, /) -> None:
-        """
-        Initialize all elements to a single value.
-        """
-    @overload
-    def __init__(self, _s0: float, _s1: float, _s2: float, /) -> None:
-        """
-        Initialize all elements with explicit arguments.
         """
     @staticmethod
     def Axis(_i: int, /) -> Vec3f:
@@ -6781,15 +6721,12 @@ class Vec3f(Boost.Python.instance):
         """
     def __getinitargs__(self) -> tuple: ...
     @overload
-    def __getitem__(self, _i: int, /) -> float:
-        """
-        Indexing.
-        """
-    @overload
     def __getitem__(self, _i: int, /) -> list:
         """
         Indexing.
         """
+    @overload
+    def __getitem__(self, arg2: int, /) -> float: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec3f | list[float] | tuple[float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: float, /) -> Any: ...
@@ -6829,6 +6766,16 @@ class Vec3h(Boost.Python.instance):
         Default constructor does no initialization.
         """
     @overload
+    def __init__(self, _value: float, /) -> None:
+        """
+        Initialize all elements to a single value.
+        """
+    @overload
+    def __init__(self, _s0: float, _s1: float, _s2: float, /) -> None:
+        """
+        Initialize all elements with explicit arguments.
+        """
+    @overload
     def __init__(self, _other: Vec3d | list[float] | tuple[float, float, float], /) -> None:
         """
         Construct from GfVec3d.
@@ -6844,20 +6791,7 @@ class Vec3h(Boost.Python.instance):
         Implicitly convert from GfVec3i.
         """
     @overload
-    def __init__(self, _value: Vec3h | list[float] | tuple[float, float, float], /) -> None:
-        """
-        Initialize all elements to a single value.
-        """
-    @overload
-    def __init__(self, _value: float, /) -> None:
-        """
-        Initialize all elements to a single value.
-        """
-    @overload
-    def __init__(self, _s0: float, _s1: float, _s2: float, /) -> None:
-        """
-        Initialize all elements with explicit arguments.
-        """
+    def __init__(self, arg2: Vec3h | list[float] | tuple[float, float, float], /) -> None: ...
     @staticmethod
     def Axis(_i: int, /) -> Vec3h:
         """
@@ -6951,15 +6885,12 @@ class Vec3h(Boost.Python.instance):
         """
     def __getinitargs__(self) -> tuple: ...
     @overload
-    def __getitem__(self, _i: int, /) -> float:
-        """
-        Indexing.
-        """
-    @overload
     def __getitem__(self, _i: int, /) -> list:
         """
         Indexing.
         """
+    @overload
+    def __getitem__(self, arg2: int, /) -> Any: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: object, /) -> Any: ...
@@ -7004,15 +6935,12 @@ class Vec3i(Boost.Python.instance):
         Initialize all elements to a single value.
         """
     @overload
-    def __init__(self, _value: int, /) -> None:
-        """
-        Initialize all elements to a single value.
-        """
-    @overload
     def __init__(self, _s0: int, _s1: int, _s2: int, /) -> None:
         """
         Initialize all elements with explicit arguments.
         """
+    @overload
+    def __init__(self, arg2: int, /) -> None: ...
     @staticmethod
     def Axis(_i: int, /) -> Vec3i:
         """
@@ -7045,15 +6973,12 @@ class Vec3i(Boost.Python.instance):
         """
     def __getinitargs__(self) -> tuple: ...
     @overload
-    def __getitem__(self, _i: int, /) -> int:
-        """
-        Indexing.
-        """
-    @overload
     def __getitem__(self, _i: int, /) -> list:
         """
         Indexing.
         """
+    @overload
+    def __getitem__(self, arg2: int, /) -> int: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec3i | list[int] | Size3 | tuple[int, int, int], /) -> Any: ...
     def __idiv__(self, arg2: int, /) -> Any: ...
@@ -7092,6 +7017,16 @@ class Vec4d(Boost.Python.instance):
         Default constructor does no initialization.
         """
     @overload
+    def __init__(self, _value: float, /) -> None:
+        """
+        Initialize all elements to a single value.
+        """
+    @overload
+    def __init__(self, _s0: float, _s1: float, _s2: float, _s3: float, /) -> None:
+        """
+        Initialize all elements with explicit arguments.
+        """
+    @overload
     def __init__(self, _other: Vec4f | list[float] | tuple[float, float, float, float], /) -> None:
         """
         Implicitly convert from GfVec4f.
@@ -7110,16 +7045,6 @@ class Vec4d(Boost.Python.instance):
     def __init__(self, _other: Vec4d | list[float] | tuple[float, float, float, float], /) -> None:
         """
         Implicitly convert from GfVec4i.
-        """
-    @overload
-    def __init__(self, _value: float, /) -> None:
-        """
-        Initialize all elements to a single value.
-        """
-    @overload
-    def __init__(self, _s0: float, _s1: float, _s2: float, _s3: float, /) -> None:
-        """
-        Initialize all elements with explicit arguments.
         """
     @staticmethod
     def Axis(_i: int, /) -> Vec4d:
@@ -7193,15 +7118,12 @@ class Vec4d(Boost.Python.instance):
         """
     def __getinitargs__(self) -> tuple: ...
     @overload
-    def __getitem__(self, _i: int, /) -> float:
-        """
-        Indexing.
-        """
-    @overload
     def __getitem__(self, _i: int, /) -> list:
         """
         Indexing.
         """
+    @overload
+    def __getitem__(self, arg2: int, /) -> float: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec4d | list[float] | tuple[float, float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: float, /) -> Any: ...
@@ -7240,6 +7162,16 @@ class Vec4f(Boost.Python.instance):
         Default constructor does no initialization.
         """
     @overload
+    def __init__(self, _value: float, /) -> None:
+        """
+        Initialize all elements to a single value.
+        """
+    @overload
+    def __init__(self, _s0: float, _s1: float, _s2: float, _s3: float, /) -> None:
+        """
+        Initialize all elements with explicit arguments.
+        """
+    @overload
     def __init__(self, _other: Vec4d | list[float] | tuple[float, float, float, float], /) -> None:
         """
         Construct from GfVec4d.
@@ -7258,16 +7190,6 @@ class Vec4f(Boost.Python.instance):
     def __init__(self, _other: Vec4f | list[float] | tuple[float, float, float, float], /) -> None:
         """
         Implicitly convert from GfVec4i.
-        """
-    @overload
-    def __init__(self, _value: float, /) -> None:
-        """
-        Initialize all elements to a single value.
-        """
-    @overload
-    def __init__(self, _s0: float, _s1: float, _s2: float, _s3: float, /) -> None:
-        """
-        Initialize all elements with explicit arguments.
         """
     @staticmethod
     def Axis(_i: int, /) -> Vec4f:
@@ -7341,15 +7263,12 @@ class Vec4f(Boost.Python.instance):
         """
     def __getinitargs__(self) -> tuple: ...
     @overload
-    def __getitem__(self, _i: int, /) -> float:
-        """
-        Indexing.
-        """
-    @overload
     def __getitem__(self, _i: int, /) -> list:
         """
         Indexing.
         """
+    @overload
+    def __getitem__(self, arg2: int, /) -> float: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec4f | list[float] | tuple[float, float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: float, /) -> Any: ...
@@ -7388,6 +7307,16 @@ class Vec4h(Boost.Python.instance):
         Default constructor does no initialization.
         """
     @overload
+    def __init__(self, _value: float, /) -> None:
+        """
+        Initialize all elements to a single value.
+        """
+    @overload
+    def __init__(self, _s0: float, _s1: float, _s2: float, _s3: float, /) -> None:
+        """
+        Initialize all elements with explicit arguments.
+        """
+    @overload
     def __init__(self, _other: Vec4d | list[float] | tuple[float, float, float, float], /) -> None:
         """
         Construct from GfVec4d.
@@ -7403,20 +7332,7 @@ class Vec4h(Boost.Python.instance):
         Implicitly convert from GfVec4i.
         """
     @overload
-    def __init__(self, _value: Vec4h | list[float] | tuple[float, float, float, float], /) -> None:
-        """
-        Initialize all elements to a single value.
-        """
-    @overload
-    def __init__(self, _value: float, /) -> None:
-        """
-        Initialize all elements to a single value.
-        """
-    @overload
-    def __init__(self, _s0: float, _s1: float, _s2: float, _s3: float, /) -> None:
-        """
-        Initialize all elements with explicit arguments.
-        """
+    def __init__(self, arg2: Vec4h | list[float] | tuple[float, float, float, float], /) -> None: ...
     @staticmethod
     def Axis(_i: int, /) -> Vec4h:
         """
@@ -7489,15 +7405,12 @@ class Vec4h(Boost.Python.instance):
         """
     def __getinitargs__(self) -> tuple: ...
     @overload
-    def __getitem__(self, _i: int, /) -> float:
-        """
-        Indexing.
-        """
-    @overload
     def __getitem__(self, _i: int, /) -> list:
         """
         Indexing.
         """
+    @overload
+    def __getitem__(self, arg2: int, /) -> Any: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec4h | list[float] | tuple[float, float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: object, /) -> Any: ...
@@ -7541,15 +7454,12 @@ class Vec4i(Boost.Python.instance):
         Initialize all elements to a single value.
         """
     @overload
-    def __init__(self, _value: int, /) -> None:
-        """
-        Initialize all elements to a single value.
-        """
-    @overload
     def __init__(self, _s0: int, _s1: int, _s2: int, _s3: int, /) -> None:
         """
         Initialize all elements with explicit arguments.
         """
+    @overload
+    def __init__(self, arg2: int, /) -> None: ...
     @staticmethod
     def Axis(_i: int, /) -> Vec4i:
         """
@@ -7587,15 +7497,12 @@ class Vec4i(Boost.Python.instance):
         """
     def __getinitargs__(self) -> tuple: ...
     @overload
-    def __getitem__(self, _i: int, /) -> int:
-        """
-        Indexing.
-        """
-    @overload
     def __getitem__(self, _i: int, /) -> list:
         """
         Indexing.
         """
+    @overload
+    def __getitem__(self, arg2: int, /) -> int: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec4i | list[int] | tuple[int, int, int, int], /) -> Any: ...
     def __idiv__(self, arg2: int, /) -> Any: ...
@@ -7704,78 +7611,6 @@ def Clampf(f) -> float:
 
     Use instead of Clamp() to return the clamped value of f as a float instead of a double."""
 @overload
-def CompDiv(_left: float, _right: float, /) -> float:
-    """
-    Returns component-wise quotient of vectors.
-
-
-    For scalar types, this is just the regular quotient.
-    """
-@overload
-def CompDiv(_left: Vec2h | list[float] | tuple[float, float], _right: Vec2h | list[float] | tuple[float, float], /) -> Vec2h:
-    """
-    Returns component-wise quotient of vectors.
-
-
-    For scalar types, this is just the regular quotient.
-    """
-@overload
-def CompDiv(_left: Vec2f | list[float] | tuple[float, float], _right: Vec2f | list[float] | tuple[float, float], /) -> Vec2f:
-    """
-    Returns component-wise quotient of vectors.
-
-
-    For scalar types, this is just the regular quotient.
-    """
-@overload
-def CompDiv(_left: Vec2d | list[float] | tuple[float, float], _right: Vec2d | list[float] | tuple[float, float], /) -> Vec2d:
-    """
-    Returns component-wise quotient of vectors.
-
-
-    For scalar types, this is just the regular quotient.
-    """
-@overload
-def CompDiv(_left: Vec3h | list[float] | tuple[float, float, float], _right: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h:
-    """
-    Returns component-wise quotient of vectors.
-
-
-    For scalar types, this is just the regular quotient.
-    """
-@overload
-def CompDiv(_left: Vec3f | list[float] | tuple[float, float, float], _right: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
-    """
-    Returns component-wise quotient of vectors.
-
-
-    For scalar types, this is just the regular quotient.
-    """
-@overload
-def CompDiv(_left: Vec3d | list[float] | tuple[float, float, float], _right: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
-    """
-    Returns component-wise quotient of vectors.
-
-
-    For scalar types, this is just the regular quotient.
-    """
-@overload
-def CompDiv(_left: Vec4h | list[float] | tuple[float, float, float, float], _right: Vec4h | list[float] | tuple[float, float, float, float], /) -> Vec4h:
-    """
-    Returns component-wise quotient of vectors.
-
-
-    For scalar types, this is just the regular quotient.
-    """
-@overload
-def CompDiv(_left: Vec4f | list[float] | tuple[float, float, float, float], _right: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f:
-    """
-    Returns component-wise quotient of vectors.
-
-
-    For scalar types, this is just the regular quotient.
-    """
-@overload
 def CompDiv(_left: Vec4d | list[float] | tuple[float, float, float, float], _right: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d:
     """
     Returns component-wise quotient of vectors.
@@ -7784,77 +7619,23 @@ def CompDiv(_left: Vec4d | list[float] | tuple[float, float, float, float], _rig
     For scalar types, this is just the regular quotient.
     """
 @overload
-def CompMult(_left: float, _right: float, /) -> float:
-    """
-    Returns component-wise multiplication of vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
+def CompDiv(arg1: float, arg2: float, /) -> float: ...
 @overload
-def CompMult(_left: Vec2h | list[float] | tuple[float, float], _right: Vec2h | list[float] | tuple[float, float], /) -> Vec2h:
-    """
-    Returns component-wise multiplication of vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
+def CompDiv(arg1: Vec2h | list[float] | tuple[float, float], arg2: Vec2h | list[float] | tuple[float, float], /) -> Vec2h: ...
 @overload
-def CompMult(_left: Vec2f | list[float] | tuple[float, float], _right: Vec2f | list[float] | tuple[float, float], /) -> Vec2f:
-    """
-    Returns component-wise multiplication of vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
+def CompDiv(arg1: Vec2f | list[float] | tuple[float, float], arg2: Vec2f | list[float] | tuple[float, float], /) -> Vec2f: ...
 @overload
-def CompMult(_left: Vec2d | list[float] | tuple[float, float], _right: Vec2d | list[float] | tuple[float, float], /) -> Vec2d:
-    """
-    Returns component-wise multiplication of vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
+def CompDiv(arg1: Vec2d | list[float] | tuple[float, float], arg2: Vec2d | list[float] | tuple[float, float], /) -> Vec2d: ...
 @overload
-def CompMult(_left: Vec3h | list[float] | tuple[float, float, float], _right: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h:
-    """
-    Returns component-wise multiplication of vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
+def CompDiv(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...
 @overload
-def CompMult(_left: Vec3f | list[float] | tuple[float, float, float], _right: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
-    """
-    Returns component-wise multiplication of vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
+def CompDiv(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f: ...
 @overload
-def CompMult(_left: Vec3d | list[float] | tuple[float, float, float], _right: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
-    """
-    Returns component-wise multiplication of vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
+def CompDiv(arg1: Vec3d | list[float] | tuple[float, float, float], arg2: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d: ...
 @overload
-def CompMult(_left: Vec4h | list[float] | tuple[float, float, float, float], _right: Vec4h | list[float] | tuple[float, float, float, float], /) -> Vec4h:
-    """
-    Returns component-wise multiplication of vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
+def CompDiv(arg1: Vec4h | list[float] | tuple[float, float, float, float], arg2: Vec4h | list[float] | tuple[float, float, float, float], /) -> Vec4h: ...
 @overload
-def CompMult(_left: Vec4f | list[float] | tuple[float, float, float, float], _right: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f:
-    """
-    Returns component-wise multiplication of vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
+def CompDiv(arg1: Vec4f | list[float] | tuple[float, float, float, float], arg2: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f: ...
 @overload
 def CompMult(_left: Vec4d | list[float] | tuple[float, float, float, float], _right: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d:
     """
@@ -7863,6 +7644,24 @@ def CompMult(_left: Vec4d | list[float] | tuple[float, float, float, float], _ri
 
     For scalar types, this is just the regular product.
     """
+@overload
+def CompMult(arg1: float, arg2: float, /) -> float: ...
+@overload
+def CompMult(arg1: Vec2h | list[float] | tuple[float, float], arg2: Vec2h | list[float] | tuple[float, float], /) -> Vec2h: ...
+@overload
+def CompMult(arg1: Vec2f | list[float] | tuple[float, float], arg2: Vec2f | list[float] | tuple[float, float], /) -> Vec2f: ...
+@overload
+def CompMult(arg1: Vec2d | list[float] | tuple[float, float], arg2: Vec2d | list[float] | tuple[float, float], /) -> Vec2d: ...
+@overload
+def CompMult(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...
+@overload
+def CompMult(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f: ...
+@overload
+def CompMult(arg1: Vec3d | list[float] | tuple[float, float, float], arg2: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d: ...
+@overload
+def CompMult(arg1: Vec4h | list[float] | tuple[float, float, float, float], arg2: Vec4h | list[float] | tuple[float, float, float, float], /) -> Vec4h: ...
+@overload
+def CompMult(arg1: Vec4f | list[float] | tuple[float, float, float, float], arg2: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f: ...
 @overload
 def ConvertDisplayToLinear(_v: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
     """
@@ -7896,175 +7695,17 @@ def ConvertLinearToDisplay(_v: Vec4d | list[float] | tuple[float, float, float, 
 @overload
 def ConvertLinearToDisplay(_v: Vec4h | list[float] | tuple[float, float, float, float], /) -> Vec4h: ...
 @overload
-def Cross(_v1: Vec3h | list[float] | tuple[float, float, float], _v2: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h:
-    """
-    Returns the cross product of C{v1} and C{v2}.
-    """
-@overload
-def Cross(_v1: Vec3f | list[float] | tuple[float, float, float], _v2: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
-    """
-    Returns the cross product of C{v1} and C{v2}.
-    """
-@overload
 def Cross(_v1: Vec3d | list[float] | tuple[float, float, float], _v2: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
     """
     Returns the cross product of C{v1} and C{v2}.
     """
+@overload
+def Cross(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...
+@overload
+def Cross(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f: ...
 def DegreesToRadians(_degrees: float, /) -> float:
     """
     Converts an angle in degrees to radians.
-    """
-@overload
-def Dot(_left: DualQuatd | DualQuatf | DualQuath, _right: DualQuatd | DualQuatf | DualQuath, /) -> float:
-    """
-    Returns the dot (inner) product of two vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
-@overload
-def Dot(_left: DualQuatf | DualQuath, _right: DualQuatf | DualQuath, /) -> float:
-    """
-    Returns the dot (inner) product of two vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
-@overload
-def Dot(_left: DualQuath, _right: DualQuath, /):
-    """
-    Returns the dot (inner) product of two vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
-@overload
-def Dot(_left: float, _right: float, /) -> float:
-    """
-    Returns the dot (inner) product of two vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
-@overload
-def Dot(_left: Quatd | Quatf | Quath, _right: Quatd | Quatf | Quath, /) -> float:
-    """
-    Returns the dot (inner) product of two vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
-@overload
-def Dot(_left: Quatf | Quath, _right: Quatf | Quath, /) -> float:
-    """
-    Returns the dot (inner) product of two vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
-@overload
-def Dot(_left: Quath, _right: Quath, /):
-    """
-    Returns the dot (inner) product of two vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
-@overload
-def Dot(_left: Quaternion, _right: Quaternion, /) -> float:
-    """
-    Returns the dot (inner) product of two vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
-@overload
-def Dot(_left: Vec2h | list[float] | tuple[float, float], _right: Vec2h | list[float] | tuple[float, float], /):
-    """
-    Returns the dot (inner) product of two vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
-@overload
-def Dot(_left: Vec2f | list[float] | tuple[float, float], _right: Vec2f | list[float] | tuple[float, float], /) -> float:
-    """
-    Returns the dot (inner) product of two vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
-@overload
-def Dot(_left: Vec2d | list[float] | tuple[float, float], _right: Vec2d | list[float] | tuple[float, float], /) -> float:
-    """
-    Returns the dot (inner) product of two vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
-@overload
-def Dot(_left: Vec2i | list[int] | Size2 | tuple[int, int], _right: Vec2i | list[int] | Size2 | tuple[int, int], /) -> int:
-    """
-    Returns the dot (inner) product of two vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
-@overload
-def Dot(_left: Vec3h | list[float] | tuple[float, float, float], _right: Vec3h | list[float] | tuple[float, float, float], /):
-    """
-    Returns the dot (inner) product of two vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
-@overload
-def Dot(_left: Vec3f | list[float] | tuple[float, float, float], _right: Vec3f | list[float] | tuple[float, float, float], /) -> float:
-    """
-    Returns the dot (inner) product of two vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
-@overload
-def Dot(_left: Vec3d | list[float] | tuple[float, float, float], _right: Vec3d | list[float] | tuple[float, float, float], /) -> float:
-    """
-    Returns the dot (inner) product of two vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
-@overload
-def Dot(_left: Vec3i | list[int] | Size3 | tuple[int, int, int], _right: Vec3i | list[int] | Size3 | tuple[int, int, int], /) -> int:
-    """
-    Returns the dot (inner) product of two vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
-@overload
-def Dot(_left: Vec4h | list[float] | tuple[float, float, float, float], _right: Vec4h | list[float] | tuple[float, float, float, float], /):
-    """
-    Returns the dot (inner) product of two vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
-@overload
-def Dot(_left: Vec4f | list[float] | tuple[float, float, float, float], _right: Vec4f | list[float] | tuple[float, float, float, float], /) -> float:
-    """
-    Returns the dot (inner) product of two vectors.
-
-
-    For scalar types, this is just the regular product.
-    """
-@overload
-def Dot(_left: Vec4d | list[float] | tuple[float, float, float, float], _right: Vec4d | list[float] | tuple[float, float, float, float], /) -> float:
-    """
-    Returns the dot (inner) product of two vectors.
-
-
-    For scalar types, this is just the regular product.
     """
 @overload
 def Dot(_left: Vec4i | list[int] | tuple[int, int, int, int], _right: Vec4i | list[int] | tuple[int, int, int, int], /) -> int:
@@ -8074,6 +7715,44 @@ def Dot(_left: Vec4i | list[int] | tuple[int, int, int, int], _right: Vec4i | li
 
     For scalar types, this is just the regular product.
     """
+@overload
+def Dot(arg1: DualQuatd | DualQuatf | DualQuath, arg2: DualQuatd | DualQuatf | DualQuath, /) -> float: ...
+@overload
+def Dot(arg1: DualQuatf | DualQuath, arg2: DualQuatf | DualQuath, /) -> float: ...
+@overload
+def Dot(arg1: DualQuath, arg2: DualQuath, /) -> Any: ...
+@overload
+def Dot(arg1: float, arg2: float, /) -> float: ...
+@overload
+def Dot(arg1: Quatd | Quatf | Quath, arg2: Quatd | Quatf | Quath, /) -> float: ...
+@overload
+def Dot(arg1: Quatf | Quath, arg2: Quatf | Quath, /) -> float: ...
+@overload
+def Dot(arg1: Quath, arg2: Quath, /) -> Any: ...
+@overload
+def Dot(arg1: Quaternion, arg2: Quaternion, /) -> float: ...
+@overload
+def Dot(arg1: Vec2h | list[float] | tuple[float, float], arg2: Vec2h | list[float] | tuple[float, float], /) -> Any: ...
+@overload
+def Dot(arg1: Vec2f | list[float] | tuple[float, float], arg2: Vec2f | list[float] | tuple[float, float], /) -> float: ...
+@overload
+def Dot(arg1: Vec2d | list[float] | tuple[float, float], arg2: Vec2d | list[float] | tuple[float, float], /) -> float: ...
+@overload
+def Dot(arg1: Vec2i | list[int] | Size2 | tuple[int, int], arg2: Vec2i | list[int] | Size2 | tuple[int, int], /) -> int: ...
+@overload
+def Dot(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Any: ...
+@overload
+def Dot(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: Vec3f | list[float] | tuple[float, float, float], /) -> float: ...
+@overload
+def Dot(arg1: Vec3d | list[float] | tuple[float, float, float], arg2: Vec3d | list[float] | tuple[float, float, float], /) -> float: ...
+@overload
+def Dot(arg1: Vec3i | list[int] | Size3 | tuple[int, int, int], arg2: Vec3i | list[int] | Size3 | tuple[int, int, int], /) -> int: ...
+@overload
+def Dot(arg1: Vec4h | list[float] | tuple[float, float, float, float], arg2: Vec4h | list[float] | tuple[float, float, float, float], /) -> Any: ...
+@overload
+def Dot(arg1: Vec4f | list[float] | tuple[float, float, float, float], arg2: Vec4f | list[float] | tuple[float, float, float, float], /) -> float: ...
+@overload
+def Dot(arg1: Vec4d | list[float] | tuple[float, float, float, float], arg2: Vec4d | list[float] | tuple[float, float, float, float], /) -> float: ...
 def Exp(_f: float, /) -> float:
     """
     Return exp( C{f}).
@@ -8092,6 +7771,34 @@ def Expf(f) -> float:
     f : float
 
     Use instead of Exp() to return the exponent of f as a float instead of a double."""
+@overload
+def FindClosestPoints(_ray: Ray, _line: Line, /) -> tuple:
+    """
+    Computes the closest points between a ray and a line.
+
+
+    The two points are returned in C{rayPoint} and C{linePoint}. The
+    parametric distance of each point on the lines is returned in
+    C{rayDistance} and C{lineDistance}.
+
+    This returns C{false} if the lines were close enough to parallel that
+    no points could be computed; in this case, the other return values are
+    undefined.
+    """
+@overload
+def FindClosestPoints(_ray: Ray, _seg: LineSeg, /) -> tuple:
+    """
+    Computes the closest points between a ray and a line segment.
+
+
+    The two points are returned in C{rayPoint} and C{segPoint}. The
+    parametric distance of each point is returned in C{rayDistance} and
+    C{segDistance}.
+
+    This returns C{false} if the lines were close enough to parallel that
+    no points could be computed; in this case, the other return values are
+    undefined.
+    """
 @overload
 def FindClosestPoints(arg1: Line, arg2: Line, /) -> tuple:
     """    Computes the closest points between two lines, returning a tuple.  The first item in the tuple is true if the linesintersect.  The two points are returned in p1 and p2.  The parametric distance of each point on the lines is returned in t1 and t2.
@@ -8170,34 +7877,6 @@ def FindClosestPoints(arg1: LineSeg, arg2: LineSeg, /) -> tuple:
         The parametric distance of each point on the ray and line
         segment is returned in t1 and t2.
         ----------------------------------------------------------------------"""
-@overload
-def FindClosestPoints(_ray: Ray, _line: Line, /) -> tuple:
-    """
-    Computes the closest points between a ray and a line.
-
-
-    The two points are returned in C{rayPoint} and C{linePoint}. The
-    parametric distance of each point on the lines is returned in
-    C{rayDistance} and C{lineDistance}.
-
-    This returns C{false} if the lines were close enough to parallel that
-    no points could be computed; in this case, the other return values are
-    undefined.
-    """
-@overload
-def FindClosestPoints(_ray: Ray, _seg: LineSeg, /) -> tuple:
-    """
-    Computes the closest points between a ray and a line segment.
-
-
-    The two points are returned in C{rayPoint} and C{segPoint}. The
-    parametric distance of each point is returned in C{rayDistance} and
-    C{segDistance}.
-
-    This returns C{false} if the lines were close enough to parallel that
-    no points could be computed; in this case, the other return values are
-    undefined.
-    """
 def FitPlaneToPoints(_points: typing.Iterable[Vec3d | list[float] | tuple[float, float, float]], /) -> Plane:
     '''
     Fits a plane to the given C{points}.
@@ -8240,94 +7919,6 @@ def Floorf(f) -> float:
 
     Use instead of Floor() to return the floor of f as a float instead of a double."""
 @overload
-def GetComplement(_a: Vec2h | list[float] | tuple[float, float], _b: Vec2h | list[float] | tuple[float, float], /) -> Vec2h:
-    """
-    Returns the orthogonal complement of C{a.GetProjection(b)} .
-
-
-    That is: ::
-
-      a - a.GetProjection(b)
-
-    """
-@overload
-def GetComplement(_a: Vec2f | list[float] | tuple[float, float], _b: Vec2f | list[float] | tuple[float, float], /) -> Vec2f:
-    """
-    Returns the orthogonal complement of C{a.GetProjection(b)} .
-
-
-    That is: ::
-
-      a - a.GetProjection(b)
-
-    """
-@overload
-def GetComplement(_a: Vec2d | list[float] | tuple[float, float], _b: Vec2d | list[float] | tuple[float, float], /) -> Vec2d:
-    """
-    Returns the orthogonal complement of C{a.GetProjection(b)} .
-
-
-    That is: ::
-
-      a - a.GetProjection(b)
-
-    """
-@overload
-def GetComplement(_a: Vec3h | list[float] | tuple[float, float, float], _b: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h:
-    """
-    Returns the orthogonal complement of C{a.GetProjection(b)} .
-
-
-    That is: ::
-
-      a - a.GetProjection(b)
-
-    """
-@overload
-def GetComplement(_a: Vec3f | list[float] | tuple[float, float, float], _b: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
-    """
-    Returns the orthogonal complement of C{a.GetProjection(b)} .
-
-
-    That is: ::
-
-      a - a.GetProjection(b)
-
-    """
-@overload
-def GetComplement(_a: Vec3d | list[float] | tuple[float, float, float], _b: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
-    """
-    Returns the orthogonal complement of C{a.GetProjection(b)} .
-
-
-    That is: ::
-
-      a - a.GetProjection(b)
-
-    """
-@overload
-def GetComplement(_a: Vec4h | list[float] | tuple[float, float, float, float], _b: Vec4h | list[float] | tuple[float, float, float, float], /) -> Vec4h:
-    """
-    Returns the orthogonal complement of C{a.GetProjection(b)} .
-
-
-    That is: ::
-
-      a - a.GetProjection(b)
-
-    """
-@overload
-def GetComplement(_a: Vec4f | list[float] | tuple[float, float, float, float], _b: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f:
-    """
-    Returns the orthogonal complement of C{a.GetProjection(b)} .
-
-
-    That is: ::
-
-      a - a.GetProjection(b)
-
-    """
-@overload
 def GetComplement(_a: Vec4d | list[float] | tuple[float, float, float, float], _b: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d:
     """
     Returns the orthogonal complement of C{a.GetProjection(b)} .
@@ -8338,6 +7929,22 @@ def GetComplement(_a: Vec4d | list[float] | tuple[float, float, float, float], _
       a - a.GetProjection(b)
 
     """
+@overload
+def GetComplement(arg1: Vec2h | list[float] | tuple[float, float], arg2: Vec2h | list[float] | tuple[float, float], /) -> Vec2h: ...
+@overload
+def GetComplement(arg1: Vec2f | list[float] | tuple[float, float], arg2: Vec2f | list[float] | tuple[float, float], /) -> Vec2f: ...
+@overload
+def GetComplement(arg1: Vec2d | list[float] | tuple[float, float], arg2: Vec2d | list[float] | tuple[float, float], /) -> Vec2d: ...
+@overload
+def GetComplement(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...
+@overload
+def GetComplement(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f: ...
+@overload
+def GetComplement(arg1: Vec3d | list[float] | tuple[float, float, float], arg2: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d: ...
+@overload
+def GetComplement(arg1: Vec4h | list[float] | tuple[float, float, float, float], arg2: Vec4h | list[float] | tuple[float, float, float, float], /) -> Vec4h: ...
+@overload
+def GetComplement(arg1: Vec4f | list[float] | tuple[float, float, float, float], arg2: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f: ...
 def GetDisplayGamma() -> float:
     """
     Return the system display gamma.
@@ -8351,138 +7958,28 @@ def GetHomogenized(_v: Vec4d | list[float] | tuple[float, float, float, float], 
     If the fourth element of C{v} is 0, it is set to 1.
     """
 @overload
-def GetHomogenized(_v: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f:
-    """
-    Returns a vector which is C{v} homogenized.
-
-
-    If the fourth element of C{v} is 0, it is set to 1.
-    """
-@overload
-def GetLength(_v: Vec2h | list[float] | tuple[float, float], /) -> float:
-    """
-    Returns the geometric length of C{v}.
-    """
-@overload
-def GetLength(_v: Vec2f | list[float] | tuple[float, float], /) -> float:
-    """
-    Returns the geometric length of C{v}.
-    """
-@overload
-def GetLength(_v: Vec2d | list[float] | tuple[float, float], /) -> float:
-    """
-    Returns the geometric length of C{v}.
-    """
-@overload
-def GetLength(_v: Vec3h | list[float] | tuple[float, float, float], /) -> float:
-    """
-    Returns the geometric length of C{v}.
-    """
-@overload
-def GetLength(_v: Vec3f | list[float] | tuple[float, float, float], /) -> float:
-    """
-    Returns the geometric length of C{v}.
-    """
-@overload
-def GetLength(_v: Vec3d | list[float] | tuple[float, float, float], /) -> float:
-    """
-    Returns the geometric length of C{v}.
-    """
-@overload
-def GetLength(_v: Vec4h | list[float] | tuple[float, float, float, float], /) -> float:
-    """
-    Returns the geometric length of C{v}.
-    """
-@overload
-def GetLength(_v: Vec4f | list[float] | tuple[float, float, float, float], /) -> float:
-    """
-    Returns the geometric length of C{v}.
-    """
+def GetHomogenized(arg1: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f: ...
 @overload
 def GetLength(_v: Vec4d | list[float] | tuple[float, float, float, float], /) -> float:
     """
     Returns the geometric length of C{v}.
     """
 @overload
-def GetNormalized(_v: Vec2h | list[float] | tuple[float, float], _eps: float = ..., /) -> Vec2h:
-    """
-    Returns a normalized (unit-length) vector with the same direction as
-    C{v}.
-
-
-    If the length of this vector is smaller than C{eps}, the vector
-    divided by C{eps} is returned.
-    """
+def GetLength(arg1: Vec2h | list[float] | tuple[float, float], /) -> Any: ...
 @overload
-def GetNormalized(_v: Vec2f | list[float] | tuple[float, float], _eps: float = ..., /) -> Vec2f:
-    """
-    Returns a normalized (unit-length) vector with the same direction as
-    C{v}.
-
-
-    If the length of this vector is smaller than C{eps}, the vector
-    divided by C{eps} is returned.
-    """
+def GetLength(arg1: Vec2f | list[float] | tuple[float, float], /) -> float: ...
 @overload
-def GetNormalized(_v: Vec2d | list[float] | tuple[float, float], _eps: float = ..., /) -> Vec2d:
-    """
-    Returns a normalized (unit-length) vector with the same direction as
-    C{v}.
-
-
-    If the length of this vector is smaller than C{eps}, the vector
-    divided by C{eps} is returned.
-    """
+def GetLength(arg1: Vec2d | list[float] | tuple[float, float], /) -> float: ...
 @overload
-def GetNormalized(_v: Vec3h | list[float] | tuple[float, float, float], _eps: float = ..., /) -> Vec3h:
-    """
-    Returns a normalized (unit-length) vector with the same direction as
-    C{v}.
-
-
-    If the length of this vector is smaller than C{eps}, the vector
-    divided by C{eps} is returned.
-    """
+def GetLength(arg1: Vec3h | list[float] | tuple[float, float, float], /) -> Any: ...
 @overload
-def GetNormalized(_v: Vec3f | list[float] | tuple[float, float, float], _eps: float = ..., /) -> Vec3f:
-    """
-    Returns a normalized (unit-length) vector with the same direction as
-    C{v}.
-
-
-    If the length of this vector is smaller than C{eps}, the vector
-    divided by C{eps} is returned.
-    """
+def GetLength(arg1: Vec3f | list[float] | tuple[float, float, float], /) -> float: ...
 @overload
-def GetNormalized(_v: Vec3d | list[float] | tuple[float, float, float], _eps: float = ..., /) -> Vec3d:
-    """
-    Returns a normalized (unit-length) vector with the same direction as
-    C{v}.
-
-
-    If the length of this vector is smaller than C{eps}, the vector
-    divided by C{eps} is returned.
-    """
+def GetLength(arg1: Vec3d | list[float] | tuple[float, float, float], /) -> float: ...
 @overload
-def GetNormalized(_v: Vec4h | list[float] | tuple[float, float, float, float], _eps: float = ..., /) -> Vec4h:
-    """
-    Returns a normalized (unit-length) vector with the same direction as
-    C{v}.
-
-
-    If the length of this vector is smaller than C{eps}, the vector
-    divided by C{eps} is returned.
-    """
+def GetLength(arg1: Vec4h | list[float] | tuple[float, float, float, float], /) -> Any: ...
 @overload
-def GetNormalized(_v: Vec4f | list[float] | tuple[float, float, float, float], _eps: float = ..., /) -> Vec4f:
-    """
-    Returns a normalized (unit-length) vector with the same direction as
-    C{v}.
-
-
-    If the length of this vector is smaller than C{eps}, the vector
-    divided by C{eps} is returned.
-    """
+def GetLength(arg1: Vec4f | list[float] | tuple[float, float, float, float], /) -> float: ...
 @overload
 def GetNormalized(_v: Vec4d | list[float] | tuple[float, float, float, float], _eps: float = ..., /) -> Vec4d:
     """
@@ -8494,93 +7991,21 @@ def GetNormalized(_v: Vec4d | list[float] | tuple[float, float, float, float], _
     divided by C{eps} is returned.
     """
 @overload
-def GetProjection(_a: Vec2h | list[float] | tuple[float, float], _b: Vec2h | list[float] | tuple[float, float], /) -> Vec2h:
-    """
-    Returns the projection of C{a} onto C{b}.
-
-
-    That is: ::
-
-      b * (a * b)
-
-    """
+def GetNormalized(arg1: Vec2h | list[float] | tuple[float, float], arg2: object = ..., /) -> Vec2h: ...
 @overload
-def GetProjection(_a: Vec2f | list[float] | tuple[float, float], _b: Vec2f | list[float] | tuple[float, float], /) -> Vec2f:
-    """
-    Returns the projection of C{a} onto C{b}.
-
-
-    That is: ::
-
-      b * (a * b)
-
-    """
+def GetNormalized(arg1: Vec2f | list[float] | tuple[float, float], arg2: float = ..., /) -> Vec2f: ...
 @overload
-def GetProjection(_a: Vec2d | list[float] | tuple[float, float], _b: Vec2d | list[float] | tuple[float, float], /) -> Vec2d:
-    """
-    Returns the projection of C{a} onto C{b}.
-
-
-    That is: ::
-
-      b * (a * b)
-
-    """
+def GetNormalized(arg1: Vec2d | list[float] | tuple[float, float], arg2: float = ..., /) -> Vec2d: ...
 @overload
-def GetProjection(_a: Vec3h | list[float] | tuple[float, float, float], _b: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h:
-    """
-    Returns the projection of C{a} onto C{b}.
-
-
-    That is: ::
-
-      b * (a * b)
-
-    """
+def GetNormalized(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: object = ..., /) -> Vec3h: ...
 @overload
-def GetProjection(_a: Vec3f | list[float] | tuple[float, float, float], _b: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
-    """
-    Returns the projection of C{a} onto C{b}.
-
-
-    That is: ::
-
-      b * (a * b)
-
-    """
+def GetNormalized(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: float = ..., /) -> Vec3f: ...
 @overload
-def GetProjection(_a: Vec3d | list[float] | tuple[float, float, float], _b: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
-    """
-    Returns the projection of C{a} onto C{b}.
-
-
-    That is: ::
-
-      b * (a * b)
-
-    """
+def GetNormalized(arg1: Vec3d | list[float] | tuple[float, float, float], arg2: float = ..., /) -> Vec3d: ...
 @overload
-def GetProjection(_a: Vec4h | list[float] | tuple[float, float, float, float], _b: Vec4h | list[float] | tuple[float, float, float, float], /) -> Vec4h:
-    """
-    Returns the projection of C{a} onto C{b}.
-
-
-    That is: ::
-
-      b * (a * b)
-
-    """
+def GetNormalized(arg1: Vec4h | list[float] | tuple[float, float, float, float], arg2: object = ..., /) -> Vec4h: ...
 @overload
-def GetProjection(_a: Vec4f | list[float] | tuple[float, float, float, float], _b: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f:
-    """
-    Returns the projection of C{a} onto C{b}.
-
-
-    That is: ::
-
-      b * (a * b)
-
-    """
+def GetNormalized(arg1: Vec4f | list[float] | tuple[float, float, float, float], arg2: float = ..., /) -> Vec4f: ...
 @overload
 def GetProjection(_a: Vec4d | list[float] | tuple[float, float, float, float], _b: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d:
     """
@@ -8593,14 +8018,21 @@ def GetProjection(_a: Vec4d | list[float] | tuple[float, float, float, float], _
 
     """
 @overload
-def HomogeneousCross(_a: Vec4d | list[float] | tuple[float, float, float, float], _b: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d:
-    """
-    Homogenizes C{a} and C{b} and then performs the cross product on the
-    first three elements of each.
-
-
-    Returns the cross product as a homogenized vector.
-    """
+def GetProjection(arg1: Vec2h | list[float] | tuple[float, float], arg2: Vec2h | list[float] | tuple[float, float], /) -> Vec2h: ...
+@overload
+def GetProjection(arg1: Vec2f | list[float] | tuple[float, float], arg2: Vec2f | list[float] | tuple[float, float], /) -> Vec2f: ...
+@overload
+def GetProjection(arg1: Vec2d | list[float] | tuple[float, float], arg2: Vec2d | list[float] | tuple[float, float], /) -> Vec2d: ...
+@overload
+def GetProjection(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...
+@overload
+def GetProjection(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f: ...
+@overload
+def GetProjection(arg1: Vec3d | list[float] | tuple[float, float, float], arg2: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d: ...
+@overload
+def GetProjection(arg1: Vec4h | list[float] | tuple[float, float, float, float], arg2: Vec4h | list[float] | tuple[float, float, float, float], /) -> Vec4h: ...
+@overload
+def GetProjection(arg1: Vec4f | list[float] | tuple[float, float, float, float], arg2: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f: ...
 @overload
 def HomogeneousCross(_a: Vec4f | list[float] | tuple[float, float, float, float], _b: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f:
     """
@@ -8611,79 +8043,13 @@ def HomogeneousCross(_a: Vec4f | list[float] | tuple[float, float, float, float]
     Returns the cross product as a homogenized vector.
     """
 @overload
-def IsClose(_a: float, _b: float, _epsilon: float, /) -> bool:
+def HomogeneousCross(_a: Vec4d | list[float] | tuple[float, float, float, float], _b: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d:
     """
-    Returns true if C{a} and C{b} are with C{epsilon} of each other.
-    """
-@overload
-def IsClose(_a: Matrix2d, _b: Matrix2d, _epsilon: float, /) -> bool:
-    """
-    Returns true if C{a} and C{b} are with C{epsilon} of each other.
-    """
-@overload
-def IsClose(_a: Matrix2f, _b: Matrix2f, _epsilon: float, /) -> bool:
-    """
-    Returns true if C{a} and C{b} are with C{epsilon} of each other.
-    """
-@overload
-def IsClose(_a: Matrix3d, _b: Matrix3d, _epsilon: float, /) -> bool:
-    """
-    Returns true if C{a} and C{b} are with C{epsilon} of each other.
-    """
-@overload
-def IsClose(_a: Matrix3f, _b: Matrix3f, _epsilon: float, /) -> bool:
-    """
-    Returns true if C{a} and C{b} are with C{epsilon} of each other.
-    """
-@overload
-def IsClose(_a: Matrix4f, _b: Matrix4f, _epsilon: float, /) -> bool:
-    """
-    Returns true if C{a} and C{b} are with C{epsilon} of each other.
-    """
-@overload
-def IsClose(_a: Matrix4d, _b: Matrix4d, _epsilon: float, /) -> bool:
-    """
-    Returns true if C{a} and C{b} are with C{epsilon} of each other.
-    """
-@overload
-def IsClose(_a: Vec2h | list[float] | tuple[float, float], _b: Vec2h | list[float] | tuple[float, float], _epsilon: float, /) -> bool:
-    """
-    Returns true if C{a} and C{b} are with C{epsilon} of each other.
-    """
-@overload
-def IsClose(_a: Vec2f | list[float] | tuple[float, float], _b: Vec2f | list[float] | tuple[float, float], _epsilon: float, /) -> bool:
-    """
-    Returns true if C{a} and C{b} are with C{epsilon} of each other.
-    """
-@overload
-def IsClose(_a: Vec2d | list[float] | tuple[float, float], _b: Vec2d | list[float] | tuple[float, float], _epsilon: float, /) -> bool:
-    """
-    Returns true if C{a} and C{b} are with C{epsilon} of each other.
-    """
-@overload
-def IsClose(_a: Vec3h | list[float] | tuple[float, float, float], _b: Vec3h | list[float] | tuple[float, float, float], _epsilon: float, /) -> bool:
-    """
-    Returns true if C{a} and C{b} are with C{epsilon} of each other.
-    """
-@overload
-def IsClose(_a: Vec3f | list[float] | tuple[float, float, float], _b: Vec3f | list[float] | tuple[float, float, float], _epsilon: float, /) -> bool:
-    """
-    Returns true if C{a} and C{b} are with C{epsilon} of each other.
-    """
-@overload
-def IsClose(_a: Vec3d | list[float] | tuple[float, float, float], _b: Vec3d | list[float] | tuple[float, float, float], _epsilon: float, /) -> bool:
-    """
-    Returns true if C{a} and C{b} are with C{epsilon} of each other.
-    """
-@overload
-def IsClose(_a: Vec4h | list[float] | tuple[float, float, float, float], _b: Vec4h | list[float] | tuple[float, float, float, float], _epsilon: float, /) -> bool:
-    """
-    Returns true if C{a} and C{b} are with C{epsilon} of each other.
-    """
-@overload
-def IsClose(_a: Vec4f | list[float] | tuple[float, float, float, float], _b: Vec4f | list[float] | tuple[float, float, float, float], _epsilon: float, /) -> bool:
-    """
-    Returns true if C{a} and C{b} are with C{epsilon} of each other.
+    Homogenizes C{a} and C{b} and then performs the cross product on the
+    first three elements of each.
+
+
+    Returns the cross product as a homogenized vector.
     """
 @overload
 def IsClose(_a: Vec4d | list[float] | tuple[float, float, float, float], _b: Vec4d | list[float] | tuple[float, float, float, float], _epsilon: float, /) -> bool:
@@ -8691,101 +8057,35 @@ def IsClose(_a: Vec4d | list[float] | tuple[float, float, float, float], _b: Vec
     Returns true if C{a} and C{b} are with C{epsilon} of each other.
     """
 @overload
-def Lerp(_alpha: float, _a: float, _b: float, /) -> float:
-    """
-    Linear interpolation function.
-
-
-    For any type that supports multiplication by a scalar and binary
-    addition, returns ::
-
-      (1-alpha) * a + alpha * b 
-
-    """
+def IsClose(arg1: float, arg2: float, arg3: float, /) -> bool: ...
 @overload
-def Lerp(_alpha: float, _a: Vec2i | list[int] | Size2 | tuple[int, int], _b: Vec2i | list[int] | Size2 | tuple[int, int], /) -> Vec2i:
-    """
-    Linear interpolation function.
-
-
-    For any type that supports multiplication by a scalar and binary
-    addition, returns ::
-
-      (1-alpha) * a + alpha * b 
-
-    """
+def IsClose(arg1: Matrix2d, arg2: Matrix2d, arg3: float, /) -> bool: ...
 @overload
-def Lerp(_alpha: float, _a: Vec3i | list[int] | Size3 | tuple[int, int, int], _b: Vec3i | list[int] | Size3 | tuple[int, int, int], /) -> Vec3i:
-    """
-    Linear interpolation function.
-
-
-    For any type that supports multiplication by a scalar and binary
-    addition, returns ::
-
-      (1-alpha) * a + alpha * b 
-
-    """
+def IsClose(arg1: Matrix2f, arg2: Matrix2f, arg3: float, /) -> bool: ...
 @overload
-def Lerp(_alpha: float, _a: Vec2f | list[float] | tuple[float, float], _b: Vec2f | list[float] | tuple[float, float], /) -> Vec2f:
-    """
-    Linear interpolation function.
-
-
-    For any type that supports multiplication by a scalar and binary
-    addition, returns ::
-
-      (1-alpha) * a + alpha * b 
-
-    """
+def IsClose(arg1: Matrix3d, arg2: Matrix3d, arg3: float, /) -> bool: ...
 @overload
-def Lerp(_alpha: float, _a: Vec3f | list[float] | tuple[float, float, float], _b: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
-    """
-    Linear interpolation function.
-
-
-    For any type that supports multiplication by a scalar and binary
-    addition, returns ::
-
-      (1-alpha) * a + alpha * b 
-
-    """
+def IsClose(arg1: Matrix3f, arg2: Matrix3f, arg3: float, /) -> bool: ...
 @overload
-def Lerp(_alpha: float, _a: Vec4f | list[float] | tuple[float, float, float, float], _b: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f:
-    """
-    Linear interpolation function.
-
-
-    For any type that supports multiplication by a scalar and binary
-    addition, returns ::
-
-      (1-alpha) * a + alpha * b 
-
-    """
+def IsClose(arg1: Matrix4f, arg2: Matrix4f, arg3: float, /) -> bool: ...
 @overload
-def Lerp(_alpha: float, _a: Vec2d | list[float] | tuple[float, float], _b: Vec2d | list[float] | tuple[float, float], /) -> Vec2d:
-    """
-    Linear interpolation function.
-
-
-    For any type that supports multiplication by a scalar and binary
-    addition, returns ::
-
-      (1-alpha) * a + alpha * b 
-
-    """
+def IsClose(arg1: Matrix4d, arg2: Matrix4d, arg3: float, /) -> bool: ...
 @overload
-def Lerp(_alpha: float, _a: Vec3d | list[float] | tuple[float, float, float], _b: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
-    """
-    Linear interpolation function.
-
-
-    For any type that supports multiplication by a scalar and binary
-    addition, returns ::
-
-      (1-alpha) * a + alpha * b 
-
-    """
+def IsClose(arg1: Vec2h | list[float] | tuple[float, float], arg2: Vec2h | list[float] | tuple[float, float], arg3: float, /) -> bool: ...
+@overload
+def IsClose(arg1: Vec2f | list[float] | tuple[float, float], arg2: Vec2f | list[float] | tuple[float, float], arg3: float, /) -> bool: ...
+@overload
+def IsClose(arg1: Vec2d | list[float] | tuple[float, float], arg2: Vec2d | list[float] | tuple[float, float], arg3: float, /) -> bool: ...
+@overload
+def IsClose(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: Vec3h | list[float] | tuple[float, float, float], arg3: float, /) -> bool: ...
+@overload
+def IsClose(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: Vec3f | list[float] | tuple[float, float, float], arg3: float, /) -> bool: ...
+@overload
+def IsClose(arg1: Vec3d | list[float] | tuple[float, float, float], arg2: Vec3d | list[float] | tuple[float, float, float], arg3: float, /) -> bool: ...
+@overload
+def IsClose(arg1: Vec4h | list[float] | tuple[float, float, float, float], arg2: Vec4h | list[float] | tuple[float, float, float, float], arg3: float, /) -> bool: ...
+@overload
+def IsClose(arg1: Vec4f | list[float] | tuple[float, float, float, float], arg2: Vec4f | list[float] | tuple[float, float, float, float], arg3: float, /) -> bool: ...
 @overload
 def Lerp(_alpha: float, _a: Vec4d | list[float] | tuple[float, float, float, float], _b: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d:
     """
@@ -8798,6 +8098,22 @@ def Lerp(_alpha: float, _a: Vec4d | list[float] | tuple[float, float, float, flo
       (1-alpha) * a + alpha * b 
 
     """
+@overload
+def Lerp(arg1: float, arg2: float, arg3: float, /) -> float: ...
+@overload
+def Lerp(arg1: float, arg2: Vec2i | list[int] | Size2 | tuple[int, int], arg3: Vec2i | list[int] | Size2 | tuple[int, int], /) -> Vec2i: ...
+@overload
+def Lerp(arg1: float, arg2: Vec3i | list[int] | Size3 | tuple[int, int, int], arg3: Vec3i | list[int] | Size3 | tuple[int, int, int], /) -> Vec3i: ...
+@overload
+def Lerp(arg1: float, arg2: Vec2f | list[float] | tuple[float, float], arg3: Vec2f | list[float] | tuple[float, float], /) -> Vec2f: ...
+@overload
+def Lerp(arg1: float, arg2: Vec3f | list[float] | tuple[float, float, float], arg3: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f: ...
+@overload
+def Lerp(arg1: float, arg2: Vec4f | list[float] | tuple[float, float, float, float], arg3: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f: ...
+@overload
+def Lerp(arg1: float, arg2: Vec2d | list[float] | tuple[float, float], arg3: Vec2d | list[float] | tuple[float, float], /) -> Vec2d: ...
+@overload
+def Lerp(arg1: float, arg2: Vec3d | list[float] | tuple[float, float, float], arg3: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d: ...
 @overload
 def Lerpf(arg1: float, arg2: float, arg3: float, /) -> float:
     """Lerpf(f) -> float
@@ -8831,10 +8147,12 @@ def Logf(f) -> float:
 
     Use instead of Log() to return the logarithm of f as a float instead of a double."""
 @overload
-def Max(_a1: float, _a2: float, /) -> float:
+def Max(_a1: int, _a2: int, /) -> int:
     """
     Returns the largest of the given C{values}.
     """
+@overload
+def Max(arg1: float, arg2: float, /) -> float: ...
 @overload
 def Max(arg1: float, arg2: float, arg3: float, /) -> float: ...
 @overload
@@ -8842,32 +8160,24 @@ def Max(arg1: float, arg2: float, arg3: float, arg4: float, /) -> float: ...
 @overload
 def Max(arg1: float, arg2: float, arg3: float, arg4: float, arg5: float, /) -> float: ...
 @overload
-def Max(_a1: int, _a2: int, /) -> int:
-    """
-    Returns the largest of the given C{values}.
-    """
-@overload
 def Max(arg1: int, arg2: int, arg3: int, /) -> int: ...
 @overload
 def Max(arg1: int, arg2: int, arg3: int, arg4: int, /) -> int: ...
 @overload
 def Max(arg1: int, arg2: int, arg3: int, arg4: int, arg5: int, /) -> int: ...
 @overload
-def Min(_a1: float, _a2: float, /) -> float:
+def Min(_a1: int, _a2: int, /) -> int:
     """
     Returns the smallest of the given C{values}.
     """
+@overload
+def Min(arg1: float, arg2: float, /) -> float: ...
 @overload
 def Min(arg1: float, arg2: float, arg3: float, /) -> float: ...
 @overload
 def Min(arg1: float, arg2: float, arg3: float, arg4: float, /) -> float: ...
 @overload
 def Min(arg1: float, arg2: float, arg3: float, arg4: float, arg5: float, /) -> float: ...
-@overload
-def Min(_a1: int, _a2: int, /) -> int:
-    """
-    Returns the smallest of the given C{values}.
-    """
 @overload
 def Min(arg1: int, arg2: int, arg3: int, /) -> int: ...
 @overload
@@ -8898,86 +8208,6 @@ def Modf(f) -> float:
 
     Use instead of Mod() to return the modulus of f as a float instead of a double."""
 @overload
-def Normalize(_v: Vec2h | list[float] | tuple[float, float], _eps: float = ..., /) -> float:
-    """
-    Normalizes C{*v} in place to unit length, returning the length before
-    normalization.
-
-
-    If the length of C{*v} is smaller than C{eps} then C{*v} is set to
-    C{*v/eps}. The original length of C{*v} is returned.
-    """
-@overload
-def Normalize(_v: Vec2f | list[float] | tuple[float, float], _eps: float = ..., /) -> float:
-    """
-    Normalizes C{*v} in place to unit length, returning the length before
-    normalization.
-
-
-    If the length of C{*v} is smaller than C{eps} then C{*v} is set to
-    C{*v/eps}. The original length of C{*v} is returned.
-    """
-@overload
-def Normalize(_v: Vec2d | list[float] | tuple[float, float], _eps: float = ..., /) -> float:
-    """
-    Normalizes C{*v} in place to unit length, returning the length before
-    normalization.
-
-
-    If the length of C{*v} is smaller than C{eps} then C{*v} is set to
-    C{*v/eps}. The original length of C{*v} is returned.
-    """
-@overload
-def Normalize(_v: Vec3h | list[float] | tuple[float, float, float], _eps: float = ..., /) -> float:
-    """
-    Normalizes C{*v} in place to unit length, returning the length before
-    normalization.
-
-
-    If the length of C{*v} is smaller than C{eps} then C{*v} is set to
-    C{*v/eps}. The original length of C{*v} is returned.
-    """
-@overload
-def Normalize(_v: Vec3f | list[float] | tuple[float, float, float], _eps: float = ..., /) -> float:
-    """
-    Normalizes C{*v} in place to unit length, returning the length before
-    normalization.
-
-
-    If the length of C{*v} is smaller than C{eps} then C{*v} is set to
-    C{*v/eps}. The original length of C{*v} is returned.
-    """
-@overload
-def Normalize(_v: Vec3d | list[float] | tuple[float, float, float], _eps: float = ..., /) -> float:
-    """
-    Normalizes C{*v} in place to unit length, returning the length before
-    normalization.
-
-
-    If the length of C{*v} is smaller than C{eps} then C{*v} is set to
-    C{*v/eps}. The original length of C{*v} is returned.
-    """
-@overload
-def Normalize(_v: Vec4h | list[float] | tuple[float, float, float, float], _eps: float = ..., /) -> float:
-    """
-    Normalizes C{*v} in place to unit length, returning the length before
-    normalization.
-
-
-    If the length of C{*v} is smaller than C{eps} then C{*v} is set to
-    C{*v/eps}. The original length of C{*v} is returned.
-    """
-@overload
-def Normalize(_v: Vec4f | list[float] | tuple[float, float, float, float], _eps: float = ..., /) -> float:
-    """
-    Normalizes C{*v} in place to unit length, returning the length before
-    normalization.
-
-
-    If the length of C{*v} is smaller than C{eps} then C{*v} is set to
-    C{*v/eps}. The original length of C{*v} is returned.
-    """
-@overload
 def Normalize(_v: Vec4d | list[float] | tuple[float, float, float, float], _eps: float = ..., /) -> float:
     """
     Normalizes C{*v} in place to unit length, returning the length before
@@ -8987,6 +8217,22 @@ def Normalize(_v: Vec4d | list[float] | tuple[float, float, float, float], _eps:
     If the length of C{*v} is smaller than C{eps} then C{*v} is set to
     C{*v/eps}. The original length of C{*v} is returned.
     """
+@overload
+def Normalize(arg1: Vec2h | list[float] | tuple[float, float], arg2: object = ..., /) -> Any: ...
+@overload
+def Normalize(arg1: Vec2f | list[float] | tuple[float, float], arg2: float = ..., /) -> float: ...
+@overload
+def Normalize(arg1: Vec2d | list[float] | tuple[float, float], arg2: float = ..., /) -> float: ...
+@overload
+def Normalize(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: object = ..., /) -> Any: ...
+@overload
+def Normalize(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: float = ..., /) -> float: ...
+@overload
+def Normalize(arg1: Vec3d | list[float] | tuple[float, float, float], arg2: float = ..., /) -> float: ...
+@overload
+def Normalize(arg1: Vec4h | list[float] | tuple[float, float, float, float], arg2: object = ..., /) -> Any: ...
+@overload
+def Normalize(arg1: Vec4f | list[float] | tuple[float, float, float, float], arg2: float = ..., /) -> float: ...
 def Pow(_f: float, _p: float, /) -> float:
     """
     Return pow( C{f}, C{p}).
@@ -9006,16 +8252,16 @@ def Powf(f) -> float:
 
     Use instead of Pow() to return the power of f as a float instead of a double."""
 @overload
-def Project(_v: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec3d:
-    """
-    Projects homogeneous C{v} into Euclidean space and returns the result
-    as a Vec3d.
-    """
-@overload
 def Project(_v: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec3f:
     """
     Projects homogeneous C{v} into Euclidean space and returns the result
     as a Vec3f.
+    """
+@overload
+def Project(_v: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec3d:
+    """
+    Projects homogeneous C{v} into Euclidean space and returns the result
+    as a Vec3d.
     """
 def RadiansToDegrees(_radians: float, /) -> float:
     """
@@ -9040,17 +8286,6 @@ def Roundf(f) -> float:
 
     Use instead of Round() to return the rounded value of f as a float instead of a double."""
 @overload
-def Sgn(_v: float, /) -> float:
-    """
-    Return the signum of C{v} (i.e.
-
-
-    -1, 0, or 1).
-
-    The type C{T} must implement the<and>operators; the function returns
-    zero only if value neither positive, nor negative.
-    """
-@overload
 def Sgn(_v: int, /) -> int:
     """
     Return the signum of C{v} (i.e.
@@ -9062,112 +8297,24 @@ def Sgn(_v: int, /) -> int:
     zero only if value neither positive, nor negative.
     """
 @overload
-def Slerp(_alpha: float, _v0: Quatd | Quatf | Quath, _v1: Quatd | Quatf | Quath, /) -> Quatd:
-    """
-    Spherical linear interpolation in three dimensions.
-    """
-@overload
-def Slerp(_alpha: float, _v0: Quatf | Quath, _v1: Quatf | Quath, /) -> Quatf:
-    """
-    Spherical linear interpolation in three dimensions.
-    """
-@overload
-def Slerp(_alpha: float, _v0: Quath, _v1: Quath, /) -> Quath:
-    """
-    Spherical linear interpolation in three dimensions.
-    """
-@overload
-def Slerp(_alpha: float, _v0: Quaternion, _v1: Quaternion, /) -> Quaternion:
-    """
-    Spherical linear interpolation in three dimensions.
-    """
-@overload
-def Slerp(_alpha: float, _v0: Vec3h | list[float] | tuple[float, float, float], _v1: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h:
-    """
-    Spherical linear interpolation in three dimensions.
-    """
-@overload
-def Slerp(_alpha: float, _v0: Vec3f | list[float] | tuple[float, float, float], _v1: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
-    """
-    Spherical linear interpolation in three dimensions.
-    """
+def Sgn(arg1: float, /) -> float: ...
 @overload
 def Slerp(_alpha: float, _v0: Vec3d | list[float] | tuple[float, float, float], _v1: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
     """
     Spherical linear interpolation in three dimensions.
     """
 @overload
-def Sqr(_x: float, /) -> float:
-    """
-    Returns the inner product of C{x} with itself: specifically, C{x*x}.
-
-
-    Defined for C{int}, C{float}, C{double}, and all C{GfVec} types.
-    """
+def Slerp(arg1: float, arg2: Quatd | Quatf | Quath, arg3: Quatd | Quatf | Quath, /) -> Quatd: ...
 @overload
-def Sqr(_x: int, /) -> float:
-    """
-    Returns the inner product of C{x} with itself: specifically, C{x*x}.
-
-
-    Defined for C{int}, C{float}, C{double}, and all C{GfVec} types.
-    """
+def Slerp(arg1: float, arg2: Quatf | Quath, arg3: Quatf | Quath, /) -> Quatf: ...
 @overload
-def Sqr(_x: Vec2i | list[int] | Size2 | tuple[int, int], /) -> float:
-    """
-    Returns the inner product of C{x} with itself: specifically, C{x*x}.
-
-
-    Defined for C{int}, C{float}, C{double}, and all C{GfVec} types.
-    """
+def Slerp(arg1: float, arg2: Quath, arg3: Quath, /) -> Quath: ...
 @overload
-def Sqr(_x: Vec3i | list[int] | Size3 | tuple[int, int, int], /) -> float:
-    """
-    Returns the inner product of C{x} with itself: specifically, C{x*x}.
-
-
-    Defined for C{int}, C{float}, C{double}, and all C{GfVec} types.
-    """
+def Slerp(arg1: float, arg2: Quaternion, arg3: Quaternion, /) -> Quaternion: ...
 @overload
-def Sqr(_x: Vec2f | list[float] | tuple[float, float], /) -> float:
-    """
-    Returns the inner product of C{x} with itself: specifically, C{x*x}.
-
-
-    Defined for C{int}, C{float}, C{double}, and all C{GfVec} types.
-    """
+def Slerp(arg1: float, arg2: Vec3h | list[float] | tuple[float, float, float], arg3: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...
 @overload
-def Sqr(_x: Vec3f | list[float] | tuple[float, float, float], /) -> float:
-    """
-    Returns the inner product of C{x} with itself: specifically, C{x*x}.
-
-
-    Defined for C{int}, C{float}, C{double}, and all C{GfVec} types.
-    """
-@overload
-def Sqr(_x: Vec4f | list[float] | tuple[float, float, float, float], /) -> float:
-    """
-    Returns the inner product of C{x} with itself: specifically, C{x*x}.
-
-
-    Defined for C{int}, C{float}, C{double}, and all C{GfVec} types.
-    """
-@overload
-def Sqr(_x: Vec2d | list[float] | tuple[float, float], /) -> float:
-    """
-    Returns the inner product of C{x} with itself: specifically, C{x*x}.
-
-
-    Defined for C{int}, C{float}, C{double}, and all C{GfVec} types.
-    """
-@overload
-def Sqr(_x: Vec3d | list[float] | tuple[float, float, float], /) -> float:
-    """
-    Returns the inner product of C{x} with itself: specifically, C{x*x}.
-
-
-    Defined for C{int}, C{float}, C{double}, and all C{GfVec} types.
-    """
+def Slerp(arg1: float, arg2: Vec3f | list[float] | tuple[float, float, float], arg3: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f: ...
 @overload
 def Sqr(_x: Vec4d | list[float] | tuple[float, float, float, float], /) -> float:
     """
@@ -9176,6 +8323,24 @@ def Sqr(_x: Vec4d | list[float] | tuple[float, float, float, float], /) -> float
 
     Defined for C{int}, C{float}, C{double}, and all C{GfVec} types.
     """
+@overload
+def Sqr(arg1: float, /) -> float: ...
+@overload
+def Sqr(arg1: int, /) -> float: ...
+@overload
+def Sqr(arg1: Vec2i | list[int] | Size2 | tuple[int, int], /) -> float: ...
+@overload
+def Sqr(arg1: Vec3i | list[int] | Size3 | tuple[int, int, int], /) -> float: ...
+@overload
+def Sqr(arg1: Vec2f | list[float] | tuple[float, float], /) -> float: ...
+@overload
+def Sqr(arg1: Vec3f | list[float] | tuple[float, float, float], /) -> float: ...
+@overload
+def Sqr(arg1: Vec4f | list[float] | tuple[float, float, float, float], /) -> float: ...
+@overload
+def Sqr(arg1: Vec2d | list[float] | tuple[float, float], /) -> float: ...
+@overload
+def Sqr(arg1: Vec3d | list[float] | tuple[float, float, float], /) -> float: ...
 def Sqrt(_f: float, /) -> float:
     """
     Return sqrt( C{f}).

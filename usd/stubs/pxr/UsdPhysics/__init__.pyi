@@ -621,8 +621,6 @@ class DriveAPI(pxr.Usd.APISchemaBase):
     '''
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self) -> None: ...
-    @overload
     def __init__(self, prim: pxr.Usd.Prim, name: str | pxr.Ar.ResolvedPath) -> None:
         '''
         Construct a UsdPhysicsDriveAPI on UsdPrim C{prim} with name C{name}.
@@ -644,6 +642,8 @@ class DriveAPI(pxr.Usd.APISchemaBase):
         Should be preferred over UsdPhysicsDriveAPI (schemaObj.GetPrim(),
         name), as it preserves SchemaBase state.
         """
+    @overload
+    def __init__(self) -> None: ...
     @staticmethod
     def Apply(prim: pxr.Usd.Prim, name: str | pxr.Ar.ResolvedPath) -> DriveAPI:
         '''
@@ -1537,8 +1537,6 @@ class LimitAPI(pxr.Usd.APISchemaBase):
     '''
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self) -> None: ...
-    @overload
     def __init__(self, prim: pxr.Usd.Prim, name: str | pxr.Ar.ResolvedPath) -> None:
         '''
         Construct a UsdPhysicsLimitAPI on UsdPrim C{prim} with name C{name}.
@@ -1560,6 +1558,8 @@ class LimitAPI(pxr.Usd.APISchemaBase):
         Should be preferred over UsdPhysicsLimitAPI (schemaObj.GetPrim(),
         name), as it preserves SchemaBase state.
         """
+    @overload
+    def __init__(self) -> None: ...
     @staticmethod
     def Apply(prim: pxr.Usd.Prim, name: str | pxr.Ar.ResolvedPath) -> LimitAPI:
         '''

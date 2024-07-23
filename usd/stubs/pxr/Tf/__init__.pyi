@@ -359,12 +359,6 @@ class MallocTag(Boost.Python.instance):
         def GetRoot(self) -> MallocTag.CallTree.PathNode: ...
         def LogReport(self, rootName: str | pxr.Ar.ResolvedPath = ...) -> str: ...
         @overload
-        def Report(self, rootName: str | pxr.Ar.ResolvedPath = ...) -> None:
-            """
-            This is an overloaded member function, provided for convenience. It
-            differs from the above function only in what argument(s) it accepts.
-            """
-        @overload
         def Report(self, fileName: str | pxr.Ar.ResolvedPath, rootName: str | pxr.Ar.ResolvedPath = ...) -> None:
             """
             Generates a report to the ostream C{out}.
@@ -373,6 +367,12 @@ class MallocTag(Boost.Python.instance):
             This report is printed in a way that is intended to be used by
             xxtracediff. If C{rootName} is non-empty it will replace the name of
             the tree root in the report.
+            """
+        @overload
+        def Report(self, rootName: str | pxr.Ar.ResolvedPath = ...) -> None:
+            """
+            This is an overloaded member function, provided for convenience. It
+            differs from the above function only in what argument(s) it accepts.
             """
     def __init__(self, *args, **kwargs) -> None:
         """Raises an exception
@@ -601,24 +601,23 @@ class Notice(Boost.Python.instance):
         C{Register()} was called in.
         """
     @overload
-    def Send(self, sender: Sender) -> typing.Any:
-        """
-        Deliver the notice to interested listeners, returning the number of
-        interested listeners.
+    def Send(self, arg2: object, /) -> int:
+        """    Send(sender) 
 
+            sender : object 
 
-        This is the recommended form of Send. It takes the sender as an
-        argument.
+            Deliver the notice to interested listeners, returning the number of interested listeners. This is the recommended form of Send.  It takes the sender as an argument. Listeners that registered for the given sender AND listeners that registered globally will get the notice. 
 
-        Listeners that registered for the given sender AND listeners that
-        registered globally will get the notice.
+        Send( (Notice)arg1, (object)arg2) -> int"""
+    @overload
+    def Send(self, sender) -> typing.Any:
+        """    Send(sender) 
 
-        Listeners are invoked synchronously and in arbitrary order. The value
-        returned is the total number of times the notice was sent to
-        listeners. Note that a listener is called in the thread in which
-        C{Send()} is called and *not* necessarily in the thread that
-        C{Register()} was called in.
-        """
+            sender : object 
+
+            Deliver the notice to interested listeners, returning the number of interested listeners. This is the recommended form of Send.  It takes the sender as an argument. Listeners that registered for the given sender AND listeners that registered globally will get the notice. 
+
+        Send( (Notice)arg1, (object)arg2) -> int"""
     @overload
     def SendGlobally(self) -> int:
         """SendGlobally() 

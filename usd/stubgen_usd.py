@@ -950,18 +950,47 @@ def get_sigs_from_cpp_overloads(
 
 @dataclass
 class MatchInfo:
+    # name of the SigMatcher
     kind: str
+    # cpp overload index:
     source_overload: int
     key: Any
 
 
 @dataclass
 class SigTracker:
+    # mapping of boost overload number to FunctionSig
     matches: dict[int, FunctionSig] = field(default_factory=dict)
+    # mapping of boost overload number to MatchInfo
     successes: dict[int, MatchInfo] = field(default_factory=dict)
+    # mapping of boost overload number to MatchInfo
     failures: defaultdict[int, list[str]] = field(
         default_factory=lambda: defaultdict(list)
     )
+
+    def iter_sigs(self, sigs) -> Iterator[tuple[int, FunctionSig, FunctionSig | None]]:
+        """Iterate over signatures in order of cpp overloads.
+
+        This is necessary because the docstrings generated from C++ docs refer to
+        overloads 'above' the current one, which is confusing if the overloads
+        are not in their original order.
+        """
+        # create a mapping from C++ overload id to boost overload id
+        cpp_overload_ids = {
+            info.source_overload: py_overload_id
+            for py_overload_id, info in self.successes.items()
+        }
+        # iterate over matched C++ overloads in order
+        for cpp_overload_id in sorted(cpp_overload_ids):
+            py_overload_id = cpp_overload_ids[cpp_overload_id]
+            boost_sig = sigs[py_overload_id]
+            cpp_sig = self.matches[py_overload_id]
+            yield py_overload_id, boost_sig, cpp_sig
+        # now yield remaining non-matches
+        for py_overload_id in sorted(
+            set(range(len(sigs))) - set(cpp_overload_ids.values())
+        ):
+            yield py_overload_id, sigs[py_overload_id], None
 
 
 class SignatureMatcher(Generic[T]):
@@ -1004,39 +1033,48 @@ class SignatureMatcher(Generic[T]):
 
         cpp_sigs_map: DefaultDict[T, list[FunctionSig]] = defaultdict(list)
         cpp_overload_map: DefaultDict[T, list[int]] = defaultdict(list)
-        for i, cpp_sig in enumerate(cpp_sigs):
-            if skip is not None and skip(i, cpp_sig):
+        for cpp_overload_id, cpp_sig in enumerate(cpp_sigs):
+            if skip is not None and skip(cpp_overload_id, cpp_sig):
                 continue
             key = self.make_key(cpp_sig)
             sigs = cpp_sigs_map[key]
             if cpp_sig not in sigs:
                 sigs.append(cpp_sig)
-                cpp_overload_map[key].append(i)
+                cpp_overload_map[key].append(cpp_overload_id)
 
         found = set()
-        for i, py_sig in enumerate(py_sigs):
+        for py_overload_id, py_sig in enumerate(py_sigs):
             key = self.make_key(py_sig)
             cpp_sigs = cpp_sigs_map[key]
             # if there is more than one match the answer is ambiguous
             if len(cpp_sigs) == 1:
-                if i in tracker.matches:
-                    tracker.failures[i].append(f"{self.name}: Already matched: {key}")
+                if py_overload_id in tracker.matches:
+                    tracker.failures[py_overload_id].append(
+                        f"{self.name}: Already matched: {key}"
+                    )
                     if self.validate:
                         self._validate_match(
-                            tracker.matches[i], cpp_sigs[0], tracker.successes[i], key
+                            tracker.matches[py_overload_id],
+                            cpp_sigs[0],
+                            tracker.successes[py_overload_id],
+                            key,
                         )
                 else:
-                    overloads = cpp_overload_map[key]
-                    assert len(overloads) == 1
-                    tracker.matches[i] = cpp_sigs[0]
-                    tracker.successes[i] = MatchInfo(
-                        kind=self.name, source_overload=overloads[0], key=key
+                    cpp_overload_ids = cpp_overload_map[key]
+                    assert len(cpp_overload_ids) == 1
+                    tracker.matches[py_overload_id] = cpp_sigs[0]
+                    tracker.successes[py_overload_id] = MatchInfo(
+                        kind=self.name, source_overload=cpp_overload_ids[0], key=key
                     )
-                    found.add(i)
+                    found.add(py_overload_id)
             elif len(cpp_sigs) > 1:
-                tracker.failures[i].append(f"{self.name}: More than one match: {key}")
+                tracker.failures[py_overload_id].append(
+                    f"{self.name}: More than one match: {key}"
+                )
             else:
-                tracker.failures[i].append(f"{self.name}: No matches: {key}")
+                tracker.failures[py_overload_id].append(
+                    f"{self.name}: No matches: {key}"
+                )
         return found
 
 
@@ -1509,59 +1547,55 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, BaseSigFix
                         kind="fallback for unmatched", source_overload=i, key=None
                     )
 
-            # if "ComputeClipAssetPaths" in ctx.fullname:
-            # if "MakeMultipleApplyNameInstance" in ctx.fullname:
-            # if "GetAttributeAtPath" in ctx.fullname:
-            if "Notice.Register" in ctx.fullname:
-                # we picked a new overload and it's unclear why
-                for overload, sig in tracker.matches.items():
-                    self._summarize_overload_mismatch(
-                        "Match reason",
-                        ctx,
-                        [tracker.successes[overload].kind],
-                        sigs,
-                        cpp_overloads,
-                        overload,
-                        match=sig,
-                        cpp_ptrs=cpp_sigs_with_ptrs,
-                        cpp_no_ptrs=cpp_sigs_without_ptrs,
-                    )
-
             # loop through and cleanup types
-            orig_sigs = sigs[:]
-            for overload_num, py_sig in enumerate(sigs):
-                cpp_sig = tracker.matches.get(overload_num)
+            orig_sigs = sigs
+            sigs = []
+            for py_overload_id, py_sig, cpp_sig in tracker.iter_sigs(orig_sigs):
                 if cpp_sig is None:
                     # use sigs from boost-python as-is (cleanup_sig_types has already been applied)
                     self._summarize_overload_mismatch(
                         "Could not find C++ info for overload",
                         ctx,
-                        tracker.failures[overload_num],
+                        tracker.failures[py_overload_id],
                         orig_sigs,
                         cpp_overloads,
-                        overload_num,
+                        py_overload_id,
                         cpp_ptrs=cpp_sigs_with_ptrs,
                         cpp_no_ptrs=cpp_sigs_without_ptrs,
                     )
-                    sigs[overload_num] = self._add_positional_only_args(ctx, py_sig)
+                    sigs.append(self._add_positional_only_args(ctx, py_sig))
                 elif len(py_sig.args) != len(cpp_sig.args):
                     # arg lists between C++ docs and boost-python don't match:
                     # use the boost-python sig. In practice, I don't think this ever happens
                     self._summarize_overload_mismatch(
                         "C++ info for overload has wrong number of args",
                         ctx,
-                        tracker.failures[overload_num],
-                        sigs,
+                        tracker.failures[py_overload_id],
+                        orig_sigs,
                         cpp_overloads,
-                        overload_num,
+                        py_overload_id,
                         cpp_found=[cpp_sig],
                         cpp_ptrs=cpp_sigs_with_ptrs,
                         cpp_no_ptrs=cpp_sigs_without_ptrs,
                     )
-                    sigs[overload_num] = self._add_positional_only_args(
-                        ctx, py_sig
-                    )._replace(docstring=cpp_sig.docstring)
+                    sigs.append(
+                        self._add_positional_only_args(ctx, py_sig)._replace(
+                            docstring=cpp_sig.docstring
+                        )
+                    )
                 else:
+                    if "GetClipAssetPaths" in ctx.fullname:
+                        self._summarize_overload_mismatch(
+                            "Match reason",
+                            ctx,
+                            [tracker.successes[py_overload_id].kind],
+                            orig_sigs,
+                            cpp_overloads,
+                            py_overload_id,
+                            match=cpp_sig,
+                            cpp_ptrs=cpp_sigs_with_ptrs,
+                            cpp_no_ptrs=cpp_sigs_without_ptrs,
+                        )
                     # create best guesses for python types.
                     args = []
                     arg_num = 0
@@ -1622,11 +1656,13 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, BaseSigFix
                         # trust boost over the c++ docs in this case. It's probably a ptr result.
                         return_type = py_sig.ret_type
 
-                    sigs[overload_num] = FunctionSig(
-                        py_sig.name,
-                        args,
-                        return_type,
-                        docstring=cpp_sig.docstring,
+                    sigs.append(
+                        FunctionSig(
+                            py_sig.name,
+                            args,
+                            return_type,
+                            docstring=cpp_sig.docstring,
+                        )
                     )
 
         if (
@@ -1655,10 +1691,11 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, BaseSigFix
             if new_sigs and new_sigs[0].ret_type != "Any":
                 return new_sigs
 
-        results = self.get_overridden_signatures(ctx)
-        if results:
+        override = self.get_overridden_signatures(ctx)
+        if override:
+            # early out: fix up the docstrings before we return
             ctx.docstring = writer.strip_boost_docstring(ctx.docstring)
-            return results
+            return override
 
         if ctx.docstring:
             sigs = infer_sig_from_boost_docstring(ctx.docstring, ctx.name)

@@ -10941,14 +10941,14 @@ class XformCache(Boost.Python.instance):
     """
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self) -> None:
-        """
-        Construct a new XformCache for UsdTimeCode::Default() .
-        """
-    @overload
     def __init__(self, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode) -> None:
         """
         Construct a new XformCache for the specified C{time}.
+        """
+    @overload
+    def __init__(self) -> None:
+        """
+        Construct a new XformCache for UsdTimeCode::Default() .
         """
     def Clear(self) -> None:
         """

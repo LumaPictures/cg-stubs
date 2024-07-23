@@ -82,16 +82,6 @@ class AssetPath(Boost.Python.instance):
         Construct an empty asset path.
         """
     @overload
-    def __init__(self, _path: AssetPath | str, /) -> None:
-        """
-        Construct an asset path with C{path} and no associated resolved path.
-
-
-        If the passed C{path} is not valid UTF-8 or contains C0 or C1 control
-        characters, raise a TfError and return the default-constructed empty
-        asset path.
-        """
-    @overload
     def __init__(self, _path: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Construct an asset path with C{path} and no associated resolved path.
@@ -112,6 +102,8 @@ class AssetPath(Boost.Python.instance):
         either contain C0 or C1 control characters, raise a TfError and return
         the default-constructed empty asset path.
         """
+    @overload
+    def __init__(self, arg2: AssetPath | str, /) -> None: ...
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool:
         """
@@ -311,12 +303,12 @@ class BatchNamespaceEdit(Boost.Python.instance):
         Add a namespace edit.
         """
     @overload
-    def Add(self, arg2: Path | str, arg3: Path | str, /) -> None: ...
-    @overload
     def Add(self, _currentPath: Path | str, _newPath: Path | str, _index: int, /) -> None:
         """
         Add a namespace edit.
         """
+    @overload
+    def Add(self, arg2: Path | str, arg3: Path | str, /) -> None: ...
     def Process(self, hasObjectAtPath: HasObjectAtPath, canEdit: CanEdit, fixBackpointers: bool = ...) -> tuple:
         """
         Validate the edits and generate a possibly more efficient edit
@@ -2039,11 +2031,11 @@ class LayerTree(Boost.Python.instance):
     lifetime.
     """
     @overload
+    def __init__(self, _layer: Layer, _childTrees: list[LayerTree], _cumulativeOffset: LayerOffset, /) -> None: ...
+    @overload
     def __init__(self) -> None: ...
     @overload
     def __init__(self, arg2: Layer, arg3: object, /) -> None: ...
-    @overload
-    def __init__(self, _layer: Layer, _childTrees: list[LayerTree], _cumulativeOffset: LayerOffset, /) -> None: ...
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
     def __lt__(self, other: object) -> bool: ...
@@ -3309,9 +3301,6 @@ class Path(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def JoinIdentifier(arg1: object, /) -> str: ...
-    @overload
-    @staticmethod
     def JoinIdentifier(_lhs: str | pxr.Ar.ResolvedPath, _rhs: str | pxr.Ar.ResolvedPath, /) -> str:
         """
         Join C{lhs} and C{rhs} into a single identifier using the namespace
@@ -3321,6 +3310,10 @@ class Path(Boost.Python.instance):
         Returns C{lhs} if C{rhs} is empty and vice verse. Returns an empty
         string if both C{lhs} and C{rhs} are empty.
         """
+    @overload
+    @staticmethod
+    def JoinIdentifier(arg1: object, /) -> str: ...
+    @overload
     def MakeAbsolutePath(self, _anchor: Path | str, /) -> Path:
         """
         Returns the absolute form of this path using C{anchor} as the relative
@@ -3334,6 +3327,9 @@ class Path(Boost.Python.instance):
 
         If this path is already an absolute path, just return a copy.
         """
+    @overload
+    def MakeAbsolutePath(self, arg2: Path | str, /) -> Path: ...
+    @overload
     def MakeRelativePath(self, _anchor: Path | str, /) -> Path:
         """
         Returns the relative form of this path using C{anchor} as the relative
@@ -3350,6 +3346,8 @@ class Path(Boost.Python.instance):
         a given prim path is the relative path with the least leading dot-
         dots.
         """
+    @overload
+    def MakeRelativePath(self, arg2: Path | str, /) -> Path: ...
     @staticmethod
     def RemoveAncestorPaths(_paths: list[Path] | list[str], /) -> list:
         """
@@ -3740,8 +3738,6 @@ class PathExpression(Boost.Python.instance):
         nothing.
         '''
     @overload
-    def __init__(self, arg2: PathExpression, /) -> None: ...
-    @overload
     def __init__(self, patternString: str | pxr.Ar.ResolvedPath, parseContext: str | pxr.Ar.ResolvedPath = ...) -> None:
         """
         Construct an expression by parsing C{expr}.
@@ -3751,6 +3747,8 @@ class PathExpression(Boost.Python.instance):
         generated. See GetParseError() . See the class documentation for
         details on expression syntax.
         """
+    @overload
+    def __init__(self, arg2: PathExpression, /) -> None: ...
     def ComposeOver(self, weaker: PathExpression) -> PathExpression:
         '''
         Return a new expression created by replacing references to
@@ -5170,8 +5168,6 @@ class TimeCode(Boost.Python.instance):
     """
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self) -> None: ...
-    @overload
     def __init__(self, _time: float, /) -> None:
         """
         Construct a time code with the given time.
@@ -5180,6 +5176,8 @@ class TimeCode(Boost.Python.instance):
         A default constructed SdfTimeCode has a time of 0.0. A double value
         can implicitly cast to SdfTimeCode.
         """
+    @overload
+    def __init__(self) -> None: ...
     def GetValue(self) -> float:
         """
         Return the time value.
@@ -5452,7 +5450,7 @@ class ValueTypeName(Boost.Python.instance):
         Returns C{true} if this type name is equal to C{rhs}.
 
 
-        Aliases compare equal. Avoid relying on this overload.
+        Aliases compare equal.
         """
     def __hash__(self) -> int: ...
     def __ne__(self, other: object) -> bool: ...
@@ -5696,11 +5694,6 @@ class VariableExpression(Boost.Python.instance):
         def value(self): ...
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self) -> None:
-        """
-        Construct an object representing an invalid expression.
-        """
-    @overload
     def __init__(self, expression: str | pxr.Ar.ResolvedPath) -> None:
         """
         Construct using the expression C{expr}.
@@ -5708,6 +5701,11 @@ class VariableExpression(Boost.Python.instance):
 
         If the expression cannot be parsed, this object represents an invalid
         expression. Parsing errors will be accessible via GetErrors.
+        """
+    @overload
+    def __init__(self) -> None:
+        """
+        Construct an object representing an invalid expression.
         """
     def Evaluate(self, vars: dict) -> VariableExpression.Result:
         """
@@ -5981,36 +5979,6 @@ def ConvertUnit(_fromUnit: pxr.Tf.Enum, _toUnit: pxr.Tf.Enum, /) -> float:
     example, both of type SdfLengthUnit).
     """
 @overload
-def CopySpec(srcLayer: Layer, srcPath: Path | str, dstLayer: Layer, dstPath: Path | str) -> bool:
-    """
-    Utility function for copying spec data at C{srcPath} in C{srcLayer} to
-    C{destPath} in C{destLayer}.
-
-
-    Copying is performed recursively: all child specs are copied as well.
-    Any destination specs that already exist will be overwritten.
-
-    Parent specs of the destination are not created, and must exist before
-    SdfCopySpec is called, or a coding error will result. For prim
-    parents, clients may find it convenient to call SdfCreatePrimInLayer
-    before SdfCopySpec.
-
-    As a special case, if the top-level object to be copied is a
-    relationship target or a connection, the destination spec must already
-    exist. That is because we don't want SdfCopySpec to impose any policy
-    on how list edits are made; client code should arrange for
-    relationship targets and connections to be specified as prepended,
-    appended, deleted, and/or ordered, as needed.
-
-    Variant specs may be copied to prim paths and vice versa. When copying
-    a variant to a prim, the specifier and typename from the variant's
-    parent prim will be used.
-
-    Attribute connections, relationship targets, inherit and specializes
-    paths, and internal sub-root references that target an object beneath
-    C{srcPath} will be remapped to target objects beneath C{dstPath}.
-    """
-@overload
 def CopySpec(srcLayer: Layer, srcPath: Path | str, dstLayer: Layer, dstPath: Path | str, shouldCopyValueFn: ShouldCopyValueFn, shouldCopyChildrenFn: ShouldCopyChildrenFn) -> bool:
     """
     Utility function for copying spec data at C{srcPath} in C{srcLayer} to
@@ -6039,6 +6007,36 @@ def CopySpec(srcLayer: Layer, srcPath: Path | str, dstLayer: Layer, dstPath: Pat
     on how list edits are made; client code should arrange for
     relationship targets and connections to be specified as prepended,
     appended, deleted, and/or ordered, as needed.
+    """
+@overload
+def CopySpec(srcLayer: Layer, srcPath: Path | str, dstLayer: Layer, dstPath: Path | str) -> bool:
+    """
+    Utility function for copying spec data at C{srcPath} in C{srcLayer} to
+    C{destPath} in C{destLayer}.
+
+
+    Copying is performed recursively: all child specs are copied as well.
+    Any destination specs that already exist will be overwritten.
+
+    Parent specs of the destination are not created, and must exist before
+    SdfCopySpec is called, or a coding error will result. For prim
+    parents, clients may find it convenient to call SdfCreatePrimInLayer
+    before SdfCopySpec.
+
+    As a special case, if the top-level object to be copied is a
+    relationship target or a connection, the destination spec must already
+    exist. That is because we don't want SdfCopySpec to impose any policy
+    on how list edits are made; client code should arrange for
+    relationship targets and connections to be specified as prepended,
+    appended, deleted, and/or ordered, as needed.
+
+    Variant specs may be copied to prim paths and vice versa. When copying
+    a variant to a prim, the specifier and typename from the variant's
+    parent prim will be used.
+
+    Attribute connections, relationship targets, inherit and specializes
+    paths, and internal sub-root references that target an object beneath
+    C{srcPath} will be remapped to target objects beneath C{dstPath}.
     """
 def CreatePrimInLayer(_layer: Layer, _primPath: Path | str, /) -> PrimSpec:
     """

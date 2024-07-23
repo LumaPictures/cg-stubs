@@ -963,13 +963,6 @@ class ClipsAPI(APISchemaBase):
         preserves SchemaBase state.
         """
     @overload
-    def ComputeClipAssetPaths(self) -> list[pxr.Sdf.AssetPath]:
-        """
-        This is an overloaded member function, provided for convenience. It
-        differs from the above function only in what argument(s) it accepts.
-        This function operates on the default clip set.
-        """
-    @overload
     def ComputeClipAssetPaths(self, clipSet: str | pxr.Ar.ResolvedPath) -> list[pxr.Sdf.AssetPath]:
         """
         Computes and resolves the list of clip asset paths used by the clip
@@ -984,15 +977,11 @@ class ClipsAPI(APISchemaBase):
         Otherwise this function will use the authored clipAssetPaths.
         """
     @overload
-    def GenerateClipManifest(self, writeBlocksForClipsWithMissingValues: bool = ...) -> pxr.Sdf.Layer:
+    def ComputeClipAssetPaths(self) -> list[pxr.Sdf.AssetPath]:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
         This function operates on the default clip set.
-
-
-
-        UsdClipsAPISetNames
         """
     @overload
     def GenerateClipManifest(self, clipSet: str | pxr.Ar.ResolvedPath, writeBlocksForClipsWithMissingValues: bool = ...) -> pxr.Sdf.Layer:
@@ -1012,6 +1001,17 @@ class ClipsAPI(APISchemaBase):
         Clip Set for more details.
 
         Returns an invalid SdfLayerRefPtr on failure.
+        """
+    @overload
+    def GenerateClipManifest(self, writeBlocksForClipsWithMissingValues: bool = ...) -> pxr.Sdf.Layer:
+        """
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
+        This function operates on the default clip set.
+
+
+
+        UsdClipsAPISetNames
         """
     @staticmethod
     def GenerateClipManifestFromLayers(clipLayers: list[pxr.Sdf.Layer], clipPrimPath: pxr.Sdf.Path | str) -> pxr.Sdf.Layer:
@@ -1041,17 +1041,6 @@ class ClipsAPI(APISchemaBase):
 
         """
     @overload
-    def GetClipActive(self) -> pxr.Vt.Vec2dArray:
-        """
-        This is an overloaded member function, provided for convenience. It
-        differs from the above function only in what argument(s) it accepts.
-        This function operates on the default clip set.
-
-
-
-        UsdClipsAPISetNames
-        """
-    @overload
     def GetClipActive(self, clipSet: str | pxr.Ar.ResolvedPath) -> pxr.Vt.Vec2dArray:
         """
         List of pairs (time, clip index) indicating the time on the stage at
@@ -1063,7 +1052,7 @@ class ClipsAPI(APISchemaBase):
         is active at time 0 and clip 1 is active at time 20.
         """
     @overload
-    def GetClipAssetPaths(self) -> list[pxr.Sdf.AssetPath]:
+    def GetClipActive(self) -> pxr.Vt.Vec2dArray:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -1083,7 +1072,7 @@ class ClipsAPI(APISchemaBase):
         index in other clip-related fields.
         """
     @overload
-    def GetClipManifestAssetPath(self) -> pxr.Sdf.AssetPath:
+    def GetClipAssetPaths(self) -> list[pxr.Sdf.AssetPath]:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -1110,7 +1099,7 @@ class ClipsAPI(APISchemaBase):
         and is varying in the manifest.
         """
     @overload
-    def GetClipPrimPath(self) -> str:
+    def GetClipManifestAssetPath(self) -> pxr.Sdf.AssetPath:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -1134,6 +1123,17 @@ class ClipsAPI(APISchemaBase):
         substituted in, yielding'/Prim.size', and each clip will be examined
         for values at that path.
         """
+    @overload
+    def GetClipPrimPath(self) -> str:
+        """
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
+        This function operates on the default clip set.
+
+
+
+        UsdClipsAPISetNames
+        """
     def GetClipSets(self) -> pxr.Sdf.StringListOp:
         """
         ListOp that may be used to affect how opinions from clip sets are
@@ -1154,17 +1154,6 @@ class ClipsAPI(APISchemaBase):
         target.
         """
     @overload
-    def GetClipTemplateActiveOffset(self) -> float:
-        """
-        This is an overloaded member function, provided for convenience. It
-        differs from the above function only in what argument(s) it accepts.
-        This function operates on the default clip set.
-
-
-
-        UsdClipsAPISetNames
-        """
-    @overload
     def GetClipTemplateActiveOffset(self, clipSet: str | pxr.Ar.ResolvedPath) -> float:
         """
         A double representing the offset value used by USD when determining
@@ -1173,7 +1162,7 @@ class ClipsAPI(APISchemaBase):
 
         """
     @overload
-    def GetClipTemplateAssetPath(self) -> str:
+    def GetClipTemplateActiveOffset(self) -> float:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -1221,7 +1210,7 @@ class ClipsAPI(APISchemaBase):
         that there only be one or two such groups.
         """
     @overload
-    def GetClipTemplateEndTime(self) -> float:
+    def GetClipTemplateAssetPath(self) -> str:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -1243,7 +1232,7 @@ class ClipsAPI(APISchemaBase):
         GetClipTemplateAssetPath.
         """
     @overload
-    def GetClipTemplateStartTime(self) -> float:
+    def GetClipTemplateEndTime(self) -> float:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -1265,7 +1254,7 @@ class ClipsAPI(APISchemaBase):
         GetClipTemplateAssetPath.
         """
     @overload
-    def GetClipTemplateStride(self) -> float:
+    def GetClipTemplateStartTime(self) -> float:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -1286,7 +1275,7 @@ class ClipsAPI(APISchemaBase):
         GetClipTemplateAssetPath.
         """
     @overload
-    def GetClipTimes(self) -> pxr.Vt.Vec2dArray:
+    def GetClipTemplateStride(self) -> float:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -1311,6 +1300,17 @@ class ClipsAPI(APISchemaBase):
         values from the active clip at time 10, and at stage time 10, clip
         values at time 20.
         """
+    @overload
+    def GetClipTimes(self) -> pxr.Vt.Vec2dArray:
+        """
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
+        This function operates on the default clip set.
+
+
+
+        UsdClipsAPISetNames
+        """
     def GetClips(self) -> dict:
         """
         Dictionary that contains the definition of the clip sets on this prim.
@@ -1325,14 +1325,14 @@ class ClipsAPI(APISchemaBase):
         set.
         """
     @overload
+    def GetInterpolateMissingClipValues(self, clipSet: str | pxr.Ar.ResolvedPath) -> bool: ...
+    @overload
     def GetInterpolateMissingClipValues(self) -> bool:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
         This function operates on the default clip set.
         """
-    @overload
-    def GetInterpolateMissingClipValues(self, clipSet: str | pxr.Ar.ResolvedPath) -> bool: ...
     @staticmethod
     def GetSchemaAttributeNames(includeInherited: bool = ...) -> list[str]:
         """
@@ -1344,17 +1344,6 @@ class ClipsAPI(APISchemaBase):
         methods of the schemas involved.
         """
     @overload
-    def SetClipActive(self, activeClips: pxr.Vt.Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]]) -> None:
-        """
-        This is an overloaded member function, provided for convenience. It
-        differs from the above function only in what argument(s) it accepts.
-        This function operates on the default clip set.
-
-
-
-        UsdClipsAPISetNames
-        """
-    @overload
     def SetClipActive(self, activeClips: pxr.Vt.Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], clipSet: str | pxr.Ar.ResolvedPath) -> None:
         """
         Set the active clip metadata for the clip set named C{clipSet}.
@@ -1364,7 +1353,7 @@ class ClipsAPI(APISchemaBase):
         GetClipActive()
         """
     @overload
-    def SetClipAssetPaths(self, assetPaths: list[pxr.Sdf.AssetPath] | list[str]) -> None:
+    def SetClipActive(self, activeClips: pxr.Vt.Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]]) -> None:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -1384,7 +1373,7 @@ class ClipsAPI(APISchemaBase):
         GetClipAssetPaths()
         """
     @overload
-    def SetClipManifestAssetPath(self, manifestAssetPath: pxr.Sdf.AssetPath | str) -> bool:
+    def SetClipAssetPaths(self, assetPaths: list[pxr.Sdf.AssetPath] | list[str]) -> None:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -1404,7 +1393,7 @@ class ClipsAPI(APISchemaBase):
         GetClipManifestAssetPath()
         """
     @overload
-    def SetClipPrimPath(self, primPath: str | pxr.Ar.ResolvedPath) -> bool:
+    def SetClipManifestAssetPath(self, manifestAssetPath: pxr.Sdf.AssetPath | str) -> bool:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -1423,16 +1412,8 @@ class ClipsAPI(APISchemaBase):
 
         GetClipPrimPath()
         """
-    def SetClipSets(self, clipSets: pxr.Sdf.StringListOp) -> bool:
-        """
-        Set the clip sets list op for this prim.
-
-
-
-        GetClipSets
-        """
     @overload
-    def SetClipTemplateActiveOffset(self, clipTemplateActiveOffset: float) -> bool:
+    def SetClipPrimPath(self, primPath: str | pxr.Ar.ResolvedPath) -> bool:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -1441,6 +1422,14 @@ class ClipsAPI(APISchemaBase):
 
 
         UsdClipsAPISetNames
+        """
+    def SetClipSets(self, clipSets: pxr.Sdf.StringListOp) -> bool:
+        """
+        Set the clip sets list op for this prim.
+
+
+
+        GetClipSets
         """
     @overload
     def SetClipTemplateActiveOffset(self, clipTemplateActiveOffset: float, clipSet: str | pxr.Ar.ResolvedPath) -> bool:
@@ -1452,7 +1441,7 @@ class ClipsAPI(APISchemaBase):
         GetClipTemplateActiveOffset
         """
     @overload
-    def SetClipTemplateAssetPath(self, clipTemplateAssetPath: str | pxr.Ar.ResolvedPath) -> None:
+    def SetClipTemplateActiveOffset(self, clipTemplateActiveOffset: float) -> bool:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -1472,7 +1461,7 @@ class ClipsAPI(APISchemaBase):
         GetClipTemplateAssetPath
         """
     @overload
-    def SetClipTemplateEndTime(self, clipTemplateEndTime: float) -> bool:
+    def SetClipTemplateAssetPath(self, clipTemplateAssetPath: str | pxr.Ar.ResolvedPath) -> None:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -1492,7 +1481,7 @@ class ClipsAPI(APISchemaBase):
         GetClipTemplateEndTime()
         """
     @overload
-    def SetClipTemplateStartTime(self, clipTemplateStartTime: float) -> bool:
+    def SetClipTemplateEndTime(self, clipTemplateEndTime: float) -> bool:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -1512,7 +1501,7 @@ class ClipsAPI(APISchemaBase):
         GetClipTemplateStartTime
         """
     @overload
-    def SetClipTemplateStride(self, clipTemplateStride: float) -> bool:
+    def SetClipTemplateStartTime(self, clipTemplateStartTime: float) -> bool:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -1532,7 +1521,7 @@ class ClipsAPI(APISchemaBase):
         GetClipTemplateStride()
         """
     @overload
-    def SetClipTimes(self, clipTimes: pxr.Vt.Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]]) -> None:
+    def SetClipTemplateStride(self, clipTemplateStride: float) -> bool:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -1551,6 +1540,17 @@ class ClipsAPI(APISchemaBase):
 
         GetClipTimes()
         """
+    @overload
+    def SetClipTimes(self, clipTimes: pxr.Vt.Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]]) -> None:
+        """
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
+        This function operates on the default clip set.
+
+
+
+        UsdClipsAPISetNames
+        """
     def SetClips(self, clips: dict) -> bool:
         """
         Set the clips dictionary for this prim.
@@ -1560,17 +1560,17 @@ class ClipsAPI(APISchemaBase):
         GetClips
         """
     @overload
+    def SetInterpolateMissingClipValues(self, interpolate: bool, clipSet: str | pxr.Ar.ResolvedPath) -> bool:
+        """
+        Set whether missing clip values are interpolated from surrounding
+        clips.
+        """
+    @overload
     def SetInterpolateMissingClipValues(self, interpolate: bool) -> bool:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
         This function operates on the default clip set.
-        """
-    @overload
-    def SetInterpolateMissingClipValues(self, interpolate: bool, clipSet: str | pxr.Ar.ResolvedPath) -> bool:
-        """
-        Set whether missing clip values are interpolated from surrounding
-        clips.
         """
     @staticmethod
     def _GetStaticTfType() -> pxr.Tf.Type: ...
@@ -1759,8 +1759,6 @@ class CollectionAPI(APISchemaBase):
     '''
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self) -> None: ...
-    @overload
     def __init__(self, prim: Prim, name: str | pxr.Ar.ResolvedPath) -> None:
         '''
         Construct a UsdCollectionAPI on UsdPrim C{prim} with name C{name}.
@@ -1773,16 +1771,6 @@ class CollectionAPI(APISchemaBase):
         invalid C{prim}
         '''
     @overload
-    def __init__(self, schemaObj: SchemaBase, name: str | pxr.Ar.ResolvedPath) -> None:
-        """
-        Construct a UsdCollectionAPI on the prim held by C{schemaObj} with
-        name C{name}.
-
-
-        Should be preferred over UsdCollectionAPI (schemaObj.GetPrim(), name),
-        as it preserves SchemaBase state.
-        """
-    @overload
     def __init__(self, _schemaObj: Prim, _name: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Construct a UsdCollectionAPI on the prim held by C{schemaObj} with
@@ -1792,6 +1780,10 @@ class CollectionAPI(APISchemaBase):
         Should be preferred over UsdCollectionAPI (schemaObj.GetPrim(), name),
         as it preserves SchemaBase state.
         """
+    @overload
+    def __init__(self) -> None: ...
+    @overload
+    def __init__(self, schemaObj: SchemaBase, name: object) -> None: ...
     @staticmethod
     def Apply(prim: Prim, name: str | pxr.Ar.ResolvedPath) -> CollectionAPI:
         '''
@@ -1998,17 +1990,17 @@ class CollectionAPI(APISchemaBase):
         """
     @overload
     @staticmethod
-    def GetCollection(prim: Prim, name: str | pxr.Ar.ResolvedPath) -> CollectionAPI:
-        """
-        Returns the schema object representing a collection named C{name} on
-        the given C{prim}.
-        """
-    @overload
-    @staticmethod
     def GetCollection(stage: Stage, collectionPath: pxr.Sdf.Path | str) -> CollectionAPI:
         """
         Returns the collection represented by the given collection path,
         C{collectionPath} on the given USD stage.
+        """
+    @overload
+    @staticmethod
+    def GetCollection(prim: Prim, name: str | pxr.Ar.ResolvedPath) -> CollectionAPI:
+        """
+        Returns the schema object representing a collection named C{name} on
+        the given C{prim}.
         """
     def GetCollectionAttr(self) -> Attribute:
         """
@@ -4214,14 +4206,6 @@ class Prim(Object):
         For details, see Names, Namespace Ordering, and Property Namespaces
         """
     @overload
-    def FindAllAttributeConnectionPaths(self, predicate: typing.Callable[[Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | pxr.UsdShade.Input | pxr.UsdShade.Output], bool] = ..., recurseOnSources: bool = ...) -> list[pxr.Sdf.Path]:
-        """
-        This is an overloaded member function, provided for convenience. It
-        differs from the above function only in what argument(s) it accepts.
-        Invoke FindAllAttributeConnectionPaths() with the
-        UsdPrimDefaultPredicate as its traversalPredicate.
-        """
-    @overload
     def FindAllAttributeConnectionPaths(self, traversalPredicate: _PrimFlagsPredicate | _Term, predicate: typing.Callable[[Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | pxr.UsdShade.Input | pxr.UsdShade.Output], bool] = ..., recurseOnSources: bool = ...) -> list[pxr.Sdf.Path]:
         """
         Search the prim subtree rooted at this prim according to
@@ -4235,11 +4219,11 @@ class Prim(Object):
         return the union.
         """
     @overload
-    def FindAllRelationshipTargetPaths(self, predicate: typing.Callable[[Relationship], bool] = ..., recurseOnTargets: bool = ...) -> list[pxr.Sdf.Path]:
+    def FindAllAttributeConnectionPaths(self, predicate: typing.Callable[[Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | pxr.UsdShade.Input | pxr.UsdShade.Output], bool] = ..., recurseOnSources: bool = ...) -> list[pxr.Sdf.Path]:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
-        Invoke FindAllRelationshipTargetPaths() with the
+        Invoke FindAllAttributeConnectionPaths() with the
         UsdPrimDefaultPredicate as its traversalPredicate.
         """
     @overload
@@ -4254,6 +4238,14 @@ class Prim(Object):
         If C{recurseOnTargets} is true, act as if this function was invoked on
         the targeted prims and owning prims of targeted properties also (but
         not of forwarding relationships) and return the union.
+        """
+    @overload
+    def FindAllRelationshipTargetPaths(self, predicate: typing.Callable[[Relationship], bool] = ..., recurseOnTargets: bool = ...) -> list[pxr.Sdf.Path]:
+        """
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
+        Invoke FindAllRelationshipTargetPaths() with the
+        UsdPrimDefaultPredicate as its traversalPredicate.
         """
     def GetAllChildren(self) -> list:
         """
@@ -4975,20 +4967,6 @@ class Prim(Object):
 
         """
     @overload
-    def HasAPIInFamily(self, schemaType: pxr.Tf.Type, versionPolicy: SchemaRegistry.VersionPolicy) -> bool:
-        """
-        Overload for convenience of HasAPIInFamily that finds a registered
-        schema for the given C{schemaType} and uses that schema's family and
-        version.
-        """
-    @overload
-    def HasAPIInFamily(self, schemaType: pxr.Tf.Type, versionPolicy: SchemaRegistry.VersionPolicy, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
-        """
-        Overload for convenience of HasAPIInFamily that finds a registered
-        schema for the given C{schemaType} and uses that schema's family and
-        version.
-        """
-    @overload
     def HasAPIInFamily(self, schemaFamily: str | pxr.Ar.ResolvedPath) -> bool:
         """
         Return true if the prim has an applied API schema that is any version
@@ -5033,6 +5011,20 @@ class Prim(Object):
 
 
         C{instanceName} must be non-empty, otherwise it is a coding error.
+        """
+    @overload
+    def HasAPIInFamily(self, schemaType: pxr.Tf.Type, versionPolicy: SchemaRegistry.VersionPolicy) -> bool:
+        """
+        Overload for convenience of HasAPIInFamily that finds a registered
+        schema for the given C{schemaType} and uses that schema's family and
+        version.
+        """
+    @overload
+    def HasAPIInFamily(self, schemaType: pxr.Tf.Type, versionPolicy: SchemaRegistry.VersionPolicy, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
+        """
+        Overload for convenience of HasAPIInFamily that finds a registered
+        schema for the given C{schemaType} and uses that schema's family and
+        version.
         """
     @overload
     def HasAPIInFamily(self, schemaIdentifier: str | pxr.Ar.ResolvedPath, versionPolicy: SchemaRegistry.VersionPolicy) -> bool:
@@ -5589,13 +5581,13 @@ class PrimCompositionQuery(Boost.Python.instance):
         values: ClassVar[dict] = ...
     filter: PrimCompositionQuery.Filter
     @overload
-    def __init__(self, prim: Prim) -> None: ...
-    @overload
     def __init__(self, prim: Prim, filter: PrimCompositionQuery.Filter) -> None:
         """
         Create a prim composition query for the C{with} the given option
         C{filter}.
         """
+    @overload
+    def __init__(self, prim: Prim) -> None: ...
     def GetCompositionArcs(self) -> list[PrimCompositionQueryArc]:
         """
         Return a list of composition arcs for this query's prim using the
@@ -5810,23 +5802,6 @@ class PrimDefinition(Boost.Python.instance):
         This class cannot be instantiated from Python
         """
     @overload
-    def FlattenTo(self, prim: Prim, newSpecSpecifier: pxr.Sdf.Specifier = ...) -> Prim:
-        """
-        This is an overloaded member function, provided for convenience. It
-        differs from the above function only in what argument(s) it accepts.
-        Copies the contents of this prim definition to a prim spec at the
-        current edit target for the given C{prim}.
-        """
-    @overload
-    def FlattenTo(self, parent: Prim, name: str | pxr.Ar.ResolvedPath, newSpecSpecifier: pxr.Sdf.Specifier = ...) -> Prim:
-        """
-        This is an overloaded member function, provided for convenience. It
-        differs from the above function only in what argument(s) it accepts.
-        Copies the contents of this prim definition to a prim spec at the
-        current edit target for a prim with the given C{name} under the prim
-        C{parent}.
-        """
-    @overload
     def FlattenTo(self, layer: pxr.Sdf.Layer, path: pxr.Sdf.Path | str, newSpecSpecifier: pxr.Sdf.Specifier = ...) -> bool:
         '''
         Copies the contents of this prim definition to a prim spec on the
@@ -5854,6 +5829,23 @@ class PrimDefinition(Boost.Python.instance):
         properties and schema allowed metadata are cleared before it is
         populated from the prim definition.
         '''
+    @overload
+    def FlattenTo(self, parent: Prim, name: str | pxr.Ar.ResolvedPath, newSpecSpecifier: pxr.Sdf.Specifier = ...) -> Prim:
+        """
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
+        Copies the contents of this prim definition to a prim spec at the
+        current edit target for a prim with the given C{name} under the prim
+        C{parent}.
+        """
+    @overload
+    def FlattenTo(self, prim: Prim, newSpecSpecifier: pxr.Sdf.Specifier = ...) -> Prim:
+        """
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
+        Copies the contents of this prim definition to a prim spec at the
+        current edit target for the given C{prim}.
+        """
     def GetAppliedAPISchemas(self) -> list[str]:
         """
         Return the list of names of the API schemas that have been applied to
@@ -6177,15 +6169,15 @@ class PrimRange(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def Stage(stage: Stage) -> PrimRange: ...
-    @overload
-    @staticmethod
     def Stage(stage: Stage, predicate: _PrimFlagsPredicate | _Term) -> PrimRange:
         """
         Create a PrimRange that traverses all the prims on C{stage}, and
         visits those that pass the default predicate (as defined by
         UsdPrimDefaultPredicate).
         """
+    @overload
+    @staticmethod
+    def Stage(stage: Stage) -> PrimRange: ...
     def __bool__(self) -> bool:
         """
         Return true if this range contains one or more prims, false otherwise.
@@ -7104,8 +7096,6 @@ class SchemaBase(Boost.Python.instance):
     """
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self) -> None: ...
-    @overload
     def __init__(self, prim: Prim) -> None:
         """
         Construct and store C{prim} as the held prim.
@@ -7115,6 +7105,8 @@ class SchemaBase(Boost.Python.instance):
         """
         Construct and store for the same prim held by C{otherSchema}.
         """
+    @overload
+    def __init__(self) -> None: ...
     def GetPath(self) -> pxr.Sdf.Path:
         """
         Shorthand for GetPrim() -> GetPath() .
@@ -7988,14 +7980,14 @@ class Stage(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def CreateNew(identifier: str | pxr.Ar.ResolvedPath, pathResolverContext: pxr.Ar.ResolverContext, load: Stage.InitialLoadSet = ...) -> Stage:
+    def CreateNew(identifier: str | pxr.Ar.ResolvedPath, sessionLayer: pxr.Sdf.Layer, pathResolverContext: pxr.Ar.ResolverContext, load: Stage.InitialLoadSet = ...) -> Stage:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
         """
     @overload
     @staticmethod
-    def CreateNew(identifier: str | pxr.Ar.ResolvedPath, sessionLayer: pxr.Sdf.Layer, pathResolverContext: pxr.Ar.ResolverContext, load: Stage.InitialLoadSet = ...) -> Stage:
+    def CreateNew(identifier: str | pxr.Ar.ResolvedPath, pathResolverContext: pxr.Ar.ResolverContext, load: Stage.InitialLoadSet = ...) -> Stage:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -8027,14 +8019,6 @@ class Stage(Boost.Python.instance):
         opinion overrides the opinion at the current EditTarget.
         """
     @overload
-    def ExpandPopulationMask(self, relationshipPredicate: typing.Callable[[Relationship], bool] = ..., attributePredicate: typing.Callable[[Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | pxr.UsdShade.Input | pxr.UsdShade.Output], bool] = ...) -> None:
-        """
-        This is an overloaded member function, provided for convenience. It
-        differs from the above function only in what argument(s) it accepts.
-        This convenience overload invokes ExpandPopulationMask() with the
-        UsdPrimDefaultPredicate traversal predicate.
-        """
-    @overload
     def ExpandPopulationMask(self, traversalPredicate: _PrimFlagsPredicate | _Term, relationshipPredicate: typing.Callable[[Relationship], bool] = ..., attributePredicate: typing.Callable[[Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | pxr.UsdShade.Input | pxr.UsdShade.Output], bool] = ...) -> None:
         """
         Expand this stage's population mask to include the targets of all
@@ -8053,6 +8037,14 @@ class Stage(Boost.Python.instance):
 
         See also UsdPrim::FindAllRelationshipTargetPaths() and
         UsdPrim::FindAllAttributeConnectionPaths() .
+        """
+    @overload
+    def ExpandPopulationMask(self, relationshipPredicate: typing.Callable[[Relationship], bool] = ..., attributePredicate: typing.Callable[[Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | pxr.UsdShade.Input | pxr.UsdShade.Output], bool] = ...) -> None:
+        """
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
+        This convenience overload invokes ExpandPopulationMask() with the
+        UsdPrimDefaultPredicate traversal predicate.
         """
     def Export(self, filename: str | pxr.Ar.ResolvedPath, addSourceFileComment: bool = ..., args: dict = ...) -> bool:
         """
@@ -9518,12 +9510,12 @@ class StageCacheContext(Boost.Python.instance):
     influence calls to UsdStage::Open() from a different thread.
     """
     @overload
-    def __init__(self, arg2: _NonPopulatingStageCacheWrapper, /) -> None: ...
-    @overload
     def __init__(self, _cache: StageCache, /) -> None:
         """
         Bind a cache for calls to UsdStage::Open() to read from and write to.
         """
+    @overload
+    def __init__(self, arg2: _NonPopulatingStageCacheWrapper, /) -> None: ...
     @overload
     def __init__(self, arg2: object, /) -> None: ...
     def __enter__(self) -> None: ...
@@ -9895,8 +9887,6 @@ class TimeCode(Boost.Python.instance):
             """
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self) -> None: ...
-    @overload
     def __init__(self, _t: float, /) -> None:
         """
         Construct with optional time value. Impilicitly convert from double.
@@ -9906,6 +9896,10 @@ class TimeCode(Boost.Python.instance):
         """
         Construct and implicitly cast from SdfTimeCode.
         """
+    @overload
+    def __init__(self) -> None: ...
+    @overload
+    def __init__(self, arg2: TimeCode | float | pxr.Sdf.TimeCode, /) -> None: ...
     @staticmethod
     def Default() -> TimeCode:
         """
@@ -10660,15 +10654,6 @@ def GetVersion() -> tuple:
     Returns a value of type tuple(int,int,int).
     USD versions are described as (major,minor,patch)"""
 @overload
-def TraverseInstanceProxies() -> _PrimFlagsPredicate:
-    """
-    This is an overloaded member function, provided for convenience. It
-    differs from the above function only in what argument(s) it accepts.
-    Convenience method equivalent to calling UsdTraverseInstanceProxies
-    with the UsdPrimDefaultPredicate that is used by default for prim
-    traversals.
-    """
-@overload
 def TraverseInstanceProxies(predicate: _PrimFlagsPredicate | _Term) -> _PrimFlagsPredicate:
     """
     This function is used to allow the prim traversal functions listed
@@ -10703,6 +10688,15 @@ def TraverseInstanceProxies(predicate: _PrimFlagsPredicate | _Term) -> _PrimFlag
     However, this function may be more convenient, especially when calling
     a prim traversal function with a default-constructed tautology
     predicate.
+    """
+@overload
+def TraverseInstanceProxies() -> _PrimFlagsPredicate:
+    """
+    This is an overloaded member function, provided for convenience. It
+    differs from the above function only in what argument(s) it accepts.
+    Convenience method equivalent to calling UsdTraverseInstanceProxies
+    with the UsdPrimDefaultPredicate that is used by default for prim
+    traversals.
     """
 def UseButDoNotPopulateCache(_cache: StageCache, /) -> _NonPopulatingStageCacheWrapper:
     """

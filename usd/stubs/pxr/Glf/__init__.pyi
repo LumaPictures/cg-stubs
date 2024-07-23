@@ -26,9 +26,9 @@ class DrawTarget(Boost.Python.instance):
     internalFormat to GL_DEPTH24_STENCIL8)
     """
     @overload
-    def __init__(self, _drawtarget: pxr.Gf.Vec2i | list[int] | pxr.Gf.Size2 | tuple[int, int], /) -> None: ...
-    @overload
     def __init__(self, _size: int, _requestMSAA: int, /) -> None: ...
+    @overload
+    def __init__(self, _drawtarget: pxr.Gf.Vec2i | list[int] | pxr.Gf.Size2 | tuple[int, int], /) -> None: ...
     def AddAttachment(self, _name: str | pxr.Ar.ResolvedPath, _format: int, _type: int, _internalFormat: int, /) -> None:
         """
         Add an attachment to the DrawTarget.

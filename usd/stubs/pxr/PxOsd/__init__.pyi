@@ -40,21 +40,21 @@ class MeshTopology(Boost.Python.instance):
     """
     __instance_size__: ClassVar[int] = ...
     @overload
+    def __init__(self) -> None: ...
+    @overload
     def __init__(self, _scheme: str | pxr.Ar.ResolvedPath, _orientation: str | pxr.Ar.ResolvedPath, _faceVertexCounts: pxr.Vt.IntArray | typing.Iterable[int], _faceVertexIndices: pxr.Vt.IntArray | typing.Iterable[int], /) -> None:
         """
         Construct a topology without holes or subdiv tags.
         """
-    @overload
-    def __init__(self, arg2: object, arg3: object, arg4: pxr.Vt.IntArray | typing.Iterable[int], arg5: pxr.Vt.IntArray | typing.Iterable[int], arg6: pxr.Vt.IntArray | typing.Iterable[int], /) -> None: ...
     @overload
     def __init__(self, _scheme: str | pxr.Ar.ResolvedPath, _orientation: str | pxr.Ar.ResolvedPath, _faceVertexCounts: pxr.Vt.IntArray | typing.Iterable[int], _faceVertexIndices: pxr.Vt.IntArray | typing.Iterable[int], _holeIndices: pxr.Vt.IntArray | typing.Iterable[int], _subdivTags: SubdivTags, /) -> None:
         """
         Construct a topology with holes and subdiv tags.
         """
     @overload
-    def __init__(self, arg2: object, arg3: object, arg4: pxr.Vt.IntArray | typing.Iterable[int], arg5: pxr.Vt.IntArray | typing.Iterable[int], arg6: SubdivTags, /) -> None: ...
+    def __init__(self, arg2: object, arg3: object, arg4: pxr.Vt.IntArray | typing.Iterable[int], arg5: pxr.Vt.IntArray | typing.Iterable[int], arg6: pxr.Vt.IntArray | typing.Iterable[int], /) -> None: ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self, arg2: object, arg3: object, arg4: pxr.Vt.IntArray | typing.Iterable[int], arg5: pxr.Vt.IntArray | typing.Iterable[int], arg6: SubdivTags, /) -> None: ...
     def ComputeHash(self) -> int:
         """
         Returns the hash value of this topology to be used for instancing.

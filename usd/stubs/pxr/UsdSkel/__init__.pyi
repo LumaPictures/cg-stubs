@@ -58,15 +58,6 @@ class AnimMapper(Boost.Python.instance):
         """
     def Remap(self, source: object, target: object = ..., elementSize: int = ..., defaultValue: object = ...) -> Any: ...
     @overload
-    def RemapTransforms(self, source: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], target: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], elementSize: int = ...) -> pxr.Vt.Matrix4dArray:
-        """
-        Convenience method for the common task of remapping transform arrays.
-
-
-        This performs the same operation as Remap(), but sets the matrix
-        identity as the default value.
-        """
-    @overload
     def RemapTransforms(self, source: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], target: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], elementSize: int = ...) -> pxr.Vt.Matrix4fArray:
         """
         Convenience method for the common task of remapping transform arrays.
@@ -75,6 +66,8 @@ class AnimMapper(Boost.Python.instance):
         This performs the same operation as Remap(), but sets the matrix
         identity as the default value.
         """
+    @overload
+    def RemapTransforms(self, source: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], target: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], elementSize: int = ...) -> pxr.Vt.Matrix4dArray: ...
     def __len__(self) -> int: ...
 
 class AnimQuery(Boost.Python.instance):
@@ -1302,6 +1295,14 @@ class Cache(Boost.Python.instance):
         already been called for C{skelRoot}, with an equivalent predicate.
         """
     @overload
+    def GetAnimQuery(self, anim: Animation) -> AnimQuery:
+        """
+        Get an anim query corresponding to C{anim}.
+
+
+        This does not require Populate() to be called on the cache.
+        """
+    @overload
     def GetAnimQuery(self, prim: pxr.Usd.Prim) -> AnimQuery:
         """
         This is an overloaded member function, provided for convenience. It
@@ -1309,14 +1310,6 @@ class Cache(Boost.Python.instance):
 
 
         Deprecated
-        """
-    @overload
-    def GetAnimQuery(self, anim: Animation) -> AnimQuery:
-        """
-        Get an anim query corresponding to C{anim}.
-
-
-        This does not require Populate() to be called on the cache.
         """
     def GetSkelQuery(self, _skel: Skeleton, /) -> SkeletonQuery:
         """
@@ -1937,20 +1930,6 @@ class SkinningQuery(Boost.Python.instance):
         not validated.
         """
     @overload
-    def ComputeSkinnedPoints(self, xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
-        """
-        Compute skinned points using specified skinning method attr (fallback
-        to linear blend skinning if not specified) Both C{xforms} and
-        C{points} are given in *skeleton space*, using the joint order of the
-        bound skeleton.
-
-
-        Joint influences and the (optional) binding transform are computed at
-        time C{time} (which will typically be unvarying).
-
-        UsdSkelSkeletonQuery::ComputeSkinningTransforms
-        """
-    @overload
     def ComputeSkinnedPoints(self, xforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool:
         """
         Compute skinned points using specified skinning method attr (fallback
@@ -1965,21 +1944,7 @@ class SkinningQuery(Boost.Python.instance):
         UsdSkelSkeletonQuery::ComputeSkinningTransforms
         """
     @overload
-    def ComputeSkinnedTransform(self, xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> pxr.Gf.Matrix4d:
-        """
-        Compute a skinning transform using specified skinning method attr
-        (fallback to linear blend skinning if not specified) The C{xforms} are
-        given in *skeleton space*, using the joint order of the bound
-        skeleton.
-
-
-        Joint influences and the (optional) binding transform are computed at
-        time C{time} (which will typically be unvarying). If this skinning
-        query holds non-constant joint influences, no transform will be
-        computed, and the function will return false.
-
-        UsdSkelSkeletonQuery::ComputeSkinningTransforms
-        """
+    def ComputeSkinnedPoints(self, xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> bool: ...
     @overload
     def ComputeSkinnedTransform(self, xforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> pxr.Gf.Matrix4f:
         """
@@ -1996,6 +1961,8 @@ class SkinningQuery(Boost.Python.instance):
 
         UsdSkelSkeletonQuery::ComputeSkinningTransforms
         """
+    @overload
+    def ComputeSkinnedTransform(self, xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> pxr.Gf.Matrix4d: ...
     def ComputeVaryingJointInfluences(self, numPoints: int, time: pxr.Usd.TimeCode | float | pxr.Sdf.TimeCode = ...) -> tuple[pxr.Vt.IntArray, pxr.Vt.FloatArray]:
         """
         Convenience method for computing joint influence, where constant
@@ -2145,10 +2112,6 @@ class Topology(Boost.Python.instance):
     joint relationships in a manner suitable to computations.
     """
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
-    @overload
-    def __init__(self, arg2: pxr.Vt.TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> None: ...
-    @overload
     def __init__(self, _parentIndices: pxr.Vt.IntArray | typing.Iterable[int], /) -> None:
         """
         Construct a skel topology from an array of parent indices.
@@ -2157,6 +2120,10 @@ class Topology(Boost.Python.instance):
         For each joint, this provides the parent index of that joint, or -1 if
         none.
         """
+    @overload
+    def __init__(self, arg2: object, /) -> None: ...
+    @overload
+    def __init__(self, arg2: pxr.Vt.TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> None: ...
     def GetNumJoints(self) -> int: ...
     def GetParent(self, _index: int, /) -> int:
         """
@@ -2234,21 +2201,6 @@ def ComputeJointLocalTransforms(topology: Topology, xforms: pxr.Vt.Matrix4dArray
     Use form that takes TfSpan arguments.
     """
 @overload
-def ComputeJointLocalTransforms(topology: Topology, xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], jointLocalXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], rootInverseXform: pxr.Gf.Matrix4d = ...) -> bool:
-    """
-    This is an overloaded member function, provided for convenience. It
-    differs from the above function only in what argument(s) it accepts.
-
-
-    Deprecated
-
-    Use form that takes TfSpan arguments.
-    """
-@overload
-def ComputeJointLocalTransforms(topology: Topology, xforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], inverseXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], jointLocalXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], rootInverseXform: pxr.Gf.Matrix4f = ...) -> bool: ...
-@overload
-def ComputeJointLocalTransforms(topology: Topology, xforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], jointLocalXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], rootInverseXform: pxr.Gf.Matrix4f = ...) -> bool: ...
-@overload
 def ComputeJointLocalTransforms(topology: Topology, xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], inverseXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], rootInverseXform: pxr.Gf.Matrix4d = ...) -> pxr.Vt.Matrix4dArray:
     """
     This is an overloaded member function, provided for convenience. It
@@ -2259,6 +2211,12 @@ def ComputeJointLocalTransforms(topology: Topology, xforms: pxr.Vt.Matrix4dArray
 
     Use form that takes TfSpan arguments.
     """
+@overload
+def ComputeJointLocalTransforms(topology: Topology, xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], jointLocalXforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], rootInverseXform: pxr.Gf.Matrix4d = ...) -> bool: ...
+@overload
+def ComputeJointLocalTransforms(topology: Topology, xforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], inverseXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], jointLocalXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], rootInverseXform: pxr.Gf.Matrix4f = ...) -> bool: ...
+@overload
+def ComputeJointLocalTransforms(topology: Topology, xforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], jointLocalXforms: pxr.Vt.Matrix4fArray | typing.Iterable[pxr.Gf.Matrix4f], rootInverseXform: pxr.Gf.Matrix4f = ...) -> bool: ...
 @overload
 def ComputeJointLocalTransforms(topology: Topology, xforms: pxr.Vt.Matrix4dArray | typing.Iterable[pxr.Gf.Matrix4d], rootInverseXform: pxr.Gf.Matrix4d = ...) -> pxr.Vt.Matrix4dArray: ...
 @overload

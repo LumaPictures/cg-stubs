@@ -684,15 +684,6 @@ class StatementsAPI(pxr.Usd.APISchemaBase):
         UsdPrim::RemoveAPI()
         """
     @overload
-    def CreateRiAttribute(self, name: str | pxr.Ar.ResolvedPath, tfType: pxr.Tf.Type, nameSpace: str | pxr.Ar.ResolvedPath = ...) -> pxr.Usd.Attribute:
-        """
-        Creates an attribute of the given C{tfType}.
-
-
-        This is an overloaded member function, provided for convenience. It
-        differs from the above function only in what argument(s) it accepts.
-        """
-    @overload
     def CreateRiAttribute(self, name: str | pxr.Ar.ResolvedPath, riType: str | pxr.Ar.ResolvedPath, nameSpace: str | pxr.Ar.ResolvedPath = ...) -> pxr.Usd.Attribute:
         '''
         Create a rib attribute on the prim to which this schema is attached.
@@ -712,6 +703,15 @@ class StatementsAPI(pxr.Usd.APISchemaBase):
         valued. For instance, both"color"and"float[3]"are valid values for
         C{riType}.
         '''
+    @overload
+    def CreateRiAttribute(self, name: str | pxr.Ar.ResolvedPath, tfType: pxr.Tf.Type, nameSpace: str | pxr.Ar.ResolvedPath = ...) -> pxr.Usd.Attribute:
+        """
+        Creates an attribute of the given C{tfType}.
+
+
+        This is an overloaded member function, provided for convenience. It
+        differs from the above function only in what argument(s) it accepts.
+        """
     @staticmethod
     def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> StatementsAPI:
         """

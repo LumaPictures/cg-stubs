@@ -91,27 +91,20 @@ class DiscoveryPlugin(Boost.Python.instance):
         This class cannot be instantiated from Python
         """
     @overload
-    def DiscoverNodes(self, _unknownArg1: DiscoveryPluginContext, /) -> NodeDiscoveryResultVec:
-        """
-        Finds and returns all nodes that the implementing plugin should be
-        aware of.
-        """
-    @overload
     def DiscoverNodes(self, _unknownArg1: DiscoveryPluginContext, /) -> None:
         """
         Finds and returns all nodes that the implementing plugin should be
         aware of.
         """
     @overload
-    def GetSearchURIs(self) -> list[str]:
-        """
-        Gets the URIs that this plugin is searching for nodes in.
-        """
+    def DiscoverNodes(self, arg2: DiscoveryPluginContext, /) -> Any: ...
     @overload
     def GetSearchURIs(self) -> None:
         """
         Gets the URIs that this plugin is searching for nodes in.
         """
+    @overload
+    def GetSearchURIs(self) -> Any: ...
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
     def __lt__(self, other: object) -> bool: ...
@@ -132,14 +125,6 @@ class DiscoveryPluginContext(Boost.Python.instance):
         This class cannot be instantiated from Python
         """
     @overload
-    def GetSourceType(self, _discoveryType: str | pxr.Ar.ResolvedPath, /) -> str:
-        """
-        Returns the source type associated with the discovery type.
-
-
-        This may return an empty token if there is no such association.
-        """
-    @overload
     def GetSourceType(self, _discoveryType: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Returns the source type associated with the discovery type.
@@ -147,6 +132,8 @@ class DiscoveryPluginContext(Boost.Python.instance):
 
         This may return an empty token if there is no such association.
         """
+    @overload
+    def GetSourceType(self, arg2: object, /) -> Any: ...
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
     def __lt__(self, other: object) -> bool: ...
@@ -711,14 +698,6 @@ class Version(Boost.Python.instance):
         Create an invalid version.
         """
     @overload
-    def __init__(self, _x: int, /) -> None:
-        """
-        Create a version from a string.
-
-
-        On failure generates an error and yields an invalid version.
-        """
-    @overload
     def __init__(self, _major: int, _minor: int, /) -> None:
         """
         Create a version with the given major and minor numbers.
@@ -735,6 +714,8 @@ class Version(Boost.Python.instance):
 
         On failure generates an error and yields an invalid version.
         """
+    @overload
+    def __init__(self, arg2: int, /) -> None: ...
     def GetAsDefault(self) -> Version:
         """
         Return an equal version marked as default.

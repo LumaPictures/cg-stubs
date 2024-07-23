@@ -508,15 +508,12 @@ class Timestamp(Boost.Python.instance):
         Create an invalid timestamp.
         """
     @overload
-    def __init__(self, _time: float, /) -> None:
-        """
-        Create a timestamp at C{time}, which must be a Unix time value.
-        """
-    @overload
     def __init__(self, _time: Timestamp, /) -> None:
         """
         Create a timestamp at C{time}, which must be a Unix time value.
         """
+    @overload
+    def __init__(self, arg2: float, /) -> None: ...
     def GetTime(self) -> float:
         """
         Return the time represented by this timestamp as a double.
@@ -602,13 +599,13 @@ def IsPackageRelativePath(path: str | ResolvedPath) -> bool:
     Return true if C{path} is a package-relative path, false otherwise.
     """
 @overload
-def JoinPackageRelativePath(paths: object) -> str: ...
-@overload
 def JoinPackageRelativePath(packagePath: str | ResolvedPath, packagedPath: str | ResolvedPath) -> str:
     """
     This is an overloaded member function, provided for convenience. It
     differs from the above function only in what argument(s) it accepts.
     """
+@overload
+def JoinPackageRelativePath(paths: object) -> str: ...
 def SetPreferredResolver(resolverTypeName: str | ResolvedPath) -> None:
     """
     Set the preferred ArResolver subclass used by ArGetResolver.

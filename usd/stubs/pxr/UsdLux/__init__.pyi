@@ -1194,6 +1194,15 @@ class LightAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
+    def __init__(self, connectable: pxr.UsdShade.ConnectableAPI) -> None:
+        """
+        Constructor that takes a ConnectableAPI object.
+
+
+        Allow implicit conversion of a UsdShadeConnectableAPI to
+        UsdLuxLightAPI
+        """
+    @overload
     def __init__(self, prim: pxr.Usd.Prim) -> None:
         """
         Construct a UsdLuxLightAPI on UsdPrim C{prim}.
@@ -1211,15 +1220,6 @@ class LightAPI(pxr.Usd.APISchemaBase):
 
         Should be preferred over UsdLuxLightAPI (schemaObj.GetPrim()), as it
         preserves SchemaBase state.
-        """
-    @overload
-    def __init__(self, connectable: pxr.UsdShade.ConnectableAPI) -> None:
-        """
-        Constructor that takes a ConnectableAPI object.
-
-
-        Allow implicit conversion of a UsdShadeConnectableAPI to
-        UsdLuxLightAPI
         """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> LightAPI:
@@ -1806,6 +1806,15 @@ class LightFilter(pxr.UsdGeom.Xformable):
     @overload
     def __init__(self) -> None: ...
     @overload
+    def __init__(self, connectable: pxr.UsdShade.ConnectableAPI) -> None:
+        """
+        Constructor that takes a ConnectableAPI object.
+
+
+        Allow implicit conversion of UsdShadeConnectableAPI to
+        UsdLuxLightFilter.
+        """
+    @overload
     def __init__(self, prim: pxr.Usd.Prim) -> None:
         """
         Construct a UsdLuxLightFilter on UsdPrim C{prim}.
@@ -1823,15 +1832,6 @@ class LightFilter(pxr.UsdGeom.Xformable):
 
         Should be preferred over UsdLuxLightFilter (schemaObj.GetPrim()), as
         it preserves SchemaBase state.
-        """
-    @overload
-    def __init__(self, connectable: pxr.UsdShade.ConnectableAPI) -> None:
-        """
-        Constructor that takes a ConnectableAPI object.
-
-
-        Allow implicit conversion of UsdShadeConnectableAPI to
-        UsdLuxLightFilter.
         """
     def ConnectableAPI(self) -> pxr.UsdShade.ConnectableAPI:
         """
@@ -3338,6 +3338,15 @@ class ShadowAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
+    def __init__(self, connectable: pxr.UsdShade.ConnectableAPI) -> None:
+        """
+        Constructor that takes a ConnectableAPI object.
+
+
+        Allow implicit conversion of UsdShadeConnectableAPI to
+        UsdLuxShadowAPI.
+        """
+    @overload
     def __init__(self, prim: pxr.Usd.Prim) -> None:
         """
         Construct a UsdLuxShadowAPI on UsdPrim C{prim}.
@@ -3355,15 +3364,6 @@ class ShadowAPI(pxr.Usd.APISchemaBase):
 
         Should be preferred over UsdLuxShadowAPI (schemaObj.GetPrim()), as it
         preserves SchemaBase state.
-        """
-    @overload
-    def __init__(self, connectable: pxr.UsdShade.ConnectableAPI) -> None:
-        """
-        Constructor that takes a ConnectableAPI object.
-
-
-        Allow implicit conversion of UsdShadeConnectableAPI to
-        UsdLuxShadowAPI.
         """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> ShadowAPI:
@@ -3654,6 +3654,15 @@ class ShapingAPI(pxr.Usd.APISchemaBase):
     @overload
     def __init__(self) -> None: ...
     @overload
+    def __init__(self, connectable: pxr.UsdShade.ConnectableAPI) -> None:
+        """
+        Constructor that takes a ConnectableAPI object.
+
+
+        Allow implicit conversion of UsdShadeConnectableAPI to
+        UsdLuxShapingAPI.
+        """
+    @overload
     def __init__(self, prim: pxr.Usd.Prim) -> None:
         """
         Construct a UsdLuxShapingAPI on UsdPrim C{prim}.
@@ -3671,15 +3680,6 @@ class ShapingAPI(pxr.Usd.APISchemaBase):
 
         Should be preferred over UsdLuxShapingAPI (schemaObj.GetPrim()), as it
         preserves SchemaBase state.
-        """
-    @overload
-    def __init__(self, connectable: pxr.UsdShade.ConnectableAPI) -> None:
-        """
-        Constructor that takes a ConnectableAPI object.
-
-
-        Allow implicit conversion of UsdShadeConnectableAPI to
-        UsdLuxShapingAPI.
         """
     @staticmethod
     def Apply(prim: pxr.Usd.Prim) -> ShapingAPI:
