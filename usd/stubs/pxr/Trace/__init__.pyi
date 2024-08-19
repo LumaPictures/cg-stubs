@@ -24,10 +24,14 @@ class AggregateNode(Boost.Python.instance):
         """Raises an exception
         This class cannot be instantiated from Python
         """
-    def __bool__(self) -> bool: ...
-    def __eq__(self, other: object) -> bool: ...
-    def __lt__(self, other: object) -> bool: ...
-    def __ne__(self, other: object) -> bool: ...
+    def __bool__(self) -> bool:
+        """True if this object has not expired.  False otherwise."""
+    def __eq__(self, other: object) -> bool:
+        """Equality operator:  x == y"""
+    def __lt__(self, other: object) -> bool:
+        """Less than operator: x < y"""
+    def __ne__(self, other: object) -> bool:
+        """Non-equality operator: x != y"""
     @property
     def children(self) -> list[AggregateNode]: ...
     @property
@@ -140,10 +144,14 @@ class Collector(Boost.Python.instance):
         """
         Return the label associated with this collector.
         """
-    def __bool__(self) -> bool: ...
-    def __eq__(self, other: object) -> bool: ...
-    def __lt__(self, other: object) -> bool: ...
-    def __ne__(self, other: object) -> bool: ...
+    def __bool__(self) -> bool:
+        """True if this object has not expired.  False otherwise."""
+    def __eq__(self, other: object) -> bool:
+        """Equality operator:  x == y"""
+    def __lt__(self, other: object) -> bool:
+        """Less than operator: x < y"""
+    def __ne__(self, other: object) -> bool:
+        """Non-equality operator: x != y"""
     @property
     def expired(self): ...
 
@@ -194,10 +202,14 @@ class Reporter(Boost.Python.instance):
         """
     @classmethod
     def globalReporter(cls, *args, **kwargs): ...
-    def __bool__(self) -> bool: ...
-    def __eq__(self, other: object) -> bool: ...
-    def __lt__(self, other: object) -> bool: ...
-    def __ne__(self, other: object) -> bool: ...
+    def __bool__(self) -> bool:
+        """True if this object has not expired.  False otherwise."""
+    def __eq__(self, other: object) -> bool:
+        """Equality operator:  x == y"""
+    def __lt__(self, other: object) -> bool:
+        """Less than operator: x < y"""
+    def __ne__(self, other: object) -> bool:
+        """Non-equality operator: x != y"""
     @property
     def aggregateTreeRoot(self) -> AggregateNode:
         """

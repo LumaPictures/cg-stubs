@@ -156,13 +156,49 @@ class AssetPathArray(Boost.Python.instance):
     """An array of type SdfAssetPath."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     def __eq__(self, other: object) -> bool: ...
     @overload
     def __getitem__(self, arg2: object, /) -> Any: ...
@@ -949,10 +985,14 @@ class FileFormat(Boost.Python.instance):
         This is a convenience method for invoking FormatSupportsWriting with
         this format's extension and target.
         """
-    def __bool__(self) -> bool: ...
-    def __eq__(self, other: object) -> bool: ...
-    def __lt__(self, other: object) -> bool: ...
-    def __ne__(self, other: object) -> bool: ...
+    def __bool__(self) -> bool:
+        """True if this object has not expired.  False otherwise."""
+    def __eq__(self, other: object) -> bool:
+        """Equality operator:  x == y"""
+    def __lt__(self, other: object) -> bool:
+        """Less than operator: x < y"""
+    def __ne__(self, other: object) -> bool:
+        """Non-equality operator: x != y"""
     @property
     def expired(self): ...
     @property
@@ -1859,10 +1899,14 @@ class Layer(Boost.Python.instance):
         Use UpdateCompositionAssetDependency instead.
         """
     def _WriteDataFile(self, arg2: object, /) -> bool: ...
-    def __bool__(self) -> bool: ...
-    def __eq__(self, other: object) -> bool: ...
-    def __lt__(self, other: object) -> bool: ...
-    def __ne__(self, other: object) -> bool: ...
+    def __bool__(self) -> bool:
+        """True if this object has not expired.  False otherwise."""
+    def __eq__(self, other: object) -> bool:
+        """Equality operator:  x == y"""
+    def __lt__(self, other: object) -> bool:
+        """Less than operator: x < y"""
+    def __ne__(self, other: object) -> bool:
+        """Non-equality operator: x != y"""
     @property
     def anonymous(self): ...
     @property
@@ -2036,10 +2080,14 @@ class LayerTree(Boost.Python.instance):
     def __init__(self) -> None: ...
     @overload
     def __init__(self, arg2: Layer, arg3: object, /) -> None: ...
-    def __bool__(self) -> bool: ...
-    def __eq__(self, other: object) -> bool: ...
-    def __lt__(self, other: object) -> bool: ...
-    def __ne__(self, other: object) -> bool: ...
+    def __bool__(self) -> bool:
+        """True if this object has not expired.  False otherwise."""
+    def __eq__(self, other: object) -> bool:
+        """Equality operator:  x == y"""
+    def __lt__(self, other: object) -> bool:
+        """Less than operator: x < y"""
+    def __ne__(self, other: object) -> bool:
+        """Non-equality operator: x != y"""
     @property
     def childTrees(self) -> list[LayerTree]:
         """
@@ -3573,13 +3621,49 @@ class PathArray(Boost.Python.instance):
     """An array of type SdfPath."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     def __eq__(self, other: object) -> bool: ...
     @overload
     def __getitem__(self, arg2: object, /) -> Any: ...
@@ -5204,13 +5288,49 @@ class TimeCodeArray(Boost.Python.instance):
     """An array of type SdfTimeCode."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     def __eq__(self, other: object) -> bool: ...
     @overload
     def __getitem__(self, arg2: object, /) -> Any: ...

@@ -237,9 +237,15 @@ class Camera(Boost.Python.instance):
     verticalAperture: float
     verticalApertureOffset: float
     @overload
-    def __init__(self, transform: Matrix4d = ..., projection: Camera.Projection = ..., horizontalAperture: float = ..., verticalAperture: float = ..., horizontalApertureOffset: float = ..., verticalApertureOffset: float = ..., focalLength: float = ..., clippingRange: Range1f = ..., clippingPlanes: typing.Iterable[Vec4f | list[float] | tuple[float, float, float, float]] = ..., fStop: float = ..., focusDistance: float = ...) -> None: ...
+    def __init__(self, transform: Matrix4d = ..., projection: Camera.Projection = ..., horizontalAperture: float = ..., verticalAperture: float = ..., horizontalApertureOffset: float = ..., verticalApertureOffset: float = ..., focalLength: float = ..., clippingRange: Range1f = ..., clippingPlanes: typing.Iterable[Vec4f | list[float] | tuple[float, float, float, float]] = ..., fStop: float = ..., focusDistance: float = ...) -> None:
+        """0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0) [, (object)projection=Gf.Camera.Perspective [, (float)horizontalAperture=20.955 [, (float)verticalAperture=15.290799999999999 [, (float)horizontalApertureOffset=0.0 [, (float)verticalApertureOffset=0.0 [, (float)focalLength=50.0 [, (Range1f)clippingRange=Gf.Range1f(1.0, 1000000.0) [, (object)clippingPlanes=[] [, (float)fStop=0.0 [, (float)focusDistance=0.0]]]]]]]]]]]) -> None"""
     @overload
-    def __init__(self, arg2: Camera, /) -> None: ...
+    def __init__(self, arg2: Camera, /) -> None:
+        """0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0) [, (object)projection=Gf.Camera.Perspective [, (float)horizontalAperture=20.955 [, (float)verticalAperture=15.290799999999999 [, (float)horizontalApertureOffset=0.0 [, (float)verticalApertureOffset=0.0 [, (float)focalLength=50.0 [, (Range1f)clippingRange=Gf.Range1f(1.0, 1000000.0) [, (object)clippingPlanes=[] [, (float)fStop=0.0 [, (float)focusDistance=0.0]]]]]]]]]]]) -> None"""
     def GetFieldOfView(self, _direction: Camera.FOVDirection, /) -> float:
         """
         Returns the horizontal or vertical field of view in degrees.
@@ -1297,9 +1303,27 @@ class Interval(Boost.Python.instance):
         Construct an interval with the given arguments.
         """
     @overload
-    def __init__(self, arg2: float, /) -> None: ...
+    def __init__(self, arg2: float, /) -> None:
+        """    Create a closed interval representing the single point [val,val].
+
+        __init__( (object)arg1, (float)arg2, (float)arg3) -> None :
+            Create a closed interval representing the range [v1,v2].
+
+        __init__( (object)arg1, (float)arg2, (float)arg3, (bool)arg4, (bool)arg5) -> None :
+            Create the interval.
+
+        __init__( (object)arg1, (Interval)arg2) -> None"""
     @overload
-    def __init__(self, arg2: float, arg3: float, /) -> None: ...
+    def __init__(self, arg2: float, arg3: float, /) -> None:
+        """    Create a closed interval representing the single point [val,val].
+
+        __init__( (object)arg1, (float)arg2, (float)arg3) -> None :
+            Create a closed interval representing the range [v1,v2].
+
+        __init__( (object)arg1, (float)arg2, (float)arg3, (bool)arg4, (bool)arg5) -> None :
+            Create the interval.
+
+        __init__( (object)arg1, (Interval)arg2) -> None"""
     @overload
     def Contains(self, _d: float, /) -> bool:
         """
@@ -1697,9 +1721,11 @@ class Matrix2d(Boost.Python.instance):
         """
     def __add__(self, arg2: Matrix2d, /) -> Any: ...
     @overload
-    def __contains__(self, arg2: float, /) -> bool: ...
+    def __contains__(self, arg2: float, /) -> bool:
+        """Check rows against GfVec"""
     @overload
-    def __contains__(self, arg2: Vec2d | list[float] | tuple[float, float], /) -> bool: ...
+    def __contains__(self, arg2: Vec2d | list[float] | tuple[float, float], /) -> bool:
+        """Check rows against GfVec"""
     def __eq__(self, other: object) -> bool:
         """
         Tests for element-wise matrix equality.
@@ -1724,7 +1750,8 @@ class Matrix2d(Boost.Python.instance):
     @overload
     def __imul__(self, arg2: float, /) -> Any: ...
     def __isub__(self, arg2: Matrix2d, /) -> Any: ...
-    def __len__(self) -> int: ...
+    def __len__(self) -> int:
+        """Return number of rows"""
     @overload
     def __mul__(self, arg2: Matrix2d, /) -> Any: ...
     @overload
@@ -1865,9 +1892,11 @@ class Matrix2f(Boost.Python.instance):
         """
     def __add__(self, arg2: Matrix2f, /) -> Any: ...
     @overload
-    def __contains__(self, arg2: float, /) -> bool: ...
+    def __contains__(self, arg2: float, /) -> bool:
+        """Check rows against GfVec"""
     @overload
-    def __contains__(self, arg2: Vec2f | list[float] | tuple[float, float], /) -> bool: ...
+    def __contains__(self, arg2: Vec2f | list[float] | tuple[float, float], /) -> bool:
+        """Check rows against GfVec"""
     def __eq__(self, other: object) -> bool:
         """
         Tests for element-wise matrix equality.
@@ -1892,7 +1921,8 @@ class Matrix2f(Boost.Python.instance):
     @overload
     def __imul__(self, arg2: float, /) -> Any: ...
     def __isub__(self, arg2: Matrix2f, /) -> Any: ...
-    def __len__(self) -> int: ...
+    def __len__(self) -> int:
+        """Return number of rows"""
     @overload
     def __mul__(self, arg2: Matrix2f, /) -> Any: ...
     @overload
@@ -2126,9 +2156,11 @@ class Matrix3d(Boost.Python.instance):
         """
     def __add__(self, arg2: Matrix3d, /) -> Any: ...
     @overload
-    def __contains__(self, arg2: float, /) -> bool: ...
+    def __contains__(self, arg2: float, /) -> bool:
+        """Check rows against GfVec"""
     @overload
-    def __contains__(self, arg2: Vec3d | list[float] | tuple[float, float, float], /) -> bool: ...
+    def __contains__(self, arg2: Vec3d | list[float] | tuple[float, float, float], /) -> bool:
+        """Check rows against GfVec"""
     def __eq__(self, other: object) -> bool:
         """
         Tests for element-wise matrix equality.
@@ -2153,7 +2185,8 @@ class Matrix3d(Boost.Python.instance):
     @overload
     def __imul__(self, arg2: float, /) -> Any: ...
     def __isub__(self, arg2: Matrix3d, /) -> Any: ...
-    def __len__(self) -> int: ...
+    def __len__(self) -> int:
+        """Return number of rows"""
     @overload
     def __mul__(self, arg2: Matrix3d, /) -> Any: ...
     @overload
@@ -2391,9 +2424,11 @@ class Matrix3f(Boost.Python.instance):
         """
     def __add__(self, arg2: Matrix3f, /) -> Any: ...
     @overload
-    def __contains__(self, arg2: float, /) -> bool: ...
+    def __contains__(self, arg2: float, /) -> bool:
+        """Check rows against GfVec"""
     @overload
-    def __contains__(self, arg2: Vec3f | list[float] | tuple[float, float, float], /) -> bool: ...
+    def __contains__(self, arg2: Vec3f | list[float] | tuple[float, float, float], /) -> bool:
+        """Check rows against GfVec"""
     def __eq__(self, other: object) -> bool:
         """
         Tests for element-wise matrix equality.
@@ -2418,7 +2453,8 @@ class Matrix3f(Boost.Python.instance):
     @overload
     def __imul__(self, arg2: float, /) -> Any: ...
     def __isub__(self, arg2: Matrix3f, /) -> Any: ...
-    def __len__(self) -> int: ...
+    def __len__(self) -> int:
+        """Return number of rows"""
     @overload
     def __mul__(self, arg2: Matrix3f, /) -> Any: ...
     @overload
@@ -2879,9 +2915,11 @@ class Matrix4d(Boost.Python.instance):
         """
     def __add__(self, arg2: Matrix4d, /) -> Any: ...
     @overload
-    def __contains__(self, arg2: float, /) -> bool: ...
+    def __contains__(self, arg2: float, /) -> bool:
+        """Check rows against GfVec"""
     @overload
-    def __contains__(self, arg2: Vec4d | list[float] | tuple[float, float, float, float], /) -> bool: ...
+    def __contains__(self, arg2: Vec4d | list[float] | tuple[float, float, float, float], /) -> bool:
+        """Check rows against GfVec"""
     def __eq__(self, other: object) -> bool:
         """
         Tests for element-wise matrix equality.
@@ -2906,7 +2944,8 @@ class Matrix4d(Boost.Python.instance):
     @overload
     def __imul__(self, arg2: float, /) -> Any: ...
     def __isub__(self, arg2: Matrix4d, /) -> Any: ...
-    def __len__(self) -> int: ...
+    def __len__(self) -> int:
+        """Return number of rows"""
     @overload
     def __mul__(self, arg2: Matrix4d, /) -> Any: ...
     @overload
@@ -3371,9 +3410,11 @@ class Matrix4f(Boost.Python.instance):
         """
     def __add__(self, arg2: Matrix4f, /) -> Any: ...
     @overload
-    def __contains__(self, arg2: float, /) -> bool: ...
+    def __contains__(self, arg2: float, /) -> bool:
+        """Check rows against GfVec"""
     @overload
-    def __contains__(self, arg2: Vec4f | list[float] | tuple[float, float, float, float], /) -> bool: ...
+    def __contains__(self, arg2: Vec4f | list[float] | tuple[float, float, float, float], /) -> bool:
+        """Check rows against GfVec"""
     def __eq__(self, other: object) -> bool:
         """
         Tests for element-wise matrix equality.
@@ -3398,7 +3439,8 @@ class Matrix4f(Boost.Python.instance):
     @overload
     def __imul__(self, arg2: float, /) -> Any: ...
     def __isub__(self, arg2: Matrix4f, /) -> Any: ...
-    def __len__(self) -> int: ...
+    def __len__(self) -> int:
+        """Return number of rows"""
     @overload
     def __mul__(self, arg2: Matrix4f, /) -> Any: ...
     @overload
@@ -5142,81 +5184,14 @@ class Ray(Boost.Python.instance):
         Returns the point that is C{distance} units from the starting point
         along the direction vector, expressed in parametic distance.
         """
-    @overload
-    def Intersect(self, _plane: Plane, /) -> tuple:
+    def Intersect(self, *args, **kwargs):
         """
-        Intersects the ray with a plane, returning C{true} if the ray is not
-        parallel to the plane and the intersection is within the ray bounds.
 
-
-        If there is an intersection, it also returns the parametric distance
-        to the intersection point in C{distance} and the front-facing flag in
-        C{frontFacing}, if they are not C{None}. The front-facing flag is
-        C{true} if the intersection is on the side of the plane in which its
-        normal points.
-        """
-    @overload
-    def Intersect(self, _box: Range3d | list[float] | tuple[float, float, float], /) -> tuple:
-        """
-        Intersects the ray with an axis-aligned box, returning C{true} if the
-        ray intersects it at all within bounds.
-
-
-        If there is an intersection, this also returns the parametric
-        distances to the two intersection points in C{enterDistance} and
-        C{exitDistance}.
-        """
-    @overload
-    def Intersect(self, _box: BBox3d, /) -> tuple:
-        """
-        Intersects the ray with an oriented box, returning C{true} if the ray
-        intersects it at all within bounds.
-
-
-        If there is an intersection, this also returns the parametric
-        distances to the two intersection points in C{enterDistance} and
-        C{exitDistance}.
-        """
-    @overload
-    def Intersect(self, _center: Vec3d | list[float] | tuple[float, float, float], _radius: float, /) -> tuple:
-        """
-        Intersects the ray with a sphere, returning C{true} if the ray
-        intersects it at all within bounds.
-
-
-        If there is an intersection, returns the parametric distance to the
-        two intersection points in C{enterDistance} and C{exitDistance}.
-        """
-    @overload
-    def Intersect(self, _origin: Vec3d | list[float] | tuple[float, float, float], _axis: Vec3d | list[float] | tuple[float, float, float], _radius: Vec3d | list[float] | tuple[float, float, float], /) -> tuple:
-        """
-        Intersects the ray with an infinite cylinder, with axis C{axis},
-        centered at the C{origin}, with radius C{radius}.
-
-
-        Returns C{true} if the ray intersects it at all within bounds. If
-        there is an intersection, returns the parametric distance to the two
-        intersection points in C{enterDistance} and C{exitDistance}.
-
-        Note this method does not validate whether the radius is valid.
-        """
-    @overload
-    def Intersect(self, _origin: Vec3d | list[float] | tuple[float, float, float], _axis: Vec3d | list[float] | tuple[float, float, float], _radius: float, _height: float, /) -> tuple:
-        """
-        Intersects the ray with an infinite non-double cone, centered at
-        C{origin}, with axis C{axis}, radius C{radius} and apex at C{height}.
-
-
-        Returns C{true} if the ray intersects it at all within bounds. If
-        there is an intersection, returns the parametric distance to the two
-        intersection points in C{enterDistance} and C{exitDistance}.
-
-        Note this method does not validate whether the radius are height are
-        valid.
-        """
-    @overload
-    def Intersect(self, arg2: Vec3d | list[float] | tuple[float, float, float], arg3: Vec3d | list[float] | tuple[float, float, float], arg4: float, /) -> tuple:
-        """    Intersects the ray with the triangle formed by points p0,
+        Intersect( (Ray)arg1, (Vec3d)arg2, (Vec3d)arg3, (Vec3d)arg4) -> tuple :
+            Intersect( p0, p1, p2 ) -> tuple<intersects = bool, dist =
+            float, barycentric = GfVec3d, frontFacing = bool>
+    
+            Intersects the ray with the triangle formed by points p0,
             p1, and p2.  The first item in the tuple is true if the ray
             intersects the triangle. dist is the the parametric
             distance to the intersection point, the barycentric
@@ -5226,16 +5201,19 @@ class Ray(Boost.Python.instance):
             flag is True if the intersection hit the side of the
             triangle that is formed when the vertices are ordered
             counter-clockwise (right-hand rule).
-
+    
             Barycentric coordinates are defined to sum to 1 and satisfy
             this relationsip:
-
+    
                 intersectionPoint = (barycentricCoords[0] * p0 +
                                      barycentricCoords[1] * p1 +
                                      barycentricCoords[2] * p2);
             ----------------------------------------------------------------------
 
         Intersect( (Ray)arg1, (Plane)arg2) -> tuple :
+            Intersect( plane ) -> tuple<intersects = bool, dist = float,
+            frontFacing = bool>
+    
             Intersects the ray with the Gf.Plane.  The first item in
             the returned tuple is true if the ray intersects the plane.
             dist is the parametric distance to the intersection point
@@ -5244,6 +5222,8 @@ class Ray(Boost.Python.instance):
             ----------------------------------------------------------------------
 
         Intersect( (Ray)arg1, (Range3d)arg2) -> tuple :
+            Intersect( range3d ) -> tuple<intersects = bool, enterDist
+            = float, exitDist = float>
             Intersects the plane with an axis-aligned box in a
             Gf.Range3d.  intersects is true if the ray intersects it at
             all within bounds. If there is an intersection then enterDist
@@ -5252,6 +5232,8 @@ class Ray(Boost.Python.instance):
             ----------------------------------------------------------------------
 
         Intersect( (Ray)arg1, (BBox3d)arg2) -> tuple :
+            Intersect( bbox3d ) -> tuple<intersects = bool, enterDist
+            = float, exitDist = float>
             Intersects the plane with an oriented box in a Gf.BBox3d.
             intersects is true if the ray intersects it at all within
             bounds. If there is an intersection then enterDist and
@@ -5260,6 +5242,9 @@ class Ray(Boost.Python.instance):
             ----------------------------------------------------------------------
 
         Intersect( (Ray)arg1, (Vec3d)arg2, (float)arg3) -> tuple :
+            Intersect( center, radius ) -> tuple<intersects = bool,
+            enterDist = float, exitDist = float>
+    
             Intersects the plane with an sphere. intersects is true if
             the ray intersects it at all within the sphere. If there is
             an intersection then enterDist and exitDist will be the
@@ -5267,6 +5252,9 @@ class Ray(Boost.Python.instance):
             ----------------------------------------------------------------------
 
         Intersect( (Ray)arg1, (Vec3d)arg2, (Vec3d)arg3, (float)arg4) -> tuple :
+            Intersect( origin, axis, radius ) -> tuple<intersects = bool,
+            enterDist = float, exitDist = float>
+    
             Intersects the plane with an infinite cylinder. intersects
             is true if the ray intersects it at all within the
             sphere. If there is an intersection then enterDist and
@@ -5275,6 +5263,9 @@ class Ray(Boost.Python.instance):
             ----------------------------------------------------------------------
 
         Intersect( (Ray)arg1, (Vec3d)arg2, (Vec3d)arg3, (float)arg4, (float)arg5) -> tuple :
+            Intersect( origin, axis, radius, height ) -> 
+            tuple<intersects = bool, enterDist = float, exitDist = float>
+    
             Intersects the plane with an cylinder. intersects
             is true if the ray intersects it at all within the
             sphere. If there is an intersection then enterDist and
@@ -7528,15 +7519,7 @@ def Abs(_f: float, /) -> float:
     """
     Return abs( C{f}).
     """
-@overload
 def Absf(arg1: float, /) -> float:
-    """Absf(f) -> float
-
-    f : float
-
-    Use instead of Abs() to return the absolute value of f as a float instead of a double."""
-@overload
-def Absf(f) -> float:
     """Absf(f) -> float
 
     f : float
@@ -7574,15 +7557,7 @@ def Ceil(_f: float, /) -> float:
     """
     Return ceil( C{f}).
     """
-@overload
 def Ceilf(arg1: float, /) -> float:
-    """Ceilf(f) -> float
-
-    f : float
-
-    Use instead of Ceil() to return the ceiling of f as a float instead of a double."""
-@overload
-def Ceilf(f) -> float:
     """Ceilf(f) -> float
 
     f : float
@@ -7596,15 +7571,7 @@ def Clamp(_value: float, _min: float, _max: float, /) -> float:
 
     This function is also defined for GfVecs.
     """
-@overload
 def Clampf(arg1: float, arg2: float, arg3: float, /) -> float:
-    """Clampf(f) -> float
-
-    f : float
-
-    Use instead of Clamp() to return the clamped value of f as a float instead of a double."""
-@overload
-def Clampf(f) -> float:
     """Clampf(f) -> float
 
     f : float
@@ -7757,15 +7724,7 @@ def Exp(_f: float, /) -> float:
     """
     Return exp( C{f}).
     """
-@overload
 def Expf(arg1: float, /) -> float:
-    """Expf(f) -> float
-
-    f : float
-
-    Use instead of Exp() to return the exponent of f as a float instead of a double."""
-@overload
-def Expf(f) -> float:
     """Expf(f) -> float
 
     f : float
@@ -7801,18 +7760,38 @@ def FindClosestPoints(_ray: Ray, _seg: LineSeg, /) -> tuple:
     """
 @overload
 def FindClosestPoints(arg1: Line, arg2: Line, /) -> tuple:
-    """    Computes the closest points between two lines, returning a tuple.  The first item in the tuple is true if the linesintersect.  The two points are returned in p1 and p2.  The parametric distance of each point on the lines is returned in t1 and t2.
+    """    FindClosestPoints( l1, l2 ) -> tuple<intersects = bool, p1 = GfVec3d, p2 = GfVec3d, t1 = double, t2 = double>
+
+        l1 : GfLine
+        l2 : GfLine
+
+        Computes the closest points between two lines, returning a tuple.  The first item in the tuple is true if the linesintersect.  The two points are returned in p1 and p2.  The parametric distance of each point on the lines is returned in t1 and t2.
         ----------------------------------------------------------------------
 
     FindClosestPoints( (Line)arg1, (LineSeg)arg2) -> tuple :
+        FindClosestPoints( l1, s2 ) -> tuple< intersects = bool, p1 = GfVec3d, p2 = GfVec3d, t1 = double, t2 = double>
+
+        l1 : GfLine
+        s2 : GfLineSeg
+
         Computes the closest points between a line and a line segment, returning a tuple. The first item in the tuple is true if they intersect. The two points are returned in p1 and p2.  The parametric distance of each point on the line and line segment is returned in t1 and t2.
         ----------------------------------------------------------------------
 
     FindClosestPoints( (LineSeg)arg1, (LineSeg)arg2) -> tuple :
+        FindClosestPoints( s1, s2 ) -> tuple<result = bool,p1 = GfVec3d, p2 = GfVec3d, t1 = double, t2 = double>
+
+        l1 : GfLineSeg
+        l2 : GfLineSeg
+
         Computes the closest points between two line segments, returning a tuple.  The first item in the tuple is true if they intersect.  The two points are returned in p1 and p2.  The parametric distance of each point on the line and line segment is returned in t1 and t2.
         ----------------------------------------------------------------------
 
     FindClosestPoints( (Ray)arg1, (Line)arg2) -> tuple :
+        FindClosestPoints( r1, l2 ) -> tuple<intersects=bool, p1 = GfVec3d, p2 = GfVec3d, t1 = double, t2 = double>
+
+        r1 : GfRay
+        l2 : GfLine
+
         Computes the closest points between a ray and a line,
         returning a tuple. The first item in the tuple is true if they intersect. The two points are returned in p1 and p2.
         The parametric distance of each point on the ray and line is
@@ -7820,6 +7799,11 @@ def FindClosestPoints(arg1: Line, arg2: Line, /) -> tuple:
         ----------------------------------------------------------------------
 
     FindClosestPoints( (Ray)arg1, (LineSeg)arg2) -> tuple :
+        FindClosestPoints( r1, s2 ) -> tuple<intersects = bool, p1 = GfVec3d, p2 = GfVec3d, t1 = double, t2 = double>
+
+        r1 : GfRay
+        s2 : GfLineSeg
+
         Computes the closest points between a ray and a line segment,
         returning a tuple. The first item in the tuple is true if they intersect. The two points are returned in p1 and p2.
         The parametric distance of each point on the ray and line
@@ -7827,18 +7811,38 @@ def FindClosestPoints(arg1: Line, arg2: Line, /) -> tuple:
         ----------------------------------------------------------------------"""
 @overload
 def FindClosestPoints(arg1: Line, arg2: LineSeg, /) -> tuple:
-    """    Computes the closest points between two lines, returning a tuple.  The first item in the tuple is true if the linesintersect.  The two points are returned in p1 and p2.  The parametric distance of each point on the lines is returned in t1 and t2.
+    """    FindClosestPoints( l1, l2 ) -> tuple<intersects = bool, p1 = GfVec3d, p2 = GfVec3d, t1 = double, t2 = double>
+
+        l1 : GfLine
+        l2 : GfLine
+
+        Computes the closest points between two lines, returning a tuple.  The first item in the tuple is true if the linesintersect.  The two points are returned in p1 and p2.  The parametric distance of each point on the lines is returned in t1 and t2.
         ----------------------------------------------------------------------
 
     FindClosestPoints( (Line)arg1, (LineSeg)arg2) -> tuple :
+        FindClosestPoints( l1, s2 ) -> tuple< intersects = bool, p1 = GfVec3d, p2 = GfVec3d, t1 = double, t2 = double>
+
+        l1 : GfLine
+        s2 : GfLineSeg
+
         Computes the closest points between a line and a line segment, returning a tuple. The first item in the tuple is true if they intersect. The two points are returned in p1 and p2.  The parametric distance of each point on the line and line segment is returned in t1 and t2.
         ----------------------------------------------------------------------
 
     FindClosestPoints( (LineSeg)arg1, (LineSeg)arg2) -> tuple :
+        FindClosestPoints( s1, s2 ) -> tuple<result = bool,p1 = GfVec3d, p2 = GfVec3d, t1 = double, t2 = double>
+
+        l1 : GfLineSeg
+        l2 : GfLineSeg
+
         Computes the closest points between two line segments, returning a tuple.  The first item in the tuple is true if they intersect.  The two points are returned in p1 and p2.  The parametric distance of each point on the line and line segment is returned in t1 and t2.
         ----------------------------------------------------------------------
 
     FindClosestPoints( (Ray)arg1, (Line)arg2) -> tuple :
+        FindClosestPoints( r1, l2 ) -> tuple<intersects=bool, p1 = GfVec3d, p2 = GfVec3d, t1 = double, t2 = double>
+
+        r1 : GfRay
+        l2 : GfLine
+
         Computes the closest points between a ray and a line,
         returning a tuple. The first item in the tuple is true if they intersect. The two points are returned in p1 and p2.
         The parametric distance of each point on the ray and line is
@@ -7846,6 +7850,11 @@ def FindClosestPoints(arg1: Line, arg2: LineSeg, /) -> tuple:
         ----------------------------------------------------------------------
 
     FindClosestPoints( (Ray)arg1, (LineSeg)arg2) -> tuple :
+        FindClosestPoints( r1, s2 ) -> tuple<intersects = bool, p1 = GfVec3d, p2 = GfVec3d, t1 = double, t2 = double>
+
+        r1 : GfRay
+        s2 : GfLineSeg
+
         Computes the closest points between a ray and a line segment,
         returning a tuple. The first item in the tuple is true if they intersect. The two points are returned in p1 and p2.
         The parametric distance of each point on the ray and line
@@ -7853,18 +7862,38 @@ def FindClosestPoints(arg1: Line, arg2: LineSeg, /) -> tuple:
         ----------------------------------------------------------------------"""
 @overload
 def FindClosestPoints(arg1: LineSeg, arg2: LineSeg, /) -> tuple:
-    """    Computes the closest points between two lines, returning a tuple.  The first item in the tuple is true if the linesintersect.  The two points are returned in p1 and p2.  The parametric distance of each point on the lines is returned in t1 and t2.
+    """    FindClosestPoints( l1, l2 ) -> tuple<intersects = bool, p1 = GfVec3d, p2 = GfVec3d, t1 = double, t2 = double>
+
+        l1 : GfLine
+        l2 : GfLine
+
+        Computes the closest points between two lines, returning a tuple.  The first item in the tuple is true if the linesintersect.  The two points are returned in p1 and p2.  The parametric distance of each point on the lines is returned in t1 and t2.
         ----------------------------------------------------------------------
 
     FindClosestPoints( (Line)arg1, (LineSeg)arg2) -> tuple :
+        FindClosestPoints( l1, s2 ) -> tuple< intersects = bool, p1 = GfVec3d, p2 = GfVec3d, t1 = double, t2 = double>
+
+        l1 : GfLine
+        s2 : GfLineSeg
+
         Computes the closest points between a line and a line segment, returning a tuple. The first item in the tuple is true if they intersect. The two points are returned in p1 and p2.  The parametric distance of each point on the line and line segment is returned in t1 and t2.
         ----------------------------------------------------------------------
 
     FindClosestPoints( (LineSeg)arg1, (LineSeg)arg2) -> tuple :
+        FindClosestPoints( s1, s2 ) -> tuple<result = bool,p1 = GfVec3d, p2 = GfVec3d, t1 = double, t2 = double>
+
+        l1 : GfLineSeg
+        l2 : GfLineSeg
+
         Computes the closest points between two line segments, returning a tuple.  The first item in the tuple is true if they intersect.  The two points are returned in p1 and p2.  The parametric distance of each point on the line and line segment is returned in t1 and t2.
         ----------------------------------------------------------------------
 
     FindClosestPoints( (Ray)arg1, (Line)arg2) -> tuple :
+        FindClosestPoints( r1, l2 ) -> tuple<intersects=bool, p1 = GfVec3d, p2 = GfVec3d, t1 = double, t2 = double>
+
+        r1 : GfRay
+        l2 : GfLine
+
         Computes the closest points between a ray and a line,
         returning a tuple. The first item in the tuple is true if they intersect. The two points are returned in p1 and p2.
         The parametric distance of each point on the ray and line is
@@ -7872,6 +7901,11 @@ def FindClosestPoints(arg1: LineSeg, arg2: LineSeg, /) -> tuple:
         ----------------------------------------------------------------------
 
     FindClosestPoints( (Ray)arg1, (LineSeg)arg2) -> tuple :
+        FindClosestPoints( r1, s2 ) -> tuple<intersects = bool, p1 = GfVec3d, p2 = GfVec3d, t1 = double, t2 = double>
+
+        r1 : GfRay
+        s2 : GfLineSeg
+
         Computes the closest points between a ray and a line segment,
         returning a tuple. The first item in the tuple is true if they intersect. The two points are returned in p1 and p2.
         The parametric distance of each point on the ray and line
@@ -7904,15 +7938,7 @@ def Floor(_f: float, /) -> float:
     """
     Return floor( C{f}).
     """
-@overload
 def Floorf(arg1: float, /) -> float:
-    """Floorf(f) -> float
-
-    f : float
-
-    Use instead of Floor() to return the floor of f as a float instead of a double."""
-@overload
-def Floorf(f) -> float:
     """Floorf(f) -> float
 
     f : float
@@ -8114,15 +8140,7 @@ def Lerp(arg1: float, arg2: Vec4f | list[float] | tuple[float, float, float, flo
 def Lerp(arg1: float, arg2: Vec2d | list[float] | tuple[float, float], arg3: Vec2d | list[float] | tuple[float, float], /) -> Vec2d: ...
 @overload
 def Lerp(arg1: float, arg2: Vec3d | list[float] | tuple[float, float, float], arg3: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d: ...
-@overload
 def Lerpf(arg1: float, arg2: float, arg3: float, /) -> float:
-    """Lerpf(f) -> float
-
-    f : float
-
-    Use instead of Lerp() to return the linear interpolation of f as a float instead of a double."""
-@overload
-def Lerpf(f) -> float:
     """Lerpf(f) -> float
 
     f : float
@@ -8132,15 +8150,7 @@ def Log(_f: float, /) -> float:
     """
     Return log( C{f}).
     """
-@overload
 def Logf(arg1: float, /) -> float:
-    """Logf(f) -> float
-
-    f : float
-
-    Use instead of Log() to return the logarithm of f as a float instead of a double."""
-@overload
-def Logf(f) -> float:
     """Logf(f) -> float
 
     f : float
@@ -8193,15 +8203,7 @@ def Mod(_a: float, _b: float, /) -> float:
     Otherwise, for positive C{a}, the value returned is C{fmod(a,b)} , and
     for negative C{a}, the value returned is C{fmod(a,b)+b}.
     '''
-@overload
 def Modf(arg1: float, arg2: float, /) -> float:
-    """Modf(f) -> float
-
-    f : float
-
-    Use instead of Mod() to return the modulus of f as a float instead of a double."""
-@overload
-def Modf(f) -> float:
     """Modf(f) -> float
 
     f : float
@@ -8237,15 +8239,7 @@ def Pow(_f: float, _p: float, /) -> float:
     """
     Return pow( C{f}, C{p}).
     """
-@overload
 def Powf(arg1: float, arg2: float, /) -> float:
-    """Powf(f) -> float
-
-    f : float
-
-    Use instead of Pow() to return the power of f as a float instead of a double."""
-@overload
-def Powf(f) -> float:
     """Powf(f) -> float
 
     f : float
@@ -8271,15 +8265,7 @@ def Round(_f: float, /) -> float:
     """
     Return round( C{f}).
     """
-@overload
 def Roundf(arg1: float, /) -> float:
-    """Roundf(f) -> float
-
-    f : float
-
-    Use instead of Round() to return the rounded value of f as a float instead of a double."""
-@overload
-def Roundf(f) -> float:
     """Roundf(f) -> float
 
     f : float
@@ -8345,15 +8331,7 @@ def Sqrt(_f: float, /) -> float:
     """
     Return sqrt( C{f}).
     """
-@overload
 def Sqrtf(arg1: float, /) -> float:
-    """Sqrtf(f) -> float
-
-    f : float
-
-    Use instead of Sqrt() to return the square root of f as a float instead of a double."""
-@overload
-def Sqrtf(f) -> float:
     """Sqrtf(f) -> float
 
     f : float

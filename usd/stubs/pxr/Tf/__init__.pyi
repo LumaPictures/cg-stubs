@@ -491,11 +491,11 @@ class MallocTag(Boost.Python.instance):
         """
 
 class NamedTemporaryFile:
-    """A named temporary file which keeps the internal file handle closed.
+    """A named temporary file which keeps the internal file handle closed. 
        A class which constructs a temporary file(that isn't open) on __enter__,
-       provides its name as an attribute, and deletes it on __exit__.
-
-       Note: The constructor args for this object match those of
+       provides its name as an attribute, and deletes it on __exit__. 
+       
+       Note: The constructor args for this object match those of 
        python's tempfile.mkstemp() function, and will have the same effect on
        the underlying file created."""
     __init__: ClassVar[Callable] = ...
@@ -562,25 +562,30 @@ class Notice(Boost.Python.instance):
             """Raises an exception
             This class cannot be instantiated from Python
             """
-        @overload
         def Revoke(self) -> None:
-            """Revoke() 
-
-            Revoke interest by a notice listener.  This function revokes interest in the particular notice type and call-back method that its Listener object was registered for."""
-        @overload
-        def Revoke(self) -> typing.Any:
             """Revoke() 
 
             Revoke interest by a notice listener.  This function revokes interest in the particular notice type and call-back method that its Listener object was registered for."""
     def __init__(self) -> None: ...
     @staticmethod
     def Register(_listener: type[NoticeT], _method: Callable[[NoticeT, T], typing.Any], _sender: T) -> Listener:
-        """    Register a listener as being interested in a TfNotice  type from a specific sender.  Notice listener will get sender  as an argument.     Registration of interest in a notice class N automatically  registers interest in all classes derived from N.  When a  notice of appropriate type is received, the listening object's  member-function method is called with the notice.     To reverse the registration, call Revoke() on the Listener object returned by this call. 
+        """    Register( noticeType, callback, sender ) -> Listener 
+
+            noticeType : Tf.Notice
+            callback : function
+            sender : object
+
+            Register a listener as being interested in a TfNotice  type from a specific sender.  Notice listener will get sender  as an argument.     Registration of interest in a notice class N automatically  registers interest in all classes derived from N.  When a  notice of appropriate type is received, the listening object's  member-function method is called with the notice.     To reverse the registration, call Revoke() on the Listener object returned by this call. 
 
         Register( (Type)arg1, (object)arg2, (object)arg3) -> Listener"""
     @staticmethod
     def RegisterGlobally(_listener: type[NoticeT], _method: Callable[[NoticeT, typing.Any], typing.Any]) -> Listener:
-        """Register a listener as being interested in a TfNotice type from any sender.  The notice listener does not get sender as an argument."""
+        """RegisterGlobally( noticeType, callback ) -> Listener 
+
+        noticeType : Tf.Notice
+        callback : function
+
+        Register a listener as being interested in a TfNotice type from any sender.  The notice listener does not get sender as an argument."""
     @overload
     def Send(self, _s: Sender, /) -> int:
         """
@@ -609,22 +614,7 @@ class Notice(Boost.Python.instance):
             Deliver the notice to interested listeners, returning the number of interested listeners. This is the recommended form of Send.  It takes the sender as an argument. Listeners that registered for the given sender AND listeners that registered globally will get the notice. 
 
         Send( (Notice)arg1, (object)arg2) -> int"""
-    @overload
-    def Send(self, sender) -> typing.Any:
-        """    Send(sender) 
-
-            sender : object 
-
-            Deliver the notice to interested listeners, returning the number of interested listeners. This is the recommended form of Send.  It takes the sender as an argument. Listeners that registered for the given sender AND listeners that registered globally will get the notice. 
-
-        Send( (Notice)arg1, (object)arg2) -> int"""
-    @overload
     def SendGlobally(self) -> int:
-        """SendGlobally() 
-
-        Deliver the notice to interested listeners.   For most clients it is recommended to use the Send(sender) version of Send() rather than this one.  Clients that use this form of Send will prevent listeners from being able to register to receive notices based on the sender of the notice. ONLY listeners that registered globally will get the notice."""
-    @overload
-    def SendGlobally(self) -> typing.Any:
         """SendGlobally() 
 
         Deliver the notice to interested listeners.   For most clients it is recommended to use the Send(sender) version of Send() rather than this one.  Clients that use this form of Send will prevent listeners from being able to register to receive notices based on the sender of the notice. ONLY listeners that registered globally will get the notice."""
@@ -701,10 +691,14 @@ class RefPtrTracker(Boost.Python.instance):
     def GetAllTracesReport(self) -> str: ...
     def GetAllWatchedCountsReport(self) -> str: ...
     def GetTracesReportForWatched(self, arg2: int, /) -> str: ...
-    def __bool__(self) -> bool: ...
-    def __eq__(self, other: object) -> bool: ...
-    def __lt__(self, other: object) -> bool: ...
-    def __ne__(self, other: object) -> bool: ...
+    def __bool__(self) -> bool:
+        """True if this object has not expired.  False otherwise."""
+    def __eq__(self, other: object) -> bool:
+        """Equality operator:  x == y"""
+    def __lt__(self, other: object) -> bool:
+        """Less than operator: x < y"""
+    def __ne__(self, other: object) -> bool:
+        """Non-equality operator: x != y"""
     @property
     def expired(self): ...
 
@@ -766,10 +760,14 @@ class ScriptModuleLoader(Boost.Python.instance):
         """
     def _LoadModulesForLibrary(self, arg2: object, /) -> None: ...
     def _RegisterLibrary(self, arg2: object, arg3: object, arg4: object, /) -> None: ...
-    def __bool__(self) -> bool: ...
-    def __eq__(self, other: object) -> bool: ...
-    def __lt__(self, other: object) -> bool: ...
-    def __ne__(self, other: object) -> bool: ...
+    def __bool__(self) -> bool:
+        """True if this object has not expired.  False otherwise."""
+    def __eq__(self, other: object) -> bool:
+        """Equality operator:  x == y"""
+    def __lt__(self, other: object) -> bool:
+        """Less than operator: x < y"""
+    def __ne__(self, other: object) -> bool:
+        """Non-equality operator: x != y"""
     @property
     def expired(self): ...
 
@@ -1211,12 +1209,9 @@ class Type(Boost.Python.instance):
 
         If C{queryType} is unknown, this always returns C{false}.
         """
-    @overload
     @staticmethod
-    def _DumpTypeHierarchy() -> None: ...
-    @overload
-    @staticmethod
-    def _DumpTypeHierarchy(TfType) -> typing.Any: ...
+    def _DumpTypeHierarchy() -> None:
+        """_DumpTypeHierarchy(TfType): Diagnostic method to print the type hierarchy beneath a given TfType."""
     def __bool__(self) -> bool: ...
     def __eq__(self, other: object) -> bool:
         """
@@ -1314,10 +1309,14 @@ class _ClassWithClassMethod(Boost.Python.instance):
 
 class _ClassWithVarArgInit(Boost.Python.instance):
     def __init__(self) -> None: ...
-    def __bool__(self) -> bool: ...
-    def __eq__(self, other: object) -> bool: ...
-    def __lt__(self, other: object) -> bool: ...
-    def __ne__(self, other: object) -> bool: ...
+    def __bool__(self) -> bool:
+        """True if this object has not expired.  False otherwise."""
+    def __eq__(self, other: object) -> bool:
+        """Equality operator:  x == y"""
+    def __lt__(self, other: object) -> bool:
+        """Less than operator: x < y"""
+    def __ne__(self, other: object) -> bool:
+        """Non-equality operator: x != y"""
     @property
     def allowExtraArgs(self): ...
     @property
@@ -1402,10 +1401,14 @@ class _TestBase(Boost.Python.instance):
     def Virtual2(self) -> None: ...
     def Virtual3(self, arg2: str | pxr.Ar.ResolvedPath, /) -> None: ...
     def Virtual4(self) -> str: ...
-    def __bool__(self) -> bool: ...
-    def __eq__(self, other: object) -> bool: ...
-    def __lt__(self, other: object) -> bool: ...
-    def __ne__(self, other: object) -> bool: ...
+    def __bool__(self) -> bool:
+        """True if this object has not expired.  False otherwise."""
+    def __eq__(self, other: object) -> bool:
+        """Equality operator:  x == y"""
+    def __lt__(self, other: object) -> bool:
+        """Less than operator: x < y"""
+    def __ne__(self, other: object) -> bool:
+        """Non-equality operator: x != y"""
     @property
     def expired(self): ...
 
@@ -1414,10 +1417,14 @@ class _TestDerived(_TestBase):
     def Virtual(self) -> str: ...
     def Virtual2(self) -> None: ...
     def Virtual3(self, arg2: str | pxr.Ar.ResolvedPath, /) -> None: ...
-    def __bool__(self) -> bool: ...
-    def __eq__(self, other: object) -> bool: ...
-    def __lt__(self, other: object) -> bool: ...
-    def __ne__(self, other: object) -> bool: ...
+    def __bool__(self) -> bool:
+        """True if this object has not expired.  False otherwise."""
+    def __eq__(self, other: object) -> bool:
+        """Equality operator:  x == y"""
+    def __lt__(self, other: object) -> bool:
+        """Less than operator: x < y"""
+    def __ne__(self, other: object) -> bool:
+        """Non-equality operator: x != y"""
     @property
     def expired(self): ...
 

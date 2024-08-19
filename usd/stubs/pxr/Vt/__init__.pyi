@@ -12,13 +12,49 @@ class BoolArray(Boost.Python.instance):
     """An array of type bool."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -116,13 +152,49 @@ class CharArray(Boost.Python.instance):
     """An array of type char."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -220,13 +292,49 @@ class DoubleArray(Boost.Python.instance):
     """An array of type double."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -310,13 +418,49 @@ class DualQuatdArray(Boost.Python.instance):
     """An array of type GfDualQuatd."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -391,13 +535,49 @@ class DualQuatfArray(Boost.Python.instance):
     """An array of type GfDualQuatf."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -472,13 +652,49 @@ class DualQuathArray(Boost.Python.instance):
     """An array of type GfDualQuath."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -553,13 +769,49 @@ class FloatArray(Boost.Python.instance):
     """An array of type float."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -643,13 +895,49 @@ class HalfArray(Boost.Python.instance):
     """An array of type pxr_half::half."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -733,13 +1021,49 @@ class Int64Array(Boost.Python.instance):
     """An array of type long long."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -837,13 +1161,49 @@ class IntArray(Boost.Python.instance):
     """An array of type int."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -941,13 +1301,49 @@ class IntervalArray(Boost.Python.instance):
     """An array of type GfInterval."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
     def __add__(self, arg2: IntervalArray | typing.Iterable[pxr.Gf.Interval], /) -> Any: ...
     @overload
@@ -979,13 +1375,49 @@ class Matrix2dArray(Boost.Python.instance):
     """An array of type GfMatrix2d."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -1073,13 +1505,49 @@ class Matrix2fArray(Boost.Python.instance):
     """An array of type GfMatrix2f."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -1167,13 +1635,49 @@ class Matrix3dArray(Boost.Python.instance):
     """An array of type GfMatrix3d."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -1261,13 +1765,49 @@ class Matrix3fArray(Boost.Python.instance):
     """An array of type GfMatrix3f."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -1355,13 +1895,49 @@ class Matrix4dArray(Boost.Python.instance):
     """An array of type GfMatrix4d."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -1449,13 +2025,49 @@ class Matrix4fArray(Boost.Python.instance):
     """An array of type GfMatrix4f."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -1543,13 +2155,49 @@ class QuatdArray(Boost.Python.instance):
     """An array of type GfQuatd."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -1624,13 +2272,49 @@ class QuaternionArray(Boost.Python.instance):
     """An array of type GfQuaternion."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
     def __add__(self, arg2: QuaternionArray | typing.Iterable[pxr.Gf.Quaternion], /) -> Any: ...
     @overload
@@ -1695,13 +2379,49 @@ class QuatfArray(Boost.Python.instance):
     """An array of type GfQuatf."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -1776,13 +2496,49 @@ class QuathArray(Boost.Python.instance):
     """An array of type GfQuath."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -1857,13 +2613,49 @@ class Range1dArray(Boost.Python.instance):
     """An array of type GfRange1d."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -1905,13 +2697,49 @@ class Range1fArray(Boost.Python.instance):
     """An array of type GfRange1f."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -1953,13 +2781,49 @@ class Range2dArray(Boost.Python.instance):
     """An array of type GfRange2d."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -2001,13 +2865,49 @@ class Range2fArray(Boost.Python.instance):
     """An array of type GfRange2f."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -2049,13 +2949,49 @@ class Range3dArray(Boost.Python.instance):
     """An array of type GfRange3d."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -2097,13 +3033,49 @@ class Range3fArray(Boost.Python.instance):
     """An array of type GfRange3f."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -2145,13 +3117,49 @@ class Rect2iArray(Boost.Python.instance):
     """An array of type GfRect2i."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -2193,13 +3201,49 @@ class ShortArray(Boost.Python.instance):
     """An array of type short."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -2297,13 +3341,49 @@ class StringArray(Boost.Python.instance):
     """An array of type string."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
     def __add__(self, arg2: StringArray, /) -> Any: ...
     @overload
@@ -2335,13 +3415,49 @@ class TokenArray(Boost.Python.instance):
     """An array of type TfToken."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     def __eq__(self, other: object) -> bool: ...
     @overload
     def __getitem__(self, arg2: object, /) -> Any: ...
@@ -2359,13 +3475,49 @@ class UCharArray(Boost.Python.instance):
     """An array of type unsigned char."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -2463,13 +3615,49 @@ class UInt64Array(Boost.Python.instance):
     """An array of type unsigned long long."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -2567,13 +3755,49 @@ class UIntArray(Boost.Python.instance):
     """An array of type unsigned int."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -2671,13 +3895,49 @@ class UShortArray(Boost.Python.instance):
     """An array of type unsigned short."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -2775,13 +4035,49 @@ class Vec2dArray(Boost.Python.instance):
     """An array of type GfVec2d."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -2840,13 +4136,49 @@ class Vec2fArray(Boost.Python.instance):
     """An array of type GfVec2f."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -2905,13 +4237,49 @@ class Vec2hArray(Boost.Python.instance):
     """An array of type GfVec2h."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -2970,13 +4338,49 @@ class Vec2iArray(Boost.Python.instance):
     """An array of type GfVec2i."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -3035,13 +4439,49 @@ class Vec3dArray(Boost.Python.instance):
     """An array of type GfVec3d."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -3100,13 +4540,49 @@ class Vec3fArray(Boost.Python.instance):
     """An array of type GfVec3f."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -3165,13 +4641,49 @@ class Vec3hArray(Boost.Python.instance):
     """An array of type GfVec3h."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -3230,13 +4742,49 @@ class Vec3iArray(Boost.Python.instance):
     """An array of type GfVec3i."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -3295,13 +4843,49 @@ class Vec4dArray(Boost.Python.instance):
     """An array of type GfVec4d."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -3360,13 +4944,49 @@ class Vec4fArray(Boost.Python.instance):
     """An array of type GfVec4f."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -3425,13 +5045,49 @@ class Vec4hArray(Boost.Python.instance):
     """An array of type GfVec4h."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -3490,13 +5146,49 @@ class Vec4iArray(Boost.Python.instance):
     """An array of type GfVec4i."""
     _isVtArray: ClassVar[bool] = ...
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: object, /) -> None: ...
+    def __init__(self, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, arg3: object, /) -> None: ...
+    def __init__(self, size: int, array: typing.Iterable) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @overload
-    def __init__(self, arg2: int, /) -> None: ...
+    def __init__(self, size: int) -> None:
+        """    __init__(values)
+
+            values: a sequence (tuple, list, or another VtArray with element type convertible to the new array's element type)
+
+
+
+        __init__( (object)arg1, (int)arg2, (object)arg3) -> object
+
+        __init__( (object)arg1, (int)arg2) -> None"""
     @staticmethod
     def FromBuffer(*args, **kwargs):
         """
@@ -3642,15 +5334,7 @@ def AnyTrue(arg1: Int64Array | typing.Iterable[int], /) -> bool: ...
 def AnyTrue(arg1: UInt64Array | typing.Iterable[int], /) -> bool: ...
 @overload
 def AnyTrue(arg1: StringArray, /) -> bool: ...
-@overload
 def Bool(arg1: bool, /) -> _ValueWrapper:
-    """Bool(value) -> _ValueWrapper
-
-    value : bool
-
-    Use this function to specify a value with the explicit C++ type bool when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
-@overload
-def Bool(value) -> _ValueWrapper:
     """Bool(value) -> _ValueWrapper
 
     value : bool
@@ -4135,15 +5819,7 @@ def Cat(arg1: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf
 @overload
 def Cat(arg1: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], arg2: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], arg3: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], arg4: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], arg5: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], /) -> Vec2dArray: ...
 def CharArrayFromBuffer(arg1: object, /) -> Any: ...
-@overload
 def Double(arg1: float, /) -> _ValueWrapper:
-    """Double(value) -> _ValueWrapper
-
-    value : double
-
-    Use this function to specify a value with the explicit C++ type double when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
-@overload
-def Double(value) -> _ValueWrapper:
     """Double(value) -> _ValueWrapper
 
     value : double
@@ -4811,15 +6487,7 @@ def Equal(arg1: tuple, arg2: Vec2dArray | typing.Iterable[list[float]] | typing.
 def Equal(arg1: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], arg2: list, /) -> BoolArray: ...
 @overload
 def Equal(arg1: list, arg2: Vec2dArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec2d] | typing.Iterable[tuple[float, float]], /) -> BoolArray: ...
-@overload
 def Float(arg1: float, /) -> _ValueWrapper:
-    """Float(value) -> _ValueWrapper
-
-    value : float
-
-    Use this function to specify a value with the explicit C++ type float when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
-@overload
-def Float(value) -> _ValueWrapper:
     """Float(value) -> _ValueWrapper
 
     value : float
@@ -5218,44 +6886,20 @@ def GreaterOrEqual(arg1: tuple, arg2: TokenArray | typing.Iterable[pxr.Ar.Resolv
 def GreaterOrEqual(arg1: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], arg2: list, /) -> BoolArray: ...
 @overload
 def GreaterOrEqual(arg1: list, arg2: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> BoolArray: ...
-@overload
 def Half(arg1: object, /) -> _ValueWrapper:
     """Half(value) -> _ValueWrapper
 
     value : half
 
     Use this function to specify a value with the explicit C++ type GfHalf when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
-@overload
-def Half(value) -> _ValueWrapper:
-    """Half(value) -> _ValueWrapper
-
-    value : half
-
-    Use this function to specify a value with the explicit C++ type GfHalf when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
 def HalfArrayFromBuffer(arg1: object, /) -> Any: ...
-@overload
 def Int(arg1: int, /) -> _ValueWrapper:
     """Int(value) -> _ValueWrapper
 
     value : int
 
     Use this function to specify a value with the explicit C++ type int when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
-@overload
-def Int(value) -> _ValueWrapper:
-    """Int(value) -> _ValueWrapper
-
-    value : int
-
-    Use this function to specify a value with the explicit C++ type int when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
-@overload
 def Int64(arg1: int, /) -> _ValueWrapper:
-    """Int64(value) -> _ValueWrapper
-
-    value : int64_t
-
-    Use this function to specify a value with the explicit C++ type int64_t when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
-@overload
-def Int64(value) -> _ValueWrapper:
     """Int64(value) -> _ValueWrapper
 
     value : int64_t
@@ -5655,15 +7299,7 @@ def LessOrEqual(arg1: tuple, arg2: TokenArray | typing.Iterable[pxr.Ar.ResolvedP
 def LessOrEqual(arg1: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], arg2: list, /) -> BoolArray: ...
 @overload
 def LessOrEqual(arg1: list, arg2: TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> BoolArray: ...
-@overload
 def Long(arg1: int, /) -> _ValueWrapper:
-    """Long(value) -> _ValueWrapper
-
-    value : long
-
-    Use this function to specify a value with the explicit C++ type long when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
-@overload
-def Long(value) -> _ValueWrapper:
     """Long(value) -> _ValueWrapper
 
     value : long
@@ -6343,15 +7979,7 @@ def Range2fArrayFromBuffer(arg1: object, /) -> Any: ...
 def Range3dArrayFromBuffer(arg1: object, /) -> Any: ...
 def Range3fArrayFromBuffer(arg1: object, /) -> Any: ...
 def Rect2iArrayFromBuffer(arg1: object, /) -> Any: ...
-@overload
 def Short(arg1: int, /) -> _ValueWrapper:
-    """Short(value) -> _ValueWrapper
-
-    value : short
-
-    Use this function to specify a value with the explicit C++ type short when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
-@overload
-def Short(value) -> _ValueWrapper:
     """Short(value) -> _ValueWrapper
 
     value : short
@@ -6364,44 +7992,20 @@ def Token(arg1: object, /) -> _ValueWrapper:
     value : TfToken
 
     Use this function to specify a value with the explicit C++ type TfToken when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
-@overload
 def UChar(arg1: int, /) -> _ValueWrapper:
     """UChar(value) -> _ValueWrapper
 
     value : unsigned char
 
     Use this function to specify a value with the explicit C++ type unsigned char when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
-@overload
-def UChar(value) -> _ValueWrapper:
-    """UChar(value) -> _ValueWrapper
-
-    value : unsigned char
-
-    Use this function to specify a value with the explicit C++ type unsigned char when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
 def UCharArrayFromBuffer(arg1: object, /) -> Any: ...
-@overload
 def UInt(arg1: int, /) -> _ValueWrapper:
     """UInt(value) -> _ValueWrapper
 
     value : unsigned int
 
     Use this function to specify a value with the explicit C++ type unsigned int when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
-@overload
-def UInt(value) -> _ValueWrapper:
-    """UInt(value) -> _ValueWrapper
-
-    value : unsigned int
-
-    Use this function to specify a value with the explicit C++ type unsigned int when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
-@overload
 def UInt64(arg1: int, /) -> _ValueWrapper:
-    """UInt64(value) -> _ValueWrapper
-
-    value : uint64_t
-
-    Use this function to specify a value with the explicit C++ type uint64_t when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
-@overload
-def UInt64(value) -> _ValueWrapper:
     """UInt64(value) -> _ValueWrapper
 
     value : uint64_t
@@ -6409,29 +8013,13 @@ def UInt64(value) -> _ValueWrapper:
     Use this function to specify a value with the explicit C++ type uint64_t when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
 def UInt64ArrayFromBuffer(arg1: object, /) -> Any: ...
 def UIntArrayFromBuffer(arg1: object, /) -> Any: ...
-@overload
 def ULong(arg1: int, /) -> _ValueWrapper:
     """ULong(value) -> _ValueWrapper
 
     value : unsigned long
 
     Use this function to specify a value with the explicit C++ type unsigned long when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
-@overload
-def ULong(value) -> _ValueWrapper:
-    """ULong(value) -> _ValueWrapper
-
-    value : unsigned long
-
-    Use this function to specify a value with the explicit C++ type unsigned long when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
-@overload
 def UShort(arg1: int, /) -> _ValueWrapper:
-    """UShort(value) -> _ValueWrapper
-
-    value : unsigned short
-
-    Use this function to specify a value with the explicit C++ type unsigned short when calling a C++ wrapped function that expects a VtValue. (There are some C++ types that have no equivalents in Python, such as short.)"""
-@overload
-def UShort(value) -> _ValueWrapper:
     """UShort(value) -> _ValueWrapper
 
     value : unsigned short

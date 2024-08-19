@@ -6086,12 +6086,7 @@ class PrimRange(Boost.Python.instance):
             """Raises an exception
             This class cannot be instantiated from Python
             """
-        @overload
         def GetCurrentPrim(self) -> Prim:
-            """Since an iterator cannot be dereferenced in python, GetCurrentPrim()
-             performs the same function: yielding the currently visited prim."""
-        @overload
-        def GetCurrentPrim(self) -> typing.Any:
             """Since an iterator cannot be dereferenced in python, GetCurrentPrim()
              performs the same function: yielding the currently visited prim."""
         def IsPostVisit(self) -> bool: ...
@@ -7693,10 +7688,14 @@ class SchemaRegistry(Boost.Python.instance):
         C{schemaIdentifier} be a registered schema itself or even an allowed
         schema identifier.
         '''
-    def __bool__(self) -> bool: ...
-    def __eq__(self, other: object) -> bool: ...
-    def __lt__(self, other: object) -> bool: ...
-    def __ne__(self, other: object) -> bool: ...
+    def __bool__(self) -> bool:
+        """True if this object has not expired.  False otherwise."""
+    def __eq__(self, other: object) -> bool:
+        """Equality operator:  x == y"""
+    def __lt__(self, other: object) -> bool:
+        """Less than operator: x < y"""
+    def __ne__(self, other: object) -> bool:
+        """Non-equality operator: x != y"""
     @property
     def expired(self): ...
 
@@ -9130,10 +9129,14 @@ class Stage(Boost.Python.instance):
         Fallback Prim Types UsdSchemaRegistry::GetFallbackPrimTypes
         """
     def _GetPcpCache(self) -> pxr.Pcp.Cache: ...
-    def __bool__(self) -> bool: ...
-    def __eq__(self, other: object) -> bool: ...
-    def __lt__(self, other: object) -> bool: ...
-    def __ne__(self, other: object) -> bool: ...
+    def __bool__(self) -> bool:
+        """True if this object has not expired.  False otherwise."""
+    def __eq__(self, other: object) -> bool:
+        """Equality operator:  x == y"""
+    def __lt__(self, other: object) -> bool:
+        """Less than operator: x < y"""
+    def __ne__(self, other: object) -> bool:
+        """Non-equality operator: x != y"""
     @property
     def expired(self): ...
 

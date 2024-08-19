@@ -1116,9 +1116,16 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, BaseSigFix
             #   enabled using `enable_incomplete_feature = NewGenericSyntax`
             # "pxr.Tf.Notice.Register": "[NoticeT: pxr.Tf.Notice, T](_listener: type[NoticeT], _method: Callable[[NoticeT, T], typing.Any], _sender: T, /) -> pxr.Tf.Listener",
             # TypeVars are created using get_imports()
-            # FIXME: sig parser does not accept / arguments
+            # FIXME: add "/" to these when sig parser is made to accept "/" arguments
             "pxr.Tf.Notice.Register": "(_listener: type[NoticeT], _method: Callable[[NoticeT, T], typing.Any], _sender: T) -> pxr.Tf.Listener",
             "pxr.Tf.Notice.RegisterGlobally": "(_listener: type[NoticeT], _method: Callable[[NoticeT, typing.Any], typing.Any]) -> pxr.Tf.Listener",
+            # FIXME: add "/" to these when sig parser is made to accept "/" arguments
+            "pxr.*.*Array.__init__": [
+                "(self) -> None",
+                "(self, array: typing.Iterable) -> None",
+                "(self, size: int, array: typing.Iterable) -> None",
+                "(self, size: int) -> None",
+            ],
         }
     )
 
@@ -1228,7 +1235,7 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, BaseSigFix
         already_cleaned: bool = False,
     ) -> str | None:
         """
-        Given a python type guessed from boost and from Doxygen, use multiple
+        Given a python type guessed from boost and one from Doxygen, use multiple
         approaches to find the best.
 
         - Try to convert the c++ type to a python type.
@@ -1410,6 +1417,10 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, BaseSigFix
     def _add_positional_only_args(
         self, ctx: FunctionContext, py_sig: FunctionSig
     ) -> FunctionSig:
+        """
+        Analyze the signature and add a '/' argument if necessary to mark
+        arguments which cannot be access by named.
+        """
         args = []
         requires_pos_only: bool | None = None
         for arg_num, py_arg in enumerate(py_sig.args):
@@ -1584,7 +1595,7 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, BaseSigFix
                         )
                     )
                 else:
-                    if "GetClipAssetPaths" in ctx.fullname:
+                    if "HasInfo" in ctx.fullname:
                         self._summarize_overload_mismatch(
                             "Match reason",
                             ctx,
@@ -1698,7 +1709,14 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, BaseSigFix
             return override
 
         if ctx.docstring:
-            sigs = infer_sig_from_boost_docstring(ctx.docstring, ctx.name)
+            # USD boost docstrings sometimes include manually authored signatures. They
+            # are always indented.
+            docstring = "".join(
+                line
+                for line in ctx.docstring.splitlines(keepends=True)
+                if not re.match(" {4}[A-Za-z_]", line)
+            )
+            sigs = infer_sig_from_boost_docstring(docstring, ctx.name)
             if not sigs:
                 return None
         else:
@@ -1851,15 +1869,15 @@ def main(outdir: str) -> None:
     notifier.set_modules(
         [
             "pxr.Sdf",
-            "pxr.Pcp",
+            # "pxr.Pcp",
             # "pxr.Sdr",
             # "pxr.UsdGeom",
             # "pxr.UsdLux",
-            "pxr.UsdShade",
-            "pxr.UsdUtils",
-            "pxr.Usd",
+            # "pxr.UsdShade",
+            # "pxr.UsdUtils",
+            # "pxr.Usd",
             # "pxr.Ar",
-            "pxr.Tf",
+            # "pxr.Tf",
         ]
     )
     # notifier.set_keys(

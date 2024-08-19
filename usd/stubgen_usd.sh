@@ -7,7 +7,7 @@ REPO_PATH=$(git rev-parse --show-toplevel)
 outdir=$REPO_PATH/usd/stubs
 
 # Custom variables --
-export USD_BUILD_ROOT=~/dev/USD/.build-24.05-py39
+export USD_BUILD_ROOT=~/dev/USD/.build-24.05-py39-manual-sigs
 export USD_SOURCE_ROOT=~/dev/USD
 # End custom variables --
 

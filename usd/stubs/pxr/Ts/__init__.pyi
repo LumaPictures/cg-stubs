@@ -76,15 +76,11 @@ class KeyFrame(Boost.Python.instance):
         """
         Constructs a keyframe by duplicating an existing TsKeyFrame.
         """
-    @overload
-    def CanSetKnotType(self, kf: KnotType) -> typing.Any:
+    def CanSetKnotType(self, _unknownArg1: KnotType, /) -> _AnnotatedBoolResult:
         """
         Checks whether the key frame's value type supports the given knot
         type.
         """
-    @overload
-    def CanSetKnotType(self, arg2: object, /) -> _AnnotatedBoolResult:
-        """Returns true if the given knot type can be set on this key frame. If it returns false, it also returns the reason why not. The reason can be accessed like this: anim.CanSetKnotType(kf).reasonWhyNot."""
     def GetValue(self, _side: Side, /) -> Any:
         """
         Gets the value at this keyframe on the given side.
@@ -273,25 +269,11 @@ class Spline(Boost.Python.instance):
         existing keyframe at the given time. If an error has occurred, an
         empty value may be returned.
         """
-    @overload
     def CanSetKeyFrame(self, _kf: KeyFrame, /) -> _AnnotatedBoolResult:
         """
         Checks if the given keyframe is a valid candidate to set, optionally
         returning the reason if it cannot.
         """
-    @overload
-    def CanSetKeyFrame(self, kf: KeyFrame) -> typing.Any:
-        """
-        Checks if the given keyframe is a valid candidate to set, optionally
-        returning the reason if it cannot.
-        """
-    @overload
-    def CanSetKeyFrame(self, kf) -> bool:
-        """CanSetKeyFrame(kf) -> bool
-
-        kf : TsKeyFrame
-
-        Returns true if the given keyframe can be set on this spline. If it returns false, it also returns the reason why not. The reason can be accessed like this: anim.CanSetKeyFrame(kf).reasonWhyNot."""
     def ClearRedundantKeyFrames(self, defaultValue: Any = ..., intervals: pxr.Gf.MultiInterval = ...) -> bool:
         """
         Removes redundant keyframes from the spline in the specified multi-
@@ -308,43 +290,19 @@ class Spline(Boost.Python.instance):
         Only keyframes in the given multiInterval will be removed, although
         all keyframes will be considered in computing what is redundant.
         """
-    @overload
     def ClosestKeyFrame(self, arg2: float, /) -> Any:
         """ClosestKeyFrame(time) -> TsKeyFrame
 
         time : Time
 
         Finds the keyframe closest to the given time. Returns None if there are no keyframes."""
-    @overload
-    def ClosestKeyFrame(self, time) -> TsKeyFrame:
-        """ClosestKeyFrame(time) -> TsKeyFrame
-
-        time : Time
-
-        Finds the keyframe closest to the given time. Returns None if there are no keyframes."""
-    @overload
     def ClosestKeyFrameAfter(self, arg2: float, /) -> Any:
         """ClosestKeyFrameAfter(time) -> TsKeyFrame
 
         time : Time
 
         Finds the closest keyframe after the given time. Returns None if no such keyframe exists."""
-    @overload
-    def ClosestKeyFrameAfter(self, time) -> TsKeyFrame:
-        """ClosestKeyFrameAfter(time) -> TsKeyFrame
-
-        time : Time
-
-        Finds the closest keyframe after the given time. Returns None if no such keyframe exists."""
-    @overload
     def ClosestKeyFrameBefore(self, arg2: float, /) -> Any:
-        """ClosestKeyFrameBefore(time) -> TsKeyFrame
-
-        time : Time
-
-        Finds the closest keyframe before the given time. Returns None if no such keyframe exists."""
-    @overload
-    def ClosestKeyFrameBefore(self, time) -> TsKeyFrame:
         """ClosestKeyFrameBefore(time) -> TsKeyFrame
 
         time : Time
@@ -536,15 +494,7 @@ class Spline(Boost.Python.instance):
         replaced. If the keyframe is not a valid type to set, an error will be
         emitted; to avoid this, call CanSetKeyFrame() first.
         """
-    @overload
     def SetKeyFrames(self, arg2: object, /) -> None:
-        """SetKeyFrames(keyFrames)
-
-        keyFrames : sequence<TsKeyFrame>
-
-        Replaces all of the specified keyframes. Keyframes may be specified using any type of Python sequence, such as a list or tuple."""
-    @overload
-    def SetKeyFrames(self, keyFrames) -> typing.Any:
         """SetKeyFrames(keyFrames)
 
         keyFrames : sequence<TsKeyFrame>

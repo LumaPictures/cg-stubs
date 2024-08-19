@@ -822,10 +822,14 @@ class LayerStack(Boost.Python.instance):
         """Raises an exception
         This class cannot be instantiated from Python
         """
-    def __bool__(self) -> bool: ...
-    def __eq__(self, other: object) -> bool: ...
-    def __lt__(self, other: object) -> bool: ...
-    def __ne__(self, other: object) -> bool: ...
+    def __bool__(self) -> bool:
+        """True if this object has not expired.  False otherwise."""
+    def __eq__(self, other: object) -> bool:
+        """Equality operator:  x == y"""
+    def __lt__(self, other: object) -> bool:
+        """Less than operator: x < y"""
+    def __ne__(self, other: object) -> bool:
+        """Non-equality operator: x != y"""
     @property
     def expired(self): ...
     @property
