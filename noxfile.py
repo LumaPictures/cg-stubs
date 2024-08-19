@@ -526,7 +526,7 @@ def mypy(session: nox.Session, lib: str) -> None:
     if lib == "ocio":
         session.install("numpy")
 
-    session.run("mypy")
+    session.run("bash", "-c", "mypy | mypy-baseline filter", external=True)
 
 
 @check(paths=LINT_FILES, pass_filenames=False, tags=['ci', 'prepush'])

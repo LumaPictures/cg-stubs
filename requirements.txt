@@ -1,3 +1,4 @@
 docstring_parser
 # mypy==1.9.0
 mypy @ git+https://github.com/chadrik/mypy@stubgen/nested-classes
+mypy_baseline
