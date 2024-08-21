@@ -2,6 +2,18 @@
 
 These stubs are designed to be used with a type checker like `mypy` to provide static type checking of python code, as well as to provide analysis and completion in IDEs like PyCharm and VSCode (with Pylance).
 
+## Features
+
+- Includes docstrings for easy access with an IDE.
+- Number of `@overloads` is extracted from Boost, so it is always accurate.
+- Handles pointer arguments and properly converts them to python results.
+- Converts numerous known types such as `std::vector`, `std::sequence`, `std::set`, `std::unordered_set`, `std::function`, `std::map`, `std::unordered_map`, `std::optional`.
+- More esoteric types are converted by scaning headers for `typedef` and `using` statements to substitute these aliases for their actual types
+- Stub signatures indicate arguments which can be referenced by name vs those which must be passed by position, via [pep0570](https://peps.python.org/pep-0570/#syntax-and-semantics).  For example, for `Sdf.Layer.ReloadLayers`, arguments after `/` can be passed by name, while those before can only be passed base on position:
+    ```python
+    def ReloadLayers(_layers: typing.Iterable[Layer], /, force: bool = ...) -> bool: ...
+    ```
+
 ## Installing
 
 ```commandline
