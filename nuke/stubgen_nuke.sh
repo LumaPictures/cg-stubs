@@ -10,7 +10,6 @@ outdir=$REPO_PATH/nuke/stubs/
 
 # using $NUKE_APP/python3 crashes in my latest tests
 # must import nuke to make nuke modules available, but this consumes sys.argv, so we have to get a bit hacky
-export PYTHONPATH=$REPO_PATH/../mypy
 
 $REPO_PATH/nuke/bin/nukepy -c "import _nuke;import sys;sys.argv=['foo', '-o=$outdir', '-m', '_nuke', '-p', 'nuke_internal', '-m', '_curveknob', '-m', '_nuke_color', '-m', '_curvelib', '-m', '_geo', '-m', '_localization', '-m', '_splinewarp']; import mypy.stubgen;mypy.stubgen.main()"
 
