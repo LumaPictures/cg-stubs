@@ -73,7 +73,7 @@ class AnnotationFixer(ast.NodeTransformer):
             # NOTE: we use Tuple instead of tuple because of Parm.tuple()
             # convert:  std.vector[Foo]  -->  Tuple[Foo, ...]
             return ast.Subscript(
-                value=ast.Name(id='Tuple', ctx=ast.Load()),
+                value=ast.Name(id="Tuple", ctx=ast.Load()),
                 slice=ast.Tuple(
                     elts=[new_node.slice, ast.Constant(value=Ellipsis)], ctx=ast.Load()
                 ),
@@ -111,14 +111,18 @@ class HoudiniCppTypeConverter(CppTypeConverter):
     TYPE_MAP = [
         (r"\bHOM_PtrOrNull\b", "Optional"),
         (r"\bHOM_OptionalDouble\b", "Optional[float]"),
+        (r"\bHOM_OptionalInt\b", "Optional[int]"),
         (r"\bHOM_BinaryString\b", "bytes"),
         (r"\bHOM_logging_LogEntry\b", "_logging_LogEntry"),
         (r"\bHOM_logging_MemorySink\b", "_logging_MemorySink"),
         (r"\bHOM_ik_Joint\b", "_ik_Joint"),
+        (r"\bHOM_ik_Skeleton\b", "_ik_Skeleton"),
+        (r"\bHOM_ik_Target\b", "_ik_Target"),
         (r"\bHOM_IterableList\b", "Iterator"),
         (r"\bHOM_NodeBundle\b", "Bundle"),
         (r"\bInterpreterObject\b", "Any"),
         (r"\bhboost::any\b", "Any"),
+        (r"\bPyObject\b", "Any"),
         (r"\bUT_Tuple\b", "Tuple"),
         (r"\bswig::SwigPyIterator\b", "Self"),
         (r"\bUT_InfoTree\b", "NodeInfoTree"),
@@ -203,6 +207,20 @@ class ASTStubGenerator(mypy.stubgen.ASTStubGenerator):
             )
         ]
 
+    def get_signatures(
+        self,
+        default_signature: FunctionSig,
+        sig_generators: list[SignatureGenerator],
+        func_ctx: FunctionContext,
+    ) -> list[FunctionSig]:
+        if (
+            func_ctx.class_info
+            and func_ctx.class_info.name[0].islower()
+            and not func_ctx.name.startswith("__")
+        ):
+            self._decorators.append("@staticmethod")
+        return super().get_signatures(default_signature, sig_generators, func_ctx)
+
     def get_imports(self) -> str:
         imports = super().get_imports()
         imports += "\nimport typing\nfrom typing import Any, Iterator, Optional, Sequence, Self, Tuple\n"
@@ -214,7 +232,7 @@ mypy.stubgen.ASTStubGenerator = ASTStubGenerator  # type: ignore[attr-defined,mi
 
 
 def enableHouModule():
-    '''Set up the environment so that "import hou" works.'''
+    """Set up the environment so that "import hou" works."""
     import sys, os
 
     # Importing hou will load Houdini's libraries and initialize Houdini.
@@ -249,7 +267,7 @@ enableHouModule()
 
 def main(outdir: str):
     # "--include-docstrings"
-    mypy.stubgen.main(['-m=hou', '--verbose', "--parse-only", '-o', outdir])
+    mypy.stubgen.main(["-m=hou", "--verbose", "--parse-only", "-o", outdir])
 
     # print(AnnotationFixer().transform('tuple[str, ...]'))
     # print(AnnotationFixer().transform('std.vector[str]'))
