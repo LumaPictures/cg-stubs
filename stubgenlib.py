@@ -7,7 +7,6 @@ import itertools
 import pathlib
 import re
 import tokenize
-from abc import abstractmethod
 from collections import defaultdict
 from dataclasses import dataclass, field
 from functools import lru_cache
@@ -117,14 +116,21 @@ def merge_signatures(
     return FunctionSig(name=dest.name, args=args, ret_type=ret_type)
 
 
-class BaseSigFixer:
+class SignatureFixer(SignatureGenerator):
     """
-    Mixin base class that handles the boilerplate of cleaning up a signature
-    from an external source, such as documentation
+    Signature generator that handles the boilerplate of cleaning up a signature
+    from an external source, such as documentation.
+
+    This class should be subclassed to implement cleanup_type(), then paired
+    with a concrete SignatureGenerator class (the fixer should come first).
+    It will call super().get_function_sig() then apply the fixes defined by
+    cleanup_type() to all types in the signatures.
     """
 
     def __init__(
-        self, default_sig_handling: Literal["ignore", "merge"] = "merge"
+        self,
+        sig_gen: SignatureGenerator,
+        default_sig_handling: Literal["ignore", "merge"] = "merge",
     ) -> None:
         """
         default_sig_handling
@@ -132,6 +138,7 @@ class BaseSigFixer:
             "ignore": only use the sigs from this generator. don't use the default sig.
             "merge": merge the sigs from this generator into the default.
         """
+        self.sig_gen = sig_gen
         self.default_sig_handling = default_sig_handling
 
     @staticmethod
@@ -144,7 +151,11 @@ class BaseSigFixer:
             return True
 
     def cleanup_type(
-        self, type_name: str, ctx: FunctionContext, is_result: bool
+        self,
+        type_name: str,
+        ctx: FunctionContext,
+        is_result: bool,
+        default_value: str | None = None,
     ) -> str:
         """Override this to implement logic to fix a type"""
         return type_name
@@ -154,18 +165,22 @@ class BaseSigFixer:
         sigs: list[FunctionSig],
         ctx: FunctionContext,
     ) -> list[FunctionSig]:
+        """Call cleanup_type on the types of all sigs"""
         return [self.cleanup_sig_types(sig, ctx) for sig in sigs]
 
     def cleanup_sig_types(
         self, sig: FunctionSig, ctx: FunctionContext, docstring: str | None = None
     ) -> FunctionSig:
+        """Call cleanup_type on the types of the sig (args and return type)"""
         args = []
         return_type = None
         invalid = []
         for arg in sig.args:
             type_name = None
             if arg.type:
-                type_name = self.cleanup_type(arg.type, ctx, is_result=False)
+                type_name = self.cleanup_type(
+                    arg.type, ctx, is_result=False, default_value=arg.default_value
+                )
                 if not self.is_valid(type_name):
                     invalid.append(
                         "Invalid arg {} (orig: {} converted: {})".format(
@@ -208,8 +223,8 @@ class BaseSigFixer:
     def get_function_sig(
         self, default_sig: FunctionSig, ctx: FunctionContext
     ) -> list[FunctionSig] | None:
-        # TYPING: this is a mixin so this func doesn't exist on super
-        sigs = super().get_function_sig(default_sig, ctx)  # type: ignore[misc]
+        """Gets the signatures from sig_gen, then cleans up the types"""
+        sigs = self.sig_gen.get_function_sig(default_sig, ctx)
         if sigs:
             for i, sig in enumerate(sigs):
                 sig = self.cleanup_sig_types(sig, ctx)
@@ -226,9 +241,9 @@ class BaseSigFixer:
         return sigs
 
 
-class DocstringTypeFixer:
+class DocstringTypeFixer(SignatureFixer):
     """
-    Mixin class that fixes human-defined types in docstrings
+    fixes human-defined types in docstrings
     """
 
     PYPATH = re.compile(r"((?:[a-zA-Z_][a-zA-Z0-9_]*)(?:[.][a-zA-Z_][a-zA-Z0-9_]*)*)")
@@ -271,7 +286,11 @@ class DocstringTypeFixer:
         return obj_name
 
     def cleanup_type(
-        self, type_name: str, ctx: FunctionContext, is_result: bool
+        self,
+        type_name: str,
+        ctx: FunctionContext,
+        is_result: bool,
+        default_value: str | None = None,
     ) -> str:
         type_name = type_name.replace('`', '')
         type_name = type_name.replace('\n', ' ')
@@ -385,14 +404,6 @@ class DocstringSignatureGenerator(SignatureGenerator):
             sig = FunctionSig(ctx.name, args, return_type)
             return [sig]
         return None
-
-
-class FixableDocstringSigGen(BaseSigFixer, DocstringSignatureGenerator):
-    pass
-
-
-class FixableCDocstringSigGen(BaseSigFixer, CDocstringSignatureGenerator):
-    pass
 
 
 class BoostDocstringSignatureGenerator(SignatureGenerator):
@@ -813,6 +824,11 @@ Optionality = NamedTuple("Optionality", [("accepts_none", bool), ("has_default",
 
 @dataclass
 class AdvancedSigMatcher(object):
+    """
+    Defines rules for matching objects within inspected modules and correcting
+    or overriding their inspected signature.
+    """
+
     # Full signature replacements.
     #   name_pattern: sig_str
     #   e.g. "*.VolatileBool.set": "(self, a: object) -> None"
@@ -936,9 +952,17 @@ class AdvancedSigMatcher(object):
 
 
 class AdvancedSignatureGenerator(SignatureGenerator):
+    """
+    A signature generator that uses an AdvancedSigMatcher to override all or
+    part of a function signature.
+    """
+
     sig_matcher: AdvancedSigMatcher
 
     def __init__(self, fallback_sig_gen=CDocstringSignatureGenerator()) -> None:
+        """
+        fallback_sig_gen: used to find a signature when sig_matcher has no matches.
+        """
         self.fallback_sig_gen = fallback_sig_gen
 
     def get_signature_str(self, ctx: FunctionContext) -> str | list[str] | None:
@@ -969,6 +993,10 @@ class AdvancedSignatureGenerator(SignatureGenerator):
             arg.type = arg_type_override
 
     def process_sig(self, ctx: FunctionContext, sig: FunctionSig) -> FunctionSig:
+        """
+        Check if the AdvancedSigMatcher matches `sig` and if it does, apply
+        fixes.
+        """
         for arg in sig.args:
             self.process_arg(ctx, arg)
         if self.sig_matcher.find_result_match(
@@ -986,6 +1014,9 @@ class AdvancedSignatureGenerator(SignatureGenerator):
     def process_sigs(
         self, ctx: FunctionContext, results: list[FunctionSig]
     ) -> list[FunctionSig] | None:
+        """
+        Process all of the signatures
+        """
         for i, inferred in enumerate(results):
             results[i] = self.process_sig(ctx, inferred)
 
@@ -1002,6 +1033,10 @@ class AdvancedSignatureGenerator(SignatureGenerator):
     def get_overridden_signatures(
         self, ctx: FunctionContext
     ) -> list[FunctionSig] | None:
+        """
+        Return a full replacement for the docstring signature, if it has
+        been provded by the AdvancedSigMatcher.
+        """
         docstr_override = self.get_signature_str(ctx)
         if docstr_override:
             name = ctx.name
@@ -1024,6 +1059,7 @@ class AdvancedSignatureGenerator(SignatureGenerator):
     def get_function_sig(
         self, default_sig: FunctionSig, ctx: FunctionContext
     ) -> list[FunctionSig] | None:
+        """Main override to apply the signature overrides"""
         results = self.get_overridden_signatures(ctx)
         if not results:
             # call the standard docstring-based generator.
@@ -1060,6 +1096,8 @@ class CppTypeConverter:
         (r"\bstd::ostream\b", "typing.TextIO"),
         (r"\bstring\b", "str"),
         (r"\bsize_t\b", "int"),
+        (r"\bint64\b", "int"),
+        (r"\bshort\b", "int"),
         (r"\bchar\b", "str"),
         # note that argname gets stripped. see stubgen_usd.test
         (
@@ -1120,8 +1158,12 @@ class CppTypeConverter:
             yield alias, type
 
     def _replace_typedefs(self, typestr: str) -> str:
+        typedefs = self._get_typedefs()
+        if not typedefs:
+            return typestr
+
         def replace_typedefs(typ: str) -> str:
-            for alias, replace in self._get_typedefs():
+            for alias, replace in typedefs:
                 typ = re.sub(rf"\b{alias}\b", replace, typ)
             return typ
 
@@ -1182,11 +1224,16 @@ class CppTypeConverter:
         typestr = typestr.replace("::", ".")
 
         typestr = typestr.replace(" ", "")
+
+        if is_ptr:
+            typestr = self.process_ptr(typestr, is_result)
         return typestr
 
-    @abstractmethod
+    def process_ptr(self, converted_type: str, is_result: bool) -> str:
+        return converted_type
+
     def to_python_id(self, cpp_type: str) -> str:
-        raise NotImplementedError
+        return cpp_type
 
     def should_strip_part(self, x: str) -> bool:
         """

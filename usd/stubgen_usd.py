@@ -70,7 +70,7 @@ import doxygenlib.cdWriterDocstring
 
 from stubgenlib import (
     insert_typevars,
-    BaseSigFixer,
+    SignatureFixer,
     AdvancedSigMatcher,
     AdvancedSignatureGenerator,
     BoostDocstringSignatureGenerator,
@@ -1106,7 +1106,7 @@ class ArgNumAndDefaultMatcher(SignatureMatcher[tuple[int, tuple[bool, ...]]]):
         return len(sig.args), tuple(arg.default for arg in sig.args)
 
 
-class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, BaseSigFixer):
+class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureFixer):
     sig_matcher = AdvancedSigMatcher(
         # Full signature replacements.
         # The class name can be "*", in which case it will match any class

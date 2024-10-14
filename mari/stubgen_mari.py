@@ -14,7 +14,7 @@ import mari
 from stubgenlib import (
     get_mypy_ignore_directive,
     DocstringTypeFixer,
-    FixableDocstringSigGen,
+    DocstringSignatureGenerator,
 )
 
 # the mari.so module patches in the Mari pure python package using __path__. Undo that
@@ -22,44 +22,12 @@ from stubgenlib import (
 mari.__path__ = []
 
 
-class MariDocstringSignatureGenerator(DocstringTypeFixer, FixableDocstringSigGen):
+class MariDocstringSignatureGenerator(DocstringSignatureGenerator):
     # FIXME: implement?
     def get_property_type(
         self, default_type: str | None, ctx: FunctionContext
     ) -> str | None:
         return None
-
-    def prepare_docstring(self, docstr: str) -> str:
-        # remove :obj: from docstring because it breaks the parser
-        return re.sub(r":(?:[a-z_]+):", "", docstr).replace("`", "")
-
-    def get_full_name(self, obj_name: str) -> str:
-        if (
-            obj_name
-            and obj_name[0].isupper()
-            and not obj_name.startswith("mari.")
-            and not obj_name.startswith("PySide")
-        ):
-            if obj_name[0] == "Q":
-                return f"PySide2.QtWidgets.{obj_name}"
-            else:
-                return f"mari.{obj_name}"
-        if obj_name == "list":
-            # use typing.List to avoid a clash with ActionManager.list
-            return "typing.List"
-        else:
-            return obj_name
-
-    def cleanup_type(
-        self, type_name: str, ctx: FunctionContext, is_result: bool
-    ) -> str:
-        if type_name == "int" and not is_result:
-            # docstrings specify the type of enums as int, but they're not.
-            # rather than try to keep track of which args are enums, we just
-            # say all int are SupportsInt, which is probably accurate (need to test)
-            return "typing.SupportsInt"
-        else:
-            return super().cleanup_type(type_name, ctx, is_result)
 
     def get_function_sig(
         self, default_sig: FunctionSig, ctx: FunctionContext
@@ -85,6 +53,44 @@ class MariDocstringSignatureGenerator(DocstringTypeFixer, FixableDocstringSigGen
                     layer_type = "MultiChannelMaterialLayer"
                 return [sig._replace(ret_type=layer_type) for sig in sigs]
         return sigs
+
+
+class MariDocstringTypeFixer(DocstringTypeFixer):
+    def prepare_docstring(self, docstr: str) -> str:
+        # remove :obj: from docstring because it breaks the parser
+        return re.sub(r":(?:[a-z_]+):", "", docstr).replace("`", "")
+
+    def get_full_name(self, obj_name: str) -> str:
+        if (
+            obj_name
+            and obj_name[0].isupper()
+            and not obj_name.startswith("mari.")
+            and not obj_name.startswith("PySide")
+        ):
+            if obj_name[0] == "Q":
+                return f"PySide2.QtWidgets.{obj_name}"
+            else:
+                return f"mari.{obj_name}"
+        if obj_name == "list":
+            # use typing.List to avoid a clash with ActionManager.list
+            return "typing.List"
+        else:
+            return obj_name
+
+    def cleanup_type(
+        self,
+        type_name: str,
+        ctx: FunctionContext,
+        is_result: bool,
+        default_value: str | None = None,
+    ) -> str:
+        if type_name == "int" and not is_result:
+            # docstrings specify the type of enums as int, but they're not.
+            # rather than try to keep track of which args are enums, we just
+            # say all int are SupportsInt, which is probably accurate (need to test)
+            return "typing.SupportsInt"
+        else:
+            return super().cleanup_type(type_name, ctx, is_result, default_value)
 
 
 class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
@@ -140,7 +146,11 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         return typename
 
     def get_sig_generators(self) -> list[SignatureGenerator]:
-        return [MariDocstringSignatureGenerator(default_sig_handling="merge")]
+        return [
+            MariDocstringTypeFixer(
+                MariDocstringSignatureGenerator(), default_sig_handling="merge"
+            )
+        ]
 
     def get_imports(self) -> str:
         output = super().get_imports()

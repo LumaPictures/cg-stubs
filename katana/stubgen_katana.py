@@ -16,8 +16,8 @@ from stubgenlib import (
     get_mypy_ignore_directive,
     AdvancedSigMatcher,
     AdvancedSignatureGenerator,
-    FixableCDocstringSigGen,
-    FixableDocstringSigGen,
+    DocstringSignatureGenerator,
+    CDocstringSignatureGenerator,
     CFunctionStub,
     Notifier,
     DocstringTypeFixer,
@@ -76,18 +76,12 @@ class KatanaDocstringTypeFixer(DocstringTypeFixer):
         return type_name
 
 
-class KatanaDocstringSignatureGenerator(
-    KatanaDocstringTypeFixer, FixableDocstringSigGen
-):
+class KatanaDocstringSignatureGenerator(DocstringSignatureGenerator):
     # FIXME: implement?
     def get_property_type(
         self, default_type: str | None, ctx: FunctionContext
     ) -> str | None:
         return default_type
-
-
-class KatanaCSignatureGenerator(KatanaDocstringTypeFixer, FixableCDocstringSigGen):
-    pass
 
 
 class KatanaSignatureGenerator(AdvancedSignatureGenerator):
@@ -220,12 +214,18 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
     def get_sig_generators(self) -> list[SignatureGenerator]:
         if self.is_c_module:
             return [
-                KatanaSignatureGenerator(fallback_sig_gen=KatanaCSignatureGenerator())
+                KatanaSignatureGenerator(
+                    fallback_sig_gen=KatanaDocstringTypeFixer(
+                        CDocstringSignatureGenerator()
+                    )
+                )
             ]
         else:
             return [
                 KatanaSignatureGenerator(
-                    fallback_sig_gen=KatanaDocstringSignatureGenerator()
+                    fallback_sig_gen=KatanaDocstringTypeFixer(
+                        KatanaDocstringSignatureGenerator()
+                    )
                 )
             ]
 
