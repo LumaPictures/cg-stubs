@@ -133,6 +133,7 @@ class SignatureFixer(SignatureGenerator):
         default_sig_handling: Literal["ignore", "merge"] = "merge",
     ) -> None:
         """
+        sig_gen: signature generator to call to get signatures to fix.
         default_sig_handling
             How to use the default signature.
             "ignore": only use the sigs from this generator. don't use the default sig.

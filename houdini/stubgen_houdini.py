@@ -113,11 +113,14 @@ class HoudiniCppTypeConverter(CppTypeConverter):
         (r"\bHOM_OptionalDouble\b", "Optional[float]"),
         (r"\bHOM_OptionalInt\b", "Optional[int]"),
         (r"\bHOM_BinaryString\b", "bytes"),
+        # HOM classes that have underscores
         (r"\bHOM_logging_LogEntry\b", "_logging_LogEntry"),
         (r"\bHOM_logging_MemorySink\b", "_logging_MemorySink"),
         (r"\bHOM_ik_Joint\b", "_ik_Joint"),
         (r"\bHOM_ik_Skeleton\b", "_ik_Skeleton"),
         (r"\bHOM_ik_Target\b", "_ik_Target"),
+        (r"\bHOM_clone_Connection\b", "_clone_Connection"),
+        # other
         (r"\bHOM_IterableList\b", "Iterator"),
         (r"\bHOM_NodeBundle\b", "Bundle"),
         (r"\bInterpreterObject\b", "Any"),
@@ -169,9 +172,6 @@ class HoudiniTypeFixer(SignatureFixer):
             type_name = type_name[1:-1]
         new_type = self.converter.cpp_arg_to_py_type(type_name, is_result)
         new_type = self.transfomer.transform(new_type)
-
-        # if is_result and new_type.startswith("list["):
-
         new_type = self.maybe_add_optional(new_type, default_value)
         return new_type
 
@@ -188,7 +188,7 @@ class HoudiniSignatureGenerator(AdvancedSignatureGenerator):
 
 class ASTStubGenerator(mypy.stubgen.ASTStubGenerator):
     def visit_class_def(self, o) -> None:
-        # filter Tuple types, they are not used
+        # filter _*Tuple classes, they are not used (See to_python_id).
         if (
             o.name in ("SwigPyIterator", "_AgentDefnMap")
             or tupleTypeRegex.match(o.name)
@@ -266,8 +266,9 @@ enableHouModule()
 
 
 def main(outdir: str):
-    # "--include-docstrings"
-    mypy.stubgen.main(["-m=hou", "--verbose", "--parse-only", "-o", outdir])
+    mypy.stubgen.main(
+        ["-m=hou", "--verbose", "--parse-only", "--include-docstrings", "-o", outdir]
+    )
 
     # print(AnnotationFixer().transform('tuple[str, ...]'))
     # print(AnnotationFixer().transform('std.vector[str]'))
