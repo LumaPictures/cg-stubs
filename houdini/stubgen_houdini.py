@@ -70,7 +70,7 @@ class AnnotationFixer(ast.NodeTransformer):
 
         new_node = self.generic_visit(node)
         if isinstance(new_node, ast.Subscript) and is_std(new_node.value, "vector"):
-            # NOTE: we use Tuple instead of tuple because of Parm.tuple()
+            # NOTE: we use Tuple instead of Tuple because of Parm.Tuple()
             # convert:  std.vector[Foo]  -->  Tuple[Foo, ...]
             return ast.Subscript(
                 value=ast.Name(id="Tuple", ctx=ast.Load()),
@@ -182,6 +182,88 @@ class HoudiniSignatureGenerator(AdvancedSignatureGenerator):
             # signatures for these special methods include many inaccurate overloads
             "*.__ne__": "(self, other: object) -> bool",
             "*.__eq__": "(self, other: object) -> bool",
+            "*.__lt__": "(self, other: object) -> bool",
+            "*.__le__": "(self, other: object) -> bool",
+            "*.__gt__": "(self, other: object) -> bool",
+            "*.__ge__": "(self, other: object) -> bool",
+            "*.applicationVersion": "(include_patch: bool = False) -> Tuple[int, int, int]",
+            "*.expandString": "(text: str) -> str",
+            # "*.expandStringAtFrame": "(text: str, frame_number: float) -> str",
+            "*.runVex": "(vex_file: str, inputs: dict[str, Any], precision: Literal['32', '64'] = '32') -> dict[str, Any]",
+            "*.startHoudiniEngineDebugger": "(portOrPipeName: Union[int, str]) -> None",
+            "*.NetworkMovableItem.shiftPosition": "(self, vector2: Union[Sequence[float], Vector2]) -> None",
+            "*.Node.simulation": "(self) -> DopSimulation",
+            "*.Node.setInput": "(self, input_index: int, item_to_become_input: Optional[NetworkMovableItem], output_index: int = 0) -> None",
+            "*.Node.setFirstInput": "(self, item_to_become_input: Optional[NetworkMovableItem], output_index: int = 0) -> None",
+            "*.Node.setParms": "(self, parm_dict: dict[str, Any]) -> None",
+            "*.Node.setParmExpressions": "(self, parm_dict: dict[str, Any], language: Optional[EnumValue] = None, replace_expressions: bool = True) -> None",
+            "*.Node.parmTemplateGroup": "(self) -> ParmTemplateGroup",
+            "*.Node.addSpareParmTuple": "(self, parm_template: ParmTemplate, in_folder: Tuple[str, ...] = ..., create_missing_folders: bool = False) -> ParmTuple",
+            "*.Node.layoutChildren": "(self, items: Sequence[NetworkMovableItem] = ..., horizontal_spacing: float = 1.0, vertical_spacing: float = 1.0) -> None",
+            "*.Node.createOutputNode": "(self, node_type_name: str, node_name: Optional[str] = None, run_init_scripts: bool = True, load_contents: bool = True, exact_type_name: bool = False) -> T",
+            "*.Node.createInputNode": "(self, input_index: int, node_type_name: str, node_name: Optional[str] = None, run_init_scripts: bool = True, load_contents: bool = True, exact_type_name: bool = False) -> T",
+            "*.Node.creationTime": "(self) -> datetime.datetime",
+            "*.Node.modificationTime": "(self) -> datetime.datetime",
+            "*.Node.inputs": "(self) -> Tuple[T, ...]",
+            # "*.Node.input": "(self, inputidx: int) -> T",
+            "*.Node.outputs": "(self) -> Tuple[T, ...]",
+            "*.LopNode.displayNode": "(self) -> LopNode",
+            "*.LopNode.setLastModifiedPrims": "(self, primPaths: Sequence[str]) -> None",
+            "*.Geometry.addAttrib": "(self, type: EnumValue, name: str, default_value: Any, transform_as_normal: bool = True, create_local_variable: bool = True) -> Attrib",
+            "*.Geometry.setGlobalAttribValue": "(self, name_or_attrib: Union[str, Attrib], attrib_value: Any) -> None",
+            "*.StickyNote.setSize": "(self, size: Union[Sequence[float], Vector2]) -> None",
+            "*.Parm.set": "(self, value: Union[int, float, str, Parm, Ramp], language: Optional[EnumValue] = None, follow_parm_reference: bool = True) -> None",
+            "*.ParmTuple.__iter__": "(self) -> Iterator[Parm]",
+            "*.ParmTuple.set": "(self, value: Union[Iterable[int], Iterable[float], Iterable[str], Iterable[Parm], ParmTuple], language: Optional[EnumValue] = None, follow_parm_reference: bool = True) -> None",
+            "*.ParmTemplate.conditionals": "(self) -> dict[EnumValue, str]",
+            "*.ParmTemplate.setTags": "(self, tags: dict[str, str]) -> None",
+            "*.DataParmTemplate.__init__": "(self, name: , label: , num_components: int, look: EnumValue = parmLook.Regular, naming_scheme: EnumValue = parmNamingScheme.XYZW, unknown_str: Optional[str] = None, disable_when: Optional[str] = None, is_hidden: bool = False, is_label_hidden: bool = False, join_with_next: bool = False, help: Optional[str] = None, script_callback: Optional[str] = None, script_callback_language: EnumValue = scriptLanguage.Hscript, tags: dict[str, str] = {}, unknown_dict: dict[EnumValue, str] = {}, default_expression: Sequence[str] = (), default_expression_language: Sequence[EnumValue] = ()) -> DataParmTemplate",
+            "*.FolderSetParmTemplate.folderNames": "(self) -> list[str]",
+            "*.FolderSetParmTemplate.setFolderNames": "(self, folder_names: Sequence[str]) -> None",
+            "*.MenuParmTemplate.setDefaultExpressionLanguage": "(self, default_expression_language: EnumValue) -> None",
+            "*.Vector2.__iter__": "(self) -> Iterator[float]",
+            "*.Vector3.__iter__": "(self) -> Iterator[float]",
+            "*.Vector4.__iter__": "(self) -> Iterator[float]",
+            "*.Matrix2.__init__": "(self, values: Union[int, float, Iterable[Union[int, float]], Iterable[Iterable[Union[int, float]]]] = 0) -> Matrix2",
+            "*.Matrix3.__init__": "(self, values: Union[int, float, Iterable[Union[int, float]], Iterable[Iterable[Union[int, float]]]] = 0) -> Matrix3",
+            "*.Matrix4.__init__": "(self, values: Union[int, float, Sequence[Union[int, float]], Sequence[Sequence[Union[int, float]]]] = 0) -> Matrix4",
+            "*.Take.name": "(self) -> str",
+            "*.Prim.setIntrinsicValue": "(self, intrinsic_name: str, value: Union[int, float, str, Iterable[int], Iterable[float], Iterable[str]]) -> None",
+            "*.Prim.voxelRange": "(self, range: BoundingBox) -> Union[Tuple[bool, ...], Tuple[int, ...], Tuple[float, ...], Tuple[Vector3, ...]]",
+            "*.Prim.voxelRangeAsBool": "(self, range: BoundingBox) -> Tuple[bool, ...]",
+            "*.Prim.voxelRangeAsInt": "(self, range: BoundingBox) -> Tuple[int, ...]",
+            "*.Prim.voxelRangeAsFloat": "(self, range: BoundingBox) -> Tuple[float, ...]",
+            "*.Prim.voxelRangeAsVector3": "(self, range: BoundingBox) -> Tuple[Vector3, ...]",
+            "*.Keyframe.__init__": "(self, value: Optional[float] = None, time: Optional[float] = None) -> None",
+            "*.Keyframe.__init__": "(self, expression: Optional[str] = None, time: Optional[float] = None, language: Optional[EnumValue] = exprLanguage.Python) -> None",
+            "*.SceneViewer.groupListMask": "(self) -> str",
+            "*.SceneViewer.isGroupPicking": "(self) -> bool",
+            "*.SceneViewer.selectGeometry": "(self, prompt: str = 'Select geometry', sel_index: int = 0, allow_drag: bool = False, quick_select: bool = False, use_existing_selection: bool = True, initial_selection: Optional[str] = None, initial_selection_type: Optional[EnumValue] = None, ordered: bool = False, geometry_types: Sequence[EnumValue] = ..., primitive_types: Sequence[EnumValue] = ..., allow_obj_sel: bool = True, icon: Optional[str] = None, label: Optional[str] = None, prior_selection_paths: list = ..., prior_selection_ids: list = ..., prior_selections: list = ..., allow_other_sops: bool = True, consume_selections: bool = True) -> GeometrySelection",
+            "*.ViewportVizualizer.setParm": "(self, parm_name: str, value: Union[int, float, str]) -> None",
+            "*.NetworkEditor.flashMessage": "(self, image: Optional[str], message: Optional[str], duration: float) -> None",
+            "*.NetworkEditor.registerPref": "(self, pref: str, value: str, _global: bool) -> None",
+            "*.Selection.numSelected": "(self) -> int",
+            "*.NodeInfoTree.__init__": "(self, tree_root: Any, tree: Any) -> None",
+            "*.PerfMonProfile.stats": "(self) -> dict[str, Any]",
+            "*.SwigPyIterator.__sub__": "(self, n: int) -> Any",
+            "*.OperationFailed.__init__": "(self, message: Optional[str] = ...) -> None",
+            "*.AgentMetadata.data": "(self) -> dict[str, Any]",
+            "*.AgentMetadata.setData": "(self, data: dict[str, Any]) -> None",
+            "*.AgentMetadata.setMetadata": "(self, item_id: str, metadata: dict[str, Any]) -> None",
+            "*.ChannelGraph.selectedKeyframes": "(self) -> dict[Parm, Tuple[BaseKeyframe, ...]]",
+            "*.GeometryViewport.changeType": "(self, type: EnumValue) -> None",
+            "*._StringMapDoubleTuple.__iter__": "(self) -> Iterator[str]",
+            # "*.VopNode.deleteIndependentInputNodes": "(self, input_index: int, make_parm_node: bool, reference_input_defaults: Any) -> bool",
+            "*.hda.reloadHDAModule": "(self, hda_module: HDAModule) -> None",
+            "*.hmath.buildTransform": "(self, values_dict: dict[str, Union[Vector3, Sequence[float]]], transform_order: str = 'srt', rotate_order: str = 'xyz') -> Matrix4",
+            "*.playbar.setChannelList": "(arg: ChannelList) -> None",
+            "*.hotkeys.assignments": "(self, hotkey_symbol: str) -> list[str]",
+            "*.qt.mainWindow": "(self) -> QtWidgets.QMainWindow",
+            "*.qt.Icon": "(self, icon_name: str, width: Optional[int] = None, height: Optional[int] = None) -> QtGui.QIcon",
+            "*.ui.displayConfirmation": "(self, text: str, severity: EnumValue = severityType.Message, help: Optional[str] = None, title: Optional[str] = None, details: Optional[str] = None, destails_label: Optional[str] = None, destails_expanded: bool = False) -> bool",
+            "*.ui.hasDragSourceData": "(label: str, index: int) -> bool",
+            "*.ui.selectFile": "(self, start_directory: Optional[str] = None, title: Optional[str] = None, collapse_sequences: bool = False, file_type: EnumValue = fileType.Any, pattern: Optional[str] = None, default_value: Optional[str] = None, multiple_select: bool = False, image_chooser: bool = False, chooser_mode: EnumValue = fileChooserMode.ReadAndWrite, width: int = 0, height: int = 0) -> str",
+            "*.webServer.registerOpdefPath": "(self, prefix: str) -> None",
         }
     )
 
@@ -219,6 +301,8 @@ class ASTStubGenerator(mypy.stubgen.ASTStubGenerator):
             and not func_ctx.name.startswith("__")
         ):
             self._decorators.append("@staticmethod")
+            if default_signature.args[0].name == "self":
+                default_signature.args.pop(0)
         return super().get_signatures(default_signature, sig_generators, func_ctx)
 
     def get_imports(self) -> str:
@@ -270,5 +354,5 @@ def main(outdir: str):
         ["-m=hou", "--verbose", "--parse-only", "--include-docstrings", "-o", outdir]
     )
 
-    # print(AnnotationFixer().transform('tuple[str, ...]'))
+    # print(AnnotationFixer().transform('Tuple[str, ...]'))
     # print(AnnotationFixer().transform('std.vector[str]'))

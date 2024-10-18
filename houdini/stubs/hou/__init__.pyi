@@ -42,7 +42,7 @@ class EnumValue:
 
 
         """
-    def __lt__(self, value: EnumValue) -> bool: ...
+    def __lt__(self, other: object) -> bool: ...
 
 class numericData:
     """
@@ -5868,7 +5868,7 @@ class OperationFailed(Error):
 
     """
     thisown: Incomplete
-    def __init__(self, *args) -> None:
+    def __init__(self, message: Optional[str] = ...) -> None:
         """
 
         hou.OperationFailed
@@ -7741,7 +7741,7 @@ class StickyNote(NetworkMovableItem):
 
         """
     def setBounds(self, bounds: BoundingRect) -> None: ...
-    def setSize(self, size: Sequence[float]) -> None:
+    def setSize(self, size: Union[Sequence[float], Vector2]) -> None:
         """
 
         setSize(self, size)
@@ -8244,7 +8244,7 @@ class Node(NetworkMovableItem):
 
 
         """
-    def setInput(self, input_index: int, item_to_become_input: NetworkMovableItem, output_index: int = 0) -> None:
+    def setInput(self, input_index: int, item_to_become_input: Optional[NetworkMovableItem], output_index: int = ...) -> None:
         """
 
         setInput(self, input_index, item_to_become_input, output_index=0)
@@ -8284,7 +8284,7 @@ class Node(NetworkMovableItem):
 
 
         """
-    def setFirstInput(self, item_to_become_input: NetworkMovableItem, output_index: int = 0) -> None:
+    def setFirstInput(self, item_to_become_input: Optional[NetworkMovableItem], output_index: int = ...) -> None:
         """
 
         setFirstInput(self, item_to_become_input, output_index=0)
@@ -8865,7 +8865,7 @@ class Node(NetworkMovableItem):
 
 
         """
-    def layoutChildren(self, *args, **kwargs) -> None:
+    def layoutChildren(self, items: Sequence[NetworkMovableItem] = ..., horizontal_spacing: float = ..., vertical_spacing: float = ...) -> None:
         """
 
         layoutChildren(self, items=(), horizontal_spacing=-1.0,
@@ -12279,7 +12279,7 @@ class Prim:
 
 
         """
-    def setIntrinsicValue(self, *args) -> None:
+    def setIntrinsicValue(self, intrinsic_name: str, value: Union[int, float, str, Iterable[int], Iterable[float], Iterable[str]]) -> None:
         """
 
         setIntrinsicValue(self, intrinsic_name, value)
@@ -18489,7 +18489,7 @@ class anim:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def bookmarks(self) -> Tuple[Bookmark, ...]:
+    def bookmarks() -> Tuple[Bookmark, ...]:
         """
 
         bookmarks() -> tuple of hou.Bookmarks
@@ -18499,7 +18499,7 @@ class anim:
 
         """
     @staticmethod
-    def saveBookmarks(self, *args, **kwargs) -> bool:
+    def saveBookmarks(*args, **kwargs) -> bool:
         """
 
         saveBookmarks(filename, bookmarks=None, include_temporary=False) -> bool
@@ -18526,7 +18526,7 @@ class anim:
 
         """
     @staticmethod
-    def loadBookmarks(self, filename: str, remove_existing: bool = True) -> bool:
+    def loadBookmarks(filename: str, remove_existing: bool = True) -> bool:
         """
 
         loadBookmarks(filename, remove_existing=True) -> bool
@@ -18547,7 +18547,7 @@ class anim:
 
         """
     @staticmethod
-    def saveBookmarksToString(self, *args, **kwargs) -> bytes:
+    def saveBookmarksToString(*args, **kwargs) -> bytes:
         """
 
         saveBookmarksToString(bookmarks=None, include_temporary=False,
@@ -18572,7 +18572,7 @@ class anim:
 
         """
     @staticmethod
-    def loadBookmarksFromString(self, data: bytes, remove_existing: bool = True) -> bool:
+    def loadBookmarksFromString(data: bytes, remove_existing: bool = True) -> bool:
         """
 
         loadBookmarksFromString(data, remove_existing=True)
@@ -18590,7 +18590,7 @@ class anim:
 
         """
     @staticmethod
-    def clearBookmarks(self) -> None:
+    def clearBookmarks() -> None:
         """
 
         clearBookmarks()
@@ -18601,7 +18601,7 @@ class anim:
 
         """
     @staticmethod
-    def newBookmark(self, name: str, start: int, end: int) -> Bookmark:
+    def newBookmark(name: str, start: int, end: int) -> Bookmark:
         """
 
         newBookmark(name, start_frame, end_frame) -> hou.Bookmark
@@ -18613,7 +18613,7 @@ class anim:
 
         """
     @staticmethod
-    def bookmark(self, bookmark_id: int) -> Bookmark:
+    def bookmark(bookmark_id: int) -> Bookmark:
         """
 
         bookmark(session_id) -> hou.Bookmark
@@ -18624,7 +18624,7 @@ class anim:
 
         """
     @staticmethod
-    def getBookmark(self, bookmark_id: int) -> Bookmark:
+    def getBookmark(bookmark_id: int) -> Bookmark:
         """
 
         getBookmark(session_id) -> hou.Bookmark
@@ -18637,7 +18637,7 @@ class anim:
 
         """
     @staticmethod
-    def removeBookmarks(self, bm: Sequence[Bookmark]) -> None:
+    def removeBookmarks(bm: Sequence[Bookmark]) -> None:
         """
 
         removeBookmarks(bookmarks)
@@ -18649,7 +18649,7 @@ class anim:
 
         """
     @staticmethod
-    def mergeGeometryChannels(self, *args) -> None:
+    def mergeGeometryChannels(*args) -> None:
         """
 
         mergeGeometryChannels(collection_name, geometry, channel_names=None)
@@ -18681,7 +18681,7 @@ class anim:
 
         """
     @staticmethod
-    def getGeometryChannels(self, *args) -> None:
+    def getGeometryChannels(*args) -> None:
         """
 
         getGeometryChannels(collection_name, geometry, channel_names=None)
@@ -18716,7 +18716,7 @@ class anim:
 
         """
     @staticmethod
-    def setGeometryChannels(self, collection_name: str, geometry: Geometry, channel_names: Sequence[str]) -> None:
+    def setGeometryChannels(collection_name: str, geometry: Geometry, channel_names: Sequence[str]) -> None:
         """
 
         setGeometryChannels(collection_name, geometry, channel_names)
@@ -18740,7 +18740,7 @@ class anim:
 
         """
     @staticmethod
-    def setGeometryChannelsFromPattern(self, *args) -> None:
+    def setGeometryChannelsFromPattern(*args) -> None:
         """
 
         setGeometryChannelsFromPattern(collection_name, geometry, pattern)
@@ -18763,7 +18763,7 @@ class anim:
 
         """
     @staticmethod
-    def setGeometryChannelPending(self, collection_name: str, channel_name: str, value: Optional[float]) -> None:
+    def setGeometryChannelPending(collection_name: str, channel_name: str, value: Optional[float]) -> None:
         """
 
         setGeometryChannelPending(collection_name, channel_name, value)
@@ -18785,7 +18785,7 @@ class anim:
 
         """
     @staticmethod
-    def isGeometryChannelPending(self, collection_name: str, channel_name: str) -> bool:
+    def isGeometryChannelPending(collection_name: str, channel_name: str) -> bool:
         """
 
         isGeometryChannelPending(collection_name, channel_name)
@@ -18802,7 +18802,7 @@ class anim:
 
         """
     @staticmethod
-    def isGeometryChannelPinned(self, *args) -> bool:
+    def isGeometryChannelPinned(*args) -> bool:
         """
 
         isGeometryChannelPinned(collection_name, channel_name=None) -> bool
@@ -18821,7 +18821,7 @@ class anim:
 
         """
     @staticmethod
-    def pinnedGeometryChannels(self, collection_name: str) -> Tuple[str, ...]:
+    def pinnedGeometryChannels(collection_name: str) -> Tuple[str, ...]:
         """
 
         pinnedGeometryChannels(collection_name)
@@ -18836,7 +18836,7 @@ class anim:
 
         """
     @staticmethod
-    def getPinnedGeometryChannels(self, collection_name: str) -> Tuple[str, ...]:
+    def getPinnedGeometryChannels(collection_name: str) -> Tuple[str, ...]:
         """
 
         getPinnedGeometryChannels(collection_name)
@@ -18854,7 +18854,7 @@ class anim:
 
         """
     @staticmethod
-    def lockGeometryChannelCollection(self, collection_name: str, lock: bool) -> None:
+    def lockGeometryChannelCollection(collection_name: str, lock: bool) -> None:
         """
 
         lockGeometryChannelCollection(collection_name, lock)
@@ -18872,7 +18872,7 @@ class anim:
 
         """
     @staticmethod
-    def addBookmarksChangedCallback(self, callback: Any) -> None:
+    def addBookmarksChangedCallback(callback: Any) -> None:
         """
 
         addBookmarksChangedCallback(callback)
@@ -18883,7 +18883,7 @@ class anim:
 
         """
     @staticmethod
-    def removeBookmarksChangedCallback(self, callback: Any) -> None:
+    def removeBookmarksChangedCallback(callback: Any) -> None:
         """
 
         removeBookmarksChangedCallback(callback)
@@ -18893,7 +18893,7 @@ class anim:
 
         """
     @staticmethod
-    def addGeometryChannelsChangedCallback(self, collection_name: str, callback: Any, on_mouse_up: bool = True) -> bool:
+    def addGeometryChannelsChangedCallback(collection_name: str, callback: Any, on_mouse_up: bool = True) -> bool:
         """
 
         addGeometryChannelsChangedCallback(collection_name, callback,
@@ -18930,7 +18930,7 @@ class anim:
 
         """
     @staticmethod
-    def removeGeometryChannelsChangedCallback(self, collection_name: str, callback: Any, on_mouse_up: bool = True) -> bool:
+    def removeGeometryChannelsChangedCallback(collection_name: str, callback: Any, on_mouse_up: bool = True) -> bool:
         """
 
         removeGeometryChannelsChangedCallback(collection_name, callback,
@@ -18955,7 +18955,7 @@ class anim:
 
         """
     @staticmethod
-    def slopeMode(self) -> EnumValue:
+    def slopeMode() -> EnumValue:
         """
 
         slopeMode(self) -> hou.slopeMode
@@ -18966,7 +18966,7 @@ class anim:
 
         """
     @staticmethod
-    def setSlopeMode(self, mode: EnumValue) -> None:
+    def setSlopeMode(mode: EnumValue) -> None:
         """
 
         setSlopeMode(self, mode)
@@ -19114,19 +19114,19 @@ class anonstats:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def recordOccurrence(self, key: str) -> None: ...
+    def recordOccurrence(key: str) -> None: ...
     @staticmethod
-    def recordString(self, key: str, value: str) -> None: ...
+    def recordString(key: str, value: str) -> None: ...
     @staticmethod
-    def hasString(self, key: str) -> bool: ...
+    def hasString(key: str) -> bool: ...
     @staticmethod
-    def getString(self, key: str) -> str: ...
+    def getString(key: str) -> str: ...
     @staticmethod
-    def incrementCount(self, key: str, count: int = 1) -> None: ...
+    def incrementCount(key: str, count: int = 1) -> None: ...
     @staticmethod
-    def logEvent(self, key: str, message: str) -> None: ...
+    def logEvent(key: str, message: str) -> None: ...
     @staticmethod
-    def addSum(self, key: str, stat_value: float, count: int = 1) -> None: ...
+    def addSum(key: str, stat_value: float, count: int = 1) -> None: ...
 
 class AssetBrowser(PathBasedPaneTab):
     thisown: Incomplete
@@ -20118,7 +20118,7 @@ class audio:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def turnOffAudio(self) -> None:
+    def turnOffAudio() -> None:
         """
 
         turnOffAudio()
@@ -20128,7 +20128,7 @@ class audio:
 
         """
     @staticmethod
-    def useTimeLineMode(self) -> None:
+    def useTimeLineMode() -> None:
         """
 
         useTimeLineMode()
@@ -20142,7 +20142,7 @@ class audio:
 
         """
     @staticmethod
-    def useTimeSliceMode(self) -> None:
+    def useTimeSliceMode() -> None:
         """
 
         useTimeSliceMode()
@@ -20152,7 +20152,7 @@ class audio:
 
         """
     @staticmethod
-    def useTestMode(self) -> None:
+    def useTestMode() -> None:
         """
 
         useTestMode()
@@ -20171,7 +20171,7 @@ class audio:
 
         """
     @staticmethod
-    def setMono(self, on: bool) -> None:
+    def setMono(on: bool) -> None:
         """
 
         setMono(on)
@@ -20181,7 +20181,7 @@ class audio:
 
         """
     @staticmethod
-    def setVolumeTied(self, on: bool) -> None:
+    def setVolumeTied(on: bool) -> None:
         """
 
         setVolumeTied(self, on)
@@ -20193,7 +20193,7 @@ class audio:
 
         """
     @staticmethod
-    def setMeter(self, on: bool) -> None:
+    def setMeter(on: bool) -> None:
         """
 
         setMeter(on)
@@ -20204,7 +20204,7 @@ class audio:
 
         """
     @staticmethod
-    def setLeftVolume(self, volume: float) -> None:
+    def setLeftVolume(volume: float) -> None:
         """
 
         setLeftVolume(value)
@@ -20214,7 +20214,7 @@ class audio:
 
         """
     @staticmethod
-    def setRightVolume(self, volume: float) -> None:
+    def setRightVolume(volume: float) -> None:
         """
 
         setRightVolume(value)
@@ -20224,7 +20224,7 @@ class audio:
 
         """
     @staticmethod
-    def useChops(self) -> None:
+    def useChops() -> None:
         """
 
         useChops()
@@ -20234,7 +20234,7 @@ class audio:
 
         """
     @staticmethod
-    def useAudioFile(self) -> None:
+    def useAudioFile() -> None:
         """
 
         useAudioFile()
@@ -20244,7 +20244,7 @@ class audio:
 
         """
     @staticmethod
-    def setChopPath(self, node_path: str) -> None:
+    def setChopPath(node_path: str) -> None:
         """
 
         setChopPath(path)
@@ -20260,7 +20260,7 @@ class audio:
 
         """
     @staticmethod
-    def setAudioFileName(self, file_name: str) -> None:
+    def setAudioFileName(file_name: str) -> None:
         """
 
         setAudioFileName(path)
@@ -20272,7 +20272,7 @@ class audio:
 
         """
     @staticmethod
-    def setAudioOffset(self, time_offset: float) -> None:
+    def setAudioOffset(time_offset: float) -> None:
         """
 
         setAudioOffset(offset)
@@ -20284,7 +20284,7 @@ class audio:
 
         """
     @staticmethod
-    def setAudioFrame(self, frame: float) -> None:
+    def setAudioFrame(frame: float) -> None:
         """
 
         setAudioFrame(frame)
@@ -20295,7 +20295,7 @@ class audio:
 
         """
     @staticmethod
-    def setScrubRepeat(self, on: bool) -> None:
+    def setScrubRepeat(on: bool) -> None:
         """
 
         setScrubRepeat(on)
@@ -20306,7 +20306,7 @@ class audio:
 
         """
     @staticmethod
-    def setScrubSustain(self, sustain: float) -> None:
+    def setScrubSustain(sustain: float) -> None:
         """
 
         setScrubSustain(value)
@@ -20321,7 +20321,7 @@ class audio:
 
         """
     @staticmethod
-    def setScrubRate(self, scrub_rate: float) -> None:
+    def setScrubRate(scrub_rate: float) -> None:
         """
 
         setScrubRate(value)
@@ -20333,7 +20333,7 @@ class audio:
 
         """
     @staticmethod
-    def reverse(self) -> None:
+    def reverse() -> None:
         """
 
         reverse()
@@ -20344,7 +20344,7 @@ class audio:
 
         """
     @staticmethod
-    def stop(self) -> None:
+    def stop() -> None:
         """
 
         stop()
@@ -20355,7 +20355,7 @@ class audio:
 
         """
     @staticmethod
-    def play(self) -> None:
+    def play() -> None:
         """
 
         play()
@@ -20367,7 +20367,7 @@ class audio:
 
         """
     @staticmethod
-    def setLooping(self, on: bool) -> None:
+    def setLooping(on: bool) -> None:
         """
 
         setLooping(on)
@@ -20379,7 +20379,7 @@ class audio:
 
         """
     @staticmethod
-    def setRewind(self, on: bool) -> None:
+    def setRewind(on: bool) -> None:
         """
 
         setRewind(on)
@@ -22889,7 +22889,7 @@ class clone:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def runAsClone(self, start_port: int = 0, end_port: int = -1, debug: bool = False, block: bool = False, print_port: bool = False, connection_timeout_seconds: int = -1) -> None:
+    def runAsClone(start_port: int = 0, end_port: int = -1, debug: bool = False, block: bool = False, print_port: bool = False, connection_timeout_seconds: int = -1) -> None:
         """
 
         hou.clone.runAsClone
@@ -22963,7 +22963,7 @@ class clone:
 
         """
     @staticmethod
-    def isRunningAsClone(self) -> bool:
+    def isRunningAsClone() -> bool:
         """
 
         hou.clone.isRunningAsClone
@@ -22979,7 +22979,7 @@ class clone:
 
         """
     @staticmethod
-    def createClone(self, id: Optional[str] = None) -> _clone_Connection:
+    def createClone(id: Optional[str] = None) -> _clone_Connection:
         """
 
         hou.clone.createClone
@@ -23007,7 +23007,7 @@ class clone:
 
         """
     @staticmethod
-    def clones(self) -> Tuple[_clone_Connection, ...]:
+    def clones() -> Tuple[_clone_Connection, ...]:
         """
 
         hou.clone.clones
@@ -23024,7 +23024,7 @@ class clone:
 
         """
     @staticmethod
-    def clone(self, id: str) -> _clone_Connection:
+    def clone(id: str) -> _clone_Connection:
         """
 
         hou.clone.clone
@@ -23047,7 +23047,7 @@ class clone:
 
         """
     @staticmethod
-    def deleteClone(self, id: str) -> None:
+    def deleteClone(id: str) -> None:
         """
 
         hou.clone.deleteClone
@@ -23072,7 +23072,7 @@ class clone:
 
         """
     @staticmethod
-    def deleteDisconnectedClones(self) -> None:
+    def deleteDisconnectedClones() -> None:
         """
 
         hou.clone.deleteDisconnectedClones
@@ -23089,7 +23089,7 @@ class clone:
 
         """
     @staticmethod
-    def removeAllConnectionChangeCallbacks(self) -> None:
+    def removeAllConnectionChangeCallbacks() -> None:
         """
 
         hou.clone.removeAllConnectionChangeCallbacks
@@ -23107,7 +23107,7 @@ class clone:
 
         """
     @staticmethod
-    def removeAllImageChangeCallbacks(self) -> None:
+    def removeAllImageChangeCallbacks() -> None:
         """
 
         hou.clone.removeAllImageChangeCallbacks
@@ -23124,7 +23124,7 @@ class clone:
 
         """
     @staticmethod
-    def addConnectionChangeCallback(self, callback: Any) -> None:
+    def addConnectionChangeCallback(callback: Any) -> None:
         """
 
         hou.clone.addConnectionChangeCallback
@@ -23152,7 +23152,7 @@ class clone:
 
         """
     @staticmethod
-    def removeConnectionChangeCallback(self, callback: Any) -> None:
+    def removeConnectionChangeCallback(callback: Any) -> None:
         """
 
         hou.clone.removeConnectionChangeCallback
@@ -23175,7 +23175,7 @@ class clone:
 
         """
     @staticmethod
-    def connectionChangeCallbacks(self) -> Tuple[Any, ...]:
+    def connectionChangeCallbacks() -> Tuple[Any, ...]:
         """
 
         hou.clone.connectionChangeCallbacks
@@ -23191,7 +23191,7 @@ class clone:
 
         """
     @staticmethod
-    def addImageChangeCallback(self, callback: Any) -> None:
+    def addImageChangeCallback(callback: Any) -> None:
         """
 
         hou.clone.addImageChangeCallback
@@ -23216,7 +23216,7 @@ class clone:
 
         """
     @staticmethod
-    def removeImageChangeCallback(self, callback: Any) -> None:
+    def removeImageChangeCallback(callback: Any) -> None:
         """
 
         hou.clone.removeImageChangeCallback
@@ -23239,7 +23239,7 @@ class clone:
 
         """
     @staticmethod
-    def imageChangeCallbacks(self) -> Tuple[Any, ...]:
+    def imageChangeCallbacks() -> Tuple[Any, ...]:
         """
 
         hou.clone.imageChangeCallbacks
@@ -25049,7 +25049,7 @@ class crowds:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def addBlendshapeInputs(self, base_shape_geo: Geometry, shapes: Sequence[AgentShape], channel_names: Sequence[str]) -> None:
+    def addBlendshapeInputs(base_shape_geo: Geometry, shapes: Sequence[AgentShape], channel_names: Sequence[str]) -> None:
         """
 
         addBlendshapeInputs(self, base_shape_geo, shapes, channel_names)
@@ -25077,7 +25077,7 @@ class crowds:
 
         """
     @staticmethod
-    def addInBetweenShapes(self, primary_shape_geo: Geometry, shapes: Sequence[AgentShape], weights: Sequence[float]) -> None:
+    def addInBetweenShapes(primary_shape_geo: Geometry, shapes: Sequence[AgentShape], weights: Sequence[float]) -> None:
         """
 
         addInBetweenShapes(self, primary_shape_geo, shapes, weights)
@@ -25105,7 +25105,7 @@ class crowds:
 
         """
     @staticmethod
-    def setBlendshapeDeformerParms(self, *args, **kwargs) -> None:
+    def setBlendshapeDeformerParms(*args, **kwargs) -> None:
         '''
 
         setBlendshapeDeformerParms(self, base_shape_geo, attribs=\\"P N\\",
@@ -25133,7 +25133,7 @@ class crowds:
 
         '''
     @staticmethod
-    def findAgentDefinitions(self, *args, **kwargs) -> Tuple[AgentDefinition, ...]:
+    def findAgentDefinitions(*args, **kwargs) -> Tuple[AgentDefinition, ...]:
         '''
 
         findAgentDefinitions(geometry, group = \\"\\",
@@ -25168,7 +25168,7 @@ class crowds:
 
         '''
     @staticmethod
-    def replaceAgentDefinitions(self, *args, **kwargs) -> None:
+    def replaceAgentDefinitions(*args, **kwargs) -> None:
         '''
 
         replaceAgentDefinitions(geometry, new_definition_map, group = \\"\\",
@@ -25214,7 +25214,7 @@ class crowds:
 
         '''
     @staticmethod
-    def computeLocalTransforms(self, rig: AgentRig, world_xforms: typing.Iterable[Matrix4]) -> Tuple[Matrix4, ...]:
+    def computeLocalTransforms(rig: AgentRig, world_xforms: typing.Iterable[Matrix4]) -> Tuple[Matrix4, ...]:
         """
 
         computeLocalTransforms(self, rig, xforms) -> tuple of hou.Matrix4
@@ -25234,7 +25234,7 @@ class crowds:
 
         """
     @staticmethod
-    def computeWorldTransforms(self, rig: AgentRig, local_xforms: typing.Iterable[Matrix4]) -> Tuple[Matrix4, ...]:
+    def computeWorldTransforms(rig: AgentRig, local_xforms: typing.Iterable[Matrix4]) -> Tuple[Matrix4, ...]:
         """
 
         computeWorldTransforms(self, rig, xforms) -> tuple of hou.Matrix4
@@ -25254,7 +25254,7 @@ class crowds:
 
         """
     @staticmethod
-    def computeRotationLimits(self, rig: AgentRig, clips: Sequence[AgentClip], xform_idx: int, parent_xform_idx: int) -> dict[str, Any]:
+    def computeRotationLimits(rig: AgentRig, clips: Sequence[AgentClip], xform_idx: int, parent_xform_idx: int) -> dict[str, Any]:
         """
 
         computeRotationLimits(rig, clips, transform, parent_transform) -> dict
@@ -25296,7 +25296,7 @@ class crowds:
 
         """
     @staticmethod
-    def shapeDeformers(self) -> Tuple[AgentShapeDeformer, ...]:
+    def shapeDeformers() -> Tuple[AgentShapeDeformer, ...]:
         """
 
         shapeDeformers() -> tuple of hou.AgentShapeDeformer
@@ -25306,7 +25306,7 @@ class crowds:
 
         """
     @staticmethod
-    def findShapeDeformer(self, name: str) -> AgentShapeDeformer:
+    def findShapeDeformer(name: str) -> AgentShapeDeformer:
         """
 
         findShapeDeformer(name) -> hou.AgentShapeDeformer
@@ -25317,7 +25317,7 @@ class crowds:
 
         """
     @staticmethod
-    def applyUsdProcedural(self, stage: Any, selection_rule: LopSelectionRule, camera_path: str, resolution: tuple[int, int], lod_threshold: float, optimize_identical_poses: bool, frame: float, prototype_material: str, instance_material: str, default_material: str) -> None:
+    def applyUsdProcedural(stage: Any, selection_rule: LopSelectionRule, camera_path: str, resolution: tuple[int, int], lod_threshold: float, optimize_identical_poses: bool, frame: float, prototype_material: str, instance_material: str, default_material: str) -> None:
         """
 
         applyUsdProcedural(self, stage, selection_rule, camera_path, resolution,
@@ -25389,7 +25389,7 @@ class DataParmTemplate(ParmTemplate):
 
     """
     thisown: Incomplete
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, name, label, num_components: int, look: EnumValue = ..., naming_scheme: EnumValue = ..., unknown_str: Optional[str] = ..., disable_when: Optional[str] = ..., is_hidden: bool = ..., is_label_hidden: bool = ..., join_with_next: bool = ..., help: Optional[str] = ..., script_callback: Optional[str] = ..., script_callback_language: EnumValue = ..., tags: dict[str, str] = ..., unknown_dict: dict[EnumValue, str] = ..., default_expression: Sequence[str] = ..., default_expression_language: Sequence[EnumValue] = ...) -> DataParmTemplate:
         """
 
         __init__(self, name, label, num_components, look=hou.parmLook.Regular,
@@ -26194,7 +26194,7 @@ class dop:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def isScriptSolverRunning(self) -> bool:
+    def isScriptSolverRunning() -> bool:
         """
 
         isScriptSolverRunning() -> bool
@@ -26208,7 +26208,7 @@ class dop:
 
         """
     @staticmethod
-    def scriptSolverData(self) -> DopData:
+    def scriptSolverData() -> DopData:
         """
 
         scriptSolverData() -> hou.DopData
@@ -26242,7 +26242,7 @@ class dop:
 
         """
     @staticmethod
-    def scriptSolverNetwork(self) -> Node:
+    def scriptSolverNetwork() -> Node:
         """
 
         scriptSolverNetwork() -> hou.OpNode or None
@@ -26254,9 +26254,9 @@ class dop:
 
         """
     @staticmethod
-    def scriptSolverSimulation(self) -> DopSimulation: ...
+    def scriptSolverSimulation() -> DopSimulation: ...
     @staticmethod
-    def scriptSolverObjects(self) -> Tuple[DopData, ...]:
+    def scriptSolverObjects() -> Tuple[DopData, ...]:
         """
 
         scriptSolverObjects() -> tuple of hou.DopObject
@@ -26267,7 +26267,7 @@ class dop:
 
         """
     @staticmethod
-    def scriptSolverNewObjects(self) -> Tuple[DopData, ...]:
+    def scriptSolverNewObjects() -> Tuple[DopData, ...]:
         """
 
         scriptSolverNewObjects() -> tuple of hou.DopObject
@@ -26279,7 +26279,7 @@ class dop:
 
         """
     @staticmethod
-    def scriptSolverTimestepSize(self) -> float:
+    def scriptSolverTimestepSize() -> float:
         """
 
         scriptSolverTimestepSize() -> float
@@ -26290,7 +26290,7 @@ class dop:
 
         """
     @staticmethod
-    def scriptSolverTime(self) -> float: ...
+    def scriptSolverTime() -> float: ...
 
 class DopNode(OpNode):
     """
@@ -29531,7 +29531,7 @@ class FolderSetParmTemplate(ParmTemplate):
 
         """
     __swig_destroy__: Incomplete
-    def folderNames(self) -> Tuple[str, ...]:
+    def folderNames(self) -> list[str]:
         """
 
         setFolderNames(self, folder_names)
@@ -29713,7 +29713,7 @@ class galleries:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def galleries(self) -> Tuple[Gallery, ...]:
+    def galleries() -> Tuple[Gallery, ...]:
         """
 
         galleries() -> tuple of hou.Gallery
@@ -29724,7 +29724,7 @@ class galleries:
 
         """
     @staticmethod
-    def galleryEntries(self, name_pattern: Optional[str] = None, label_pattern: Optional[str] = None, keyword_pattern: Optional[str] = None, category: Optional[str] = None, node_type: Optional[NodeType] = None) -> Tuple[GalleryEntry, ...]:
+    def galleryEntries(name_pattern: Optional[str] = None, label_pattern: Optional[str] = None, keyword_pattern: Optional[str] = None, category: Optional[str] = None, node_type: Optional[NodeType] = None) -> Tuple[GalleryEntry, ...]:
         '''
 
         galleryEntries(name_pattern=None, label_pattern=None,
@@ -29786,7 +29786,7 @@ class galleries:
 
         '''
     @staticmethod
-    def installGallery(self, gallery_path: str) -> Gallery:
+    def installGallery(gallery_path: str) -> Gallery:
         """
 
         installGallery(gallery_path) -> hou.Gallery or None
@@ -29800,7 +29800,7 @@ class galleries:
 
         """
     @staticmethod
-    def removeGallery(self, gallery_path: str) -> bool:
+    def removeGallery(gallery_path: str) -> bool:
         """
 
         removeGallery(gallery_path) -> bool
@@ -29815,7 +29815,7 @@ class galleries:
 
         """
     @staticmethod
-    def createGalleryEntry(self, gallery_path: str, entry_name: str, node: Optional[Node] = None) -> GalleryEntry:
+    def createGalleryEntry(gallery_path: str, entry_name: str, node: Optional[Node] = None) -> GalleryEntry:
         """
 
         createGalleryEntry(gallery_path, entry_name, node) -> hou.GalleryEntry
@@ -32533,7 +32533,7 @@ class Geometry:
 
 
         """
-    def addAttrib(self, *args) -> Attrib:
+    def addAttrib(self, type: EnumValue, name: str, default_value: Any, transform_as_normal: bool = ..., create_local_variable: bool = ...) -> Attrib:
         '''
 
         addAttrib(self, type, name, default_value, transform_as_normal=False,
@@ -32698,7 +32698,7 @@ class Geometry:
 
 
         """
-    def setGlobalAttribValue(self, *args) -> None:
+    def setGlobalAttribValue(self, name_or_attrib: Union[str, Attrib], attrib_value: Any) -> None:
         '''
 
         setGlobalAttribValue(self, name_or_attrib, attrib_value)
@@ -42095,7 +42095,7 @@ class hda:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def installFile(self, file_path: str, oplibraries_file: Optional[str] = None, change_oplibraries_file: bool = True, force_use_assets: bool = False) -> None:
+    def installFile(file_path: str, oplibraries_file: Optional[str] = None, change_oplibraries_file: bool = True, force_use_assets: bool = False) -> None:
         """
 
         installFile(file_path, oplibraries_file=None,
@@ -42153,7 +42153,7 @@ class hda:
 
         """
     @staticmethod
-    def uninstallFile(self, file_path: str, oplibraries_file: Optional[str] = None, change_oplibraries_file: bool = True) -> None:
+    def uninstallFile(file_path: str, oplibraries_file: Optional[str] = None, change_oplibraries_file: bool = True) -> None:
         '''
 
         uninstallFile(file_path, oplibraries_file=None,
@@ -42186,7 +42186,7 @@ class hda:
 
         '''
     @staticmethod
-    def reloadFile(self, file_path: str) -> None:
+    def reloadFile(file_path: str) -> None:
         """
 
         reloadFile(file_path)
@@ -42200,7 +42200,7 @@ class hda:
 
         """
     @staticmethod
-    def reloadAllFiles(self, rescan: bool = True) -> None:
+    def reloadAllFiles(rescan: bool = True) -> None:
         """
 
         reloadAllFiles(rescan=True)
@@ -42216,7 +42216,7 @@ class hda:
 
         """
     @staticmethod
-    def reloadNamespaceOrder(self) -> None:
+    def reloadNamespaceOrder() -> None:
         """
 
         reloadNamespaceOrder()
@@ -42230,7 +42230,7 @@ class hda:
 
         """
     @staticmethod
-    def expandToDirectory(self, file_path: str, directory_path: str) -> None:
+    def expandToDirectory(file_path: str, directory_path: str) -> None:
         """
 
         expandToDirectory(file_path, directory_path)
@@ -42253,7 +42253,7 @@ class hda:
 
         """
     @staticmethod
-    def collapseFromDirectory(self, file_path: str, directory_path: str) -> None:
+    def collapseFromDirectory(file_path: str, directory_path: str) -> None:
         """
 
         collapseFromDirectory(file_path, directory_path)
@@ -42266,7 +42266,7 @@ class hda:
 
         """
     @staticmethod
-    def loadedFiles(self) -> Tuple[str, ...]:
+    def loadedFiles() -> Tuple[str, ...]:
         """
 
         loadedFiles() -> tuple of str
@@ -42295,7 +42295,7 @@ class hda:
 
         """
     @staticmethod
-    def renameSource(self, oplibraries_file: str, source_name: Optional[str] = None) -> None:
+    def renameSource(oplibraries_file: str, source_name: Optional[str] = None) -> None:
         """
 
         renameSource(oplibraries_file, source_name=None)
@@ -42312,7 +42312,7 @@ class hda:
 
         """
     @staticmethod
-    def definitionsInFile(self, file_path: str) -> Tuple[HDADefinition, ...]:
+    def definitionsInFile(file_path: str) -> Tuple[HDADefinition, ...]:
         '''
 
         definitionsInFile(file_path) -> tuple of hou.HDADefinition
@@ -42336,7 +42336,7 @@ class hda:
 
         '''
     @staticmethod
-    def componentsFromFullNodeTypeName(self, node_type_name: str) -> Tuple[str, ...]:
+    def componentsFromFullNodeTypeName(node_type_name: str) -> Tuple[str, ...]:
         """
 
         componentsFromFullNodeTypeName(node_type_name) -> tuple of str
@@ -42354,7 +42354,7 @@ class hda:
 
         """
     @staticmethod
-    def fullNodeTypeNameFromComponents(self, scope_node_type: str, name_space: str, name: str, version: str) -> str:
+    def fullNodeTypeNameFromComponents(scope_node_type: str, name_space: str, name: str, version: str) -> str:
         """
 
         fullNodeTypeNameFromComponents(scope_node_type, name_space, name,
@@ -42374,9 +42374,9 @@ class hda:
 
         """
     @staticmethod
-    def changeCurrentStoreUser(self, new_user: str) -> None: ...
+    def changeCurrentStoreUser(new_user: str) -> None: ...
     @staticmethod
-    def safeguardHDAs(self) -> bool:
+    def safeguardHDAs() -> bool:
         """
 
         safeguardHDAs() -> bool
@@ -42388,7 +42388,7 @@ class hda:
 
         """
     @staticmethod
-    def setSafeguardHDAs(self, on: bool) -> None:
+    def setSafeguardHDAs(on: bool) -> None:
         """
 
         setSafeguardHDAs(on)
@@ -42400,7 +42400,7 @@ class hda:
 
         """
     @staticmethod
-    def removeAllEventCallbacks(self) -> None:
+    def removeAllEventCallbacks() -> None:
         """
 
         removeAllEventCallbacks(self)
@@ -42412,7 +42412,7 @@ class hda:
 
         """
     @staticmethod
-    def defaultFileExtension(self) -> str:
+    def defaultFileExtension() -> str:
         """
 
         defaultFileExtension(self) -> str
@@ -42423,7 +42423,7 @@ class hda:
 
         """
     @staticmethod
-    def addEventCallback(self, event_types: Sequence[EnumValue], callback: Any) -> None:
+    def addEventCallback(event_types: Sequence[EnumValue], callback: Any) -> None:
         '''
 
         addEventCallback(self, event_types, callback)
@@ -42492,7 +42492,7 @@ class hda:
 
         '''
     @staticmethod
-    def removeEventCallback(self, event_types: Sequence[EnumValue], callback: Any) -> None:
+    def removeEventCallback(event_types: Sequence[EnumValue], callback: Any) -> None:
         """
 
         removeEventCallback(self, event_types, callback)
@@ -42513,7 +42513,7 @@ class hda:
 
         """
     @staticmethod
-    def eventCallbacks(self) -> Tuple[tuple[Tuple[EnumValue, ...], Any], ...]: ...
+    def eventCallbacks() -> Tuple[tuple[Tuple[EnumValue, ...], Any], ...]: ...
 
 class HDADefinition:
     """
@@ -44153,7 +44153,7 @@ class hipFile:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def save(self, file_name: Optional[str] = None, save_to_recent_files: bool = True) -> None:
+    def save(file_name: Optional[str] = None, save_to_recent_files: bool = True) -> None:
         """
 
         save(file_name=None, save_to_recent_files=True)
@@ -44192,7 +44192,7 @@ class hipFile:
 
         """
     @staticmethod
-    def saveAndIncrementFileName(self) -> None:
+    def saveAndIncrementFileName() -> None:
         """
 
         saveAndIncrementFileName()
@@ -44212,7 +44212,7 @@ class hipFile:
 
         """
     @staticmethod
-    def saveAndBackup(self) -> str:
+    def saveAndBackup() -> str:
         """
 
         saveAndBackup() -> str
@@ -44237,7 +44237,7 @@ class hipFile:
 
         """
     @staticmethod
-    def saveAsBackup(self) -> str:
+    def saveAsBackup() -> str:
         """
 
         saveAsBackup() -> str
@@ -44261,7 +44261,7 @@ class hipFile:
 
         """
     @staticmethod
-    def basename(self) -> str:
+    def basename() -> str:
         """
 
         basename() -> str
@@ -44272,7 +44272,7 @@ class hipFile:
 
         """
     @staticmethod
-    def name(self) -> str:
+    def name() -> str:
         """
 
         name() -> str
@@ -44293,7 +44293,7 @@ class hipFile:
 
         """
     @staticmethod
-    def path(self) -> str:
+    def path() -> str:
         """
 
         path() -> str
@@ -44305,7 +44305,7 @@ class hipFile:
 
         """
     @staticmethod
-    def setName(self, file_name: str) -> None:
+    def setName(file_name: str) -> None:
         """
 
         setName(file_name)
@@ -44326,7 +44326,7 @@ class hipFile:
 
         """
     @staticmethod
-    def saveMode(self) -> EnumValue:
+    def saveMode() -> EnumValue:
         """
 
         saveMode(self) -> hou.saveMode
@@ -44337,7 +44337,7 @@ class hipFile:
 
         """
     @staticmethod
-    def setSaveMode(self, savemode: EnumValue) -> None:
+    def setSaveMode(savemode: EnumValue) -> None:
         """
 
         setSaveMode(self, save_mode)
@@ -44348,7 +44348,7 @@ class hipFile:
 
         """
     @staticmethod
-    def clear(self, suppress_save_prompt: bool = False) -> None:
+    def clear(suppress_save_prompt: bool = False) -> None:
         """
 
         clear(suppress_save_prompt=False)
@@ -44369,7 +44369,7 @@ class hipFile:
 
         """
     @staticmethod
-    def load(self, file_name: str, suppress_save_prompt: bool = False, ignore_load_warnings: bool = False) -> None:
+    def load(file_name: str, suppress_save_prompt: bool = False, ignore_load_warnings: bool = False) -> None:
         """
 
         load(file_name, suppress_save_prompt=False, ignore_load_warnings=False)
@@ -44409,7 +44409,7 @@ class hipFile:
 
         """
     @staticmethod
-    def merge(self, *args, **kwargs) -> None:
+    def merge(*args, **kwargs) -> None:
         '''
 
         merge(file_name, node_pattern=\\"*\\", overwrite_on_conflict=False,
@@ -44451,7 +44451,7 @@ class hipFile:
 
         '''
     @staticmethod
-    def collisionNodesIfMerged(self, *args, **kwargs) -> Tuple[Node, ...]:
+    def collisionNodesIfMerged(*args, **kwargs) -> Tuple[Node, ...]:
         '''
 
         collisionNodesIfMerged(file_name, node_pattern=\\"*\\") -> tuple of
@@ -44476,7 +44476,7 @@ class hipFile:
 
         '''
     @staticmethod
-    def isLoadingHipFile(self) -> bool:
+    def isLoadingHipFile() -> bool:
         """
 
         isLoadingHipFile() -> bool
@@ -44486,7 +44486,7 @@ class hipFile:
 
         """
     @staticmethod
-    def isShuttingDown(self) -> bool:
+    def isShuttingDown() -> bool:
         """
 
         isShuttingDown() -> bool
@@ -44496,7 +44496,7 @@ class hipFile:
 
         """
     @staticmethod
-    def isNewFile(self) -> bool:
+    def isNewFile() -> bool:
         """
 
         isNewFile() -> bool
@@ -44511,7 +44511,7 @@ class hipFile:
 
         """
     @staticmethod
-    def hasUnsavedChanges(self) -> bool:
+    def hasUnsavedChanges() -> bool:
         """
 
         hasUnsavedChanges() -> bool
@@ -44526,7 +44526,7 @@ class hipFile:
 
         """
     @staticmethod
-    def groupColorTable(self) -> dict[str, Color]:
+    def groupColorTable() -> dict[str, Color]:
         """
 
         groupColorTable() -> dict of str to hou.Color
@@ -44542,7 +44542,7 @@ class hipFile:
 
         """
     @staticmethod
-    def setGroupColorTable(self, color_table: dict[str, Color]) -> None:
+    def setGroupColorTable(color_table: dict[str, Color]) -> None:
         """
 
         setGroupColorTable(color_table)
@@ -44564,7 +44564,7 @@ class hipFile:
 
         """
     @staticmethod
-    def importFBX(self, *args, **kwargs) -> tuple[Node, str]:
+    def importFBX(*args, **kwargs) -> tuple[Node, str]:
         """
 
         importFBX(file_name, suppress_save_prompt=False, merge_into_scene=True,
@@ -44616,7 +44616,7 @@ class hipFile:
 
         """
     @staticmethod
-    def addEventCallback(self, callback: Any) -> None:
+    def addEventCallback(callback: Any) -> None:
         '''
 
         addEventCallback(self, callback)
@@ -44638,7 +44638,7 @@ class hipFile:
 
         '''
     @staticmethod
-    def removeEventCallback(self, callback: Any) -> None:
+    def removeEventCallback(callback: Any) -> None:
         """
 
         removeEventCallback(callback)
@@ -44653,7 +44653,7 @@ class hipFile:
 
         """
     @staticmethod
-    def clearEventCallbacks(self) -> None:
+    def clearEventCallbacks() -> None:
         """
 
         clearEventCallbacks()
@@ -44664,7 +44664,7 @@ class hipFile:
 
         """
     @staticmethod
-    def eventCallbacks(self) -> Tuple[Any, ...]:
+    def eventCallbacks() -> Tuple[Any, ...]:
         """
 
         eventCallbacks() -> tuple of callback
@@ -44691,7 +44691,7 @@ class hmath:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def identityTransform(self) -> Matrix4:
+    def identityTransform() -> Matrix4:
         """
 
         identityTransform() -> hou.Matrix4
@@ -44707,7 +44707,7 @@ class hmath:
 
         """
     @staticmethod
-    def buildTranslate(self, *args) -> Matrix4:
+    def buildTranslate(*args) -> Matrix4:
         """
 
         buildTranslate(tx, ty, tz) -> hou.Matrix4
@@ -44724,7 +44724,7 @@ class hmath:
 
         """
     @staticmethod
-    def buildScale(self, *args) -> Matrix4:
+    def buildScale(*args) -> Matrix4:
         """
 
         buildScale(sx, sy, sz) -> hou.Matrix4
@@ -44745,7 +44745,7 @@ class hmath:
 
         """
     @staticmethod
-    def buildShear(self, *args) -> Matrix4:
+    def buildShear(*args) -> Matrix4:
         """
 
         buildShear(shearx, sheary, shearz) -> hou.Matrix4
@@ -44762,7 +44762,7 @@ class hmath:
 
         """
     @staticmethod
-    def buildRotate(self, *args) -> Matrix4:
+    def buildRotate(*args) -> Matrix4:
         '''
 
         buildRotate(rx, ry, rz, order=\\"xyz\\") -> hou.Matrix4
@@ -44786,7 +44786,7 @@ class hmath:
 
         '''
     @staticmethod
-    def buildRotateAboutAxis(self, axis: Sequence[float], angle_in_deg: float) -> Matrix4:
+    def buildRotateAboutAxis(axis: Sequence[float], angle_in_deg: float) -> Matrix4:
         """
 
         buildRotateAboutAxis(axis, angle_in_deg) -> hou.Matrix4
@@ -44844,7 +44844,7 @@ class hmath:
 
         """
     @staticmethod
-    def buildRotateZToAxis(self, axis: Sequence[float]) -> Matrix4:
+    def buildRotateZToAxis(axis: Sequence[float]) -> Matrix4:
         """
 
         buildRotateZToAxis(axis) -> hou.Matrix4
@@ -44866,7 +44866,7 @@ class hmath:
 
         """
     @staticmethod
-    def buildRotateLookAt(self, _from: Vector3, to: Vector3, up: Vector3) -> Matrix4:
+    def buildRotateLookAt(_from: Vector3, to: Vector3, up: Vector3) -> Matrix4:
         """
 
         buildRotateLookAt(__from, to, up) -> hou.Matrix4
@@ -44899,7 +44899,7 @@ class hmath:
 
         """
     @staticmethod
-    def buildTransform(self, *args, **kwargs) -> Matrix4:
+    def buildTransform(self, values_dict: dict[str, Union[Vector3, Sequence[float]]], transform_order: str = ..., rotate_order: str = ...) -> Matrix4:
         '''
 
         buildTransform(values_dict, transform_order=\\"srt\\", rotate_order=\\"xyz\\")
@@ -44950,7 +44950,7 @@ class hmath:
 
         '''
     @staticmethod
-    def degToRad(self, degrees: float) -> float:
+    def degToRad(degrees: float) -> float:
         """
 
         degToRad(degrees) -> float
@@ -44962,7 +44962,7 @@ class hmath:
 
         """
     @staticmethod
-    def radToDeg(self, radians: float) -> float:
+    def radToDeg(radians: float) -> float:
         """
 
         radToDeg(radians) -> double
@@ -44974,7 +44974,7 @@ class hmath:
 
         """
     @staticmethod
-    def noise1d(self, pos: Sequence[float]) -> float:
+    def noise1d(pos: Sequence[float]) -> float:
         """
 
         noise1d(self, pos) -> float
@@ -44988,7 +44988,7 @@ class hmath:
 
         """
     @staticmethod
-    def noise3d(self, pos: Sequence[float]) -> Vector3:
+    def noise3d(pos: Sequence[float]) -> Vector3:
         """
 
         noise3d(self, pos) -> hou.Vector3
@@ -45002,7 +45002,7 @@ class hmath:
 
         """
     @staticmethod
-    def fit(self, value: float, oldmin: float, oldmax: float, newmin: float, newmax: float) -> float:
+    def fit(value: float, oldmin: float, oldmax: float, newmin: float, newmax: float) -> float:
         """
 
         fit(value, old_min, old_max, new_min, new_max) -> float
@@ -45016,7 +45016,7 @@ class hmath:
 
         """
     @staticmethod
-    def fit01(self, value: float, newmin: float, newmax: float) -> float:
+    def fit01(value: float, newmin: float, newmax: float) -> float:
         """
 
         fit01(value, new_min, new_max) -> float
@@ -45031,7 +45031,7 @@ class hmath:
 
         """
     @staticmethod
-    def fit10(self, value: float, newmin: float, newmax: float) -> float:
+    def fit10(value: float, newmin: float, newmax: float) -> float:
         """
 
         fit10(value, new_min, new_max) -> float
@@ -45046,7 +45046,7 @@ class hmath:
 
         """
     @staticmethod
-    def fit11(self, value: float, newmin: float, newmax: float) -> float:
+    def fit11(value: float, newmin: float, newmax: float) -> float:
         """
 
         fit11(value, new_min, new_max) -> float
@@ -45061,7 +45061,7 @@ class hmath:
 
         """
     @staticmethod
-    def sign(self, value: float) -> float:
+    def sign(value: float) -> float:
         """
 
         sign(value) -> int
@@ -45075,7 +45075,7 @@ class hmath:
 
         """
     @staticmethod
-    def clamp(self, value: float, min: float, max: float) -> float:
+    def clamp(value: float, min: float, max: float) -> float:
         """
 
         clamp(value, min, max) -> float
@@ -45087,7 +45087,7 @@ class hmath:
 
         """
     @staticmethod
-    def smooth(self, value: float, min: float, max: float) -> float:
+    def smooth(value: float, min: float, max: float) -> float:
         '''
 
         smooth(value, min, max) -> float
@@ -45119,7 +45119,7 @@ class hmath:
 
         '''
     @staticmethod
-    def wrap(self, value: float, min: float, max: float) -> float:
+    def wrap(value: float, min: float, max: float) -> float:
         """
 
         wrap(value, min, max)
@@ -45132,7 +45132,7 @@ class hmath:
 
         """
     @staticmethod
-    def rand(self, seed: float) -> float:
+    def rand(seed: float) -> float:
         """
 
         rand(seed) -> float
@@ -45143,7 +45143,7 @@ class hmath:
 
         """
     @staticmethod
-    def orient2d(self, pa: Sequence[float], pb: Sequence[float], point: Sequence[float]) -> float:
+    def orient2d(pa: Sequence[float], pb: Sequence[float], point: Sequence[float]) -> float:
         """
 
         orient2d(pa, pb, point) -> float
@@ -45157,7 +45157,7 @@ class hmath:
 
         """
     @staticmethod
-    def orient3d(self, pa: Sequence[float], pb: Sequence[float], pc: Sequence[float], point: Sequence[float]) -> float:
+    def orient3d(pa: Sequence[float], pb: Sequence[float], pc: Sequence[float], point: Sequence[float]) -> float:
         """
 
         orient3d(pa, pb, pc, point) -> float
@@ -45171,7 +45171,7 @@ class hmath:
 
         """
     @staticmethod
-    def inCircle(self, pa: Sequence[float], pb: Sequence[float], pc: Sequence[float], point: Sequence[float]) -> float:
+    def inCircle(pa: Sequence[float], pb: Sequence[float], pc: Sequence[float], point: Sequence[float]) -> float:
         """
 
         inCircle(pa, pb, pc, point) -> float
@@ -45186,7 +45186,7 @@ class hmath:
 
         """
     @staticmethod
-    def inSphere(self, pa: Sequence[float], pb: Sequence[float], pc: Sequence[float], pd: Sequence[float], point: Sequence[float]) -> float:
+    def inSphere(pa: Sequence[float], pb: Sequence[float], pc: Sequence[float], pd: Sequence[float], point: Sequence[float]) -> float:
         """
 
         inSphere(pa, pb, pc, pd, point) -> float
@@ -45202,7 +45202,7 @@ class hmath:
 
         """
     @staticmethod
-    def intersectPlane(self, plane_point: Vector3, plane_dir: Vector3, line_origin: Vector3, line_dir: Vector3) -> Vector3:
+    def intersectPlane(plane_point: Vector3, plane_dir: Vector3, line_origin: Vector3, line_dir: Vector3) -> Vector3:
         """
 
         intersectPlane(plane_point, plane_normal, line_origin, line_dir) ->
@@ -45236,7 +45236,7 @@ class hmath:
 
         """
     @staticmethod
-    def combineLocalTransform(self, *args, **kwargs) -> Matrix4:
+    def combineLocalTransform(*args, **kwargs) -> Matrix4:
         """
 
         combineLocalTransform(local, world, parent_local=None,
@@ -45248,7 +45248,7 @@ class hmath:
 
         """
     @staticmethod
-    def extractLocalTransform(self, *args, **kwargs) -> Matrix4:
+    def extractLocalTransform(*args, **kwargs) -> Matrix4:
         """
 
         extractLocalTransform(world, parent_world, parent_local,
@@ -45263,7 +45263,7 @@ class hmath:
 
         """
     @staticmethod
-    def slerpTransforms(self, xforms: typing.Iterable[Matrix4], input_weights: Sequence[float], normalize_weigths: bool = True, slerp_method: int = 1, slerp_flip_mehtod: int = 1) -> Matrix4:
+    def slerpTransforms(xforms: typing.Iterable[Matrix4], input_weights: Sequence[float], normalize_weigths: bool = True, slerp_method: int = 1, slerp_flip_mehtod: int = 1) -> Matrix4:
         """
 
         slerpTransforms( xforms, input_weights, normalize_weights, slerp_method,
@@ -45298,9 +45298,9 @@ class hotkeys:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def assignments(self, *args) -> Tuple[str, ...]: ...
+    def assignments(self, hotkey_symbol: str) -> list[str]: ...
     @staticmethod
-    def hotkeyDescription(self, hotkey_symbol: str) -> str:
+    def hotkeyDescription(hotkey_symbol: str) -> str:
         '''
 
         hotkeyDescription(hotkey_symbol) -> str
@@ -45312,7 +45312,7 @@ class hotkeys:
 
         '''
     @staticmethod
-    def hotkeyLabel(self, hotkey_symbol: str) -> str:
+    def hotkeyLabel(hotkey_symbol: str) -> str:
         '''
 
         hotkeyLabel(hotkey_symbol) -> str
@@ -45328,7 +45328,7 @@ class hotkeys:
 
         '''
     @staticmethod
-    def isKeyMatch(self, key: str, hotkey_symbol: str) -> bool:
+    def isKeyMatch(key: str, hotkey_symbol: str) -> bool:
         """
 
         isKeyMatch(key, hotkey_symbol) -> bool
@@ -45351,7 +45351,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def isKeycodeMatch(self, key_code: int, hotkey_symbol: str) -> bool:
+    def isKeycodeMatch(key_code: int, hotkey_symbol: str) -> bool:
         """
 
         isKeycodeMatch(key_code, hotkey_symbol) -> bool
@@ -45368,7 +45368,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def findConflicts(self, *args) -> Tuple[str, ...]:
+    def findConflicts(*args) -> Tuple[str, ...]:
         '''
 
         findConflicts(context, symbol, key) -> tuple of str
@@ -45407,7 +45407,7 @@ class hotkeys:
 
         '''
     @staticmethod
-    def resolveAssignments(self, contexts: Sequence[str], hotkey_symbols: Sequence[str]) -> Tuple[Tuple[str, ...], ...]:
+    def resolveAssignments(contexts: Sequence[str], hotkey_symbols: Sequence[str]) -> Tuple[Tuple[str, ...], ...]:
         '''
 
         resolveAssignments(self, contexts, hotkey_symbols) -> tuple of tuple of
@@ -45423,7 +45423,7 @@ class hotkeys:
 
         '''
     @staticmethod
-    def changeIndex(self) -> int:
+    def changeIndex() -> int:
         """
 
         changeIndex() -> int
@@ -45437,7 +45437,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def commandsInContext(self, context: str) -> Tuple[dict[str, str], ...]:
+    def commandsInContext(context: str) -> Tuple[dict[str, str], ...]:
         """
 
         commandsInContext(context) -> tuple of dict
@@ -45458,7 +45458,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def contextsInContext(self, context: str) -> Tuple[dict[str, str], ...]:
+    def contextsInContext(context: str) -> Tuple[dict[str, str], ...]:
         """
 
         contextsInContext(context) -> tuple of dict
@@ -45475,7 +45475,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def commandCategoriesInCategory(self, category: str) -> Tuple[dict[str, str], ...]:
+    def commandCategoriesInCategory(category: str) -> Tuple[dict[str, str], ...]:
         """
 
         commandCategoriesInCategory(category) -> tuple of dict
@@ -45493,7 +45493,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def commandsInCategory(self, category: str) -> Tuple[dict[str, str], ...]:
+    def commandsInCategory(category: str) -> Tuple[dict[str, str], ...]:
         """
 
         commandsInCategory(category) -> tuple of dict
@@ -45510,7 +45510,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def commandBindingsInContext(self, context: str) -> Tuple[dict[str, str], ...]:
+    def commandBindingsInContext(context: str) -> Tuple[dict[str, str], ...]:
         """
 
         commandBindingsInContext(context) -> tuple of dict
@@ -45527,7 +45527,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def addCommand(self, *args) -> bool:
+    def addCommand(*args) -> bool:
         '''
 
         addCommand(hotkey_symbol, label, description, assignments) -> bool
@@ -45590,7 +45590,7 @@ class hotkeys:
 
         '''
     @staticmethod
-    def addContext(self, hotkey_symbol: str, label: str, description: str) -> bool:
+    def addContext(hotkey_symbol: str, label: str, description: str) -> bool:
         """
 
         addContext(hotkey_symbol, label, long_description ) -> bool
@@ -45621,7 +45621,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def installDefinitions(self, definitions: PluginHotkeyDefinitions) -> None:
+    def installDefinitions(definitions: PluginHotkeyDefinitions) -> None:
         """
 
         uninstallDefinitions(definitions)
@@ -45638,9 +45638,9 @@ class hotkeys:
 
         """
     @staticmethod
-    def uninstallDefinitions(self, definitions: PluginHotkeyDefinitions) -> None: ...
+    def uninstallDefinitions(definitions: PluginHotkeyDefinitions) -> None: ...
     @staticmethod
-    def addCommandBinding(self, context: str, command: str) -> bool:
+    def addCommandBinding(context: str, command: str) -> bool:
         """
 
         addCommandBinding(context, command) -> bool
@@ -45662,7 +45662,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def removeCommandBinding(self, context: str, command: str) -> bool:
+    def removeCommandBinding(context: str, command: str) -> bool:
         """
 
         removeCommandBinding(context, command) -> bool
@@ -45682,7 +45682,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def removeHotkeySymbol(self, hotkey_symbol: str) -> None:
+    def removeHotkeySymbol(hotkey_symbol: str) -> None:
         '''
 
         removeHotkeySymbol(hotkey_symbol)
@@ -45705,7 +45705,7 @@ class hotkeys:
 
         '''
     @staticmethod
-    def hotkeySymbol(self, english_context: str, english_command: Optional[str] = None) -> str:
+    def hotkeySymbol(english_context: str, english_command: Optional[str] = None) -> str:
         '''
 
         hotkeySymbol(context_label_path, command_label=None) -> str or None
@@ -45730,7 +45730,7 @@ class hotkeys:
 
         '''
     @staticmethod
-    def clearAssignments(self, *args) -> bool:
+    def clearAssignments(*args) -> bool:
         '''
 
         clearAssignments(context, hotkey_symbol) -> bool
@@ -45757,7 +45757,7 @@ class hotkeys:
 
         '''
     @staticmethod
-    def addAssignment(self, *args) -> bool:
+    def addAssignment(*args) -> bool:
         '''
 
         addAssignment(context, hotkey_symbol, key) -> bool
@@ -45789,7 +45789,7 @@ class hotkeys:
 
         '''
     @staticmethod
-    def removeAssignment(self, *args) -> bool:
+    def removeAssignment(*args) -> bool:
         '''
 
         removeAssignment(context, hotkey_symbol, key) -> bool
@@ -45815,7 +45815,7 @@ class hotkeys:
 
         '''
     @staticmethod
-    def availableKeycodes(self, *args) -> Tuple[int, ...]:
+    def availableKeycodes(*args) -> Tuple[int, ...]:
         """
 
         availableKeycodes(context, hotkey_symbol, layout_keys, modifiers=0) ->
@@ -45848,7 +45848,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def keycodeToString(self, keycode: int, modifiers: int = 0) -> str:
+    def keycodeToString(keycode: int, modifiers: int = 0) -> str:
         """
 
         keycodeToString(keycode, modifiers=0) -> str
@@ -45862,7 +45862,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def stringToKeycode(self, key: str, modifiers: int = 0) -> int:
+    def stringToKeycode(key: str, modifiers: int = 0) -> int:
         """
 
         stringToKeycode(key, modifiers=0) -> int
@@ -45876,7 +45876,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def revertToDefaults(self, *args) -> None:
+    def revertToDefaults(*args) -> None:
         """
 
         revertToDefaults(context, hotkey_symbol, one_level_only)
@@ -45902,7 +45902,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def saveOverrides(self) -> bool:
+    def saveOverrides() -> bool:
         """
 
         saveOverrides() -> bool
@@ -45916,7 +45916,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def saveAsKeymap(self, name: str, path: Optional[str] = None) -> bool:
+    def saveAsKeymap(name: str, path: Optional[str] = None) -> bool:
         """
 
         saveAsKeymap(name, path=None) -> bool
@@ -45937,7 +45937,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def loadKeymap(self, name: str, path: Optional[str] = None) -> bool:
+    def loadKeymap(name: str, path: Optional[str] = None) -> bool:
         """
 
         loadKeymap(name, path=None) -> bool
@@ -45957,7 +45957,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def importKeymap(self, name: str, path: str) -> bool:
+    def importKeymap(name: str, path: str) -> bool:
         """
 
         importKeymap(name, path=None) -> bool
@@ -45976,7 +45976,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def keymaps(self) -> Tuple[tuple[str, str], ...]:
+    def keymaps() -> Tuple[tuple[str, str], ...]:
         """
 
         keymaps() -> tuple or str
@@ -45987,7 +45987,7 @@ class hotkeys:
 
         """
     @staticmethod
-    def currentKeymap(self) -> str:
+    def currentKeymap() -> str:
         """
 
         currentKeymap() -> str
@@ -46013,7 +46013,7 @@ class ik:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def solveFBIK(self, *args, **kwargs) -> None:
+    def solveFBIK(*args, **kwargs) -> None:
         """
 
         hou.ik.solveFBIK
@@ -46052,7 +46052,7 @@ class ik:
 
         """
     @staticmethod
-    def solvePhysFBIK(self, *args, **kwargs) -> None:
+    def solvePhysFBIK(*args, **kwargs) -> None:
         """
 
         hou.ik.solvePhysFBIK
@@ -48282,7 +48282,7 @@ class Keyframe(BaseKeyframe):
 
     """
     thisown: Incomplete
-    def __init__(self, *args) -> None:
+    def __init__(self, expression: Optional[str] = ..., time: Optional[float] = ..., language: Optional[EnumValue] = ...) -> None:
         """
 
         __init__(self, values)
@@ -48769,7 +48769,7 @@ class logging:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def sources(self) -> Tuple[str, ...]:
+    def sources() -> Tuple[str, ...]:
         """
 
         hou.logging.sources
@@ -48809,7 +48809,7 @@ class logging:
 
         """
     @staticmethod
-    def setRenderLogVerbosity(self, verbosity: int) -> None:
+    def setRenderLogVerbosity(verbosity: int) -> None:
         """
 
         hou.logging.setRenderLogVerbosity
@@ -48828,7 +48828,7 @@ class logging:
 
         """
     @staticmethod
-    def renderLogVerbosity(self) -> int:
+    def renderLogVerbosity() -> int:
         """
 
         hou.logging.renderLogVerbosity
@@ -48847,7 +48847,7 @@ class logging:
 
         """
     @staticmethod
-    def saveLogsToFile(self, logs: typing.Iterable[_logging_LogEntry], filepath: str) -> None:
+    def saveLogsToFile(logs: typing.Iterable[_logging_LogEntry], filepath: str) -> None:
         """
 
         hou.logging.saveLogsToFile
@@ -48874,7 +48874,7 @@ class logging:
 
         """
     @staticmethod
-    def loadLogsFromFile(self, filepath: str) -> Tuple[_logging_LogEntry, ...]:
+    def loadLogsFromFile(filepath: str) -> Tuple[_logging_LogEntry, ...]:
         """
 
         hou.logging.loadLogsFromFile
@@ -48895,7 +48895,7 @@ class logging:
 
         """
     @staticmethod
-    def createSource(self, source_name: str) -> None:
+    def createSource(source_name: str) -> None:
         """
 
         hou.logging.createSource
@@ -48921,7 +48921,7 @@ class logging:
 
         """
     @staticmethod
-    def log(self, entry: _logging_LogEntry, source_name: Optional[str] = None) -> None:
+    def log(entry: _logging_LogEntry, source_name: Optional[str] = None) -> None:
         """
 
         hou.logging.log
@@ -48955,7 +48955,7 @@ class logging:
 
         """
     @staticmethod
-    def defaultSink(self, force_create: bool = False) -> _logging_MemorySink:
+    def defaultSink(force_create: bool = False) -> _logging_MemorySink:
         """
 
         hou.logging.defaultSink
@@ -49712,7 +49712,7 @@ class LopNode(OpNode):
 
 
         """
-    def displayNode(self) -> Node:
+    def displayNode(self) -> LopNode:
         """
 
         displayNode(self) -> Node
@@ -49908,7 +49908,7 @@ class LopNode(OpNode):
           > lopnode.inputs()[inputidx].lastModifiedPrims()
 
         """
-    def setLastModifiedPrims(self, primpaths: Any) -> None:
+    def setLastModifiedPrims(self, primPaths: Sequence[str]) -> None:
         """
 
         setLastModifiedPrims(self, primpaths)
@@ -50135,7 +50135,7 @@ class lop:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def defaultNewPrimPath(self) -> str:
+    def defaultNewPrimPath() -> str:
         """
 
         defaultNewPrimPath() -> str
@@ -50146,7 +50146,7 @@ class lop:
 
         """
     @staticmethod
-    def setDefaultNewPrimPath(self, path: str) -> None:
+    def setDefaultNewPrimPath(path: str) -> None:
         """
 
         setDefaultNewPrimPath(path)
@@ -50160,7 +50160,7 @@ class lop:
 
         """
     @staticmethod
-    def defaultCollectionsPrimPath(self) -> str:
+    def defaultCollectionsPrimPath() -> str:
         """
 
         defaultCollectionsPrimPath() -> str
@@ -50172,7 +50172,7 @@ class lop:
 
         """
     @staticmethod
-    def setDefaultCollectionsPrimPath(self, path: str) -> None:
+    def setDefaultCollectionsPrimPath(path: str) -> None:
         """
 
         setDefaultCollectionsPrimPath(path)
@@ -50185,7 +50185,7 @@ class lop:
 
         """
     @staticmethod
-    def defaultCollectionsPrimType(self) -> str:
+    def defaultCollectionsPrimType() -> str:
         """
 
         defaultCollectionsPrimType() -> str
@@ -50198,7 +50198,7 @@ class lop:
 
         """
     @staticmethod
-    def setDefaultCollectionsPrimType(self, primtype: str) -> None:
+    def setDefaultCollectionsPrimType(primtype: str) -> None:
         """
 
         setDefaultCollectionsPrimType(path)
@@ -50211,7 +50211,7 @@ class lop:
 
         """
     @staticmethod
-    def defaultLightsPrimPath(self) -> str:
+    def defaultLightsPrimPath() -> str:
         """
 
         defaultLightsPrimPath() -> str
@@ -50223,7 +50223,7 @@ class lop:
 
         """
     @staticmethod
-    def setDefaultLightsPrimPath(self, path: str) -> None:
+    def setDefaultLightsPrimPath(path: str) -> None:
         """
 
         setDefaultLightsPrimPath(path)
@@ -50236,7 +50236,7 @@ class lop:
 
         """
     @staticmethod
-    def defaultCamerasPrimPath(self) -> str:
+    def defaultCamerasPrimPath() -> str:
         """
 
         defaultCamerasPrimPath() -> str
@@ -50248,7 +50248,7 @@ class lop:
 
         """
     @staticmethod
-    def setDefaultCamerasPrimPath(self, path: str) -> None:
+    def setDefaultCamerasPrimPath(path: str) -> None:
         """
 
         setDefaultCamerasPrimPath(path)
@@ -50261,7 +50261,7 @@ class lop:
 
         """
     @staticmethod
-    def defaultTransformSuffix(self) -> str:
+    def defaultTransformSuffix() -> str:
         """
 
         defaultTransformSuffix() -> str
@@ -50272,7 +50272,7 @@ class lop:
 
         """
     @staticmethod
-    def setDefaultTransformSuffix(self, suffix: str) -> None:
+    def setDefaultTransformSuffix(suffix: str) -> None:
         """
 
         setDefaultTransformSuffix(suffix)
@@ -50288,7 +50288,7 @@ class lop:
 
         """
     @staticmethod
-    def showResolvedPaths(self) -> bool:
+    def showResolvedPaths() -> bool:
         """
 
         showResolvedPaths() -> bool
@@ -50299,7 +50299,7 @@ class lop:
 
         """
     @staticmethod
-    def setShowResolvedPaths(self, show_resolved_paths: bool) -> None:
+    def setShowResolvedPaths(show_resolved_paths: bool) -> None:
         """
 
         setShowResolvedPaths(show_resolved_paths)
@@ -50314,7 +50314,7 @@ class lop:
 
         """
     @staticmethod
-    def panesFollowCurrentNode(self) -> bool:
+    def panesFollowCurrentNode() -> bool:
         """
 
         panesFollowCurrentNode() -> bool
@@ -50326,7 +50326,7 @@ class lop:
 
         """
     @staticmethod
-    def setPanesFollowCurrentNode(self, follow_current_node: bool) -> None:
+    def setPanesFollowCurrentNode(follow_current_node: bool) -> None:
         """
 
         setPanesFollowCurrentNode(follow_current_node)
@@ -50339,7 +50339,7 @@ class lop:
 
         """
     @staticmethod
-    def panesShowViewportStage(self) -> bool:
+    def panesShowViewportStage() -> bool:
         """
 
         panesShowViewportStage() -> bool
@@ -50351,7 +50351,7 @@ class lop:
 
         """
     @staticmethod
-    def setPanesShowViewportStage(self, show_viewport_stage: bool) -> None:
+    def setPanesShowViewportStage(show_viewport_stage: bool) -> None:
         """
 
         setPanesShowViewportStage(show_viewport_stage)
@@ -50371,7 +50371,7 @@ class lop:
 
         """
     @staticmethod
-    def panesShowPostLayers(self) -> bool:
+    def panesShowPostLayers() -> bool:
         """
 
         panesShowPostLayers() -> bool
@@ -50383,7 +50383,7 @@ class lop:
 
         """
     @staticmethod
-    def setPanesShowPostLayers(self, show_post_layers: bool) -> None:
+    def setPanesShowPostLayers(show_post_layers: bool) -> None:
         """
 
         setPanesShowPostLayers(show_post_layers)
@@ -50395,7 +50395,7 @@ class lop:
 
         """
     @staticmethod
-    def autoSetAssetResolverContext(self) -> bool:
+    def autoSetAssetResolverContext() -> bool:
         """
 
         autoSetAssetResolverContext() -> bool
@@ -50408,7 +50408,7 @@ class lop:
 
         """
     @staticmethod
-    def setAutoSetAssetResolverContext(self, auto_set_context: bool) -> None:
+    def setAutoSetAssetResolverContext(auto_set_context: bool) -> None:
         """
 
         setAutoSetAssetResolverContext(auto_set_context)
@@ -50431,7 +50431,7 @@ class lop:
 
         """
     @staticmethod
-    def updateRendererInBackground(self) -> bool:
+    def updateRendererInBackground() -> bool:
         """
 
         updateRendererInBackground() -> bool
@@ -50442,7 +50442,7 @@ class lop:
 
         """
     @staticmethod
-    def setUpdateRendererInBackground(self, update_in_background: bool) -> None:
+    def setUpdateRendererInBackground(update_in_background: bool) -> None:
         """
 
         setUpdateRendererInBackground(update_in_background)
@@ -50455,7 +50455,7 @@ class lop:
 
         """
     @staticmethod
-    def loadPayloadsByDefault(self) -> bool:
+    def loadPayloadsByDefault() -> bool:
         """
 
         loadPayloadsByDefault() -> bool
@@ -50466,7 +50466,7 @@ class lop:
 
         """
     @staticmethod
-    def setLoadPayloadsByDefault(self, load_payloads: bool) -> None:
+    def setLoadPayloadsByDefault(load_payloads: bool) -> None:
         """
 
         setLoadPayloadsByDefault(load_payloads)
@@ -50480,7 +50480,7 @@ class lop:
 
         """
     @staticmethod
-    def allowViewportOnlyPayloads(self) -> bool:
+    def allowViewportOnlyPayloads() -> bool:
         """
 
         allowViewportOnlyPayloads() -> bool
@@ -50498,7 +50498,7 @@ class lop:
 
         """
     @staticmethod
-    def setAllowViewportOnlyPayloads(self, allow_viewport_only_payloads: bool) -> None:
+    def setAllowViewportOnlyPayloads(allow_viewport_only_payloads: bool) -> None:
         """
 
         setAllowViewportOnlyPayloads(allow_viewport_only_payloads)
@@ -50510,7 +50510,7 @@ class lop:
 
         """
     @staticmethod
-    def pathParameterCompletion(self) -> bool:
+    def pathParameterCompletion() -> bool:
         """
 
         pathParameterCompletion() -> bool
@@ -50523,7 +50523,7 @@ class lop:
 
         """
     @staticmethod
-    def setPathParameterCompletion(self, path_parameter_completion: bool) -> None:
+    def setPathParameterCompletion(path_parameter_completion: bool) -> None:
         """
 
         setPathParameterCompletion(path_parameter_completion)
@@ -50534,7 +50534,7 @@ class lop:
 
         """
     @staticmethod
-    def defaultMetersPerUnit(self) -> float:
+    def defaultMetersPerUnit() -> float:
         """
 
         defaultMetersPerUnit() -> float
@@ -50547,7 +50547,7 @@ class lop:
 
         """
     @staticmethod
-    def setDefaultMetersPerUnit(self, meters_per_unit: float) -> None:
+    def setDefaultMetersPerUnit(meters_per_unit: float) -> None:
         """
 
         setDefaultMetersPerUnit(meters_per_unit)
@@ -50560,7 +50560,7 @@ class lop:
 
         """
     @staticmethod
-    def defaultUpAxis(self) -> str:
+    def defaultUpAxis() -> str:
         """
 
         defaultUpAxis() -> str
@@ -50573,7 +50573,7 @@ class lop:
 
         """
     @staticmethod
-    def setDefaultUpAxis(self, up_axis: str) -> None:
+    def setDefaultUpAxis(up_axis: str) -> None:
         """
 
         setDefaultUpAxis(up_axis)
@@ -50587,7 +50587,7 @@ class lop:
 
         """
     @staticmethod
-    def savePreferences(self) -> bool:
+    def savePreferences() -> bool:
         """
 
         savePreferences() -> bool
@@ -50602,7 +50602,7 @@ class lop:
 
         """
     @staticmethod
-    def reloadLayer(self, layer_path: str, recursive: bool = False) -> None:
+    def reloadLayer(layer_path: str, recursive: bool = False) -> None:
         """
 
         reloadLayer(layer_path, recursive = False)
@@ -50620,7 +50620,7 @@ class lop:
 
         """
     @staticmethod
-    def makeValidPrimName(self, name: str) -> str:
+    def makeValidPrimName(name: str) -> str:
         """
 
         makeValidPrimName(name) -> str
@@ -50635,7 +50635,7 @@ class lop:
 
         """
     @staticmethod
-    def makeValidPrimPath(self, path: str, allow_relative: bool = False) -> str:
+    def makeValidPrimPath(path: str, allow_relative: bool = False) -> str:
         """
 
         makeValidPrimPath(path, allow_relative = False) -> str
@@ -50656,7 +50656,7 @@ class lop:
 
         """
     @staticmethod
-    def createParmsForProperty(self, *args) -> ParmTemplateGroup:
+    def createParmsForProperty(*args) -> ParmTemplateGroup:
         """
 
         createParmsForProperty(source, primpath, propertyname, parametername,
@@ -50710,7 +50710,7 @@ class lop:
 
         """
     @staticmethod
-    def createParmsForParameter(self, source: ParmTemplate, parametername: Optional[str] = None, usdvaluetype: Optional[str] = None, prepend_control_parm: bool = True, propertyname: Optional[str] = None) -> ParmTemplateGroup:
+    def createParmsForParameter(source: ParmTemplate, parametername: Optional[str] = None, usdvaluetype: Optional[str] = None, prepend_control_parm: bool = True, propertyname: Optional[str] = None) -> ParmTemplateGroup:
         """
 
         createParmsForParameter(source, parametername, usdvaluetype,
@@ -50753,7 +50753,7 @@ class lop:
 
         """
     @staticmethod
-    def createConnectionParmsForProperty(self, *args) -> ParmTemplateGroup:
+    def createConnectionParmsForProperty(*args) -> ParmTemplateGroup:
         """
 
         createConnectionParmsForProperty(source, primpath, propertyname,
@@ -50793,7 +50793,7 @@ class lop:
 
         """
     @staticmethod
-    def setParmTupleFromProperty(self, *args) -> None:
+    def setParmTupleFromProperty(*args) -> None:
         """
 
         setParmTupleFromProperty(parmtuple, source, primpath, propertyname)
@@ -50828,7 +50828,7 @@ class lop:
 
         """
     @staticmethod
-    def shaderTranslatorID(self, node: Node) -> int:
+    def shaderTranslatorID(node: Node) -> int:
         """
 
         shaderTranslatorID(node) -> int
@@ -50839,7 +50839,7 @@ class lop:
 
         """
     @staticmethod
-    def shaderRenderContextName(self, node: Node, node_output_name: str) -> str:
+    def shaderRenderContextName(node: Node, node_output_name: str) -> str:
         """
 
         shaderRenderContextName(node, node_output_name) -> str
@@ -50859,7 +50859,7 @@ class lop:
 
         """
     @staticmethod
-    def translateShader(self, *args) -> str:
+    def translateShader(*args) -> str:
         """
 
         translateShader(node, node_output_name, material_prim_path,
@@ -50898,7 +50898,7 @@ class lop:
 
         """
     @staticmethod
-    def reportShaderTranslation(self, node: Node, usd_shader_path: str) -> None:
+    def reportShaderTranslation(node: Node, usd_shader_path: str) -> None:
         """
 
         reportShaderTranslation(node, usd_shader_path)
@@ -50917,7 +50917,7 @@ class lop:
 
         """
     @staticmethod
-    def shaderNodeType(self, shader_name: str) -> NodeType:
+    def shaderNodeType(shader_name: str) -> NodeType:
         '''
 
         shaderNodeType(shader_name) -> hou.NodeType
@@ -50934,7 +50934,7 @@ class lop:
 
         '''
     @staticmethod
-    def availableRendererNames(self) -> Tuple[str, ...]:
+    def availableRendererNames() -> Tuple[str, ...]:
         """
 
         availableRendererNames() -> tuple of str
@@ -50945,7 +50945,7 @@ class lop:
 
         """
     @staticmethod
-    def availableRendererLabels(self) -> Tuple[str, ...]:
+    def availableRendererLabels() -> Tuple[str, ...]:
         """
 
         availableRendererLabels() -> tuple of str
@@ -50956,7 +50956,7 @@ class lop:
 
         """
     @staticmethod
-    def outputProcessors(self) -> Tuple[tuple[str, str], ...]:
+    def outputProcessors() -> Tuple[tuple[str, str], ...]:
         """
 
         outputProcessors() -> tuple of tuple of str
@@ -50968,7 +50968,7 @@ class lop:
 
         """
     @staticmethod
-    def outputProcessorParms(self, name: str) -> ParmTemplateGroup:
+    def outputProcessorParms(name: str) -> ParmTemplateGroup:
         """
 
         outputProcessorParms(name) -> hou.ParmTemplateGroup
@@ -50980,7 +50980,7 @@ class lop:
 
         """
     @staticmethod
-    def usdVersionInfo(self) -> dict[str, str]:
+    def usdVersionInfo() -> dict[str, str]:
         """
 
         usdVersionInfo() -> dict of str to str
@@ -51009,7 +51009,7 @@ class lop:
 
         """
     @staticmethod
-    def usdOutputMinimumSeverity(self) -> EnumValue:
+    def usdOutputMinimumSeverity() -> EnumValue:
         """
 
         usdOutputMinimumSeverity() -> hou.severityType
@@ -51023,7 +51023,7 @@ class lop:
 
         """
     @staticmethod
-    def setUsdOutputMinimumSeverity(self, severity: EnumValue) -> None:
+    def setUsdOutputMinimumSeverity(severity: EnumValue) -> None:
         """
 
         setUsdOutputMinimumSeverity(hou.severityType)
@@ -51035,7 +51035,7 @@ class lop:
 
         """
     @staticmethod
-    def addLockedGeometry(self, *args) -> str:
+    def addLockedGeometry(*args) -> str:
         """
 
         addLockedGeometry(self, identifier, geo, args = {}) -> str
@@ -51069,7 +51069,7 @@ class lop:
 
         """
     @staticmethod
-    def removeLockedGeometry(self, identifier: str) -> bool:
+    def removeLockedGeometry(identifier: str) -> bool:
         """
 
         removeLockedGeometry(self, identifier) -> bool
@@ -51091,7 +51091,7 @@ class lop:
 
         """
     @staticmethod
-    def forceReloadAllFilesFromDisk(self, reload_viewports: bool = False) -> None:
+    def forceReloadAllFilesFromDisk(reload_viewports: bool = False) -> None:
         """
 
         forceReloadAllFilesFromDisk(self, reload_viewports)
@@ -51108,7 +51108,7 @@ class lop:
 
         """
     @staticmethod
-    def availableRendererInfo(self) -> Any:
+    def availableRendererInfo() -> Any:
         """
 
         availableRendererInfo() -> list of dict
@@ -51119,7 +51119,7 @@ class lop:
 
         """
     @staticmethod
-    def addPreferenceChangeCallback(self, callback: Any) -> None:
+    def addPreferenceChangeCallback(callback: Any) -> None:
         """
 
         addPreferenceChangeCallback(callback)
@@ -51130,7 +51130,7 @@ class lop:
 
         """
     @staticmethod
-    def removePreferenceChangeCallback(self, callback: Any) -> None:
+    def removePreferenceChangeCallback(callback: Any) -> None:
         """
 
         removePreferenceChangeCallback(callback)
@@ -52120,7 +52120,7 @@ class Matrix2:
 
     """
     thisown: Incomplete
-    def __init__(self, *args) -> None:
+    def __init__(self, values: Union[int, float, Iterable[Union[int, float]], Iterable[Iterable[Union[int, float]]]] = ...) -> Matrix2:
         """
 
         __init__(self, values)
@@ -52342,7 +52342,7 @@ class Matrix3:
 
     """
     thisown: Incomplete
-    def __init__(self, *args) -> None:
+    def __init__(self, values: Union[int, float, Iterable[Union[int, float]], Iterable[Iterable[Union[int, float]]]] = ...) -> Matrix3:
         """
 
         __init__(self, values)
@@ -52689,7 +52689,7 @@ class Matrix4:
 
     """
     thisown: Incomplete
-    def __init__(self, *args) -> None:
+    def __init__(self, values: Union[int, float, Sequence[Union[int, float]], Sequence[Sequence[Union[int, float]]]] = ...) -> Matrix4:
         """
 
         __init__(self, values)
@@ -54356,7 +54356,7 @@ class NetworkEditor(PathBasedPaneTab):
 
 
         """
-    def flashMessage(self, image: str, message: str, duration: float) -> None:
+    def flashMessage(self, image: Optional[str], message: Optional[str], duration: float) -> None:
         """
 
         flashMessage(self, image, message, duration)
@@ -56073,7 +56073,7 @@ class NodeInfoTree:
 
     """
     thisown: Incomplete
-    def __init__(self, tree_root: NodeInfoTree, tree: NodeInfoTree) -> None:
+    def __init__(self, tree_root: Any, tree: Any) -> None:
         """
 
         hou.NodeInfoTree
@@ -58998,7 +58998,7 @@ class perfMon:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def startProfile(self, title: str, options: Optional[PerfMonRecordOptions] = None) -> PerfMonProfile:
+    def startProfile(title: str, options: Optional[PerfMonRecordOptions] = None) -> PerfMonProfile:
         """
 
         startProfile(title, options=None) -> hou.PerfMonProfile
@@ -59017,7 +59017,7 @@ class perfMon:
 
         """
     @staticmethod
-    def loadProfile(self, file_path: str) -> PerfMonProfile:
+    def loadProfile(file_path: str) -> PerfMonProfile:
         """
 
         loadProfile(file_path) -> hou.PerfMonProfile
@@ -59031,7 +59031,7 @@ class perfMon:
 
         """
     @staticmethod
-    def saveProfile(self, profile: PerfMonProfile, file_path: str) -> None:
+    def saveProfile(profile: PerfMonProfile, file_path: str) -> None:
         """
 
         saveProfile(profile, file_path)
@@ -59044,7 +59044,7 @@ class perfMon:
 
         """
     @staticmethod
-    def activeProfile(self) -> PerfMonProfile:
+    def activeProfile() -> PerfMonProfile:
         """
 
         activeProfile() -> hou.PerfMonProfile or None
@@ -59055,7 +59055,7 @@ class perfMon:
 
         """
     @staticmethod
-    def startTimedEvent(self, description: str, auto_nest_events: bool = True) -> PerfMonEvent:
+    def startTimedEvent(description: str, auto_nest_events: bool = True) -> PerfMonEvent:
         """
 
         startTimedEvent(description, auto_nest_events=True) -> hou.PerfMonEvent
@@ -59065,7 +59065,7 @@ class perfMon:
 
         """
     @staticmethod
-    def startEvent(self, description: str, auto_nest_events: bool = True) -> PerfMonEvent:
+    def startEvent(description: str, auto_nest_events: bool = True) -> PerfMonEvent:
         """
 
         startEvent(description, auto_nest_events=True) -> hou.PerfMonEvent
@@ -59098,7 +59098,7 @@ class perfMon:
 
         """
     @staticmethod
-    def startTimedCookEvent(self, description: str, node: Node) -> PerfMonEvent:
+    def startTimedCookEvent(description: str, node: Node) -> PerfMonEvent:
         """
 
         startTimedCookEvent(description, node) -> hou.PerfMonEvent
@@ -59108,7 +59108,7 @@ class perfMon:
 
         """
     @staticmethod
-    def startCookEvent(self, description: str, node: Node) -> PerfMonEvent:
+    def startCookEvent(description: str, node: Node) -> PerfMonEvent:
         """
 
         startCookEvent(description, node) -> hou.PerfMonEvent
@@ -59140,7 +59140,7 @@ class perfMon:
 
         """
     @staticmethod
-    def startPaneEvent(self, panetype: str, operation: str) -> PerfMonEvent:
+    def startPaneEvent(panetype: str, operation: str) -> PerfMonEvent:
         """
 
         startPaneEvent(panetype, operation) -> hou.PerfMonEvent
@@ -59168,7 +59168,7 @@ class perfMon:
 
         """
     @staticmethod
-    def isRecording(self) -> bool:
+    def isRecording() -> bool:
         """
 
         isRecording() -> bool
@@ -60160,7 +60160,7 @@ class playbar:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def isPlaying(self) -> bool:
+    def isPlaying() -> bool:
         """
 
         isPlaying(self) -> bool
@@ -60170,7 +60170,7 @@ class playbar:
 
         """
     @staticmethod
-    def play(self) -> None:
+    def play() -> None:
         """
 
         play(self)
@@ -60182,7 +60182,7 @@ class playbar:
 
         """
     @staticmethod
-    def stop(self) -> None:
+    def stop() -> None:
         """
 
         stop(self)
@@ -60194,7 +60194,7 @@ class playbar:
 
         """
     @staticmethod
-    def reverse(self) -> None:
+    def reverse() -> None:
         """
 
         reverse(self)
@@ -60206,11 +60206,11 @@ class playbar:
 
         """
     @staticmethod
-    def jumpToNextKeyframe(self) -> None: ...
+    def jumpToNextKeyframe() -> None: ...
     @staticmethod
-    def jumpToPreviousKeyframe(self) -> None: ...
+    def jumpToPreviousKeyframe() -> None: ...
     @staticmethod
-    def playMode(self) -> EnumValue:
+    def playMode() -> EnumValue:
         """
 
         playMode(self) -> hou.playMode
@@ -60222,7 +60222,7 @@ class playbar:
 
         """
     @staticmethod
-    def setPlayMode(self, mode: EnumValue) -> None:
+    def setPlayMode(mode: EnumValue) -> None:
         """
 
         setPlayMode(self, mode)
@@ -60239,7 +60239,7 @@ class playbar:
 
         """
     @staticmethod
-    def frameIncrement(self) -> float:
+    def frameIncrement() -> float:
         """
 
         frameIncrement(self) -> float
@@ -60249,7 +60249,7 @@ class playbar:
 
         """
     @staticmethod
-    def setFrameIncrement(self, increment: float) -> None:
+    def setFrameIncrement(increment: float) -> None:
         """
 
         setFrameIncrement(self, increment)
@@ -60262,7 +60262,7 @@ class playbar:
 
         """
     @staticmethod
-    def playbackRange(self) -> Vector2:
+    def playbackRange() -> Vector2:
         """
 
         playbackRange(self) -> hou.Vector2
@@ -60273,7 +60273,7 @@ class playbar:
 
         """
     @staticmethod
-    def setPlaybackRange(self, start: float, end: float) -> None:
+    def setPlaybackRange(start: float, end: float) -> None:
         """
 
         setPlaybackRange(self, start, end)
@@ -60285,7 +60285,7 @@ class playbar:
 
         """
     @staticmethod
-    def isRangeRestricted(self) -> bool:
+    def isRangeRestricted() -> bool:
         """
 
         isRangeRestricted(self) -> bool
@@ -60296,7 +60296,7 @@ class playbar:
 
         """
     @staticmethod
-    def setRestrictRange(self, on: bool) -> None:
+    def setRestrictRange(on: bool) -> None:
         """
 
         setRestrictRange(self, on)
@@ -60310,7 +60310,7 @@ class playbar:
 
         """
     @staticmethod
-    def usesIntegerFrames(self) -> bool:
+    def usesIntegerFrames() -> bool:
         """
 
         usesIntegerFrames(self) -> bool
@@ -60321,7 +60321,7 @@ class playbar:
 
         """
     @staticmethod
-    def setUseIntegerFrames(self, on: bool) -> None:
+    def setUseIntegerFrames(on: bool) -> None:
         """
 
         setUseIntegerFrames(self, on)
@@ -60333,7 +60333,7 @@ class playbar:
 
         """
     @staticmethod
-    def isRealTime(self) -> bool:
+    def isRealTime() -> bool:
         """
 
         isRealTime(self) -> bool
@@ -60344,7 +60344,7 @@ class playbar:
 
         """
     @staticmethod
-    def setRealTime(self, on: bool) -> None:
+    def setRealTime(on: bool) -> None:
         """
 
         setRealTime(self, on)
@@ -60356,7 +60356,7 @@ class playbar:
 
         """
     @staticmethod
-    def realTimeFactor(self) -> float:
+    def realTimeFactor() -> float:
         """
 
         realTimeFactor(self) -> float
@@ -60367,7 +60367,7 @@ class playbar:
 
         """
     @staticmethod
-    def setRealTimeFactor(self, factor: float) -> None:
+    def setRealTimeFactor(factor: float) -> None:
         """
 
         setRealTimeFactor(self, factor)
@@ -60383,7 +60383,7 @@ class playbar:
 
         """
     @staticmethod
-    def isRealTimeSkipping(self) -> bool:
+    def isRealTimeSkipping() -> bool:
         """
 
         isRealTimeSkipping(self) -> bool
@@ -60394,7 +60394,7 @@ class playbar:
 
         """
     @staticmethod
-    def setRealTimeSkipping(self, on: bool) -> None:
+    def setRealTimeSkipping(on: bool) -> None:
         """
 
         setRealTimeSkipping(self, on)
@@ -60406,7 +60406,7 @@ class playbar:
 
         """
     @staticmethod
-    def isAudioShown(self) -> bool:
+    def isAudioShown() -> bool:
         """
 
         isAudioShown(self) -> bool
@@ -60417,7 +60417,7 @@ class playbar:
 
         """
     @staticmethod
-    def showAudio(self, on: bool) -> None:
+    def showAudio(on: bool) -> None:
         """
 
         showAudio(self, on)
@@ -60429,7 +60429,7 @@ class playbar:
 
         """
     @staticmethod
-    def areKeysShown(self) -> bool:
+    def areKeysShown() -> bool:
         """
 
         areKeysShown(self) -> bool
@@ -60440,7 +60440,7 @@ class playbar:
 
         """
     @staticmethod
-    def showKeys(self, on: bool) -> None:
+    def showKeys(on: bool) -> None:
         """
 
         showKeys(self, on)
@@ -60452,11 +60452,11 @@ class playbar:
 
         """
     @staticmethod
-    def isSimCacheShown(self) -> bool: ...
+    def isSimCacheShown() -> bool: ...
     @staticmethod
-    def showSimCache(self, on: bool) -> None: ...
+    def showSimCache(on: bool) -> None: ...
     @staticmethod
-    def isRangeSliderShown(self) -> bool:
+    def isRangeSliderShown() -> bool:
         """
 
         isRangeSliderShown(self) -> bool
@@ -60467,7 +60467,7 @@ class playbar:
 
         """
     @staticmethod
-    def showRangeSlider(self, on: bool) -> None:
+    def showRangeSlider(on: bool) -> None:
         """
 
         showRangeSlider(self, on)
@@ -60479,7 +60479,7 @@ class playbar:
 
         """
     @staticmethod
-    def areTicksShown(self) -> bool:
+    def areTicksShown() -> bool:
         """
 
         areTicksShown(self) -> bool
@@ -60490,7 +60490,7 @@ class playbar:
 
         """
     @staticmethod
-    def showTicks(self, on: bool) -> None:
+    def showTicks(on: bool) -> None:
         """
 
         showTicks(self, on)
@@ -60502,7 +60502,7 @@ class playbar:
 
         """
     @staticmethod
-    def moveToBottom(self) -> None:
+    def moveToBottom() -> None:
         """
 
         moveToBottom(self)
@@ -60514,7 +60514,7 @@ class playbar:
 
         """
     @staticmethod
-    def moveToPane(self, pane: Pane) -> None:
+    def moveToPane(pane: Pane) -> None:
         """
 
         moveToPane(self, pane)
@@ -60527,7 +60527,7 @@ class playbar:
 
         """
     @staticmethod
-    def addEventCallback(self, callback: Any) -> None:
+    def addEventCallback(callback: Any) -> None:
         '''
 
         addEventCallback(self, callback)
@@ -60549,7 +60549,7 @@ class playbar:
 
         '''
     @staticmethod
-    def removeEventCallback(self, callback: Any) -> None:
+    def removeEventCallback(callback: Any) -> None:
         """
 
         removeEventCallback(callback)
@@ -60564,7 +60564,7 @@ class playbar:
 
         """
     @staticmethod
-    def clearEventCallbacks(self) -> None:
+    def clearEventCallbacks() -> None:
         """
 
         clearEventCallbacks()
@@ -60575,7 +60575,7 @@ class playbar:
 
         """
     @staticmethod
-    def eventCallbacks(self) -> Tuple[Any, ...]:
+    def eventCallbacks() -> Tuple[Any, ...]:
         """
 
         eventCallbacks() -> tuple of callback
@@ -60586,9 +60586,9 @@ class playbar:
 
         """
     @staticmethod
-    def selectedKeyframes(self) -> dict[Parm, Tuple[BaseKeyframe, ...]]: ...
+    def selectedKeyframes() -> dict[Parm, Tuple[BaseKeyframe, ...]]: ...
     @staticmethod
-    def selectionRange(self) -> Vector2:
+    def selectionRange() -> Vector2:
         """
 
         selectionRange(self) -> hou.Vector2 or None
@@ -60604,7 +60604,7 @@ class playbar:
 
         """
     @staticmethod
-    def selectionRanges(self) -> Tuple[Vector2, ...]:
+    def selectionRanges() -> Tuple[Vector2, ...]:
         """
 
         selectionRanges(self) -> tuple of hou.Vector2
@@ -60615,7 +60615,7 @@ class playbar:
 
         """
     @staticmethod
-    def timelineRange(self) -> Vector2:
+    def timelineRange() -> Vector2:
         """
 
         timelineRange(self) -> hou.Vector2
@@ -60626,7 +60626,7 @@ class playbar:
 
         """
     @staticmethod
-    def timeRange(self) -> Vector2:
+    def timeRange() -> Vector2:
         """
 
         timeRange(self) -> hou.Vector2
@@ -60637,7 +60637,7 @@ class playbar:
 
         """
     @staticmethod
-    def setTimeRange(self, start: float, end: float) -> None:
+    def setTimeRange(start: float, end: float) -> None:
         """
 
         setTimeRange(self, start, end)
@@ -60647,7 +60647,7 @@ class playbar:
 
         """
     @staticmethod
-    def frameRange(self) -> Vector2:
+    def frameRange() -> Vector2:
         """
 
         frameRange(self) -> hou.Vector2
@@ -60658,7 +60658,7 @@ class playbar:
 
         """
     @staticmethod
-    def setFrameRange(self, start: float, end: float) -> None:
+    def setFrameRange(start: float, end: float) -> None:
         """
 
         setFrameRange(self, start, end)
@@ -60668,7 +60668,7 @@ class playbar:
 
         """
     @staticmethod
-    def frameBookmark(self, bookmark: Bookmark) -> None:
+    def frameBookmark(bookmark: Bookmark) -> None:
         """
 
         frameBookmark(self, bookmark)
@@ -60679,7 +60679,7 @@ class playbar:
 
         """
     @staticmethod
-    def channelList(self) -> ChannelList:
+    def channelList() -> ChannelList:
         """
 
         channelList(self) -> hou.ChannelList
@@ -60689,7 +60689,7 @@ class playbar:
 
         """
     @staticmethod
-    def setChannelList(self, l: ChannelList) -> None:
+    def setChannelList(arg: ChannelList) -> None:
         """
 
         setChannelList(self, [Hom:hou.ChannelList])
@@ -60699,7 +60699,7 @@ class playbar:
 
         """
     @staticmethod
-    def channelListFromSelection(self) -> ChannelList:
+    def channelListFromSelection() -> ChannelList:
         """
 
         channelListFromSelection(self) -> hou.ChannelList
@@ -60710,7 +60710,7 @@ class playbar:
 
         """
     @staticmethod
-    def channelListFromNodes(self, nodes: Sequence[Node]) -> ChannelList:
+    def channelListFromNodes(nodes: Sequence[Node]) -> ChannelList:
         """
 
         channelListFromNodes(self,nodes) -> hou.ChannelList
@@ -60721,7 +60721,7 @@ class playbar:
 
         """
     @staticmethod
-    def channelListFromParms(self, parms: Tuple[Parm, ...]) -> ChannelList:
+    def channelListFromParms(parms: Tuple[Parm, ...]) -> ChannelList:
         """
 
         channelListFromParms(self,parms) -> hou.ChannelList
@@ -60732,7 +60732,7 @@ class playbar:
 
         """
     @staticmethod
-    def channelListFromParmTuples(self, parms: Tuple[ParmTuple, ...]) -> ChannelList:
+    def channelListFromParmTuples(parms: Tuple[ParmTuple, ...]) -> ChannelList:
         """
 
         channelListFromParmTuples(self,parms) -> hou.ChannelList
@@ -60743,7 +60743,7 @@ class playbar:
 
         """
     @staticmethod
-    def isAnimBarShown(self) -> bool:
+    def isAnimBarShown() -> bool:
         """
 
         isAnimBarShown(self) -> bool
@@ -60753,7 +60753,7 @@ class playbar:
 
         """
     @staticmethod
-    def showAnimBar(self, show: bool) -> None:
+    def showAnimBar(show: bool) -> None:
         """
 
         showAnimBar(self, show: bool)
@@ -60763,7 +60763,7 @@ class playbar:
 
         """
     @staticmethod
-    def animBar(self) -> AnimBar:
+    def animBar() -> AnimBar:
         """
 
         animBar(self): -> hou.AnimBar
@@ -61893,7 +61893,7 @@ class properties:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def classes(self, *args) -> Tuple[str, ...]:
+    def classes(*args) -> Tuple[str, ...]:
         """
 
         classes(tags=None) -> tuple of str
@@ -61905,7 +61905,7 @@ class properties:
 
         """
     @staticmethod
-    def classLabel(self, class_name: str) -> str:
+    def classLabel(class_name: str) -> str:
         """
 
         classLabel(class_name) -> str
@@ -61916,7 +61916,7 @@ class properties:
 
         """
     @staticmethod
-    def categories(self, class_name: str) -> Tuple[str, ...]:
+    def categories(class_name: str) -> Tuple[str, ...]:
         """
 
         categories(class_name) -> tuple of str
@@ -61927,7 +61927,7 @@ class properties:
 
         """
     @staticmethod
-    def parameters(self, class_name: str, category_name: str) -> Tuple[str, ...]:
+    def parameters(class_name: str, category_name: str) -> Tuple[str, ...]:
         """
 
         parameters(class_name, category_name) -> tuple of str
@@ -61938,7 +61938,7 @@ class properties:
 
         """
     @staticmethod
-    def parmTemplate(self, class_name: str, parm_name: str) -> ParmTemplate:
+    def parmTemplate(class_name: str, parm_name: str) -> ParmTemplate:
         """
 
         parmTemplate(class_name, parm_name) -> hou.ParmTemplate
@@ -62105,7 +62105,7 @@ class pypanel:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def installFile(self, file_path: str) -> None:
+    def installFile(file_path: str) -> None:
         """
 
         installFile(file_path)
@@ -62120,7 +62120,7 @@ class pypanel:
 
         """
     @staticmethod
-    def interfacesInFile(self, file_path: str) -> Tuple[PythonPanelInterface, ...]:
+    def interfacesInFile(file_path: str) -> Tuple[PythonPanelInterface, ...]:
         """
 
         interfacesInFile(file_path) -> tuple of hou.PythonPanelInterface
@@ -62134,7 +62134,7 @@ class pypanel:
 
         """
     @staticmethod
-    def interfaces(self) -> dict[str, PythonPanelInterface]:
+    def interfaces() -> dict[str, PythonPanelInterface]:
         """
 
         interfaces() -> dict of str to hou.PythonPanelInterface
@@ -62148,7 +62148,7 @@ class pypanel:
 
         """
     @staticmethod
-    def interfaceByName(self, name: str) -> PythonPanelInterface:
+    def interfaceByName(name: str) -> PythonPanelInterface:
         """
 
         interfaceByName(name) -> hou.PythonPanelInterface
@@ -62161,7 +62161,7 @@ class pypanel:
 
         """
     @staticmethod
-    def setMenuInterfaces(self, names: Sequence[str]) -> None:
+    def setMenuInterfaces(names: Sequence[str]) -> None:
         """
 
         setMenuInterfaces(names)
@@ -62176,7 +62176,7 @@ class pypanel:
 
         """
     @staticmethod
-    def menuInterfaces(self) -> Tuple[str, ...]:
+    def menuInterfaces() -> Tuple[str, ...]:
         """
 
         menuInterfaces() -> tuple of str
@@ -62778,7 +62778,7 @@ class qt:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def canCreateIcon(self, icon_name: str) -> bool:
+    def canCreateIcon(icon_name: str) -> bool:
         """
 
         hou.qt.canCreateIcon
@@ -62796,7 +62796,7 @@ class qt:
 
         """
     @staticmethod
-    def styleSheet(self, file_path: Optional[str] = None) -> str:
+    def styleSheet(file_path: Optional[str] = None) -> str:
         '''
 
         hou.qt.styleSheet
@@ -62834,7 +62834,7 @@ class qt:
 
         '''
     @staticmethod
-    def inchesToPixels(self, inches: float) -> float:
+    def inchesToPixels(inches: float) -> float:
         """
 
         hou.qt.inchesToPixels
@@ -62848,7 +62848,7 @@ class qt:
 
         """
     @staticmethod
-    def pixelsToInches(self, pixels: float) -> float:
+    def pixelsToInches(pixels: float) -> float:
         """
 
         hou.qt.pixelsToInches
@@ -62862,7 +62862,7 @@ class qt:
 
         """
     @staticmethod
-    def skipClosingMenusForCurrentButtonPress(self) -> None:
+    def skipClosingMenusForCurrentButtonPress() -> None:
         """
 
         hou.qt.skipClosingMenusForCurrentButtonPress
@@ -64768,7 +64768,7 @@ class SceneViewer(PathBasedPaneTab):
 
 
         '''
-    def selectGeometry(self, *args, **kwargs) -> GeometrySelection:
+    def selectGeometry(self, prompt: str = ..., sel_index: int = ..., allow_drag: bool = ..., quick_select: bool = ..., use_existing_selection: bool = ..., initial_selection: Optional[str] = ..., initial_selection_type: Optional[EnumValue] = ..., ordered: bool = ..., geometry_types: Sequence[EnumValue] = ..., primitive_types: Sequence[EnumValue] = ..., allow_obj_sel: bool = ..., icon: Optional[str] = ..., label: Optional[str] = ..., prior_selection_paths: list = ..., prior_selection_ids: list = ..., prior_selections: list = ..., allow_other_sops: bool = ..., consume_selections: bool = ...) -> GeometrySelection:
         '''
 
         selectGeometry(self, prompt=\'Select geometry\', sel_index=0,
@@ -67938,7 +67938,7 @@ class shelves:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def shelfSets(self) -> dict[str, ShelfSet]:
+    def shelfSets() -> dict[str, ShelfSet]:
         """
 
         shelfSets() -> dict of str to hou.ShelfSet
@@ -67949,7 +67949,7 @@ class shelves:
 
         """
     @staticmethod
-    def shelves(self) -> dict[str, Shelf]:
+    def shelves() -> dict[str, Shelf]:
         """
 
         shelves() -> dict of str to hou.Shelf
@@ -67960,7 +67960,7 @@ class shelves:
 
         """
     @staticmethod
-    def tools(self) -> dict[str, Tool]:
+    def tools() -> dict[str, Tool]:
         """
 
         tools() -> dict of str to hou.Tool
@@ -67978,7 +67978,7 @@ class shelves:
 
         """
     @staticmethod
-    def tool(self, tool_name: str) -> Tool:
+    def tool(tool_name: str) -> Tool:
         '''
 
         tool(tool_name) -> hou.Tool or None
@@ -67990,9 +67990,9 @@ class shelves:
 
         '''
     @staticmethod
-    def isToolDeleted(self, tool_name: str) -> bool: ...
+    def isToolDeleted(tool_name: str) -> bool: ...
     @staticmethod
-    def loadFile(self, file_path: str) -> None:
+    def loadFile(file_path: str) -> None:
         """
 
         loadFile(file_path)
@@ -68003,7 +68003,7 @@ class shelves:
 
         """
     @staticmethod
-    def reloadShelfFiles(self) -> None:
+    def reloadShelfFiles() -> None:
         """
 
         reloadShelfFiles()
@@ -68014,7 +68014,7 @@ class shelves:
 
         """
     @staticmethod
-    def runningTool(self) -> Tool:
+    def runningTool() -> Tool:
         """
 
         runningTool() -> hou.Tool or None
@@ -68022,7 +68022,7 @@ class shelves:
 
         """
     @staticmethod
-    def beginChangeBlock(self) -> None:
+    def beginChangeBlock() -> None:
         '''
 
         beginChangeBlock()
@@ -68059,7 +68059,7 @@ class shelves:
 
         '''
     @staticmethod
-    def endChangeBlock(self) -> None:
+    def endChangeBlock() -> None:
         """
 
         endChangeBlock()
@@ -68069,7 +68069,7 @@ class shelves:
 
         """
     @staticmethod
-    def newShelfSet(self, file_path: Optional[str] = None, name: Optional[str] = None, label: Optional[str] = None) -> ShelfSet:
+    def newShelfSet(file_path: Optional[str] = None, name: Optional[str] = None, label: Optional[str] = None) -> ShelfSet:
         """
 
         newShelfSet(file_path=None, name=None, label=None) -> hou.ShelfSet
@@ -68081,7 +68081,7 @@ class shelves:
 
         """
     @staticmethod
-    def newShelf(self, file_path: Optional[str] = None, name: Optional[str] = None, label: Optional[str] = None) -> Shelf:
+    def newShelf(file_path: Optional[str] = None, name: Optional[str] = None, label: Optional[str] = None) -> Shelf:
         """
 
         newShelf(file_path=None, name=None, label=None) -> hou.Shelf
@@ -68093,7 +68093,7 @@ class shelves:
 
         """
     @staticmethod
-    def newTool(self, *args, **kwargs) -> Tool:
+    def newTool(*args, **kwargs) -> Tool:
         """
 
         newTool(file_path=None, name=None, label=None, script=None,
@@ -68109,7 +68109,7 @@ class shelves:
 
         """
     @staticmethod
-    def defaultFilePath(self) -> str:
+    def defaultFilePath() -> str:
         """
 
         defaultFilePath() -> str
@@ -68117,7 +68117,7 @@ class shelves:
 
         """
     @staticmethod
-    def defaultToolName(self, nodetype_category_name: str, nodetype_name: str) -> str: ...
+    def defaultToolName(nodetype_category_name: str, nodetype_name: str) -> str: ...
 
 class ShopNode(OpNode):
     """
@@ -69562,7 +69562,7 @@ class styles:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def hasStyle(self, name: str) -> bool:
+    def hasStyle(name: str) -> bool:
         """
 
         hasStyle(name) -> bool
@@ -69572,7 +69572,7 @@ class styles:
 
         """
     @staticmethod
-    def styles(self, pattern: Optional[str] = None) -> Tuple[str, ...]:
+    def styles(pattern: Optional[str] = None) -> Tuple[str, ...]:
         """
 
         styles() -> tuple of str
@@ -69583,7 +69583,7 @@ class styles:
 
         """
     @staticmethod
-    def description(self, style: str) -> str:
+    def description(style: str) -> str:
         """
 
         description(name) -> str
@@ -69594,7 +69594,7 @@ class styles:
 
         """
     @staticmethod
-    def stylesheet(self, style: str) -> str:
+    def stylesheet(style: str) -> str:
         """
 
         stylesheet(name) -> str
@@ -69606,7 +69606,7 @@ class styles:
 
         """
     @staticmethod
-    def errors(self, style: str) -> str:
+    def errors(style: str) -> str:
         """
 
         errors(name) -> str
@@ -69618,7 +69618,7 @@ class styles:
 
         """
     @staticmethod
-    def addStyle(self, name: str, description: str, stylesheet: str) -> None:
+    def addStyle(name: str, description: str, stylesheet: str) -> None:
         """
 
         addStyle(name, description, stylesheet)
@@ -69642,7 +69642,7 @@ class styles:
 
         """
     @staticmethod
-    def renameStyle(self, old_name: str, new_name: str) -> None:
+    def renameStyle(old_name: str, new_name: str) -> None:
         """
 
         renameStyle(old_name, new_name)
@@ -69656,7 +69656,7 @@ class styles:
 
         """
     @staticmethod
-    def reorderStyles(self, names: Sequence[str]) -> None:
+    def reorderStyles(names: Sequence[str]) -> None:
         """
 
         reorderStyles(names)
@@ -69677,7 +69677,7 @@ class styles:
 
         """
     @staticmethod
-    def removeStyle(self, name: str) -> None:
+    def removeStyle(name: str) -> None:
         """
 
         removeStyle(name)
@@ -69687,7 +69687,7 @@ class styles:
 
         """
     @staticmethod
-    def removeAll(self) -> None:
+    def removeAll() -> None:
         """
 
         removeAll()
@@ -70411,7 +70411,7 @@ class takes:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def takes(self) -> Tuple[Take, ...]:
+    def takes() -> Tuple[Take, ...]:
         """
 
         takes() -> tuple of hou.Take
@@ -70421,7 +70421,7 @@ class takes:
 
         """
     @staticmethod
-    def currentTake(self) -> Take:
+    def currentTake() -> Take:
         """
 
         currentTake() -> hou.Take
@@ -70431,7 +70431,7 @@ class takes:
 
         """
     @staticmethod
-    def setCurrentTake(self, take: Take) -> None:
+    def setCurrentTake(take: Take) -> None:
         """
 
         setCurrentTake(take)
@@ -70443,7 +70443,7 @@ class takes:
 
         """
     @staticmethod
-    def rootTake(self) -> Take:
+    def rootTake() -> Take:
         """
 
         rootTake() -> hou.Take
@@ -70453,7 +70453,7 @@ class takes:
 
         """
     @staticmethod
-    def findTake(self, take_name: str) -> Take:
+    def findTake(take_name: str) -> Take:
         """
 
         findTake(take_name) -> hou.Take or None
@@ -70464,7 +70464,7 @@ class takes:
 
         """
     @staticmethod
-    def defaultTakeName(self) -> str:
+    def defaultTakeName() -> str:
         """
 
         defaultTakeName()
@@ -70476,7 +70476,7 @@ class takes:
 
         """
     @staticmethod
-    def setDefaultTakeName(self, default_name: str) -> None:
+    def setDefaultTakeName(default_name: str) -> None:
         """
 
         setDefaultTakeName()
@@ -70500,7 +70500,7 @@ class text:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def expandString(self, str: str, expand_tilde: bool = True) -> str:
+    def expandString(text: str) -> str:
         '''
 
         expandString(str, expand_tilde=True) -> str
@@ -70533,7 +70533,7 @@ class text:
 
         '''
     @staticmethod
-    def expandStringAtFrame(self, str: str, frame: float, expand_tilde: bool = True) -> str:
+    def expandStringAtFrame(str: str, frame: float, expand_tilde: bool = True) -> str:
         '''
 
         expandStringAtFrame(str, frame_number, expand_tilde=True) -> str
@@ -70561,7 +70561,7 @@ class text:
 
         '''
     @staticmethod
-    def expandHuskFilePath(self, str: str, frame_start: float = 1.0, frame_inc: float = 1.0, frame_idx: int = 0) -> str:
+    def expandHuskFilePath(str: str, frame_start: float = 1.0, frame_inc: float = 1.0, frame_idx: int = 0) -> str:
         """
 
         expandHuskFilePath(str, frame_start = 1.0, frame_inc = 1.0, frame_idx =
@@ -70584,7 +70584,7 @@ class text:
 
         """
     @staticmethod
-    def incrementNumberedString(self, str: str) -> str:
+    def incrementNumberedString(str: str) -> str:
         """
 
         incrementNumberedString(str) -> str
@@ -70606,7 +70606,7 @@ class text:
 
         """
     @staticmethod
-    def encode(self, varname: str) -> str:
+    def encode(varname: str) -> str:
         """
 
         encode(str) -> str
@@ -70633,7 +70633,7 @@ class text:
 
         """
     @staticmethod
-    def decode(self, varname: str) -> str:
+    def decode(varname: str) -> str:
         """
 
         decode(str) -> str
@@ -70652,7 +70652,7 @@ class text:
 
         """
     @staticmethod
-    def encodeAttrib(self, attribname: str) -> str:
+    def encodeAttrib(attribname: str) -> str:
         """
 
         encodeAttrib(str) -> str
@@ -70679,7 +70679,7 @@ class text:
 
         """
     @staticmethod
-    def decodeAttrib(self, attribname: str) -> str:
+    def decodeAttrib(attribname: str) -> str:
         """
 
         decodeAttrib(str) -> str
@@ -70699,7 +70699,7 @@ class text:
 
         """
     @staticmethod
-    def encodeParm(self, parmname: str) -> str:
+    def encodeParm(parmname: str) -> str:
         """
 
         encodeParm(str) -> str
@@ -70726,7 +70726,7 @@ class text:
 
         """
     @staticmethod
-    def decodeParm(self, parmname: str) -> str:
+    def decodeParm(parmname: str) -> str:
         """
 
         decodeParm(str) -> str
@@ -70746,7 +70746,7 @@ class text:
 
         """
     @staticmethod
-    def alphaNumeric(self, str: str) -> str:
+    def alphaNumeric(str: str) -> str:
         """
 
         alphaNumeric(str) -> str
@@ -70767,7 +70767,7 @@ class text:
 
         """
     @staticmethod
-    def variableName(self, str: str, safe_chars: Optional[str] = None) -> str:
+    def variableName(str: str, safe_chars: Optional[str] = None) -> str:
         '''
 
         variableName(str, safe_chars=\\"\\") -> str
@@ -70787,7 +70787,7 @@ class text:
 
         '''
     @staticmethod
-    def abspath(self, path: str, anchor_path: Optional[str] = None) -> str:
+    def abspath(path: str, anchor_path: Optional[str] = None) -> str:
         """
 
         abspath(path, base_path = None) -> str
@@ -70802,7 +70802,7 @@ class text:
 
         """
     @staticmethod
-    def relpath(self, path: str, anchor_path: Optional[str] = None) -> str:
+    def relpath(path: str, anchor_path: Optional[str] = None) -> str:
         """
 
         relpath(path, base_path = None) -> str
@@ -70815,7 +70815,7 @@ class text:
 
         """
     @staticmethod
-    def normpath(self, path: str) -> str:
+    def normpath(path: str) -> str:
         """
 
         normpath(path) -> str
@@ -70835,7 +70835,7 @@ class text:
 
         """
     @staticmethod
-    def collapseCommonVars(self, *args, **kwargs) -> str:
+    def collapseCommonVars(*args, **kwargs) -> str:
         """
 
         collapseCommonVars(path, vars = ['$HIP', '$JOB']) -> str
@@ -70849,7 +70849,7 @@ class text:
 
         """
     @staticmethod
-    def oclExtractBindings(self, code: str) -> Tuple[dict[str, Any], ...]:
+    def oclExtractBindings(code: str) -> Tuple[dict[str, Any], ...]:
         """
 
         oclExtractBindings(code) -> tuple of dict
@@ -70860,7 +70860,7 @@ class text:
 
         """
     @staticmethod
-    def patternRename(self, str: str, find: str, replace: str) -> str:
+    def patternRename(str: str, find: str, replace: str) -> str:
         '''
 
         patternRename(input_string, pattern_find, pattern_replace) -> str
@@ -70876,7 +70876,7 @@ class text:
 
         '''
     @staticmethod
-    def patternMatch(self, pattern: str, str: str, ignore_case: bool = False, path_match: bool = False) -> bool:
+    def patternMatch(pattern: str, str: str, ignore_case: bool = False, path_match: bool = False) -> bool:
         '''
 
         patternMatch(pattern_string, input_string, ignore_case = False,
@@ -71276,7 +71276,7 @@ class Tool(ShelfElement):
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def __lt__(self, other: Tool) -> bool: ...
+    def __lt__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
     def script(self) -> str:
         """
@@ -72158,7 +72158,7 @@ class ui:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def shellIO(self) -> ShellIO:
+    def shellIO() -> ShellIO:
         """
 
         shellIO() -> hou.ShellIO
@@ -72170,7 +72170,7 @@ class ui:
 
         """
     @staticmethod
-    def curDesktop(self) -> Desktop:
+    def curDesktop() -> Desktop:
         """
 
         curDesktop() -> hou.Desktop
@@ -72180,7 +72180,7 @@ class ui:
 
         """
     @staticmethod
-    def desktop(self, name: str) -> Desktop:
+    def desktop(name: str) -> Desktop:
         """
 
         desktop(name) -> hou.Desktop
@@ -72191,7 +72191,7 @@ class ui:
 
         """
     @staticmethod
-    def desktops(self) -> Tuple[Desktop, ...]:
+    def desktops() -> Tuple[Desktop, ...]:
         """
 
         desktops() -> tuple of hou.Desktop
@@ -72203,7 +72203,7 @@ class ui:
 
         """
     @staticmethod
-    def radialMenu(self, name: str) -> RadialMenu:
+    def radialMenu(name: str) -> RadialMenu:
         """
 
         radialMenu(name) -> hou.RadialMenu
@@ -72214,7 +72214,7 @@ class ui:
 
         """
     @staticmethod
-    def radialMenus(self) -> Tuple[RadialMenu, ...]:
+    def radialMenus() -> Tuple[RadialMenu, ...]:
         """
 
         radialMenus() -> tuple of hou.RadialMenu
@@ -72225,7 +72225,7 @@ class ui:
 
         """
     @staticmethod
-    def createRadialMenu(self, name: str, label: str) -> RadialMenu:
+    def createRadialMenu(name: str, label: str) -> RadialMenu:
         """
 
         createRadialMenu(name, label) -> hou.RadialMenu
@@ -72235,7 +72235,7 @@ class ui:
 
         """
     @staticmethod
-    def createRadialItem(self, submenu: bool = False, callback: bool = False) -> RadialScriptItem:
+    def createRadialItem(submenu: bool = False, callback: bool = False) -> RadialScriptItem:
         """
 
         createRadialItem(submenu=False, callback=false) -> hou.RadialScriptItem
@@ -72252,7 +72252,7 @@ class ui:
 
         """
     @staticmethod
-    def injectRadialItem(self, location: int, item: RadialItem) -> None:
+    def injectRadialItem(location: int, item: RadialItem) -> None:
         """
 
         injectRadialMenu(name)
@@ -72266,9 +72266,9 @@ class ui:
 
         """
     @staticmethod
-    def injectRadialMenu(self, name: str) -> None: ...
+    def injectRadialMenu(name: str) -> None: ...
     @staticmethod
-    def updateMainMenuBar(self) -> None:
+    def updateMainMenuBar() -> None:
         """
 
         updateMainMenuBar()
@@ -72282,7 +72282,7 @@ class ui:
 
         """
     @staticmethod
-    def panes(self) -> Tuple[Pane, ...]:
+    def panes() -> Tuple[Pane, ...]:
         """
 
         panes(self) -> tuple of hou.Pane
@@ -72295,7 +72295,7 @@ class ui:
 
         """
     @staticmethod
-    def paneTabs(self) -> Tuple[PaneTab, ...]:
+    def paneTabs() -> Tuple[PaneTab, ...]:
         """
 
         paneTabs(self) -> tuple of hou.PaneTab
@@ -72308,7 +72308,7 @@ class ui:
 
         """
     @staticmethod
-    def currentPaneTabs(self) -> Tuple[PaneTab, ...]:
+    def currentPaneTabs() -> Tuple[PaneTab, ...]:
         """
 
         currentPaneTabs(self) -> tuple of hou.PaneTab
@@ -72321,7 +72321,7 @@ class ui:
 
         """
     @staticmethod
-    def paneTabOfType(self, type: EnumValue, index: int = 0) -> PaneTab:
+    def paneTabOfType(type: EnumValue, index: int = 0) -> PaneTab:
         """
 
         paneTabOfType(self, type, index=0) -> hou.PaneTab or None
@@ -72344,7 +72344,7 @@ class ui:
 
         """
     @staticmethod
-    def findPane(self, pane_id: int) -> Pane:
+    def findPane(pane_id: int) -> Pane:
         """
 
         findPane(self, pane_id) -> hou.Pane or None
@@ -72357,7 +72357,7 @@ class ui:
 
         """
     @staticmethod
-    def findPaneTab(self, name: str) -> PaneTab:
+    def findPaneTab(name: str) -> PaneTab:
         """
 
         findPaneTab(self, name) -> hou.PaneTab or None
@@ -72373,7 +72373,7 @@ class ui:
 
         """
     @staticmethod
-    def floatingPaneTabs(self) -> Tuple[PaneTab, ...]:
+    def floatingPaneTabs() -> Tuple[PaneTab, ...]:
         """
 
         floatingPaneTabs(self) -> tuple of hou.PaneTab
@@ -72385,7 +72385,7 @@ class ui:
 
         """
     @staticmethod
-    def floatingPanels(self) -> Tuple[FloatingPanel, ...]:
+    def floatingPanels() -> Tuple[FloatingPanel, ...]:
         """
 
         floatingPanels(self) -> tuple of hou.FloatingPanel
@@ -72397,7 +72397,7 @@ class ui:
 
         """
     @staticmethod
-    def paneUnderCursor(self) -> Pane:
+    def paneUnderCursor() -> Pane:
         """
 
         paneUnderCursor(self)
@@ -72411,7 +72411,7 @@ class ui:
 
         """
     @staticmethod
-    def paneTabUnderCursor(self) -> PaneTab:
+    def paneTabUnderCursor() -> PaneTab:
         """
 
         paneTabUnderCursor(self)
@@ -72426,7 +72426,7 @@ class ui:
 
         """
     @staticmethod
-    def isUserInteracting(self) -> bool:
+    def isUserInteracting() -> bool:
         """
 
         isUserInteracting()
@@ -72441,7 +72441,7 @@ class ui:
 
         """
     @staticmethod
-    def setUserInteracting(self, interacting: bool) -> None:
+    def setUserInteracting(interacting: bool) -> None:
         """
 
         setUserInteracting()
@@ -72460,7 +72460,7 @@ class ui:
 
         """
     @staticmethod
-    def orientationUpAxis(self) -> EnumValue:
+    def orientationUpAxis() -> EnumValue:
         """
 
         orientationUpAxis(self) -> hou.orientUpAxis enum value
@@ -72471,7 +72471,7 @@ class ui:
 
         """
     @staticmethod
-    def handleOrientToNormalAxis(self) -> EnumValue:
+    def handleOrientToNormalAxis() -> EnumValue:
         """
 
         handleOrientToNormalAxis(self) -> hou.handleOrientToNormalAxis enum
@@ -72483,9 +72483,9 @@ class ui:
 
         """
     @staticmethod
-    def displayConfirmation(self, *args, **kwargs) -> bool: ...
+    def displayConfirmation(self, text: str, severity: EnumValue = ..., help: Optional[str] = ..., title: Optional[str] = ..., details: Optional[str] = ..., destails_label: Optional[str] = ..., destails_expanded: bool = ...) -> bool: ...
     @staticmethod
-    def displayCustomConfirmation(self, *args, **kwargs) -> int:
+    def displayCustomConfirmation(*args, **kwargs) -> int:
         '''
 
         displayCustomConfirmation(text, buttons=(),
@@ -72559,7 +72559,7 @@ class ui:
 
         '''
     @staticmethod
-    def displayMessage(self, *args, **kwargs) -> int:
+    def displayMessage(*args, **kwargs) -> int:
         '''
 
         displayMessage(text, buttons=(\'OK\',), severity=hou.severityType.Message,
@@ -72625,7 +72625,7 @@ class ui:
 
         '''
     @staticmethod
-    def readInput(self, *args, **kwargs) -> tuple[int, str]:
+    def readInput(*args, **kwargs) -> tuple[int, str]:
         """
 
         readInput(message, buttons=('OK',), severity=hou.severityType.Message,
@@ -72680,7 +72680,7 @@ class ui:
 
         """
     @staticmethod
-    def readMultiInput(self, *args, **kwargs) -> tuple[int, Tuple[str, ...]]:
+    def readMultiInput(*args, **kwargs) -> tuple[int, Tuple[str, ...]]:
         '''
 
         readMultiInput(message, input_labels, password_input_indices=(),
@@ -72766,7 +72766,7 @@ class ui:
 
         '''
     @staticmethod
-    def selectFromList(self, *args, **kwargs) -> Tuple[int, ...]:
+    def selectFromList(*args, **kwargs) -> Tuple[int, ...]:
         '''
 
         selectFromList(choices, default_choices=(), exclusive=False,
@@ -72835,7 +72835,7 @@ class ui:
 
         '''
     @staticmethod
-    def selectFromTree(self, *args, **kwargs) -> Tuple[str, ...]:
+    def selectFromTree(*args, **kwargs) -> Tuple[str, ...]:
         """
 
         selectFromTree(choices, picked=(), exclusive=False, message=None,
@@ -72882,7 +72882,7 @@ class ui:
 
         """
     @staticmethod
-    def selectParmTag(self, width: int = 0, height: int = 0) -> Tuple[str, ...]:
+    def selectParmTag(width: int = 0, height: int = 0) -> Tuple[str, ...]:
         """
 
         selectParmTag(width=0, height=0) -> tuple of str
@@ -72913,7 +72913,7 @@ class ui:
 
         """
     @staticmethod
-    def selectParm(self, *args, **kwargs) -> Tuple[str, ...]:
+    def selectParm(*args, **kwargs) -> Tuple[str, ...]:
         """
 
         selectParm(category=None, bound_parms_only=False, relative_to_node=None,
@@ -72951,7 +72951,7 @@ class ui:
 
         """
     @staticmethod
-    def selectParmTuple(self, *args, **kwargs) -> Tuple[str, ...]:
+    def selectParmTuple(*args, **kwargs) -> Tuple[str, ...]:
         """
 
         selectParmTuple(category=None, bound_parms_only=False,
@@ -72967,7 +72967,7 @@ class ui:
 
         """
     @staticmethod
-    def selectColor(self, initial_color: Optional[Color] = None) -> Color:
+    def selectColor(initial_color: Optional[Color] = None) -> Color:
         """
 
         selectColor(initial_color=None) -> hou.Color or None
@@ -72984,7 +72984,7 @@ class ui:
 
         """
     @staticmethod
-    def loadPaletteFile(self, file: str) -> Tuple[Color, ...]:
+    def loadPaletteFile(file: str) -> Tuple[Color, ...]:
         """
 
         loadPaletteFile(self, file) -> tuple of hou.Color
@@ -72997,7 +72997,7 @@ class ui:
 
         """
     @staticmethod
-    def savePaletteFile(self, file: str, colors: typing.Iterable[Color]) -> None:
+    def savePaletteFile(file: str, colors: typing.Iterable[Color]) -> None:
         """
 
         savePaletteFile(self, file, colors)
@@ -73011,7 +73011,7 @@ class ui:
 
         """
     @staticmethod
-    def updateValueLadder(self, cursor_x: int, cursor_y: int, alt_key: bool, shift_key: bool) -> None:
+    def updateValueLadder(cursor_x: int, cursor_y: int, alt_key: bool, shift_key: bool) -> None:
         """
 
         updateValueLadder(cursor_x, cursor_y, alt_key, shift_key)
@@ -73043,7 +73043,7 @@ class ui:
 
         """
     @staticmethod
-    def closeValueLadder(self) -> None:
+    def closeValueLadder() -> None:
         """
 
         closeValueLadder()
@@ -73058,7 +73058,7 @@ class ui:
 
         """
     @staticmethod
-    def displayFileDependencyDialog(self, *args, **kwargs) -> Tuple[bool, Tuple[tuple[Parm, str], ...]]:
+    def displayFileDependencyDialog(*args, **kwargs) -> Tuple[bool, Tuple[tuple[Parm, str], ...]]:
         """
 
         displayFileDependencyDialog(rop_node=None, uploaded_files=(),
@@ -73087,7 +73087,7 @@ class ui:
 
         """
     @staticmethod
-    def displayNodeHelp(self, node_type: NodeType) -> None:
+    def displayNodeHelp(node_type: NodeType) -> None:
         """
 
         displayNodeHelp(node_type)
@@ -73105,7 +73105,7 @@ class ui:
 
         """
     @staticmethod
-    def openRenderDialog(self, rop: RopNode) -> None:
+    def openRenderDialog(rop: RopNode) -> None:
         """
 
         openRenderDialog(rop_node)
@@ -73117,7 +73117,7 @@ class ui:
 
         """
     @staticmethod
-    def openRenameSelectedDialog(self, network: Node) -> None:
+    def openRenameSelectedDialog(network: Node) -> None:
         """
 
         openRenameSelectedDialog(node)
@@ -73129,7 +73129,7 @@ class ui:
 
         """
     @staticmethod
-    def openParameterInterfaceDialog(self, node: Node, open_tab: Optional[EnumValue] = None, open_tab_tree_path: Optional[str] = None) -> None:
+    def openParameterInterfaceDialog(node: Node, open_tab: Optional[EnumValue] = None, open_tab_tree_path: Optional[str] = None) -> None:
         """
 
         openParameterInterfaceDialog(node, open_tab = None, open_tab_tree_path =
@@ -73154,7 +73154,7 @@ class ui:
 
         """
     @staticmethod
-    def updateMode(self) -> EnumValue:
+    def updateMode() -> EnumValue:
         """
 
         updateMode() -> hou.updateMode enum value
@@ -73164,7 +73164,7 @@ class ui:
 
         """
     @staticmethod
-    def setUpdateMode(self, mode: EnumValue) -> None:
+    def setUpdateMode(mode: EnumValue) -> None:
         """
 
         setUpdateMode(mode)
@@ -73174,7 +73174,7 @@ class ui:
 
         """
     @staticmethod
-    def triggerUpdate(self) -> None:
+    def triggerUpdate() -> None:
         """
 
         triggerUpdate()
@@ -73186,7 +73186,7 @@ class ui:
 
         """
     @staticmethod
-    def reloadViewportColorSchemes(self) -> None:
+    def reloadViewportColorSchemes() -> None:
         """
 
         reloadViewportColorSchemes()
@@ -73202,7 +73202,7 @@ class ui:
 
         """
     @staticmethod
-    def reloadColorScheme(self) -> None:
+    def reloadColorScheme() -> None:
         """
 
         reloadColorScheme()
@@ -73218,7 +73218,7 @@ class ui:
 
         """
     @staticmethod
-    def currentColorScheme(self) -> str:
+    def currentColorScheme() -> str:
         """
 
         currentColorScheme() -> str
@@ -73228,7 +73228,7 @@ class ui:
 
         """
     @staticmethod
-    def isAutoKey(self) -> bool:
+    def isAutoKey() -> bool:
         """
 
         isAutoKey() -> bool`
@@ -73240,7 +73240,7 @@ class ui:
 
         """
     @staticmethod
-    def removeAllSelectionCallbacks(self) -> None:
+    def removeAllSelectionCallbacks() -> None:
         """
 
         removeAllSelectionCallbacks()
@@ -73252,7 +73252,7 @@ class ui:
 
         """
     @staticmethod
-    def createDialog(self, ui_file_name: str) -> Dialog:
+    def createDialog(ui_file_name: str) -> Dialog:
         """
 
         createDialog(ui_file_name) -> hou.Dialog
@@ -73276,7 +73276,7 @@ class ui:
 
         """
     @staticmethod
-    def findDialog(self, ui_file_name: str) -> Dialog:
+    def findDialog(ui_file_name: str) -> Dialog:
         """
 
         findDialog(ui_file_name) -> hou.Dialog
@@ -73292,7 +73292,7 @@ class ui:
 
         """
     @staticmethod
-    def dialogs(self) -> Tuple[Dialog, ...]:
+    def dialogs() -> Tuple[Dialog, ...]:
         """
 
         dialogs() -> tuple of hou.Dialog
@@ -73302,7 +73302,7 @@ class ui:
 
         """
     @staticmethod
-    def writePythonShellHistoryFile(self, filename: Optional[str] = None) -> None:
+    def writePythonShellHistoryFile(filename: Optional[str] = None) -> None:
         """
 
         writePythonShellHistoryFile(filename=None)
@@ -73320,7 +73320,7 @@ class ui:
 
         """
     @staticmethod
-    def readPythonShellHistoryFile(self, filename: Optional[str] = None) -> None:
+    def readPythonShellHistoryFile(filename: Optional[str] = None) -> None:
         """
 
         readPythonShellHistoryFile(filename=None)
@@ -73339,7 +73339,7 @@ class ui:
 
         """
     @staticmethod
-    def setStatusMessage(self, *args, **kwargs) -> None:
+    def setStatusMessage(*args, **kwargs) -> None:
         '''
 
         setStatusMessage(message, severity=hou.severityType.Message)
@@ -73356,7 +73356,7 @@ class ui:
 
         '''
     @staticmethod
-    def statusMessage(self) -> tuple[str, EnumValue]:
+    def statusMessage() -> tuple[str, EnumValue]:
         """
 
         statusMessage() -> (string, hou.severityType)
@@ -73368,11 +73368,11 @@ class ui:
 
         """
     @staticmethod
-    def openAssetUploadDialog(self, uploading_node: Node, session_key: str, containing_node: Node) -> None: ...
+    def openAssetUploadDialog(uploading_node: Node, session_key: str, containing_node: Node) -> None: ...
     @staticmethod
-    def openAssetDependenciesDialog(self, uploading_nodes: Sequence[Node], uploaded_nodes: Sequence[Node], session_key: str, containing_node: Node) -> None: ...
+    def openAssetDependenciesDialog(uploading_nodes: Sequence[Node], uploaded_nodes: Sequence[Node], session_key: str, containing_node: Node) -> None: ...
     @staticmethod
-    def hasDragSourceData(self, label: str) -> bool:
+    def hasDragSourceData(label: str, index: int) -> bool:
         """
 
         getDragSourceData(label, index) -> data
@@ -73393,9 +73393,9 @@ class ui:
 
         """
     @staticmethod
-    def getDragSourceData(self, label: str, index: int = 0) -> DDSourceAny: ...
+    def getDragSourceData(label: str, index: int = 0) -> DDSourceAny: ...
     @staticmethod
-    def resourceValueFromName(self, name: str) -> str:
+    def resourceValueFromName(name: str) -> str:
         """
 
         resourceValueFromName(self, name) -> str
@@ -73409,7 +73409,7 @@ class ui:
 
         """
     @staticmethod
-    def colorFromName(self, name: str) -> Color:
+    def colorFromName(name: str) -> Color:
         '''
 
         colorFromName(self, name) -> hou.Color
@@ -73432,7 +73432,7 @@ class ui:
 
         '''
     @staticmethod
-    def globalScaleFactor(self) -> float:
+    def globalScaleFactor() -> float:
         """
 
         globalScaleFactor(self) -> float
@@ -73451,7 +73451,7 @@ class ui:
 
         """
     @staticmethod
-    def scaledSize(self, size: int) -> int:
+    def scaledSize(size: int) -> int:
         """
 
         scaledSize(self, size) -> int
@@ -73475,7 +73475,7 @@ class ui:
 
         """
     @staticmethod
-    def inchesToPixels(self, inches: float) -> float:
+    def inchesToPixels(inches: float) -> float:
         """
 
         inchesToPixels(self, inches) -> float
@@ -73492,7 +73492,7 @@ class ui:
 
         """
     @staticmethod
-    def pixelsToInches(self, pixels: float) -> float:
+    def pixelsToInches(pixels: float) -> float:
         """
 
         pixelsToInches(self, pixels) -> float
@@ -73509,7 +73509,7 @@ class ui:
 
         """
     @staticmethod
-    def copyTextToClipboard(self, text: str) -> None:
+    def copyTextToClipboard(text: str) -> None:
         """
 
         copyTextToClipboard(self, text)
@@ -73519,7 +73519,7 @@ class ui:
 
         """
     @staticmethod
-    def getTextFromClipboard(self) -> str:
+    def getTextFromClipboard() -> str:
         """
 
         getTextFromClipboard(self) -> str
@@ -73531,7 +73531,7 @@ class ui:
 
         """
     @staticmethod
-    def hotkeys(self, hotkey_symbol: str) -> Tuple[str, ...]:
+    def hotkeys(hotkey_symbol: str) -> Tuple[str, ...]:
         '''
 
         hotkeys(self, hotkey_symbol) -> tuple of str
@@ -73551,7 +73551,7 @@ class ui:
 
         '''
     @staticmethod
-    def hotkeyDescription(self, hotkey_symbol: str) -> str:
+    def hotkeyDescription(hotkey_symbol: str) -> str:
         '''
 
         hotkeyDescription(self, hotkey_symbol) -> str
@@ -73569,7 +73569,7 @@ class ui:
 
         '''
     @staticmethod
-    def isKeyMatch(self, key: str, hotkey_symbol: str) -> bool:
+    def isKeyMatch(key: str, hotkey_symbol: str) -> bool:
         '''
 
         isKeyMatch(self, key, hotkey_symbol) -> bool
@@ -73590,7 +73590,7 @@ class ui:
 
         '''
     @staticmethod
-    def openCaptureWeightSpreadsheet(self, node: Node, pattern: Optional[str] = None) -> None:
+    def openCaptureWeightSpreadsheet(node: Node, pattern: Optional[str] = None) -> None:
         """
 
         openCaptureWeightSpreadsheet(node, pattern=None)
@@ -73604,7 +73604,7 @@ class ui:
 
         """
     @staticmethod
-    def registerViewerState(self, vs_templ: ViewerStateTemplate) -> None:
+    def registerViewerState(vs_templ: ViewerStateTemplate) -> None:
         """
 
         registerViewerState(template)
@@ -73625,7 +73625,7 @@ class ui:
 
         """
     @staticmethod
-    def registerViewerStateFile(self, state_file: str) -> None:
+    def registerViewerStateFile(state_file: str) -> None:
         """
 
         registerViewerStateFile(file_path)
@@ -73647,7 +73647,7 @@ class ui:
 
         """
     @staticmethod
-    def registerViewerStates(self) -> None:
+    def registerViewerStates() -> None:
         """
 
         registerViewerStates()
@@ -73660,7 +73660,7 @@ class ui:
 
         """
     @staticmethod
-    def unregisterViewerState(self, state_typename: str) -> None:
+    def unregisterViewerState(state_typename: str) -> None:
         """
 
         unregisterViewerState(state_name)
@@ -73679,7 +73679,7 @@ class ui:
 
         """
     @staticmethod
-    def unregisterViewerStateFile(self, state_file: str) -> None:
+    def unregisterViewerStateFile(state_file: str) -> None:
         """
 
         unregisterViewerStateFile(file_path)
@@ -73698,7 +73698,7 @@ class ui:
 
         """
     @staticmethod
-    def isRegisteredViewerState(self, state_name: str) -> bool:
+    def isRegisteredViewerState(state_name: str) -> bool:
         """
 
         isRegisteredViewerState(state_name) -> bool
@@ -73713,7 +73713,7 @@ class ui:
 
         """
     @staticmethod
-    def reloadViewerState(self, state_typename: str) -> None:
+    def reloadViewerState(state_typename: str) -> None:
         """
 
         reloadViewerStates(state_names=None)
@@ -73733,9 +73733,9 @@ class ui:
 
         """
     @staticmethod
-    def reloadViewerStates(self, *args, **kwargs) -> None: ...
+    def reloadViewerStates(*args, **kwargs) -> None: ...
     @staticmethod
-    def viewerStateInfo(self, *args, **kwargs) -> str:
+    def viewerStateInfo(*args, **kwargs) -> str:
         '''
 
         viewerStateInfo(state_names) -> str
@@ -73855,7 +73855,7 @@ class ui:
 
         '''
     @staticmethod
-    def viewerStateInfoFromFile(self, state_file: str) -> Tuple[str, str]:
+    def viewerStateInfoFromFile(state_file: str) -> Tuple[str, str]:
         '''
 
         viewerStateInfoFromFile(state_filepath) -> (str, str)
@@ -73997,7 +73997,7 @@ class ui:
 
         '''
     @staticmethod
-    def viewerHandleInfo(self, *args, **kwargs) -> str:
+    def viewerHandleInfo(*args, **kwargs) -> str:
         '''
 
         viewerHandleInfo(handle_names) -> string
@@ -74330,7 +74330,7 @@ class ui:
 
         '''
     @staticmethod
-    def printResourceMessage(self, *args, **kwargs) -> None:
+    def printResourceMessage(*args, **kwargs) -> None:
         """
 
         printResourceMessage(resource_type, message,
@@ -74358,7 +74358,7 @@ class ui:
 
         """
     @staticmethod
-    def fireResourceCustomEvent(self, resource_type: EnumValue, user_data: dict[str, Any], queue: bool = True) -> None:
+    def fireResourceCustomEvent(resource_type: EnumValue, user_data: dict[str, Any], queue: bool = True) -> None:
         """
 
         fireResourceCustomEvent(resource_type, user_data, queue=True)
@@ -74417,7 +74417,7 @@ class ui:
 
         """
     @staticmethod
-    def showInFileBrowser(self, file_path: str) -> None:
+    def showInFileBrowser(file_path: str) -> None:
         """
 
         showInFileBrowser(file_path)
@@ -74448,7 +74448,7 @@ class ui:
 
         """
     @staticmethod
-    def showFloatingParameterEditor(self, node: Node, reuse: bool = True) -> ParameterEditor:
+    def showFloatingParameterEditor(node: Node, reuse: bool = True) -> ParameterEditor:
         """
 
         showFloatingParameterEditor(node,reuse) -> hou.ParameterEditor
@@ -74458,7 +74458,7 @@ class ui:
 
         """
     @staticmethod
-    def openParameterExpressionEditor(self, parm: Parm) -> None:
+    def openParameterExpressionEditor(parm: Parm) -> None:
         """
 
         openParameterExpressionEditor(parm)
@@ -74473,7 +74473,7 @@ class ui:
 
         """
     @staticmethod
-    def openPreferences(self, page: str, label: str) -> None:
+    def openPreferences(page: str, label: str) -> None:
         """
 
         openPreferences(page)
@@ -74626,7 +74626,7 @@ class ui:
 
         """
     @staticmethod
-    def hideAllMinimizedStowbars(self) -> bool:
+    def hideAllMinimizedStowbars() -> bool:
         """
 
         hideAllMinimizedStowbars(self) -> bool
@@ -74637,7 +74637,7 @@ class ui:
 
         """
     @staticmethod
-    def setHideAllMinimizedStowbars(self, hide: bool) -> None:
+    def setHideAllMinimizedStowbars(hide: bool) -> None:
         """
 
         setHideAllMinimizedStowbars(self,on) -> bool
@@ -74651,7 +74651,7 @@ class ui:
 
         """
     @staticmethod
-    def registerViewerHandle(self, tmpl: ViewerHandleTemplate) -> None:
+    def registerViewerHandle(tmpl: ViewerHandleTemplate) -> None:
         """
 
         registerViewerHandle(template)
@@ -74675,7 +74675,7 @@ class ui:
 
         """
     @staticmethod
-    def registerViewerHandles(self) -> None:
+    def registerViewerHandles() -> None:
         """
 
         registerViewerHandles()
@@ -74688,7 +74688,7 @@ class ui:
 
         """
     @staticmethod
-    def registerViewerHandleFile(self, handle_file: str) -> None:
+    def registerViewerHandleFile(handle_file: str) -> None:
         """
 
         registerViewerHandleFile(handle_file)
@@ -74711,7 +74711,7 @@ class ui:
 
         """
     @staticmethod
-    def unregisterViewerHandle(self, handle_name: str) -> None:
+    def unregisterViewerHandle(handle_name: str) -> None:
         """
 
         unregisterViewerHandle(handle_name)
@@ -74730,7 +74730,7 @@ class ui:
 
         """
     @staticmethod
-    def unregisterViewerHandleFile(self, handle_file: str) -> None:
+    def unregisterViewerHandleFile(handle_file: str) -> None:
         """
 
         unregisterViewerHandleFile(handle_file)
@@ -74749,7 +74749,7 @@ class ui:
 
         """
     @staticmethod
-    def isRegisteredViewerHandle(self, handle_name: str) -> bool:
+    def isRegisteredViewerHandle(handle_name: str) -> bool:
         """
 
         isRegisteredViewerHandle(handle_name) -> bool
@@ -74764,7 +74764,7 @@ class ui:
 
         """
     @staticmethod
-    def reloadViewerHandle(self, handle_name: str) -> None:
+    def reloadViewerHandle(handle_name: str) -> None:
         """
 
         reloadViewerHandle(handle_name)
@@ -74795,7 +74795,7 @@ class ui:
 
         """
     @staticmethod
-    def loadPackage(self, package_filepath: str) -> None:
+    def loadPackage(package_filepath: str) -> None:
         '''
 
         loadPackage(file_path)
@@ -74881,7 +74881,7 @@ class ui:
 
         '''
     @staticmethod
-    def loadPackageArchive(self, *args, **kwargs) -> Tuple[str, ...]:
+    def loadPackageArchive(*args, **kwargs) -> Tuple[str, ...]:
         """
 
         loadPackageArchive(file_path, extract_path=None) -> list of string
@@ -74921,7 +74921,7 @@ class ui:
 
         """
     @staticmethod
-    def unloadPackage(self, package_filepath: str) -> None:
+    def unloadPackage(package_filepath: str) -> None:
         """
 
         unloadPackage(file_path)
@@ -74935,7 +74935,7 @@ class ui:
 
         """
     @staticmethod
-    def reloadPackage(self, package_filepath: str) -> None:
+    def reloadPackage(package_filepath: str) -> None:
         """
 
         reloadPackage(file_path)
@@ -74950,7 +74950,7 @@ class ui:
 
         """
     @staticmethod
-    def packageInfo(self, *args) -> str:
+    def packageInfo(*args) -> str:
         """
 
         packageInfo(file_paths) -> string
@@ -74990,7 +74990,7 @@ class ui:
 
         """
     @staticmethod
-    def sharedAssetGalleryDataSource(self, gallery_name: str) -> AssetGalleryDataSource:
+    def sharedAssetGalleryDataSource(gallery_name: str) -> AssetGalleryDataSource:
         """
 
         sharedAssetGalleryDataSource(self, gallery_name) ->
@@ -75004,7 +75004,7 @@ class ui:
 
         """
     @staticmethod
-    def setSharedAssetGalleryDataSource(self, data_source: AssetGalleryDataSource, gallery_name: str) -> None:
+    def setSharedAssetGalleryDataSource(data_source: AssetGalleryDataSource, gallery_name: str) -> None:
         """
 
         setSharedAssetGalleryDataSource(self, datasource)
@@ -75017,7 +75017,7 @@ class ui:
 
         """
     @staticmethod
-    def reloadSharedAssetGalleryDataSource(self, gallery_name: str) -> None:
+    def reloadSharedAssetGalleryDataSource(gallery_name: str) -> None:
         """
 
         reloadSharedAssetGalleryDataSource(self)
@@ -75030,7 +75030,7 @@ class ui:
 
         """
     @staticmethod
-    def selectMultipleNodes(self, relative_to_node: Optional[Node] = None, initial_node: Optional[Node] = None, node_type_filter: Optional[EnumValue] = None, title: Optional[str] = None, width: int = 0, height: int = 0, custom_node_filter_callback: Optional[Any] = None) -> Tuple[str, ...]:
+    def selectMultipleNodes(relative_to_node: Optional[Node] = None, initial_node: Optional[Node] = None, node_type_filter: Optional[EnumValue] = None, title: Optional[str] = None, width: int = 0, height: int = 0, custom_node_filter_callback: Optional[Any] = None) -> Tuple[str, ...]:
         """
 
         selectMultipleNodes(relative_to_node=None, initial_node=None,
@@ -75044,7 +75044,7 @@ class ui:
 
         """
     @staticmethod
-    def openBookmarkEditor(self, bookmark: Optional[Bookmark] = None) -> None:
+    def openBookmarkEditor(bookmark: Optional[Bookmark] = None) -> None:
         """
 
         openBookmarkEditor(bookmark)
@@ -75057,7 +75057,7 @@ class ui:
 
         """
     @staticmethod
-    def openColorEditor(self, color_changed_callback: Any, include_alpha: bool = False, initial_color: Optional[Color] = None, initial_alpha: float = 1.0) -> None:
+    def openColorEditor(color_changed_callback: Any, include_alpha: bool = False, initial_color: Optional[Color] = None, initial_alpha: float = 1.0) -> None:
         '''
 
         openColorEditor( color_change_callback, include_alpha=False,
@@ -75093,7 +75093,7 @@ class ui:
 
         '''
     @staticmethod
-    def openValueLadder(self, *args, **kwargs) -> None:
+    def openValueLadder(*args, **kwargs) -> None:
         """
 
         openValueLadder(initial_value, value_changed_callback,
@@ -75192,7 +75192,7 @@ class ui:
 
         """
     @staticmethod
-    def addEventLoopCallback(self, callback: Any) -> None:
+    def addEventLoopCallback(callback: Any) -> None:
         """
 
         addEventLoopCallback(callback)
@@ -75220,7 +75220,7 @@ class ui:
 
         """
     @staticmethod
-    def removeEventLoopCallback(self, callback: Any) -> None:
+    def removeEventLoopCallback(callback: Any) -> None:
         """
 
         removeEventLoopCallback(callback)
@@ -75235,7 +75235,7 @@ class ui:
 
         """
     @staticmethod
-    def postEventCallback(self, callback: Any) -> None:
+    def postEventCallback(callback: Any) -> None:
         """
 
         postEventCallback(callback)
@@ -75252,7 +75252,7 @@ class ui:
 
         """
     @staticmethod
-    def removePostedEventCallback(self, callback: Any) -> None:
+    def removePostedEventCallback(callback: Any) -> None:
         """
 
         removePostedEventCallback(callback)
@@ -75264,7 +75264,7 @@ class ui:
 
         """
     @staticmethod
-    def eventLoopCallbacks(self) -> Tuple[Any, ...]:
+    def eventLoopCallbacks() -> Tuple[Any, ...]:
         """
 
         eventLoopCallbacks() -> tuple of callback
@@ -75275,7 +75275,7 @@ class ui:
 
         """
     @staticmethod
-    def waitUntil(self, callback: Any) -> None:
+    def waitUntil(callback: Any) -> None:
         '''
 
         waitUntil(condition_callback)
@@ -75330,7 +75330,7 @@ class ui:
 
         '''
     @staticmethod
-    def addTriggerUpdateCallback(self, callback: Any) -> None:
+    def addTriggerUpdateCallback(callback: Any) -> None:
         """
 
         removeTriggerUpdateCallback(callback)
@@ -75341,9 +75341,9 @@ class ui:
 
         """
     @staticmethod
-    def removeTriggerUpdateCallback(self, callback: Any) -> None: ...
+    def removeTriggerUpdateCallback(callback: Any) -> None: ...
     @staticmethod
-    def addSelectionCallback(self, callback: Any) -> None:
+    def addSelectionCallback(callback: Any) -> None:
         """
 
         addSelectionCallback(callback)
@@ -75365,7 +75365,7 @@ class ui:
 
         """
     @staticmethod
-    def removeSelectionCallback(self, callback: Any) -> None:
+    def removeSelectionCallback(callback: Any) -> None:
         """
 
         removeSelectionCallback(callback)
@@ -75377,7 +75377,7 @@ class ui:
 
         """
     @staticmethod
-    def selectionCallbacks(self) -> Tuple[Any, ...]:
+    def selectionCallbacks() -> Tuple[Any, ...]:
         """
 
         selectionCallbacks() -> tuple of callback
@@ -75388,7 +75388,7 @@ class ui:
 
         """
     @staticmethod
-    def addResourceEventCallback(self, callback: Any) -> None:
+    def addResourceEventCallback(callback: Any) -> None:
         """
 
         addResourceEventCallback(self, callback)
@@ -75415,7 +75415,7 @@ class ui:
 
         """
     @staticmethod
-    def removeResourceEventCallback(self, callback: Any) -> None:
+    def removeResourceEventCallback(callback: Any) -> None:
         """
 
         removeResourceEventCallback(self,callback)
@@ -75426,7 +75426,7 @@ class ui:
 
         """
     @staticmethod
-    def openFileEditor(self, *args, **kwargs) -> None:
+    def openFileEditor(*args, **kwargs) -> None:
         """
 
         openFileEditor(title, file_path, action_callback=None, params=None)
@@ -75505,7 +75505,7 @@ class ui:
 
         """
     @staticmethod
-    def openViewerStateCodeGenDialog(self, *args, **kwargs) -> None:
+    def openViewerStateCodeGenDialog(*args, **kwargs) -> None:
         """
 
         openViewerStateCodeGenDialog(category, action_callback,
@@ -75586,7 +75586,7 @@ class ui:
 
         """
     @staticmethod
-    def openViewerHandleCodeGenDialog(self, category: NodeTypeCategory, action_callback: Any) -> None:
+    def openViewerHandleCodeGenDialog(category: NodeTypeCategory, action_callback: Any) -> None:
         """
 
         openViewerHandleCodeGenDialog(categories, action_callback)
@@ -76161,7 +76161,7 @@ class undos:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def areEnabled(self) -> bool:
+    def areEnabled() -> bool:
         """
 
         areEnabled() -> bool
@@ -76171,7 +76171,7 @@ class undos:
 
         """
     @staticmethod
-    def disabler(self) -> UndosDisabler:
+    def disabler() -> UndosDisabler:
         '''
 
         disabler() -> hou.UndosDisabler
@@ -76189,7 +76189,7 @@ class undos:
 
         '''
     @staticmethod
-    def group(self, label: str, editor: Optional[NetworkEditor] = None) -> UndosGroup:
+    def group(label: str, editor: Optional[NetworkEditor] = None) -> UndosGroup:
         '''
 
         group(label, editor=None) -> hou.UndosGroup
@@ -76218,7 +76218,7 @@ class undos:
 
         '''
     @staticmethod
-    def removeUndos(self, tag: str) -> None:
+    def removeUndos(tag: str) -> None:
         '''
 
         removeUndos(tag)
@@ -76231,7 +76231,7 @@ class undos:
 
         '''
     @staticmethod
-    def clear(self) -> None:
+    def clear() -> None:
         """
 
         clear()
@@ -76241,7 +76241,7 @@ class undos:
 
         """
     @staticmethod
-    def memoryUsage(self) -> int:
+    def memoryUsage() -> int:
         """
 
         memoryUsage() -> int
@@ -76251,7 +76251,7 @@ class undos:
 
         """
     @staticmethod
-    def memoryUsageLimit(self) -> int:
+    def memoryUsageLimit() -> int:
         """
 
         memoryUsageLimit() -> int
@@ -76261,7 +76261,7 @@ class undos:
 
         """
     @staticmethod
-    def performUndo(self) -> bool:
+    def performUndo() -> bool:
         """
 
         performUndo()
@@ -76271,7 +76271,7 @@ class undos:
 
         """
     @staticmethod
-    def performRedo(self) -> bool:
+    def performRedo() -> bool:
         """
 
         performRedo()
@@ -76281,7 +76281,7 @@ class undos:
 
         """
     @staticmethod
-    def undoLabels(self) -> Tuple[str, ...]:
+    def undoLabels() -> Tuple[str, ...]:
         """
 
         undoLabels() -> tuple of str
@@ -76293,7 +76293,7 @@ class undos:
 
         """
     @staticmethod
-    def redoLabels(self) -> Tuple[str, ...]:
+    def redoLabels() -> Tuple[str, ...]:
         """
 
         redoLabels() -> tuple of str
@@ -76305,7 +76305,7 @@ class undos:
 
         """
     @staticmethod
-    def add(self, undo: Any, label: str, tag: Optional[str] = None) -> None:
+    def add(undo: Any, label: str, tag: Optional[str] = None) -> None:
         '''
 
         add(undo, label, tag=None)
@@ -81584,7 +81584,7 @@ class viewportVisualizers:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def visualizers(self, *args, **kwargs) -> Tuple[ViewportVisualizer, ...]:
+    def visualizers(*args, **kwargs) -> Tuple[ViewportVisualizer, ...]:
         """
 
         visualizers(category=hou.viewportVisualizerCategory.Common, node=None)
@@ -81604,7 +81604,7 @@ class viewportVisualizers:
 
         """
     @staticmethod
-    def createVisualizer(self, *args, **kwargs) -> ViewportVisualizer:
+    def createVisualizer(*args, **kwargs) -> ViewportVisualizer:
         """
 
         createVisualizer(type, category=hou.viewportVisualizerCategory.Common,
@@ -81627,7 +81627,7 @@ class viewportVisualizers:
 
         """
     @staticmethod
-    def copyVisualizer(self, source: ViewportVisualizer) -> ViewportVisualizer:
+    def copyVisualizer(source: ViewportVisualizer) -> ViewportVisualizer:
         """
 
         copyVisualizer(source) -> hou.ViewportVisualizer
@@ -81637,7 +81637,7 @@ class viewportVisualizers:
 
         """
     @staticmethod
-    def types(self) -> Tuple[ViewportVisualizerType, ...]:
+    def types() -> Tuple[ViewportVisualizerType, ...]:
         """
 
         types() -> tuple of hou.ViewportVisualizerType
@@ -81647,7 +81647,7 @@ class viewportVisualizers:
 
         """
     @staticmethod
-    def type(self, name: str) -> ViewportVisualizerType:
+    def type(name: str) -> ViewportVisualizerType:
         """
 
         type(name) -> hou.ViewportVisualizerType
@@ -81658,7 +81658,7 @@ class viewportVisualizers:
 
         """
     @staticmethod
-    def isCategoryActive(self, category: EnumValue, node: Optional[Node] = None, viewport: Optional[GeometryViewport] = None) -> bool:
+    def isCategoryActive(category: EnumValue, node: Optional[Node] = None, viewport: Optional[GeometryViewport] = None) -> bool:
         """
 
         isCategoryActive(category, node=None, viewport=None) -> bool
@@ -81678,7 +81678,7 @@ class viewportVisualizers:
 
         """
     @staticmethod
-    def setIsCategoryActive(self, on: bool, category: EnumValue, node: Optional[Node] = None, viewport: Optional[GeometryViewport] = None) -> None:
+    def setIsCategoryActive(on: bool, category: EnumValue, node: Optional[Node] = None, viewport: Optional[GeometryViewport] = None) -> None:
         """
 
         setIsCategoryActive(on, category, node=None, viewport=None) -> bool
@@ -81698,7 +81698,7 @@ class viewportVisualizers:
 
         """
     @staticmethod
-    def visualizerBySessionId(self, session_id: int) -> ViewportVisualizer:
+    def visualizerBySessionId(session_id: int) -> ViewportVisualizer:
         """
 
         visualizerBySessionId(session_id) -> hou.ViewportVisualizer
@@ -81714,7 +81714,7 @@ class viewportVisualizers:
 
         """
     @staticmethod
-    def removeAllEventCallbacks(self, *args, **kwargs) -> None:
+    def removeAllEventCallbacks(*args, **kwargs) -> None:
         """
 
         removeAllEventCallbacks(self,
@@ -81727,7 +81727,7 @@ class viewportVisualizers:
 
         """
     @staticmethod
-    def addEventCallback(self, *args, **kwargs) -> None:
+    def addEventCallback(*args, **kwargs) -> None:
         '''
 
         addEventCallback(self, event_types, callback,
@@ -81792,7 +81792,7 @@ class viewportVisualizers:
 
         '''
     @staticmethod
-    def removeEventCallback(self, *args, **kwargs) -> None:
+    def removeEventCallback(*args, **kwargs) -> None:
         """
 
         removeEventCallback(self, event_types, callback,
@@ -81812,7 +81812,7 @@ class viewportVisualizers:
 
         """
     @staticmethod
-    def eventCallbacks(self, *args) -> Tuple[tuple[Tuple[EnumValue, ...], Any], ...]:
+    def eventCallbacks(*args) -> Tuple[tuple[Tuple[EnumValue, ...], Any], ...]:
         """
 
         eventCallbacks(category=hou.viewportVisualizerCategory.Common,
@@ -83088,7 +83088,7 @@ def applicationName() -> str:
 
 
     """
-def applicationVersion(include_patch: bool = False) -> Tuple[int, ...]:
+def applicationVersion(include_patch: bool = ...) -> Tuple[int, int, int]:
     """
 
     hou.vdbVersionInfo
@@ -85282,7 +85282,7 @@ def updateProgressAndCheckForInterrupt(percentage: int = -1) -> bool:
 
 
     """
-def runVex(*args, **kwargs) -> dict[str, Any]:
+def runVex(vex_file: str, inputs: dict[str, Any], precision=...) -> dict[str, Any]:
     '''
 
     hou.runVex
@@ -89625,7 +89625,7 @@ def refreshPreferences() -> None:
 
 
     """
-def startHoudiniEngineDebugger(*args) -> None:
+def startHoudiniEngineDebugger(portOrPipeName: Union[int, str]) -> None:
     '''
 
     hou.startHoudiniEngineDebugger

@@ -958,6 +958,8 @@ class AdvancedSignatureGenerator(SignatureGenerator):
     part of a function signature.
     """
 
+    WHITESPACE_FIX = re.compile(",(?=\w)")
+
     sig_matcher: AdvancedSigMatcher
 
     def __init__(self, fallback_sig_gen=CDocstringSignatureGenerator()) -> None:
@@ -993,6 +995,10 @@ class AdvancedSignatureGenerator(SignatureGenerator):
         if arg_type_override is not None:
             arg.type = arg_type_override
 
+        if arg.type:
+            # fixes the removal of whitepsace caused by infer_sig_from_docstring
+            arg.type = self.WHITESPACE_FIX.sub(", ", arg.type)
+
     def process_sig(self, ctx: FunctionContext, sig: FunctionSig) -> FunctionSig:
         """
         Check if the AdvancedSigMatcher matches `sig` and if it does, apply
@@ -1010,6 +1016,11 @@ class AdvancedSignatureGenerator(SignatureGenerator):
             )
             if ret_override:
                 sig = sig._replace(ret_type=ret_override)
+        if sig.ret_type:
+            # fixes the removal of whitepsace caused by infer_sig_from_docstring
+            fixed_type = self.WHITESPACE_FIX.sub(", ", sig.ret_type)
+            if sig.ret_type != fixed_type:
+                sig = sig._replace(ret_type=fixed_type)
         return sig
 
     def process_sigs(
@@ -1221,10 +1232,10 @@ class CppTypeConverter:
         parts = [(self.to_python_id(x) or x) for x in parts]
 
         typestr = "".join(parts)
-        typestr = typestr.replace(",", ", ")
         typestr = typestr.replace("::", ".")
 
         typestr = typestr.replace(" ", "")
+        typestr = typestr.replace(",", ", ")
 
         if is_ptr:
             typestr = self.process_ptr(typestr, is_result)
