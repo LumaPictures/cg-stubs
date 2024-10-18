@@ -147,6 +147,12 @@ class HoudiniCppTypeConverter(CppTypeConverter):
                 py_type = f"Sequence[{sub_type}]"
         return py_type
 
+    def process_ptr(self, converted_type: str, is_result: bool) -> str:
+        if is_result:
+            return f"Optional[{converted_type}]"
+        else:
+            return converted_type
+
 
 class HoudiniTypeFixer(SignatureFixer):
     converter = HoudiniCppTypeConverter()

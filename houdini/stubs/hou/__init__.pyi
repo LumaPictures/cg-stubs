@@ -7203,7 +7203,7 @@ class NetworkMovableItem(NetworkItem):
 
 
         """
-    def parent(self) -> Node:
+    def parent(self) -> Optional[Node]:
         '''
 
         parent(self) -> hou.Node
@@ -7219,7 +7219,7 @@ class NetworkMovableItem(NetworkItem):
           > None
 
         '''
-    def parentNetworkBox(self) -> NetworkBox:
+    def parentNetworkBox(self) -> Optional[NetworkBox]:
         """
 
         parentNetworkBox(self) -> hou.NetworkBox or None
@@ -7888,7 +7888,7 @@ class Node(NetworkMovableItem):
 
         """
     def isEditable(self) -> bool: ...
-    def type(self) -> NodeType:
+    def type(self) -> Optional[NodeType]:
         """
 
         type(self) -> hou.NodeType
@@ -7899,7 +7899,7 @@ class Node(NetworkMovableItem):
 
 
         """
-    def childTypeCategory(self) -> NodeTypeCategory:
+    def childTypeCategory(self) -> Optional[NodeTypeCategory]:
         """
 
         childTypeCategory(self) -> hou.NodeTypeCategory
@@ -7997,7 +7997,7 @@ class Node(NetworkMovableItem):
 
 
         """
-    def node(self, node_path: str) -> Node:
+    def node(self, node_path: str) -> Optional[Node]:
         '''
 
         node(self, node_path) -> hou.Node or None
@@ -8031,7 +8031,7 @@ class Node(NetworkMovableItem):
           > nodes = [self.node(path) for path in paths]
 
         """
-    def item(self, item_path: str) -> NetworkMovableItem:
+    def item(self, item_path: str) -> Optional[NetworkMovableItem]:
         '''
 
         item(self, item_path) -> hou.NetworkMovableItem or None
@@ -8149,7 +8149,7 @@ class Node(NetworkMovableItem):
 
 
         """
-    def createNode(self, node_type_name: str, node_name: Optional[str] = None, run_init_scripts: bool = True, load_contents: bool = True, exact_type_name: bool = False, force_valid_node_name: bool = False) -> Node:
+    def createNode(self, node_type_name: str, node_name: Optional[str] = None, run_init_scripts: bool = True, load_contents: bool = True, exact_type_name: bool = False, force_valid_node_name: bool = False) -> Optional[Node]:
         '''
 
         createNode(self, node_type_name, node_name=None, run_init_scripts=True,
@@ -8365,7 +8365,7 @@ class Node(NetworkMovableItem):
 
 
         """
-    def input(self, input_index: int) -> Node:
+    def input(self, input_index: int) -> Optional[Node]:
         """
 
         input(self, inputidx) -> hou.Node
@@ -8382,7 +8382,7 @@ class Node(NetworkMovableItem):
 
 
         """
-    def inputFollowingOutputs(self, input_index: int) -> Node:
+    def inputFollowingOutputs(self, input_index: int) -> Optional[Node]:
         """
 
         inputFollowingOutputs(self, inputidx) -> hou.Node
@@ -8431,7 +8431,7 @@ class Node(NetworkMovableItem):
 
 
         '''
-    def inputConnectors(self) -> Iterator[Tuple[NodeConnection, ...]]:
+    def inputConnectors(self) -> Optional[Iterator[Tuple[NodeConnection, ...]]]:
         """
 
         inputConnectors(self) -> tuple of tuple of hou.NodeConnection
@@ -8543,7 +8543,7 @@ class Node(NetworkMovableItem):
 
 
         '''
-    def outputConnectors(self) -> Iterator[Tuple[NodeConnection, ...]]:
+    def outputConnectors(self) -> Optional[Iterator[Tuple[NodeConnection, ...]]]:
         '''
 
         outputConnectors(self) -> tuple of tuple of hou.NodeConnection
@@ -8839,7 +8839,7 @@ class Node(NetworkMovableItem):
 
 
         """
-    def creator(self) -> Node:
+    def creator(self) -> Optional[Node]:
         """
 
         creator(self) -> Node
@@ -8854,7 +8854,7 @@ class Node(NetworkMovableItem):
 
 
         """
-    def moveToGoodPosition(self, relative_to_inputs: bool = True, move_inputs: bool = True, move_outputs: bool = True, move_unconnected: bool = True) -> Vector2:
+    def moveToGoodPosition(self, relative_to_inputs: bool = True, move_inputs: bool = True, move_outputs: bool = True, move_unconnected: bool = True) -> Optional[Vector2]:
         """
 
         moveToGoodPosition(self, relative_to_inputs=True, move_inputs=True,
@@ -9019,8 +9019,8 @@ class Node(NetworkMovableItem):
 
 
         """
-    def iterNetworkBoxes(self) -> Iterator[NetworkBox]: ...
-    def createNetworkBox(self, name: Optional[str] = None) -> NetworkBox:
+    def iterNetworkBoxes(self) -> Optional[Iterator[NetworkBox]]: ...
+    def createNetworkBox(self, name: Optional[str] = None) -> Optional[NetworkBox]:
         """
 
         createNetworkBox(self, name=None) -> hou.NetworkBox
@@ -9037,7 +9037,7 @@ class Node(NetworkMovableItem):
 
 
         """
-    def copyNetworkBox(self, network_box_to_copy: NetworkBox, new_name: Optional[str] = None, channel_reference_original: bool = False) -> NetworkBox:
+    def copyNetworkBox(self, network_box_to_copy: NetworkBox, new_name: Optional[str] = None, channel_reference_original: bool = False) -> Optional[NetworkBox]:
         """
 
         copyNetworkBox(self, network_box_to_copy, new_name=None,
@@ -9058,7 +9058,7 @@ class Node(NetworkMovableItem):
 
 
         """
-    def findNetworkBox(self, name: str) -> NetworkBox:
+    def findNetworkBox(self, name: str) -> Optional[NetworkBox]:
         """
 
         findNetworkBox(self, name) -> hou.NetworkBox
@@ -9087,7 +9087,7 @@ class Node(NetworkMovableItem):
 
 
         """
-    def createNetworkDot(self) -> NetworkDot:
+    def createNetworkDot(self) -> Optional[NetworkDot]:
         """
 
         createNetworkDot(self) -> hou.NetworkDot
@@ -9106,7 +9106,7 @@ class Node(NetworkMovableItem):
 
 
         """
-    def collapseIntoSubnet(self, child_items: Sequence[NetworkMovableItem], subnet_name: Optional[str] = None, subnet_type: Optional[str] = None) -> Node:
+    def collapseIntoSubnet(self, child_items: Sequence[NetworkMovableItem], subnet_name: Optional[str] = None, subnet_type: Optional[str] = None) -> Optional[Node]:
         """
 
         collapseIntoSubnet(self, child_nodes, subnet_name=None,
@@ -9288,7 +9288,7 @@ class Node(NetworkMovableItem):
           >     return self.userDataDict().get(name)
 
         """
-    def createStickyNote(self, name: Optional[str] = None) -> StickyNote:
+    def createStickyNote(self, name: Optional[str] = None) -> Optional[StickyNote]:
         """
 
         createStickyNote(self, name=None) -> hou.StickyNote
@@ -9310,8 +9310,8 @@ class Node(NetworkMovableItem):
 
 
         """
-    def iterStickyNotes(self) -> Iterator[StickyNote]: ...
-    def copyStickyNote(self, sticky_note_to_copy: StickyNote, new_name: Optional[str] = None) -> StickyNote:
+    def iterStickyNotes(self) -> Optional[Iterator[StickyNote]]: ...
+    def copyStickyNote(self, sticky_note_to_copy: StickyNote, new_name: Optional[str] = None) -> Optional[StickyNote]:
         """
 
         copyStickyNote(self, network_box_to_copy, new_name=None) ->
@@ -9328,7 +9328,7 @@ class Node(NetworkMovableItem):
 
 
         """
-    def findStickyNote(self, name: str) -> StickyNote:
+    def findStickyNote(self, name: str) -> Optional[StickyNote]:
         """
 
         findStickyNote(self, name) -> hou.StickyNote
@@ -9526,7 +9526,7 @@ class OpNode(Node):
         """
     def isBuiltExplicitly(self) -> bool: ...
     def setBuiltExplicitly(self, built_explicitly: bool) -> None: ...
-    def expressionLanguage(self) -> EnumValue:
+    def expressionLanguage(self) -> Optional[EnumValue]:
         """
 
         expressionLanguage(self) -> hou.exprLanguage enum value
@@ -9561,7 +9561,7 @@ class OpNode(Node):
 
 
         """
-    def parm(self, parm_path: str) -> Parm:
+    def parm(self, parm_path: str) -> Optional[Parm]:
         """
 
         parm(self, parm_path) -> hou.Parm or None
@@ -9571,7 +9571,7 @@ class OpNode(Node):
 
 
         """
-    def parmTuple(self, parm_path: str) -> ParmTuple:
+    def parmTuple(self, parm_path: str) -> Optional[ParmTuple]:
         """
 
         parmTuple(self, parm_path) -> hou.ParmTuple or None
@@ -9734,7 +9734,7 @@ class OpNode(Node):
 
 
         '''
-    def parmTemplateGroup(self) -> ParmTemplateGroup: ...
+    def parmTemplateGroup(self) -> Optional[ParmTemplateGroup]: ...
     def localVariables(self) -> Tuple[str, ...]:
         """
 
@@ -10016,7 +10016,7 @@ class OpNode(Node):
 
 
         """
-    def hdaModule(self) -> HDAModule:
+    def hdaModule(self) -> Optional[HDAModule]:
         """
 
         hm(self) -> hou.HDAModule
@@ -10027,7 +10027,7 @@ class OpNode(Node):
 
 
         """
-    def hdaViewerStateModule(self) -> HDAViewerStateModule:
+    def hdaViewerStateModule(self) -> Optional[HDAViewerStateModule]:
         """
 
         hdaViewerStateModule(self) -> hou.HDAViewerStateModule
@@ -10039,7 +10039,7 @@ class OpNode(Node):
 
 
         """
-    def hdaViewerHandleModule(self) -> HDAViewerHandleModule:
+    def hdaViewerHandleModule(self) -> Optional[HDAViewerHandleModule]:
         """
 
         hdaViewerHandleModule(self) -> hou.HDAViewerHandleModule
@@ -10051,8 +10051,8 @@ class OpNode(Node):
 
 
         """
-    def hm(self) -> HDAModule: ...
-    def createDigitalAsset(self, name: Optional[str] = None, hda_file_name: Optional[str] = None, description: Optional[str] = None, min_num_inputs: int = 0, max_num_inputs: int = 0, compress_contents: bool = False, comment: Optional[str] = None, version: Optional[str] = None, save_as_embedded: bool = False, ignore_external_references: bool = False, compile_asset: bool = False, change_node_type: bool = True, create_backup: bool = True, install_path: Optional[str] = None) -> Node:
+    def hm(self) -> Optional[HDAModule]: ...
+    def createDigitalAsset(self, name: Optional[str] = None, hda_file_name: Optional[str] = None, description: Optional[str] = None, min_num_inputs: int = 0, max_num_inputs: int = 0, compress_contents: bool = False, comment: Optional[str] = None, version: Optional[str] = None, save_as_embedded: bool = False, ignore_external_references: bool = False, compile_asset: bool = False, change_node_type: bool = True, create_backup: bool = True, install_path: Optional[str] = None) -> Optional[Node]:
         """
 
         createDigitalAsset(self, name=None, hda_file_name=None,
@@ -10127,7 +10127,7 @@ class OpNode(Node):
 
 
         """
-    def changeNodeType(self, new_node_type: str, keep_name: bool = True, keep_parms: bool = True, keep_network_contents: bool = True, force_change_on_node_type_match: bool = False) -> Node:
+    def changeNodeType(self, new_node_type: str, keep_name: bool = True, keep_parms: bool = True, keep_network_contents: bool = True, force_change_on_node_type_match: bool = False) -> Optional[Node]:
         """
 
         changeNodeType(self, new_node_type, keep_name=True, keep_parms=True,
@@ -10207,7 +10207,7 @@ class OpNode(Node):
 
 
         """
-    def cookCodeGeneratorNode(self) -> Node:
+    def cookCodeGeneratorNode(self) -> Optional[Node]:
         """
 
         cookCodeGeneratorNode(self, check_parent=False) -> hou.Node
@@ -10428,7 +10428,7 @@ class OpNode(Node):
 
 
         """
-    def addNodeGroup(self, name: Optional[str] = None) -> NodeGroup:
+    def addNodeGroup(self, name: Optional[str] = None) -> Optional[NodeGroup]:
         """
 
         addNodeGroup(self, name=None) -> hou.NodeGroup
@@ -10457,7 +10457,7 @@ class OpNode(Node):
 
 
         """
-    def nodeGroup(self, name: str) -> NodeGroup:
+    def nodeGroup(self, name: str) -> Optional[NodeGroup]:
         """
 
         nodeGroup(self, name) -> hou.NodeGroup
@@ -10478,7 +10478,7 @@ class OpNode(Node):
 
 
         """
-    def findOrCreateMotionEffectsNetwork(self, create: bool = True) -> Node:
+    def findOrCreateMotionEffectsNetwork(self, create: bool = True) -> Optional[Node]:
         """
 
         findOrCreateMotionEffectsNetwork(self, create=True) ->
@@ -10835,7 +10835,7 @@ class OpNode(Node):
           > True
 
         '''
-    def simulation(self) -> DopSimulation: ...
+    def simulation(self) -> Optional[DopSimulation]: ...
     def findNodesThatProcessedObject(self, dop_object: DopObject) -> Tuple[Node, ...]: ...
     def addError(self, *args, **kwargs) -> None:
         """
@@ -11030,7 +11030,7 @@ class OpNode(Node):
 
 
         """
-    def eventCallbacks(self) -> Tuple[tuple[Tuple[EnumValue, ...], Any], ...]: ...
+    def eventCallbacks(self) -> Optional[Tuple[tuple[Tuple[EnumValue, ...], Any], ...]]: ...
 
 class NodeGroup:
     """
@@ -11073,7 +11073,7 @@ class NodeGroup:
 
 
         """
-    def parent(self) -> Node:
+    def parent(self) -> Optional[Node]:
         """
 
         parent(self) -> hou.OpNode
@@ -11179,7 +11179,7 @@ class ObjNode(OpNode):
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def origin(self) -> Vector3:
+    def origin(self) -> Optional[Vector3]:
         """
 
         origin(self) -> hou.Vector3
@@ -11209,7 +11209,7 @@ class ObjNode(OpNode):
 
 
         """
-    def localTransform(self) -> Matrix4:
+    def localTransform(self) -> Optional[Matrix4]:
         """
 
         localTransform(self) -> hou.Matrix4
@@ -11236,7 +11236,7 @@ class ObjNode(OpNode):
 
 
         """
-    def localTransformAtTime(self, time: float) -> Matrix4:
+    def localTransformAtTime(self, time: float) -> Optional[Matrix4]:
         """
 
         localTransformAtTime(self, time) -> hou.Matrix4
@@ -11251,7 +11251,7 @@ class ObjNode(OpNode):
 
 
         """
-    def worldTransform(self) -> Matrix4:
+    def worldTransform(self) -> Optional[Matrix4]:
         """
 
         worldTransform(self) -> hou.Matrix4
@@ -11277,7 +11277,7 @@ class ObjNode(OpNode):
 
 
         """
-    def worldTransformAtTime(self, time: float) -> Matrix4:
+    def worldTransformAtTime(self, time: float) -> Optional[Matrix4]:
         """
 
         worldTransformAtTime(self, time) -> hou.Matrix4
@@ -11388,7 +11388,7 @@ class ObjNode(OpNode):
 
 
         """
-    def parmTransform(self) -> Matrix4:
+    def parmTransform(self) -> Optional[Matrix4]:
         '''
 
         parmTransform(self) -> hou.Matrix4
@@ -11466,7 +11466,7 @@ class ObjNode(OpNode):
 
 
         """
-    def parmPivotTransform(self) -> Matrix4:
+    def parmPivotTransform(self) -> Optional[Matrix4]:
         '''
 
         parmPivotTransform(self) -> hou.Matrix4
@@ -11525,7 +11525,7 @@ class ObjNode(OpNode):
 
 
         """
-    def preTransform(self) -> Matrix4:
+    def preTransform(self) -> Optional[Matrix4]:
         """
 
         preTransform(self) -> hou.Matrix4
@@ -11657,7 +11657,7 @@ class ObjNode(OpNode):
 
 
         """
-    def parentAndSubnetTransform(self) -> Matrix4:
+    def parentAndSubnetTransform(self) -> Optional[Matrix4]:
         """
 
         parentAndSubnetTransform(self) -> hou.Matrix4
@@ -11680,7 +11680,7 @@ class ObjNode(OpNode):
           > return hou.hmath.identityMatrix()
 
         """
-    def getTransformToNode(self, obj_node: ObjNode) -> Matrix4:
+    def getTransformToNode(self, obj_node: ObjNode) -> Optional[Matrix4]:
         """
 
         getTransformToNode(self, obj_node) -> hou.Matrix4
@@ -11705,7 +11705,7 @@ class ObjNode(OpNode):
 
 
         """
-    def getTransformFromPointToPoint(self, pos3: Vector3, other_node: ObjNode, other_pos3: Vector3) -> Matrix4:
+    def getTransformFromPointToPoint(self, pos3: Vector3, other_node: ObjNode, other_pos3: Vector3) -> Optional[Matrix4]:
         """
 
         getTransformFromPointToPoint(self, pos3, other_node, other_pos3) ->
@@ -11730,7 +11730,7 @@ class ObjNode(OpNode):
 
 
         """
-    def buildLookatRotation(self, to_node: ObjNode, up_vector: Optional[Vector3] = None) -> Matrix4:
+    def buildLookatRotation(self, to_node: ObjNode, up_vector: Optional[Vector3] = None) -> Optional[Matrix4]:
         '''
 
         buildLookatRotation(self, to_node, up_vector=None) -> hou.Matrix4
@@ -11878,7 +11878,7 @@ class ObjNode(OpNode):
 
 
         """
-    def displayNode(self) -> Node:
+    def displayNode(self) -> Optional[Node]:
         """
 
         displayNode(self) -> hou.OpNode or None
@@ -11888,7 +11888,7 @@ class ObjNode(OpNode):
 
 
         """
-    def renderNode(self) -> Node:
+    def renderNode(self) -> Optional[Node]:
         """
 
         renderNode(self) -> hou.OpNode or None
@@ -11990,7 +11990,7 @@ class Prim:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def geometry(self) -> Geometry:
+    def geometry(self) -> Optional[Geometry]:
         """
 
         geometry(self) -> hou.Geometry
@@ -12041,7 +12041,7 @@ class Prim:
 
 
         """
-    def vertices(self) -> Iterator[Vertex]:
+    def vertices(self) -> Optional[Iterator[Vertex]]:
         """
 
         vertices(self) -> generator of hou.Vertex
@@ -12316,7 +12316,7 @@ class Prim:
 
 
         """
-    def positionAtInterior(self, u: float, v: float, w: float = 0.0) -> Vector3:
+    def positionAtInterior(self, u: float, v: float, w: float = 0.0) -> Optional[Vector3]:
         """
 
         positionAtInterior(self, u, v, w=0.0) -> hou.Vector3
@@ -12383,7 +12383,7 @@ class Prim:
 
 
         """
-    def primuvConvert(self, *args) -> Vector2:
+    def primuvConvert(self, *args) -> Optional[Vector2]:
         """
 
         primuConvert(self, u, mode, tol)
@@ -12455,7 +12455,7 @@ class Face(Prim):
 
 
         """
-    def normal(self) -> Vector3:
+    def normal(self) -> Optional[Vector3]:
         """
 
         normal(self) -> hou.Vector3
@@ -12464,7 +12464,7 @@ class Face(Prim):
 
 
         """
-    def positionAt(self, u: float) -> Vector3:
+    def positionAt(self, u: float) -> Optional[Vector3]:
         """
 
         positionAt(self, u) -> hou.Vector3
@@ -12489,7 +12489,7 @@ class Face(Prim):
 
 
         """
-    def vertex(self, index: int) -> Vertex:
+    def vertex(self, index: int) -> Optional[Vertex]:
         """
 
         vertex(self, index)
@@ -12503,7 +12503,7 @@ class Face(Prim):
 
 
         """
-    def addVertex(self, point: Point) -> Vertex:
+    def addVertex(self, point: Point) -> Optional[Vertex]:
         """
 
         addVertex(self, point) -> hou.Vertex
@@ -12590,7 +12590,7 @@ class PackedPrim(Prim):
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def transform(self) -> Matrix3:
+    def transform(self) -> Optional[Matrix3]:
         """
 
         transform(self) -> hou.Matrix3
@@ -12602,7 +12602,7 @@ class PackedPrim(Prim):
 
 
         """
-    def fullTransform(self) -> Matrix4:
+    def fullTransform(self) -> Optional[Matrix4]:
         """
 
         fullTransform(self) -> hou.Matrix4
@@ -12632,7 +12632,7 @@ class PackedPrim(Prim):
 
 
         """
-    def vertex(self, index: int) -> Vertex:
+    def vertex(self, index: int) -> Optional[Vertex]:
         """
 
         vertex(self, index)
@@ -12902,7 +12902,7 @@ class ChannelGraphSelection:
     __swig_destroy__: Incomplete
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
-    def parm(self) -> Parm:
+    def parm(self) -> Optional[Parm]:
         """
 
         path(self) -> str
@@ -13359,7 +13359,7 @@ class NodeType:
 
 
         """
-    def parmTemplateGroup(self) -> ParmTemplateGroup:
+    def parmTemplateGroup(self) -> Optional[ParmTemplateGroup]:
         """
 
         parmTemplateGroup(self) -> hou.ParmTemplateGroup
@@ -13415,7 +13415,7 @@ class NodeType:
 
 
         """
-    def childTypeCategory(self) -> NodeTypeCategory: ...
+    def childTypeCategory(self) -> Optional[NodeTypeCategory]: ...
     def helpUrl(self) -> str:
         """
 
@@ -13535,7 +13535,7 @@ class ApexNodeType(NodeType):
 
 
         """
-    def definition(self) -> HDADefinition:
+    def definition(self) -> Optional[HDADefinition]:
         """
 
         definition(self) -> hou.HDADefinition
@@ -13639,7 +13639,7 @@ class OpNodeType(NodeType):
           > \'Internal\'
 
         '''
-    def sourceNetwork(self) -> Node:
+    def sourceNetwork(self) -> Optional[Node]:
         """
 
         sourceNetwork(self) -> hou.Node or None
@@ -13649,7 +13649,7 @@ class OpNodeType(NodeType):
 
 
         """
-    def definition(self) -> HDADefinition:
+    def definition(self) -> Optional[HDADefinition]:
         """
 
         definition(self) -> hou.HDADefinition
@@ -13676,7 +13676,7 @@ class OpNodeType(NodeType):
 
         """
     def uninstallFromPath(self, path: str) -> None: ...
-    def hdaModule(self) -> HDAModule:
+    def hdaModule(self) -> Optional[HDAModule]:
         """
 
         hdaModule(self) -> hou.HDAModule
@@ -13693,7 +13693,7 @@ class OpNodeType(NodeType):
 
 
         """
-    def hdaViewerStateModule(self) -> HDAViewerStateModule:
+    def hdaViewerStateModule(self) -> Optional[HDAViewerStateModule]:
         """
 
         hdaViewerStateModule(self) -> hou.HDAViewerStateModule
@@ -13706,7 +13706,7 @@ class OpNodeType(NodeType):
 
 
         """
-    def hdaViewerHandleModule(self) -> HDAViewerHandleModule:
+    def hdaViewerHandleModule(self) -> Optional[HDAViewerHandleModule]:
         """
 
         hdaViewerHandleModule(self) -> hou.HDAViewerHandleModule
@@ -13945,7 +13945,7 @@ class NodeTypeCategory:
 
 
         """
-    def nodeType(self, type_name: str) -> NodeType:
+    def nodeType(self, type_name: str) -> Optional[NodeType]:
         """
 
         nodeType(self, type_name) -> hou.NodeType or None
@@ -14050,7 +14050,7 @@ class OpNodeTypeCategory(NodeTypeCategory):
     def __hash__(self) -> int: ...
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
-    def createDigitalAsset(self, name: Optional[str] = None, hda_file_name: Optional[str] = None, description: Optional[str] = None) -> NodeType:
+    def createDigitalAsset(self, name: Optional[str] = None, hda_file_name: Optional[str] = None, description: Optional[str] = None) -> Optional[NodeType]:
         """
 
         createDigitalAsset(self, name=None, hda_file_name=None,
@@ -14089,7 +14089,7 @@ class OpNodeTypeCategory(NodeTypeCategory):
 
 
         """
-    def nodeVerb(self, verb_name: str) -> SopVerb:
+    def nodeVerb(self, verb_name: str) -> Optional[SopVerb]:
         """
 
         nodeVerb(self, name) -> hou.SopVerb or None
@@ -14175,7 +14175,7 @@ class ParmTemplate:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def clone(self) -> ParmTemplate:
+    def clone(self) -> Optional[ParmTemplate]:
         """
 
         clone(self) -> hou.ParmTemplate
@@ -14802,7 +14802,7 @@ class ParmTemplateGroup:
         '''
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
-    def find(self, name: str) -> ParmTemplate:
+    def find(self, name: str) -> Optional[ParmTemplate]:
         '''
 
         find(self, name) -> hou.ParmTemplate or None
@@ -14861,7 +14861,7 @@ class ParmTemplateGroup:
 
 
         """
-    def findFolder(self, *args) -> ParmTemplate:
+    def findFolder(self, *args) -> Optional[ParmTemplate]:
         """
 
         findFolder(self, label_or_labels) -> hou.FolderParmTemplate or None
@@ -14901,7 +14901,7 @@ class ParmTemplateGroup:
 
 
         """
-    def entryAtIndices(self, indices: Sequence[int]) -> ParmTemplate:
+    def entryAtIndices(self, indices: Sequence[int]) -> Optional[ParmTemplate]:
         '''
 
         entryAtIndices(self, indices) -> hou.ParmTemplate
@@ -14949,7 +14949,7 @@ class ParmTemplateGroup:
 
 
         """
-    def containingFolder(self, *args) -> ParmTemplate:
+    def containingFolder(self, *args) -> Optional[ParmTemplate]:
         """
 
         containingFolder(self, name_or_parm_template) -> hou.FolderParmTemplate
@@ -15335,7 +15335,7 @@ class ParmTemplateGroup:
 
 
         """
-    def sourceNode(self) -> Node:
+    def sourceNode(self) -> Optional[Node]:
         """
 
         sourceNode(self) -> hou.OpNode or None
@@ -15347,7 +15347,7 @@ class ParmTemplateGroup:
 
 
         """
-    def sourceNodeType(self) -> NodeType:
+    def sourceNodeType(self) -> Optional[NodeType]:
         """
 
         sourceNodeType(self) -> hou.NodeType or None
@@ -15426,7 +15426,7 @@ class Pane:
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def desktop(self) -> Desktop:
+    def desktop(self) -> Optional[Desktop]:
         """
 
         desktop(self) -> hou.Desktop or None
@@ -15446,7 +15446,7 @@ class Pane:
 
 
         """
-    def floatingPanel(self) -> FloatingPanel: ...
+    def floatingPanel(self) -> Optional[FloatingPanel]: ...
     def setIsMaximized(self, on: bool) -> None:
         """
 
@@ -15465,7 +15465,7 @@ class Pane:
 
 
         """
-    def createTab(self, type: EnumValue) -> PaneTab:
+    def createTab(self, type: EnumValue) -> Optional[PaneTab]:
         """
 
         createTab(self, type) -> hou.PaneTab
@@ -15475,7 +15475,7 @@ class Pane:
 
 
         """
-    def currentTab(self) -> PaneTab:
+    def currentTab(self) -> Optional[PaneTab]:
         """
 
         currentTab(self) -> hou.PaneTab
@@ -15486,7 +15486,7 @@ class Pane:
 
 
         """
-    def tabOfType(self, type: EnumValue, index: int = 0) -> PaneTab:
+    def tabOfType(self, type: EnumValue, index: int = 0) -> Optional[PaneTab]:
         """
 
         tabOfType(self, type, index=0) -> hou.PaneTab or None
@@ -15503,7 +15503,7 @@ class Pane:
 
 
         """
-    def splitHorizontally(self) -> Pane:
+    def splitHorizontally(self) -> Optional[Pane]:
         """
 
         splitHorizontally(self) -> hou.Pane
@@ -15516,7 +15516,7 @@ class Pane:
 
 
         """
-    def splitVertically(self) -> Pane:
+    def splitVertically(self) -> Optional[Pane]:
         """
 
         splitVertically(self) -> hou.Pane
@@ -15529,7 +15529,7 @@ class Pane:
 
 
         """
-    def getSplitParent(self) -> Pane:
+    def getSplitParent(self) -> Optional[Pane]:
         """
 
         getSplitParent(self) -> hou.Pane or None
@@ -15538,7 +15538,7 @@ class Pane:
 
 
         """
-    def getSplitChild(self, child: int) -> Pane:
+    def getSplitChild(self, child: int) -> Optional[Pane]:
         """
 
         getSplitChild(self,index) -> hou.Pane or None
@@ -15713,7 +15713,7 @@ class PaneTab:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def pane(self) -> Pane:
+    def pane(self) -> Optional[Pane]:
         """
 
         pane(self) -> hou.Pane or None
@@ -15729,7 +15729,7 @@ class PaneTab:
 
 
         """
-    def floatingPanel(self) -> FloatingPanel:
+    def floatingPanel(self) -> Optional[FloatingPanel]:
         """
 
         floatingPanel(self) -> hou.FloatingPanel or None
@@ -15791,7 +15791,7 @@ class PaneTab:
           >     return self.pane() is None or self.pane().floatingPanel() is not None
 
         """
-    def clone(self) -> PaneTab:
+    def clone(self) -> Optional[PaneTab]:
         """
 
         clone(self) -> hou.PaneTab
@@ -15820,7 +15820,7 @@ class PaneTab:
 
 
         """
-    def setType(self, type: EnumValue) -> PaneTab:
+    def setType(self, type: EnumValue) -> Optional[PaneTab]:
         """
 
         setType(self, type) -> hou.PaneTab
@@ -15976,7 +15976,7 @@ class PathBasedPaneTab(PaneTab):
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def pwd(self) -> Node:
+    def pwd(self) -> Optional[Node]:
         """
 
         pwd(self) -> Node
@@ -15997,7 +15997,7 @@ class PathBasedPaneTab(PaneTab):
 
 
         """
-    def currentNode(self) -> Node:
+    def currentNode(self) -> Optional[Node]:
         """
 
         currentNode(self) -> Node
@@ -16057,7 +16057,7 @@ class DopData:
     __swig_destroy__: Incomplete
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
-    def freeze(self) -> DopData:
+    def freeze(self) -> Optional[DopData]:
         """
 
         freeze(self) -> hou.DopData
@@ -16118,7 +16118,7 @@ class DopData:
 
         """
     def __hash__(self) -> int: ...
-    def dopNetNode(self) -> Node:
+    def dopNetNode(self) -> Optional[Node]:
         """
 
         dopNetNode(self) -> hou.OpNode
@@ -16127,7 +16127,7 @@ class DopData:
 
 
         """
-    def simulation(self) -> DopSimulation:
+    def simulation(self) -> Optional[DopSimulation]:
         """
 
         simulation(self) -> hou.DopSimulation
@@ -16137,7 +16137,7 @@ class DopData:
 
 
         """
-    def creator(self) -> Node:
+    def creator(self) -> Optional[Node]:
         """
 
         creator(self) -> hou.DopNode
@@ -16190,7 +16190,7 @@ class DopData:
 
 
         """
-    def record(self, record_type: str, record_index: int = 0) -> DopRecord:
+    def record(self, record_type: str, record_index: int = 0) -> Optional[DopRecord]:
         """
 
         record(self, record_type, record_index=0) -> hou.DopRecord
@@ -16208,7 +16208,7 @@ class DopData:
 
 
         """
-    def records(self, record_type: str) -> Iterator[DopRecord]:
+    def records(self, record_type: str) -> Optional[Iterator[DopRecord]]:
         '''
 
         records(self, record_type) -> tuple of hou.DopRecord
@@ -16228,7 +16228,7 @@ class DopData:
           > \'staticsolver1_staticsolver1\'
 
         '''
-    def options(self) -> DopRecord:
+    def options(self) -> Optional[DopRecord]:
         '''
 
         options(self) -> hou.DopRecord
@@ -16267,7 +16267,7 @@ class DopData:
           > <hou.Vector3 [0, -9.80665, 0]>
 
         '''
-    def findSubData(self, data_spec: str) -> DopData:
+    def findSubData(self, data_spec: str) -> Optional[DopData]:
         '''
 
         findSubData(self, data_spec) -> hou.DopData or None
@@ -16311,7 +16311,7 @@ class DopData:
           > [\'SolverParms/ActiveValue\', \'Solver/Random\']
 
         '''
-    def createSubData(self, *args, **kwargs) -> DopData:
+    def createSubData(self, *args, **kwargs) -> Optional[DopData]:
         '''
 
         createSubData(self, data_name, data_type=\\"SIM_EmptyData\\",
@@ -16416,9 +16416,9 @@ class DopData:
           >     return new_data
 
         """
-    def fieldGeometry(self, data_name: str) -> Geometry: ...
-    def geometry(self, data_name: Optional[str] = None) -> Geometry: ...
-    def editableGeometry(self, data_name: Optional[str] = None) -> EditableDopGeometryGuard: ...
+    def fieldGeometry(self, data_name: str) -> Optional[Geometry]: ...
+    def geometry(self, data_name: Optional[str] = None) -> Optional[Geometry]: ...
+    def editableGeometry(self, data_name: Optional[str] = None) -> Optional[EditableDopGeometryGuard]: ...
 
 class ShelfElement:
     """
@@ -16608,7 +16608,7 @@ class Agent(PackedPrim):
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def definition(self) -> AgentDefinition:
+    def definition(self) -> Optional[AgentDefinition]:
         """
 
         definition(self) -> hou.AgentDefinition
@@ -16636,7 +16636,7 @@ class Agent(PackedPrim):
 
 
         """
-    def currentLayer(self) -> AgentLayer:
+    def currentLayer(self) -> Optional[AgentLayer]:
         """
 
         currentLayer(self) -> hou.AgentLayer
@@ -16667,7 +16667,7 @@ class Agent(PackedPrim):
 
 
         """
-    def collisionLayer(self) -> AgentLayer:
+    def collisionLayer(self) -> Optional[AgentLayer]:
         """
 
         collisionLayer(self) -> hou.AgentLayer
@@ -16815,7 +16815,7 @@ class Agent(PackedPrim):
 
 
         """
-    def localTransform(self, i: int) -> Matrix4:
+    def localTransform(self, i: int) -> Optional[Matrix4]:
         """
 
         localTransform(self, transform) -> hou.Matrix4
@@ -16848,7 +16848,7 @@ class Agent(PackedPrim):
 
 
         """
-    def worldTransform(self, i: int) -> Matrix4:
+    def worldTransform(self, i: int) -> Optional[Matrix4]:
         """
 
         worldTransform(self, transform) -> hou.Matrix4
@@ -16954,7 +16954,7 @@ class AgentClip:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def freeze(self) -> AgentClip:
+    def freeze(self) -> Optional[AgentClip]:
         """
 
         freeze(self) -> hou.AgentClip
@@ -17070,7 +17070,7 @@ class AgentClip:
 
 
         """
-    def sampleLocal(self, time: float, transform: int) -> Matrix4:
+    def sampleLocal(self, time: float, transform: int) -> Optional[Matrix4]:
         """
 
         sampleLocal(self, time, transform) -> hou.Matrix4
@@ -17087,7 +17087,7 @@ class AgentClip:
 
 
         """
-    def sampleWorld(self, time: float, transform: int) -> Matrix4:
+    def sampleWorld(self, time: float, transform: int) -> Optional[Matrix4]:
         """
 
         sampleWorld(self, time, transform) -> hou.Matrix4
@@ -17280,7 +17280,7 @@ class AgentDefinition:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def freeze(self, new_shapelib: Optional[AgentShapeLibrary] = None, new_rig: Optional[AgentRig] = None) -> AgentDefinition:
+    def freeze(self, new_shapelib: Optional[AgentShapeLibrary] = None, new_rig: Optional[AgentRig] = None) -> Optional[AgentDefinition]:
         """
 
         freeze(self, new_shapelib = None, new_rig = None) -> hou.AgentDefinition
@@ -17300,7 +17300,7 @@ class AgentDefinition:
 
 
         """
-    def rig(self) -> AgentRig:
+    def rig(self) -> Optional[AgentRig]:
         """
 
         rig(self) -> hou.AgentRig
@@ -17309,7 +17309,7 @@ class AgentDefinition:
 
 
         """
-    def shapeLibrary(self) -> AgentShapeLibrary:
+    def shapeLibrary(self) -> Optional[AgentShapeLibrary]:
         """
 
         shapeLibrary(self) -> hou.AgentShapeLibrary
@@ -17318,7 +17318,7 @@ class AgentDefinition:
 
 
         """
-    def layers(self) -> Iterator[AgentLayer]:
+    def layers(self) -> Optional[Iterator[AgentLayer]]:
         """
 
         layers(self) -> tuple of hou.AgentLayer
@@ -17327,7 +17327,7 @@ class AgentDefinition:
 
 
         """
-    def findLayer(self, name: str) -> AgentLayer:
+    def findLayer(self, name: str) -> Optional[AgentLayer]:
         """
 
         findLayer(self, name) -> hou.AgentLayer
@@ -17337,7 +17337,7 @@ class AgentDefinition:
 
 
         """
-    def clips(self) -> Iterator[AgentClip]:
+    def clips(self) -> Optional[Iterator[AgentClip]]:
         """
 
         clips(self) -> tuple of hou.AgentClip
@@ -17346,7 +17346,7 @@ class AgentDefinition:
 
 
         """
-    def findClip(self, name: str) -> AgentClip:
+    def findClip(self, name: str) -> Optional[AgentClip]:
         """
 
         findClip(self, name) -> hou.AgentClip
@@ -17356,7 +17356,7 @@ class AgentDefinition:
 
 
         """
-    def transformGroups(self) -> Iterator[AgentTransformGroup]:
+    def transformGroups(self) -> Optional[Iterator[AgentTransformGroup]]:
         """
 
         transformGroups(self) -> tuple of hou.AgentTransformGroup
@@ -17365,7 +17365,7 @@ class AgentDefinition:
 
 
         """
-    def findTransformGroup(self, name: str) -> AgentTransformGroup:
+    def findTransformGroup(self, name: str) -> Optional[AgentTransformGroup]:
         """
 
         findTransformGroup(self, name) -> hou.AgentTransformGroup
@@ -17480,7 +17480,7 @@ class AgentDefinition:
 
 
         """
-    def metadata(self) -> AgentMetadata:
+    def metadata(self) -> Optional[AgentMetadata]:
         """
 
         setMetadata(self, metadata)
@@ -17643,7 +17643,7 @@ class AgentMetadata:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def freeze(self) -> AgentMetadata:
+    def freeze(self) -> Optional[AgentMetadata]:
         """
 
         freeze(self) -> hou.AgentMetadata
@@ -17753,7 +17753,7 @@ class AgentRig:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def freeze(self) -> AgentRig:
+    def freeze(self) -> Optional[AgentRig]:
         """
 
         freeze(self) -> hou.AgentRig
@@ -17876,7 +17876,7 @@ class AgentRig:
 
 
         """
-    def restLocalTransform(self, i: int) -> Matrix4:
+    def restLocalTransform(self, i: int) -> Optional[Matrix4]:
         """
 
         restLocalTransform(self, transform) -> hou.Matrix4
@@ -17890,7 +17890,7 @@ class AgentRig:
 
 
         """
-    def restWorldTransform(self, i: int) -> Matrix4:
+    def restWorldTransform(self, i: int) -> Optional[Matrix4]:
         """
 
         restWorldTransform(self, transform) -> hou.Matrix4
@@ -18038,7 +18038,7 @@ class AgentShape:
 
 
         """
-    def geometry(self) -> Geometry:
+    def geometry(self) -> Optional[Geometry]:
         """
 
         geometry(self) -> hou.Geometry
@@ -18047,7 +18047,7 @@ class AgentShape:
 
 
         """
-    def freeze(self) -> AgentShape:
+    def freeze(self) -> Optional[AgentShape]:
         """
 
         freeze(self) -> hou.AgentShape
@@ -18152,7 +18152,7 @@ class AgentShapeBinding:
 
 
         """
-    def boundsScale(self) -> Vector3:
+    def boundsScale(self) -> Optional[Vector3]:
         """
 
         boundsScale(self) -> hou.Vector3
@@ -18161,7 +18161,7 @@ class AgentShapeBinding:
 
 
         """
-    def shape(self) -> AgentShape:
+    def shape(self) -> Optional[AgentShape]:
         """
 
         shape(self) -> hou.AgentShape
@@ -18170,7 +18170,7 @@ class AgentShapeBinding:
 
 
         """
-    def deformer(self) -> AgentShapeDeformer:
+    def deformer(self) -> Optional[AgentShapeDeformer]:
         """
 
         deformer(self) -> hou.AgentShapeDeformer
@@ -18277,7 +18277,7 @@ class AgentShapeLibrary:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def freeze(self, keep_external_ref: bool = False) -> AgentShapeLibrary:
+    def freeze(self, keep_external_ref: bool = False) -> Optional[AgentShapeLibrary]:
         """
 
         freeze(self, keep_external_ref = False) -> hou.AgentShapeLibrary
@@ -18321,7 +18321,7 @@ class AgentShapeLibrary:
 
 
         """
-    def findShape(self, name: str) -> AgentShape:
+    def findShape(self, name: str) -> Optional[AgentShape]:
         """
 
         findShape(self, shape_name) -> hou.AgentShape
@@ -18340,7 +18340,7 @@ class AgentShapeLibrary:
 
 
         """
-    def data(self) -> Geometry:
+    def data(self) -> Optional[Geometry]:
         """
 
         data(self) -> hou.Geometry
@@ -18350,7 +18350,7 @@ class AgentShapeLibrary:
 
 
         """
-    def addShape(self, name: str, geometry: Geometry) -> AgentShape:
+    def addShape(self, name: str, geometry: Geometry) -> Optional[AgentShape]:
         """
 
         addShape(self, name, geometry) -> hou.AgentShape
@@ -18601,7 +18601,7 @@ class anim:
 
         """
     @staticmethod
-    def newBookmark(name: str, start: int, end: int) -> Bookmark:
+    def newBookmark(name: str, start: int, end: int) -> Optional[Bookmark]:
         """
 
         newBookmark(name, start_frame, end_frame) -> hou.Bookmark
@@ -18613,7 +18613,7 @@ class anim:
 
         """
     @staticmethod
-    def bookmark(bookmark_id: int) -> Bookmark:
+    def bookmark(bookmark_id: int) -> Optional[Bookmark]:
         """
 
         bookmark(session_id) -> hou.Bookmark
@@ -18624,7 +18624,7 @@ class anim:
 
         """
     @staticmethod
-    def getBookmark(bookmark_id: int) -> Bookmark:
+    def getBookmark(bookmark_id: int) -> Optional[Bookmark]:
         """
 
         getBookmark(session_id) -> hou.Bookmark
@@ -19763,7 +19763,7 @@ class Attrib:
 
 
         """
-    def geometry(self) -> Geometry:
+    def geometry(self) -> Optional[Geometry]:
         """
 
         geometry(self) -> hou.Geometry
@@ -19990,7 +19990,7 @@ class Attrib:
 
 
         """
-    def dataId(self) -> AttribDataId:
+    def dataId(self) -> Optional[AttribDataId]:
         """
 
         dataId(self)
@@ -21106,7 +21106,7 @@ class ChannelEditorPane(PaneTab):
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def graph(self) -> ChannelGraph:
+    def graph(self) -> Optional[ChannelGraph]:
         """
 
         graph(self) -> hou.ChannelGraph
@@ -21306,7 +21306,7 @@ class ChannelEditorPane(PaneTab):
           >         return color.rgb()
 
         '''
-    def channelList(self) -> ChannelList: ...
+    def channelList(self) -> Optional[ChannelList]: ...
     def setChannelList(self, l: ChannelList) -> None: ...
     def channelListPinned(self) -> bool: ...
     def setChannelListPinned(self, pinned: bool) -> None: ...
@@ -21328,7 +21328,7 @@ class ChannelEditorPane(PaneTab):
 
 
         """
-    def animBar(self) -> AnimBar:
+    def animBar(self) -> Optional[AnimBar]:
         """
 
         animBar(self): -> hou.AnimBar
@@ -22164,7 +22164,7 @@ class ChannelPrim(Prim):
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def vertex(self, index: int) -> Vertex:
+    def vertex(self, index: int) -> Optional[Vertex]:
         """
 
         vertex(self, index)
@@ -22178,7 +22178,7 @@ class ChannelPrim(Prim):
 
 
         """
-    def addVertex(self, point: Point) -> Vertex:
+    def addVertex(self, point: Point) -> Optional[Vertex]:
         """
 
         addVertex(self, point) -> hou.Vertex
@@ -22608,7 +22608,7 @@ class ChopNode(OpNode):
 
 
         """
-    def track(self, track_name: str, output_index: int = 0, cook: bool = True) -> Track:
+    def track(self, track_name: str, output_index: int = 0, cook: bool = True) -> Optional[Track]:
         """
 
         track(self, track_name) -> hou.Track or None
@@ -22617,7 +22617,7 @@ class ChopNode(OpNode):
 
 
         """
-    def clip(self, output_index: int = 0) -> Clip:
+    def clip(self, output_index: int = 0) -> Optional[Clip]:
         """
 
         clip(self, output_index=0) -> hou.Clip
@@ -22756,7 +22756,7 @@ class Clip:
     __swig_destroy__: Incomplete
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
-    def chopNode(self) -> ChopNode:
+    def chopNode(self) -> Optional[ChopNode]:
         """
 
         chopNode(self) -> hou.ChopNode
@@ -22785,7 +22785,7 @@ class Clip:
 
 
         """
-    def track(self, track_name: str) -> Track:
+    def track(self, track_name: str) -> Optional[Track]:
         """
 
         track(self, track_name) -> hou.Track or None
@@ -22979,7 +22979,7 @@ class clone:
 
         """
     @staticmethod
-    def createClone(id: Optional[str] = None) -> _clone_Connection:
+    def createClone(id: Optional[str] = None) -> Optional[_clone_Connection]:
         """
 
         hou.clone.createClone
@@ -23024,7 +23024,7 @@ class clone:
 
         """
     @staticmethod
-    def clone(id: str) -> _clone_Connection:
+    def clone(id: str) -> Optional[_clone_Connection]:
         """
 
         hou.clone.clone
@@ -23338,7 +23338,7 @@ class _clone_Connection:
 
 
         """
-    def lopNode(self) -> Node:
+    def lopNode(self) -> Optional[Node]:
         """
 
         lopNode() -> hou.LopNode
@@ -23756,7 +23756,7 @@ class _clone_Connection:
 
 
         """
-    def renderGalleryDataSource(self) -> AssetGalleryDataSource:
+    def renderGalleryDataSource(self) -> Optional[AssetGalleryDataSource]:
         """
 
         renderGalleryDataSource(self) -> hou.AssetGalleryDataSource
@@ -23803,7 +23803,7 @@ class _clone_Connection:
 
 
         """
-    def duplicate(self) -> _clone_Connection:
+    def duplicate(self) -> Optional[_clone_Connection]:
         """
 
         duplicate(self) -> hou.clone.Connection
@@ -24079,7 +24079,7 @@ class Color:
 
 
         """
-    def ocio_transform(self, src_colorspace: str, dest_colorspace: str, looks: str) -> Color:
+    def ocio_transform(self, src_colorspace: str, dest_colorspace: str, looks: str) -> Optional[Color]:
         """
 
         ocio_transform(src_colorspace, dest_colorspace, looks) -> hou.Color`
@@ -24091,7 +24091,7 @@ class Color:
 
 
         """
-    def ocio_viewTransform(self, src_colorspace: str, display: str, view: str) -> Color:
+    def ocio_viewTransform(self, src_colorspace: str, display: str, view: str) -> Optional[Color]:
         """
 
         ocio_viewTransform(src_colorspace, display_name, view_name) ->
@@ -24232,7 +24232,7 @@ class ConstructionPlane:
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def sceneViewer(self) -> SceneViewer:
+    def sceneViewer(self) -> Optional[SceneViewer]:
         """
 
         sceneViewer(self) -> hou.SceneViewer
@@ -24259,7 +24259,7 @@ class ConstructionPlane:
 
 
         """
-    def transform(self) -> Matrix4:
+    def transform(self) -> Optional[Matrix4]:
         """
 
         transform(self) -> hou.Matrix4
@@ -24387,7 +24387,7 @@ class ContextViewer(PathBasedPaneTab):
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def sceneViewer(self) -> SceneViewer:
+    def sceneViewer(self) -> Optional[SceneViewer]:
         """
 
         sceneViewer(self) -> hou.SceneViewer
@@ -24397,7 +24397,7 @@ class ContextViewer(PathBasedPaneTab):
 
 
         """
-    def compositorViewer(self) -> CompositorViewer:
+    def compositorViewer(self) -> Optional[CompositorViewer]:
         """
 
         compositorViewer(self) -> hou.CompositorViewer
@@ -24407,7 +24407,7 @@ class ContextViewer(PathBasedPaneTab):
 
 
         """
-    def findViewport(self, name: str) -> GeometryViewport:
+    def findViewport(self, name: str) -> Optional[GeometryViewport]:
         """
 
         findViewport(self, viewport_name) -> hou.GeometryViewport
@@ -25306,7 +25306,7 @@ class crowds:
 
         """
     @staticmethod
-    def findShapeDeformer(name: str) -> AgentShapeDeformer:
+    def findShapeDeformer(name: str) -> Optional[AgentShapeDeformer]:
         """
 
         findShapeDeformer(name) -> hou.AgentShapeDeformer
@@ -25507,7 +25507,7 @@ class DataParmTemplate(ParmTemplate):
 
 
         """
-    def defaultExpressionLanguage(self) -> Tuple[EnumValue, ...]:
+    def defaultExpressionLanguage(self) -> Optional[Tuple[EnumValue, ...]]:
         """
 
         defaultExpressionLanguage(self) -> tuple of hou.scriptLanguage
@@ -25742,7 +25742,7 @@ class Desktop:
 
 
         """
-    def paneTabOfType(self, type: EnumValue, index: int = 0) -> PaneTab:
+    def paneTabOfType(self, type: EnumValue, index: int = 0) -> Optional[PaneTab]:
         """
 
         paneTabOfType(self, type, index=0) -> hou.PaneTab or None
@@ -25775,7 +25775,7 @@ class Desktop:
           >     return pane_tabs[max(index, 0)]
 
         """
-    def findPane(self, pane_id: int) -> Pane:
+    def findPane(self, pane_id: int) -> Optional[Pane]:
         """
 
         findPane(self, pane_id) -> hou.Pane or None
@@ -25789,7 +25789,7 @@ class Desktop:
 
 
         """
-    def findPaneTab(self, name: str) -> PaneTab:
+    def findPaneTab(self, name: str) -> Optional[PaneTab]:
         """
 
         findPaneTab(self, name) -> hou.PaneTab or None
@@ -25806,7 +25806,7 @@ class Desktop:
 
 
         """
-    def createFloatingPaneTab(self, *args, **kwargs) -> PaneTab:
+    def createFloatingPaneTab(self, *args, **kwargs) -> Optional[PaneTab]:
         """
 
         createFloatingPaneTab(self, pane_tab_type, position=(), size=(),
@@ -25866,7 +25866,7 @@ class Desktop:
           >     return pane_tab
 
         """
-    def createFloatingPane(self, *args) -> PaneTab: ...
+    def createFloatingPane(self, *args) -> Optional[PaneTab]: ...
     def floatingPanels(self) -> Tuple[FloatingPanel, ...]:
         """
 
@@ -25881,7 +25881,7 @@ class Desktop:
 
 
         """
-    def createFloatingPanel(self, *args, **kwargs) -> FloatingPanel:
+    def createFloatingPanel(self, *args, **kwargs) -> Optional[FloatingPanel]:
         """
 
         createFloatingPanel(self, pane_tab_type, position=(), size=(),
@@ -25906,7 +25906,7 @@ class Desktop:
           > pane2.tabs()[0].setType(hou.paneTabType.ChannelViewer)
 
         """
-    def paneUnderCursor(self) -> Pane:
+    def paneUnderCursor(self) -> Optional[Pane]:
         """
 
         paneUnderCursor(self)
@@ -25920,7 +25920,7 @@ class Desktop:
 
 
         """
-    def paneTabUnderCursor(self) -> PaneTab:
+    def paneTabUnderCursor(self) -> Optional[PaneTab]:
         """
 
         paneTabUnderCursor(self)
@@ -25948,7 +25948,7 @@ class Desktop:
 
 
         """
-    def shelfDock(self) -> ShelfDock:
+    def shelfDock(self) -> Optional[ShelfDock]:
         """
 
         shelfDock(self) -> hou.ShelfDock
@@ -25957,7 +25957,7 @@ class Desktop:
 
 
         """
-    def displaySideHelp(self, show: bool = True) -> PaneTab:
+    def displaySideHelp(self, show: bool = True) -> Optional[PaneTab]:
         """
 
         displaySideHelp(self, show=True) -> hou.PaneTab
@@ -26208,7 +26208,7 @@ class dop:
 
         """
     @staticmethod
-    def scriptSolverData() -> DopData:
+    def scriptSolverData() -> Optional[DopData]:
         """
 
         scriptSolverData() -> hou.DopData
@@ -26242,7 +26242,7 @@ class dop:
 
         """
     @staticmethod
-    def scriptSolverNetwork() -> Node:
+    def scriptSolverNetwork() -> Optional[Node]:
         """
 
         scriptSolverNetwork() -> hou.OpNode or None
@@ -26254,7 +26254,7 @@ class dop:
 
         """
     @staticmethod
-    def scriptSolverSimulation() -> DopSimulation: ...
+    def scriptSolverSimulation() -> Optional[DopSimulation]: ...
     @staticmethod
     def scriptSolverObjects() -> Tuple[DopData, ...]:
         """
@@ -26304,7 +26304,7 @@ class DopNode(OpNode):
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def dopNetNode(self) -> Node:
+    def dopNetNode(self) -> Optional[Node]:
         """
 
         dopNetNode(self) -> hou.OpNode
@@ -26313,7 +26313,7 @@ class DopNode(OpNode):
 
 
         """
-    def simulation(self) -> DopSimulation:
+    def simulation(self) -> Optional[DopSimulation]:
         """
 
         simulation(self) -> hou.DopSimulation
@@ -26400,7 +26400,7 @@ class DopNode(OpNode):
 
 
         """
-    def displayNode(self) -> Node:
+    def displayNode(self) -> Optional[Node]:
         """
 
         displayNode(self) -> hou.OpNode or None
@@ -26411,7 +26411,7 @@ class DopNode(OpNode):
 
 
         """
-    def renderNode(self) -> Node: ...
+    def renderNode(self) -> Optional[Node]: ...
     def objectsToProcess(self) -> Tuple[DopData, ...]:
         """
 
@@ -26423,7 +26423,7 @@ class DopNode(OpNode):
 
 
         """
-    def pythonSolverData(self) -> DopData:
+    def pythonSolverData(self) -> Optional[DopData]:
         """
 
         pythonSolverData(self) -> hou.DopData
@@ -26505,7 +26505,7 @@ class DopObject(DopData):
           > True
 
         '''
-    def transform(self, include_geometry_transform: bool = True) -> Matrix4:
+    def transform(self, include_geometry_transform: bool = True) -> Optional[Matrix4]:
         '''
 
         transform(self, include_geometry_transform=True) -> hou.Matrix4
@@ -26749,7 +26749,7 @@ class DopRelationship(DopData):
 
 
         """
-    def relationshipTypeData(self) -> DopData:
+    def relationshipTypeData(self) -> Optional[DopData]:
         """
 
         relationshipTypeData(self) -> hou.DopData or None
@@ -26786,7 +26786,7 @@ class DopSimulation:
     __swig_destroy__: Incomplete
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
-    def createObject(self, name: str, solve_on_creation_frame: bool) -> DopData:
+    def createObject(self, name: str, solve_on_creation_frame: bool) -> Optional[DopData]:
         """
 
         createObject(self, name, solve_on_creation_frame) -> hou.DopObject
@@ -26826,7 +26826,7 @@ class DopSimulation:
 
 
         """
-    def createRelationship(self, name: str) -> DopData:
+    def createRelationship(self, name: str) -> Optional[DopData]:
         """
 
         createRelationship(self, name) -> hou.DopRelationship
@@ -26864,7 +26864,7 @@ class DopSimulation:
 
 
         """
-    def dopNetNode(self) -> Node:
+    def dopNetNode(self) -> Optional[Node]:
         """
 
         dopNetNode(self) -> hou.OpNode
@@ -26911,7 +26911,7 @@ class DopSimulation:
           > [\'box_object2\']
 
         '''
-    def findObject(self, obj_spec: str) -> DopData:
+    def findObject(self, obj_spec: str) -> Optional[DopData]:
         """
 
         findObject(self, obj_spec) -> hou.DopObject or None
@@ -26922,7 +26922,7 @@ class DopSimulation:
 
 
         """
-    def findRelationship(self, rel_spec: str) -> DopData:
+    def findRelationship(self, rel_spec: str) -> Optional[DopData]:
         """
 
         findRelationship(self, rel_spec) -> hou.DopRelationship
@@ -26932,7 +26932,7 @@ class DopSimulation:
 
 
         """
-    def findData(self, data_spec: str) -> DopData:
+    def findData(self, data_spec: str) -> Optional[DopData]:
         """
 
         findData(self, data_spec) -> hou.DopData or None
@@ -27784,7 +27784,7 @@ class SimpleDrawable(Drawable):
 
 
         """
-    def geometry(self) -> Geometry:
+    def geometry(self) -> Optional[Geometry]:
         """
 
         geometry(self): -> hou.Geometry
@@ -27875,7 +27875,7 @@ class Edge:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def geometry(self) -> Geometry: ...
+    def geometry(self) -> Optional[Geometry]: ...
     def points(self) -> Tuple[Point, ...]:
         """
 
@@ -27934,7 +27934,7 @@ class EdgeGroup:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def geometry(self) -> Geometry:
+    def geometry(self) -> Optional[Geometry]:
         """
 
         geometry(self) -> hou.Geometry
@@ -27952,7 +27952,7 @@ class EdgeGroup:
 
 
         """
-    def iterEdges(self) -> Iterator[Edge]:
+    def iterEdges(self) -> Optional[Iterator[Edge]]:
         """
 
         iterEdges(self) -> generator of hou.Edge
@@ -28054,7 +28054,7 @@ class EdgeGroup:
 
 
         """
-    def dataId(self) -> AttribDataId:
+    def dataId(self) -> Optional[AttribDataId]:
         """
 
         dataId(self)
@@ -28078,7 +28078,7 @@ class EditableDopGeometryGuard:
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def __enter__(self) -> Geometry: ...
+    def __enter__(self) -> Optional[Geometry]: ...
     def __exit__(self, type: Any, value: Any, traceback: Any) -> None: ...
 
 class FlipbookSettings:
@@ -28122,7 +28122,7 @@ class FlipbookSettings:
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def stash(self) -> FlipbookSettings:
+    def stash(self) -> Optional[FlipbookSettings]:
         """
 
         stash(self) -> hou.FlipbookSettings
@@ -28678,7 +28678,7 @@ class FloatingPanel:
 
 
         """
-    def paneTabOfType(self, type: EnumValue, index: int = 0) -> PaneTab:
+    def paneTabOfType(self, type: EnumValue, index: int = 0) -> Optional[PaneTab]:
         """
 
         paneTabOfType(self, type, index=0) -> hou.PaneTab or None
@@ -28698,7 +28698,7 @@ class FloatingPanel:
 
 
         """
-    def findPaneTab(self, name: str) -> PaneTab:
+    def findPaneTab(self, name: str) -> Optional[PaneTab]:
         """
 
         findPaneTab(self, name) -> hou.PaneTab or None
@@ -28868,7 +28868,7 @@ class FloatingPanel:
 
 
         """
-    def position(self) -> Vector2:
+    def position(self) -> Optional[Vector2]:
         """
 
         position(self) -> hou.Vector2
@@ -28890,7 +28890,7 @@ class FloatingPanel:
 
 
         """
-    def size(self) -> Vector2:
+    def size(self) -> Optional[Vector2]:
         """
 
         size(self) -> hou.Vector2
@@ -29181,7 +29181,7 @@ class FloatParmTemplate(ParmTemplate):
 
 
         """
-    def defaultExpressionLanguage(self) -> Tuple[EnumValue, ...]:
+    def defaultExpressionLanguage(self) -> Optional[Tuple[EnumValue, ...]]:
         """
 
         defaultExpressionLanguage(self) -> tuple of hou.scriptLanguage
@@ -29377,7 +29377,7 @@ class FolderParmTemplate(ParmTemplate):
 
 
         """
-    def tabConditionals(self) -> dict[EnumValue, str]:
+    def tabConditionals(self) -> Optional[dict[EnumValue, str]]:
         """
 
         tabConditionals(self) -> dict of [Hom:hou.parmCondType] enum value to
@@ -29786,7 +29786,7 @@ class galleries:
 
         '''
     @staticmethod
-    def installGallery(gallery_path: str) -> Gallery:
+    def installGallery(gallery_path: str) -> Optional[Gallery]:
         """
 
         installGallery(gallery_path) -> hou.Gallery or None
@@ -29815,7 +29815,7 @@ class galleries:
 
         """
     @staticmethod
-    def createGalleryEntry(gallery_path: str, entry_name: str, node: Optional[Node] = None) -> GalleryEntry:
+    def createGalleryEntry(gallery_path: str, entry_name: str, node: Optional[Node] = None) -> Optional[GalleryEntry]:
         """
 
         createGalleryEntry(gallery_path, entry_name, node) -> hou.GalleryEntry
@@ -29898,7 +29898,7 @@ class Gallery:
 
 
         """
-    def createEntry(self, entry_name: str, node: Optional[Node] = None) -> GalleryEntry: ...
+    def createEntry(self, entry_name: str, node: Optional[Node] = None) -> Optional[GalleryEntry]: ...
     def deleteEntry(self, entry_name: str) -> None: ...
 
 class GalleryEntry:
@@ -29986,7 +29986,7 @@ class GalleryEntry:
 
 
         """
-    def createChildNode(self, parent: Node) -> Node:
+    def createChildNode(self, parent: Node) -> Optional[Node]:
         """
 
         createChildNode(self, parent) -> Node
@@ -30187,7 +30187,7 @@ class GalleryEntry:
 
 
         """
-    def bestNodeType(self) -> NodeType:
+    def bestNodeType(self) -> Optional[NodeType]:
         """
 
         bestNodeType(self) -> NodeType or None
@@ -30444,7 +30444,7 @@ class Geometry:
 
         """
     __swig_destroy__: Incomplete
-    def sopNode(self) -> SopNode:
+    def sopNode(self) -> Optional[SopNode]:
         """
 
         sopNode(self) -> hou.SopNode
@@ -30474,7 +30474,7 @@ class Geometry:
 
         """
     def isValid(self) -> bool: ...
-    def freeze(self, read_only: bool = False, clone_data_ids: bool = False) -> Geometry:
+    def freeze(self, read_only: bool = False, clone_data_ids: bool = False) -> Optional[Geometry]:
         """
 
         freeze(self, read_only=False, clone_data_ids=False) -> hou.Geometry
@@ -30529,7 +30529,7 @@ class Geometry:
 
 
         """
-    def iterPoints(self) -> Iterator[Point]:
+    def iterPoints(self) -> Optional[Iterator[Point]]:
         """
 
         iterPoints(self) -> generator of hou.Point
@@ -30573,7 +30573,7 @@ class Geometry:
 
 
         """
-    def point(self, index: int) -> Point:
+    def point(self, index: int) -> Optional[Point]:
         """
 
         point(self, index) -> hou.Point
@@ -30588,7 +30588,7 @@ class Geometry:
 
 
         """
-    def iterPrims(self) -> Iterator[Prim]:
+    def iterPrims(self) -> Optional[Iterator[Prim]]:
         """
 
         iterPrims(self) -> generator of hou.Prim
@@ -30648,7 +30648,7 @@ class Geometry:
 
 
         """
-    def prim(self, index: int) -> Prim:
+    def prim(self, index: int) -> Optional[Prim]:
         """
 
         prim(self, index) -> hou.Prim
@@ -30724,7 +30724,7 @@ class Geometry:
 
 
         """
-    def iterPrimsOfType(self, prim_type: EnumValue) -> Iterator[Prim]:
+    def iterPrimsOfType(self, prim_type: EnumValue) -> Optional[Iterator[Prim]]:
         """
 
         iterPrimsOfType(primtype) -> generator of hou.Prim
@@ -30886,7 +30886,7 @@ class Geometry:
         """
     def globVertices(self, pattern: str) -> Tuple[Vertex, ...]: ...
     def globEdges(self, pattern: str) -> Tuple[Edge, ...]: ...
-    def findPointAttrib(self, *args) -> Attrib:
+    def findPointAttrib(self, *args) -> Optional[Attrib]:
         """
 
         findPointAttrib(self, name, scope=hou.attribScope.Public) -> hou.Attrib
@@ -30911,7 +30911,7 @@ class Geometry:
 
 
         """
-    def findPrimAttrib(self, *args) -> Attrib:
+    def findPrimAttrib(self, *args) -> Optional[Attrib]:
         """
 
         findPrimAttrib(self, name, scope=hou.attribScope.Public) -> hou.Attrib
@@ -30930,7 +30930,7 @@ class Geometry:
 
 
         """
-    def findVertexAttrib(self, *args) -> Attrib:
+    def findVertexAttrib(self, *args) -> Optional[Attrib]:
         """
 
         findVertexAttrib(self, name, scope=hou.attribScope.Public) -> hou.Attrib
@@ -30949,7 +30949,7 @@ class Geometry:
 
 
         """
-    def findGlobalAttrib(self, *args) -> Attrib:
+    def findGlobalAttrib(self, *args) -> Optional[Attrib]:
         """
 
         findGlobalAttrib(self, name, scope=hou.attribScope.Public) -> hou.Attrib
@@ -31905,7 +31905,7 @@ class Geometry:
 
 
         """
-    def createPoint(self) -> Point:
+    def createPoint(self) -> Optional[Point]:
         """
 
         createPoint(self) -> hou.Point
@@ -31952,7 +31952,7 @@ class Geometry:
 
 
         """
-    def createPolygon(self, is_closed: bool = True) -> Polygon:
+    def createPolygon(self, is_closed: bool = True) -> Optional[Polygon]:
         """
 
         createPolygon(self, is_closed=True) -> hou.Polygon
@@ -32029,7 +32029,7 @@ class Geometry:
           >     ((points[0], points[1], points[2]), (points[3], points[4], points[5])))
 
         """
-    def createPacked(self, packed_type: str, point: Optional[Point] = None) -> PackedPrim:
+    def createPacked(self, packed_type: str, point: Optional[Point] = None) -> Optional[PackedPrim]:
         '''
 
         createPacked(self, typename, point=None) -> hou.PackedPrim
@@ -32049,7 +32049,7 @@ class Geometry:
 
 
         '''
-    def createTetrahedron(self) -> Prim:
+    def createTetrahedron(self) -> Optional[Prim]:
         """
 
         createTetrahedron(self) -> hou.Prim
@@ -32067,7 +32067,7 @@ class Geometry:
 
 
         """
-    def createTetrahedronInPlace(self, p0: Point, p1: Point, p2: Point, p3: Point) -> Prim:
+    def createTetrahedronInPlace(self, p0: Point, p1: Point, p2: Point, p3: Point) -> Optional[Prim]:
         """
 
         createTetrahedronInPlace(self, p0, p1, p2, p3) -> hou.Prim
@@ -32084,7 +32084,7 @@ class Geometry:
 
 
         """
-    def createHexahedron(self) -> Prim:
+    def createHexahedron(self) -> Optional[Prim]:
         """
 
         createHexahedron(self) -> hou.Prim
@@ -32102,7 +32102,7 @@ class Geometry:
 
 
         """
-    def createHexahedronInPlace(self, p0: Point, p1: Point, p2: Point, p3: Point, p4: Point, p5: Point, p6: Point, p7: Point) -> Prim:
+    def createHexahedronInPlace(self, p0: Point, p1: Point, p2: Point, p3: Point, p4: Point, p5: Point, p6: Point, p7: Point) -> Optional[Prim]:
         """
 
         createHexahedronInPlace(self, p0, p1, p2, p3, p4, p5, p6, p7) ->
@@ -32120,7 +32120,7 @@ class Geometry:
 
 
         """
-    def createNURBSCurve(self, num_points: int = 4, is_closed: bool = False, order: int = 4) -> Face:
+    def createNURBSCurve(self, num_points: int = 4, is_closed: bool = False, order: int = 4) -> Optional[Face]:
         """
 
         createNURBSCurve(self, num_vertices=4, is_closed=False, order=4) ->
@@ -32177,7 +32177,7 @@ class Geometry:
 
 
         """
-    def createBezierCurve(self, num_points: int = 4, is_closed: bool = False, order: int = 4) -> Face:
+    def createBezierCurve(self, num_points: int = 4, is_closed: bool = False, order: int = 4) -> Optional[Face]:
         """
 
         createBezierCurve(num_points: 'int' = 4, is_closed: 'bool' = False,
@@ -32218,7 +32218,7 @@ class Geometry:
 
 
         """
-    def createNURBSSurface(self, rows: int, cols: int, is_closed_in_u: bool = False, is_closed_in_v: bool = False, order_u: int = 4, order_v: int = 4) -> Surface:
+    def createNURBSSurface(self, rows: int, cols: int, is_closed_in_u: bool = False, is_closed_in_v: bool = False, order_u: int = 4, order_v: int = 4) -> Optional[Surface]:
         """
 
         createNURBSSurface(self, rows, cols, is_closed_in_u=False,
@@ -32281,7 +32281,7 @@ class Geometry:
 
 
         """
-    def createBezierSurface(self, rows: int, cols: int, is_closed_in_u: bool = False, is_closed_in_v: bool = False, order_u: int = 4, order_v: int = 4) -> Surface:
+    def createBezierSurface(self, rows: int, cols: int, is_closed_in_u: bool = False, is_closed_in_v: bool = False, order_u: int = 4, order_v: int = 4) -> Optional[Surface]:
         """
 
         createBezierSurface(self, rows, cols, is_closed_in_u=False,
@@ -32345,7 +32345,7 @@ class Geometry:
           >             (math.cos(angle), v_index / float(num_cols-1), math.sin(angle)))
 
         """
-    def createMeshSurface(self, rows: int, cols: int, is_closed_in_u: bool = False, is_closed_in_v: bool = False) -> Surface:
+    def createMeshSurface(self, rows: int, cols: int, is_closed_in_u: bool = False, is_closed_in_v: bool = False) -> Optional[Surface]:
         """
 
         createMeshSurface(self, rows, cols, is_closed_in_u=False,
@@ -32362,7 +32362,7 @@ class Geometry:
 
 
         """
-    def createVolume(self, xres: int, yres: int, zres: int, bounding_box: Optional[BoundingBox] = None) -> Volume:
+    def createVolume(self, xres: int, yres: int, zres: int, bounding_box: Optional[BoundingBox] = None) -> Optional[Volume]:
         """
 
         createVolume(self, xres, yres, zres, bounding_box=None) -> hou.Volume
@@ -32385,7 +32385,7 @@ class Geometry:
 
 
         """
-    def createChannelPrim(self) -> ChannelPrim:
+    def createChannelPrim(self) -> Optional[ChannelPrim]:
         """
 
         createChannelPrim(self) -> hou.ChannelPrim
@@ -32659,7 +32659,7 @@ class Geometry:
 
 
         '''
-    def addArrayAttrib(self, type: EnumValue, name: str, data_type: EnumValue, tuple_size: int = 1) -> Attrib:
+    def addArrayAttrib(self, type: EnumValue, name: str, data_type: EnumValue, tuple_size: int = 1) -> Optional[Attrib]:
         """
 
         addArrayAttrib(self, type, name, data_type, tuple_size=1) -> hou.Attrib
@@ -33266,7 +33266,7 @@ class Geometry:
           >     return [group.name() for group in geometry.pointGroups()]
 
         """
-    def findPointGroup(self, *args) -> PointGroup:
+    def findPointGroup(self, *args) -> Optional[PointGroup]:
         """
 
         findPointGroup(self, name, scope=hou.groupScope.Public) ->
@@ -33285,7 +33285,7 @@ class Geometry:
 
 
         """
-    def createPointGroup(self, name: str, is_ordered: bool = False, unique_name: bool = False) -> PointGroup:
+    def createPointGroup(self, name: str, is_ordered: bool = False, unique_name: bool = False) -> Optional[PointGroup]:
         """
 
         createPointGroup(self, name, is_ordered=False, unique_name=False) ->
@@ -33331,7 +33331,7 @@ class Geometry:
 
 
         """
-    def findPrimGroup(self, *args) -> PrimGroup:
+    def findPrimGroup(self, *args) -> Optional[PrimGroup]:
         """
 
         findPrimGroup(self, name, scope=hou.groupScope.Public) -> hou.PrimGroup
@@ -33350,7 +33350,7 @@ class Geometry:
 
 
         """
-    def createPrimGroup(self, name: str, is_ordered: bool = False, unique_name: bool = False) -> PrimGroup:
+    def createPrimGroup(self, name: str, is_ordered: bool = False, unique_name: bool = False) -> Optional[PrimGroup]:
         """
 
         createPrimGroup(self, name, is_ordered=False, unique_name=False) ->
@@ -33396,7 +33396,7 @@ class Geometry:
 
 
         """
-    def findEdgeGroup(self, *args) -> EdgeGroup:
+    def findEdgeGroup(self, *args) -> Optional[EdgeGroup]:
         """
 
         findEdgeGroup(self, name, scope=hou.groupScope.Public) -> hou.EdgeGroup
@@ -33415,7 +33415,7 @@ class Geometry:
 
 
         """
-    def createEdgeGroup(self, name: str) -> EdgeGroup:
+    def createEdgeGroup(self, name: str) -> Optional[EdgeGroup]:
         """
 
         createEdgeGroup(self, name) -> hou.EdgeGroup
@@ -33451,7 +33451,7 @@ class Geometry:
           >     return [group.name() for group in geometry.vertexGroups()]
 
         """
-    def findVertexGroup(self, *args) -> VertexGroup:
+    def findVertexGroup(self, *args) -> Optional[VertexGroup]:
         """
 
         findVertexGroup(self, name, scope=hou.groupScope.Public) ->
@@ -33470,7 +33470,7 @@ class Geometry:
 
 
         """
-    def createVertexGroup(self, name: str, is_ordered: bool = False) -> VertexGroup:
+    def createVertexGroup(self, name: str, is_ordered: bool = False) -> Optional[VertexGroup]:
         """
 
         createVertexGroup(self, name, is_ordered=False) -> hou.VertexGroup
@@ -33491,7 +33491,7 @@ class Geometry:
 
 
         """
-    def findEdge(self, p0: Point, p1: Point) -> Edge:
+    def findEdge(self, p0: Point, p1: Point) -> Optional[Edge]:
         """
 
         findEdge(self, p0, p1) -> hou.Edge
@@ -33610,7 +33610,7 @@ class Geometry:
 
 
         """
-    def nearestPoint(self, position: Sequence[float], ptgroup: Optional[str] = None, max_radius: float = 1e+18) -> Point:
+    def nearestPoint(self, position: Sequence[float], ptgroup: Optional[str] = None, max_radius: float = 1e+18) -> Optional[Point]:
         """
 
         nearestPoint(self, position, ptgroup=None, max_radius=1E18) -> hou.Point
@@ -33763,7 +33763,7 @@ class Geometry:
 
 
         """
-    def importLop(self, *args, **kwargs) -> LopLockedStage:
+    def importLop(self, *args, **kwargs) -> Optional[LopLockedStage]:
         """
 
         importLop(self, lopnode, selectionrule, purpose=None, traversal=None,
@@ -33844,7 +33844,7 @@ class Geometry:
 
 
         """
-    def selection(self) -> Selection:
+    def selection(self) -> Optional[Selection]:
         """
 
         selection(self) -> hou.Selection
@@ -33913,7 +33913,7 @@ class Geometry:
 
 
         """
-    def primitiveIntrinsicsDataId(self) -> AttribDataId:
+    def primitiveIntrinsicsDataId(self) -> Optional[AttribDataId]:
         """
 
         primitiveIntrinsicsDataId(self)
@@ -33934,7 +33934,7 @@ class Geometry:
 
 
         """
-    def topologyDataId(self) -> AttribDataId:
+    def topologyDataId(self) -> Optional[AttribDataId]:
         """
 
         topologyDataId(self)
@@ -34025,7 +34025,7 @@ class Geometry:
 
 
         """
-    def unpackFromFolder(self, path: str) -> Geometry:
+    def unpackFromFolder(self, path: str) -> Optional[Geometry]:
         """
 
         unpackFromFolder(self, path) -> hou.Geometry
@@ -34363,7 +34363,7 @@ class GeometryDrawable(AdvancedDrawable):
 
         """
     __swig_destroy__: Incomplete
-    def geometry(self) -> Geometry:
+    def geometry(self) -> Optional[Geometry]:
         """
 
         geometry(self) -> hou.Geometry
@@ -34528,7 +34528,7 @@ class GeometryDrawableGroup(AdvancedDrawable):
 
 
         """
-    def drawable(self, drawable_name: str) -> GeometryDrawable:
+    def drawable(self, drawable_name: str) -> Optional[GeometryDrawable]:
         """
 
         drawable(name): -> hou.GeometryDrawable
@@ -34546,7 +34546,7 @@ class GeometryDrawableGroup(AdvancedDrawable):
 
 
         """
-    def geometry(self) -> Geometry:
+    def geometry(self) -> Optional[Geometry]:
         """
 
         geometry(self): -> hou.Geometry
@@ -34824,7 +34824,7 @@ class GeometrySelection:
 
 
         """
-    def primitiveTypes(self) -> Tuple[EnumValue, ...]:
+    def primitiveTypes(self) -> Optional[Tuple[EnumValue, ...]]:
         """
 
         primitiveTypes(self) -> tuple of hou.primitiveType enum values
@@ -34885,7 +34885,7 @@ class GeometrySelection:
 
 
         """
-    def mergedNode(self, parent: Node, creator_name: str, force_keep_original_objects: bool = False, display_original_objects: bool = False) -> Node:
+    def mergedNode(self, parent: Node, creator_name: str, force_keep_original_objects: bool = False, display_original_objects: bool = False) -> Optional[Node]:
         """
 
         mergedNode(self, parent, creator_name,
@@ -35124,7 +35124,7 @@ class GeometrySpreadsheet(PathBasedPaneTab):
 
 
         """
-    def sceneGraphTree(self) -> SceneGraphTree:
+    def sceneGraphTree(self) -> Optional[SceneGraphTree]:
         """
 
         sceneGraphTree(self) -> hou.SceneGraphTree or None
@@ -35212,7 +35212,7 @@ class GeometryViewport:
 
 
         """
-    def settings(self) -> GeometryViewportSettings:
+    def settings(self) -> Optional[GeometryViewportSettings]:
         """
 
         settings(self) -> hou.GeometryViewportSettings
@@ -35364,7 +35364,7 @@ class GeometryViewport:
 
 
         """
-    def viewTransform(self) -> Matrix4:
+    def viewTransform(self) -> Optional[Matrix4]:
         """
 
         viewTransform(self) -> hou.Matrix4
@@ -35375,7 +35375,7 @@ class GeometryViewport:
 
 
         """
-    def modelToGeometryTransform(self) -> Matrix4:
+    def modelToGeometryTransform(self) -> Optional[Matrix4]:
         """
 
         modelToGeometryTransform(self) -> hou.Matrix4
@@ -35387,7 +35387,7 @@ class GeometryViewport:
 
 
         """
-    def cameraToModelTransform(self) -> Matrix4:
+    def cameraToModelTransform(self) -> Optional[Matrix4]:
         """
 
         cameraToModelTransform(self) -> hou.Matrix4
@@ -35398,7 +35398,7 @@ class GeometryViewport:
 
 
         """
-    def ndcToCameraTransform(self) -> Matrix4:
+    def ndcToCameraTransform(self) -> Optional[Matrix4]:
         """
 
         ndcToCameraTransform(self) -> hou.Matrix4
@@ -35410,7 +35410,7 @@ class GeometryViewport:
 
 
         """
-    def viewportToNDCTransform(self) -> Matrix4:
+    def viewportToNDCTransform(self) -> Optional[Matrix4]:
         """
 
         viewportToNDCTransform(self) -> hou.Matrix4
@@ -35421,7 +35421,7 @@ class GeometryViewport:
 
 
         """
-    def windowToViewportTransform(self) -> Matrix4:
+    def windowToViewportTransform(self) -> Optional[Matrix4]:
         """
 
         windowToViewportTransform(self) -> hou.Matrix4
@@ -35436,7 +35436,7 @@ class GeometryViewport:
 
 
         """
-    def viewPivot(self) -> Vector3:
+    def viewPivot(self) -> Optional[Vector3]:
         """
 
         viewPivot(self) -> hou.Vector3
@@ -35456,7 +35456,7 @@ class GeometryViewport:
 
 
         """
-    def camera(self) -> ObjNode: ...
+    def camera(self) -> Optional[ObjNode]: ...
     def cameraPath(self) -> str:
         """
 
@@ -35500,7 +35500,7 @@ class GeometryViewport:
 
 
         """
-    def defaultCamera(self) -> GeometryViewportCamera:
+    def defaultCamera(self) -> Optional[GeometryViewportCamera]:
         """
 
         defaultCamera(self) -> hou.GeometryViewportCamera
@@ -35630,7 +35630,7 @@ class GeometryViewport:
 
 
         """
-    def queryNodeAtPixel(self, x: int, y: int, pick_templates: bool = False) -> Node:
+    def queryNodeAtPixel(self, x: int, y: int, pick_templates: bool = False) -> Optional[Node]:
         """
 
         queryNodeAtPixel(self, x, y, pick_templates=False) -> hou.ObjNode,
@@ -35645,7 +35645,7 @@ class GeometryViewport:
 
 
         """
-    def queryPrimAtPixel(self, node: Node, x: int, y: int) -> Prim:
+    def queryPrimAtPixel(self, node: Node, x: int, y: int) -> Optional[Prim]:
         """
 
         queryPrimAtPixel(self, node, x, y) -> hou.Prim or None
@@ -35659,7 +35659,7 @@ class GeometryViewport:
 
 
         """
-    def queryInspectedGeometry(self) -> Geometry:
+    def queryInspectedGeometry(self) -> Optional[Geometry]:
         """
 
         queryInspectedGeometry(self) -> hou.Geometry or None
@@ -35670,7 +35670,7 @@ class GeometryViewport:
 
 
         """
-    def queryInspectedPrim(self) -> Prim:
+    def queryInspectedPrim(self) -> Optional[Prim]:
         """
 
         queryInspectedPrim(self) -> hou.Prim or None
@@ -35692,7 +35692,7 @@ class GeometryViewport:
 
 
         """
-    def mapToScreen(self, pos: Vector3) -> Vector2:
+    def mapToScreen(self, pos: Vector3) -> Optional[Vector2]:
         """
 
         mapToScreen(self, position) -> hou.Vector2
@@ -35856,7 +35856,7 @@ class GeometryViewportCamera:
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def stash(self) -> GeometryViewportCamera:
+    def stash(self) -> Optional[GeometryViewportCamera]:
         """
 
         stash(self) -> hou.GeometryViewportCamera
@@ -37354,7 +37354,7 @@ class GeometryViewportSettings:
 
 
         """
-    def displaySet(self, settype: EnumValue) -> GeometryViewportDisplaySet:
+    def displaySet(self, settype: EnumValue) -> Optional[GeometryViewportDisplaySet]:
         """
 
         displaySet(self, display_set) -> hou.GeometryViewportDisplaySet
@@ -37468,7 +37468,7 @@ class GeometryViewportSettings:
 
 
         """
-    def camera(self) -> ObjNode:
+    def camera(self) -> Optional[ObjNode]:
         """
 
         camera(self) -> ObjNode or None
@@ -40063,7 +40063,7 @@ class GeometryViewportSettings:
 
 
         """
-    def getFogNode(self) -> Node:
+    def getFogNode(self) -> Optional[Node]:
         """
 
         getFogNode(self) -> hou.OpNode
@@ -40360,7 +40360,7 @@ class GeometryViewportSettings:
 
 
         """
-    def backgroundImage(self, viewportBackgroundView: EnumValue, layer: int = 1) -> GeometryViewportBackground:
+    def backgroundImage(self, viewportBackgroundView: EnumValue, layer: int = 1) -> Optional[GeometryViewportBackground]:
         """
 
         backgroundImage(self, viewportBGImageView, layer) ->
@@ -42513,7 +42513,7 @@ class hda:
 
         """
     @staticmethod
-    def eventCallbacks() -> Tuple[tuple[Tuple[EnumValue, ...], Any], ...]: ...
+    def eventCallbacks() -> Optional[Tuple[tuple[Tuple[EnumValue, ...], Any], ...]]: ...
 
 class HDADefinition:
     """
@@ -42559,7 +42559,7 @@ class HDADefinition:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def nodeType(self) -> NodeType:
+    def nodeType(self) -> Optional[NodeType]:
         """
 
         nodeType(self) -> hou.NodeType
@@ -42747,7 +42747,7 @@ class HDADefinition:
 
 
         """
-    def addSection(self, *args) -> HDASection:
+    def addSection(self, *args) -> Optional[HDASection]:
         '''
 
         addSection(self, name, contents=\\"\\",
@@ -43037,7 +43037,7 @@ class HDADefinition:
 
 
         """
-    def options(self) -> HDAOptions:
+    def options(self) -> Optional[HDAOptions]:
         """
 
         options(self) -> hou.HDAOptions
@@ -43161,7 +43161,7 @@ class HDADefinition:
 
 
         """
-    def parmTemplateGroup(self) -> ParmTemplateGroup:
+    def parmTemplateGroup(self) -> Optional[ParmTemplateGroup]:
         '''
 
         parmTemplateGroup(self) -> hou.ParmTemplateGroup
@@ -43825,7 +43825,7 @@ class HDASection:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def definition(self) -> HDADefinition:
+    def definition(self) -> Optional[HDADefinition]:
         """
 
         definition(self) -> hou.HDADefinition
@@ -44691,7 +44691,7 @@ class hmath:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def identityTransform() -> Matrix4:
+    def identityTransform() -> Optional[Matrix4]:
         """
 
         identityTransform() -> hou.Matrix4
@@ -44707,7 +44707,7 @@ class hmath:
 
         """
     @staticmethod
-    def buildTranslate(*args) -> Matrix4:
+    def buildTranslate(*args) -> Optional[Matrix4]:
         """
 
         buildTranslate(tx, ty, tz) -> hou.Matrix4
@@ -44724,7 +44724,7 @@ class hmath:
 
         """
     @staticmethod
-    def buildScale(*args) -> Matrix4:
+    def buildScale(*args) -> Optional[Matrix4]:
         """
 
         buildScale(sx, sy, sz) -> hou.Matrix4
@@ -44745,7 +44745,7 @@ class hmath:
 
         """
     @staticmethod
-    def buildShear(*args) -> Matrix4:
+    def buildShear(*args) -> Optional[Matrix4]:
         """
 
         buildShear(shearx, sheary, shearz) -> hou.Matrix4
@@ -44762,7 +44762,7 @@ class hmath:
 
         """
     @staticmethod
-    def buildRotate(*args) -> Matrix4:
+    def buildRotate(*args) -> Optional[Matrix4]:
         '''
 
         buildRotate(rx, ry, rz, order=\\"xyz\\") -> hou.Matrix4
@@ -44786,7 +44786,7 @@ class hmath:
 
         '''
     @staticmethod
-    def buildRotateAboutAxis(axis: Sequence[float], angle_in_deg: float) -> Matrix4:
+    def buildRotateAboutAxis(axis: Sequence[float], angle_in_deg: float) -> Optional[Matrix4]:
         """
 
         buildRotateAboutAxis(axis, angle_in_deg) -> hou.Matrix4
@@ -44844,7 +44844,7 @@ class hmath:
 
         """
     @staticmethod
-    def buildRotateZToAxis(axis: Sequence[float]) -> Matrix4:
+    def buildRotateZToAxis(axis: Sequence[float]) -> Optional[Matrix4]:
         """
 
         buildRotateZToAxis(axis) -> hou.Matrix4
@@ -44866,7 +44866,7 @@ class hmath:
 
         """
     @staticmethod
-    def buildRotateLookAt(_from: Vector3, to: Vector3, up: Vector3) -> Matrix4:
+    def buildRotateLookAt(_from: Vector3, to: Vector3, up: Vector3) -> Optional[Matrix4]:
         """
 
         buildRotateLookAt(__from, to, up) -> hou.Matrix4
@@ -45236,7 +45236,7 @@ class hmath:
 
         """
     @staticmethod
-    def combineLocalTransform(*args, **kwargs) -> Matrix4:
+    def combineLocalTransform(*args, **kwargs) -> Optional[Matrix4]:
         """
 
         combineLocalTransform(local, world, parent_local=None,
@@ -45248,7 +45248,7 @@ class hmath:
 
         """
     @staticmethod
-    def extractLocalTransform(*args, **kwargs) -> Matrix4:
+    def extractLocalTransform(*args, **kwargs) -> Optional[Matrix4]:
         """
 
         extractLocalTransform(world, parent_world, parent_local,
@@ -45263,7 +45263,7 @@ class hmath:
 
         """
     @staticmethod
-    def slerpTransforms(xforms: typing.Iterable[Matrix4], input_weights: Sequence[float], normalize_weigths: bool = True, slerp_method: int = 1, slerp_flip_mehtod: int = 1) -> Matrix4:
+    def slerpTransforms(xforms: typing.Iterable[Matrix4], input_weights: Sequence[float], normalize_weigths: bool = True, slerp_method: int = 1, slerp_flip_mehtod: int = 1) -> Optional[Matrix4]:
         """
 
         slerpTransforms( xforms, input_weights, normalize_weights, slerp_method,
@@ -46123,7 +46123,7 @@ class _ik_Joint:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def worldTransform(self) -> Matrix4:
+    def worldTransform(self) -> Optional[Matrix4]:
         """
 
         worldTransform() -> hou.Matrix4
@@ -46141,7 +46141,7 @@ class _ik_Joint:
 
 
         """
-    def parent(self) -> _ik_Joint:
+    def parent(self) -> Optional[_ik_Joint]:
         """
 
         parent() -> hou.ik.Joint
@@ -46176,7 +46176,7 @@ class _ik_Joint:
 
 
         """
-    def rotationWeights(self) -> Vector3:
+    def rotationWeights(self) -> Optional[Vector3]:
         """
 
         rotationWeights() -> hou.Vector3
@@ -46198,7 +46198,7 @@ class _ik_Joint:
 
 
         """
-    def translationWeights(self) -> Vector3:
+    def translationWeights(self) -> Optional[Vector3]:
         """
 
         translationWeights() -> hou.Vector3
@@ -46243,7 +46243,7 @@ class _ik_Joint:
 
 
         """
-    def localCenterOfMass(self) -> Vector3:
+    def localCenterOfMass(self) -> Optional[Vector3]:
         """
 
         localCenterOfMass() -> hou.Vector3
@@ -46305,7 +46305,7 @@ class _ik_Joint:
 
 
         """
-    def restTransform(self) -> Matrix4:
+    def restTransform(self) -> Optional[Matrix4]:
         """
 
         restTransform() -> hou.Matrix4
@@ -46331,7 +46331,7 @@ class _ik_Joint:
 
 
         """
-    def restRotationWeights(self) -> Vector3:
+    def restRotationWeights(self) -> Optional[Vector3]:
         """
 
         restRotationWeights() -> hou.Vector3
@@ -46353,7 +46353,7 @@ class _ik_Joint:
 
 
         """
-    def restTranslationWeights(self) -> Vector3:
+    def restTranslationWeights(self) -> Optional[Vector3]:
         """
 
         restTranslationWeights() -> hou.Vector3
@@ -46407,7 +46407,7 @@ class _ik_Skeleton:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def addJoint(self, *args, **kwargs) -> _ik_Joint:
+    def addJoint(self, *args, **kwargs) -> Optional[_ik_Joint]:
         """
 
         addJoint(self, world_transform=hou.Matrix4(1.0), parent=None,
@@ -46438,7 +46438,7 @@ class _ik_Skeleton:
 
 
         """
-    def joints(self) -> Iterator[_ik_Joint]:
+    def joints(self) -> Optional[Iterator[_ik_Joint]]:
         """
 
         joints(self) -> tuple of hou.ik.Joint
@@ -46448,7 +46448,7 @@ class _ik_Skeleton:
 
 
         """
-    def centerOfMass(self) -> Vector3:
+    def centerOfMass(self) -> Optional[Vector3]:
         """
 
         centerOfMass() -> hou.Vector3
@@ -46514,7 +46514,7 @@ class _ik_Target:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def joint(self) -> _ik_Joint:
+    def joint(self) -> Optional[_ik_Joint]:
         """
 
         joint() -> hou.ik.Joint
@@ -46534,7 +46534,7 @@ class _ik_Target:
 
 
         """
-    def goalTransform(self) -> Matrix4:
+    def goalTransform(self) -> Optional[Matrix4]:
         """
 
         goalTransform() -> hou.Matrix4
@@ -46552,7 +46552,7 @@ class _ik_Target:
 
 
         """
-    def jointOffset(self) -> Matrix4:
+    def jointOffset(self) -> Optional[Matrix4]:
         """
 
         jointOffset() -> hou.Matrix4
@@ -46672,7 +46672,7 @@ class IndexPairPropertyTable:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def attrib(self) -> Attrib:
+    def attrib(self) -> Optional[Attrib]:
         """
 
         attrib(self) -> hou.Attrib
@@ -46691,7 +46691,7 @@ class IndexPairPropertyTable:
 
 
         """
-    def propertyDataType(self, prop_name: str) -> EnumValue:
+    def propertyDataType(self, prop_name: str) -> Optional[EnumValue]:
         """
 
         propertyDataType(self, property_name) -> hou.attribData enum value
@@ -46813,9 +46813,9 @@ class IndirectInput(NetworkMovableItem):
 
         """
     def outputConnections(self) -> Tuple[NodeConnection, ...]: ...
-    def input(self) -> Node: ...
+    def input(self) -> Optional[Node]: ...
     def inputOutputIndex(self) -> int: ...
-    def inputItem(self) -> NetworkMovableItem:
+    def inputItem(self) -> Optional[NetworkMovableItem]:
         """
 
         inputItem(self) -> hou.NetworkMovableItem
@@ -47058,7 +47058,7 @@ class InterruptableOperation:
 
 
         """
-    def __enter__(self) -> InterruptableOperation: ...
+    def __enter__(self) -> Optional[InterruptableOperation]: ...
     def __exit__(self, type: Any, value: Any, traceback: Any) -> None: ...
 
 class IntParmTemplate(ParmTemplate):
@@ -47355,7 +47355,7 @@ class IntParmTemplate(ParmTemplate):
 
 
         """
-    def defaultExpressionLanguage(self) -> Tuple[EnumValue, ...]:
+    def defaultExpressionLanguage(self) -> Optional[Tuple[EnumValue, ...]]:
         """
 
         defaultExpressionLanguage(self) -> tuple of hou.scriptLanguage
@@ -47667,7 +47667,7 @@ class CopNode(OpNode):
 
 
         """
-    def displayNode(self) -> Node:
+    def displayNode(self) -> Optional[Node]:
         """
 
         displayNode(self) -> Node
@@ -47992,7 +47992,7 @@ class IPRViewer(PaneTab):
           >         hou.ui.displayMessage(\\"Click on an object to bring up the shader.\\")
 
         '''
-    def ropNode(self) -> Node:
+    def ropNode(self) -> Optional[Node]:
         """
 
         ropNode(self) -> hou.RopNode or None
@@ -48169,7 +48169,7 @@ class IPRViewer(PaneTab):
 
 
         """
-    def objectNode(self, x: int, y: int) -> Node:
+    def objectNode(self, x: int, y: int) -> Optional[Node]:
         """
 
         objectNode(self, x, y) -> hou.ObjNode or None
@@ -48189,7 +48189,7 @@ class IPRViewer(PaneTab):
 
 
         """
-    def prim(self, x: int, y: int) -> Prim:
+    def prim(self, x: int, y: int) -> Optional[Prim]:
         """
 
         prim(self, x, y) -> hou.Prim or None
@@ -48202,7 +48202,7 @@ class IPRViewer(PaneTab):
 
 
         """
-    def materialNode(self, x: int, y: int) -> Node:
+    def materialNode(self, x: int, y: int) -> Optional[Node]:
         """
 
         materialNode(self, x, y) -> hou.ShopNode or None
@@ -48955,7 +48955,7 @@ class logging:
 
         """
     @staticmethod
-    def defaultSink(force_create: bool = False) -> _logging_MemorySink:
+    def defaultSink(force_create: bool = False) -> Optional[_logging_MemorySink]:
         """
 
         hou.logging.defaultSink
@@ -49082,7 +49082,7 @@ class _logging_LogEntry:
 
 
         """
-    def severity(self) -> EnumValue:
+    def severity(self) -> Optional[EnumValue]:
         """
 
         severity() -> hou.severityType
@@ -49221,7 +49221,7 @@ class _logging_MemorySink(_logging_Sink):
 
         """
     __swig_destroy__: Incomplete
-    def logEntries(self) -> Iterator[_logging_LogEntry]:
+    def logEntries(self) -> Optional[Iterator[_logging_LogEntry]]:
         """
 
         logEntries() -> iterable of hou.logging.LogEntry
@@ -49314,7 +49314,7 @@ class LopNetwork(OpNode):
 
 
         """
-    def displayNode(self) -> Node:
+    def displayNode(self) -> Optional[Node]:
         """
 
         displayNode(self) -> Node
@@ -49324,7 +49324,7 @@ class LopNetwork(OpNode):
 
 
         """
-    def viewerNode(self) -> Node:
+    def viewerNode(self) -> Optional[Node]:
         """
 
         viewerNode(self) -> Node
@@ -49338,7 +49338,7 @@ class LopNetwork(OpNode):
 
 
         """
-    def viewportOverrides(self, lop: LopNode, output_index: int = 0) -> LopViewportOverrides:
+    def viewportOverrides(self, lop: LopNode, output_index: int = 0) -> Optional[LopViewportOverrides]:
         """
 
         viewportOverrides(self, lop, output_index = 0) ->
@@ -49433,7 +49433,7 @@ class LopNetwork(OpNode):
 
 
         """
-    def viewportLoadMasks(self) -> LopViewportLoadMasks:
+    def viewportLoadMasks(self) -> Optional[LopViewportLoadMasks]:
         """
 
         viewportLoadMasks(self) -> hou.LopViewportLoadMasks
@@ -49466,7 +49466,7 @@ class LopNetwork(OpNode):
 
 
         """
-    def loadNamedViewportLoadMasks(self, name: str) -> LopViewportLoadMasks:
+    def loadNamedViewportLoadMasks(self, name: str) -> Optional[LopViewportLoadMasks]:
         """
 
         loadNamedViewportLoadMasks(self, name) -> hou.LopViewportLoadMasks
@@ -49491,7 +49491,7 @@ class LopNetwork(OpNode):
 
 
         """
-    def editablePostLayer(self, name: str, lop: LopNode, output_index: int = 0) -> LopPostLayer:
+    def editablePostLayer(self, name: str, lop: LopNode, output_index: int = 0) -> Optional[LopPostLayer]:
         """
 
         editablePostLayer(self, name, lop, output_index=0) -> hou.LopPostLayer
@@ -49722,7 +49722,7 @@ class LopNode(OpNode):
 
 
         """
-    def viewerNode(self) -> Node:
+    def viewerNode(self) -> Optional[Node]:
         """
 
         viewerNode(self) -> Node
@@ -49920,7 +49920,7 @@ class LopNode(OpNode):
 
 
         """
-    def loadMasks(self, *args, **kwargs) -> LopViewportLoadMasks:
+    def loadMasks(self, *args, **kwargs) -> Optional[LopViewportLoadMasks]:
         """
 
         loadMasks(self, output_index = 0, force_cook = False,
@@ -50003,7 +50003,7 @@ class LopNode(OpNode):
 
 
         """
-    def selectionRule(self, inputidx: int = -1, pattern: Optional[str] = None) -> LopSelectionRule:
+    def selectionRule(self, inputidx: int = -1, pattern: Optional[str] = None) -> Optional[LopSelectionRule]:
         """
 
         selectionRule(self, inputidx=-1, pattern=None) -> hou.LopSelectionRule
@@ -50022,7 +50022,7 @@ class LopNode(OpNode):
 
 
         """
-    def network(self) -> Node:
+    def network(self) -> Optional[Node]:
         """
 
         network(self) -> hou.LopNetwork
@@ -50656,7 +50656,7 @@ class lop:
 
         """
     @staticmethod
-    def createParmsForProperty(*args) -> ParmTemplateGroup:
+    def createParmsForProperty(*args) -> Optional[ParmTemplateGroup]:
         """
 
         createParmsForProperty(source, primpath, propertyname, parametername,
@@ -50710,7 +50710,7 @@ class lop:
 
         """
     @staticmethod
-    def createParmsForParameter(source: ParmTemplate, parametername: Optional[str] = None, usdvaluetype: Optional[str] = None, prepend_control_parm: bool = True, propertyname: Optional[str] = None) -> ParmTemplateGroup:
+    def createParmsForParameter(source: ParmTemplate, parametername: Optional[str] = None, usdvaluetype: Optional[str] = None, prepend_control_parm: bool = True, propertyname: Optional[str] = None) -> Optional[ParmTemplateGroup]:
         """
 
         createParmsForParameter(source, parametername, usdvaluetype,
@@ -50753,7 +50753,7 @@ class lop:
 
         """
     @staticmethod
-    def createConnectionParmsForProperty(*args) -> ParmTemplateGroup:
+    def createConnectionParmsForProperty(*args) -> Optional[ParmTemplateGroup]:
         """
 
         createConnectionParmsForProperty(source, primpath, propertyname,
@@ -50917,7 +50917,7 @@ class lop:
 
         """
     @staticmethod
-    def shaderNodeType(shader_name: str) -> NodeType:
+    def shaderNodeType(shader_name: str) -> Optional[NodeType]:
         '''
 
         shaderNodeType(shader_name) -> hou.NodeType
@@ -50968,7 +50968,7 @@ class lop:
 
         """
     @staticmethod
-    def outputProcessorParms(name: str) -> ParmTemplateGroup:
+    def outputProcessorParms(name: str) -> Optional[ParmTemplateGroup]:
         """
 
         outputProcessorParms(name) -> hou.ParmTemplateGroup
@@ -51272,7 +51272,7 @@ class LopPostLayer:
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def __enter__(self) -> LopPostLayer: ...
+    def __enter__(self) -> Optional[LopPostLayer]: ...
     def layer(self) -> Any: ...
     def stage(self) -> Any: ...
     def __exit__(self, type: Any, value: Any, traceback: Any) -> None: ...
@@ -51421,7 +51421,7 @@ class LopSelectionRule:
 
 
         """
-    def lastErrorSeverity(self) -> EnumValue:
+    def lastErrorSeverity(self) -> Optional[EnumValue]:
         """
 
         lastErrorSeverity(self) -> hou.severityType
@@ -51514,7 +51514,7 @@ class LopSelectionRule:
 
 
         """
-    def sourceNode(self) -> Node:
+    def sourceNode(self) -> Optional[Node]:
         """
 
         sourceNode(self) -> hou.LopNode or None
@@ -51803,7 +51803,7 @@ class LopViewportOverrides:
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def __enter__(self) -> LopViewportOverrides: ...
+    def __enter__(self) -> Optional[LopViewportOverrides]: ...
     def setDrawMode(self, prims: LopSelectionRule, drawmode: str) -> None:
         """
 
@@ -53022,7 +53022,7 @@ class Matrix4:
 
 
         """
-    def extractRotationMatrix3(self) -> Matrix3:
+    def extractRotationMatrix3(self) -> Optional[Matrix3]:
         """
 
         extractRotationMatrix3(self) -> hou.Matrix3
@@ -53977,7 +53977,7 @@ class NetworkEditor(PathBasedPaneTab):
 
 
         """
-    def decoratedItem(self) -> NetworkItem:
+    def decoratedItem(self) -> Optional[NetworkItem]:
         """
 
         decoratedItem(self) -> hou.NetworkItem
@@ -55844,7 +55844,7 @@ class NodeConnection(NetworkItem):
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def outputNode(self) -> Node:
+    def outputNode(self) -> Optional[Node]:
         """
 
         outputNode(self) -> hou.Node
@@ -55866,7 +55866,7 @@ class NodeConnection(NetworkItem):
 
 
         """
-    def outputItem(self) -> NetworkMovableItem:
+    def outputItem(self) -> Optional[NetworkMovableItem]:
         """
 
         outputItem(self) -> hou.NetworkMovableItem
@@ -55877,7 +55877,7 @@ class NodeConnection(NetworkItem):
 
 
         """
-    def inputNode(self) -> Node:
+    def inputNode(self) -> Optional[Node]:
         """
 
         inputNode(self) -> hou.Node
@@ -55902,7 +55902,7 @@ class NodeConnection(NetworkItem):
 
 
         """
-    def subnetIndirectInput(self) -> SubnetIndirectInput:
+    def subnetIndirectInput(self) -> Optional[SubnetIndirectInput]:
         """
 
         subnetIndirectInput(self) -> hou.SubnetIndirectInput
@@ -55914,7 +55914,7 @@ class NodeConnection(NetworkItem):
 
 
         """
-    def inputItem(self) -> NetworkMovableItem:
+    def inputItem(self) -> Optional[NetworkMovableItem]:
         """
 
         inputItem(self) -> hou.NetworkMovableItem
@@ -56373,7 +56373,7 @@ class PackedGeometry(PackedPrim):
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def getEmbeddedGeometry(self) -> Geometry:
+    def getEmbeddedGeometry(self) -> Optional[Geometry]:
         """
 
         getEmbeddedGeometry(self) -> hou.Geometry
@@ -56410,7 +56410,7 @@ class Parm:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def node(self) -> Node:
+    def node(self) -> Optional[Node]:
         """
 
         node(self) -> hou.OpNode
@@ -56419,7 +56419,7 @@ class Parm:
 
 
         """
-    def tuple(self) -> ParmTuple:
+    def tuple(self) -> Optional[ParmTuple]:
         """
 
         tuple(self) -> hou.ParmTuple
@@ -56434,7 +56434,7 @@ class Parm:
 
 
         """
-    def parmTemplate(self) -> ParmTemplate:
+    def parmTemplate(self) -> Optional[ParmTemplate]:
         """
 
         parmTemplate(self) -> hou.ParmTemplate
@@ -56748,7 +56748,7 @@ class Parm:
 
 
         """
-    def expressionLanguage(self) -> EnumValue:
+    def expressionLanguage(self) -> Optional[EnumValue]:
         """
 
         expressionLanguage(self) -> hou.exprLanguage enum value
@@ -56936,7 +56936,7 @@ class Parm:
 
 
         """
-    def evalAsGeometry(self) -> Geometry:
+    def evalAsGeometry(self) -> Optional[Geometry]:
         """
 
         evalAsGeometry(self) -> hou.Geometry
@@ -56948,7 +56948,7 @@ class Parm:
 
 
         """
-    def evalAsGeometryAtFrame(self, frame: float) -> Geometry:
+    def evalAsGeometryAtFrame(self, frame: float) -> Optional[Geometry]:
         """
 
         evalAsGeometryAtFrame(self, frame) -> hou.Geometry
@@ -56986,7 +56986,7 @@ class Parm:
 
 
         """
-    def evalAsRamp(self) -> Ramp:
+    def evalAsRamp(self) -> Optional[Ramp]:
         """
 
         evalAsRamp(self) -> hou.Ramp
@@ -56998,7 +56998,7 @@ class Parm:
 
 
         """
-    def evalAsRampAtFrame(self, frame: float) -> Ramp:
+    def evalAsRampAtFrame(self, frame: float) -> Optional[Ramp]:
         """
 
         evalAsRampAtFrame(self, frame) -> hou.Ramp
@@ -57010,7 +57010,7 @@ class Parm:
 
 
         """
-    def evalAsNode(self) -> Node:
+    def evalAsNode(self) -> Optional[Node]:
         """
 
         evalAsNode(self) -> hou.OpNode
@@ -57025,7 +57025,7 @@ class Parm:
 
 
         """
-    def evalAsNodeAtFrame(self, frame: float) -> Node:
+    def evalAsNodeAtFrame(self, frame: float) -> Optional[Node]:
         """
 
         evalAsNodeAtFrame(self, frame) -> hou.OpNode
@@ -57180,7 +57180,7 @@ class Parm:
 
 
         """
-    def getReferencedParm(self) -> Parm:
+    def getReferencedParm(self) -> Optional[Parm]:
         """
 
         getReferencedParm(self) -> hou.Parm
@@ -57365,7 +57365,7 @@ class Parm:
 
 
         """
-    def parentMultiParm(self) -> Parm:
+    def parentMultiParm(self) -> Optional[Parm]:
         """
 
         parentMultiParm(self) -> hou.Parm
@@ -57692,7 +57692,7 @@ class Parm:
           > hou_parm_tuple = parmtuplelib.setParmTupleProperties(node.parm(\\"t\\"))
 
         '''
-    def createClip(self, parent_node: Node, name: str, create_new: bool, apply_immediately: bool, current_value_only: bool = False, create_locked: bool = False, set_value_to_default: bool = False) -> Node:
+    def createClip(self, parent_node: Node, name: str, create_new: bool, apply_immediately: bool, current_value_only: bool = False, create_locked: bool = False, set_value_to_default: bool = False) -> Optional[Node]:
         """
 
         createClip(self, parent_node, name, create_new, apply_immediately,
@@ -57746,7 +57746,7 @@ class Parm:
 
 
         """
-    def overrideTrack(self) -> Track:
+    def overrideTrack(self) -> Optional[Track]:
         """
 
         overrideTrack(self) -> hou.Track or None
@@ -57965,7 +57965,7 @@ class Parm:
 
 
         """
-    def uiBackgroundColor(self) -> Color:
+    def uiBackgroundColor(self) -> Optional[Color]:
         """
 
         uiBackgroundColor(self) -> hou.Color
@@ -58240,7 +58240,7 @@ class ParmTuple:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def node(self) -> Node:
+    def node(self) -> Optional[Node]:
         """
 
         node(self) -> hou.OpNode
@@ -58249,7 +58249,7 @@ class ParmTuple:
 
 
         """
-    def parmTemplate(self) -> ParmTemplate:
+    def parmTemplate(self) -> Optional[ParmTemplate]:
         """
 
         parmTemplate(self) -> hou.ParmTemplate
@@ -58621,7 +58621,7 @@ class ParmTuple:
 
 
         """
-    def parentMultiParm(self) -> Parm:
+    def parentMultiParm(self) -> Optional[Parm]:
         """
 
         parentMultiParm(self) -> hou.Parm
@@ -58760,7 +58760,7 @@ class ParmTuple:
 
 
         """
-    def __getitem__(self, index: int) -> Parm:
+    def __getitem__(self, index: int) -> Optional[Parm]:
         '''
 
         __getitem__(self, index) -> hou.Parm
@@ -58791,7 +58791,7 @@ class ParmTuple:
 
         """
     def __bool__(self) -> bool: ...
-    def createClip(self, parent_node: Node, name: str, create_new: bool, apply_immediately: bool, current_value_only: bool = False, create_locked: bool = False, set_value_to_default: bool = False) -> Node:
+    def createClip(self, parent_node: Node, name: str, create_new: bool, apply_immediately: bool, current_value_only: bool = False, create_locked: bool = False, set_value_to_default: bool = False) -> Optional[Node]:
         """
 
         createClip(self, parent_node, name, create_new, apply_immediately,
@@ -58998,7 +58998,7 @@ class perfMon:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def startProfile(title: str, options: Optional[PerfMonRecordOptions] = None) -> PerfMonProfile:
+    def startProfile(title: str, options: Optional[PerfMonRecordOptions] = None) -> Optional[PerfMonProfile]:
         """
 
         startProfile(title, options=None) -> hou.PerfMonProfile
@@ -59017,7 +59017,7 @@ class perfMon:
 
         """
     @staticmethod
-    def loadProfile(file_path: str) -> PerfMonProfile:
+    def loadProfile(file_path: str) -> Optional[PerfMonProfile]:
         """
 
         loadProfile(file_path) -> hou.PerfMonProfile
@@ -59044,7 +59044,7 @@ class perfMon:
 
         """
     @staticmethod
-    def activeProfile() -> PerfMonProfile:
+    def activeProfile() -> Optional[PerfMonProfile]:
         """
 
         activeProfile() -> hou.PerfMonProfile or None
@@ -59055,7 +59055,7 @@ class perfMon:
 
         """
     @staticmethod
-    def startTimedEvent(description: str, auto_nest_events: bool = True) -> PerfMonEvent:
+    def startTimedEvent(description: str, auto_nest_events: bool = True) -> Optional[PerfMonEvent]:
         """
 
         startTimedEvent(description, auto_nest_events=True) -> hou.PerfMonEvent
@@ -59065,7 +59065,7 @@ class perfMon:
 
         """
     @staticmethod
-    def startEvent(description: str, auto_nest_events: bool = True) -> PerfMonEvent:
+    def startEvent(description: str, auto_nest_events: bool = True) -> Optional[PerfMonEvent]:
         """
 
         startEvent(description, auto_nest_events=True) -> hou.PerfMonEvent
@@ -59098,7 +59098,7 @@ class perfMon:
 
         """
     @staticmethod
-    def startTimedCookEvent(description: str, node: Node) -> PerfMonEvent:
+    def startTimedCookEvent(description: str, node: Node) -> Optional[PerfMonEvent]:
         """
 
         startTimedCookEvent(description, node) -> hou.PerfMonEvent
@@ -59108,7 +59108,7 @@ class perfMon:
 
         """
     @staticmethod
-    def startCookEvent(description: str, node: Node) -> PerfMonEvent:
+    def startCookEvent(description: str, node: Node) -> Optional[PerfMonEvent]:
         """
 
         startCookEvent(description, node) -> hou.PerfMonEvent
@@ -59140,7 +59140,7 @@ class perfMon:
 
         """
     @staticmethod
-    def startPaneEvent(panetype: str, operation: str) -> PerfMonEvent:
+    def startPaneEvent(panetype: str, operation: str) -> Optional[PerfMonEvent]:
         """
 
         startPaneEvent(panetype, operation) -> hou.PerfMonEvent
@@ -59316,7 +59316,7 @@ class PerfMonEvent:
 
 
         """
-    def __enter__(self) -> PerfMonEvent: ...
+    def __enter__(self) -> Optional[PerfMonEvent]: ...
     def __exit__(self, type: Any, value: Any, traceback: Any) -> None: ...
 
 class PerfMonProfile:
@@ -60262,7 +60262,7 @@ class playbar:
 
         """
     @staticmethod
-    def playbackRange() -> Vector2:
+    def playbackRange() -> Optional[Vector2]:
         """
 
         playbackRange(self) -> hou.Vector2
@@ -60588,7 +60588,7 @@ class playbar:
     @staticmethod
     def selectedKeyframes() -> dict[Parm, Tuple[BaseKeyframe, ...]]: ...
     @staticmethod
-    def selectionRange() -> Vector2:
+    def selectionRange() -> Optional[Vector2]:
         """
 
         selectionRange(self) -> hou.Vector2 or None
@@ -60615,7 +60615,7 @@ class playbar:
 
         """
     @staticmethod
-    def timelineRange() -> Vector2:
+    def timelineRange() -> Optional[Vector2]:
         """
 
         timelineRange(self) -> hou.Vector2
@@ -60626,7 +60626,7 @@ class playbar:
 
         """
     @staticmethod
-    def timeRange() -> Vector2:
+    def timeRange() -> Optional[Vector2]:
         """
 
         timeRange(self) -> hou.Vector2
@@ -60647,7 +60647,7 @@ class playbar:
 
         """
     @staticmethod
-    def frameRange() -> Vector2:
+    def frameRange() -> Optional[Vector2]:
         """
 
         frameRange(self) -> hou.Vector2
@@ -60679,7 +60679,7 @@ class playbar:
 
         """
     @staticmethod
-    def channelList() -> ChannelList:
+    def channelList() -> Optional[ChannelList]:
         """
 
         channelList(self) -> hou.ChannelList
@@ -60699,7 +60699,7 @@ class playbar:
 
         """
     @staticmethod
-    def channelListFromSelection() -> ChannelList:
+    def channelListFromSelection() -> Optional[ChannelList]:
         """
 
         channelListFromSelection(self) -> hou.ChannelList
@@ -60710,7 +60710,7 @@ class playbar:
 
         """
     @staticmethod
-    def channelListFromNodes(nodes: Sequence[Node]) -> ChannelList:
+    def channelListFromNodes(nodes: Sequence[Node]) -> Optional[ChannelList]:
         """
 
         channelListFromNodes(self,nodes) -> hou.ChannelList
@@ -60721,7 +60721,7 @@ class playbar:
 
         """
     @staticmethod
-    def channelListFromParms(parms: Tuple[Parm, ...]) -> ChannelList:
+    def channelListFromParms(parms: Tuple[Parm, ...]) -> Optional[ChannelList]:
         """
 
         channelListFromParms(self,parms) -> hou.ChannelList
@@ -60732,7 +60732,7 @@ class playbar:
 
         """
     @staticmethod
-    def channelListFromParmTuples(parms: Tuple[ParmTuple, ...]) -> ChannelList:
+    def channelListFromParmTuples(parms: Tuple[ParmTuple, ...]) -> Optional[ChannelList]:
         """
 
         channelListFromParmTuples(self,parms) -> hou.ChannelList
@@ -60763,7 +60763,7 @@ class playbar:
 
         """
     @staticmethod
-    def animBar() -> AnimBar:
+    def animBar() -> Optional[AnimBar]:
         """
 
         animBar(self): -> hou.AnimBar
@@ -61006,7 +61006,7 @@ class Point:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def geometry(self) -> Geometry:
+    def geometry(self) -> Optional[Geometry]:
         """
 
         geometry(self) -> hou.Geometry
@@ -61026,7 +61026,7 @@ class Point:
 
 
         """
-    def position(self) -> Vector3:
+    def position(self) -> Optional[Vector3]:
         '''
 
         position(self) -> hou.Vector3
@@ -61371,7 +61371,7 @@ class PointGroup:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def geometry(self) -> Geometry:
+    def geometry(self) -> Optional[Geometry]:
         """
 
         geometry(self) -> hou.Geometry
@@ -61389,7 +61389,7 @@ class PointGroup:
 
 
         """
-    def iterPoints(self) -> Iterator[Point]:
+    def iterPoints(self) -> Optional[Iterator[Point]]:
         """
 
         iterPoints(self) -> generator of hou.Point
@@ -61562,7 +61562,7 @@ class PointGroup:
 
 
         """
-    def dataId(self) -> AttribDataId:
+    def dataId(self) -> Optional[AttribDataId]:
         """
 
         dataId(self)
@@ -61645,7 +61645,7 @@ class PrimGroup:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def geometry(self) -> Geometry:
+    def geometry(self) -> Optional[Geometry]:
         """
 
         geometry(self) -> hou.Geometry
@@ -61664,7 +61664,7 @@ class PrimGroup:
 
 
         """
-    def iterPrims(self) -> Iterator[Prim]:
+    def iterPrims(self) -> Optional[Iterator[Prim]]:
         """
 
         iterPrims(self) -> generator of hou.Prim
@@ -61839,7 +61839,7 @@ class PrimGroup:
 
 
         """
-    def dataId(self) -> AttribDataId:
+    def dataId(self) -> Optional[AttribDataId]:
         """
 
         dataId(self)
@@ -61938,7 +61938,7 @@ class properties:
 
         """
     @staticmethod
-    def parmTemplate(class_name: str, parm_name: str) -> ParmTemplate:
+    def parmTemplate(class_name: str, parm_name: str) -> Optional[ParmTemplate]:
         """
 
         parmTemplate(class_name, parm_name) -> hou.ParmTemplate
@@ -61971,7 +61971,7 @@ class PythonPanel(PathBasedPaneTab):
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def activeInterface(self) -> PythonPanelInterface:
+    def activeInterface(self) -> Optional[PythonPanelInterface]:
         """
 
         activeInterface(self) -> hou.PythonPanelInterface
@@ -62148,7 +62148,7 @@ class pypanel:
 
         """
     @staticmethod
-    def interfaceByName(name: str) -> PythonPanelInterface:
+    def interfaceByName(name: str) -> Optional[PythonPanelInterface]:
         """
 
         interfaceByName(name) -> hou.PythonPanelInterface
@@ -62326,7 +62326,7 @@ class Quadric(Prim):
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def transform(self) -> Matrix3:
+    def transform(self) -> Optional[Matrix3]:
         """
 
         transform(self) -> hou.Matrix3
@@ -62338,8 +62338,8 @@ class Quadric(Prim):
 
 
         """
-    def getTransform(self) -> Matrix3: ...
-    def vertex(self, index: int) -> Vertex:
+    def getTransform(self) -> Optional[Matrix3]: ...
+    def vertex(self, index: int) -> Optional[Vertex]:
         """
 
         vertex(self, index) -> hou.Vertex
@@ -62695,7 +62695,7 @@ class Quaternion:
 
 
         """
-    def extractRotationMatrix3(self) -> Matrix3:
+    def extractRotationMatrix3(self) -> Optional[Matrix3]:
         """
 
         extractRotationMatrix3(self) -> hou.Matrix3
@@ -62941,7 +62941,7 @@ class RadialScriptItem(RadialItem):
 
 
         """
-    def label(self) -> str:
+    def label(self) -> Optional[str]:
         """
 
         label(self) -> str
@@ -62959,7 +62959,7 @@ class RadialScriptItem(RadialItem):
 
 
         """
-    def icon(self) -> str:
+    def icon(self) -> Optional[str]:
         """
 
         icon(self) -> str
@@ -62977,7 +62977,7 @@ class RadialScriptItem(RadialItem):
 
 
         """
-    def check(self) -> str:
+    def check(self) -> Optional[str]:
         """
 
         check(self) -> str
@@ -62997,7 +62997,7 @@ class RadialScriptItem(RadialItem):
 
 
         """
-    def script(self) -> str:
+    def script(self) -> Optional[str]:
         """
 
         script(self) -> str
@@ -63017,7 +63017,7 @@ class RadialScriptItem(RadialItem):
 
 
         """
-    def shortcut(self) -> str:
+    def shortcut(self) -> Optional[str]:
         """
 
         shortcut(self) -> str
@@ -63080,7 +63080,7 @@ class RadialSubmenu(RadialItem):
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def label(self) -> str:
+    def label(self) -> Optional[str]:
         """
 
         label(self) -> str
@@ -63098,7 +63098,7 @@ class RadialSubmenu(RadialItem):
 
 
         """
-    def shortcut(self) -> str:
+    def shortcut(self) -> Optional[str]:
         """
 
         shortcut(self) -> str
@@ -63118,7 +63118,7 @@ class RadialSubmenu(RadialItem):
 
         """
     def remove(self, location: EnumValue) -> None: ...
-    def item(self, location: EnumValue) -> RadialItem:
+    def item(self, location: EnumValue) -> Optional[RadialItem]:
         """
 
         item(self, [Hom:hou.radialItemLocation]) -> hou.RadialItem
@@ -63128,7 +63128,7 @@ class RadialSubmenu(RadialItem):
 
 
         """
-    def items(self) -> dict[EnumValue, RadialItem]:
+    def items(self) -> Optional[dict[EnumValue, RadialItem]]:
         """
 
         items(self) -> dict of hou.radialItemLocation to hou.RadialItem
@@ -63137,7 +63137,7 @@ class RadialSubmenu(RadialItem):
 
 
         """
-    def createSubmenu(self, location: EnumValue, label: Optional[str] = None, shortcut: Optional[str] = None) -> RadialSubmenu:
+    def createSubmenu(self, location: EnumValue, label: Optional[str] = None, shortcut: Optional[str] = None) -> Optional[RadialSubmenu]:
         """
 
         createSubmenu(self, [Hom:hou.radialItemLocation], label=None) ->
@@ -63149,7 +63149,7 @@ class RadialSubmenu(RadialItem):
 
 
         """
-    def createScriptItem(self, location: EnumValue, label: Optional[str] = None, icon: Optional[str] = None, check: Optional[str] = None, script: Optional[str] = None, shortcut: Optional[str] = None) -> RadialScriptItem:
+    def createScriptItem(self, location: EnumValue, label: Optional[str] = None, icon: Optional[str] = None, check: Optional[str] = None, script: Optional[str] = None, shortcut: Optional[str] = None) -> Optional[RadialScriptItem]:
         """
 
         createScriptItem(self, [Hom:hou.radialItemLocation], label=None,
@@ -63209,7 +63209,7 @@ class RadialMenu:
 
 
         """
-    def categories(self) -> str:
+    def categories(self) -> Optional[str]:
         """
 
         categories(self) -> str
@@ -63228,7 +63228,7 @@ class RadialMenu:
 
 
         """
-    def sourceFile(self) -> str:
+    def sourceFile(self) -> Optional[str]:
         """
 
         sourceFile(self) -> str
@@ -63247,7 +63247,7 @@ class RadialMenu:
 
 
         """
-    def root(self) -> RadialItem:
+    def root(self) -> Optional[RadialItem]:
         """
 
         root(self) -> hou.RadialItem
@@ -63258,7 +63258,7 @@ class RadialMenu:
 
 
         """
-    def label(self) -> str:
+    def label(self) -> Optional[str]:
         """
 
         label(self) -> str
@@ -63276,7 +63276,7 @@ class RadialMenu:
 
 
         """
-    def shortcut(self) -> str:
+    def shortcut(self) -> Optional[str]:
         """
 
         shortcut(self) -> str
@@ -63294,7 +63294,7 @@ class RadialMenu:
 
 
         """
-    def item(self, location: EnumValue) -> RadialItem:
+    def item(self, location: EnumValue) -> Optional[RadialItem]:
         """
 
         item(self, [Hom:hou.radialItemLocation]) -> hou.RadialItem
@@ -63304,7 +63304,7 @@ class RadialMenu:
 
 
         """
-    def items(self) -> dict[EnumValue, RadialItem]:
+    def items(self) -> Optional[dict[EnumValue, RadialItem]]:
         """
 
         items(self) -> dict of hou.radialItemLocation to hou.RadialItem
@@ -63314,7 +63314,7 @@ class RadialMenu:
 
 
         """
-    def createSubmenu(self, location: EnumValue, label: Optional[str] = None, shortcut: Optional[str] = None) -> RadialSubmenu:
+    def createSubmenu(self, location: EnumValue, label: Optional[str] = None, shortcut: Optional[str] = None) -> Optional[RadialSubmenu]:
         """
 
         createSubmenu(self, [Hom:hou.radialItemLocation], label=None) ->
@@ -63325,7 +63325,7 @@ class RadialMenu:
 
 
         """
-    def createScriptItem(self, location: EnumValue, label: Optional[str] = None, icon: Optional[str] = None, check: Optional[str] = None, script: Optional[str] = None, shortcut: Optional[str] = None) -> RadialScriptItem:
+    def createScriptItem(self, location: EnumValue, label: Optional[str] = None, icon: Optional[str] = None, check: Optional[str] = None, script: Optional[str] = None, shortcut: Optional[str] = None) -> Optional[RadialScriptItem]:
         """
 
         createScriptItem(self, [Hom:hou.radialItemLocation], label=None,
@@ -63456,7 +63456,7 @@ class Ramp:
 
 
         """
-    def basis(self) -> Tuple[EnumValue, ...]:
+    def basis(self) -> Optional[Tuple[EnumValue, ...]]:
         """
 
         basis(self) -> tuple of hou.rampBasis enum values
@@ -63793,7 +63793,7 @@ class RedrawBlock:
 
         """
     __swig_destroy__: Incomplete
-    def __enter__(self) -> RedrawBlock: ...
+    def __enter__(self) -> Optional[RedrawBlock]: ...
     def __exit__(self, type: Any, value: Any, traceback: Any) -> None: ...
 
 class ReferencePlane:
@@ -63809,7 +63809,7 @@ class ReferencePlane:
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def sceneViewer(self) -> SceneViewer:
+    def sceneViewer(self) -> Optional[SceneViewer]:
         """
 
         sceneViewer(self) -> hou.SceneViewer
@@ -63836,7 +63836,7 @@ class ReferencePlane:
 
 
         """
-    def transform(self) -> Matrix4:
+    def transform(self) -> Optional[Matrix4]:
         """
 
         transform(self) -> hou.Matrix4
@@ -64554,14 +64554,14 @@ class SceneViewer(PathBasedPaneTab):
 
 
         """
-    def findViewport(self, name: str) -> GeometryViewport:
+    def findViewport(self, name: str) -> Optional[GeometryViewport]:
         """
 
         findViewport(self, name) -> hou.GeometryViewport
 
 
         """
-    def curViewport(self) -> GeometryViewport:
+    def curViewport(self) -> Optional[GeometryViewport]:
         """
 
         curViewport(self) -> hou.GeometryViewport
@@ -64572,7 +64572,7 @@ class SceneViewer(PathBasedPaneTab):
 
 
         """
-    def selectedViewport(self) -> GeometryViewport:
+    def selectedViewport(self) -> Optional[GeometryViewport]:
         """
 
         selectedViewport(self) -> hou.GeometryViewport
@@ -64904,7 +64904,7 @@ class SceneViewer(PathBasedPaneTab):
 
 
         """
-    def currentGeometrySelection(self) -> GeometrySelection:
+    def currentGeometrySelection(self) -> Optional[GeometrySelection]:
         """
 
         currentGeometrySelection(self) -> hou.GeometrySelection
@@ -65132,7 +65132,7 @@ class SceneViewer(PathBasedPaneTab):
 
 
         """
-    def snappingPriorities(self) -> Tuple[EnumValue, ...]:
+    def snappingPriorities(self) -> Optional[Tuple[EnumValue, ...]]:
         """
 
         snappingPriorities(self): -> tuple of hou.snappingPriority values
@@ -65516,7 +65516,7 @@ class SceneViewer(PathBasedPaneTab):
 
 
         """
-    def groupListSize(self) -> Vector2:
+    def groupListSize(self) -> Optional[Vector2]:
         """
 
         groupListSize(self)
@@ -65575,7 +65575,7 @@ class SceneViewer(PathBasedPaneTab):
 
 
         """
-    def constructionPlane(self) -> ConstructionPlane:
+    def constructionPlane(self) -> Optional[ConstructionPlane]:
         """
 
         constructionPlane(self) -> hou.ConstructionPlane
@@ -65587,7 +65587,7 @@ class SceneViewer(PathBasedPaneTab):
 
 
         """
-    def referencePlane(self) -> ReferencePlane:
+    def referencePlane(self) -> Optional[ReferencePlane]:
         """
 
         referencePlane(self) -> hou.ReferencePlane
@@ -65599,7 +65599,7 @@ class SceneViewer(PathBasedPaneTab):
 
 
         """
-    def flipbookSettings(self) -> FlipbookSettings:
+    def flipbookSettings(self) -> Optional[FlipbookSettings]:
         """
 
         flipbookSettings(self) -> hou.FlipbookSettings
@@ -67047,7 +67047,7 @@ class ScriptEvalContext:
 
         '''
     __swig_destroy__: Incomplete
-    def node(self) -> Node:
+    def node(self) -> Optional[Node]:
         """
 
         node(self)
@@ -67056,7 +67056,7 @@ class ScriptEvalContext:
 
 
         """
-    def parm(self) -> Parm:
+    def parm(self) -> Optional[Parm]:
         """
 
         parm(self)
@@ -67070,7 +67070,7 @@ class ScriptEvalContext:
 
 
         """
-    def __enter__(self) -> ScriptEvalContext: ...
+    def __enter__(self) -> Optional[ScriptEvalContext]: ...
     def __exit__(self, type: Any, value: Any, traceback: Any) -> None: ...
 
 class Selection:
@@ -67130,7 +67130,7 @@ class Selection:
 
         """
     __swig_destroy__: Incomplete
-    def freeze(self) -> Selection:
+    def freeze(self) -> Optional[Selection]:
         """
 
         freeze(self) -> hou.Selection
@@ -67367,7 +67367,7 @@ class Selector:
 
 
         """
-    def nodeType(self) -> NodeType:
+    def nodeType(self) -> Optional[NodeType]:
         """
 
         nodeType(self) -> hou.NodeType
@@ -67393,7 +67393,7 @@ class Selector:
 
 
         """
-    def geometryTypes(self) -> Tuple[EnumValue, ...]:
+    def geometryTypes(self) -> Optional[Tuple[EnumValue, ...]]:
         '''
 
         geometryTypes(self) -> tuple of hou.geometryType enum values
@@ -67490,7 +67490,7 @@ class Selector:
 
 
         """
-    def primitiveTypes(self) -> Tuple[EnumValue, ...]:
+    def primitiveTypes(self) -> Optional[Tuple[EnumValue, ...]]:
         """
 
         primitiveTypes(self) -> tuple of hou.primType enum values
@@ -67978,7 +67978,7 @@ class shelves:
 
         """
     @staticmethod
-    def tool(tool_name: str) -> Tool:
+    def tool(tool_name: str) -> Optional[Tool]:
         '''
 
         tool(tool_name) -> hou.Tool or None
@@ -68014,7 +68014,7 @@ class shelves:
 
         """
     @staticmethod
-    def runningTool() -> Tool:
+    def runningTool() -> Optional[Tool]:
         """
 
         runningTool() -> hou.Tool or None
@@ -68069,7 +68069,7 @@ class shelves:
 
         """
     @staticmethod
-    def newShelfSet(file_path: Optional[str] = None, name: Optional[str] = None, label: Optional[str] = None) -> ShelfSet:
+    def newShelfSet(file_path: Optional[str] = None, name: Optional[str] = None, label: Optional[str] = None) -> Optional[ShelfSet]:
         """
 
         newShelfSet(file_path=None, name=None, label=None) -> hou.ShelfSet
@@ -68081,7 +68081,7 @@ class shelves:
 
         """
     @staticmethod
-    def newShelf(file_path: Optional[str] = None, name: Optional[str] = None, label: Optional[str] = None) -> Shelf:
+    def newShelf(file_path: Optional[str] = None, name: Optional[str] = None, label: Optional[str] = None) -> Optional[Shelf]:
         """
 
         newShelf(file_path=None, name=None, label=None) -> hou.Shelf
@@ -68093,7 +68093,7 @@ class shelves:
 
         """
     @staticmethod
-    def newTool(*args, **kwargs) -> Tool:
+    def newTool(*args, **kwargs) -> Optional[Tool]:
         """
 
         newTool(file_path=None, name=None, label=None, script=None,
@@ -68210,7 +68210,7 @@ class ShopNode(OpNode):
 
 
         """
-    def definingVopNetNode(self) -> Node:
+    def definingVopNetNode(self) -> Optional[Node]:
         """
 
         definingVopNetNode(self) -> hou.VopNetNode or None
@@ -68306,7 +68306,7 @@ class SopNode(OpNode):
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def geometry(self, output_index: int = 0) -> Geometry:
+    def geometry(self, output_index: int = 0) -> Optional[Geometry]:
         """
 
         geometry(self, output_index=0) -> hou.Geometry
@@ -68324,7 +68324,7 @@ class SopNode(OpNode):
 
 
         """
-    def geometryNoDep(self, output_index: int = 0) -> Geometry:
+    def geometryNoDep(self, output_index: int = 0) -> Optional[Geometry]:
         """
 
         geometryNoDep(self, output_index=0) -> hou.Geometry
@@ -68356,7 +68356,7 @@ class SopNode(OpNode):
 
 
         """
-    def geometryAtFrame(self, frame: float, output_index: int = 0) -> Geometry:
+    def geometryAtFrame(self, frame: float, output_index: int = 0) -> Optional[Geometry]:
         """
 
         geometryAtFrame(self, frame, output_index=0) -> hou.Geometry
@@ -68375,7 +68375,7 @@ class SopNode(OpNode):
 
 
         """
-    def inputGeometry(self, index: int) -> Geometry:
+    def inputGeometry(self, index: int) -> Optional[Geometry]:
         """
 
         inputGeometry(self, index) -> hou.Geometry
@@ -68389,7 +68389,7 @@ class SopNode(OpNode):
 
 
         """
-    def inputGeometryAtFrame(self, frame: float, index: int) -> Geometry:
+    def inputGeometryAtFrame(self, frame: float, index: int) -> Optional[Geometry]:
         """
 
         inputGeometryAtFrame(self, frame, index) -> hou.Geometry
@@ -68403,7 +68403,7 @@ class SopNode(OpNode):
 
 
         """
-    def geometryDelta(self) -> GeometryDelta:
+    def geometryDelta(self) -> Optional[GeometryDelta]:
         """
 
         geometryDelta(self) -> hou.GeometryDelta
@@ -68427,7 +68427,7 @@ class SopNode(OpNode):
 
 
         """
-    def verb(self) -> SopVerb:
+    def verb(self) -> Optional[SopVerb]:
         """
 
         verb(self) -> hou.SopVerb
@@ -68438,7 +68438,7 @@ class SopNode(OpNode):
 
 
         """
-    def selection(self, selection_type: EnumValue) -> Selection:
+    def selection(self, selection_type: EnumValue) -> Optional[Selection]:
         """
 
         selection(self, selection_type) -> hou.Selection
@@ -68468,7 +68468,7 @@ class SopNode(OpNode):
 
 
         """
-    def curPoint(self) -> Point:
+    def curPoint(self) -> Optional[Point]:
         '''
 
         curPoint(self) -> Point
@@ -68549,7 +68549,7 @@ class SopNode(OpNode):
 
 
         """
-    def curPrim(self) -> Prim:
+    def curPrim(self) -> Optional[Prim]:
         '''
 
         curPrim(self) -> Prim
@@ -68589,7 +68589,7 @@ class SopNode(OpNode):
 
 
         """
-    def curVertex(self) -> Vertex:
+    def curVertex(self) -> Optional[Vertex]:
         """
 
         curVertex(self) -> Vertex
@@ -68857,7 +68857,7 @@ class SopNode(OpNode):
 
         """
     def copyNodeSelectionToUserSelection(self, force_cook: bool = False) -> None: ...
-    def displayNode(self) -> Node:
+    def displayNode(self) -> Optional[Node]:
         """
 
         displayNode(self) -> Node
@@ -68867,7 +68867,7 @@ class SopNode(OpNode):
 
 
         """
-    def renderNode(self) -> Node:
+    def renderNode(self) -> Optional[Node]:
         """
 
         renderNode(self) -> hou.OpNode
@@ -68930,7 +68930,7 @@ class SopNodeType(OpNodeType):
           >     return result
 
         """
-    def addSelector(self, *args, **kwargs) -> Selector:
+    def addSelector(self, *args, **kwargs) -> Optional[Selector]:
         '''
 
         addSelector(self, name, selector_type, prompt=\'Select components\',
@@ -69381,7 +69381,7 @@ class StringParmTemplate(ParmTemplate):
 
 
         """
-    def defaultExpressionLanguage(self) -> Tuple[EnumValue, ...]:
+    def defaultExpressionLanguage(self) -> Optional[Tuple[EnumValue, ...]]:
         """
 
         defaultExpressionLanguage(self) -> tuple of hou.scriptLanguage
@@ -69728,7 +69728,7 @@ class StyleSheet:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def clone(self) -> StyleSheet:
+    def clone(self) -> Optional[StyleSheet]:
         """
 
         clone(self) -> hou.StyleSheet
@@ -69737,7 +69737,7 @@ class StyleSheet:
 
 
         """
-    def cloneWithObject(self, obj: Node) -> StyleSheet:
+    def cloneWithObject(self, obj: Node) -> Optional[StyleSheet]:
         """
 
         cloneWithObject(self, object) -> hou.StyleSheet
@@ -69747,7 +69747,7 @@ class StyleSheet:
 
 
         """
-    def cloneWithPrim(self, prim: Prim) -> StyleSheet:
+    def cloneWithPrim(self, prim: Prim) -> Optional[StyleSheet]:
         """
 
         cloneWithPrim(self, prim) -> hou.StyleSheet
@@ -69757,7 +69757,7 @@ class StyleSheet:
 
 
         """
-    def cloneWithShape(self, shape_name: str, agent_prim: Prim) -> StyleSheet:
+    def cloneWithShape(self, shape_name: str, agent_prim: Prim) -> Optional[StyleSheet]:
         """
 
         cloneWithShape(self, shape_name, prim) -> hou.StyleSheet
@@ -69768,7 +69768,7 @@ class StyleSheet:
 
 
         """
-    def cloneWithAddedStyleSheet(self, *args, **kwargs) -> StyleSheet:
+    def cloneWithAddedStyleSheet(self, *args, **kwargs) -> Optional[StyleSheet]:
         """
 
         cloneWithAddedStyleSheet(self, stylesheet, target) -> hou.StyleSheet
@@ -69915,7 +69915,7 @@ class Surface(Prim):
 
 
         """
-    def vertex(self, u_index: int, v_index: int) -> Vertex:
+    def vertex(self, u_index: int, v_index: int) -> Optional[Vertex]:
         '''
 
         vertex(self, u_index, v_index)
@@ -69994,7 +69994,7 @@ class Surface(Prim):
 
 
         """
-    def positionAt(self, u: float, v: float) -> Vector3:
+    def positionAt(self, u: float, v: float) -> Optional[Vector3]:
         """
 
         positionAt(self, u, v) -> hou.Vector3
@@ -70006,7 +70006,7 @@ class Surface(Prim):
 
 
         """
-    def normalAt(self, u: float, v: float) -> Vector3:
+    def normalAt(self, u: float, v: float) -> Optional[Vector3]:
         """
 
         normalAt(self, u, v) -> Vector3
@@ -70133,7 +70133,7 @@ class Take:
 
 
         """
-    def parent(self) -> Take:
+    def parent(self) -> Optional[Take]:
         """
 
         parent(self) -> hou.Take
@@ -70153,7 +70153,7 @@ class Take:
 
 
         """
-    def addChildTake(self, name: Optional[str] = None) -> Take:
+    def addChildTake(self, name: Optional[str] = None) -> Optional[Take]:
         """
 
         addChildTake(self, name) -> hou.Take
@@ -70166,7 +70166,7 @@ class Take:
 
 
         """
-    def insertTakeAbove(self, name: Optional[str] = None) -> Take:
+    def insertTakeAbove(self, name: Optional[str] = None) -> Optional[Take]:
         """
 
         insertTakeAbove(self, name) -> hou.Take
@@ -70345,7 +70345,7 @@ class Take:
 
 
         """
-    def loadChildTakeFromFile(self, filename: str) -> Take:
+    def loadChildTakeFromFile(self, filename: str) -> Optional[Take]:
         """
 
         loadChildTakeFromFile(self, filename) -> tuple of hou.Take
@@ -70421,7 +70421,7 @@ class takes:
 
         """
     @staticmethod
-    def currentTake() -> Take:
+    def currentTake() -> Optional[Take]:
         """
 
         currentTake() -> hou.Take
@@ -70443,7 +70443,7 @@ class takes:
 
         """
     @staticmethod
-    def rootTake() -> Take:
+    def rootTake() -> Optional[Take]:
         """
 
         rootTake() -> hou.Take
@@ -70453,7 +70453,7 @@ class takes:
 
         """
     @staticmethod
-    def findTake(take_name: str) -> Take:
+    def findTake(take_name: str) -> Optional[Take]:
         """
 
         findTake(take_name) -> hou.Take or None
@@ -71392,7 +71392,7 @@ class Tool(ShelfElement):
 
 
         """
-    def toolMenuCategories(self, pane_type: EnumValue) -> Tuple[NodeTypeCategory, ...]:
+    def toolMenuCategories(self, pane_type: EnumValue) -> Optional[Tuple[NodeTypeCategory, ...]]:
         """
 
         toolMenuCategories(self, pane_type) -> tuple of hou.NodeTypeCategory
@@ -71585,7 +71585,7 @@ class TopNode(OpNode):
 
 
         """
-    def displayNode(self) -> Node:
+    def displayNode(self) -> Optional[Node]:
         """
 
         displayNode(self) -> hou.OpNode
@@ -71595,7 +71595,7 @@ class TopNode(OpNode):
 
 
         """
-    def renderNode(self) -> Node:
+    def renderNode(self) -> Optional[Node]:
         """
 
         renderNode(self) -> hou.OpNode
@@ -71605,7 +71605,7 @@ class TopNode(OpNode):
 
 
         """
-    def outputNode(self) -> Node:
+    def outputNode(self) -> Optional[Node]:
         """
 
         outputNode(self) -> hou.OpNode
@@ -71616,7 +71616,7 @@ class TopNode(OpNode):
 
 
         """
-    def topParent(self) -> Node: ...
+    def topParent(self) -> Optional[Node]: ...
     def cookWorkItems(self, *args, **kwargs) -> None:
         """
 
@@ -72022,7 +72022,7 @@ class Track:
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def chopNode(self) -> ChopNode:
+    def chopNode(self) -> Optional[ChopNode]:
         """
 
         chopNode(self) -> hou.ChopNode or None
@@ -72032,7 +72032,7 @@ class Track:
 
 
         """
-    def clip(self) -> Clip:
+    def clip(self) -> Optional[Clip]:
         """
 
         clip(self) -> hou.Clip
@@ -72170,7 +72170,7 @@ class ui:
 
         """
     @staticmethod
-    def curDesktop() -> Desktop:
+    def curDesktop() -> Optional[Desktop]:
         """
 
         curDesktop() -> hou.Desktop
@@ -72180,7 +72180,7 @@ class ui:
 
         """
     @staticmethod
-    def desktop(name: str) -> Desktop:
+    def desktop(name: str) -> Optional[Desktop]:
         """
 
         desktop(name) -> hou.Desktop
@@ -72203,7 +72203,7 @@ class ui:
 
         """
     @staticmethod
-    def radialMenu(name: str) -> RadialMenu:
+    def radialMenu(name: str) -> Optional[RadialMenu]:
         """
 
         radialMenu(name) -> hou.RadialMenu
@@ -72225,7 +72225,7 @@ class ui:
 
         """
     @staticmethod
-    def createRadialMenu(name: str, label: str) -> RadialMenu:
+    def createRadialMenu(name: str, label: str) -> Optional[RadialMenu]:
         """
 
         createRadialMenu(name, label) -> hou.RadialMenu
@@ -72235,7 +72235,7 @@ class ui:
 
         """
     @staticmethod
-    def createRadialItem(submenu: bool = False, callback: bool = False) -> RadialScriptItem:
+    def createRadialItem(submenu: bool = False, callback: bool = False) -> Optional[RadialScriptItem]:
         """
 
         createRadialItem(submenu=False, callback=false) -> hou.RadialScriptItem
@@ -72321,7 +72321,7 @@ class ui:
 
         """
     @staticmethod
-    def paneTabOfType(type: EnumValue, index: int = 0) -> PaneTab:
+    def paneTabOfType(type: EnumValue, index: int = 0) -> Optional[PaneTab]:
         """
 
         paneTabOfType(self, type, index=0) -> hou.PaneTab or None
@@ -72344,7 +72344,7 @@ class ui:
 
         """
     @staticmethod
-    def findPane(pane_id: int) -> Pane:
+    def findPane(pane_id: int) -> Optional[Pane]:
         """
 
         findPane(self, pane_id) -> hou.Pane or None
@@ -72357,7 +72357,7 @@ class ui:
 
         """
     @staticmethod
-    def findPaneTab(name: str) -> PaneTab:
+    def findPaneTab(name: str) -> Optional[PaneTab]:
         """
 
         findPaneTab(self, name) -> hou.PaneTab or None
@@ -72397,7 +72397,7 @@ class ui:
 
         """
     @staticmethod
-    def paneUnderCursor() -> Pane:
+    def paneUnderCursor() -> Optional[Pane]:
         """
 
         paneUnderCursor(self)
@@ -72411,7 +72411,7 @@ class ui:
 
         """
     @staticmethod
-    def paneTabUnderCursor() -> PaneTab:
+    def paneTabUnderCursor() -> Optional[PaneTab]:
         """
 
         paneTabUnderCursor(self)
@@ -72967,7 +72967,7 @@ class ui:
 
         """
     @staticmethod
-    def selectColor(initial_color: Optional[Color] = None) -> Color:
+    def selectColor(initial_color: Optional[Color] = None) -> Optional[Color]:
         """
 
         selectColor(initial_color=None) -> hou.Color or None
@@ -73252,7 +73252,7 @@ class ui:
 
         """
     @staticmethod
-    def createDialog(ui_file_name: str) -> Dialog:
+    def createDialog(ui_file_name: str) -> Optional[Dialog]:
         """
 
         createDialog(ui_file_name) -> hou.Dialog
@@ -73276,7 +73276,7 @@ class ui:
 
         """
     @staticmethod
-    def findDialog(ui_file_name: str) -> Dialog:
+    def findDialog(ui_file_name: str) -> Optional[Dialog]:
         """
 
         findDialog(ui_file_name) -> hou.Dialog
@@ -73356,7 +73356,7 @@ class ui:
 
         '''
     @staticmethod
-    def statusMessage() -> tuple[str, EnumValue]:
+    def statusMessage() -> Optional[tuple[str, EnumValue]]:
         """
 
         statusMessage() -> (string, hou.severityType)
@@ -74448,7 +74448,7 @@ class ui:
 
         """
     @staticmethod
-    def showFloatingParameterEditor(node: Node, reuse: bool = True) -> ParameterEditor:
+    def showFloatingParameterEditor(node: Node, reuse: bool = True) -> Optional[ParameterEditor]:
         """
 
         showFloatingParameterEditor(node,reuse) -> hou.ParameterEditor
@@ -74990,7 +74990,7 @@ class ui:
 
         """
     @staticmethod
-    def sharedAssetGalleryDataSource(gallery_name: str) -> AssetGalleryDataSource:
+    def sharedAssetGalleryDataSource(gallery_name: str) -> Optional[AssetGalleryDataSource]:
         """
 
         sharedAssetGalleryDataSource(self, gallery_name) ->
@@ -75689,7 +75689,7 @@ class UIEvent:
 
         """
     __swig_destroy__: Incomplete
-    def device(self) -> UIEventDevice:
+    def device(self) -> Optional[UIEventDevice]:
         """
 
         device(self) -> hou.UIEventDevice
@@ -76171,7 +76171,7 @@ class undos:
 
         """
     @staticmethod
-    def disabler() -> UndosDisabler:
+    def disabler() -> Optional[UndosDisabler]:
         '''
 
         disabler() -> hou.UndosDisabler
@@ -76189,7 +76189,7 @@ class undos:
 
         '''
     @staticmethod
-    def group(label: str, editor: Optional[NetworkEditor] = None) -> UndosGroup:
+    def group(label: str, editor: Optional[NetworkEditor] = None) -> Optional[UndosGroup]:
         '''
 
         group(label, editor=None) -> hou.UndosGroup
@@ -76370,7 +76370,7 @@ class UndosDisabler:
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def __enter__(self) -> UndosDisabler: ...
+    def __enter__(self) -> Optional[UndosDisabler]: ...
     def __exit__(self, type: Any, value: Any, traceback: Any) -> None: ...
 
 class UndosGroup:
@@ -76398,7 +76398,7 @@ class UndosGroup:
 
 
         """
-    def __enter__(self) -> UndosGroup: ...
+    def __enter__(self) -> Optional[UndosGroup]: ...
     def __exit__(self, type: Any, value: Any, traceback: Any) -> None: ...
 
 class VDB(Prim):
@@ -76428,7 +76428,7 @@ class VDB(Prim):
 
 
         """
-    def samplev(self, position: Sequence[float]) -> Vector3:
+    def samplev(self, position: Sequence[float]) -> Optional[Vector3]:
         """
 
         samplev(self, position) -> hou.Vector3
@@ -76442,7 +76442,7 @@ class VDB(Prim):
 
 
         """
-    def gradient(self, position: Sequence[float]) -> Vector3:
+    def gradient(self, position: Sequence[float]) -> Optional[Vector3]:
         """
 
         gradient(self, position) -> hou.Vector3
@@ -76476,7 +76476,7 @@ class VDB(Prim):
 
 
         """
-    def indexToPos(self, index: Sequence[int]) -> Vector3:
+    def indexToPos(self, index: Sequence[int]) -> Optional[Vector3]:
         """
 
         indexToPos(self, index) -> hou.Vector3
@@ -76552,7 +76552,7 @@ class VDB(Prim):
 
 
         """
-    def transform(self) -> Matrix3:
+    def transform(self) -> Optional[Matrix3]:
         """
 
         transform(self) -> hou.Matrix3
@@ -76586,7 +76586,7 @@ class VDB(Prim):
 
 
         """
-    def vertex(self, index: int) -> Vertex:
+    def vertex(self, index: int) -> Optional[Vertex]:
         """
 
         vertex(self, index)
@@ -77219,7 +77219,7 @@ class Vector3:
 
 
         """
-    def matrixToRotateTo(self, vector3: Vector3) -> Matrix4:
+    def matrixToRotateTo(self, vector3: Vector3) -> Optional[Matrix4]:
         """
 
         matrixToRotateTo(self, vector3) -> hou.Matrix4
@@ -77672,7 +77672,7 @@ class Vertex:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def geometry(self) -> Geometry:
+    def geometry(self) -> Optional[Geometry]:
         """
 
         geometry(self) -> Geometry
@@ -77681,7 +77681,7 @@ class Vertex:
 
 
         """
-    def prim(self) -> Prim:
+    def prim(self) -> Optional[Prim]:
         """
 
         prim(self) -> hou.Prim
@@ -77694,7 +77694,7 @@ class Vertex:
 
 
         """
-    def point(self) -> Point:
+    def point(self) -> Optional[Point]:
         """
 
         point(self) -> hou.Point
@@ -77936,7 +77936,7 @@ class VertexGroup:
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
-    def geometry(self) -> Geometry:
+    def geometry(self) -> Optional[Geometry]:
         """
 
         geometry(self) -> hou.Geometry
@@ -77954,7 +77954,7 @@ class VertexGroup:
 
 
         """
-    def iterVertices(self) -> Iterator[Vertex]:
+    def iterVertices(self) -> Optional[Iterator[Vertex]]:
         """
 
         iterVertices(self) -> generator of hou.Vertex
@@ -78129,7 +78129,7 @@ class VertexGroup:
 
 
         """
-    def dataId(self) -> AttribDataId:
+    def dataId(self) -> Optional[AttribDataId]:
         """
 
         dataId(self)
@@ -78197,7 +78197,7 @@ class VexContext:
 
 
         """
-    def nodeTypeCategory(self) -> NodeTypeCategory:
+    def nodeTypeCategory(self) -> Optional[NodeTypeCategory]:
         '''
 
         nodeTypeCategory(self) -> hou.NodeTypeCategory
@@ -78216,7 +78216,7 @@ class VexContext:
           > <hou.NodeTypeCategory for Sop>
 
         '''
-    def shaderType(self) -> EnumValue:
+    def shaderType(self) -> Optional[EnumValue]:
         """
 
         shaderType(self) -> hou.shaderType enum value or None
@@ -78523,7 +78523,7 @@ class ViewerDragger:
 
 
         """
-    def viewport(self) -> GeometryViewport:
+    def viewport(self) -> Optional[GeometryViewport]:
         """
 
         viewport(self) -> hou.GeometryViewport
@@ -78746,7 +78746,7 @@ class ViewerEvent(UIEvent):
 
 
         """
-    def curViewport(self) -> GeometryViewport:
+    def curViewport(self) -> Optional[GeometryViewport]:
         """
 
         curViewport(self) -> hou.GeometryViewport
@@ -79075,7 +79075,7 @@ class ViewerHandleTemplate:
 
 
         """
-    def categories(self) -> Tuple[NodeTypeCategory, ...]:
+    def categories(self) -> Optional[Tuple[NodeTypeCategory, ...]]:
         """
 
         categories(self) -> list of hou.NodeTypeCategory
@@ -79470,7 +79470,7 @@ class ViewerState:
 
 
         """
-    def categories(self) -> Tuple[NodeTypeCategory, ...]:
+    def categories(self) -> Optional[Tuple[NodeTypeCategory, ...]]:
         """
 
         categories(self) -> tuple of hou.NodeTypeCategory
@@ -79480,7 +79480,7 @@ class ViewerState:
 
 
         """
-    def nodeType(self) -> NodeType:
+    def nodeType(self) -> Optional[NodeType]:
         """
 
         nodeType(self) -> hou.NodeType or None
@@ -79502,7 +79502,7 @@ class ViewerState:
 
 
         """
-    def parmTemplates(self) -> ParmTemplateGroup:
+    def parmTemplates(self) -> Optional[ParmTemplateGroup]:
         """
 
         parmTemplates(self) -> hou.ParmTemplateGroup
@@ -80026,7 +80026,7 @@ class ViewerStateTemplate:
 
 
         """
-    def contexts(self) -> Tuple[NodeTypeCategory, ...]:
+    def contexts(self) -> Optional[Tuple[NodeTypeCategory, ...]]:
         """
 
         contexts(self) -> list of hou.NodeTypeCategory
@@ -81276,7 +81276,7 @@ class ViewportVisualizer:
 
 
         """
-    def type(self) -> ViewportVisualizerType:
+    def type(self) -> Optional[ViewportVisualizerType]:
         """
 
         type(self) -> hou.ViewportVisualizerType
@@ -81305,7 +81305,7 @@ class ViewportVisualizer:
 
 
         """
-    def categoryNode(self) -> Node:
+    def categoryNode(self) -> Optional[Node]:
         """
 
         categoryNode(self) -> hou.OpNode
@@ -81522,7 +81522,7 @@ class ViewportVisualizer:
 
 
         """
-    def evalParmAsRamp(self, parm_name: str) -> Ramp:
+    def evalParmAsRamp(self, parm_name: str) -> Optional[Ramp]:
         """
 
         evalParmAsRamp(self) -> hou.Ramp
@@ -81604,7 +81604,7 @@ class viewportVisualizers:
 
         """
     @staticmethod
-    def createVisualizer(*args, **kwargs) -> ViewportVisualizer:
+    def createVisualizer(*args, **kwargs) -> Optional[ViewportVisualizer]:
         """
 
         createVisualizer(type, category=hou.viewportVisualizerCategory.Common,
@@ -81627,7 +81627,7 @@ class viewportVisualizers:
 
         """
     @staticmethod
-    def copyVisualizer(source: ViewportVisualizer) -> ViewportVisualizer:
+    def copyVisualizer(source: ViewportVisualizer) -> Optional[ViewportVisualizer]:
         """
 
         copyVisualizer(source) -> hou.ViewportVisualizer
@@ -81647,7 +81647,7 @@ class viewportVisualizers:
 
         """
     @staticmethod
-    def type(name: str) -> ViewportVisualizerType:
+    def type(name: str) -> Optional[ViewportVisualizerType]:
         """
 
         type(name) -> hou.ViewportVisualizerType
@@ -81698,7 +81698,7 @@ class viewportVisualizers:
 
         """
     @staticmethod
-    def visualizerBySessionId(session_id: int) -> ViewportVisualizer:
+    def visualizerBySessionId(session_id: int) -> Optional[ViewportVisualizer]:
         """
 
         visualizerBySessionId(session_id) -> hou.ViewportVisualizer
@@ -81812,7 +81812,7 @@ class viewportVisualizers:
 
         """
     @staticmethod
-    def eventCallbacks(*args) -> Tuple[tuple[Tuple[EnumValue, ...], Any], ...]:
+    def eventCallbacks(*args) -> Optional[Tuple[tuple[Tuple[EnumValue, ...], Any], ...]]:
         """
 
         eventCallbacks(category=hou.viewportVisualizerCategory.Common,
@@ -81894,7 +81894,7 @@ class Volume(Prim):
 
 
         """
-    def gradient(self, position: Sequence[float]) -> Vector3:
+    def gradient(self, position: Sequence[float]) -> Optional[Vector3]:
         """
 
         gradient(self, position) -> hou.Vector3
@@ -82178,7 +82178,7 @@ class Volume(Prim):
 
 
         """
-    def indexToPos(self, index: Sequence[int]) -> Vector3:
+    def indexToPos(self, index: Sequence[int]) -> Optional[Vector3]:
         """
 
         indexToPos(self, index) -> hou.Vector3
@@ -82272,7 +82272,7 @@ class Volume(Prim):
 
 
         """
-    def transform(self) -> Matrix3:
+    def transform(self) -> Optional[Matrix3]:
         """
 
         transform(self) -> hou.Matrix3
@@ -82311,7 +82311,7 @@ class Volume(Prim):
         """
     def taperX(self) -> float: ...
     def taperY(self) -> float: ...
-    def vertex(self, index: int) -> Vertex:
+    def vertex(self, index: int) -> Optional[Vertex]:
         """
 
         vertex(self, index)
@@ -82345,21 +82345,21 @@ class VopNetNode(OpNode):
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def definedType(self) -> NodeType:
+    def definedType(self) -> Optional[NodeType]:
         """
 
         definedType(self) -> NodeType
 
 
         """
-    def vexContext(self) -> VexContext:
+    def vexContext(self) -> Optional[VexContext]:
         """
 
         vexContext(self) -> VexContext
 
 
         """
-    def shaderType(self) -> EnumValue:
+    def shaderType(self) -> Optional[EnumValue]:
         """
 
         shaderType(self) -> hou.shaderType enum value or None
@@ -82379,7 +82379,7 @@ class VopNode(OpNode):
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def insertParmGenerator(self, input_name: str, parm_gen_type: EnumValue, reference_input_defaults: bool) -> VopNode:
+    def insertParmGenerator(self, input_name: str, parm_gen_type: EnumValue, reference_input_defaults: bool) -> Optional[VopNode]:
         """
 
         insertParmGenerator(self, input_name, parm_gen_type,
@@ -82410,7 +82410,7 @@ class VopNode(OpNode):
 
 
         """
-    def parmDefinerNode(self) -> VopNode:
+    def parmDefinerNode(self) -> Optional[VopNode]:
         """
 
         parmDefinerNode(self) -> hou.VopNode
@@ -83390,7 +83390,7 @@ def setMaxThreads(max_threads: int) -> None:
 
 
     """
-def root() -> Node:
+def root() -> Optional[Node]:
     '''
 
     hou.root
@@ -83410,7 +83410,7 @@ def root() -> Node:
 
 
     '''
-def pwd() -> Node:
+def pwd() -> Optional[Node]:
     '''
 
     hou.pwd
@@ -83445,7 +83445,7 @@ def pwd() -> Node:
 
 
     '''
-def parent() -> Node:
+def parent() -> Optional[Node]:
     '''
 
     hou.parent
@@ -83520,7 +83520,7 @@ def cd(path: str) -> None:
 
 
     """
-def phm() -> HDAModule:
+def phm() -> Optional[HDAModule]:
     """
 
     hou.phm
@@ -83538,7 +83538,7 @@ def phm() -> HDAModule:
 
 
     """
-def currentDopNet() -> Node:
+def currentDopNet() -> Optional[Node]:
     """
 
     hou.currentDopNet
@@ -83637,7 +83637,7 @@ def setSimulationEnabled(enabled: bool) -> None:
 
 
     """
-def node(path: str) -> Node:
+def node(path: str) -> Optional[Node]:
     '''
 
     hou.node
@@ -83691,7 +83691,7 @@ def node(path: str) -> Node:
 
 
     '''
-def item(path: str) -> NetworkMovableItem:
+def item(path: str) -> Optional[NetworkMovableItem]:
     '''
 
     hou.item
@@ -83819,7 +83819,7 @@ def items(paths: Sequence[str]) -> Tuple[NetworkMovableItem, ...]:
 
 
     '''
-def nodeBySessionId(session_id: int) -> Node:
+def nodeBySessionId(session_id: int) -> Optional[Node]:
     """
 
     hou.nodeBySessionId
@@ -83844,7 +83844,7 @@ def nodeBySessionId(session_id: int) -> Node:
 
 
     """
-def networkBoxBySessionId(session_id: int) -> NetworkBox:
+def networkBoxBySessionId(session_id: int) -> Optional[NetworkBox]:
     """
 
     hou.networkBoxBySessionId
@@ -83867,7 +83867,7 @@ def networkBoxBySessionId(session_id: int) -> NetworkBox:
 
 
     """
-def stickyNoteBySessionId(session_id: int) -> StickyNote:
+def stickyNoteBySessionId(session_id: int) -> Optional[StickyNote]:
     """
 
     hou.stickyNoteBySessionId
@@ -83890,7 +83890,7 @@ def stickyNoteBySessionId(session_id: int) -> StickyNote:
 
 
     """
-def subnetIndirectInputBySessionId(session_id: int) -> SubnetIndirectInput:
+def subnetIndirectInputBySessionId(session_id: int) -> Optional[SubnetIndirectInput]:
     """
 
     hou.subnetIndirectInputBySessionId
@@ -83915,7 +83915,7 @@ def subnetIndirectInputBySessionId(session_id: int) -> SubnetIndirectInput:
 
 
     """
-def networkDotBySessionId(session_id: int) -> NetworkDot:
+def networkDotBySessionId(session_id: int) -> Optional[NetworkDot]:
     """
 
     hou.networkDotBySessionId
@@ -83938,7 +83938,7 @@ def networkDotBySessionId(session_id: int) -> NetworkDot:
 
 
     """
-def itemBySessionId(item_type: EnumValue, session_id: int) -> NetworkMovableItem:
+def itemBySessionId(item_type: EnumValue, session_id: int) -> Optional[NetworkMovableItem]:
     """
 
     hou.itemBySessionId
@@ -83982,7 +83982,7 @@ def itemBySessionId(item_type: EnumValue, session_id: int) -> NetworkMovableItem
 
 
     """
-def nodeConnectionBySessionId(session_id: int, input_index: int) -> NodeConnection:
+def nodeConnectionBySessionId(session_id: int, input_index: int) -> Optional[NodeConnection]:
     """
 
     hou.nodeConnectionBySessionId
@@ -84005,7 +84005,7 @@ def nodeConnectionBySessionId(session_id: int, input_index: int) -> NodeConnecti
 
 
     """
-def createApexRootNode() -> ApexNode:
+def createApexRootNode() -> Optional[ApexNode]:
     """
 
     hou.createApexRootNode
@@ -84023,7 +84023,7 @@ def createApexRootNode() -> ApexNode:
 
 
     """
-def apexNodeBySessionId(session_id: int) -> ApexNode:
+def apexNodeBySessionId(session_id: int) -> Optional[ApexNode]:
     """
 
     hou.apexNodeBySessionId
@@ -84051,7 +84051,7 @@ def apexNodeBySessionId(session_id: int) -> ApexNode:
 
 
     """
-def apexNodeConnectionBySessionId(session_id: int) -> ApexNodeConnection:
+def apexNodeConnectionBySessionId(session_id: int) -> Optional[ApexNodeConnection]:
     """
 
     hou.apexNodeConnectionBySessionId
@@ -84078,7 +84078,7 @@ def apexNodeConnectionBySessionId(session_id: int) -> ApexNodeConnection:
 
 
     """
-def apexStickyNoteBySessionId(session_id: int) -> ApexStickyNote:
+def apexStickyNoteBySessionId(session_id: int) -> Optional[ApexStickyNote]:
     """
 
     hou.apexStickyNoteBySessionId
@@ -84303,7 +84303,7 @@ def pasteNodesFromClipboard(destination_node: Node) -> None:
 
 
     """
-def parm(path: str) -> Parm:
+def parm(path: str) -> Optional[Parm]:
     '''
 
     hou.parm
@@ -84344,7 +84344,7 @@ def parm(path: str) -> Parm:
 
 
     '''
-def parmTuple(path: str) -> ParmTuple:
+def parmTuple(path: str) -> Optional[ParmTuple]:
     '''
 
     hou.parmTuple
@@ -84385,7 +84385,7 @@ def parmTuple(path: str) -> ParmTuple:
 
 
     '''
-def evaluatingParm() -> Parm:
+def evaluatingParm() -> Optional[Parm]:
     """
 
     hou.evaluatingParm
@@ -85122,7 +85122,7 @@ def hscriptMatrixExpression(expression: str) -> Tuple[Tuple[float, ...], ...]:
 
 
     '''
-def getEnvConfigValue(name: str, default_value: Optional[str] = None) -> str:
+def getEnvConfigValue(name: str, default_value: Optional[str] = None) -> Optional[str]:
     """
 
     hou.getEnvConfigValue
@@ -85155,7 +85155,7 @@ def getEnvConfigValue(name: str, default_value: Optional[str] = None) -> str:
 
 
     """
-def getenv(name: str, default_value: Optional[str] = None) -> str:
+def getenv(name: str, default_value: Optional[str] = None) -> Optional[str]:
     """
 
     hou.getenv
@@ -85533,7 +85533,7 @@ def imageResolution(image_file_name: str) -> Tuple[int, ...]:
 
 
     '''
-def runCallbackAndCatchCrashes(callback: Any) -> Any: ...
+def runCallbackAndCatchCrashes(callback: Any) -> Optional[Any]: ...
 def updateModeSetting() -> EnumValue:
     """
 
@@ -85586,7 +85586,7 @@ def setUpdateMode(mode: EnumValue) -> None:
 
 
     """
-def orboltURLHandler() -> OrboltURLHandler: ...
+def orboltURLHandler() -> Optional[OrboltURLHandler]: ...
 def chsop(path: str) -> str:
     """
 
@@ -85735,7 +85735,7 @@ def setChopExportConflictResolutionPattern(pattern: str) -> None:
 
 
     """
-def nodeType(*args) -> NodeType:
+def nodeType(*args) -> Optional[NodeType]:
     '''
 
     hou.nodeType
@@ -85824,7 +85824,7 @@ def nodeType(*args) -> NodeType:
 
 
     '''
-def preferredNodeType(name: str, parent_node: Optional[Node] = None) -> NodeType:
+def preferredNodeType(name: str, parent_node: Optional[Node] = None) -> Optional[NodeType]:
     '''
 
     hou.preferredNodeType
@@ -86090,7 +86090,7 @@ def dataNodeTypeCategory() -> NodeTypeCategory:
 
 
     """
-def nodeTypeCategories() -> dict[str, NodeTypeCategory]:
+def nodeTypeCategories() -> Optional[dict[str, NodeTypeCategory]]:
     """
 
     hou.nodeTypeCategories
@@ -86197,7 +86197,7 @@ def moveNodesTo(nodes: Sequence[Node], destination_node: Node) -> Tuple[Node, ..
 
 
     """
-def addNodeBundle(name: Optional[str] = None) -> Bundle:
+def addNodeBundle(name: Optional[str] = None) -> Optional[Bundle]:
     """
 
     hou.addNodeBundle
@@ -86248,7 +86248,7 @@ def selectedNodeBundles() -> Tuple[Bundle, ...]:
 
 
     """
-def nodeBundle(name: str) -> Bundle:
+def nodeBundle(name: str) -> Optional[Bundle]:
     """
 
     hou.nodeBundle
@@ -86263,7 +86263,7 @@ def nodeBundle(name: str) -> Bundle:
 
 
     """
-def hdaDefinition(category: NodeTypeCategory, name: str, file_path: str) -> HDADefinition:
+def hdaDefinition(category: NodeTypeCategory, name: str, file_path: str) -> Optional[HDADefinition]:
     """
 
     hou.hdaDefinition
@@ -88838,7 +88838,7 @@ def vexContexts() -> Tuple[VexContext, ...]:
 
 
     """
-def vexContextForShaderType(shader_type: EnumValue) -> VexContext:
+def vexContextForShaderType(shader_type: EnumValue) -> Optional[VexContext]:
     """
 
     hou.vexContextForShaderType
@@ -88858,7 +88858,7 @@ def vexContextForShaderType(shader_type: EnumValue) -> VexContext:
 
 
     """
-def vexContextForNodeTypeCategory(node_type_category: NodeTypeCategory) -> VexContext:
+def vexContextForNodeTypeCategory(node_type_category: NodeTypeCategory) -> Optional[VexContext]:
     '''
 
     hou.vexContextForNodeTypeCategory
@@ -89702,7 +89702,7 @@ def machineName(alpha: bool = True) -> str:
 
 
     """
-def createAnimationLayers(*args) -> Node:
+def createAnimationLayers(*args) -> Optional[Node]:
     '''
 
     hou.createAnimationLayers
@@ -89731,7 +89731,7 @@ def createAnimationLayers(*args) -> Node:
 
 
     '''
-def addAnimationLayer(*args) -> Node:
+def addAnimationLayer(*args) -> Optional[Node]:
     '''
 
     hou.addAnimationLayer
@@ -89790,7 +89790,7 @@ def removeAnimationLayer(layermixer: Node, layername: str, merge_down: bool = Fa
 
 
     """
-def createAnimationClip(*args) -> Node:
+def createAnimationClip(*args) -> Optional[Node]:
     '''
 
     hou.createAnimationClip
