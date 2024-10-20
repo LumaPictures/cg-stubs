@@ -524,6 +524,54 @@ def contains_other_overload(sig: FunctionSig, other: FunctionSig) -> bool:
     return False
 
 
+def add_positional_only_args(ctx: FunctionContext, py_sig: FunctionSig) -> FunctionSig:
+    """
+    Analyze the signature and add a '/' argument if necessary to mark
+    arguments which cannot be access by name.
+
+    Before:
+        def foo(arg0, arg1, this=True, that='with_default')
+    After:
+        def foo(arg0, arg1, /, this=True, that='with_default')
+
+    Before:
+        def foo(arg0, arg1, this=True, that)
+    After:
+        def foo(arg0, arg1, /, this=True, *, that)
+    """
+    args = []
+    requires_pos_only: bool | None = None
+    has_defaults: bool | None = False
+    for arg_num, py_arg in enumerate(py_sig.args):
+        if BoostDocstringSignatureGenerator.is_default_boost_arg(py_arg.name):
+            if requires_pos_only is False:
+                raise ValueError(
+                    f"{ctx.fullname}: Unnamed argument appears after named one: {py_sig.format_sig()}"
+                )
+            requires_pos_only = True
+        else:
+            if requires_pos_only:
+                # force arguments before this to be positional only
+                args.append(ArgSig("/"))
+            if not (arg_num == 0 and py_arg.name in ("self", "cls")):
+                requires_pos_only = False
+
+        if has_defaults is False and py_arg.default:
+            has_defaults = True
+        elif has_defaults and not py_arg.default:
+            # force arguments after this to be keyword only
+            args.append(ArgSig("*"))
+            has_defaults = None
+
+        args.append(py_arg)
+
+    if requires_pos_only:
+        # force arguments before this to be positional only
+        args.append(ArgSig("/"))
+
+    return py_sig._replace(args=args)
+
+
 def boost_parser() -> None:
     from lark import Lark
 
@@ -1025,8 +1073,10 @@ class AdvancedSignatureGenerator(SignatureGenerator):
         if self.sig_matcher.find_result_match(
             ctx.fullname, sig.ret_type, self.sig_matcher._optional_result
         ):
+            # make result optional
             sig = sig._replace(ret_type=f"typing.Optional[{sig.ret_type}]")
         else:
+            # override result type
             ret_override = self.sig_matcher.find_result_match(
                 ctx.fullname, sig.ret_type, self.sig_matcher.result_type_overrides
             )

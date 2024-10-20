@@ -19,6 +19,7 @@ APPS = [
     "nuke",
     "ocio",
     "openexr",
+    "oiio",
     "pyside",
     "substance_painter",
     "usd",

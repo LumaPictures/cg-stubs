@@ -1,9 +1,5 @@
 from __future__ import absolute_import, annotations, division, print_function
 
-import sys
-
-import textwrap
-
 # FIXME:  maybe we can kill two birds with one stone if we change this code to inject
 #  valid signatures into docstrings instead of generating stubs.
 # - Run stubgen a first time (we use stubgen just to piggy back the object crawling behavior).
@@ -75,6 +71,7 @@ from stubgenlib import (
     AdvancedSignatureGenerator,
     BoostDocstringSignatureGenerator,
     infer_sig_from_boost_docstring,
+    add_positional_only_args,
     Notifier,
     CppTypeConverter,
     reduce_overloads,
@@ -1414,35 +1411,6 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureF
                 )
         return py_sigs, cpp_sigs
 
-    def _add_positional_only_args(
-        self, ctx: FunctionContext, py_sig: FunctionSig
-    ) -> FunctionSig:
-        """
-        Analyze the signature and add a '/' argument if necessary to mark
-        arguments which cannot be access by named.
-        """
-        args = []
-        requires_pos_only: bool | None = None
-        for arg_num, py_arg in enumerate(py_sig.args):
-            if BoostDocstringSignatureGenerator.is_default_boost_arg(py_arg.name):
-                if requires_pos_only is False:
-                    raise ValueError(
-                        f"{ctx.fullname}: Unnamed argument appears after named one: {py_sig.format_sig()}"
-                    )
-                requires_pos_only = True
-            else:
-                if requires_pos_only:
-                    # force arguments before this to be positional only
-                    args.append(ArgSig("/"))
-                requires_pos_only = False
-            args.append(py_arg)
-
-        if requires_pos_only:
-            # force arguments before this to be positional only
-            args.append(ArgSig("/"))
-
-        return py_sig._replace(args=args)
-
     def _fix_schema_init(
         self, ctx: FunctionContext, sigs: list[FunctionSig]
     ) -> list[FunctionSig]:
@@ -1492,7 +1460,7 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureF
         if use_cpp_only:
             assert cpp_overloads is not None
             sigs = [
-                self._add_positional_only_args(ctx, sig)
+                add_positional_only_args(ctx, sig)
                 for sig in get_sigs_from_cpp_overloads(
                     ctx, cpp_overloads, add_docstrings=True
                 )[0]
@@ -1501,7 +1469,7 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureF
             # We only have python signatures:
             # apply fixes that don't rely on c++ docs:
             sigs = [
-                self._add_positional_only_args(ctx, self.cleanup_sig_types(sig, ctx))
+                add_positional_only_args(ctx, self.cleanup_sig_types(sig, ctx))
                 for sig in sigs
             ]
         else:
@@ -1574,7 +1542,7 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureF
                         cpp_ptrs=cpp_sigs_with_ptrs,
                         cpp_no_ptrs=cpp_sigs_without_ptrs,
                     )
-                    sigs.append(self._add_positional_only_args(ctx, py_sig))
+                    sigs.append(add_positional_only_args(ctx, py_sig))
                 elif len(py_sig.args) != len(cpp_sig.args):
                     # arg lists between C++ docs and boost-python don't match:
                     # use the boost-python sig. In practice, I don't think this ever happens
@@ -1590,7 +1558,7 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureF
                         cpp_no_ptrs=cpp_sigs_without_ptrs,
                     )
                     sigs.append(
-                        self._add_positional_only_args(ctx, py_sig)._replace(
+                        add_positional_only_args(ctx, py_sig)._replace(
                             docstring=cpp_sig.docstring
                         )
                     )
@@ -1610,7 +1578,7 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureF
                     # create best guesses for python types.
                     args = []
                     arg_num = 0
-                    fixed_py_sig = self._add_positional_only_args(ctx, py_sig)
+                    fixed_py_sig = add_positional_only_args(ctx, py_sig)
                     for py_arg in fixed_py_sig.args:
                         if py_arg.name == "/":
                             args.append(py_arg)
