@@ -820,6 +820,15 @@ def get_mypy_ignore_directive(codes: list[str]) -> str:
     return '# mypy: disable-error-code="{}"\n\n'.format(", ".join(codes))
 
 
+class DefaultSigGenerator(SignatureGenerator):
+    """Sig Gen that uses the signature extracted from the source code"""
+
+    def get_function_sig(
+        self, default_sig: FunctionSig, ctx: FunctionContext
+    ) -> list[FunctionSig] | None:
+        return [default_sig]
+
+
 Optionality = NamedTuple("Optionality", [("accepts_none", bool), ("has_default", bool)])
 
 
@@ -843,9 +852,16 @@ class AdvancedSigMatcher(object):
     )
 
     # Override argument types
-    #   (name_pattern, type): arg_type
+    #   (name_pattern, type): result_type
     #   e.g. ("*", "int"): "typing.SupportsInt"
     result_type_overrides: dict[tuple[str, str | None], str] = field(
+        default_factory=dict
+    )
+
+    # Override property types
+    #   (name_pattern, type): type
+    #   e.g. ("*", "int"): "typing.SupportsInt"
+    property_type_overrides: dict[tuple[str, str | None], str] = field(
         default_factory=dict
     )
 
@@ -1083,6 +1099,18 @@ class AdvancedSignatureGenerator(SignatureGenerator):
             return self.process_sigs(ctx, results)
 
         return results
+
+    def get_property_type(
+        self, default_type: str | None, ctx: FunctionContext
+    ) -> str | None:
+        """Return the type of the given property"""
+        type_override = self.sig_matcher.find_result_match(
+            ctx.fullname, default_type, self.sig_matcher.property_type_overrides
+        )
+        if type_override is not None:
+            return type_override
+        else:
+            return self.fallback_sig_gen.get_property_type(default_type, ctx)
 
 
 class CppTypeConverter:

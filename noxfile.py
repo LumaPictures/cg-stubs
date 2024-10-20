@@ -18,6 +18,7 @@ APPS = [
     "mari",
     "nuke",
     "ocio",
+    "openexr",
     "pyside",
     "substance_painter",
     "usd",
@@ -487,7 +488,7 @@ def get_version(directory: str, root=False) -> str:
     filename = os.path.join(directory, "pyproject.toml")
     with open(filename, "rb") as f:
         data = tomli.load(f)
-    version = data["tool.poetry"]["version"]
+    version = data["tool"]["poetry"]["version"]
     if root:
         return version.rsplit(".", 1)[0]
     else:
@@ -507,6 +508,9 @@ def generate(session: nox.Session, lib: str) -> None:
         args += [f"opencolorio=={version}"]
     elif lib == "usd":
         args += ["PySide6==6.5.1.1"]
+    elif lib == "openexr":
+        version = get_version(lib, root=True)
+        args += [f"OpenEXR=={version}", "numpy"]
 
     session.env.pop('PYTHONPATH', None)
     session.install(*args)

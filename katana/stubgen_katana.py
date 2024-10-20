@@ -190,11 +190,6 @@ class KatanaSignatureGenerator(AdvancedSignatureGenerator):
         },
     )
 
-    def get_property_type(
-        self, default_type: str | None, ctx: FunctionContext
-    ) -> str | None:
-        return self.fallback_sig_gen.get_property_type(default_type, ctx)
-
 
 class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
     DATA_ATTRS = {

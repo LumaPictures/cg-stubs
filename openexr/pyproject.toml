@@ -1,0 +1,32 @@
+[build-system]
+requires = ["poetry>=1.3.2"]
+build-backend = "poetry.masonry.api"
+
+[tool.poetry]
+name = "types-OpenEXR"
+version = "3.3.1.0"
+
+readme = "README.md"
+authors = ["Chad Dombrova"]
+description = "python stubs for OpenEXR"
+license = "MIT"
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 2",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+]
+repository = "https://github.com/LumaPictures/cg-stubs"
+homepage = "https://github.com/LumaPictures/cg-stubs"
+
+keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
+
+packages = [
+    { include = "OpenEXR-stubs", from = "stubs" },
+]
+
+[tool.distutils.bdist_wheel]
+universal = true
