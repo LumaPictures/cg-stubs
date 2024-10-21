@@ -4,8 +4,6 @@ Fill out hou.pyi typing stub based on hou.py docstrings and _hou.so symbol table
 """
 from __future__ import absolute_import, division, print_function
 
-import bootstrap_luma
-
 import json
 import os
 import re
@@ -27,10 +25,6 @@ from typing import (
 )
 
 import attr
-
-import pylib.strings
-import setpkglib
-from pylib.compat import str
 
 if TYPE_CHECKING:
     from typing import *
@@ -3144,11 +3138,32 @@ def updatePYIFile(classes, funcs):
 
 
 if __name__ == "__main__":
-    createPYIFile()
-    cTypes = extractCTypes()
-    hClasses, hFuncs = getHouStructs(cTypes)
-    updatePYIFile(hClasses, hFuncs)
+    # createPYIFile()
+    # cTypes = extractCTypes()
+    # hClasses, hFuncs = getHouStructs(cTypes)
+    # updatePYIFile(hClasses, hFuncs)
     # import pprint
     # pprint.pprint (sorted(hClasses.keys()))
     # print(hFuncs['Vector2.__iter__'].written)
     # print(hClasses['Node'].functions['needsToCook'])
+
+    for className, functions in MISSING_FUNCTION_DEFINITIONS.items():
+        for funcName, func in functions.items():
+            args = []
+            for arg in func.args:
+                type = arg.type.replace('"', "'")
+                if arg.name == "self":
+                    arg_str = arg.name
+                else:
+                    arg_str = f"{arg.name}: {type}"
+                if arg.default != 'NO_DEFAULT':
+                    default = arg.default.replace('"', "'")
+                    arg_str += f" = {default}"
+                args.append(arg_str)
+
+            args_str = ", ".join(args)
+            name = func.name
+            if func.className:
+                name = f"{func.className}.{name}"
+
+            print(f'"*.{name}": "({args_str}) -> {func.returnType}",')

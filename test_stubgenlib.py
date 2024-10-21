@@ -76,6 +76,18 @@ __init__( (object)arg1 [, (Matrix4d)transform=Gf.Matrix4d(1.0, 0.0, 0.0, 0.0, 0.
     ]
 
 
+def test_boost_docstring_multiline_sig():
+    docstr = """
+
+WriteToFile( (DrawTarget)arg1, (object)attachment, (object)filename [, (Matrix4d)viewMatrix=Gf.Matrix4d(1.0, 0.0, 0.0, 0.0,
+            0.0, 1.0, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 1.0) [, (Matrix4d)projectionMatrix=Gf.Matrix4d(1.0, 0.0, 0.0, 0.0,
+            0.0, 1.0, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 1.0)]]) -> bool"""
+
+
 def test_boost_docstring_existing_description():
     docstr = """
 Find( (object)identifier [, (dict)args={}]) -> Layer :
