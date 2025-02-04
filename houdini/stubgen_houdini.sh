@@ -14,8 +14,8 @@ set -e
 #export PATH=$MARI_APP:$PATH
 PY_SITE_DIR=$(python -c "import site,os;print(os.pathsep.join(site.getsitepackages()))")
 
-HOU_LIBS=/Applications/Houdini/Houdini20.5.332/Frameworks/Houdini.framework/Versions/20.5/Resources/houdini/python3.11libs
-PYTHON=/Applications/Houdini/Houdini20.5.332/Frameworks/Python.framework/Versions/3.11/bin/python3.11
+HOU_LIBS=$REZ_HOUDINI_ROOT/python3.11libs
+PYTHON=/opt/local_packages/houdini/20.5.487/platform-linux/bin/hython
 
 REPO_PATH=$(git rev-parse --show-toplevel)
 

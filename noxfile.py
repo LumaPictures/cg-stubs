@@ -51,7 +51,7 @@ GLOB_TO_REGEX_REG = re.compile(
 
 # Config --
 
-PYTHON_VERSIONS = {'2.7', '3.7', '3.9'}
+PYTHON_VERSIONS = {'2.7', '3.7', '3.9', '3.11'}
 
 DEFAULT_LINT_TAGS = ['precommit', 'prepush', 'ci']
 TAG_TO_PRECOMMIT_STAGE = {
