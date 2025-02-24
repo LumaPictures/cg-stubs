@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "types-houdini"
-version = "19.5.1"
+version = "20.5.487.0"
 
 readme = "README.md"
 authors = ["Chad Dombrova", "Ben Andersen"]
