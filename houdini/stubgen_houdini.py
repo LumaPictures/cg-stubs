@@ -3,10 +3,22 @@ from __future__ import absolute_import, annotations, division, print_function
 import ast
 import re
 import textwrap
+from functools import lru_cache
 
 import mypy.stubgen
 import mypy.stubgenc
+import mypy.stubdoc
 from mypy.stubgenc import FunctionContext, FunctionSig, SignatureGenerator
+
+from hou_cleanup_config import (
+    ADDITIONAL_ENUM_NAMES,
+    EXPLICIT_DEFINITIONS,
+    EXPLICIT_RETURN_TYPES,
+    MISSING_DEFINITIONS,
+    NON_OPTIONAL_RETURN_FUNCTIONS,
+    NON_OPTIONAL_RETURN_TYPES,
+    TYPE_ALIASES,
+)
 
 from stubgenlib import (
     AdvancedSignatureGenerator,
@@ -20,102 +32,14 @@ tupleTypeRegex = re.compile("^_([a-zA-Z0-9]+)Tuple$")
 tupleGenTypeRegex = re.compile("^_([a-zA-Z0-9]+)TupleGenerator$")
 
 
-ADDITIONAL_ENUM_NAMES = {
-    "fbxMaterialMode": {
-        "FBXShaderNodes",
-        "PrincipledShaders",
-        "VopNetworks",
-    },
-    "fbxCompatibilityMode": {
-        "FBXStandard",
-        "Maya",
-    },
-    "_ik_targetType": {
-        "All",
-        "Orientation",
-        "Position",
-    },
-    "parmTemplateType": {
-        "Folder",
-        "Data",
-    },
-    "optionalBool": {
-        "Yes",
-        "No",
-        "NoOpinion",
-    },
-}
+class IsResult:
+    """Indicates whether an annotating type is an argument or a return.
 
+    This is used to modify how permissive arguments may be, since we generally want arguments
+    to be abstract and returns to be concrete.
+    """
 
-MISSING_FUNCTION_DEFINITIONS = {
-    # Missing module level imports are sorted into the `None` class.
-    # WARNING: Be careful not to add missing deprecated functions unless it is absolutely necessary.
-    None:
-        [
-            # "def expandString(text: str) -> str",
-            # "def expandStringAtFrame(text: str, frame_number: float) -> str",
-        ],
-    "NetworkItem":
-        [
-            "def __lt__(self, other: object) -> bool",
-            "def __le__(self, other: object) -> bool",
-            "def __gt__(self, other: object) -> bool",
-            "def __ge__(self, other: object) -> bool",
-            "def __eq__(self, other: object) -> bool",
-            "def __ne__(self, other: object) -> bool",
-        ],
-    "Node":
-        [
-            "def setParms(self, parm_dict: Dict[str, Any]) -> None",
-            "def setParmExpressions(self, parm_dict: Dict[str, Any], language: Optional[EnumValue] = None, replace_expressions: bool = True) -> None",
-            "def createOutputNode(self: T, node_type_name: str, node_name: Optional[str] = None, run_init_scripts: bool = True, load_contents: bool = True, exact_type_name: bool = False) -> T",
-            "def createInputNode(self: T, input_index: int, node_type_name: str, node_name: Optional[str] = None, run_init_scripts: bool = True, load_contents: bool = True, exact_type_name: bool = False) -> T",
-            "def creationTime(self) -> datetime.datetime",
-            "def modificationTime(self) -> datetime.datetime",
-        ],
-    "Parm":
-        [
-            "def set(self, value: Union[int, float, str, Parm, Ramp], language: Optional[EnumValue] = None, follow_parm_reference: bool = True) -> None",
-        ],
-    "ParmTuple":
-        [
-            "def __iter__(self) -> Iterator[Parm]",
-            "def set(self, value: Union[Iterable[int], Iterable[float], Iterable[str], Iterable[Parm], ParmTuple], language: Optional[EnumValue] = None, follow_parm_reference: bool = True) -> None",
-        ],
-    "Prim":
-        [
-            "def voxelRangeAsBool(self, range: BoundingBox) -> Tuple[bool, ...]",
-            "def voxelRangeAsInt(self, range: BoundingBox) -> Tuple[int, ...]",
-            "def voxelRangeAsFloat(self, range: BoundingBox) -> Tuple[float, ...]",
-            "def voxelRangeAsVector3(self, range: BoundingBox) -> Tuple[Vector3, ...]",
-        ],
-    "Vector2":
-        [
-            "def __iter__(self) -> Iterator[float]",
-        ],
-    "Vector3":
-        [
-            "def __iter__(self) -> Iterator[float]",
-        ],
-    "Vector4":
-        [
-            "def __iter__(self) -> Iterator[float]",
-        ],
-    "hda":
-        [
-            "@staticmethod\ndef reloadHDAModule(hda_module: HDAModule) -> None",
-        ],
-    "qt":
-        [
-            "@staticmethod\ndef mainWindow() -> QtWidgets.QMainWindow",
-            "@staticmethod\ndef Icon(icon_name: str, width: Optional[int] = None, height: Optional[int] = None) -> QtGui.QIcon",
-        ],
-    "ui":
-        [
-            "@staticmethod\ndef displayConfirmation(text: str, severity: EnumValue = severityType.Message, help: Optional[str] = None, title: Optional[str] = None, details: Optional[str] = None, destails_label: Optional[str] = None, destails_expanded: bool = False) -> bool",
-            "@staticmethod\ndef selectFile(start_directory: Optional[str] = None, title: Optional[str] = None, collapse_sequences: bool = False, file_type: EnumValue = fileType.Any, pattern: Optional[str] = None, default_value: Optional[str] = None, multiple_select: bool = False, image_chooser: bool = False, chooser_mode: EnumValue = fileChooserMode.ReadAndWrite, width: int = 0, height: int = 0) -> str",
-        ],
-}
+    is_set: bool = False
 
 
 def is_std(node: ast.AST, attr: str) -> bool:
@@ -169,15 +93,22 @@ class AnnotationFixer(ast.NodeTransformer):
 
         new_node = self.generic_visit(node)
         if isinstance(new_node, ast.Subscript) and is_std(new_node.value, "vector"):
-            # NOTE: we use Tuple instead of Tuple because of Parm.Tuple()
-            # convert:  std.vector[Foo]  -->  Tuple[Foo, ...]
-            return ast.Subscript(
-                value=ast.Name(id="Tuple", ctx=ast.Load()),
-                slice=ast.Tuple(
-                    elts=[new_node.slice, ast.Constant(value=Ellipsis)], ctx=ast.Load()
-                ),
-                ctx=ast.Load(),
-            )
+            if IsResult.is_set:
+                # NOTE: we use Tuple instead of tuple because Parm.tuple() method interferes
+                #  with the tuple type from parsing properly.
+                return ast.Subscript(
+                    value=ast.Name(id="Tuple", ctx=ast.Load()),
+                    slice=ast.Tuple(
+                        elts=[new_node.slice, ast.Constant(value=Ellipsis)], ctx=ast.Load()
+                    ),
+                    ctx=ast.Load(),
+                )
+            else:
+                return ast.Subscript(
+                    value=ast.Name(id="Sequence", ctx=ast.Load()),
+                    slice=new_node.slice,
+                    ctx=ast.Load(),
+                )
         return new_node
 
 
@@ -219,15 +150,19 @@ class HoudiniCppTypeConverter(CppTypeConverter):
         (r"\bHOM_ik_Skeleton\b", "_ik_Skeleton"),
         (r"\bHOM_ik_Target\b", "_ik_Target"),
         (r"\bHOM_clone_Connection\b", "_clone_Connection"),
+        (r"\bHOM_logging_FileSink\b", "\"_logging_FileSink\""),
         # other
         (r"\bHOM_IterableList\b", "Iterator"),
         (r"\bHOM_NodeBundle\b", "Bundle"),
         (r"\bInterpreterObject\b", "Any"),
         (r"\bhboost::any\b", "Any"),
         (r"\bPyObject\b", "Any"),
+        (r"\bPY_OpaqueObject\b", "Any"),
         (r"\bUT_Tuple\b", "Tuple"),
         (r"\bswig::SwigPyIterator\b", "Self"),
         (r"\bUT_InfoTree\b", "NodeInfoTree"),
+        # NOTE: Overriding std::pair to return Tuple instead of tuple
+        (r"\bstd::pair\b", "Tuple"),
     ] + CppTypeConverter.TYPE_MAP
 
     # Don't replace vector with list.  Instead, we'll replace std.vector with
@@ -246,8 +181,61 @@ class HoudiniCppTypeConverter(CppTypeConverter):
                 py_type = f"Sequence[{sub_type}]"
         return py_type
 
-    def process_ptr(self, converted_type: str, is_result: bool) -> str:
-        if is_result:
+    @lru_cache
+    def cpp_arg_to_py_type(self, cpp_type: str, is_result: bool, allow_optional_result: bool = True) -> str:
+        """Reimplemented to provide an option to prevent pointer results from being Optional."""
+        typestr = cpp_type
+        is_ptr = "*" in typestr
+
+        typestr = self._replace_typedefs(typestr)
+
+        parts = typestr.split()
+
+        # remove extraneous bits
+        parts = [
+            re.sub(self.STRIP, "", x).replace("*", "").replace("&", "").strip()
+            for x in parts
+        ]
+        parts = [x for x in parts if not self.should_strip_part(x)]
+        typestr = " ".join(parts)
+
+        renames = dict(self.RENAMES)
+        new_typestr = renames.get(typestr.replace(" ", ""))
+        if new_typestr is not None:
+            return new_typestr
+
+        for pattern, replace in self.TYPE_MAP + (
+            self.RESULT_TYPE_MAP if is_ptr or is_result else self.ARG_TYPE_MAP
+        ):
+            typestr = re.sub(pattern, replace, typestr)
+
+        # swap container syntax
+        typestr = typestr.replace("<", "[")
+        typestr = typestr.replace(">", "]")
+
+        # convert to python identifers
+        parts = [x for x in re.split(self.IDENTIFIER, typestr) if x]
+        parts = [(self.to_python_id(x) or x) for x in parts]
+
+        typestr = "".join(parts)
+        typestr = typestr.replace("::", ".")
+        typestr = typestr.replace(" ", "")
+        typestr = typestr.replace(",", ", ")
+
+        if is_ptr:
+            typestr = self.process_ptr(typestr, is_result, allow_optional_result)
+        return typestr
+
+    def process_ptr(self, converted_type: str, is_result: bool, allow_optional_result: bool = True) -> str:
+        if is_result and allow_optional_result:
+            converted_type_start = converted_type.split("[", 1)[0]
+            if converted_type_start in NON_OPTIONAL_RETURN_TYPES:
+                # Houdini functions that return iterators or tuples are not "or None".
+                # WARNING: This is often the result of having a std.vector of pointer types,
+                #  but since `is_ptr = "*" in typestr` this is triggered for the outer type.
+                #  Luckily, we do not ever have Optional pointers to the inner type, but
+                #  ideally the is_ptr code would only be True if the container is also a pointer.
+                return converted_type
             return f"Optional[{converted_type}]"
         else:
             return converted_type
@@ -257,7 +245,7 @@ class HoudiniTypeFixer(SignatureFixer):
     converter = HoudiniCppTypeConverter()
     transfomer = AnnotationFixer()
 
-    def maybe_add_optional(self, type_name: str, default_value: str | None):
+    def maybe_add_optional(self, type_name: str, default_value: str | None) -> str:
         if default_value == "None" and not (
             type_name.startswith("Optional[")
             or type_name.startswith("typing.Optional[")
@@ -275,83 +263,52 @@ class HoudiniTypeFixer(SignatureFixer):
     ) -> str:
         if type_name.startswith("'") and type_name.endswith("'"):
             type_name = type_name[1:-1]
-        new_type = self.converter.cpp_arg_to_py_type(type_name, is_result)
+
+        class_name = ctx.class_info.name if ctx.class_info else None
+        if is_result:
+            explicit_return_type = EXPLICIT_RETURN_TYPES.get(class_name, {}).get(ctx.name)
+            if explicit_return_type:
+                return explicit_return_type
+
+        allow_optional_result = ctx.name not in NON_OPTIONAL_RETURN_FUNCTIONS.get(class_name, {})
+
+        new_type = self.converter.cpp_arg_to_py_type(type_name, is_result, allow_optional_result)
+
+        # We need to indicate to the transformer whether we expect an argument (abstract) or
+        # return (concrete) type for sequences, so set IsResult.is_set appropriately.
+        # Since the transformer has a lot of indirect calls, setting this global scope override
+        # allows us to change this behavior without redefining the whole transformer class.
+        IsResult.is_set = is_result
         new_type = self.transfomer.transform(new_type)
+        IsResult.is_set = False
+
         new_type = self.maybe_add_optional(new_type, default_value)
+
         return new_type
+
+
+def get_signature_overrides() -> dict[str, str]:
+    overrides = {}
+
+    for cls, functions in EXPLICIT_DEFINITIONS.items():
+        for function_name, function_spec in functions.items():
+            if cls == "__hou__":
+                # Modules at the root hou level
+                key = f"hou.{function_name}"
+            elif cls is not None:
+                # Specific class overrides
+                key = f"*.{cls}.{function_name}"
+            else:
+                # Overrides that should apply to all classes
+                key = f"*.{function_name}"
+            overrides[key] = function_spec
+
+    return overrides
 
 
 class HoudiniSignatureGenerator(AdvancedSignatureGenerator):
     sig_matcher = AdvancedSigMatcher(
-        signature_overrides={
-            # signatures for these special methods include many inaccurate overloads
-            "*.__ne__": "(self, other: object) -> bool",
-            "*.__eq__": "(self, other: object) -> bool",
-            "*.__lt__": "(self, other: object) -> bool",
-            "*.__le__": "(self, other: object) -> bool",
-            "*.__gt__": "(self, other: object) -> bool",
-            "*.__ge__": "(self, other: object) -> bool",
-            "*.applicationVersion": "(include_patch: bool = False) -> Tuple[int, int, int]",
-            # FIXME: The type annotation and default value for precision are being stripped out.
-            #   Possible that it is being stripped out because it is `Literal`, but even
-            #   when we declare it as a string, the default is also pulled out.
-            "*.runVex": "(vex_file: str, inputs: dict[str, Any], precision: Literal['32', '64'] = '32') -> dict[str, Any]",
-            "*.startHoudiniEngineDebugger": "(portOrPipeName: Union[int, str]) -> None",
-            "*.NetworkMovableItem.shiftPosition": "(self, vector2: Union[Sequence[float], Vector2]) -> None",
-            "*.NetworkDot.setInput": "(self, input_index: int, item_to_become_input: Optional[NetworkMovableItem], output_index: int = 0) -> None",
-            "*.OpNode.parmTemplateGroup": "(self) -> ParmTemplateGroup",
-            "*.OpNode.setInput": "(self, input_index: int, item_to_become_input: Optional[NetworkMovableItem], output_index: int = 0) -> None",
-            "*.OpNode.setFirstInput": "(self, item_to_become_input: Optional[NetworkMovableItem], output_index: int = 0) -> None",
-            "*.Node.layoutChildren": "(self, items: Sequence[NetworkMovableItem] = ..., horizontal_spacing: float = 1.0, vertical_spacing: float = 1.0) -> None",
-            "*.Node.createOutputNode": "(self, node_type_name: str, node_name: Optional[str] = None, run_init_scripts: bool = True, load_contents: bool = True, exact_type_name: bool = False) -> T",
-            "*.Node.createInputNode": "(self, input_index: int, node_type_name: str, node_name: Optional[str] = None, run_init_scripts: bool = True, load_contents: bool = True, exact_type_name: bool = False) -> T",
-            "*.Node.inputs": "(self: T) -> Tuple[T, ...]",
-            "*.Node.input": "(self: T, inputidx: int) -> Optional[T]",
-            "*.Node.outputs": "(self: T) -> Tuple[T, ...]",
-            "*.LopNode.displayNode": "(self) -> LopNode",
-            "*.LopNode.setLastModifiedPrims": "(self, primPaths: Sequence[str]) -> None",
-            "*.NodeType.parmTemplateGroup": "(self) -> ParmTemplateGroup",
-            "*.Geometry.addAttrib": "(self, type: EnumValue, name: str, default_value: Any, transform_as_normal: bool = True, create_local_variable: bool = True) -> Attrib",
-            "*.Geometry.setGlobalAttribValue": "(self, name_or_attrib: Union[str, Attrib], attrib_value: Any) -> None",
-            "*.StickyNote.setSize": "(self, size: Union[Sequence[float], Vector2]) -> None",
-            "*.Parm.set": "(self, value: Union[int, float, str, Parm, Ramp], language: Optional[EnumValue] = None, follow_parm_reference: bool = True) -> None",
-            "*.ParmTemplate.conditionals": "(self) -> dict[EnumValue, str]",
-            "*.ParmTemplate.setTags": "(self, tags: dict[str, str]) -> None",
-            "*.DataParmTemplate.__init__": "(self, name: , label: , num_components: int, look: EnumValue = parmLook.Regular, naming_scheme: EnumValue = parmNamingScheme.XYZW, unknown_str: Optional[str] = None, disable_when: Optional[str] = None, is_hidden: bool = False, is_label_hidden: bool = False, join_with_next: bool = False, help: Optional[str] = None, script_callback: Optional[str] = None, script_callback_language: EnumValue = scriptLanguage.Hscript, tags: dict[str, str] = {}, unknown_dict: dict[EnumValue, str] = {}, default_expression: Sequence[str] = (), default_expression_language: Sequence[EnumValue] = ()) -> DataParmTemplate",
-            "*.FolderSetParmTemplate.folderNames": "(self) -> list[str]",
-            "*.FolderSetParmTemplate.setFolderNames": "(self, folder_names: Sequence[str]) -> None",
-            "*.MenuParmTemplate.setDefaultExpressionLanguage": "(self, default_expression_language: EnumValue) -> None",
-            "*.Matrix2.__init__": "(self, values: Union[int, float, Iterable[Union[int, float]], Iterable[Iterable[Union[int, float]]]] = 0) -> Matrix2",
-            "*.Matrix3.__init__": "(self, values: Union[int, float, Iterable[Union[int, float]], Iterable[Iterable[Union[int, float]]]] = 0) -> Matrix3",
-            "*.Matrix4.__init__": "(self, values: Union[int, float, Sequence[Union[int, float]], Sequence[Sequence[Union[int, float]]]] = 0) -> Matrix4",
-            "*.Take.name": "(self) -> str",
-            "*.Prim.setIntrinsicValue": "(self, intrinsic_name: str, value: Union[int, float, str, Iterable[int], Iterable[float], Iterable[str]]) -> None",
-            "*.Prim.voxelRange": "(self, range: BoundingBox) -> Union[Tuple[bool, ...], Tuple[int, ...], Tuple[float, ...], Tuple[Vector3, ...]]",
-            "*.Keyframe.__init__": "(self, value: Optional[float] = None, time: Optional[float] = None) -> None",
-            "*.StringKeyframe.__init__": "(self, expression: Optional[str] = None, time: Optional[float] = None, language: Optional[EnumValue] = exprLanguage.Python) -> None",
-            "*.SceneViewer.groupListMask": "(self) -> str",
-            "*.SceneViewer.isGroupPicking": "(self) -> bool",
-            "*.SceneViewer.selectGeometry": "(self, prompt: str = 'Select geometry', sel_index: int = 0, allow_drag: bool = False, quick_select: bool = False, use_existing_selection: bool = True, initial_selection: Optional[str] = None, initial_selection_type: Optional[EnumValue] = None, ordered: bool = False, geometry_types: Sequence[EnumValue] = ..., primitive_types: Sequence[EnumValue] = ..., allow_obj_sel: bool = True, icon: Optional[str] = None, label: Optional[str] = None, prior_selection_paths: list = ..., prior_selection_ids: list = ..., prior_selections: list = ..., allow_other_sops: bool = True, consume_selections: bool = True) -> GeometrySelection",
-            "*.ViewportVizualizer.setParm": "(self, parm_name: str, value: Union[int, float, str]) -> None",
-            "*.NetworkEditor.flashMessage": "(self, image: Optional[str], message: Optional[str], duration: float) -> None",
-            "*.NetworkEditor.registerPref": "(self, pref: str, value: str, _global: bool) -> None",
-            "*.Selection.numSelected": "(self) -> int",
-            "*.NodeInfoTree.__init__": "(self, tree_root: Any, tree: Any) -> None",
-            "*.PerfMonProfile.stats": "(self) -> dict[str, Any]",
-            "*.SwigPyIterator.__sub__": "(self, n: int) -> Any",
-            "*.OperationFailed.__init__": "(self, message: Optional[str] = ...) -> None",
-            "*.AgentMetadata.data": "(self) -> dict[str, Any]",
-            "*.AgentMetadata.setData": "(self, data: dict[str, Any]) -> None",
-            "*.AgentMetadata.setMetadata": "(self, item_id: str, metadata: dict[str, Any]) -> None",
-            "*.ChannelGraph.selectedKeyframes": "(self) -> dict[Parm, Tuple[BaseKeyframe, ...]]",
-            "*.GeometryViewport.changeType": "(self, type: EnumValue) -> None",
-            "*._StringMapDoubleTuple.__iter__": "(self) -> Iterator[str]",
-            "*.hmath.buildTransform": "(self, values_dict: dict[str, Union[Vector3, Sequence[float]]], transform_order: str = 'srt', rotate_order: str = 'xyz') -> Matrix4",
-            "*.playbar.setChannelList": "(arg: ChannelList) -> None",
-            "*.hotkeys.assignments": "(self, hotkey_symbol: str) -> list[str]",
-            "*.ui.hasDragSourceData": "(label: str, index: int) -> bool",
-            "*.webServer.registerOpdefPath": "(self, prefix: str) -> None",
-        }
+        signature_overrides=get_signature_overrides()
     )
 
 
@@ -395,12 +352,34 @@ class ASTStubGenerator(mypy.stubgen.ASTStubGenerator):
     def get_imports(self) -> str:
         import hou
 
+        # FIXME: Where do we want to pull Qt from?
+        #  Houdini ships with PySide2 or PySide6 depending on the version.
+        #  We could also use `Qt`, but that doesn't ship with Houdini.
+        #  Is this the best way to get the PySide version?
+        try:
+            import PySide6
+        except ImportError:
+            pyside = "PySide2"
+        else:
+            pyside = "PySide6"
+
         # The import block goes at the top, so this is where we can add module level notes.
         imports = f"# Houdini stubs generated from Houdini {hou.applicationVersionString()}\n\n"
 
-        imports += super().get_imports()
-        imports += "\nimport typing\nfrom typing import Any, Iterator, Literal, Optional, Sequence, Self, Union, Tuple, TypeVar\n\n"
-        imports += "T = TypeVar('T')\n\n"
+        imports += super().get_imports() + "\n"
+        imports += "import datetime\n"
+        imports += "import typing\n"
+        imports += "from types import TracebackType\n"
+        imports += ("from typing import Any, Callable, Dict, Iterator, Iterable, Mapping, "
+                    "Literal, Optional, Sequence, Self, Union, Tuple, TypeAlias\n\n")
+        imports += "import pxr.Sdf\n"
+        imports += "import pxr.Usd\n"
+        imports += f"from {pyside} import QtGui, QtWidgets\n\n"
+
+        for type_alias_name, type_alias in TYPE_ALIASES.items():
+            imports += f"{type_alias_name}: TypeAlias = {type_alias}\n"
+
+        imports += "\n"
         return imports
 
     @staticmethod
@@ -453,12 +432,12 @@ class ASTStubGenerator(mypy.stubgen.ASTStubGenerator):
     def dedent(self) -> None:
         """When we exit the class, add any missing methods or enums we have flagged above.
 
-        We override this method to inject missing methods as we exit the class, because
+        We override tlhis method to inject missing methods as we exit the class, because
         it is the only method on the generator called while the class context still exists.
         """
         if self._current_class:
             class_name = self._current_class.name
-            for missing_definition in MISSING_FUNCTION_DEFINITIONS.get(class_name, {}):
+            for missing_definition in MISSING_DEFINITIONS.get(class_name, {}):
                 self.add(textwrap.indent(f"{missing_definition}: ...\n", self._indent))
 
             enum_names = self.get_enums_from_docstring(self._current_class.docstring)
@@ -469,7 +448,7 @@ class ASTStubGenerator(mypy.stubgen.ASTStubGenerator):
 
     def output(self) -> str:
         """Add module level missing imports to the end of the stub file."""
-        for missing_definition in MISSING_FUNCTION_DEFINITIONS.get(None, {}):
+        for missing_definition in MISSING_DEFINITIONS.get(None, {}):
             self.add(textwrap.indent(f"{missing_definition}: ...\n", self._indent))
         return super().output()
 
