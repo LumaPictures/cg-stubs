@@ -9,17 +9,17 @@ from mypy.stubgenc import SignatureGenerator
 
 from stubgenlib import (
     DocstringTypeFixer,
-    FixableCDocstringSigGen,
+    CDocstringSignatureGenerator,
 )
-
-
-class OcioDocstringSignatureGenerator(DocstringTypeFixer, FixableCDocstringSigGen):
-    pass
 
 
 class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
     def get_sig_generators(self) -> list[SignatureGenerator]:
-        return [OcioDocstringSignatureGenerator(default_sig_handling="merge")]
+        return [
+            DocstringTypeFixer(
+                CDocstringSignatureGenerator(), default_sig_handling="merge"
+            )
+        ]
 
     def set_defined_names(self, defined_names: set[str]) -> None:
         super().set_defined_names(defined_names)
