@@ -1,6 +1,6 @@
-import stubgenlib
+from mypy.stubdoc import ArgSig, FunctionSig
 
-from mypy.stubdoc import FunctionSig, ArgSig
+import stubgenlib
 
 # def test_boost_docstrings():
 #     docstr = """
@@ -48,30 +48,30 @@ __init__( (object)arg1 [, (Matrix4d)transform=Gf.Matrix4d(1.0, 0.0, 0.0, 0.0, 0.
     pprint.pprint(result)
     assert result == [
         FunctionSig(
-            name='__init__',
-            args=[ArgSig(name='arg1', type='object', default=False)],
-            ret_type='None',
+            name="__init__",
+            args=[ArgSig(name="arg1", type="object", default=False)],
+            ret_type="None",
         ),
         FunctionSig(
-            name='__init__',
+            name="__init__",
             args=[
-                ArgSig(name='arg1', type='object', default=False),
-                ArgSig(name='arg2', type='Camera', default=True),
+                ArgSig(name="arg1", type="object", default=False),
+                ArgSig(name="arg2", type="Camera", default=True),
             ],
-            ret_type='None',
+            ret_type="None",
         ),
         FunctionSig(
-            name='__init__',
+            name="__init__",
             args=[
-                ArgSig(name='arg1', type='object', default=False),
-                ArgSig(name='transform', type='Matrix4d', default=True),
-                ArgSig(name='projection', type='object', default=True),
-                ArgSig(name='apertureOffset', type='float', default=True),
-                ArgSig(name='clippingRange', type='Range1f', default=True),
-                ArgSig(name='clippingPlanes', type='object', default=True),
-                ArgSig(name='fStop', type='float', default=True),
+                ArgSig(name="arg1", type="object", default=False),
+                ArgSig(name="transform", type="Matrix4d", default=True),
+                ArgSig(name="projection", type="object", default=True),
+                ArgSig(name="apertureOffset", type="float", default=True),
+                ArgSig(name="clippingRange", type="Range1f", default=True),
+                ArgSig(name="clippingPlanes", type="object", default=True),
+                ArgSig(name="fStop", type="float", default=True),
             ],
-            ret_type='None',
+            ret_type="None",
         ),
     ]
 
@@ -100,11 +100,11 @@ Find( (object)identifier [, (dict)args={}]) -> Layer :
     result = stubgenlib.infer_sig_from_boost_docstring(docstr, "Find")
     assert result == [
         FunctionSig(
-            name='Find',
+            name="Find",
             args=[
-                ArgSig(name='identifier', type='object', default=False),
-                ArgSig(name='args', type='dict', default=True),
+                ArgSig(name="identifier", type="object", default=False),
+                ArgSig(name="args", type="dict", default=True),
             ],
-            ret_type='Layer',
+            ret_type="Layer",
         )
     ]

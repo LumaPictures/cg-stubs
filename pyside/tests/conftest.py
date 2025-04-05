@@ -15,7 +15,7 @@ def qapplication_fixture() -> QApplication:
 
 @pytest.fixture
 def fix_import():
-    if __builtins__['__import__'].__module__ == 'shibokensupport.__feature__':
-        __builtins__['__import__'] = sys.modules[
-            'PySide2.support.__feature__'
+    if __builtins__["__import__"].__module__ == "shibokensupport.__feature__":
+        __builtins__["__import__"] = sys.modules[
+            "PySide2.support.__feature__"
         ].original_import

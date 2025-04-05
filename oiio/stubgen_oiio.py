@@ -2,14 +2,13 @@ from __future__ import absolute_import, annotations, division, print_function
 
 import mypy.stubgen
 import mypy.stubgenc
-from mypy.stubgenc import SignatureGenerator
+from mypy.stubgenc import DocstringSignatureGenerator, SignatureGenerator
 
-from stubgenlib import (
-    AdvancedSignatureGenerator,
+from stubgenlib.siggen import (
     AdvancedSigMatcher,
-    CDocstringSignatureGenerator,
-    add_positional_only_args,
+    AdvancedSignatureGenerator,
 )
+from stubgenlib.utils import add_positional_only_args
 
 
 class OIIOSignatureGenerator(AdvancedSignatureGenerator):
@@ -38,7 +37,7 @@ class OIIOSignatureGenerator(AdvancedSignatureGenerator):
             ("*.getattribute", "object"): "Any",
             ("*.ImageSpec.get", "object"): "Any",
             ("*.ImageBufAlgo.histogram", "object"): "tuple[int, ...]",
-            ("*.ImageBufAlgo.isConstantColor", "object"): "tuple[float, ...]",
+            ("*.ImageBufAlgo.isConstantColor", "object"): "tuple[float, ...] | None",
         },
         property_type_overrides={
             # FIXME: this isn't working
@@ -56,7 +55,7 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
     def get_sig_generators(self) -> list[SignatureGenerator]:
         return [
             OIIOSignatureGenerator(
-                fallback_sig_gen=CDocstringSignatureGenerator(),
+                fallback_sig_gen=DocstringSignatureGenerator(),
             )
         ]
 

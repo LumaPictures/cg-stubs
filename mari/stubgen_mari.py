@@ -6,16 +6,15 @@ from typing import Any
 
 import mypy.stubgen
 import mypy.stubgenc
-from mypy.stubgen import FunctionContext, FunctionSig, ArgSig
+from mypy.stubgen import ArgSig, FunctionContext, FunctionSig
 from mypy.stubgenc import SignatureGenerator
 
 import mari
-
-from stubgenlib import (
-    get_mypy_ignore_directive,
-    DocstringTypeFixer,
+from stubgenlib.siggen import (
     DocstringSignatureGenerator,
+    DocstringTypeFixer,
 )
+from stubgenlib.utils import get_mypy_ignore_directive
 
 # the mari.so module patches in the Mari pure python package using __path__. Undo that
 # so that mypy will just process mari.so as a single c extension.
@@ -163,7 +162,7 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
 
     def get_members(self, obj: object) -> list[tuple[str, Any]]:
         members = super().get_members(obj)
-        if getattr(obj, '__name__', None) == "ResourceInfo":
+        if getattr(obj, "__name__", None) == "ResourceInfo":
             return members + [("ICONS", "")]
         else:
             return members
@@ -193,7 +192,7 @@ def main(outdir: str):
     out = pathlib.Path(outdir)
     # pure python package
     print("Converting Mari python package")
-    mypy.stubgen.main(['-p=Mari', '--verbose', '--parse-only', '-o', outdir])
+    mypy.stubgen.main(["-p=Mari", "--verbose", "--parse-only", "-o", outdir])
 
     dest = out.joinpath("mari")
     if dest.exists():
@@ -206,5 +205,5 @@ def main(outdir: str):
 
     # c module
     print("Converting mari.so c module")
-    mypy.stubgen.main(['-m=mari', '--verbose', '-o', outdir])
+    mypy.stubgen.main(["-m=mari", "--verbose", "-o", outdir])
     out.joinpath("mari.pyi").rename(dest.joinpath("__init__.pyi"))

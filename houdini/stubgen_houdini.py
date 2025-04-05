@@ -5,11 +5,9 @@ import re
 import textwrap
 from functools import lru_cache
 
+import mypy.stubdoc
 import mypy.stubgen
 import mypy.stubgenc
-import mypy.stubdoc
-from mypy.stubgenc import FunctionContext, FunctionSig, SignatureGenerator
-
 from hou_cleanup_config import (
     ADDITIONAL_ENUM_NAMES,
     EXPLICIT_DEFINITIONS,
@@ -19,15 +17,15 @@ from hou_cleanup_config import (
     NON_OPTIONAL_RETURN_TYPES,
     TYPE_ALIASES,
 )
+from mypy.stubgenc import FunctionContext, FunctionSig, SignatureGenerator
 
-from stubgenlib import (
-    AdvancedSignatureGenerator,
+from stubgenlib.cpptypeconvert import CppTypeConverter
+from stubgenlib.siggen import (
     AdvancedSigMatcher,
-    SignatureFixer,
-    CppTypeConverter,
+    AdvancedSignatureGenerator,
     DefaultSigGenerator,
+    SignatureFixer,
 )
-
 
 tupleTypeRegex = re.compile("^_([a-zA-Z0-9]+)Tuple$")
 tupleGenTypeRegex = re.compile("^_([a-zA-Z0-9]+)TupleGenerator$")
@@ -100,7 +98,8 @@ class AnnotationFixer(ast.NodeTransformer):
                 return ast.Subscript(
                     value=ast.Name(id="Tuple", ctx=ast.Load()),
                     slice=ast.Tuple(
-                        elts=[new_node.slice, ast.Constant(value=Ellipsis)], ctx=ast.Load()
+                        elts=[new_node.slice, ast.Constant(value=Ellipsis)],
+                        ctx=ast.Load(),
                     ),
                     ctx=ast.Load(),
                 )
@@ -142,7 +141,7 @@ class HoudiniCppTypeConverter(CppTypeConverter):
         (r"\bHOM_ik_Skeleton\b", "_ik_Skeleton"),
         (r"\bHOM_ik_Target\b", "_ik_Target"),
         (r"\bHOM_clone_Connection\b", "_clone_Connection"),
-        (r"\bHOM_logging_FileSink\b", "\"_logging_FileSink\""),
+        (r"\bHOM_logging_FileSink\b", '"_logging_FileSink"'),
         # other
         (r"\bHOM_IterableList\b", "Iterator"),
         (r"\bHOM_NodeBundle\b", "Bundle"),
@@ -174,7 +173,9 @@ class HoudiniCppTypeConverter(CppTypeConverter):
         return py_type
 
     @lru_cache
-    def cpp_arg_to_py_type(self, cpp_type: str, is_result: bool, allow_optional_result: bool = True) -> str:
+    def cpp_arg_to_py_type(
+        self, cpp_type: str, is_result: bool, allow_optional_result: bool = True
+    ) -> str:
         """Reimplemented to provide an option to prevent pointer results from being Optional."""
         typestr = cpp_type
         is_ptr = "*" in typestr
@@ -218,7 +219,9 @@ class HoudiniCppTypeConverter(CppTypeConverter):
             typestr = self.process_ptr(typestr, is_result, allow_optional_result)
         return typestr
 
-    def process_ptr(self, converted_type: str, is_result: bool, allow_optional_result: bool = True) -> str:
+    def process_ptr(
+        self, converted_type: str, is_result: bool, allow_optional_result: bool = True
+    ) -> str:
         if is_result and allow_optional_result:
             converted_type_start = converted_type.split("[", 1)[0]
             if converted_type_start in NON_OPTIONAL_RETURN_TYPES:
@@ -258,13 +261,19 @@ class HoudiniTypeFixer(SignatureFixer):
 
         class_name = ctx.class_info.name if ctx.class_info else None
         if is_result:
-            explicit_return_type = EXPLICIT_RETURN_TYPES.get(class_name, {}).get(ctx.name)
+            explicit_return_type = EXPLICIT_RETURN_TYPES.get(class_name, {}).get(
+                ctx.name
+            )
             if explicit_return_type:
                 return explicit_return_type
 
-        allow_optional_result = ctx.name not in NON_OPTIONAL_RETURN_FUNCTIONS.get(class_name, {})
+        allow_optional_result = ctx.name not in NON_OPTIONAL_RETURN_FUNCTIONS.get(
+            class_name, {}
+        )
 
-        new_type = self.converter.cpp_arg_to_py_type(type_name, is_result, allow_optional_result)
+        new_type = self.converter.cpp_arg_to_py_type(
+            type_name, is_result, allow_optional_result
+        )
 
         # We need to indicate to the transformer whether we expect an argument (abstract) or
         # return (concrete) type for sequences, so set IsResult.is_set appropriately.
@@ -299,9 +308,7 @@ def get_signature_overrides() -> dict[str, str]:
 
 
 class HoudiniSignatureGenerator(AdvancedSignatureGenerator):
-    sig_matcher = AdvancedSigMatcher(
-        signature_overrides=get_signature_overrides()
-    )
+    sig_matcher = AdvancedSigMatcher(signature_overrides=get_signature_overrides())
 
 
 class ASTStubGenerator(mypy.stubgen.ASTStubGenerator):
@@ -342,14 +349,14 @@ class ASTStubGenerator(mypy.stubgen.ASTStubGenerator):
         return super().get_signatures(default_signature, sig_generators, func_ctx)
 
     def get_imports(self) -> str:
-        import hou
+        import hou  # type: ignore[import]
 
         # FIXME: Where do we want to pull Qt from?
         #  Houdini ships with PySide2 or PySide6 depending on the version.
         #  We could also use `Qt`, but that doesn't ship with Houdini.
         #  Is this the best way to get the PySide version?
         try:
-            import PySide6
+            import PySide6  # type: ignore[import]
         except ImportError:
             pyside = "PySide2"
         else:
@@ -362,8 +369,10 @@ class ASTStubGenerator(mypy.stubgen.ASTStubGenerator):
         imports += "import datetime\n"
         imports += "import typing\n"
         imports += "from types import TracebackType\n"
-        imports += ("from typing import Any, Callable, Dict, Iterator, Iterable, Mapping, "
-                    "Literal, Optional, Sequence, Self, Union, Tuple, TypeAlias\n\n")
+        imports += (
+            "from typing import Any, Callable, Dict, Iterator, Iterable, Mapping, "
+            "Literal, Optional, Sequence, Self, Union, Tuple, TypeAlias\n\n"
+        )
         imports += "import pxr.Sdf\n"
         imports += "import pxr.Usd\n"
         imports += f"from {pyside} import QtGui, QtWidgets\n\n"
@@ -389,7 +398,7 @@ class ASTStubGenerator(mypy.stubgen.ASTStubGenerator):
         names_indent = -1
         reading_values = False
         enum_names = set()
-        for line in textwrap.dedent(docstring).split('\n'):
+        for line in textwrap.dedent(docstring).split("\n"):
             indent_match = re.match(r"(?P<indentsize>[ \t]*)[\w_]", line)
             if not indent_match:
                 continue
@@ -416,7 +425,7 @@ class ASTStubGenerator(mypy.stubgen.ASTStubGenerator):
 
                 # Some names are fully qualified (e.g. hou.glShadingType.WireBoundingBox)
                 # and others will just be the end, and we only want the member name.
-                enum_name = line.rsplit('.', 1)[-1].strip()
+                enum_name = line.rsplit(".", 1)[-1].strip()
                 enum_names.add(enum_name)
 
         return enum_names
@@ -451,7 +460,8 @@ mypy.stubgen.ASTStubGenerator = ASTStubGenerator  # type: ignore[attr-defined,mi
 
 def enableHouModule():
     """Set up the environment so that "import hou" works."""
-    import sys, os
+    import os
+    import sys
 
     # Importing hou will load Houdini's libraries and initialize Houdini.
     # This will cause Houdini to load any HDK extensions written in C++.
@@ -473,7 +483,7 @@ def enableHouModule():
         os.add_dll_directory("{}/bin".format(os.environ["HFS"]))
 
     try:
-        import hou
+        pass
     finally:
         # Reset dlopen flags back to their original value.
         if hasattr(sys, "setdlopenflags"):

@@ -1,15 +1,13 @@
 from __future__ import absolute_import, annotations, division, print_function
 
-import re
 from typing import Any
 
 import mypy.stubgen
 import mypy.stubgenc
-from mypy.stubgenc import SignatureGenerator
+from mypy.stubgenc import DocstringSignatureGenerator, SignatureGenerator
 
-from stubgenlib import (
+from stubgenlib.siggen import (
     DocstringTypeFixer,
-    CDocstringSignatureGenerator,
 )
 
 
@@ -17,7 +15,7 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
     def get_sig_generators(self) -> list[SignatureGenerator]:
         return [
             DocstringTypeFixer(
-                CDocstringSignatureGenerator(), default_sig_handling="merge"
+                DocstringSignatureGenerator(), default_sig_handling="merge"
             )
         ]
 

@@ -6,3 +6,7 @@ __pycache__
 usd/stubs/**/__DOC.pyi
 usd/stubs/**/_[a-z]*.pyi
 *.egg-info
+
+# moon
+.moon/cache
+.moon/docker

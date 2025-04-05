@@ -21,8 +21,8 @@ REPO_PATH=$(git rev-parse --show-toplevel)
 
 outdir=$REPO_PATH/houdini/stubs/
 
-#export PYTHONPATH=$REPO_PATH:$REPO_PATH/houdini:$HOU_LIBS
-export PYTHONPATH=$REPO_PATH:$REPO_PATH/houdini:$PY_SITE_DIR:$HOU_LIBS
+#export PYTHONPATH=$REPO_PATH/common/src:$REPO_PATH/houdini:$HOU_LIBS
+export PYTHONPATH=$REPO_PATH/common/src:$REPO_PATH/houdini:$PY_SITE_DIR:$HOU_LIBS
 
 echo "launching"
 export DYLD_INSERT_LIBRARIES=/Applications/Houdini/Houdini20.5.332/Frameworks/Houdini.framework/Versions/Current/Houdini

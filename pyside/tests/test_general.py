@@ -1,12 +1,11 @@
 from __future__ import absolute_import, print_function
 
 import datetime
-from typing import Any, List, ClassVar, cast, overload
-
-import pytest
+from typing import Any, ClassVar, List
 
 import PySide2
-from PySide2 import QtCore, QtGui, QtWidgets, QtQuick
+import pytest
+from PySide2 import QtCore, QtGui, QtQuick, QtWidgets
 
 pyside_version = PySide2.__version_info__
 

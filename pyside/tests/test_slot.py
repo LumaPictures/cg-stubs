@@ -1,5 +1,3 @@
-from typing import Callable, TypeVar, Type, overload, Any
-
 from PySide2.QtCore import Slot
 
 
@@ -99,8 +97,12 @@ def test():
     some_str = f_int_float_str_int_bytes_float_returns_str(
         33, 1.0, "abc", 33, b"12", 1.0
     )
-    some_int = f_int_float_str_int_bytes_float_returns_str(33, 1.0, "abc", 33, b"12", 1.0)  # type: ignore[assignment]
-    some_str = f_int_float_str_int_bytes_float_returns_str(33, 1.0, "abc", 33, "abc", "abc")  # type: ignore[arg-type]
+    some_int = f_int_float_str_int_bytes_float_returns_str(
+        33, 1.0, "abc", 33, b"12", 1.0
+    )  # type: ignore[assignment]
+    some_str = f_int_float_str_int_bytes_float_returns_str(
+        33, 1.0, "abc", 33, "abc", "abc"
+    )  # type: ignore[arg-type]
 
     # For 6 arguments, with the result argument, arguments are no longer type-checked.
     @Slot(int, float, str, int, bytes, float, result=str)

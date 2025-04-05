@@ -16,7 +16,7 @@ export PATH=$KATANA_HOME:$PATH
 export foundry_LICENSE='4101@katanalicgui.luma.ninja:5053@katanarender.luma.ninja'
 # End custom variables --
 
-export PYTHONPATH=$REPO_PATH:$REPO_PATH/katana:$PY_SITE_DIR
+export PYTHONPATH=$REPO_PATH/common/src:$REPO_PATH/katana:$PY_SITE_DIR
 
 sitedir=$KATANA_HOME/bin/python/
 outdir=${REPO_PATH}/katana/stubs

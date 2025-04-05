@@ -8,7 +8,7 @@ outdir=$REPO_PATH/oiio/stubs/
 
 OIIO_PYTHON_PATH=/usr/local/Cellar/openimageio/2.5.16.0_2/lib/python3.12/site-packages/
 
-export PYTHONPATH=$REPO_PATH:$REPO_PATH/oiio:$PY_SITE_DIR:$OIIO_PYTHON_PATH
+export PYTHONPATH=$REPO_PATH/common/src:$REPO_PATH/oiio:$PY_SITE_DIR:$OIIO_PYTHON_PATH
 
 which python
 python -m stubgen_oiio -p OpenImageIO -o $outdir

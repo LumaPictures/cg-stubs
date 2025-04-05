@@ -5,7 +5,7 @@ PY_SITE_DIR=$(python -c "import site,os;print(os.pathsep.join(site.getsitepackag
 REPO_PATH=$(git rev-parse --show-toplevel)
 outdir=$REPO_PATH/pyside/stubs/
 
-export PYTHONPATH=$REPO_PATH:$REPO_PATH/pyside:$PY_SITE_DIR
+export PYTHONPATH=$REPO_PATH/common/src:$REPO_PATH/pyside:$PY_SITE_DIR
 
 python -m stubgen_pyside -p shiboken2 -p PySide2 --include-private -o $outdir
 

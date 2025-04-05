@@ -1,5 +1,5 @@
 """Tests for QLineEdit."""
-from PySide2.QtWidgets import QApplication, QLineEdit
+
 
 # NOTE: I'm choosing not to implement this.  It opens the door to inumerable
 #  Optional[str] arguments throughout PySide.  If you want to clear a text

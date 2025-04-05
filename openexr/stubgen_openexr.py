@@ -2,14 +2,12 @@ from __future__ import absolute_import, annotations, division, print_function
 
 import mypy.stubgen
 import mypy.stubgenc
-from mypy.stubgenc import SignatureGenerator
+from mypy.stubgenc import DocstringSignatureGenerator, SignatureGenerator
 
-from stubgenlib import (
-    AdvancedSignatureGenerator,
+from stubgenlib.siggen import (
     AdvancedSigMatcher,
-    CDocstringSignatureGenerator,
+    AdvancedSignatureGenerator,
 )
-
 
 # HEADER_TYPE = "Mapping[str, float | str | Iterable[str], Iterable[int] | Iterable[float] | Iterable[tuple] | Compression | KeyCode | LineOrder | TimeCode | numbers.Rational | np.ndarray]"
 HEADER_TYPE = "dict[str, Any]"
@@ -44,7 +42,7 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
     def get_sig_generators(self) -> list[SignatureGenerator]:
         return [
             OpenEXRSignatureGenerator(
-                fallback_sig_gen=CDocstringSignatureGenerator(),
+                fallback_sig_gen=DocstringSignatureGenerator(),
             )
         ]
 

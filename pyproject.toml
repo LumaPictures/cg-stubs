@@ -1,3 +1,9 @@
-[tool.black]
+[tool.mypy]
+check_untyped_defs = true
+
+[tool.ruff]
 line-length = 88
-skip-string-normalization = 1
+lint.select = ["I"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["stubgenlib", "hou_cleanup_config"]

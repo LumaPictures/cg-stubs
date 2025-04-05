@@ -1,16 +1,16 @@
 from __future__ import annotations
 
-import nox
-import nox.command
-
 import contextlib
-import pathlib
 import os.path
+import pathlib
 import re
 import textwrap
 from dataclasses import dataclass
 from functools import lru_cache
 from typing import Any, Callable, Iterable, Iterator, Match, Pattern
+
+import nox
+import nox.command
 
 APPS = [
     "houdini",
@@ -36,34 +36,34 @@ PROCESSES = 8
 GLOB_TO_REGEX = [
     # I'm pretty sure that "**/*.py" should match a python file at the root, e.g. "setup.py"
     # this first replacement ensures that this works in pre-commit
-    ('**/', '.*'),
-    ('**', '.*'),
-    ('*', '[^/]*'),
-    ('.', '[.]'),
-    ('?', '.'),
-    ('{', '('),
-    ('}', ')'),
-    (',', '|'),
+    ("**/", ".*"),
+    ("**", ".*"),
+    ("*", "[^/]*"),
+    (".", "[.]"),
+    ("?", "."),
+    ("{", "("),
+    ("}", ")"),
+    (",", "|"),
 ]
 GLOB_TO_REGEX_MAP = dict(GLOB_TO_REGEX)
 GLOB_TO_REGEX_REG = re.compile(
-    r'({})'.format('|'.join(re.escape(f) for f, r in GLOB_TO_REGEX))
+    r"({})".format("|".join(re.escape(f) for f, r in GLOB_TO_REGEX))
 )
 
 
 # Config --
 
-PYTHON_VERSIONS = {'2.7', '3.7', '3.9', '3.11'}
+PYTHON_VERSIONS = {"2.7", "3.7", "3.9", "3.11"}
 
-DEFAULT_LINT_TAGS = ['precommit', 'prepush', 'ci']
+DEFAULT_LINT_TAGS = ["precommit", "prepush", "ci"]
 TAG_TO_PRECOMMIT_STAGE = {
-    'ci': 'manual',
-    'precommit': 'commit',
-    'prepush': 'push',
+    "ci": "manual",
+    "precommit": "commit",
+    "prepush": "push",
 }
 
 # Files to include, and from which to generate pre-commit regex
-LINT_FILES = ('**/*.py',)
+LINT_FILES = ("**/*.py",)
 
 # Standard set of "special" python files that are not linted
 LINT_EXCLUDE = ()
@@ -73,8 +73,8 @@ def multiline(s: str) -> str:
     """Indicate to ruamel.ymal to format the string as mult-line"""
     from ruamel.yaml.scalarstring import LiteralScalarString
 
-    if '\n' in s:
-        return LiteralScalarString(textwrap.dedent(s).strip('\n'))
+    if "\n" in s:
+        return LiteralScalarString(textwrap.dedent(s).strip("\n"))
     else:
         return s
 
@@ -110,12 +110,12 @@ def regexes_to_regex(patterns: Iterable[str]) -> Pattern | None:
     """
     Convert a tuple of regex strings to a single regex Pattern
     """
-    patterns = ['^' + p for p in patterns]
+    patterns = ["^" + p for p in patterns]
     if len(patterns) > 1:
-        reg = '|\n'.join('    ' + p for p in patterns)
-        pattern = '(?x)(\n{}\n)$'.format(reg)
+        reg = "|\n".join("    " + p for p in patterns)
+        pattern = "(?x)(\n{}\n)$".format(reg)
     elif len(patterns) == 1:
-        pattern = patterns[0] + '$'
+        pattern = patterns[0] + "$"
     else:
         return None
 
@@ -169,8 +169,8 @@ class GitRepo:
     def files(self) -> list[str]:
         import subprocess
 
-        output = subprocess.check_output(['git', 'ls-files'], cwd=self.root)
-        return [x for x in output.decode().split('\n') if x]
+        output = subprocess.check_output(["git", "ls-files"], cwd=self.root)
+        return [x for x in output.decode().split("\n") if x]
 
     @cache
     def file_matches(
@@ -196,7 +196,7 @@ class GitRepo:
         return list(filter_paths(self.folders(), include, exclude))
 
 
-repo = GitRepo('.')
+repo = GitRepo(".")
 
 
 @dataclass(frozen=True)
@@ -239,7 +239,7 @@ def with_versions(versions: Iterable[str]) -> Callable[[Any], Any]:
     """
     Parametrization decorator that uses the parameters as the name
     """
-    return nox.parametrize('ver', [nox.param(v, id=v) for v in sorted(versions)])
+    return nox.parametrize("ver", [nox.param(v, id=v) for v in sorted(versions)])
 
 
 def check(
@@ -254,8 +254,8 @@ def check(
     """
     import functools
 
-    session_kwargs.setdefault('reuse_venv', True)
-    session_kwargs.setdefault('tags', DEFAULT_LINT_TAGS)
+    session_kwargs.setdefault("reuse_venv", True)
+    session_kwargs.setdefault("tags", DEFAULT_LINT_TAGS)
 
     def deco(func):
         options = Options(
@@ -283,9 +283,11 @@ def check(
     paths=LINT_FILES,
     exclude=LINT_EXCLUDE,
 )
-def black(session: nox.Session, options: Options):
-    session.install('black==23.3.0')
-    session.run('black', *options.files(session), log=False)
+def ruff(session: nox.Session, options: Options):
+    """Run black code formatter"""
+    session.install("ruff==0.11.4")
+    session.run("ruff", "format", *options.files(session), log=False)
+    session.run("ruff", "check", "--fix", *options.files(session), log=False)
 
 
 # @check(paths=('**.{yaml|yml}',), venv_backend='none')
@@ -323,10 +325,10 @@ def black(session: nox.Session, options: Options):
 
 
 @check(
-    paths=['noxfile.py'],
-    venv_backend='none',  # Imports toml from luma's .venv
+    paths=["noxfile.py"],
+    venv_backend="none",  # Imports toml from luma's .venv
     pass_filenames=False,
-    tags=['precommit', 'prepush'],
+    tags=["precommit", "prepush"],
 )
 def precommit_gen(session: nox.Session, options: Options):
     """
@@ -375,7 +377,7 @@ repos:
   hooks:
 """
     for hook_name, obj in nox.registry._REGISTRY.items():
-        if hasattr(obj, 'options') and isinstance(obj.options, Options):
+        if hasattr(obj, "options") and isinstance(obj.options, Options):
             assert isinstance(obj, nox._decorators.Func)
             stages = [TAG_TO_PRECOMMIT_STAGE.get(x, x) for x in obj.tags]
             text += f"""
@@ -384,9 +386,9 @@ repos:
     entry: nox
     args: [-s, {hook_name}, --no-install, --]
     language: system
-    pass_filenames: {'true' if obj.options.pass_filenames else 'false'}
-    require_serial: {'true' if obj.venv_backend != 'none' else 'false'}
-    stages: [{', '.join(stages)}]\n"""
+    pass_filenames: {"true" if obj.options.pass_filenames else "false"}
+    require_serial: {"true" if obj.venv_backend != "none" else "false"}
+    stages: [{", ".join(stages)}]\n"""
 
             paths_regex = obj.options.paths_regex()
             if paths_regex:
@@ -395,7 +397,7 @@ repos:
             if exclude_regex:
                 text += f"    exclude: {exclude_regex.pattern}\n"
 
-    with open('.pre-commit-config.yaml', 'w') as f:
+    with open(".pre-commit-config.yaml", "w") as f:
         f.write(text)
 
 
@@ -421,8 +423,8 @@ def add_stubs_suffix(path: pathlib.Path) -> None:
     # do these at the end to improve time to git refresh
     to_delete = []
     for child in path.iterdir():
-        if child.is_dir() and not child.name.endswith('-stubs'):
-            name = child.stem + '-stubs'
+        if child.is_dir() and not child.name.endswith("-stubs"):
+            name = child.stem + "-stubs"
             newpath = child.with_name(name)
             if newpath.exists():
                 backup = newpath.with_suffix(".bak")
@@ -444,8 +446,8 @@ def stubs_suffix(session, path: pathlib.Path = pathlib.Path("./stubs")):
     paths = []
     path = path.absolute()
     for child in path.iterdir():
-        if child.is_dir() and not child.name.endswith('-stubs'):
-            name = child.stem + '-stubs'
+        if child.is_dir() and not child.name.endswith("-stubs"):
+            name = child.stem + "-stubs"
             newpath = child.with_name(name)
             paths.append((child, newpath))
             child.rename(newpath)
@@ -456,9 +458,10 @@ def stubs_suffix(session, path: pathlib.Path = pathlib.Path("./stubs")):
         new.rename(orig)
 
 
-@nox.session(venv_backend='none')
-@nox.parametrize('lib', PARAMS)
+@nox.session(venv_backend="none")
+@nox.parametrize("lib", PARAMS)
 def develop(session: nox.Session, lib: str) -> None:
+    """Install the stubs into the current venv"""
     session.chdir(lib)
     with stubs_suffix(session):
         try:
@@ -471,11 +474,12 @@ def develop(session: nox.Session, lib: str) -> None:
 
 
 @nox.session(reuse_venv=True)
-@nox.parametrize('lib', PARAMS)
+@nox.parametrize("lib", PARAMS + [nox.param("common", id="common")])
 def publish(session: nox.Session, lib: str) -> None:
+    """Publish the stub package to PyPI"""
     session.chdir(lib)
     session.install("poetry")
-    with stubs_suffix(session):
+    with (contextlib.ExitStack() if lib == "common" else stubs_suffix(session)):
         session.run("poetry", "publish", "--build", *session.posargs)
     output = session.run("poetry", "version", "-s", silent=True)
     assert output is not None
@@ -497,8 +501,9 @@ def get_version(directory: str, root=False) -> str:
 
 
 @nox.session(reuse_venv=True)
-@nox.parametrize('lib', PARAMS)
+@nox.parametrize("lib", PARAMS)
 def generate(session: nox.Session, lib: str) -> None:
+    """Create the stubs"""
     args = ["-r", "requirements.txt"]
 
     if lib == "pyside":
@@ -513,7 +518,7 @@ def generate(session: nox.Session, lib: str) -> None:
         version = get_version(lib, root=True)
         args += [f"OpenEXR=={version}", "numpy"]
 
-    session.env.pop('PYTHONPATH', None)
+    session.env.pop("PYTHONPATH", None)
     session.install(*args)
 
     session.chdir(lib)
@@ -523,8 +528,9 @@ def generate(session: nox.Session, lib: str) -> None:
 
 
 @nox.session(reuse_venv=True)
-@nox.parametrize('lib', PARAMS)
+@nox.parametrize("lib", PARAMS)
 def mypy(session: nox.Session, lib: str) -> None:
+    """Run mypy type checker"""
     session.install("-r", "requirements.txt")
     session.chdir(lib)
 
@@ -534,13 +540,13 @@ def mypy(session: nox.Session, lib: str) -> None:
     session.run("bash", "-c", "mypy | mypy-baseline filter", external=True)
 
 
-@check(paths=LINT_FILES, pass_filenames=False, tags=['ci', 'prepush'])
+@check(paths=LINT_FILES, pass_filenames=False, tags=["ci", "prepush"])
 def self_mypy(session: nox.Session, options: Options) -> None:
     session.install("-r", "requirements.txt", "-r", "nox-requirements.txt")
-    source = []
+    source = ["common/src"]
     for app in APPS:
         fpath = pathlib.Path(f"{app}/stubgen_{app}.py")
         if fpath.exists():
             source.append(str(fpath))
 
-    session.run("mypy", "noxfile.py", "stubgenlib.py", *source)
+    session.run("mypy", "noxfile.py", *source)

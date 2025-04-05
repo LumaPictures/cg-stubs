@@ -1,4 +1,5 @@
 from typing import Any
+
 from PySide2.QtWidgets import QMenu, QTreeWidget
 
 # FIXME: this test does not execute at runtime

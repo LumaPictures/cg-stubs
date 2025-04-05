@@ -1,12 +1,11 @@
 # mypy: no-warn-unreachable
 
 import sys
-from typing import Union
 
 if sys.version_info[:2] >= (3, 8):
-    from typing import Literal
+    pass
 else:
-    from typing_extensions import Literal
+    pass
 import pytest
 
 ### Specific part

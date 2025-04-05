@@ -18,6 +18,6 @@ REPO_PATH=$(git rev-parse --show-toplevel)
 
 outdir=$REPO_PATH/mari/stubs/
 
-export PYTHONPATH=$REPO_PATH:$REPO_PATH/mari:$PY_SITE_DIR
+export PYTHONPATH=$REPO_PATH/common/src:$REPO_PATH/mari:$PY_SITE_DIR
 
 ${REPO_PATH}/mari/maripy -c "import stubgen_mari;stubgen_mari.main('$outdir')" || true

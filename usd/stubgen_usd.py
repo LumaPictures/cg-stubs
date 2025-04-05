@@ -6,7 +6,6 @@ from __future__ import absolute_import, annotations, division, print_function
 #   During first pass we write sigs to __doc__, or alternately write we write __DOC.py files.
 #   disable pyi generation during this crawl.
 # - run stubgen a second time, this time parsing the new docstrings with signatures, and writing pyi as normal
-
 # Notes
 # - python args do not always match cpp args
 # - many classes (Sdf.Spec, Sdf.VariantSpec, Sdf.Path) add a self arg to methods.
@@ -26,31 +25,22 @@ from __future__ import absolute_import, annotations, division, print_function
 # - some wrapped c++ functions don't turn pointers into return types, such as UsdSkelExpandConstantInfluencesToVarying
 # - the stubs for Sdf.ValueTypeNames can be improved with some more work on stubgen.  FIXED
 # - boost python sigs do not always include defaults for keyword args.  See UsdGeom.BBoxCache.__init__
-
-
 import inspect
-import subprocess
 import os
 import pathlib
-import re
 import pydoc
+import re
+import subprocess
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Any, Callable, DefaultDict, Iterator, Generic, NamedTuple, TypeVar
 from functools import lru_cache
+from typing import Any, Callable, DefaultDict, Generic, Iterator, NamedTuple, TypeVar
 
+import doxygenlib.cdWriterDocstring  # type: ignore[import]
 import mypy.stubgen
 import mypy.stubgenc
 import mypy.stubutil
-from mypy.stubdoc import ArgSig, FunctionSig, infer_sig_from_docstring
-from mypy.stubgen import main as stubgen_main
-from mypy.stubgenc import (
-    FunctionContext,
-    SignatureGenerator,
-    ClassInfo,
-    infer_c_method_args,
-)
-from mypy.stubutil import infer_method_ret_type
+from doxygenlib.cdDocElement import DocElement  # type: ignore[import]
 
 # this doesn't work with mypy downloaded from pypi because it's been compiled.
 # produces "TypeError: tuple[] object expected; got tuple[str, str]"
@@ -58,22 +48,30 @@ from mypy.stubutil import infer_method_ret_type
 #     "pxr.Tf.testenv",  # type: ignore[assignment]
 #     "pxr.Tf.testenv.testTfScriptModuleLoader_AAA_RaisesError",
 # )
-
 from doxygenlib.cdParser import Parser, XMLNode  # type: ignore[import]
-from doxygenlib.cdDocElement import DocElement  # type: ignore[import]
 from doxygenlib.cdUtils import SetDebugMode  # type: ignore[import]
-import doxygenlib.cdWriterDocstring
+from mypy.stubdoc import ArgSig, FunctionSig, infer_sig_from_docstring
+from mypy.stubgen import main as stubgen_main
+from mypy.stubgenc import (
+    ClassInfo,
+    FunctionContext,
+    SignatureGenerator,
+    infer_c_method_args,
+)
+from mypy.stubutil import infer_method_ret_type
 
-from stubgenlib import (
-    insert_typevars,
-    SignatureFixer,
+from stubgenlib.cpptypeconvert import CppTypeConverter
+from stubgenlib.notifier import Notifier
+from stubgenlib.siggen import (
     AdvancedSigMatcher,
     AdvancedSignatureGenerator,
     BoostDocstringSignatureGenerator,
-    infer_sig_from_boost_docstring,
+    SignatureFixer,
+)
+from stubgenlib.siggen.boost import infer_sig_from_boost_docstring
+from stubgenlib.utils import (
     add_positional_only_args,
-    Notifier,
-    CppTypeConverter,
+    insert_typevars,
     reduce_overloads,
     sig_sort_key,
 )

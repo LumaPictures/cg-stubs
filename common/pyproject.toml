@@ -3,12 +3,12 @@ requires = ["poetry>=1.3.2"]
 build-backend = "poetry.masonry.api"
 
 [tool.poetry]
-name = "types-mari"
-version = "5.0.5.0"
+name = "stubgenlib"
+version = "0.1.0"
 
-readme = "README.md"
+#readme = "README.md"
 authors = ["Chad Dombrova"]
-description = "Unofficial python stubs for Foundry Mari"
+description = "Utilities for improving the output of mypy's stubgen tool"
 license = "MIT"
 
 classifiers = [
@@ -22,14 +22,7 @@ classifiers = [
 repository = "https://github.com/LumaPictures/cg-stubs"
 homepage = "https://github.com/LumaPictures/cg-stubs"
 
-keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
-
-packages = [
-    { include = "mari-stubs", from = "stubs" },
-]
-
-[tool.poetry.dependencies]
-types-PySide2 = "^5.15.0.0"
+keywords = ["mypy", "typing", "stubs"]
 
 [tool.distutils.bdist_wheel]
 universal = true

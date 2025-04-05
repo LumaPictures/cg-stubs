@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, annotations
+from __future__ import absolute_import, annotations, print_function
 
 import fnmatch
 import importlib
@@ -6,36 +6,32 @@ import inspect
 import pydoc
 import re
 import typing
-from functools import lru_cache, total_ordering
-from types import ModuleType
+from functools import lru_cache
 from typing import (
     Any,
     List,
-    Optional,
-    Hashable,
     Mapping,
+    Optional,
     Tuple,
     cast,
 )
 
 import mypy.stubgen
 import mypy.stubgenc
-from mypy.stubdoc import ArgSig, FunctionSig, infer_sig_from_docstring
+from mypy.stubdoc import ArgSig, FunctionSig
 from mypy.stubutil import (
-    FunctionContext,
     ClassInfo,
+    FunctionContext,
     SignatureGenerator,
 )
+from PySide2 import QtCore, QtWidgets  # type: ignore[import-not-found]
 
-from stubgenlib import (
-    insert_typevars,
-    reduce_overloads,
+from stubgenlib.siggen import (
+    AdvancedSigMatcher,
     AdvancedSignatureGenerator,
     Optionality,
-    AdvancedSigMatcher,
 )
-
-from PySide2 import QtCore, QtWidgets
+from stubgenlib.utils import insert_typevars, reduce_overloads
 
 cache = lru_cache(maxsize=None)
 

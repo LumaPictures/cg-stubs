@@ -1,28 +1,30 @@
 from __future__ import absolute_import, annotations, division, print_function
 
-import os
 import pathlib
 import re
 from typing import Any
 
+import Callbacks.Callbacks  # type: ignore[import]
 import mypy.stubgen
 import mypy.stubgenc
-from mypy.stubgenc import FunctionContext, FunctionSig, SignatureGenerator
-
-import Callbacks.Callbacks  # type: ignore[import]
 from Callbacks.Callbacks import _TypeEnum  # type: ignore[import]
+from mypy.stubgenc import (
+    DocstringSignatureGenerator as CDocstringSignatureGenerator,
+)
+from mypy.stubgenc import (
+    FunctionContext,
+    SignatureGenerator,
+)
 
-from stubgenlib import (
-    get_mypy_ignore_directive,
+from stubgenlib.notifier import Notifier
+from stubgenlib.siggen import (
     AdvancedSigMatcher,
     AdvancedSignatureGenerator,
     DocstringSignatureGenerator,
-    CDocstringSignatureGenerator,
-    CFunctionStub,
-    Notifier,
     DocstringTypeFixer,
     Optionality,
 )
+from stubgenlib.utils import CFunctionStub, get_mypy_ignore_directive
 
 notifier = Notifier()
 

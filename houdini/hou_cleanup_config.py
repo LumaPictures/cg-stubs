@@ -7,30 +7,85 @@ the C++ type analysis.
 _TYPE_ALIAS_COMPONENTS = {
     "ATTRIB": ["int", "float", "str"],
     "PARM": ["bool", "int", "float", "str", "dict[str, str]", "'Ramp'"],
-    "OPTION": ["bool", "int", "float", "str", "Vector2", "Vector3", "Vector4", "Quaternion", "Matrix3", "Matrix4"],
-    "OPTION_MULTI_ARG": ["bool", "int", "float", "str", "Vector2", "Vector3", "Vector4", "Quaternion", "Matrix3", "Matrix4", "Sequence[int]", "Sequence[float]"],
-    "OPTION_MULTI_RETURN": ["bool", "int", "float", "str", "Vector2", "Vector3", "Vector4", "Quaternion", "Matrix3", "Matrix4", "Tuple[int, ...]", "Tuple[float, ...]"],
+    "OPTION": [
+        "bool",
+        "int",
+        "float",
+        "str",
+        "Vector2",
+        "Vector3",
+        "Vector4",
+        "Quaternion",
+        "Matrix3",
+        "Matrix4",
+    ],
+    "OPTION_MULTI_ARG": [
+        "bool",
+        "int",
+        "float",
+        "str",
+        "Vector2",
+        "Vector3",
+        "Vector4",
+        "Quaternion",
+        "Matrix3",
+        "Matrix4",
+        "Sequence[int]",
+        "Sequence[float]",
+    ],
+    "OPTION_MULTI_RETURN": [
+        "bool",
+        "int",
+        "float",
+        "str",
+        "Vector2",
+        "Vector3",
+        "Vector4",
+        "Quaternion",
+        "Matrix3",
+        "Matrix4",
+        "Tuple[int, ...]",
+        "Tuple[float, ...]",
+    ],
 }
 
 
 def get_type_aliases() -> dict[str, str]:
-    attrib_arg_types = _TYPE_ALIAS_COMPONENTS["ATTRIB"] + [f"Sequence[{typ}]" for typ in _TYPE_ALIAS_COMPONENTS["ATTRIB"]]
-    attrib_return_types = _TYPE_ALIAS_COMPONENTS["ATTRIB"] + [f"Tuple[{typ}, ...]" for typ in _TYPE_ALIAS_COMPONENTS["ATTRIB"]]
-    option_full_multi_types = [f"Sequence[{typ}]" for typ in _TYPE_ALIAS_COMPONENTS["OPTION"]]
+    attrib_arg_types = _TYPE_ALIAS_COMPONENTS["ATTRIB"] + [
+        f"Sequence[{typ}]" for typ in _TYPE_ALIAS_COMPONENTS["ATTRIB"]
+    ]
+    attrib_return_types = _TYPE_ALIAS_COMPONENTS["ATTRIB"] + [
+        f"Tuple[{typ}, ...]" for typ in _TYPE_ALIAS_COMPONENTS["ATTRIB"]
+    ]
+    option_full_multi_types = [
+        f"Sequence[{typ}]" for typ in _TYPE_ALIAS_COMPONENTS["OPTION"]
+    ]
 
     result = {
         "AttribBasicType": " | ".join(_TYPE_ALIAS_COMPONENTS["ATTRIB"]),
         "AttribArgType": " | ".join(attrib_arg_types),
-        "AttribDictArgType": " | ".join(f"dict[str, {typ}]" for typ in attrib_arg_types),
+        "AttribDictArgType": " | ".join(
+            f"dict[str, {typ}]" for typ in attrib_arg_types
+        ),
         "AttribReturnType": " | ".join(attrib_return_types),
-        "AttribDictReturnType": " | ".join(f"dict[str, {typ}]" for typ in attrib_return_types),
+        "AttribDictReturnType": " | ".join(
+            f"dict[str, {typ}]" for typ in attrib_return_types
+        ),
         "ParmType": " | ".join(_TYPE_ALIAS_COMPONENTS["PARM"]),
-        "ParmTupleArgType": " | ".join(f"Sequence[{typ}]" for typ in _TYPE_ALIAS_COMPONENTS["PARM"]),
-        "ParmTupleReturnType": " | ".join(f"Tuple[{typ}, ...]" for typ in _TYPE_ALIAS_COMPONENTS["PARM"]),
+        "ParmTupleArgType": " | ".join(
+            f"Sequence[{typ}]" for typ in _TYPE_ALIAS_COMPONENTS["PARM"]
+        ),
+        "ParmTupleReturnType": " | ".join(
+            f"Tuple[{typ}, ...]" for typ in _TYPE_ALIAS_COMPONENTS["PARM"]
+        ),
         "OptionType": " | ".join(_TYPE_ALIAS_COMPONENTS["OPTION"]),
-        "OptionSequenceType": " | ".join(f"Sequence[{typ}]" for typ in _TYPE_ALIAS_COMPONENTS["OPTION"]),
+        "OptionSequenceType": " | ".join(
+            f"Sequence[{typ}]" for typ in _TYPE_ALIAS_COMPONENTS["OPTION"]
+        ),
         "OptionMultiArgType": " | ".join(_TYPE_ALIAS_COMPONENTS["OPTION_MULTI_ARG"]),
-        "OptionMultiReturnType": " | ".join(_TYPE_ALIAS_COMPONENTS["OPTION_MULTI_RETURN"]),
+        "OptionMultiReturnType": " | ".join(
+            _TYPE_ALIAS_COMPONENTS["OPTION_MULTI_RETURN"]
+        ),
     }
 
     return result
@@ -406,9 +461,7 @@ NON_OPTIONAL_RETURN_FUNCTIONS = {
     "OpNodeTypeCategory": {
         "createDigitalAsset",
     },
-    "PackedGeometry": {
-        "getEmbeddedGeometry"
-    },
+    "PackedGeometry": {"getEmbeddedGeometry"},
     "PackedPrim": {
         "vertex",
     },
@@ -511,9 +564,7 @@ NON_OPTIONAL_RETURN_FUNCTIONS = {
     "Selector": {
         "nodeType",
     },
-    "SimpleDrawable": {
-        "geometry"
-    },
+    "SimpleDrawable": {"geometry"},
     "SopNode": {
         "curPoint",
         "curPrim",
@@ -730,9 +781,7 @@ EXPLICIT_RETURN_TYPES = {
         "createClip": "ChopNode",
         "node": "OpNode",
     },
-    "PythonPanel": {
-        "activeInterfaceRootWidget": "QtWidgets.QWidget"
-    },
+    "PythonPanel": {"activeInterfaceRootWidget": "QtWidgets.QWidget"},
     "ScriptEvalContext": {
         "node": "OpNode | None",
     },
@@ -745,9 +794,7 @@ EXPLICIT_RETURN_TYPES = {
     "ViewportVisualizer": {
         "evalParm": "int | float | str",
     },
-    "dop": {
-        "scriptSolverNetwork": "OpNode | None"
-    },
+    "dop": {"scriptSolverNetwork": "OpNode | None"},
 }
 
 # Completely redefine function definitions that are wrong or did not come with C++ type hints.
@@ -771,7 +818,7 @@ EXPLICIT_DEFINITIONS = {
         "__ge__": "(self, other: object) -> bool",
     },
     "__hou__": {
-        "addAnimationLayer": "(layermixer: ChopNode, layername: str = "") -> ChopNode",
+        "addAnimationLayer": "(layermixer: ChopNode, layername: str = ) -> ChopNode",
         "applicationVersion": "(include_patch: bool = False) -> Tuple[int, int, int]",
         "addContextOptionChangeCallback": "(callback: Callable[[str], None]) -> None",
         "removeContextOptionChangeCallback": "(callback: Callable[[str], None]) -> None",
@@ -1440,7 +1487,7 @@ EXPLICIT_DEFINITIONS = {
     },
     "ScriptEvalContext": {
         "__exit__": "(self, type: type[BaseException], value: BaseException, traceback: TracebackType) -> None",
-        "__init__": "(self, node_or_parm: OpNode | Parm) -> None"
+        "__init__": "(self, node_or_parm: OpNode | Parm) -> None",
     },
     "Selection": {
         "__init__": "(self, selection: EnumValue | Geometry | Sequence[Prim] | Sequence[Point] | Sequence[Vertex] | Sequence[Edge], geometry_type: EnumValue | Sequence[EnumValue] = ..., selection_string: str = ...) -> None",
