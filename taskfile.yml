@@ -1,0 +1,7 @@
+version: '3'
+
+includes:
+  houdini:
+    taskfile: ./taskfile.common.yml
+  kataka:
+    taskfile: ./taskfile.common.yml

@@ -479,7 +479,7 @@ def publish(session: nox.Session, lib: str) -> None:
     """Publish the stub package to PyPI"""
     session.chdir(lib)
     session.install("poetry")
-    with (contextlib.ExitStack() if lib == "common" else stubs_suffix(session)):
+    with contextlib.ExitStack() if lib == "common" else stubs_suffix(session):
         session.run("poetry", "publish", "--build", *session.posargs)
     output = session.run("poetry", "version", "-s", silent=True)
     assert output is not None
@@ -543,10 +543,4 @@ def mypy(session: nox.Session, lib: str) -> None:
 @check(paths=LINT_FILES, pass_filenames=False, tags=["ci", "prepush"])
 def self_mypy(session: nox.Session, options: Options) -> None:
     session.install("-r", "requirements.txt", "-r", "nox-requirements.txt")
-    source = ["common/src"]
-    for app in APPS:
-        fpath = pathlib.Path(f"{app}/stubgen_{app}.py")
-        if fpath.exists():
-            source.append(str(fpath))
-
-    session.run("mypy", "noxfile.py", *source)
+    session.run("mypy")

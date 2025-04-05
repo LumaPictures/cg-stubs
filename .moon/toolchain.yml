@@ -1,0 +1,4 @@
+python:
+#   rootRequirementsOnly: true
+  version: '3.11.10'
+  pip: {}

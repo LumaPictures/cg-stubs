@@ -1,0 +1,58 @@
+tasks:
+#   fails:
+#     script: 'echo "$project failed" && false'
+#     options:
+#       cache: false
+#       outputStyle: buffer-only-failure
+#
+#   foo:
+#     command: 'echo "foo running"'
+#
+#   bug:
+#     command: 'echo "bug running"'
+# #     options:
+# #       cache: false
+#
+#   lint:
+#     deps: [bug, foo]
+#     command: "echo 'lint running'"
+#
+#
+# tasks:
+#   {%- for os in ["linux", "macos", "windows"] %}
+#     build-{{ os }}:
+#       command: "cargo"
+#       args:
+#         - "--target"
+#         {%- if os == "linux" %}
+#         - "x86_64-unknown-linux-gnu"
+#         {%- elif os == "macos" %}
+#         - "x86_64-apple-darwin"
+#         {%- else %}
+#         - "i686-pc-windows-msvc"
+#         {%- endif %}
+#         - "--verbose"
+#       options:
+#         os: {{ os }}
+#   {%- endfor %}
+#
+#
+# tasks:
+#     build-linux:
+#       command: "cargo"
+#       args: ["--target=x86_64-unknown-linux-gnu", "--verbose"]
+#       options:
+#         os: linux
+#
+#     build-macos:
+#       command: "cargo"
+#       args: ["--target=x86_64-apple-darwin", "--verbose"]
+#       options:
+#         os: macos
+#
+#     build-windows:
+#       command: "cargo"
+#       args: ["--target=i686-pc-windows-msvc", "--verbose"]
+#       options:
+#         os: windows
+#

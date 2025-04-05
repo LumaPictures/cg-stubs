@@ -1,7 +1,13 @@
 [tool.mypy]
 check_untyped_defs = true
+files = [
+    "noxfile.py",
+    "*/stubgen_*.py",
+    "common/src/stubgenlib"
+]
 
 [tool.ruff]
+include = ["*.py"]
 line-length = 88
 lint.select = ["I"]
 

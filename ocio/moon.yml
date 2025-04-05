@@ -1,0 +1,4 @@
+dependsOn:
+  - 'common'
+tags: ['stubs']
+type: 'library'

@@ -1,0 +1,26 @@
+project:
+  name: 'cg-stubs'
+  description: 'Python stub generator for VFX and Animation'
+
+workspace:
+  inheritedTasks:
+    # Include *no* tasks (works like a full exclude)
+    include: []
+
+tasks:
+  self_mypy:
+    description: 'Run mypy type checker'
+    command: 'uvx mypy@1.15.0'
+    inputs:
+      - 'pyproject.toml'
+      - '**/*.py'
+
+  ruff:
+    description: 'Run ruff formatter'
+    command: 'uvx ruff@0.11.4 format'
+    inputs:
+      - 'pyproject.toml'
+      - '**/*.py'
+    options:
+      affectedFiles: true
+      affectedPassInputs: true

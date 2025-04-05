@@ -1,0 +1,18 @@
+tasks:
+  generate:
+    description: 'Create the stubs'
+    command: 'generate'
+    inputs:
+      - 'stubgen_*'
+
+  publish:
+    description: 'Publish the stub package to PyPI'
+    deps: ['~:generate']
+    command: 'publish'
+    inputs:
+      - 'pyproject.toml'
+      - 'README.md'
+
+  develop:
+    description: 'Install the stubs into the current venv'
+    command: 'develop'

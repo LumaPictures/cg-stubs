@@ -1,0 +1,23 @@
+version: '3'
+
+tasks:
+  generate:
+    desc: 'Create the stubs'
+    cmds:
+      - 'echo generate'
+    sources:
+      - 'stubgen_*'
+
+  publish:
+    desc: 'Publish the stub package to PyPI'
+    deps: [generate]
+    cmds:
+     - 'publish'
+    sources:
+      - 'pyproject.toml'
+      - 'README.md'
+
+  develop:
+    desc: 'Install the stubs into the current venv'
+    cmds:
+      - 'develop'
