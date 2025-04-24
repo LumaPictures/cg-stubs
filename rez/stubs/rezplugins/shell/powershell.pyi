@@ -1,0 +1,9 @@
+from ._utils.powershell_base import PowerShellBase as PowerShellBase
+
+class PowerShell(PowerShellBase):
+    @classmethod
+    def name(cls): ...
+    @classmethod
+    def file_extension(cls): ...
+
+def register_plugin(): ...

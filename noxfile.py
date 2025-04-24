@@ -21,6 +21,7 @@ APPS = [
     "openexr",
     "oiio",
     "pyside",
+    "rez",
     "substance_painter",
     "usd",
 ]
@@ -517,7 +518,9 @@ def generate(session: nox.Session, lib: str) -> None:
     elif lib == "openexr":
         version = get_version(lib, root=True)
         args += [f"OpenEXR=={version}", "numpy"]
-
+    elif lib == "rez":
+        # args += ["git+https://github.com/chadrik/rez@typing"]
+        args += ["/Users/chad/dev/rez"]
     session.env.pop("PYTHONPATH", None)
     session.install(*args)
 

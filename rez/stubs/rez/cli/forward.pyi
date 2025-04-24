@@ -1,0 +1,6 @@
+from _typeshed import Incomplete
+
+__doc__: Incomplete
+
+def setup_parser(parser, completions: bool = False) -> None: ...
+def command(opts, parser, extra_arg_groups: Incomplete | None = None) -> None: ...

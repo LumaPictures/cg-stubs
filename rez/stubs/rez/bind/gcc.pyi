@@ -1,0 +1,11 @@
+from _typeshed import Incomplete
+from rez.bind._utils import extract_version as extract_version, find_exe as find_exe, log as log, make_dirs as make_dirs
+from rez.exceptions import RezBindError as RezBindError
+from rez.package_maker import make_package as make_package
+from rez.system import system as system
+from rez.utils.lint_helper import env as env
+from rez.utils.platform_ import platform_ as platform_
+
+def setup_parser(parser) -> None: ...
+def commands() -> None: ...
+def bind(path, version_range: Incomplete | None = None, opts: Incomplete | None = None, parser: Incomplete | None = None): ...
