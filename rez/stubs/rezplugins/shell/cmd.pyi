@@ -1,6 +1,7 @@
 from ._utils.windows import get_syspaths_from_registry as get_syspaths_from_registry, to_windows_path as to_windows_path
 from _typeshed import Incomplete
 from rez.shells import Shell
+from typing import Any
 
 class CMD(Shell):
     syspaths: Incomplete
@@ -9,12 +10,12 @@ class CMD(Shell):
     _env_var_regex: Incomplete
     _escape_re: Incomplete
     _escaper: Incomplete
-    _doskey_aliases: Incomplete
+    _doskey_aliases: dict[Any, Any]
     def __init__(self) -> None: ...
     @classmethod
-    def name(cls): ...
+    def name(cls) -> str: ...
     @classmethod
-    def file_extension(cls): ...
+    def file_extension(cls) -> str: ...
     @classmethod
     def startup_capabilities(cls, rcfile: bool = False, norc: bool = False, stdin: bool = False, command: bool = False): ...
     @classmethod
@@ -24,7 +25,7 @@ class CMD(Shell):
     def _bind_interactive_rez(self) -> None: ...
     def spawn_shell(self, context_file, tmpdir, rcfile: Incomplete | None = None, norc: bool = False, stdin: bool = False, command: Incomplete | None = None, env: Incomplete | None = None, quiet: bool = False, pre_command: Incomplete | None = None, add_rez: bool = True, **Popen_args): ...
     def get_output(self, style=...): ...
-    def escape_string(self, value, is_path: bool = False):
+    def escape_string(self, value: str, is_path: bool = False) -> str:
         """Escape the <, >, ^, and & special characters reserved by Windows.
 
         Args:
@@ -51,7 +52,7 @@ class CMD(Shell):
     @classmethod
     def join(cls, command): ...
     @classmethod
-    def line_terminator(cls): ...
+    def line_terminator(cls) -> str: ...
     def _expand_alias(self, command):
         """Expand `command` if alias is being presented
 

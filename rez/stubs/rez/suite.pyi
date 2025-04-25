@@ -1,5 +1,7 @@
+import collections.defaultdict[str, list[TypedDict('rez.suite.Tool', {'tool_name': str, 'tool_alias': str, 'context_name': str, 'variant': rez.packages.Variant | set[rez.packages
+import rez.packages
+import rez.resolved_context
 from _typeshed import Incomplete
-from collections import defaultdict
 from rez.exceptions import ResolvedContextError as ResolvedContextError, SuiteError as SuiteError
 from rez.packages import Variant as Variant
 from rez.resolved_context import ResolvedContext as ResolvedContext
@@ -51,12 +53,12 @@ class Suite:
     - Explicitly alias a tool using the `alias_tool` method. This takes
       precedence over context prefix/suffixing.
     """
-    load_path: Incomplete
-    contexts: dict[str, Context]
+    load_path: str | None
+    contexts: dict[str, TypedDict('rez.suite.Context', {'name': str, 'context': rez.resolved_context.ResolvedContext, 'tool_aliases': dict[str, str], 'hidden_tools': set[str], 'priority': int, 'prefix_char': str | None, 'loaded': bool, 'prefix': str, 'suffix': str})]
     next_priority: int
-    tools: dict[str, Tool] | None
-    tool_conflicts: defaultdict[str, list[Tool]] | None
-    hidden_tools: list[Tool] | None
+    tools: dict[str, TypedDict('rez.suite.Tool', {'tool_name': str, 'tool_alias': str, 'context_name': str, 'variant': rez.packages.Variant | set[rez.packages.Variant]})] | None
+    tool_conflicts: collections.defaultdict[str, list[TypedDict('rez.suite.Tool', {'tool_name': str, 'tool_alias': str, 'context_name': str, 'variant': rez.packages.Variant | set[rez.packages.Variant]})]] | None
+    hidden_tools: list[TypedDict('rez.suite.Tool', {'tool_name': str, 'tool_alias': str, 'context_name': str, 'variant': rez.packages.Variant | set[rez.packages.Variant]})] | None
     def __init__(self) -> None:
         """Create a suite."""
     @property
@@ -108,7 +110,7 @@ class Suite:
         Returns:
             List of context names that match the search criteria.
         """
-    def remove_context(self, name: str):
+    def remove_context(self, name: str) -> None:
         """Remove a context from the suite.
 
         Args:
@@ -256,7 +258,7 @@ class Suite:
     def to_dict(self): ...
     @classmethod
     def from_dict(cls, d): ...
-    def save(self, path, verbose: bool = False) -> None:
+    def save(self, path, verbose: bool = False):
         """Save the suite to disk.
 
         Args:
@@ -282,7 +284,7 @@ class Suite:
         """
     def print_info(self, buf=..., verbose: bool = False) -> None:
         """Prints a message summarising the contents of the suite."""
-    def print_tools(self, buf=..., verbose: bool = False, context_name: Incomplete | None = None):
+    def print_tools(self, buf=..., verbose: bool = False, context_name: Incomplete | None = None) -> None:
         """Print table of tools available in the suite.
 
         Args:

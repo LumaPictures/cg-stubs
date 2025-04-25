@@ -1,6 +1,8 @@
+import rez.version._version
+import typing
 from _typeshed import Incomplete
 from rez.version._util import ParseException as ParseException, VersionError as VersionError, _Common as _Common, dedup as dedup
-from typing import Callable, Generic, Iterable, TypeVar
+from typing import Any, Callable, Generic, Iterable, TypeVar
 from typing_extensions import Self
 
 T = TypeVar('T')
@@ -12,7 +14,7 @@ class _Comparable(_Common):
     def __ge__(self, other: object) -> bool: ...
 
 class _ReversedComparable(_Common):
-    value: Incomplete
+    value: Any
     def __init__(self, value) -> None: ...
     def __eq__(self, other: object) -> bool: ...
     def __lt__(self, other: object) -> bool: ...
@@ -56,14 +58,14 @@ class VersionToken(_Comparable):
         """Returns the next largest token."""
     def __str__(self) -> str: ...
     def __lt__(self, other): ...
-    def __eq__(self, other): ...
+    def __eq__(self, other) -> bool: ...
 
 class NumericToken(VersionToken):
     """Numeric version token.
 
     Version token supporting numbers only. Padding is ignored.
     """
-    n: Incomplete
+    n: int
     def __init__(self, token: str) -> None: ...
     @classmethod
     def create_random_token_string(cls) -> str: ...
@@ -75,8 +77,8 @@ class NumericToken(VersionToken):
 
 class _SubToken(_Comparable):
     """Used internally by AlphanumericVersionToken."""
-    s: Incomplete
-    n: Incomplete
+    s: Any
+    n: int | None
     def __init__(self, s) -> None: ...
     def __lt__(self, other): ...
     def __eq__(self, other): ...
@@ -109,7 +111,7 @@ class AlphanumericVersionToken(VersionToken):
     """
     numeric_regex: Incomplete
     regex: Incomplete
-    subtokens: Incomplete
+    subtokens: list[rez.version._version._SubToken]
     def __init__(self, token: str) -> None: ...
     @classmethod
     def create_random_token_string(cls) -> str: ...
@@ -149,8 +151,8 @@ class Version(_Comparable):
     represent an unversioned resource.
     """
     inf: Version
-    tokens: list[VersionToken] | None
-    seps: Incomplete
+    tokens: list[rez.version._version.VersionToken] | None
+    seps: list[str | Any]
     _str: str | None
     _hash: int | None
     def __init__(self, ver_str: str | None = '', make_token=...) -> None:
@@ -223,8 +225,8 @@ class Version(_Comparable):
 
 class _LowerBound(_Comparable):
     min: _LowerBound
-    version: Incomplete
-    inclusive: Incomplete
+    version: rez.version._version.Version
+    inclusive: bool
     def __init__(self, version: Version, inclusive: bool) -> None: ...
     def __str__(self) -> str: ...
     def __eq__(self, other): ...
@@ -234,8 +236,8 @@ class _LowerBound(_Comparable):
 
 class _UpperBound(_Comparable):
     inf: _UpperBound
-    version: Incomplete
-    inclusive: Incomplete
+    version: rez.version._version.Version
+    inclusive: bool
     def __init__(self, version: Version, inclusive: bool) -> None: ...
     def __str__(self) -> str: ...
     def __eq__(self, other): ...
@@ -245,8 +247,8 @@ class _UpperBound(_Comparable):
 
 class _Bound(_Comparable):
     any: _Bound
-    lower: Incomplete
-    upper: Incomplete
+    lower: rez.version._version._LowerBound
+    upper: rez.version._version._UpperBound
     def __init__(self, lower: _LowerBound | None = None, upper: _UpperBound | None = None, invalid_bound_error: bool = True) -> None: ...
     def __str__(self) -> str: ...
     def __eq__(self, other): ...
@@ -268,11 +270,11 @@ class _VersionRangeParser:
     version_group: str
     version_range_regex: Incomplete
     regex: Incomplete
-    make_token: Incomplete
-    _groups: Incomplete
-    _input_string: Incomplete
-    bounds: Incomplete
-    invalid_bound_error: Incomplete
+    make_token: Any
+    _groups: dict[str, str | Any]
+    _input_string: str
+    bounds: list[Any]
+    invalid_bound_error: bool
     def __init__(self, input_string: str, make_token, invalid_bound_error: bool = True) -> None: ...
     def _is_lower_bound_exclusive(self, token: str) -> bool: ...
     def _is_upper_bound_exclusive(self, token: str) -> bool: ...
@@ -350,7 +352,7 @@ class VersionRange(_Comparable):
     ``>\'\'``, it means ``any version greater than the empty version``.
     '''
     _str: str | None
-    bounds: Incomplete
+    bounds: list[rez.version._version._Bound]
     def __init__(self, range_str: str | None = '', make_token: type[VersionToken] = ..., invalid_bound_error: bool = True) -> None:
         '''
         Args:
@@ -577,14 +579,14 @@ class _ContainsVersionIterator(Generic[T]):
     MODE_INTERSECTING: int
     MODE_NON_INTERSECTING: int
     MODE_ALL: int
-    mode: Incomplete
-    range_: Incomplete
+    mode: Any
+    range_: rez.version._version.VersionRange
     index: int | None
-    nbounds: Incomplete
-    _constant: Incomplete
-    fn: Incomplete
-    it: Incomplete
-    keyfunc: Incomplete
+    nbounds: int
+    _constant: bool | None
+    fn: Callable[[rez.version._version.Version], bool]
+    it: typing.Iterator[T]
+    keyfunc: Callable[[T], rez.version._version.Version]
     next_fn: Callable[[], tuple[bool, T]] | Callable[[], T]
     def __init__(self, range_: VersionRange, iterable: Iterable[T], key: Callable[[T], Version] | None = None, descending: bool = False, mode=...) -> None: ...
     def __iter__(self) -> _ContainsVersionIterator[T]: ...

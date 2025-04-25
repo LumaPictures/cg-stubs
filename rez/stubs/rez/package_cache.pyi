@@ -53,7 +53,7 @@ class PackageCache:
     _FILELOCK_TIMEOUT: int
     _COPYING_TIME_INC: float
     _COPYING_TIME_MAX: float
-    path: Incomplete
+    path: str
     def __init__(self, path: str) -> None:
         """Create a package cache.
 
@@ -164,14 +164,14 @@ class PackageCache:
 
         Called via `rez-pkg-cache --daemon`.
         """
-    def _run_caching_operation(self, wait_for_copying: bool = True) -> None:
+    def _run_caching_operation(self, wait_for_copying: bool = True):
         """Copy pending variants.
 
         Args:
             wait_for_copying (bool): Whether the caching step should block when one of the
                 pending variants is marked as already copying.
         """
-    def clean(self, time_limit: Incomplete | None = None):
+    def clean(self, time_limit: Incomplete | None = None) -> None:
         """Delete unused package cache files.
 
         This should be run periodically via 'rez-pkg-cache --clean'.
@@ -190,7 +190,7 @@ class PackageCache:
         """
     @contextmanager
     def _lock(self) -> Generator[None]: ...
-    def _run_caching_step(self, state, wait_for_copying: bool = False): ...
+    def _run_caching_step(self, state, wait_for_copying: bool = False) -> bool: ...
     def _init_logging(self):
         """
         Creates logger that logs to file and stdout. Used for:

@@ -1,3 +1,10 @@
+import rez.package_filter
+import rez.package_order
+import rez.packages
+import rez.resolved_context
+import rez.solver
+import rez.version._requirement
+import rez.version._version
 from _typeshed import Incomplete
 from contextlib import contextmanager
 from enum import Enum
@@ -49,9 +56,9 @@ class SolverCallbackReturn(Enum):
     fail = 'Stop the solve and set to most recent failure'
 
 class _Printer:
-    verbosity: Incomplete
-    buf: Incomplete
-    suppress_passive: Incomplete
+    verbosity: Any
+    buf: rez.solver.SupportsWrite | Any
+    suppress_passive: bool
     pending_sub: str | None
     pending_br: bool
     last_pr: bool
@@ -68,9 +75,9 @@ class SolverState:
     """Represent the current state of the solver instance for use with a
     callback.
     """
-    num_solves: Incomplete
-    num_fails: Incomplete
-    phase: Incomplete
+    num_solves: int
+    num_fails: int
+    phase: rez.solver._ResolvePhase
     def __init__(self, num_solves: int, num_fails: int, phase: _ResolvePhase) -> None: ...
     def __str__(self) -> str: ...
 
@@ -80,11 +87,11 @@ class _Common:
 class Reduction(_Common):
     """A variant was removed because its dependencies conflicted with another
     scope in the current phase."""
-    name: Incomplete
-    version: Incomplete
-    variant_index: Incomplete
-    dependency: Incomplete
-    conflicting_request: Incomplete
+    name: str
+    version: Any
+    variant_index: int | None
+    dependency: rez.version._requirement.Requirement
+    conflicting_request: rez.version._requirement.Requirement
     def __init__(self, name: str, version, variant_index: int | None, dependency: Requirement, conflicting_request: Requirement) -> None: ...
     def reducee_str(self) -> str: ...
     def involved_requirements(self) -> list[Requirement]: ...
@@ -94,8 +101,8 @@ class Reduction(_Common):
 class DependencyConflict(_Common):
     """A common dependency shared by all variants in a scope, conflicted with
     another scope in the current phase."""
-    dependency: Incomplete
-    conflicting_request: Incomplete
+    dependency: rez.version._requirement.Requirement
+    conflicting_request: rez.version._requirement.Requirement
     def __init__(self, dependency: Requirement, conflicting_request: Requirement) -> None:
         """
         Args:
@@ -111,7 +118,7 @@ class FailureReason(_Common):
 
 class TotalReduction(FailureReason):
     """All of a scope's variants were reduced away."""
-    reductions: Incomplete
+    reductions: list[rez.solver.Reduction]
     def __init__(self, reductions: list[Reduction]) -> None: ...
     def involved_requirements(self) -> list[Requirement]: ...
     def description(self) -> str: ...
@@ -121,7 +128,7 @@ class TotalReduction(FailureReason):
 class DependencyConflicts(FailureReason):
     """A common dependency in a scope conflicted with another scope in the
     current phase."""
-    conflicts: Incomplete
+    conflicts: list[rez.solver.DependencyConflict]
     def __init__(self, conflicts: list[DependencyConflict]) -> None: ...
     def involved_requirements(self) -> list[Requirement]: ...
     def description(self) -> str: ...
@@ -130,7 +137,7 @@ class DependencyConflicts(FailureReason):
 
 class Cycle(FailureReason):
     """The solve contains a cyclic dependency."""
-    packages: Incomplete
+    packages: list[rez.version._requirement.VersionedObject]
     def __init__(self, packages: list[VersionedObject]) -> None: ...
     def involved_requirements(self) -> list[Requirement]: ...
     def description(self) -> str: ...
@@ -140,8 +147,8 @@ class Cycle(FailureReason):
 class PackageVariant(_Common):
     """A variant of a package.
     """
-    variant: Incomplete
-    building: Incomplete
+    variant: rez.packages.Variant
+    building: bool
     def __init__(self, variant: Variant, building: bool) -> None:
         """Create a package variant.
 
@@ -178,9 +185,9 @@ class _PackageEntry:
 
     Holds some extra state data, such as whether the variants are sorted.
     """
-    package: Incomplete
-    variants: Incomplete
-    solver: Incomplete
+    package: rez.packages.Package
+    variants: list[rez.solver.PackageVariant]
+    solver: rez.solver.Solver
     sorted: bool
     def __init__(self, package: Package, variants: list[PackageVariant], solver: Solver) -> None: ...
     @property
@@ -213,8 +220,8 @@ class _PackageEntry:
 class _PackageVariantList(_Common):
     """A list of package variants, loaded lazily.
     """
-    package_name: Incomplete
-    solver: Incomplete
+    package_name: str
+    solver: rez.solver.Solver
     entries: list[list[Any]]
     def __init__(self, package_name: str, solver: Solver) -> None: ...
     def get_intersection(self, range_: VersionRange) -> list[_PackageEntry] | None:
@@ -231,15 +238,15 @@ class _PackageVariantList(_Common):
 
 class _PackageVariantSlice(_Common):
     """A subset of a variant list, but with more dependency-related info."""
-    solver: Incomplete
-    package_name: Incomplete
-    entries: Incomplete
-    extracted_fams: Incomplete
-    been_reduced_by: Incomplete
-    been_intersected_with: Incomplete
+    solver: rez.solver.Solver
+    package_name: str
+    entries: list[rez.solver._PackageEntry]
+    extracted_fams: set[Any]
+    been_reduced_by: set[Any]
+    been_intersected_with: set[Any]
     sorted: bool
     _len: int | None
-    _range: VersionRange | None
+    _range: rez.version._version.VersionRange | None
     _fam_requires: set[str] | None
     _common_fams: set[str] | None
     def __init__(self, package_name: str, entries: list[_PackageEntry], solver: Solver) -> None:
@@ -307,8 +314,8 @@ class _PackageVariantSlice(_Common):
         """
 
 class PackageVariantCache:
-    solver: Incomplete
-    variant_lists: dict[str, _PackageVariantList]
+    solver: rez.solver.Solver
+    variant_lists: dict[str, rez.solver._PackageVariantList]
     def __init__(self, solver: Solver) -> None: ...
     def get_variant_slice(self, package_name: str, range_: VersionRange) -> _PackageVariantSlice | None:
         """Get a list of variants from the cache.
@@ -326,12 +333,12 @@ class _PackageScope(_Common):
     or a conflict range. As the resolve progresses, package scopes are narrowed
     down.
     """
-    package_name: Incomplete
-    solver: Incomplete
-    variant_slice: Incomplete
-    pr: Incomplete
-    is_ephemeral: Incomplete
-    package_request: Incomplete
+    package_name: str
+    solver: rez.solver.Solver
+    variant_slice: rez.solver._PackageVariantSlice | None
+    pr: rez.solver._Printer
+    is_ephemeral: bool
+    package_request: rez.version._requirement.Requirement
     def __init__(self, package_request: Requirement, solver: Solver) -> None: ...
     @property
     def is_conflict(self) -> bool: ...
@@ -388,12 +395,12 @@ class _ResolvePhase(_Common):
     If the resolve phase gets to a point where every package scope is solved,
     then the entire resolve is considered to be solved.
     """
-    solver: Incomplete
-    failure_reason: FailureReason | None
-    extractions: dict[tuple[str, str], Requirement]
-    status: Incomplete
-    scopes: Incomplete
-    changed_scopes_i: Incomplete
+    solver: rez.solver.Solver
+    failure_reason: rez.solver.FailureReason | None
+    extractions: dict[tuple[str, str], rez.version._requirement.Requirement]
+    status: rez.solver.SolverStatus
+    scopes: list[rez.solver._PackageScope]
+    changed_scopes_i: set[int]
     def __init__(self, solver: Solver) -> None: ...
     @property
     def pr(self) -> _Printer: ...
@@ -452,26 +459,26 @@ class Solver(_Common):
     non-conflicting packages that include all dependencies.
     """
     max_verbosity: int
-    package_paths: Incomplete
-    package_filter: Incomplete
-    package_orderers: Incomplete
-    callback: Incomplete
-    prune_unfailed: Incomplete
-    package_load_callback: Incomplete
-    building: Incomplete
-    context: Incomplete
-    pr: Incomplete
-    print_stats: Incomplete
-    buf: Incomplete
+    package_paths: list[str]
+    package_filter: rez.package_filter.PackageFilterBase | None
+    package_orderers: list[rez.package_order.PackageOrder] | None
+    callback: Callable[[rez.solver.SolverState], tuple[rez.solver.SolverCallbackReturn, str]] | None
+    prune_unfailed: bool
+    package_load_callback: Callable[[rez.packages.Package], Any] | None
+    building: bool
+    context: rez.resolved_context.ResolvedContext | None
+    pr: rez.solver._Printer
+    print_stats: bool
+    buf: rez.solver.SupportsWrite | None
     optimised: bool
-    phase_stack: list[_ResolvePhase]
-    failed_phase_list: list[_ResolvePhase]
-    depth_counts: dict
+    phase_stack: list[rez.solver._ResolvePhase]
+    failed_phase_list: list[rez.solver._ResolvePhase]
+    depth_counts: dict[Any, Any]
     solve_begun: bool
     solve_time: float
     load_time: float
     abort_reason: str | None
-    callback_return: SolverCallbackReturn | None
+    callback_return: rez.solver.SolverCallbackReturn | None
     solve_count: int
     extractions_count: int
     intersections_count: int
@@ -480,13 +487,13 @@ class Solver(_Common):
     reductions_count: int
     reduction_tests_count: int
     reduction_broad_tests_count: int
-    extraction_time: Incomplete
-    intersection_time: Incomplete
-    intersection_test_time: Incomplete
-    reduction_time: Incomplete
-    reduction_test_time: Incomplete
-    package_cache: Incomplete
-    request_list: Incomplete
+    extraction_time: list[float]
+    intersection_time: list[float]
+    intersection_test_time: list[float]
+    reduction_time: list[float]
+    reduction_test_time: list[float]
+    package_cache: rez.solver.PackageVariantCache
+    request_list: rez.version._requirement.RequirementList
     def __init__(self, package_requests: list[Requirement], package_paths: list[str], context: ResolvedContext | None = None, package_filter: PackageFilterBase | None = None, package_orderers: list[PackageOrder] | None = None, callback: Callable[[SolverState], tuple[SolverCallbackReturn, str]] | None = None, building: bool = False, optimised: bool = True, verbosity: int = 0, buf: SupportsWrite | None = None, package_load_callback: Callable[[Package], Any] | None = None, prune_unfailed: bool = True, suppress_passive: bool = False, print_stats: bool = False) -> None:
         """Create a Solver.
 

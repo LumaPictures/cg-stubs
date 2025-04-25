@@ -1,3 +1,4 @@
+import rez.packages
 from _typeshed import Incomplete
 from rez.config import config as config
 from rez.packages import iter_packages as iter_packages
@@ -13,9 +14,9 @@ class PackageHelp:
     Given a package and version range, help will be extracted from the latest
     package in the version range that provides it.
     """
-    package: Incomplete
-    _verbose: Incomplete
-    _sections: Incomplete
+    package: rez.packages.Package | None
+    _verbose: bool
+    _sections: list[list[str]]
     def __init__(self, package_name, version_range: Incomplete | None = None, paths: Incomplete | None = None, verbose: bool = False) -> None:
         """Create a PackageHelp object.
 

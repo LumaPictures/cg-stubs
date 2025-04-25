@@ -1,10 +1,11 @@
 from _typeshed import Incomplete
 from rez.version import Requirement as Requirement, VersionRange as VersionRange
+from typing import Any
 
 class Binding:
     """Abstract base class.
     """
-    _data: Incomplete
+    _data: Any | dict[Any, Any]
     def __init__(self, data: Incomplete | None = None) -> None: ...
     def _attr_error(self, attr) -> None: ...
     def __getattr__(self, attr): ...
@@ -32,7 +33,7 @@ class VersionBinding(Binding):
         >>> v.as_tuple():
         (1, 2, \'3alpha\')
     '''
-    __version: Incomplete
+    __version: Any
     def __init__(self, version) -> None: ...
     @property
     def major(self): ...
@@ -51,9 +52,9 @@ class VersionBinding(Binding):
 class VariantBinding(Binding):
     """Binds a packages.Variant object.
     """
-    __interpreter: Incomplete
-    __variant: Incomplete
-    __cached_root: Incomplete
+    __interpreter: Any
+    __variant: Any
+    __cached_root: Any
     def __init__(self, variant, cached_root: Incomplete | None = None, interpreter: Incomplete | None = None) -> None: ...
     @property
     def root(self):
@@ -63,7 +64,7 @@ class VariantBinding(Binding):
         if the package is cached.
         """
     def __getattr__(self, attr): ...
-    def _is_in_package_cache(self): ...
+    def _is_in_package_cache(self) -> bool: ...
     def _attr_error(self, attr) -> None: ...
     def __str__(self) -> str: ...
 

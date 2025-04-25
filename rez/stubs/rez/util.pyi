@@ -1,3 +1,5 @@
+import _io
+import _io.TextIOWrapper[_io
 import atexit
 from _typeshed import Incomplete
 from collections.abc import Generator
@@ -8,7 +10,7 @@ from typing import Iterable, TypeGuard, TypeVar
 T = TypeVar('T')
 
 class ProgressBar(Bar):
-    file: Incomplete
+    file: _io.TextIOWrapper[_io._WrappedBuffer]
     close_file: bool
     hide_cursor: bool
     def __init__(self, label, max) -> None: ...
@@ -40,7 +42,7 @@ def get_function_arg_names(func):
 
     Gives full list of positional and keyword-only args.
     """
-def load_module_from_file(name, filepath):
+def load_module_from_file(name: str, filepath: str):
     """Load a python module from a sourcefile.
 
     Args:

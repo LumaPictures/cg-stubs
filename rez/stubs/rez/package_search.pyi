@@ -7,6 +7,7 @@ from rez.utils.colorize import Printer as Printer, critical as critical, error a
 from rez.utils.formatting import expand_abbreviations as expand_abbreviations
 from rez.vendor.pygraph.classes.digraph import digraph as digraph
 from rez.version import Requirement as Requirement
+from typing import Any
 
 def get_reverse_dependency_tree(package_name, depth: Incomplete | None = None, paths: Incomplete | None = None, build_requires: bool = False, private_build_requires: bool = False):
     """Find packages that depend on the given package.
@@ -50,21 +51,21 @@ class ResourceSearchResult:
 
     Will contain either a package, variant, or name of a package family (str).
     """
-    resource: Incomplete
-    resource_type: Incomplete
-    validation_error: Incomplete
+    resource: Any
+    resource_type: Any
+    validation_error: Any
     def __init__(self, resource, resource_type, validation_error: Incomplete | None = None) -> None: ...
 
 class ResourceSearcher:
     """Search for resources (packages, variants or package families).
     """
-    resource_type: Incomplete
-    no_local: Incomplete
-    latest: Incomplete
-    after_time: Incomplete
-    before_time: Incomplete
-    validate: Incomplete
-    package_paths: Incomplete
+    resource_type: Any
+    no_local: bool
+    latest: bool
+    after_time: Any
+    before_time: Any
+    validate: bool
+    package_paths: Any
     def __init__(self, package_paths: Incomplete | None = None, resource_type: Incomplete | None = None, no_local: bool = False, latest: bool = False, after_time: Incomplete | None = None, before_time: Incomplete | None = None, validate: bool = False) -> None:
         '''Create resource search.
 
@@ -123,8 +124,8 @@ class ResourceSearchResultFormatter:
     """Formats search results.
     """
     fields: Incomplete
-    output_format: Incomplete
-    suppress_newlines: Incomplete
+    output_format: Any
+    suppress_newlines: bool
     def __init__(self, output_format: Incomplete | None = None, suppress_newlines: bool = False) -> None:
         '''
         Args:

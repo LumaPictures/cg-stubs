@@ -1,3 +1,5 @@
+import rez.package_repository
+import rez.utils.resources
 import threading
 from _typeshed import Incomplete
 from contextlib import contextmanager
@@ -50,8 +52,8 @@ class PackageRepository:
     @classmethod
     def name(cls) -> str:
         """Return the name of the package repository type."""
-    location: Incomplete
-    pool: Incomplete
+    location: str
+    pool: rez.utils.resources.ResourcePool
     def __init__(self, location: str, resource_pool: ResourcePool) -> None:
         """Create a package repository.
 
@@ -219,7 +221,7 @@ class PackageRepository:
             int: Number of packages removed. In dry-run mode, returns the
             number of packages that _would_ be removed.
         """
-    def pre_variant_install(self, variant_resource: VariantResource):
+    def pre_variant_install(self, variant_resource: VariantResource) -> None:
         """Called before a variant is installed.
 
         If any directories are created on disk for the variant to install into,
@@ -228,7 +230,7 @@ class PackageRepository:
         Note that it is the responsibility of the `BuildProcess` to call this
         function at the appropriate time.
         """
-    def on_variant_install_cancelled(self, variant_resource: VariantResource):
+    def on_variant_install_cancelled(self, variant_resource: VariantResource) -> None:
         """Called when a variant installation is cancelled.
 
         This is called after `pre_variant_install`, but before `install_variant`,
@@ -380,8 +382,8 @@ class PackageRepositoryManager:
     Manages retrieval of resources (packages and variants) from `PackageRepository`
     instances, and caches these resources in a resource pool.
     """
-    pool: Incomplete
-    repositories: dict[str, PackageRepository]
+    pool: rez.utils.resources.ResourcePool
+    repositories: dict[str, rez.package_repository.PackageRepository]
     def __init__(self, resource_pool: ResourcePool | None = None) -> None:
         """Create a package repo manager.
 

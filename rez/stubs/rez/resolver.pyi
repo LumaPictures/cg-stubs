@@ -1,3 +1,10 @@
+import rez.package_filter
+import rez.package_order
+import rez.packages
+import rez.resolved_context
+import rez.resolver
+import rez.solver
+import rez.version._requirement
 from _typeshed import Incomplete
 from contextlib import contextmanager
 from enum import Enum
@@ -11,7 +18,7 @@ from rez.solver import Solver as Solver, SolverCallbackReturn as SolverCallbackR
 from rez.utils.logging_ import log_duration as log_duration
 from rez.utils.memcached import Client as Client, memcached_client as memcached_client, pool_memcached_connections as pool_memcached_connections
 from rez.version import Requirement as Requirement
-from typing import Callable, Iterator
+from typing import Any, Callable, Iterator
 
 class ResolverStatus(Enum):
     """ Enum to represent the current state of a resolver instance.  The enum
@@ -21,7 +28,7 @@ class ResolverStatus(Enum):
     solved = ('The resolve has completed successfully.',)
     failed = ('The resolve is not possible.',)
     aborted = ('The resolve was stopped by the user (via callback).',)
-    description = ...
+    description: Any
     def __init__(self, description) -> None: ...
 
 class Resolver:
@@ -30,33 +37,33 @@ class Resolver:
     The Resolver uses a combination of Solver(s) and cache(s) to resolve a
     package request as quickly as possible.
     """
-    context: Incomplete
-    package_requests: Incomplete
-    package_paths: Incomplete
-    timestamp: Incomplete
-    callback: Incomplete
-    package_orderers: Incomplete
-    package_load_callback: Incomplete
-    building: Incomplete
-    testing: Incomplete
-    verbosity: Incomplete
-    caching: Incomplete
-    buf: Incomplete
-    suppress_passive: Incomplete
-    print_stats: Incomplete
-    package_orderers_hash: Incomplete
-    package_filter_hash: Incomplete
-    package_filter: Incomplete
-    status_: Incomplete
-    resolved_packages_: list[Variant] | None
-    resolved_ephemerals_: list[Requirement] | None
-    failure_description: Incomplete
-    graph_: Incomplete
+    context: rez.resolved_context.ResolvedContext
+    package_requests: list[rez.version._requirement.Requirement]
+    package_paths: list[str]
+    timestamp: float | None
+    callback: Callable[[rez.solver.SolverState], tuple[rez.solver.SolverCallbackReturn, str]] | None
+    package_orderers: list[rez.package_order.PackageOrder] | None
+    package_load_callback: Any
+    building: bool
+    testing: bool
+    verbosity: bool
+    caching: bool
+    buf: Any
+    suppress_passive: bool
+    print_stats: bool
+    package_orderers_hash: str
+    package_filter_hash: str
+    package_filter: rez.package_filter.PackageFilterList | None
+    status_: rez.resolver.ResolverStatus
+    resolved_packages_: list[rez.packages.Variant] | None
+    resolved_ephemerals_: list[rez.version._requirement.Requirement] | None
+    failure_description: None
+    graph_: None
     from_cache: bool
-    memcached_servers: Incomplete
+    memcached_servers: Any | None
     solve_time: float
     load_time: float
-    _print: Incomplete
+    _print: Any
     def __init__(self, context: ResolvedContext, package_requests: list[Requirement], package_paths: list[str], package_filter: PackageFilterList | None = None, package_orderers: list[PackageOrder] | None = None, timestamp: float | None = 0, callback: Callable[[SolverState], tuple[SolverCallbackReturn, str]] | None = None, building: bool = False, testing: bool = False, verbosity: bool = False, buf: Incomplete | None = None, package_load_callback: Incomplete | None = None, caching: bool = True, suppress_passive: bool = False, print_stats: bool = False) -> None:
         """Create a Resolver.
 

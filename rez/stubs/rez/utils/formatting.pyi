@@ -1,3 +1,4 @@
+import rez.utils.formatting
 from _typeshed import Incomplete
 from enum import Enum
 from rez.exceptions import PackageRequestError as PackageRequestError
@@ -55,9 +56,9 @@ class ObjectStringFormatter(Formatter):
     error: Incomplete
     empty: Incomplete
     unchanged: Incomplete
-    instance: Incomplete
-    pretty: Incomplete
-    expand: Incomplete
+    instance: Any
+    pretty: bool
+    expand: rez.utils.formatting.StringFormatType
     def __init__(self, instance, pretty: bool = False, expand: StringFormatType = ...) -> None:
         """Create a formatter.
 
@@ -115,7 +116,7 @@ def expand_abbreviations(txt, fields):
     Returns:
         Expanded string.
     '''
-def expandvars(text: str, environ: Incomplete | None = None):
+def expandvars(text: str, environ: Incomplete | None = None) -> str:
     """Expand shell variables of form $var and ${var}.
 
     Unknown variables are left unchanged.
@@ -179,7 +180,7 @@ def get_epoch_time_from_str(s):
 
 positional_suffix: Incomplete
 
-def positional_number_string(n):
+def positional_number_string(n) -> str:
     """Print the position string equivalent of a positive integer. Examples:
 
         0: zeroeth
@@ -191,7 +192,7 @@ def positional_number_string(n):
 
 EXPANDUSER_RE: Incomplete
 
-def expanduser(path: str):
+def expanduser(path: str) -> str:
     """Expand '~' to home directory in the given string.
 
     Note that this function deliberately differs from the builtin
@@ -200,7 +201,7 @@ def expanduser(path: str):
     string '~packagename' may inadvertently convert to a homedir, if a package
     happens to match a username.
     """
-def as_block_string(txt):
+def as_block_string(txt) -> str:
     """Return a string formatted as a python block comment string, like the one
     you're currently reading. Special characters are escaped if necessary.
     """
@@ -208,11 +209,11 @@ def as_block_string(txt):
 _header_br: Incomplete
 _header_br_minor: Incomplete
 
-def header_comment(executor, txt: str):
+def header_comment(executor, txt: str) -> None:
     """Convenience for creating header-like comment in a rex executor.
 
     Args:
         executor (`RexExecutor`): Executor.
         txt (str): Comment text.
     """
-def minor_header_comment(executor, txt: str): ...
+def minor_header_comment(executor, txt: str) -> None: ...

@@ -1,3 +1,4 @@
+import rez.packages
 from _typeshed import Incomplete
 from contextlib import contextmanager
 from rez.exceptions import PackageMetadataError as PackageMetadataError
@@ -13,6 +14,7 @@ from rez.utils.logging_ import print_warning as print_warning
 from rez.utils.schema import Required as Required, extensible_schema_dict as extensible_schema_dict
 from rez.vendor.schema.schema import And as And, Optional as Optional, Or as Or, Schema as Schema, Use as Use
 from rez.version import Version as Version
+from typing import Any, Iterator
 
 package_request_schema: Incomplete
 tests_schema: Incomplete
@@ -20,10 +22,10 @@ package_schema: Incomplete
 
 class PackageMaker(AttrDictWrapper):
     """Utility class for creating packages."""
-    name: Incomplete
-    package_cls: Incomplete
-    installed_variants: Incomplete
-    skipped_variants: Incomplete
+    name: str
+    package_cls: type[rez.packages.Package]
+    installed_variants: list[Any]
+    skipped_variants: list[Any]
     def __init__(self, name: str, data: Incomplete | None = None, package_cls: type[Package] | None = None) -> None:
         """Create a package maker.
 
@@ -39,7 +41,7 @@ class PackageMaker(AttrDictWrapper):
     def _get_data(self): ...
 
 @contextmanager
-def make_package(name: str, path: str, make_base: Incomplete | None = None, make_root: Incomplete | None = None, skip_existing: bool = True, warn_on_skip: bool = True):
+def make_package(name: str, path: str, make_base: Incomplete | None = None, make_root: Incomplete | None = None, skip_existing: bool = True, warn_on_skip: bool = True) -> Iterator[PackageMaker]:
     '''Make and install a package.
 
     Example:

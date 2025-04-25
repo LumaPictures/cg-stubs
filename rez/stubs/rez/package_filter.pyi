@@ -1,15 +1,15 @@
+import rez.version._requirement
 from _typeshed import Incomplete
-from collections.abc import Generator
 from rez.config import config as config
 from rez.exceptions import ConfigurationError as ConfigurationError
-from rez.packages import iter_packages as iter_packages
+from rez.packages import Package as Package, iter_packages as iter_packages
 from rez.utils.data_utils import cached_class_property as cached_class_property, cached_property as cached_property
-from rez.version import Requirement as Requirement, VersionedObject as VersionedObject
-from typing import Pattern
+from rez.version import Requirement as Requirement, VersionRange as VersionRange, VersionedObject as VersionedObject
+from typing import Any, Pattern, Self
 
 class PackageFilterBase:
     """Base class for package filters."""
-    def excludes(self, package) -> None:
+    def excludes(self, package: Package) -> Rule | None:
         """Determine if the filter excludes the given package.
 
         Args:
@@ -19,13 +19,13 @@ class PackageFilterBase:
             typing.Optional[Rule]: Rule object that excludes the package, or None if the package was
             not excluded.
         """
-    def add_exclusion(self, rule) -> None:
+    def add_exclusion(self, rule: Rule):
         """Add an exclusion rule.
 
         Args:
             rule (Rule): Rule to exclude on.
         """
-    def add_inclusion(self, rule) -> None:
+    def add_inclusion(self, rule: Rule):
         """Add an inclusion rule.
 
         Args:
@@ -40,7 +40,7 @@ class PackageFilterBase:
         Returns:
             dict[str, list[str]]:
         """
-    def iter_packages(self, name, range_: Incomplete | None = None, paths: Incomplete | None = None) -> Generator[Incomplete]:
+    def iter_packages(self, name: str, range_: VersionRange | str | None = None, paths: Incomplete | None = None):
         """Same as :func:`~rez.packages.iter_packages`, but also applies this filter.
 
         Args:
@@ -54,7 +54,7 @@ class PackageFilterBase:
             typing.Iterator[Package]: iterator
         """
     @property
-    def sha1(self):
+    def sha1(self) -> str:
         """
         SHA1 representation
 
@@ -75,13 +75,13 @@ class PackageFilter(PackageFilterBase):
     excluded if it matches one or more exclusion rules, and does not match any
     inclusion rules.
     """
-    _excludes: Incomplete
-    _includes: Incomplete
+    _excludes: dict[Any, Any]
+    _includes: dict[Any, Any]
     def __init__(self) -> None: ...
-    def excludes(self, package): ...
-    def add_exclusion(self, rule) -> None: ...
-    def add_inclusion(self, rule) -> None: ...
-    def copy(self):
+    def excludes(self, package: Package) -> Rule | None: ...
+    def add_exclusion(self, rule: Rule) -> None: ...
+    def add_inclusion(self, rule: Rule) -> None: ...
+    def copy(self) -> PackageFilter:
         """Return a shallow copy of the filter.
 
         Adding rules to the copy will not alter the source.
@@ -107,7 +107,7 @@ class PackageFilter(PackageFilterBase):
             PackageFilter:
         """
     def to_pod(self): ...
-    def _add_rule(self, rules_dict, rule): ...
+    def _add_rule(self, rules_dict, rule) -> None: ...
     def __str__(self) -> str: ...
 
 class PackageFilterList(PackageFilterBase):
@@ -116,16 +116,16 @@ class PackageFilterList(PackageFilterBase):
     A package is excluded by a filter list iff any filter within the list
     excludes it.
     """
-    filters: Incomplete
+    filters: list[Any]
     def __init__(self) -> None: ...
-    def add_filter(self, package_filter):
+    def add_filter(self, package_filter: PackageFilter) -> None:
         """Add a filter to the list.
 
         Args:
             package_filter (`PackageFilter`): Filter to add.
         """
-    def add_exclusion(self, rule) -> None: ...
-    def add_inclusion(self, rule) -> None:
+    def add_exclusion(self, rule: Rule) -> None: ...
+    def add_inclusion(self, rule: Rule) -> None:
         """
         See also: :meth:`PackageFilterBase.add_inclusion`
 
@@ -133,19 +133,19 @@ class PackageFilterList(PackageFilterBase):
             Adding an inclusion to a filter list applies that inclusion across
             all filters.
         """
-    def excludes(self, package):
+    def excludes(self, package: Package) -> Rule | None:
         """Returns the first rule that exlcudes ``package``, if any.
 
         Returns:
             Rule:
         """
-    def copy(self):
+    def copy(self) -> PackageFilterList:
         """Return a copy of the filter list.
 
         Adding rules to the copy will not alter the source.
         """
     @classmethod
-    def from_pod(cls, data):
+    def from_pod(cls, data) -> PackageFilterList:
         """Convert from POD types to equivalent package filter.
 
         Returns:
@@ -168,7 +168,7 @@ class Rule:
     """Base package filter rule"""
     name: str
     _family: str | None
-    def match(self, package) -> None:
+    def match(self, package: Package) -> bool:
         """Apply the rule to the package.
 
         Args:
@@ -217,10 +217,10 @@ class Rule:
 class RegexRuleBase(Rule):
     regex: Pattern[str]
     txt: str
-    def match(self, package) -> bool: ...
-    def cost(self): ...
+    def match(self, package: Package) -> bool: ...
+    def cost(self) -> int: ...
     @classmethod
-    def _parse(cls, txt: str): ...
+    def _parse(cls, txt: str) -> Self: ...
     def __str__(self) -> str: ...
 
 class RegexRule(RegexRuleBase):
@@ -262,13 +262,13 @@ class RangeRule(Rule):
     For example, the package ``foo-1.2`` would match the requirement rule ``foo<10``.
     """
     name: str
-    _requirement: Incomplete
+    _requirement: rez.version._requirement.Requirement
     _family: Incomplete
-    def __init__(self, requirement) -> None: ...
-    def match(self, package): ...
-    def cost(self): ...
+    def __init__(self, requirement: Requirement) -> None: ...
+    def match(self, package) -> bool: ...
+    def cost(self) -> int: ...
     @classmethod
-    def _parse(cls, txt): ...
+    def _parse(cls, txt: str) -> Self: ...
     def __str__(self) -> str: ...
 
 class TimestampRule(Rule):
@@ -294,11 +294,11 @@ class TimestampRule(Rule):
         and other family-specific timestamp rules to override that.
     """
     name: str
-    timestamp: Incomplete
-    reverse: Incomplete
-    match_untimestamped: Incomplete
+    timestamp: int
+    reverse: bool
+    match_untimestamped: bool
     _family: Incomplete
-    def __init__(self, timestamp, family: Incomplete | None = None, reverse: bool = False, match_untimestamped: bool = False) -> None:
+    def __init__(self, timestamp: int, family: Incomplete | None = None, reverse: bool = False, match_untimestamped: bool = False) -> None:
         """Create a timestamp rule.
 
         Args:
@@ -309,12 +309,12 @@ class TimestampRule(Rule):
             match_untimestamped (bool): Defines behaviour on non-timestamped
                 packages.
         """
-    def match(self, package): ...
-    def cost(self): ...
+    def match(self, package: Package) -> bool: ...
+    def cost(self) -> int: ...
     @classmethod
-    def after(cls, timestamp, family: Incomplete | None = None): ...
+    def after(cls, timestamp, family: Incomplete | None = None) -> Self: ...
     @classmethod
-    def before(cls, timestamp, family: Incomplete | None = None): ...
+    def before(cls, timestamp, family: Incomplete | None = None) -> Self: ...
     @classmethod
-    def _parse(cls, txt): ...
+    def _parse(cls, txt) -> Self: ...
     def __str__(self) -> str: ...

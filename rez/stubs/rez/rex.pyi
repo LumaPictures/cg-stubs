@@ -1,3 +1,6 @@
+import _collections_abc
+import os
+import rez.rex
 from _typeshed import Incomplete
 from collections.abc import Generator, MutableMapping
 from contextlib import contextmanager
@@ -13,12 +16,12 @@ from rez.utils.formatting import expandvars as expandvars
 from rez.utils.platform_ import platform_ as platform_
 from rez.utils.sourcecode import SourceCode as SourceCode, SourceCodeError as SourceCodeError
 from string import Formatter
-from typing import Iterable
+from typing import Any, Iterable
 
 class Action:
     name: str
     _registry: Incomplete
-    args: Incomplete
+    args: tuple[Any, ...]
     def __init__(self, *args) -> None: ...
     def __repr__(self) -> str: ...
     def __eq__(self, other): ...
@@ -92,14 +95,14 @@ class ActionManager:
     """Handles the execution book-keeping.  Tracks env variable values, and
     triggers the callbacks of the `ActionInterpreter`.
     """
-    interpreter: Incomplete
-    verbose: Incomplete
-    parent_environ: Incomplete
-    parent_variables: Incomplete
-    environ: Incomplete
-    formatter: Incomplete
-    actions: Incomplete
-    _env_sep_map: Incomplete
+    interpreter: rez.rex.ActionInterpreter
+    verbose: bool
+    parent_environ: os._Environ[str] | dict[str, str]
+    parent_variables: set[str]
+    environ: dict[Any, Any]
+    formatter: Any | Overload(Callable[[object], str], Callable[[_collections_abc.Buffer, str, str], str])
+    actions: list[Any]
+    _env_sep_map: Any
     def __init__(self, interpreter: ActionInterpreter, parent_environ: dict[str, str] | None = None, parent_variables: Iterable[str] | None = None, formatter: Incomplete | None = None, verbose: bool = False, env_sep_map: Incomplete | None = None) -> None:
         """
         interpreter: string or `ActionInterpreter`
@@ -133,16 +136,16 @@ class ActionManager:
     def _key(self, key): ...
     def _value(self, value): ...
     def get_output(self, style=...): ...
-    def undefined(self, key): ...
-    def defined(self, key): ...
+    def undefined(self, key) -> bool: ...
+    def defined(self, key) -> bool: ...
     def expandvars(self, value, format: bool = True): ...
     def getenv(self, key): ...
     def setenv(self, key, value) -> None: ...
     def unsetenv(self, key) -> None: ...
     def resetenv(self, key, value, friends: Incomplete | None = None) -> None: ...
     def _pendenv(self, key, value, action, interpfunc, addfunc) -> None: ...
-    def prependenv(self, key, value): ...
-    def appendenv(self, key, value): ...
+    def prependenv(self, key, value) -> None: ...
+    def appendenv(self, key, value) -> None: ...
     def alias(self, key, value) -> None: ...
     def info(self, value: str = '') -> None: ...
     def error(self, value) -> None: ...
@@ -262,9 +265,9 @@ class ActionInterpreter:
 class Python(ActionInterpreter):
     """Execute commands in the current python session"""
     expand_env_vars: bool
-    passive: Incomplete
-    manager: ActionManager | None
-    target_environ: Incomplete
+    passive: bool
+    manager: rez.rex.ActionManager | None
+    target_environ: os._Environ[str]
     update_session: bool
     def __init__(self, target_environ: Incomplete | None = None, passive: bool = False) -> None:
         """
@@ -278,7 +281,7 @@ class Python(ActionInterpreter):
             If True, commands that do not update the environment (such as info)
             are skipped.
         """
-    def set_manager(self, manager: ActionManager): ...
+    def set_manager(self, manager: ActionManager) -> None: ...
     def apply_environ(self) -> None:
         """Apply changes to target environ.
         """
@@ -298,7 +301,7 @@ class Python(ActionInterpreter):
     def _bind_interactive_rez(self) -> None: ...
     def _saferefenv(self, key) -> None: ...
     def shebang(self) -> None: ...
-    def get_key_token(self, key): ...
+    def get_key_token(self, key) -> str: ...
     def adjust_env_for_platform(self, env) -> None:
         """ Make required platform-specific adjustments to env.
         """
@@ -360,7 +363,7 @@ class EscapedString:
         you can use the `literal` and `expandable` free functions, rather than
         constructing a class instance directly.
     '''
-    strings: Incomplete
+    strings: list[tuple[bool, Any]]
     def __init__(self, value, is_literal: bool = False) -> None: ...
     def copy(self): ...
     def literal(self, value): ...
@@ -372,7 +375,7 @@ class EscapedString:
         """Return the string unescaped."""
     def __repr__(self) -> str: ...
     def __eq__(self, other): ...
-    def __ne__(self, other): ...
+    def __ne__(self, other) -> bool: ...
     def __add__(self, other):
         """Join two escaped strings together.
 
@@ -431,8 +434,8 @@ class NamespaceFormatter(Formatter):
     across shells, and avoids some problems with non-curly-braced variables in
     some situations.
     """
-    initial_namespace: Incomplete
-    namespace: Incomplete
+    initial_namespace: Any
+    namespace: Any
     def __init__(self, namespace) -> None: ...
     def format(self, format_string, *args, **kwargs): ...
     def format_field(self, value, format_spec): ...
@@ -447,8 +450,8 @@ class EnvironmentDict(MutableMapping):
     `__getitem__` is always guaranteed to return an `EnvironmentVariable`
     instance: it will not raise a KeyError.
     """
-    manager: Incomplete
-    _var_cache: Incomplete
+    manager: Any
+    _var_cache: dict[Any, Any]
     def __init__(self, manager) -> None:
         """Creates an `EnvironmentDict`.
 
@@ -473,8 +476,8 @@ class EnvironmentVariable:
 
     combined with EnvironmentDict class, records changes to the environment
     """
-    _name: Incomplete
-    _environ_map: Incomplete
+    _name: Any
+    _environ_map: Any
     def __init__(self, name, environ_map) -> None: ...
     @property
     def name(self): ...
@@ -491,7 +494,7 @@ class EnvironmentVariable:
     def __repr__(self) -> str: ...
     def __bool__(self) -> bool: ...
     def __eq__(self, value): ...
-    def __ne__(self, value): ...
+    def __ne__(self, value) -> bool: ...
 
 class RexExecutor:
     """
@@ -503,10 +506,10 @@ class RexExecutor:
     ex.env.FOO_SET = 1
     ex.alias('foo','foo -l')
     """
-    globals: Incomplete
-    formatter: Incomplete
-    manager: Incomplete
-    environ: Incomplete
+    globals: Any | dict[Any, Any]
+    formatter: rez.rex.NamespaceFormatter
+    manager: rez.rex.ActionManager
+    environ: rez.rex.EnvironmentDict
     def __init__(self, interpreter: ActionInterpreter | None = None, globals_map: Incomplete | None = None, parent_environ: dict[str, str] | None = None, parent_variables: Incomplete | None = None, shebang: bool = True, add_default_namespaces: bool = True) -> None:
         """
         interpreter: `ActionInterpreter` or None

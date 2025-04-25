@@ -12,15 +12,18 @@ from rez.utils.typing import Protocol as Protocol
 from rez.vendor import yaml as yaml
 from rez.vendor.schema.schema import And as And, Or as Or, Schema as Schema, SchemaError as SchemaError, Use as Use
 from rez.vendor.yaml.error import YAMLError as YAMLError
+from typing import Any, TypeVar
+
+T = TypeVar('T')
 
 class Validatable(Protocol):
-    def validate(self, data): ...
+    def validate(self, data: T) -> T: ...
 
 class _Deprecation:
-    __removed_in: Incomplete
-    __extra: Incomplete
+    __removed_in: Any
+    __extra: Any | str
     def __init__(self, removed_in, extra: Incomplete | None = None) -> None: ...
-    def get_message(self, name, env_var: bool = False): ...
+    def get_message(self, name: str, env_var: bool | str = False): ...
 
 class Setting:
     """Setting subclasses implement lazy setting validators.
@@ -29,13 +32,13 @@ class Setting:
     settings - plugin settings are validated on load only.
     """
     schema: Validatable
-    config: Incomplete
-    key: Incomplete
+    config: Any
+    key: Any
     def __init__(self, config, key) -> None: ...
     @property
-    def _env_var_name(self): ...
+    def _env_var_name(self) -> str: ...
     def _parse_env_var(self, value) -> None: ...
-    def validate(self, data): ...
+    def validate(self, data: Any) -> Any: ...
     def _validate(self, data): ...
 
 class Str(Setting):
@@ -62,7 +65,7 @@ class PipInstallRemaps(Setting):
     TOKENS: Incomplete
     KEYS: Incomplete
     schema: Incomplete
-    def validate(self, data):
+    def validate(self, data: list) -> list:
         """Extended to substitute regex-escaped path tokens."""
 
 class OptionalStrList(StrList):
@@ -85,7 +88,7 @@ class Bool(Setting):
     true_words: Incomplete
     false_words: Incomplete
     all_words = true_words | false_words
-    def _parse_env_var(self, value): ...
+    def _parse_env_var(self, value) -> bool: ...
 
 class OptionalBool(Bool):
     schema: Incomplete
@@ -152,12 +155,12 @@ class Config(metaclass=LazyAttributeMeta):
     """
     schema = config_schema
     schema_error = ConfigurationError
-    def __getattr__(self, item) -> None: ...
-    filepaths: Incomplete
-    _sourced_filepaths: Incomplete
-    overrides: Incomplete
-    locked: Incomplete
-    def __init__(self, filepaths, overrides: Incomplete | None = None, locked: bool = False) -> None:
+    def __getattr__(self, item: str) -> Any: ...
+    filepaths: list[str]
+    _sourced_filepaths: list[str] | None
+    overrides: Any | dict[Any, Any]
+    locked: bool
+    def __init__(self, filepaths: list[str], overrides: Incomplete | None = None, locked: bool = False) -> None:
         """Create a config.
 
         Args:
@@ -169,22 +172,22 @@ class Config(metaclass=LazyAttributeMeta):
         """
     def get(self, key, default: Incomplete | None = None):
         """Get the value of a setting."""
-    def copy(self, overrides: Incomplete | None = None, locked: bool = False):
+    def copy(self, overrides: Incomplete | None = None, locked: bool = False) -> Config:
         """Create a separate copy of this config."""
-    def override(self, key, value) -> None:
+    def override(self, key: str, value):
         """Set a setting to the given value.
 
         Note that `key` can be in dotted form, eg
         'plugins.release_hook.emailer.sender'.
         """
-    def is_overridden(self, key): ...
-    def remove_override(self, key) -> None:
+    def is_overridden(self, key: str) -> bool: ...
+    def remove_override(self, key: str):
         """Remove a setting override, if one exists."""
-    def warn(self, key):
+    def warn(self, key: str):
         """Returns True if the warning setting is enabled."""
-    def debug(self, key):
+    def debug(self, key: str):
         """Returns True if the debug setting is enabled."""
-    def debug_printer(self, key):
+    def debug_printer(self, key: str):
         """Returns a printer object suitably enabled based on the given key."""
     @cached_property
     def sourced_filepaths(self):
@@ -244,16 +247,16 @@ class _PluginConfigs:
     """Lazy config loading for plugins."""
     def __init__(self, plugin_data) -> None: ...
     def __setattr__(self, attr, value) -> None: ...
-    def __getattr__(self, attr): ...
+    def __getattr__(self, attr: str) -> Any: ...
     def __iter__(self): ...
     def override(self, key, value) -> None: ...
     def data(self): ...
     def __str__(self) -> str: ...
     def __repr__(self) -> str: ...
 
-def expand_system_vars(data):
+def expand_system_vars(data: T) -> T:
     """Expands any strings within `data` such as '{system.user}'."""
-def create_config(overrides: Incomplete | None = None):
+def create_config(overrides: Incomplete | None = None) -> Config:
     """Create a configuration based on the global config.
     """
 def _create_locked_config(overrides: Incomplete | None = None):
@@ -271,9 +274,9 @@ def _create_locked_config(overrides: Incomplete | None = None):
 def _replace_config(other) -> Generator[None]:
     """Temporarily replace the global config.
     """
-def _load_config_py(filepath): ...
-def _load_config_yaml(filepath): ...
-def _load_config_from_filepaths(filepaths): ...
-def get_module_root_config(): ...
+def _load_config_py(filepath: str) -> dict[str, Any]: ...
+def _load_config_yaml(filepath: str) -> dict[str, Any]: ...
+def _load_config_from_filepaths(filepaths: list[str]) -> tuple[dict[str, Any], list[str]]: ...
+def get_module_root_config() -> str: ...
 
 config: Incomplete

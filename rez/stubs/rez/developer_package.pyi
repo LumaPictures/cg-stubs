@@ -1,4 +1,3 @@
-from _typeshed import Incomplete
 from enum import Enum
 from rez.config import config as config
 from rez.exceptions import InvalidPackageError as InvalidPackageError, PackageMetadataError as PackageMetadataError
@@ -21,8 +20,8 @@ class DeveloperPackage(Package):
     This is a package in a source directory that is subsequently built or
     released.
     """
-    filepath: Incomplete
-    includes: Incomplete
+    filepath: str | None
+    includes: set[str] | None
     def __init__(self, resource) -> None: ...
     @property
     def root(self): ...

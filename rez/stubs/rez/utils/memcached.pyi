@@ -4,7 +4,7 @@ from rez.config import config as config
 from rez.util import get_function_arg_names as get_function_arg_names
 from rez.vendor.memcache.memcache import SERVER_MAX_KEY_LENGTH as SERVER_MAX_KEY_LENGTH
 from threading import local
-from typing import Iterator
+from typing import Any, Iterator
 
 cache_interface_version: int
 
@@ -20,10 +20,10 @@ class Client:
         def __bool__(self) -> bool: ...
     miss: Incomplete
     logger: Incomplete
-    servers: Incomplete
-    key_hasher: Incomplete
-    _client: Incomplete
-    debug: Incomplete
+    servers: list[str] | Any
+    key_hasher: Callable[[Any], Any]
+    _client: Any | None
+    debug: bool
     current: str
     def __init__(self, servers, debug: bool = False) -> None:
         """Create a memcached client.
@@ -78,7 +78,7 @@ class Client:
         """Reset the server stats."""
     def disconnect(self) -> None:
         """Disconnect from server(s). Behaviour is undefined after this call."""
-    def _qualified_key(self, key):
+    def _qualified_key(self, key) -> str:
         """
         Qualify cache key so that:
         * changes to schemas don't break compatibility (cache_interface_version)
@@ -92,7 +92,7 @@ class Client:
     def _debug_key_hash(cls, key): ...
 
 class _ScopedInstanceManager(local):
-    clients: dict[tuple[tuple, bool], list]
+    clients: dict[tuple[tuple[Any, ...], bool], list[Any]]
     def __init__(self) -> None: ...
     def acquire(self, servers, debug: bool = False) -> tuple[Client, tuple[tuple, bool]]: ...
     def release(self, key) -> None: ...
@@ -172,5 +172,5 @@ def memcached(servers, key: Incomplete | None = None, from_cache: Incomplete | N
     '''
 
 class DoNotCache:
-    result: Incomplete
+    result: Any
     def __init__(self, result) -> None: ...

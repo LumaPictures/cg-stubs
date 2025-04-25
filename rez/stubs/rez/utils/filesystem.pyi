@@ -1,9 +1,11 @@
+import _thread
 from _typeshed import Incomplete
 from collections.abc import Generator
 from contextlib import contextmanager
 from rez.util import which as which
 from rez.utils.execution import Popen as Popen
 from rez.utils.platform_ import platform_ as platform_
+from typing import Any
 
 is_windows: Incomplete
 
@@ -14,10 +16,10 @@ class TempDirs:
     """
     instances_lock: Incomplete
     instances: Incomplete
-    tmpdir: Incomplete
-    prefix: Incomplete
-    dirs: Incomplete
-    lock: Incomplete
+    tmpdir: Any
+    prefix: Any
+    dirs: set[Any]
+    lock: _thread.LockType
     def __init__(self, tmpdir, prefix: str = 'rez_') -> None: ...
     def mkdtemp(self, cleanup: bool = True): ...
     def __del__(self) -> None: ...
@@ -104,9 +106,9 @@ def make_tmp_name(name) -> Generator[Incomplete]:
     This is a tempname that sits in the same dir as `name`. If it exists on
     disk at context exit time, it is deleted.
     """
-def is_subdirectory(path_a, path_b):
+def is_subdirectory(path_a, path_b) -> bool:
     """Returns True if `path_a` is a subdirectory of `path_b`."""
-def find_matching_symlink(path, source):
+def find_matching_symlink(path: str, source: str) -> str | None:
     """Find a symlink under `path` that points at `source`.
 
     If source is relative, it is considered relative to `path`.
@@ -114,10 +116,10 @@ def find_matching_symlink(path, source):
     Returns:
         str: Name of symlink found, or None.
     """
-def copy_or_replace(src, dst) -> None:
+def copy_or_replace(src: str, dst: str):
     """try to copy with mode, and if it fails, try replacing
     """
-def copytree(src, dst, symlinks: bool = False, ignore: Incomplete | None = None, hardlinks: bool = False) -> None:
+def copytree(src: str, dst: str, symlinks: bool = False, ignore: Incomplete | None = None, hardlinks: bool = False):
     """copytree that supports hard-linking
     """
 def movetree(src, dst) -> None:

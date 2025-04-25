@@ -1,3 +1,4 @@
+import rez.developer_package
 from _typeshed import Incomplete
 from rez.exceptions import ReleaseVCSError as ReleaseVCSError
 from rez.packages import get_developer_package as get_developer_package
@@ -5,6 +6,7 @@ from rez.util import which as which
 from rez.utils.execution import Popen as Popen
 from rez.utils.filesystem import walk_up_dirs as walk_up_dirs
 from rez.utils.logging_ import print_debug as print_debug
+from typing import Any
 
 def get_release_vcs_types():
     """Returns the available VCS implementations - git, hg etc."""
@@ -14,11 +16,11 @@ def create_release_vcs(path, vcs_name: Incomplete | None = None):
 class ReleaseVCS:
     """A version control system (VCS) used to release Rez packages.
     """
-    vcs_root: Incomplete
-    pkg_root: Incomplete
-    package: Incomplete
-    type_settings: Incomplete
-    settings: Incomplete
+    vcs_root: Any
+    pkg_root: str
+    package: rez.developer_package.DeveloperPackage
+    type_settings: Any
+    settings: Any
     def __init__(self, pkg_root: str, vcs_root: Incomplete | None = None) -> None: ...
     @classmethod
     def name(cls) -> None:

@@ -1,3 +1,4 @@
+import rez.utils.resources
 from _typeshed import Incomplete
 from rez.config import config as config
 from rez.exceptions import ResourceError as ResourceError
@@ -5,7 +6,7 @@ from rez.package_repository import PackageRepository as PackageRepository
 from rez.utils.data_utils import AttributeForwardMeta as AttributeForwardMeta, LazyAttributeMeta as LazyAttributeMeta, cached_property as cached_property
 from rez.utils.logging_ import print_debug as print_debug
 from rez.vendor.schema.schema import Schema as Schema
-from typing import Self
+from typing import Any, Self
 
 class Resource(metaclass=LazyAttributeMeta):
     """Abstract base class for a data resource.
@@ -41,7 +42,7 @@ class Resource(metaclass=LazyAttributeMeta):
     def normalize_variables(cls, variables):
         """Give subclasses a chance to standardize values for certain variables
         """
-    variables: Incomplete
+    variables: Any
     def __init__(self, variables: Incomplete | None = None) -> None: ...
     @cached_property
     def handle(self) -> ResourceHandle:
@@ -74,8 +75,8 @@ class ResourceHandle:
     A handle uniquely identifies a resource. A handle can be stored and used
     with a `ResourcePool` to retrieve the same resource at a later date.
     """
-    key: Incomplete
-    variables: Incomplete
+    key: str
+    variables: Any | dict[Any, Any]
     def __init__(self, key: str, variables: Incomplete | None = None) -> None: ...
     def get(self, key, default: Incomplete | None = None):
         """Get the value of a resource variable."""
@@ -95,7 +96,7 @@ class ResourceHandle:
     def __str__(self) -> str: ...
     def __repr__(self) -> str: ...
     def __eq__(self, other): ...
-    def __ne__(self, other): ...
+    def __ne__(self, other) -> bool: ...
     def __hash__(self): ...
 
 class ResourcePool:
@@ -106,8 +107,8 @@ class ResourcePool:
     resources are created via some factory class, which first checks for the
     existence of the resource before creating one from a pool.
     """
-    resource_classes: dict[str, type[Resource]]
-    cached_get_resource: Incomplete
+    resource_classes: dict[str, type[rez.utils.resources.Resource]]
+    cached_get_resource: Any
     def __init__(self, cache_size: Incomplete | None = None) -> None: ...
     def register_resource(self, resource_class: type[Resource]) -> None: ...
     def get_resource_from_handle(self, resource_handle: ResourceHandle) -> Resource: ...
@@ -134,7 +135,7 @@ class ResourceWrapper(metaclass=AttributeForwardMeta):
     function is provided to help get a list of keys from a resource schema.
     """
     keys: Incomplete
-    wrapped: Incomplete
+    wrapped: rez.utils.resources.Resource
     def __init__(self, resource: Resource) -> None: ...
     @property
     def resource(self) -> Resource: ...

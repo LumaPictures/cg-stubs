@@ -1,3 +1,10 @@
+import functools._lru_cache_wrapper[list[rez.package_resources
+import functools._lru_cache_wrapper[list[rez.packages
+import functools._lru_cache_wrapper[rez.package_resources
+import functools._lru_cache_wrapper[tuple[str, rez.serialise
+import rez.package_resources
+import rez.packages
+import rez.serialise
 from _typeshed import Incomplete
 from collections.abc import Generator
 from contextlib import contextmanager
@@ -9,7 +16,7 @@ from rez.serialise import FileFormat
 from rez.utils.memcached import pool_memcached_connections
 from rez.utils.resources import cached_property as cached_property
 from rez.version import Version
-from typing import Iterator
+from typing import Any, Iterator
 
 debug_print: Incomplete
 format_version: int
@@ -136,14 +143,14 @@ class FileSystemPackageRepository(PackageRepository):
     ignore_prefix: str
     package_file_mode: Incomplete
     @classmethod
-    def name(cls): ...
-    disable_pkg_ignore: Incomplete
-    disable_memcache: Incomplete
-    get_families: Incomplete
-    get_family: Incomplete
-    get_packages: Incomplete
-    get_variants: Incomplete
-    get_file: Incomplete
+    def name(cls) -> str: ...
+    disable_pkg_ignore: bool
+    disable_memcache: Any
+    get_families: functools._lru_cache_wrapper[list[rez.package_resources.PackageFamilyResource]]
+    get_family: functools._lru_cache_wrapper[rez.package_resources.PackageFamilyResource | None]
+    get_packages: functools._lru_cache_wrapper[list[rez.packages.Package]]
+    get_variants: functools._lru_cache_wrapper[list[rez.package_resources.VariantResource]]
+    get_file: functools._lru_cache_wrapper[tuple[str, rez.serialise.FileFormat] | tuple[None, None]]
     def __init__(self, location, resource_pool, disable_memcache: Incomplete | None = None, disable_pkg_ignore: bool = False) -> None:
         """Create a filesystem package repository.
 
@@ -186,7 +193,7 @@ class FileSystemPackageRepository(PackageRepository):
     def get_resource_from_handle(self, resource_handle, verify_repo: bool = True): ...
     @cached_property
     def file_lock_dir(self): ...
-    def pre_variant_install(self, variant_resource: VariantResourceHelper): ...
+    def pre_variant_install(self, variant_resource: VariantResourceHelper) -> None: ...
     def on_variant_install_cancelled(self, variant_resource) -> None:
         """
         TODO:
@@ -228,9 +235,9 @@ class FileSystemPackageRepository(PackageRepository):
     def _get_file(self, path, package_filename: Incomplete | None = None) -> tuple[str, FileFormat] | tuple[None, None]: ...
     def _create_family(self, name: str): ...
     def _create_variant(self, variant: VariantResource, dry_run: bool = False, overrides: Incomplete | None = None) -> VariantResource | None: ...
-    def _on_changed(self, pkg_name: str):
+    def _on_changed(self, pkg_name: str) -> None:
         """Called when a package is added/removed/changed.
         """
-    def _delete_stale_build_tagfiles(self, family_path: str): ...
+    def _delete_stale_build_tagfiles(self, family_path: str) -> None: ...
 
 def register_plugin(): ...

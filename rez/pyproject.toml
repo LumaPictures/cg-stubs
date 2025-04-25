@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "types-rez"
-version = "3.2.1.0"
+version = "3.2.1.1"
 
 readme = "README.md"
 authors = ["Chad Dombrova"]
@@ -31,3 +31,10 @@ packages = [
 
 [tool.distutils.bdist_wheel]
 universal = true
+
+[tool.mypy]
+follow_imports = "skip"
+check_untyped_defs = true
+files = [
+    "stubs",
+]

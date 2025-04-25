@@ -1,4 +1,6 @@
 import argparse
+import rez.developer_package
+import typing
 from _typeshed import Incomplete
 from rez.build_process import BuildType as BuildType
 from rez.developer_package import DeveloperPackage as DeveloperPackage
@@ -39,13 +41,13 @@ class BuildSystem:
     @classmethod
     def name(cls) -> str:
         """Return the name of the build system, eg 'make'."""
-    working_dir: Incomplete
-    package: Incomplete
-    write_build_scripts: Incomplete
-    build_args: Incomplete
-    child_build_args: Incomplete
-    verbose: Incomplete
-    opts: Incomplete
+    working_dir: str
+    package: rez.developer_package.DeveloperPackage
+    write_build_scripts: bool
+    build_args: typing.Sequence[str]
+    child_build_args: list[str]
+    verbose: bool
+    opts: argparse.Namespace | None
     def __init__(self, working_dir: str, opts: argparse.Namespace | None = None, package: DeveloperPackage | None = None, write_build_scripts: bool = False, verbose: bool = False, build_args: Sequence[str] = [], child_build_args: list[str] = []) -> None:
         """Create a build system instance.
 

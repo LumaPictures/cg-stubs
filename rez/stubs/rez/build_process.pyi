@@ -1,3 +1,5 @@
+import rez.build_system
+import rez.release_vcs
 from _typeshed import Incomplete
 from collections.abc import Generator
 from contextlib import contextmanager
@@ -13,6 +15,7 @@ from rez.resolved_context import ResolvedContext as ResolvedContext
 from rez.resolver import ResolverStatus as ResolverStatus
 from rez.utils.colorize import Printer as Printer, heading as heading
 from rez.utils.logging_ import print_warning as print_warning
+from typing import Any
 
 debug_print: Incomplete
 
@@ -44,14 +47,14 @@ class BuildProcess:
     """
     @classmethod
     def name(cls) -> None: ...
-    verbose: Incomplete
-    quiet: Incomplete
-    build_system: Incomplete
-    vcs: Incomplete
-    ensure_latest: Incomplete
-    skip_repo_errors: Incomplete
-    ignore_existing_tag: Incomplete
-    build_path: Incomplete
+    verbose: bool
+    quiet: bool
+    build_system: rez.build_system.BuildSystem
+    vcs: rez.release_vcs.ReleaseVCS | None
+    ensure_latest: bool
+    skip_repo_errors: bool
+    ignore_existing_tag: bool
+    build_path: Any
     def __init__(self, working_dir: str, build_system: BuildSystem, package: Incomplete | None = None, vcs: ReleaseVCS | None = None, ensure_latest: bool = True, skip_repo_errors: bool = False, ignore_existing_tag: bool = False, verbose: bool = False, quiet: bool = False) -> None:
         """Create a BuildProcess.
 
@@ -150,4 +153,4 @@ class BuildProcessHelper(BuildProcess):
         """
     def _print(self, txt, *nargs) -> None: ...
     def _print_header(self, txt, n: int = 1) -> None: ...
-    def _n_of_m(self, variant): ...
+    def _n_of_m(self, variant) -> str: ...

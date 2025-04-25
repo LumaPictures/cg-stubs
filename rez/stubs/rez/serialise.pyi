@@ -14,6 +14,7 @@ from rez.utils.scope import ScopeContext as ScopeContext
 from rez.utils.sourcecode import SourceCode as SourceCode, early as early, include as include, late as late
 from rez.vendor import yaml as yaml
 from rez.vendor.atomicwrites import atomic_write as atomic_write
+from typing import Any
 
 tmpdir_manager: Incomplete
 debug_print: Incomplete
@@ -24,7 +25,7 @@ class FileFormat(Enum):
     yaml = ('yaml',)
     txt = ('txt',)
     __order__ = 'py,yaml,txt'
-    extension = ...
+    extension: Any
     def __init__(self, extension) -> None: ...
 
 @contextmanager
@@ -98,7 +99,7 @@ class EarlyThis:
 
     Just exposes raw package data as object attributes.
     """
-    _data: Incomplete
+    _data: Any
     def __init__(self, data) -> None: ...
     def __getattr__(self, attr): ...
 

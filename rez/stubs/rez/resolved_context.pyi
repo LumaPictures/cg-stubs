@@ -1,3 +1,10 @@
+import rez.package_filter
+import rez.package_order
+import rez.packages
+import rez.resolved_context
+import rez.resolver
+import rez.solver
+import rez.version._requirement
 from _typeshed import Incomplete
 from collections.abc import Generator
 from contextlib import contextmanager
@@ -61,8 +68,8 @@ class PatchLock(Enum):
     lock_4 = ('Build version updates only (X.X.X.*)', 3)
     lock = ('Exact version', -1)
     __order__ = 'no_lock,lock_2,lock_3,lock_4,lock'
-    description = ...
-    rank = ...
+    description: Any
+    rank: Any
     def __init__(self, description, rank) -> None: ...
 
 def get_lock_request(name: str, version, patch_lock: PatchLock, weak: bool = True) -> PackageRequest | None:
@@ -103,45 +110,45 @@ class ResolvedContext:
     package_cache_present: bool
     local: Incomplete
     class Callback:
-        max_fails: Incomplete
-        time_limit: Incomplete
-        callback: Incomplete
-        start_time: Incomplete
-        buf: Incomplete
-        def __init__(self, max_fails: int, time_limit, callback, buf: Incomplete | None = None) -> None: ...
+        max_fails: int
+        time_limit: Any
+        callback: Any
+        start_time: float
+        buf: rez.solver.SupportsWrite | Any
+        def __init__(self, max_fails: int, time_limit, callback, buf: SupportsWrite | None = None) -> None: ...
         def __call__(self, state): ...
     load_path: str | None
-    requested_timestamp: Incomplete
-    timestamp: Incomplete
-    building: Incomplete
-    testing: Incomplete
-    implicit_packages: list[Requirement]
-    caching: Incomplete
-    verbosity: Incomplete
-    _package_requests: list[Requirement]
-    package_paths: Incomplete
-    package_filter: Incomplete
-    package_orderers: Incomplete
+    requested_timestamp: float | None
+    timestamp: float | int
+    building: bool
+    testing: bool
+    implicit_packages: list[rez.version._requirement.Requirement]
+    caching: Any | bool
+    verbosity: int
+    _package_requests: list[rez.version._requirement.Requirement]
+    package_paths: Any | list[str]
+    package_filter: Any | rez.package_filter.PackageFilterList
+    package_orderers: rez.package_order.PackageOrderList
     append_sys_path: bool
-    package_caching: Incomplete
-    package_cache_async: Incomplete
-    default_patch_lock: Incomplete
-    patch_locks: Incomplete
-    rez_version: Incomplete
-    rez_path: Incomplete
-    user: Incomplete
-    host: Incomplete
-    platform: Incomplete
-    arch: Incomplete
-    os: Incomplete
-    created: Incomplete
-    status_: Incomplete
-    _resolved_packages: Incomplete
-    _resolved_ephemerals: Incomplete
-    failure_description: Incomplete
-    graph_string: Incomplete
-    graph_: Incomplete
-    from_cache: Incomplete
+    package_caching: Any
+    package_cache_async: Any
+    default_patch_lock: rez.resolved_context.PatchLock
+    patch_locks: dict[Any, Any]
+    rez_version: str
+    rez_path: str
+    user: str
+    host: Any
+    platform: Any
+    arch: Any
+    os: Any
+    created: int
+    status_: rez.resolver.ResolverStatus
+    _resolved_packages: list[rez.packages.Variant | Any]
+    _resolved_ephemerals: list[rez.version._requirement.Requirement] | None
+    failure_description: None
+    graph_string: None
+    graph_: Any | None
+    from_cache: bool | None
     solve_time: float
     load_time: float
     num_loaded_packages: int
@@ -314,9 +321,9 @@ class ResolvedContext:
             A string or `pygraph.digraph` object, or None if there is no graph
             associated with the resolve.
         """
-    def save(self, path: str):
+    def save(self, path: str) -> None:
         """Save the resolved context to file."""
-    def write_to_buffer(self, buf) -> None:
+    def write_to_buffer(self, buf: SupportsWrite) -> None:
         """Save the context to a buffer."""
     @classmethod
     def get_current(cls) -> ResolvedContext | None:
@@ -370,7 +377,7 @@ class ResolvedContext:
             difference between contexts.
         """
     @pool_memcached_connections
-    def print_info(self, buf=..., verbosity: int = 0, source_order: bool = False, show_resolved_uris: bool = False):
+    def print_info(self, buf: SupportsWrite = ..., verbosity: int = 0, source_order: bool = False, show_resolved_uris: bool = False) -> None:
         """Prints a message summarising the contents of the resolved context.
 
         Args:
@@ -382,8 +389,8 @@ class ResolvedContext:
                 'root' property listed, or their 'uri' if 'root' is None. Use
                 this option to list 'uri' regardless.
         """
-    def print_tools(self, buf=...) -> None: ...
-    def print_resolve_diff(self, other, heading: Incomplete | None = None):
+    def print_tools(self, buf: SupportsWrite = ...) -> None: ...
+    def print_resolve_diff(self, other, heading: Incomplete | None = None) -> None:
         """Print the difference between the resolve of two contexts.
 
         Args:
@@ -670,12 +677,12 @@ class ResolvedContext:
     def _get_package_cache(cls) -> PackageCache | None: ...
     def _update_package_cache(self) -> None: ...
     @classmethod
-    def _init_context_tracking_payload_base(cls): ...
+    def _init_context_tracking_payload_base(cls) -> None: ...
     def _track_context(self, context_data, action: str) -> None: ...
     @classmethod
-    def _read_from_buffer(cls, buf, identifier_str: Incomplete | None = None) -> ResolvedContext: ...
+    def _read_from_buffer(cls, buf, identifier_str: str | None = None) -> ResolvedContext: ...
     @classmethod
-    def _load_error(cls, e, path: Incomplete | None = None) -> NoReturn: ...
+    def _load_error(cls, e, path: str | None = None) -> NoReturn: ...
     def _set_parent_suite(self, suite_path, context_name: str) -> None: ...
     def _create_executor(self, interpreter: ActionInterpreter, parent_environ: dict[str, str] | None) -> RexExecutor: ...
     def _get_pre_resolve_bindings(self): ...

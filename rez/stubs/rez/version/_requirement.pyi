@@ -1,3 +1,5 @@
+import rez.version._requirement
+import rez.version._version
 from _typeshed import Incomplete
 from rez.version._util import _Common as _Common
 from rez.version._version import Version as Version, VersionRange as VersionRange
@@ -16,7 +18,7 @@ class VersionedObject(_Common):
     sep_regex_str: str
     sep_regex: Incomplete
     name_: str
-    version_: Version
+    version_: rez.version._version.Version
     sep_: str
     def __init__(self, s: str) -> None:
         """
@@ -89,7 +91,7 @@ class Requirement(_Common):
     '''
     sep_regex: Incomplete
     name_: str
-    range_: VersionRange | None
+    range_: rez.version._version.VersionRange | None
     negate_: bool
     conflict_: bool
     _str: str | None
@@ -150,7 +152,7 @@ class Requirement(_Common):
         Returns:
             str:
         """
-    def conflicts_with(self, other: object) -> bool:
+    def conflicts_with(self, other: Requirement | VersionedObject) -> bool:
         """Returns True if this requirement conflicts with another :class:`Requirement`
         or :class:`VersionedObject`.
 
@@ -184,9 +186,9 @@ class RequirementList(_Common):
     optimal form, merging any requirements for common objects. Order of objects
     is retained.
     """
-    requirements_: list[Requirement]
-    conflict_: tuple[Requirement, Requirement] | None
-    requirements_dict: dict[str, Requirement]
+    requirements_: list[rez.version._requirement.Requirement]
+    conflict_: tuple[rez.version._requirement.Requirement, rez.version._requirement.Requirement] | None
+    requirements_dict: dict[str, rez.version._requirement.Requirement]
     names_: set[str]
     conflict_names_: set[str]
     def __init__(self, requirements: list[Requirement]) -> None:

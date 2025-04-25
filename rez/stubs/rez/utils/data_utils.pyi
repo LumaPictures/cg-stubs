@@ -1,7 +1,8 @@
+import _thread
 from _typeshed import Incomplete
 from collections.abc import MutableMapping
 from rez.vendor.schema.schema import Optional as Optional, Schema as Schema
-from typing import Generic, TypeVar
+from typing import Any, Generic, TypeVar
 
 T = TypeVar('T')
 
@@ -11,8 +12,8 @@ class ModifyList:
     This can be used in configs to add to list-based settings, rather than
     overwriting them.
     """
-    prepend: Incomplete
-    append: Incomplete
+    prepend: Any
+    append: Any
     def __init__(self, append: Incomplete | None = None, prepend: Incomplete | None = None) -> None: ...
     def apply(self, v): ...
 
@@ -24,7 +25,7 @@ class DelayLoad:
     - yaml (``*.yaml``, ``*.yml``)
     - json (``*.json``)
     """
-    filepath: Incomplete
+    filepath: Any
     def __init__(self, filepath) -> None: ...
     def __str__(self) -> str: ...
     def get_value(self): ...
@@ -32,7 +33,7 @@ class DelayLoad:
 def remove_nones(**kwargs):
     """Return diict copy with nones removed.
     """
-def deep_update(dict1, dict2):
+def deep_update(dict1, dict2) -> None:
     """Perform a deep merge of `dict2` into `dict1`.
 
     Note that `dict2` and any nested dicts are unchanged.
@@ -81,16 +82,16 @@ class cached_class_property:
         >>> Foo.bah
         1
     """
-    func: Incomplete
+    func: Any
     def __init__(self, func, name: Incomplete | None = None) -> None: ...
     def __get__(self, instance, owner: Incomplete | None = None): ...
 
 class LazySingleton(Generic[T]):
     """A threadsafe singleton that initialises when first referenced."""
-    instance_class: Incomplete
-    nargs: Incomplete
-    kwargs: Incomplete
-    lock: Incomplete
+    instance_class: type[T]
+    nargs: tuple[Any, ...]
+    kwargs: dict[str, Any]
+    lock: _thread.LockType
     instance: T | None
     def __init__(self, instance_class: type[T], *nargs, **kwargs) -> None: ...
     def __call__(self) -> T: ...

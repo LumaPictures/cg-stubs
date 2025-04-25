@@ -1,6 +1,8 @@
+import rez.utils.scope
 from _typeshed import Incomplete
 from collections import UserDict
 from rez.utils.formatting import StringFormatMixin as StringFormatMixin, StringFormatType as StringFormatType
+from typing import Any
 
 class RecursiveAttribute(UserDict, StringFormatMixin):
     """An object that can have new attributes added recursively::
@@ -88,8 +90,8 @@ class ScopeContext:
     and the assigned properties will be merged. If the same property is set
     multiple times, it will be overwritten.
     '''
-    scopes: Incomplete
-    scope_stack: Incomplete
+    scopes: dict[Any, Any]
+    scope_stack: list[rez.utils.scope._Scope]
     def __init__(self) -> None: ...
     def __call__(self, name): ...
     def _scope_exit(self, name) -> None: ...
@@ -97,12 +99,12 @@ class ScopeContext:
         """Get an equivalent dict representation."""
     def __str__(self) -> str: ...
 
-def scoped_formatter(**objects):
+def scoped_formatter(**objects) -> RecursiveAttribute:
     """Format a string with respect to a set of objects' attributes.
 
     Use this rather than `scoped_format` when you need to reuse the formatter.
     """
-def scoped_format(txt, **objects):
+def scoped_format(txt: str, **objects) -> str:
     '''Format a string with respect to a set of objects\' attributes.
 
     Example:

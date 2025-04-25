@@ -1,3 +1,4 @@
+import rez.resolved_context
 from _typeshed import Incomplete
 from collections.abc import Generator
 from rez.config import Config as Config, config as config
@@ -15,7 +16,7 @@ from rez.utils.resources import ResourceHandle as ResourceHandle, ResourceWrappe
 from rez.utils.schema import schema_keys as schema_keys
 from rez.utils.sourcecode import SourceCode as SourceCode
 from rez.version import Requirement as Requirement, Version as Version, VersionRange as VersionRange, VersionedObject as VersionedObject
-from typing import Iterator, Literal, overload
+from typing import Any, Iterator, Literal, overload
 
 class PackageRepositoryResourceWrapper(ResourceWrapper, StringFormatMixin):
     format_expand: Incomplete
@@ -48,8 +49,8 @@ class PackageBaseResourceWrapper(PackageRepositoryResourceWrapper):
     """Abstract base class for `Package` and `Variant`.
     """
     late_bind_schemas: Incomplete
-    context: Incomplete
-    _late_binding_returnvalues: Incomplete
+    context: rez.resolved_context.ResolvedContext | None
+    _late_binding_returnvalues: dict[Any, Any]
     def __init__(self, resource: PackageResource | VariantResource, context: ResolvedContext | None = None) -> None: ...
     def set_context(self, context: ResolvedContext) -> None: ...
     def arbitrary_keys(self) -> None: ...
@@ -151,7 +152,7 @@ class Variant(PackageBaseResourceWrapper):
     keys: Incomplete
     is_package: bool
     is_variant: bool
-    _parent: Incomplete
+    _parent: Any
     def __init__(self, resource: VariantResource, context: Incomplete | None = None, parent: Incomplete | None = None) -> None: ...
     def __getattr__(self, name): ...
     def arbitrary_keys(self): ...
@@ -227,7 +228,7 @@ class PackageSearchPath:
 
     For example, $REZ_PACKAGES_PATH refers to a list of repositories.
     """
-    paths: Incomplete
+    paths: Any
     def __init__(self, packages_path) -> None:
         """Create a package repository list.
 
@@ -351,7 +352,7 @@ def get_developer_package(path: str, format: FileFormat | None = None) -> Develo
     Returns:
         `DeveloperPackage`.
     """
-def create_package(name: str, data, package_cls: Incomplete | None = None):
+def create_package(name: str, data, package_cls: type[Package] | None = None) -> Package:
     """Create a package given package data.
 
     Args:
@@ -361,7 +362,7 @@ def create_package(name: str, data, package_cls: Incomplete | None = None):
     Returns:
         `Package` object.
     """
-def get_variant(variant_handle: ResourceHandle | dict, context: Incomplete | None = None) -> Variant:
+def get_variant(variant_handle: ResourceHandle | dict, context: ResolvedContext | None = None) -> Variant:
     """Create a variant given its handle (or serialized dict equivalent)
 
     Args:
@@ -434,10 +435,10 @@ def get_completions(prefix: str, paths: list[str] | None = None, family_only: bo
         Set of strings, may be empty.
     '''
 @overload
-def get_latest_package(name: str, *, range_: Incomplete | None = None, paths: list[str] | None = None, error: Literal[True] = True) -> Package: ...
+def get_latest_package(name: str, *, range_: VersionRange | None = None, paths: list[str] | None = None, error: Literal[True] = True) -> Package: ...
 @overload
-def get_latest_package(name: str, *, range_: Incomplete | None = None, paths: list[str] | None = None, error: Literal[False] = False) -> Package | None: ...
-def get_latest_package_from_string(txt: str, paths: list[str] | None = None, error: bool = False):
+def get_latest_package(name: str, *, range_: VersionRange | None = None, paths: list[str] | None = None, error: Literal[False] | bool = False) -> Package | None: ...
+def get_latest_package_from_string(txt: str, paths: list[str] | None = None, error: bool = False) -> Package | None:
     """Get the latest package found within the given request string.
 
     Args:

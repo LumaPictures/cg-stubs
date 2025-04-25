@@ -6,6 +6,7 @@ from rez.utils.filesystem import is_subdirectory as is_subdirectory
 from rez.utils.logging_ import print_info as print_info, print_warning as print_warning
 from rez.utils.platform_ import platform_ as platform_
 from rez.utils.yaml import save_yaml as save_yaml
+from typing import Any
 
 def bundle_context(context, dest_dir, force: bool = False, skip_non_relocatable: bool = False, quiet: bool = False, patch_libs: bool = False, verbose: bool = False) -> None:
     """Bundle a context and its variants into a relocatable dir.
@@ -41,15 +42,15 @@ def bundle_context(context, dest_dir, force: bool = False, skip_non_relocatable:
 class _ContextBundler:
     """Performs context bundling.
     """
-    context: Incomplete
-    dest_dir: Incomplete
-    force: Incomplete
-    skip_non_relocatable: Incomplete
-    quiet: Incomplete
-    patch_libs: Incomplete
-    verbose: Incomplete
-    logs: Incomplete
-    copied_variants: Incomplete
+    context: Any
+    dest_dir: Any
+    force: bool
+    skip_non_relocatable: bool
+    quiet: bool
+    patch_libs: bool
+    verbose: bool
+    logs: list[Any]
+    copied_variants: dict[Any, Any]
     def __init__(self, context, dest_dir, force: bool = False, skip_non_relocatable: bool = False, quiet: bool = False, patch_libs: bool = False, verbose: bool = False) -> None: ...
     def bundle(self) -> None: ...
     @property

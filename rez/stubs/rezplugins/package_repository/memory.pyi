@@ -1,14 +1,13 @@
-from _typeshed import Incomplete
 from rez.package_repository import PackageRepository
 from rez.package_resources import PackageFamilyResource, PackageRepositoryResource, PackageResourceHelper, VariantResourceHelper, package_pod_schema
 from rez.packages import VariantResource
 from rez.utils.resources import ResourcePool, cached_property as cached_property
-from typing import Iterator
+from typing import Any, Iterator
 
 class MemoryPackageFamilyResource(PackageFamilyResource):
     key: str
     repository_type: str
-    def _uri(self): ...
+    def _uri(self) -> str: ...
     def iter_packages(self) -> Iterator[MemoryPackageResource]: ...
 
 class MemoryPackageResource(PackageResourceHelper):
@@ -57,7 +56,7 @@ class MemoryPackageRepository(PackageRepository):
         unversioned package \'bah\'.
     '''
     @classmethod
-    def name(cls): ...
+    def name(cls) -> str: ...
     @classmethod
     def create_repository(cls, repository_data) -> MemoryPackageRepository:
         """Create a standalone, in-memory repository.
@@ -73,7 +72,7 @@ class MemoryPackageRepository(PackageRepository):
         Returns:
             `MemoryPackageRepository` object.
         """
-    data: Incomplete
+    data: dict[Any, Any]
     def __init__(self, location: str, resource_pool: ResourcePool) -> None:
         """Create an in-memory package repository.
 

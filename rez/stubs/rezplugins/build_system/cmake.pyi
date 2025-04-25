@@ -4,6 +4,7 @@ from rez.build_system import BuildResult, BuildSystem
 from rez.exceptions import BuildSystemError
 from rez.packages import Variant
 from rez.resolved_context import ResolvedContext
+from typing import Any
 
 class RezCMakeError(BuildSystemError): ...
 
@@ -31,10 +32,10 @@ class CMakeBuildSystem(BuildSystem):
     @classmethod
     def is_valid_root(cls, path, package: Incomplete | None = None): ...
     @classmethod
-    def bind_cli(cls, parser: argparse.ArgumentParser, group: argparse._ArgumentGroup): ...
-    settings: Incomplete
-    build_target: Incomplete
-    cmake_build_system: Incomplete
+    def bind_cli(cls, parser: argparse.ArgumentParser, group: argparse._ArgumentGroup) -> None: ...
+    settings: Any
+    build_target: Any
+    cmake_build_system: Any
     def __init__(self, working_dir: str, opts: Incomplete | None = None, package: Incomplete | None = None, write_build_scripts: bool = False, verbose: bool = False, build_args=[], child_build_args=[]) -> None: ...
     def build(self, context: ResolvedContext, variant: Variant, build_path: str, install_path: str, install: bool = False, build_type=...) -> BuildResult: ...
     @classmethod

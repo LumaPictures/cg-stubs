@@ -18,7 +18,7 @@ def publish_message(host, amqp_settings, routing_key, data, block: bool = True):
     Returns:
         bool: True if message was sent successfully.
     """
-def _publish_message(host, amqp_settings, routing_key, data):
+def _publish_message(host, amqp_settings, routing_key, data) -> bool:
     """Publish an AMQP message.
 
     Returns:

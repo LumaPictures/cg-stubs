@@ -37,7 +37,7 @@ class LazyArgumentParser(ArgumentParser):
     `setup_subparser` is passed 'parser_name', 'parser', and can return a help
     string.
     """
-    setup_subparser: Incomplete
+    setup_subparser: Any
     def __init__(self, *args, **kwargs) -> None: ...
     def format_help(self):
         """Sets up all sub-parsers when help is requested."""
@@ -47,7 +47,7 @@ class LazyArgumentParser(ArgumentParser):
 _handled_int: bool
 _handled_term: bool
 
-def _env_var_true(name): ...
+def _env_var_true(name) -> bool: ...
 def print_items(items, stream=...) -> None: ...
 def sigbase_handler(signum, frame) -> None: ...
 def sigint_handler(signum, frame) -> None:

@@ -1,12 +1,16 @@
+import rez.package_test
+import rez.packages
+import typing
 from _typeshed import Incomplete
 from rez.config import config as config
 from rez.exceptions import PackageNotFoundError as PackageNotFoundError, PackageTestError as PackageTestError, RezError as RezError
-from rez.packages import get_latest_package_from_string as get_latest_package_from_string
+from rez.packages import Package as Package, get_latest_package_from_string as get_latest_package_from_string
 from rez.resolved_context import ResolvedContext as ResolvedContext
 from rez.utils.colorize import Printer as Printer, heading as heading
 from rez.utils.data_utils import RO_AttrDictWrapper as RO_AttrDictWrapper
 from rez.utils.logging_ import print_error as print_error, print_info as print_info, print_warning as print_warning
 from rez.version import Requirement as Requirement, RequirementList as RequirementList
+from typing import Any
 
 class PackageTestRunner:
     '''Object for running a package\'s tests.
@@ -38,22 +42,22 @@ class PackageTestRunner:
     Commands can also be a list - in this case, the test process is launched
     directly, rather than interpreted via a shell.
     '''
-    package_request: Incomplete
-    use_current_env: Incomplete
-    extra_package_requests: Incomplete
-    stdout: Incomplete
-    stderr: Incomplete
-    dry_run: Incomplete
-    stop_on_fail: Incomplete
-    cumulative_test_results: Incomplete
-    context_kwargs: Incomplete
-    verbose: Incomplete
-    package_paths: Incomplete
-    test_results: Incomplete
-    package: Incomplete
-    contexts: Incomplete
+    package_request: Any
+    use_current_env: bool
+    extra_package_requests: Any
+    stdout: Any | typing.TextIO
+    stderr: Any | typing.TextIO
+    dry_run: bool
+    stop_on_fail: bool
+    cumulative_test_results: Any
+    context_kwargs: dict[str, Any]
+    verbose: int
+    package_paths: Any
+    test_results: rez.package_test.PackageTestResults
+    package: rez.packages.Package | None
+    contexts: dict[Any, Any]
     stopped_on_fail: bool
-    timestamp: Incomplete
+    timestamp: int
     def __init__(self, package_request, use_current_env: bool = False, extra_package_requests: Incomplete | None = None, package_paths: Incomplete | None = None, stdout: Incomplete | None = None, stderr: Incomplete | None = None, verbose: int = 0, dry_run: bool = False, stop_on_fail: bool = False, cumulative_test_results: Incomplete | None = None, **context_kwargs) -> None:
         """Create a package tester.
 
@@ -169,7 +173,7 @@ class PackageTestResults:
     a single table.
     """
     valid_statuses: Incomplete
-    test_results: Incomplete
+    test_results: list[Any]
     def __init__(self) -> None: ...
     @property
     def num_tests(self) -> int:

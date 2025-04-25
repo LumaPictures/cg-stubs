@@ -1,3 +1,5 @@
+import rez.plugin_managers
+import rez.utils.data_utils
 import types
 from _typeshed import Incomplete
 from rez.config import _load_config_from_filepaths as _load_config_from_filepaths, config as config, expand_system_vars as expand_system_vars
@@ -43,11 +45,11 @@ class RezPluginType:
     the 'plugins' directory.
     """
     type_name: str
-    pretty_type_name: Incomplete
+    pretty_type_name: str
     plugin_classes: dict[str, type]
     failed_plugins: dict[str, str]
     plugin_modules: dict[str, types.ModuleType]
-    config_data: Incomplete
+    config_data: dict[Any, Any]
     def __init__(self) -> None: ...
     def __repr__(self) -> str: ...
     def register_plugin(self, plugin_name: str, plugin_class: type, plugin_module: types.ModuleType) -> None: ...
@@ -116,7 +118,7 @@ class RezPluginManager:
             This is important  because it ensures that rez's copy of
             'rezplugins' is always found first.
     """
-    _plugin_types: dict[str, LazySingleton[RezPluginType]]
+    _plugin_types: dict[str, rez.utils.data_utils.LazySingleton[rez.plugin_managers.RezPluginType]]
     def __init__(self) -> None: ...
     @cached_property
     def rezplugins_module_paths(self): ...

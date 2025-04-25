@@ -1,19 +1,20 @@
 from _typeshed import Incomplete
 from rez.exceptions import ReleaseVCSError
 from rez.release_vcs import ReleaseVCS
+from typing import Any
 
 class HgReleaseVCSError(ReleaseVCSError): ...
 
 class HgReleaseVCS(ReleaseVCS):
     @classmethod
-    def name(cls): ...
-    executable: Incomplete
-    patch_path: Incomplete
+    def name(cls) -> str: ...
+    executable: Any
+    patch_path: str
     def __init__(self, pkg_root, vcs_root: Incomplete | None = None) -> None: ...
     @classmethod
     def is_valid_root(cls, path): ...
     @classmethod
-    def search_parents_for_root(cls): ...
+    def search_parents_for_root(cls) -> bool: ...
     def hg(self, *nargs, **kwargs): ...
     def _create_tag_highlevel(self, tag_name, message: Incomplete | None = None):
         """Create a tag on the toplevel repo if there is no patch repo,
@@ -23,7 +24,7 @@ class HgReleaseVCS(ReleaseVCS):
         Returns a list where each entry is a dict for each bookmark or tag
         created, which looks like {'type': ('bookmark' or 'tag'), 'patch': bool}
         """
-    def _create_tag_lowlevel(self, tag_name, message: Incomplete | None = None, force: bool = True, patch: bool = False):
+    def _create_tag_lowlevel(self, tag_name, message: Incomplete | None = None, force: bool = True, patch: bool = False) -> bool:
         """Create a tag on the toplevel or patch repo
 
         If the tag exists, and force is False, no tag is made. If force is True,
@@ -35,8 +36,8 @@ class HgReleaseVCS(ReleaseVCS):
         Returns True or False indicating whether the tag was actually committed
         """
     def get_tags(self, patch: bool = False): ...
-    def tag_exists(self, tag_name): ...
-    def is_ancestor(self, commit1, commit2, patch: bool = False):
+    def tag_exists(self, tag_name) -> bool: ...
+    def is_ancestor(self, commit1, commit2, patch: bool = False) -> bool:
         """Returns True if commit1 is a direct ancestor of commit2, or False
         otherwise.
 

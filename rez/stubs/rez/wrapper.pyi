@@ -7,6 +7,7 @@ from rez.utils.data_utils import cached_property as cached_property
 from rez.utils.formatting import columnise as columnise
 from rez.vendor import yaml as yaml
 from rez.vendor.yaml.error import YAMLError as YAMLError
+from typing import Any
 
 class Wrapper:
     """A Wrapper.
@@ -20,11 +21,11 @@ class Wrapper:
     """
     def __init__(self, filepath) -> None:
         """Create a wrapper given its executable file."""
-    suite_path: Incomplete
-    context_name: Incomplete
-    context: Incomplete
-    tool_name: Incomplete
-    prefix_char: Incomplete
+    suite_path: Any
+    context_name: Any
+    context: Any
+    tool_name: Any
+    prefix_char: Any
     def _init(self, suite_path, context_name, context, tool_name, prefix_char: Incomplete | None = None) -> None: ...
     @cached_property
     def suite(self): ...
@@ -36,11 +37,11 @@ class Wrapper:
         """
     def _run_no_args(self, args): ...
     def _run(self, prefix_char, args): ...
-    def print_about(self):
+    def print_about(self) -> int:
         """Print an info message about the tool."""
-    def print_package_versions(self):
+    def print_package_versions(self) -> int:
         """Print a list of versions of the package this tool comes from, and
         indicate which version this tool is from."""
-    def peek(self): ...
+    def peek(self) -> int: ...
     @classmethod
     def _print_conflicting(cls, variants) -> None: ...

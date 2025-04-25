@@ -1,7 +1,9 @@
+import rez.package_test
 from _typeshed import Incomplete
 from rez.build_process import BuildProcessHelper
 from rez.build_system import BuildResult as BuildResult
 from rez.packages import Variant
+from typing import Any
 
 class LocalBuildProcess(BuildProcessHelper):
     """The default build process.
@@ -10,9 +12,9 @@ class LocalBuildProcess(BuildProcessHelper):
     """
     tmpdir_manager: Incomplete
     @classmethod
-    def name(cls): ...
-    ran_test_names: Incomplete
-    all_test_results: Incomplete
+    def name(cls) -> str: ...
+    ran_test_names: set[Any]
+    all_test_results: rez.package_test.PackageTestResults
     def __init__(self, *nargs, **kwargs) -> None: ...
     def build(self, install_path: str | None = None, clean: bool = False, install: bool = False, variants: list[int] | None = None) -> int: ...
     def release(self, release_message: Incomplete | None = None, variants: list[int] | None = None): ...

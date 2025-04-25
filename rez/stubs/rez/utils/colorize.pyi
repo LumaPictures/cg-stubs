@@ -1,6 +1,9 @@
 import logging
+import rez.solver
 from _typeshed import Incomplete
+from rez.solver import SupportsWrite as SupportsWrite
 from rez.vendor import colorama as colorama
+from typing import Any
 
 def colorama_wrap(stream):
     """ Wrap the stream with colorama so that it can display colors on any OS """
@@ -193,8 +196,8 @@ class ColorizedStreamHandler(logging.StreamHandler):
         """
 
 class Printer:
-    colorize: Incomplete
-    buf: Incomplete
-    def __init__(self, buf=...) -> None: ...
+    colorize: Any
+    buf: rez.solver.SupportsWrite
+    def __init__(self, buf: SupportsWrite = ...) -> None: ...
     def __call__(self, msg: str = '', style: Incomplete | None = None) -> None: ...
     def get(self, msg, style: Incomplete | None = None): ...

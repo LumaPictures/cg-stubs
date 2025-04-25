@@ -1,3 +1,6 @@
+import rez.package_order
+import rez.utils.typing
+import rez.version._version
 from _typeshed import Incomplete
 from rez.config import config as config
 from rez.packages import Package as Package, iter_packages as iter_packages
@@ -13,8 +16,8 @@ class FallbackComparable(_Comparable):
     """First tries to compare objects using the main_comparable, but if that
     fails, compares using the fallback_comparable object.
     """
-    main_comparable: Incomplete
-    fallback_comparable: Incomplete
+    main_comparable: rez.utils.typing.SupportsLessThan
+    fallback_comparable: rez.utils.typing.SupportsLessThan
     def __init__(self, main_comparable: SupportsLessThan, fallback_comparable: SupportsLessThan) -> None: ...
     def __eq__(self, other: object) -> bool: ...
     def __lt__(self, other: object) -> bool: ...
@@ -38,7 +41,7 @@ class PackageOrder:
             (Iterable[str]) Package families that this orderer is used for
         """
     @packages.setter
-    def packages(self, packages: str | Iterable[str] | None): ...
+    def packages(self, packages: str | Iterable[str] | None) -> None: ...
     def reorder(self, iterable: Iterable[Package], key: Callable[[Any], Package] | None = None) -> list[Package] | None:
         """Put packages into some order for consumption.
 
@@ -96,7 +99,7 @@ class PackageOrder:
     def sha1(self) -> str: ...
     def __str__(self) -> str: ...
     def __eq__(self, other): ...
-    def __ne__(self, other): ...
+    def __ne__(self, other) -> bool: ...
     def __repr__(self) -> str: ...
 
 class NullPackageOrder(PackageOrder):
@@ -126,7 +129,7 @@ class SortedOrder(PackageOrder):
     """An orderer that sorts based on :attr:`Package.version <rez.packages.Package.version>`.
     """
     name: str
-    descending: Incomplete
+    descending: bool
     def __init__(self, descending: bool, packages: Incomplete | None = None) -> None: ...
     def sort_key_implementation(self, package_name: str, version: Version) -> SupportsLessThan: ...
     def __str__(self) -> str: ...
@@ -148,8 +151,8 @@ class PerFamilyOrder(PackageOrder):
     """An orderer that applies different orderers to different package families.
     """
     name: str
-    order_dict: Incomplete
-    default_order: Incomplete
+    order_dict: dict[str, rez.package_order.PackageOrder]
+    default_order: rez.package_order.PackageOrder | None
     def __init__(self, order_dict: dict[str, PackageOrder], default_order: PackageOrder | None = None) -> None:
         """Create a reorderer.
 
@@ -191,7 +194,7 @@ class VersionSplitPackageOrder(PackageOrder):
     with ``version=3`` would give the order [3, 2, 1, 5, 4].
     """
     name: str
-    first_version: Incomplete
+    first_version: rez.version._version.Version
     def __init__(self, first_version: Version, packages: Incomplete | None = None) -> None:
         """Create a reorderer.
 
@@ -256,10 +259,10 @@ class TimestampPackageOrder(PackageOrder):
     why 2.1.1 is consumed before 2.1.0).
     """
     name: str
-    timestamp: Incomplete
-    rank: Incomplete
-    _cached_first_after: Incomplete
-    _cached_sort_key: Incomplete
+    timestamp: int
+    rank: int
+    _cached_first_after: dict[Any, Any]
+    _cached_sort_key: dict[Any, Any]
     def __init__(self, timestamp: int, rank: int = 0, packages: Incomplete | None = None) -> None:
         """Create a reorderer.
 
@@ -293,7 +296,7 @@ class TimestampPackageOrder(PackageOrder):
 class PackageOrderList(list[PackageOrder]):
     """A list of package orderer.
     """
-    by_package: dict[str, PackageOrder]
+    by_package: dict[str, rez.package_order.PackageOrder]
     dirty: bool
     def __init__(self, *args, **kwargs) -> None: ...
     def to_pod(self) -> list: ...
@@ -314,7 +317,7 @@ class PackageOrderList(list[PackageOrder]):
 def to_pod(orderer: PackageOrder) -> dict: ...
 def from_pod(data) -> PackageOrder: ...
 def get_orderer(package_name, orderers: Incomplete | None = None): ...
-def register_orderer(cls):
+def register_orderer(cls) -> bool:
     """Register an orderer
 
     Args:

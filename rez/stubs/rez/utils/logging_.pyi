@@ -1,6 +1,7 @@
 from _typeshed import Incomplete
 from collections.abc import Generator
 from contextlib import contextmanager
+from typing import Any
 
 logger: Incomplete
 
@@ -16,14 +17,14 @@ def get_error_printer(enabled: bool = True): ...
 def get_critical_printer(enabled: bool = True): ...
 
 class _Printer:
-    printer_function: Incomplete
+    printer_function: Any | None
     def __init__(self, enabled: bool = True, printer_function: Incomplete | None = None) -> None: ...
     def __call__(self, msg, *nargs) -> None: ...
     def __bool__(self) -> bool: ...
 
 @contextmanager
 def log_duration(printer, msg) -> Generator[None]: ...
-def view_file_logs(globbed_path, loglevel_index: Incomplete | None = None):
+def view_file_logs(globbed_path, loglevel_index: Incomplete | None = None) -> None:
     """View logs from one or more logfiles.
 
     Prints to stdout.
