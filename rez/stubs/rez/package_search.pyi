@@ -9,7 +9,7 @@ from rez.vendor.pygraph.classes.digraph import digraph as digraph  # type: ignor
 from rez.version import Requirement as Requirement
 from typing import Any
 
-def get_reverse_dependency_tree(package_name, depth: Incomplete | None = None, paths: Incomplete | None = None, build_requires: bool = False, private_build_requires: bool = False):
+def get_reverse_dependency_tree(package_name: str, depth: int | None = None, paths: list[str] | None = None, build_requires: bool = False, private_build_requires: bool = False) -> tuple[list[list[str]], digraph]:
     """Find packages that depend on the given package.
 
     This is a reverse dependency lookup. A tree is constructed, showing what
@@ -34,7 +34,7 @@ def get_reverse_dependency_tree(package_name, depth: Incomplete | None = None, p
         - `pygraph.digraph` object, where nodes are package names, and
           `package_name` is always the leaf node.
     """
-def get_plugins(package_name, paths: Incomplete | None = None):
+def get_plugins(package_name: str, paths: list[str] | None = None) -> list[str]:
     """Find packages that are plugins of the given package.
 
     Args:
@@ -59,14 +59,14 @@ class ResourceSearchResult:
 class ResourceSearcher:
     """Search for resources (packages, variants or package families).
     """
-    resource_type: Any
+    resource_type: str | None
     no_local: bool
     latest: bool
-    after_time: Any
-    before_time: Any
+    after_time: int | None
+    before_time: int | None
     validate: bool
-    package_paths: Any
-    def __init__(self, package_paths: Incomplete | None = None, resource_type: Incomplete | None = None, no_local: bool = False, latest: bool = False, after_time: Incomplete | None = None, before_time: Incomplete | None = None, validate: bool = False) -> None:
+    package_paths: list[str] | None
+    def __init__(self, package_paths: list[str] | None = None, resource_type: str | None = None, no_local: bool = False, latest: bool = False, after_time: int | None = None, before_time: int | None = None, validate: bool = False) -> None:
         '''Create resource search.
 
         Args:
@@ -87,7 +87,7 @@ class ResourceSearcher:
         Returns:
             List of `ResourceSearchResult` objects
         '''
-    def iter_resources(self, resources_request: Incomplete | None = None) -> None:
+    def iter_resources(self, resources_request: str | None = None) -> None:
         """Iterate over matching resources.
 
         Args:
@@ -102,7 +102,7 @@ class ResourceSearcher:
               in alphabetical order if families, and version ascending for
               packages or variants.
         """
-    def search(self, resources_request: Incomplete | None = None):
+    def search(self, resources_request: str | None = None) -> tuple[str, list[ResourceSearchResult]]:
         """Search for resources.
 
         Args:
@@ -124,9 +124,9 @@ class ResourceSearchResultFormatter:
     """Formats search results.
     """
     fields: Incomplete
-    output_format: Any
+    output_format: str | None
     suppress_newlines: bool
-    def __init__(self, output_format: Incomplete | None = None, suppress_newlines: bool = False) -> None:
+    def __init__(self, output_format: str | None = None, suppress_newlines: bool = False) -> None:
         '''
         Args:
             output_format (str): String that can contain keywords such as
@@ -136,13 +136,13 @@ class ResourceSearchResultFormatter:
                 into newlines. Defaults to qualified name.
             suppress_newlines (bool): If True, replace newlines with \'\\n\'.
         '''
-    def print_search_results(self, search_results, buf=...) -> None:
+    def print_search_results(self, search_results: list[ResourceSearchResult], buf=...) -> None:
         """Print formatted search results.
 
         Args:
             search_results (list of `ResourceSearchResult`): Search to format.
         """
-    def format_search_results(self, search_results):
+    def format_search_results(self, search_results: list[ResourceSearchResult]):
         """Format search results.
 
         Args:
@@ -151,4 +151,4 @@ class ResourceSearchResultFormatter:
         Returns:
             tuple: List of 2-tuple: Text and color to print in.
         """
-    def _format_search_result(self, resource_search_result): ...
+    def _format_search_result(self, resource_search_result: ResourceSearchResult): ...

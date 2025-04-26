@@ -1,10 +1,9 @@
-from _typeshed import Incomplete
 from rez.config import config as config
 from rez.package_repository import package_repository_manager as package_repository_manager
 from rez.utils.logging_ import print_info as print_info
 from rez.version import Version as Version
 
-def remove_package_family(name, path, force: bool = False):
+def remove_package_family(name: str, path: str, force: bool = False) -> bool:
     """Remove a package family from its repository.
 
     A family can only be deleted if it contains no packages, hidden or
@@ -18,7 +17,7 @@ def remove_package_family(name, path, force: bool = False):
     Returns:
         bool: True if the package family was removed, False if not found.
     """
-def remove_package(name, version, path):
+def remove_package(name: str, version: Version | str, path: str) -> bool:
     """Remove a package from its repository.
 
     Note that you are able to remove a package that is hidden (ie ignored).
@@ -33,7 +32,7 @@ def remove_package(name, version, path):
     Returns:
         bool: True if the package was removed, False if package not found.
     """
-def remove_packages_ignored_since(days, paths: Incomplete | None = None, dry_run: bool = False, verbose: bool = False):
+def remove_packages_ignored_since(days: int, paths: list[str] | None = None, dry_run: bool = False, verbose: bool = False) -> int:
     """Remove packages ignored for >= specified number of days.
 
     Args:

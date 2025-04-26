@@ -16,7 +16,9 @@ from rez.utils.resources import ResourceHandle as ResourceHandle, ResourceWrappe
 from rez.utils.schema import schema_keys as schema_keys
 from rez.utils.sourcecode import SourceCode as SourceCode
 from rez.version import Requirement as Requirement, Version as Version, VersionRange as VersionRange, VersionedObject as VersionedObject
-from typing import Any, Iterator, Literal, overload
+from typing import Any, Iterator, Literal, TypeVar, overload
+
+PackageT = TypeVar('PackageT', bound='Package')
 
 class PackageRepositoryResourceWrapper(ResourceWrapper, StringFormatMixin):
     format_expand: Incomplete
@@ -200,7 +202,7 @@ class Variant(PackageBaseResourceWrapper):
         Returns:
             List of `Requirement` objects.
         """
-    def install(self, path, dry_run: bool = False, overrides: Incomplete | None = None) -> Variant:
+    def install(self, path: str, dry_run: bool = False, overrides: dict[str, Any] | None = None) -> Variant | None:
         """Install this variant into another package repository.
 
         If the package already exists, this variant will be correctly merged
@@ -352,16 +354,10 @@ def get_developer_package(path: str, format: FileFormat | None = None) -> Develo
     Returns:
         `DeveloperPackage`.
     """
-def create_package(name: str, data, package_cls: type[Package] | None = None) -> Package:
-    """Create a package given package data.
-
-    Args:
-        name (str): Package name.
-        data (dict): Package data. Must conform to `package_maker.package_schema`.
-
-    Returns:
-        `Package` object.
-    """
+@overload
+def create_package(name: str, data, package_cls: type[PackageT]) -> PackageT: ...
+@overload
+def create_package(name: str, data) -> Package: ...
 def get_variant(variant_handle: ResourceHandle | dict, context: ResolvedContext | None = None) -> Variant:
     """Create a variant given its handle (or serialized dict equivalent)
 

@@ -14,7 +14,7 @@ from rez.package_order import PackageOrder as PackageOrder
 from rez.package_repository import package_repository_manager as package_repository_manager
 from rez.packages import Variant as Variant, get_last_release_time as get_last_release_time, get_variant as get_variant
 from rez.resolved_context import ResolvedContext as ResolvedContext
-from rez.solver import Solver as Solver, SolverCallbackReturn as SolverCallbackReturn, SolverState as SolverState, SolverStatus as SolverStatus
+from rez.solver import Solver as Solver, SolverCallbackReturn as SolverCallbackReturn, SolverState as SolverState, SolverStatus as SolverStatus, SupportsWrite as SupportsWrite
 from rez.utils.logging_ import log_duration as log_duration
 from rez.utils.memcached import Client as Client, memcached_client as memcached_client, pool_memcached_connections as pool_memcached_connections
 from rez.version import Requirement as Requirement
@@ -48,7 +48,7 @@ class Resolver:
     testing: bool
     verbosity: bool
     caching: bool
-    buf: Any
+    buf: rez.solver.SupportsWrite | None
     suppress_passive: bool
     print_stats: bool
     package_orderers_hash: str
@@ -57,14 +57,14 @@ class Resolver:
     status_: rez.resolver.ResolverStatus
     resolved_packages_: list[rez.packages.Variant] | None
     resolved_ephemerals_: list[rez.version._requirement.Requirement] | None
-    failure_description: None
+    failure_description: str | None
     graph_: None
     from_cache: bool
     memcached_servers: Any | None
     solve_time: float
     load_time: float
     _print: Any
-    def __init__(self, context: ResolvedContext, package_requests: list[Requirement], package_paths: list[str], package_filter: PackageFilterList | None = None, package_orderers: list[PackageOrder] | None = None, timestamp: float | None = 0, callback: Callable[[SolverState], tuple[SolverCallbackReturn, str]] | None = None, building: bool = False, testing: bool = False, verbosity: bool = False, buf: Incomplete | None = None, package_load_callback: Incomplete | None = None, caching: bool = True, suppress_passive: bool = False, print_stats: bool = False) -> None:
+    def __init__(self, context: ResolvedContext, package_requests: list[Requirement], package_paths: list[str], package_filter: PackageFilterList | None = None, package_orderers: list[PackageOrder] | None = None, timestamp: float | None = 0, callback: Callable[[SolverState], tuple[SolverCallbackReturn, str]] | None = None, building: bool = False, testing: bool = False, verbosity: bool = False, buf: SupportsWrite | None = None, package_load_callback: Incomplete | None = None, caching: bool = True, suppress_passive: bool = False, print_stats: bool = False) -> None:
         """Create a Resolver.
 
         Args:
@@ -180,4 +180,4 @@ class Resolver:
     def _solve(self) -> Solver: ...
     def _set_result(self, solver_dict) -> None: ...
     @classmethod
-    def _solver_to_dict(cls, solver): ...
+    def _solver_to_dict(cls, solver: Solver) -> dict: ...

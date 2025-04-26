@@ -4,7 +4,7 @@ from enum import Enum
 from rez.exceptions import PackageRequestError as PackageRequestError
 from rez.version import Requirement as Requirement
 from string import Formatter
-from typing import Any, Sequence
+from typing import Any, Mapping, Sequence
 
 PACKAGE_NAME_REGSTR: str
 PACKAGE_NAME_REGEX: Incomplete
@@ -116,7 +116,7 @@ def expand_abbreviations(txt, fields):
     Returns:
         Expanded string.
     '''
-def expandvars(text: str, environ: Incomplete | None = None) -> str:
+def expandvars(text: str, environ: Mapping[str, str] | None = None) -> str:
     """Expand shell variables of form $var and ${var}.
 
     Unknown variables are left unchanged.

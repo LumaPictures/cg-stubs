@@ -16,6 +16,7 @@ from rez.package_cache import PackageCache as PackageCache
 from rez.package_filter import PackageFilterList as PackageFilterList
 from rez.package_order import PackageOrder as PackageOrder, PackageOrderList as PackageOrderList
 from rez.package_repository import package_repository_manager as package_repository_manager
+from rez.package_resources import VariantResource as VariantResource
 from rez.packages import Package as Package, Variant as Variant, get_variant as get_variant, iter_packages as iter_packages
 from rez.resolver import Resolver as Resolver, ResolverStatus as ResolverStatus
 from rez.rex import ActionInterpreter as ActionInterpreter, OutputStyle as OutputStyle, Python as Python, RexExecutor as RexExecutor, literal as literal
@@ -38,7 +39,7 @@ from rez.utils.which import which as which
 from rez.utils.yaml import dump_yaml as dump_yaml
 from rez.vendor import yaml as yaml  # type: ignore[import-not-found]
 from rez.version import Requirement as Requirement, VersionRange as VersionRange
-from typing import Any, Callable, Iterable, NoReturn, Sequence, TypeVar
+from typing import Any, Callable, Iterable, Mapping, NoReturn, Sequence, TypeVar
 
 CallableT = TypeVar('CallableT', bound=Callable)
 
@@ -143,10 +144,10 @@ class ResolvedContext:
     os: Any
     created: int
     status_: rez.resolver.ResolverStatus
-    _resolved_packages: list[rez.packages.Variant | Any]
+    _resolved_packages: list[rez.packages.Variant] | None
     _resolved_ephemerals: list[rez.version._requirement.Requirement] | None
-    failure_description: None
-    graph_string: None
+    failure_description: str | None
+    graph_string: str | None
     graph_: Any | None
     from_cache: bool | None
     solve_time: float
@@ -419,7 +420,7 @@ class ResolvedContext:
     def validate(self) -> None:
         """Validate the context."""
     @_on_success
-    def get_environ(self, parent_environ: Incomplete | None = None) -> dict[str, str]:
+    def get_environ(self, parent_environ: Mapping[str, str] | None = None) -> dict[str, str]:
         """Get the environ dict resulting from interpreting this context.
 
         Args:
@@ -553,7 +554,7 @@ class ResolvedContext:
             This does not alter the current python session.
         """
     @_on_success
-    def execute_rex_code(self, code, filename: Incomplete | None = None, shell: Incomplete | None = None, parent_environ: dict[str, str] | None = None, **Popen_args):
+    def execute_rex_code(self, code, filename: Incomplete | None = None, shell: Incomplete | None = None, parent_environ: Mapping[str, str] | None = None, **Popen_args):
         """Run some rex code in the context.
 
         Note:
@@ -572,7 +573,7 @@ class ResolvedContext:
             subprocess.Popen: Subprocess object for the shell process.
         """
     @_on_success
-    def execute_shell(self, shell: str | None = None, parent_environ: dict[str, str] | None = None, rcfile: str | None = None, norc: bool = False, stdin: bool = False, command: str | Sequence[str] | None = None, quiet: bool = False, block: bool | None = None, actions_callback: Callable[[RexExecutor], Any] | None = None, post_actions_callback: Callable[[RexExecutor], Any] | None = None, context_filepath: Incomplete | None = None, start_new_session: bool = False, detached: bool = False, pre_command: Incomplete | None = None, **Popen_args):
+    def execute_shell(self, shell: str | None = None, parent_environ: Mapping[str, str] | None = None, rcfile: str | None = None, norc: bool = False, stdin: bool = False, command: str | Sequence[str] | None = None, quiet: bool = False, block: bool | None = None, actions_callback: Callable[[RexExecutor], Any] | None = None, post_actions_callback: Callable[[RexExecutor], Any] | None = None, context_filepath: Incomplete | None = None, start_new_session: bool = False, detached: bool = False, pre_command: Incomplete | None = None, **Popen_args):
         """Spawn a possibly-interactive shell.
 
         Args:
@@ -684,7 +685,7 @@ class ResolvedContext:
     @classmethod
     def _load_error(cls, e, path: str | None = None) -> NoReturn: ...
     def _set_parent_suite(self, suite_path, context_name: str) -> None: ...
-    def _create_executor(self, interpreter: ActionInterpreter, parent_environ: dict[str, str] | None) -> RexExecutor: ...
+    def _create_executor(self, interpreter: ActionInterpreter, parent_environ: Mapping[str, str] | None) -> RexExecutor: ...
     def _get_pre_resolve_bindings(self): ...
     @pool_memcached_connections
     def _execute(self, executor: RexExecutor) -> None:

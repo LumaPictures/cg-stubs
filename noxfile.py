@@ -519,8 +519,8 @@ def generate(session: nox.Session, lib: str) -> None:
         version = get_version(lib, root=True)
         args += [f"OpenEXR=={version}", "numpy"]
     elif lib == "rez":
-        # args += ["git+https://github.com/chadrik/rez@typing"]
-        args += ["/Users/chad/dev/rez"]
+        # args += ["git+https://github.com/chadrik/rez@typing", "mypy-silent"]
+        args += ["/Users/chad/dev/rez", "mypy-silent"]
     session.env.pop("PYTHONPATH", None)
     session.install(*args)
 

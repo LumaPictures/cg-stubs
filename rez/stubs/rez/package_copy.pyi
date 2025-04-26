@@ -9,8 +9,9 @@ from rez.utils.base26 import create_unique_base26_symlink as create_unique_base2
 from rez.utils.filesystem import additive_copytree as additive_copytree, get_existing_path as get_existing_path, make_path_writable as make_path_writable, replacing_copy as replacing_copy, replacing_symlink as replacing_symlink, safe_makedirs as safe_makedirs
 from rez.utils.logging_ import print_info as print_info, print_warning as print_warning
 from rez.utils.sourcecode import IncludeModuleManager as IncludeModuleManager
+from rez.version import Version as Version
 
-def copy_package(package: Package, dest_repository: PackageRepository, variants: list[int] | None = None, shallow: bool = False, dest_name: Incomplete | None = None, dest_version: Incomplete | None = None, overwrite: bool = False, force: bool = False, follow_symlinks: bool = False, dry_run: bool = False, keep_timestamp: bool = False, skip_payload: bool = False, overrides: Incomplete | None = None, verbose: bool = False) -> dict[str, list[tuple[Variant, Variant]]]:
+def copy_package(package: Package, dest_repository: PackageRepository, variants: list[int] | None = None, shallow: bool = False, dest_name: str | None = None, dest_version: str | Version | None = None, overwrite: bool = False, force: bool = False, follow_symlinks: bool = False, dry_run: bool = False, keep_timestamp: bool = False, skip_payload: bool = False, overrides: Incomplete | None = None, verbose: bool = False) -> dict[str, list[tuple[Variant, Variant]]]:
     '''Copy a package from one package repository to another.
 
     This copies the package definition and payload. The package can also be

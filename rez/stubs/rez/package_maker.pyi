@@ -14,7 +14,7 @@ from rez.utils.logging_ import print_warning as print_warning
 from rez.utils.schema import Required as Required, extensible_schema_dict as extensible_schema_dict
 from rez.vendor.schema.schema import And as And, Optional as Optional, Or as Or, Schema as Schema, Use as Use  # type: ignore[import-not-found]
 from rez.version import Version as Version
-from typing import Any, Iterator
+from typing import Any, Callable, Iterator
 
 package_request_schema: Incomplete
 tests_schema: Incomplete
@@ -26,7 +26,7 @@ class PackageMaker(AttrDictWrapper):
     package_cls: type[rez.packages.Package]
     installed_variants: list[Any]
     skipped_variants: list[Any]
-    def __init__(self, name: str, data: Incomplete | None = None, package_cls: type[Package] | None = None) -> None:
+    def __init__(self, name: str, data: dict | None = None, package_cls: type[Package] | None = None) -> None:
         """Create a package maker.
 
         Args:
@@ -38,10 +38,10 @@ class PackageMaker(AttrDictWrapper):
         Returns:
             `Package` object.
         """
-    def _get_data(self): ...
+    def _get_data(self) -> dict: ...
 
 @contextmanager
-def make_package(name: str, path: str, make_base: Incomplete | None = None, make_root: Incomplete | None = None, skip_existing: bool = True, warn_on_skip: bool = True) -> Iterator[PackageMaker]:
+def make_package(name: str, path: str, make_base: Callable[[Variant, str], Any] | None = None, make_root: Callable[[Variant, str], Any] | None = None, skip_existing: bool = True, warn_on_skip: bool = True) -> Iterator[PackageMaker]:
     '''Make and install a package.
 
     Example:

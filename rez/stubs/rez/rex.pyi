@@ -1,6 +1,7 @@
 import _collections_abc
 import os
 import rez.rex
+import typing
 from _typeshed import Incomplete
 from collections.abc import Generator, MutableMapping
 from contextlib import contextmanager
@@ -16,7 +17,7 @@ from rez.utils.formatting import expandvars as expandvars
 from rez.utils.platform_ import platform_ as platform_
 from rez.utils.sourcecode import SourceCode as SourceCode, SourceCodeError as SourceCodeError
 from string import Formatter
-from typing import Any, Callable, Iterable
+from typing import Any, Callable, Iterable, Mapping
 
 class Action:
     name: str
@@ -97,13 +98,13 @@ class ActionManager:
     """
     interpreter: rez.rex.ActionInterpreter
     verbose: bool
-    parent_environ: os._Environ[str] | dict[str, str]
+    parent_environ: typing.Mapping[str, str]
     parent_variables: set[str]
     environ: dict[Any, Any]
     formatter: Any | Overload(Callable[[object], str], Callable[[_collections_abc.Buffer, str, str], str])  # type: ignore[valid-type]
     actions: list[Any]
     _env_sep_map: Any
-    def __init__(self, interpreter: ActionInterpreter, parent_environ: dict[str, str] | None = None, parent_variables: Iterable[str] | None = None, formatter: Incomplete | None = None, verbose: bool = False, env_sep_map: Incomplete | None = None) -> None:
+    def __init__(self, interpreter: ActionInterpreter, parent_environ: Mapping[str, str] | None = None, parent_variables: Iterable[str] | None = None, formatter: Incomplete | None = None, verbose: bool = False, env_sep_map: Incomplete | None = None) -> None:
         """
         interpreter: string or `ActionInterpreter`
             the interpreter to use when executing rex actions
@@ -132,13 +133,13 @@ class ActionManager:
     def _env_sep(self, name): ...
     def _is_verbose(self, command): ...
     def _format(self, value): ...
-    def _expand(self, value): ...
+    def _expand(self, value: str): ...
     def _key(self, key): ...
     def _value(self, value): ...
     def get_output(self, style=...): ...
     def undefined(self, key) -> bool: ...
     def defined(self, key) -> bool: ...
-    def expandvars(self, value, format: bool = True): ...
+    def expandvars(self, value, format: bool = True) -> str: ...
     def getenv(self, key): ...
     def setenv(self, key, value) -> None: ...
     def unsetenv(self, key) -> None: ...
@@ -363,11 +364,11 @@ class EscapedString:
         you can use the `literal` and `expandable` free functions, rather than
         constructing a class instance directly.
     '''
-    strings: list[tuple[bool, Any]]
-    def __init__(self, value, is_literal: bool = False) -> None: ...
-    def copy(self): ...
-    def literal(self, value): ...
-    def expandable(self, value): ...
+    strings: list[tuple[bool, str]]
+    def __init__(self, value: str, is_literal: bool = False) -> None: ...
+    def copy(self) -> EscapedString: ...
+    def literal(self, value) -> EscapedString: ...
+    def expandable(self, value) -> EscapedString: ...
     def l(self, value): ...
     def e(self, value): ...
     def _add(self, value, is_literal) -> None: ...
@@ -376,19 +377,19 @@ class EscapedString:
     def __repr__(self) -> str: ...
     def __eq__(self, other): ...
     def __ne__(self, other) -> bool: ...
-    def __add__(self, other):
+    def __add__(self, other) -> EscapedString:
         """Join two escaped strings together.
 
         Returns:
             `EscapedString` object.
         """
-    def expanduser(self):
+    def expanduser(self) -> EscapedString:
         """Analogous to os.path.expanduser.
 
         Returns:
             `EscapedString` object with expanded '~' references.
         """
-    def formatted(self, func):
+    def formatted(self, func) -> EscapedString:
         """Return the string with non-literal parts formatted.
 
         Args:
@@ -405,17 +406,17 @@ class EscapedString:
             List of `EscapedString`.
         """
     @classmethod
-    def join(cls, sep, values): ...
+    def join(cls, sep: str, values) -> EscapedString: ...
     @classmethod
-    def promote(cls, value): ...
+    def promote(cls, value: str | EscapedString) -> EscapedString: ...
     @classmethod
-    def demote(cls, value): ...
+    def demote(cls, value: str | EscapedString) -> str: ...
     @classmethod
     def disallow(cls, value): ...
 
-def literal(value):
+def literal(value) -> EscapedString:
     """Creates a literal string."""
-def expandable(value):
+def expandable(value) -> EscapedString:
     """Creates an expandable string."""
 def optionvars(name, default: Incomplete | None = None):
     """Access arbitrary data from rez config setting 'optionvars'.
@@ -510,7 +511,7 @@ class RexExecutor:
     formatter: rez.rex.NamespaceFormatter
     manager: rez.rex.ActionManager
     environ: rez.rex.EnvironmentDict
-    def __init__(self, interpreter: ActionInterpreter | None = None, globals_map: Incomplete | None = None, parent_environ: dict[str, str] | None = None, parent_variables: Incomplete | None = None, shebang: bool = True, add_default_namespaces: bool = True) -> None:
+    def __init__(self, interpreter: ActionInterpreter | None = None, globals_map: Incomplete | None = None, parent_environ: Mapping[str, str] | None = None, parent_variables: Incomplete | None = None, shebang: bool = True, add_default_namespaces: bool = True) -> None:
         """
         interpreter: `ActionInterpreter` or None
             the interpreter to use when executing rex actions. If None, creates

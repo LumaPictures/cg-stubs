@@ -1,3 +1,4 @@
+import rez.package_filter
 import rez.version._requirement
 from _typeshed import Incomplete
 from rez.config import config as config
@@ -100,13 +101,13 @@ class PackageFilter(PackageFilterBase):
             float: The approximate cost of the filter.
         """
     @classmethod
-    def from_pod(cls, data):
+    def from_pod(cls, data: dict) -> PackageFilter:  # type: ignore[override]
         """Convert from POD types to equivalent package filter.
 
         Returns:
             PackageFilter:
         """
-    def to_pod(self): ...
+    def to_pod(self) -> dict: ...  # type: ignore[override]
     def _add_rule(self, rules_dict, rule) -> None: ...
     def __str__(self) -> str: ...
 
@@ -116,7 +117,7 @@ class PackageFilterList(PackageFilterBase):
     A package is excluded by a filter list iff any filter within the list
     excludes it.
     """
-    filters: list[Any]
+    filters: list[rez.package_filter.PackageFilter]
     def __init__(self) -> None: ...
     def add_filter(self, package_filter: PackageFilter) -> None:
         """Add a filter to the list.
@@ -134,7 +135,7 @@ class PackageFilterList(PackageFilterBase):
             all filters.
         """
     def excludes(self, package: Package) -> Rule | None:
-        """Returns the first rule that exlcudes ``package``, if any.
+        """Returns the first rule that excludes ``package``, if any.
 
         Returns:
             Rule:
@@ -145,17 +146,17 @@ class PackageFilterList(PackageFilterBase):
         Adding rules to the copy will not alter the source.
         """
     @classmethod
-    def from_pod(cls, data) -> PackageFilterList:  # type: ignore[override]
+    def from_pod(cls, data: list[dict]) -> PackageFilterList:  # type: ignore[override]
         """Convert from POD types to equivalent package filter.
 
         Returns:
             PackageFilterList:
         """
-    def to_pod(self): ...
+    def to_pod(self) -> list[dict]: ...  # type: ignore[override]
     def __bool__(self) -> bool: ...
     def __str__(self) -> str: ...
     @cached_class_property
-    def singleton(cls):
+    def singleton(cls) -> PackageFilterList:
         """Filter list as configured by :data:`package_filter`.
 
         Returns:

@@ -1,3 +1,4 @@
+import logging
 from _typeshed import Incomplete
 from collections.abc import Generator
 from contextlib import contextmanager
@@ -134,7 +135,7 @@ class PackageCache:
         .. deprecated:: 3.2.0
            Use :method:`add_variants` instead.
         """
-    def add_variants(self, variants: Iterable[Variant], package_cache_async: bool = True):
+    def add_variants(self, variants: Iterable[Variant], package_cache_async: bool = True) -> None:
         """Add the given variants to the package payload cache.
         """
     @staticmethod
@@ -145,7 +146,7 @@ class PackageCache:
         Returns:
             subprocess.Popen : The package caching daemon process
         """
-    def get_variants(self):
+    def get_variants(self) -> list[tuple[Variant, str, int]]:
         """Get variants and their current statuses from the cache.
 
         Returns:
@@ -191,7 +192,7 @@ class PackageCache:
     @contextmanager
     def _lock(self) -> Generator[None]: ...
     def _run_caching_step(self, state, wait_for_copying: bool = False) -> bool: ...
-    def _init_logging(self):
+    def _init_logging(self) -> logging.Logger:
         """
         Creates logger that logs to file and stdout. Used for:
         - adding variants in daemonized proc;
@@ -199,12 +200,12 @@ class PackageCache:
           manually (hence the logging to stdout also)
         """
     @property
-    def _sys_dir(self): ...
+    def _sys_dir(self) -> str: ...
     @property
-    def _log_dir(self): ...
+    def _log_dir(self) -> str: ...
     @property
-    def _pending_dir(self): ...
+    def _pending_dir(self) -> str: ...
     @property
-    def _remove_dir(self): ...
+    def _remove_dir(self) -> str: ...
     def _get_cached_root(self, variant: Variant) -> tuple[int, str]: ...
     def _get_hash_path(self, variant: Variant) -> str: ...
