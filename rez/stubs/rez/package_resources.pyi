@@ -11,7 +11,7 @@ from rez.utils.logging_ import print_warning as print_warning
 from rez.utils.resources import Resource as Resource
 from rez.utils.schema import Required as Required, extensible_schema_dict as extensible_schema_dict, schema_keys as schema_keys
 from rez.utils.sourcecode import SourceCode as SourceCode
-from rez.vendor.schema.schema import And as And, Optional as Optional, Or as Or, Schema as Schema, SchemaError as SchemaError, Use as Use
+from rez.vendor.schema.schema import And as And, Optional as Optional, Or as Or, Schema as Schema, SchemaError as SchemaError, Use as Use  # type: ignore[import-not-found]
 from rez.version import Requirement as Requirement, Version as Version
 from types import FunctionType, MethodType
 from typing import Any, Iterator
@@ -83,7 +83,7 @@ class PackageResource(PackageRepositoryResource):
     @cached_property
     def version(self) -> Version: ...
 
-class VariantResource(PackageResource, metaclass=abc.ABCMeta):
+class VariantResource(PackageResource, metaclass=abc.ABCMeta):  # type: ignore[misc]
     """A package variant.
 
     A repository implementation's variant resource(s) must derive from this
@@ -114,7 +114,7 @@ class VariantResource(PackageResource, metaclass=abc.ABCMeta):
     @abstractmethod
     def _subpath(self, ignore_shortlinks: bool = False): ...
 
-class PackageResourceHelper(PackageResource, metaclass=abc.ABCMeta):
+class PackageResourceHelper(PackageResource, metaclass=abc.ABCMeta):  # type: ignore[misc]
     """PackageResource with some common functionality included.
     """
     variant_key: str
@@ -139,7 +139,7 @@ class PackageResourceHelper(PackageResource, metaclass=abc.ABCMeta):
 
 class _Metas(AttributeForwardMeta, LazyAttributeMeta): ...
 
-class VariantResourceHelper(VariantResource, metaclass=_Metas):
+class VariantResourceHelper(VariantResource, metaclass=_Metas):  # type: ignore[misc]
     """Helper class for implementing variants that inherit properties from their
     parent package.
 

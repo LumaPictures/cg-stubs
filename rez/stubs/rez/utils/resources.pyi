@@ -5,7 +5,7 @@ from rez.exceptions import ResourceError as ResourceError
 from rez.package_repository import PackageRepository as PackageRepository
 from rez.utils.data_utils import AttributeForwardMeta as AttributeForwardMeta, LazyAttributeMeta as LazyAttributeMeta, cached_property as cached_property
 from rez.utils.logging_ import print_debug as print_debug
-from rez.vendor.schema.schema import Schema as Schema
+from rez.vendor.schema.schema import Schema as Schema  # type: ignore[import-not-found]
 from typing import Any, Self
 
 class Resource(metaclass=LazyAttributeMeta):

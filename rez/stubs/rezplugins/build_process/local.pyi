@@ -12,7 +12,7 @@ class LocalBuildProcess(BuildProcessHelper):
     """
     tmpdir_manager: Incomplete
     @classmethod
-    def name(cls) -> str: ...
+    def name(cls) -> str: ...  # type: ignore[override]
     ran_test_names: set[Any]
     all_test_results: rez.package_test.PackageTestResults
     def __init__(self, *nargs, **kwargs) -> None: ...

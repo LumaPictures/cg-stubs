@@ -1,6 +1,6 @@
 import typing
 from _typeshed import Incomplete
-from rez.vendor.argcomplete import CompletionFinder as CompletionFinder, USING_PYTHON2 as USING_PYTHON2, debug as debug, default_validator as default_validator, split_line as split_line, sys_encoding as sys_encoding
+from rez.vendor.argcomplete import CompletionFinder as CompletionFinder, USING_PYTHON2 as USING_PYTHON2, debug as debug, default_validator as default_validator, split_line as split_line, sys_encoding as sys_encoding  # type: ignore[import-not-found]
 from typing import Any
 
 class RezCompletionFinder(CompletionFinder):

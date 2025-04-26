@@ -1,7 +1,7 @@
 import _thread
 from _typeshed import Incomplete
 from collections.abc import MutableMapping
-from rez.vendor.schema.schema import Optional as Optional, Schema as Schema
+from rez.vendor.schema.schema import Optional as Optional, Schema as Schema  # type: ignore[import-not-found]
 from typing import Any, Generic, TypeVar
 
 T = TypeVar('T')

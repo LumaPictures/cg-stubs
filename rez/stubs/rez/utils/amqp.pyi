@@ -2,10 +2,10 @@ import atexit
 from _typeshed import Incomplete
 from rez.config import config as config
 from rez.utils.logging_ import print_error as print_error
-from rez.vendor.pika.adapters.blocking_connection import BlockingConnection as BlockingConnection
-from rez.vendor.pika.connection import ConnectionParameters as ConnectionParameters
-from rez.vendor.pika.credentials import PlainCredentials as PlainCredentials
-from rez.vendor.pika.spec import BasicProperties as BasicProperties
+from rez.vendor.pika.adapters.blocking_connection import BlockingConnection as BlockingConnection  # type: ignore[import-not-found]
+from rez.vendor.pika.connection import ConnectionParameters as ConnectionParameters  # type: ignore[import-not-found]
+from rez.vendor.pika.credentials import PlainCredentials as PlainCredentials  # type: ignore[import-not-found]
+from rez.vendor.pika.spec import BasicProperties as BasicProperties  # type: ignore[import-not-found]
 
 _lock: Incomplete
 _queue: Incomplete

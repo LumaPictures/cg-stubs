@@ -8,8 +8,8 @@ from rez.resolved_context import ResolvedContext as ResolvedContext
 from rez.utils.execution import Popen as Popen
 from rez.utils.logging_ import print_debug as print_debug, print_error as print_error, print_info as print_info, print_warning as print_warning
 from rez.utils.pip import get_rez_requirements as get_rez_requirements, pip_to_rez_package_name as pip_to_rez_package_name, pip_to_rez_version as pip_to_rez_version
-from rez.vendor.distlib.database import DistributionPath as DistributionPath
-from rez.vendor.packaging.specifiers import Specifier as Specifier
+from rez.vendor.distlib.database import DistributionPath as DistributionPath  # type: ignore[import-not-found]
+from rez.vendor.packaging.specifiers import Specifier as Specifier  # type: ignore[import-not-found]
 from rez.version import Version as Version
 
 PIP_SPECIFIER: Incomplete

@@ -12,8 +12,8 @@ from rez.utils.filesystem import TempDirs as TempDirs
 from rez.utils.memcached import memcached as memcached
 from rez.utils.scope import ScopeContext as ScopeContext
 from rez.utils.sourcecode import SourceCode as SourceCode, early as early, include as include, late as late
-from rez.vendor import yaml as yaml
-from rez.vendor.atomicwrites import atomic_write as atomic_write
+from rez.vendor import yaml as yaml  # type: ignore[import-not-found]
+from rez.vendor.atomicwrites import atomic_write as atomic_write  # type: ignore[import-not-found]
 from typing import Any
 
 tmpdir_manager: Incomplete

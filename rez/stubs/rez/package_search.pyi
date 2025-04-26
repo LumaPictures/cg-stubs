@@ -5,7 +5,7 @@ from rez.packages import get_latest_package as get_latest_package, iter_package_
 from rez.util import ProgressBar as ProgressBar
 from rez.utils.colorize import Printer as Printer, critical as critical, error as error, info as info
 from rez.utils.formatting import expand_abbreviations as expand_abbreviations
-from rez.vendor.pygraph.classes.digraph import digraph as digraph
+from rez.vendor.pygraph.classes.digraph import digraph as digraph  # type: ignore[import-not-found]
 from rez.version import Requirement as Requirement
 from typing import Any
 

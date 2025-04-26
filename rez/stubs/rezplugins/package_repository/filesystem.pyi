@@ -1,7 +1,4 @@
-import functools._lru_cache_wrapper[list[rez.package_resources
-import functools._lru_cache_wrapper[list[rez.packages
-import functools._lru_cache_wrapper[rez.package_resources
-import functools._lru_cache_wrapper[tuple[str, rez.serialise
+import functools
 import rez.package_resources
 import rez.packages
 import rez.serialise
@@ -36,7 +33,7 @@ class FileSystemPackageFamilyResource(PackageFamilyResource):
     def get_last_release_time(self) -> float: ...
     def iter_packages(self) -> Iterator[FileSystemPackageResource]: ...
 
-class FileSystemPackageResource(PackageResourceHelper):
+class FileSystemPackageResource(PackageResourceHelper):  # type: ignore[misc]
     key: str
     variant_key: str
     repository_type: str
@@ -61,7 +58,7 @@ class FileSystemPackageResource(PackageResourceHelper):
     @staticmethod
     def _update_changelog(file_format, data): ...
 
-class FileSystemVariantResource(VariantResourceHelper):
+class FileSystemVariantResource(VariantResourceHelper):  # type: ignore[misc]
     key: str
     repository_type: str
     @cached_property
@@ -80,7 +77,7 @@ class FileSystemCombinedPackageFamilyResource(PackageFamilyResource):
     def iter_packages(self) -> Generator[Incomplete]: ...
     def _load(self): ...
 
-class FileSystemCombinedPackageResource(PackageResourceHelper):
+class FileSystemCombinedPackageResource(PackageResourceHelper):  # type: ignore[misc]
     key: str
     variant_key: str
     repository_type: str
@@ -95,7 +92,7 @@ class FileSystemCombinedPackageResource(PackageResourceHelper):
     def iter_variants(self) -> Iterator[FileSystemCombinedVariantResource]: ...
     def _load(self): ...
 
-class FileSystemCombinedVariantResource(VariantResourceHelper):
+class FileSystemCombinedVariantResource(VariantResourceHelper):  # type: ignore[misc]
     key: str
     repository_type: str
     @cached_property
@@ -165,10 +162,10 @@ class FileSystemPackageRepository(PackageRepository):
     def iter_package_families(self) -> Iterator[PackageFamilyResource]: ...
     @pool_memcached_connections
     def iter_packages(self, package_family_resource: PackageFamilyResource) -> Iterator[Package]: ...
-    def iter_variants(self, package_resource: PackageResourceHelper) -> Iterator[VariantResource]: ...
-    def get_parent_package_family(self, package_resource: PackageResourceHelper) -> PackageRepositoryResource: ...
+    def iter_variants(self, package_resource: PackageResourceHelper) -> Iterator[VariantResource]: ...  # type: ignore[override]
+    def get_parent_package_family(self, package_resource: PackageResourceHelper) -> PackageRepositoryResource: ...  # type: ignore[override]
     def get_parent_package(self, variant_resource: VariantResource) -> PackageRepositoryResource: ...
-    def get_variant_state_handle(self, variant_resource: VariantResource): ...
+    def get_variant_state_handle(self, variant_resource: VariantResource): ...  # type: ignore[override]
     def get_last_release_time(self, package_family_resource: PackageFamilyResource): ...
     def get_package_from_uri(self, uri: str):
         '''
@@ -177,7 +174,7 @@ class FileSystemPackageRepository(PackageRepository):
         - /svr/packages/mypkg/package.py  # (unversioned package - rare)
         - /svr/packages/mypkg/package.py<1.0.0>  # ("combined" package type - rare)
         '''
-    def get_variant_from_uri(self, uri: str) -> Variant | None:
+    def get_variant_from_uri(self, uri: str) -> Variant | None:  # type: ignore[override]
         '''
         Example URIs:
         - /svr/packages/mypkg/1.0.0/package.py[1]
@@ -193,7 +190,7 @@ class FileSystemPackageRepository(PackageRepository):
     def get_resource_from_handle(self, resource_handle, verify_repo: bool = True): ...
     @cached_property
     def file_lock_dir(self): ...
-    def pre_variant_install(self, variant_resource: VariantResourceHelper) -> None: ...
+    def pre_variant_install(self, variant_resource: VariantResourceHelper) -> None: ...  # type: ignore[override]
     def on_variant_install_cancelled(self, variant_resource) -> None:
         """
         TODO:

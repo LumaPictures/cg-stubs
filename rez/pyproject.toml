@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "types-rez"
-version = "3.2.1.1"
+version = "3.2.1.2"
 
 readme = "README.md"
 authors = ["Chad Dombrova"]
@@ -37,4 +37,9 @@ follow_imports = "skip"
 check_untyped_defs = true
 files = [
     "stubs",
+]
+warn_unused_ignores = true
+show_error_codes = true
+enable_error_code = [
+    "ignore-without-code"
 ]

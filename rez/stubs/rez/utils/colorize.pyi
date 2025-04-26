@@ -2,7 +2,7 @@ import logging
 import rez.solver
 from _typeshed import Incomplete
 from rez.solver import SupportsWrite as SupportsWrite
-from rez.vendor import colorama as colorama
+from rez.vendor import colorama as colorama  # type: ignore[import-not-found]
 from typing import Any
 
 def colorama_wrap(stream):

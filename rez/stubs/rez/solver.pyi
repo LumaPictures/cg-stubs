@@ -17,10 +17,10 @@ from rez.packages import Package as Package, Variant as Variant, iter_packages a
 from rez.resolved_context import ResolvedContext as ResolvedContext
 from rez.utils.data_utils import cached_property as cached_property
 from rez.utils.logging_ import print_debug as print_debug
-from rez.utils.typing import Protocol as Protocol, SupportsLessThan as SupportsLessThan
-from rez.vendor.pygraph.algorithms.accessibility import accessibility as accessibility
-from rez.vendor.pygraph.algorithms.cycles import find_cycle as find_cycle
-from rez.vendor.pygraph.classes.digraph import digraph as digraph
+from rez.utils.typing import Protocol as Protocol, SupportsLessThan as SupportsLessThan  # type: ignore[attr-defined]
+from rez.vendor.pygraph.algorithms.accessibility import accessibility as accessibility  # type: ignore[import-not-found]
+from rez.vendor.pygraph.algorithms.cycles import find_cycle as find_cycle  # type: ignore[import-not-found]
+from rez.vendor.pygraph.classes.digraph import digraph as digraph  # type: ignore[import-not-found]
 from rez.version import Requirement as Requirement, RequirementList as RequirementList, Version as Version, VersionRange as VersionRange, VersionedObject as VersionedObject
 from typing import Any, Callable, Generator, Iterator, TypeVar
 

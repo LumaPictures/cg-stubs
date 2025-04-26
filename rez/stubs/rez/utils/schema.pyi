@@ -1,6 +1,6 @@
 from _typeshed import Incomplete
 from rez.config import Validatable as Validatable
-from rez.vendor.schema.schema import And as And, Optional as Optional, Schema as Schema, Use as Use
+from rez.vendor.schema.schema import And as And, Optional as Optional, Schema as Schema, Use as Use  # type: ignore[import-not-found]
 
 Required = Schema
 

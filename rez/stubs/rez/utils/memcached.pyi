@@ -2,9 +2,9 @@ from _typeshed import Incomplete
 from contextlib import contextmanager
 from rez.config import config as config
 from rez.util import get_function_arg_names as get_function_arg_names
-from rez.vendor.memcache.memcache import SERVER_MAX_KEY_LENGTH as SERVER_MAX_KEY_LENGTH
+from rez.vendor.memcache.memcache import SERVER_MAX_KEY_LENGTH as SERVER_MAX_KEY_LENGTH  # type: ignore[import-not-found]
 from threading import local
-from typing import Any, Iterator
+from typing import Any, Callable, Iterator
 
 cache_interface_version: int
 

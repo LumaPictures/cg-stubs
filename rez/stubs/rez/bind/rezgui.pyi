@@ -3,7 +3,7 @@ from rez.bind._utils import check_version as check_version, make_dirs as make_di
 from rez.package_maker import make_package as make_package
 from rez.system import system as system
 from rez.utils.execution import create_executable_script as create_executable_script
-from rez.utils.lint_helper import env as env
+from rez.utils.lint_helper import env as env  # type: ignore[attr-defined]
 from rez.version import Version as Version
 
 def setup_parser(parser) -> None: ...

@@ -16,7 +16,7 @@ from rez.utils.formatting import expandvars as expandvars
 from rez.utils.platform_ import platform_ as platform_
 from rez.utils.sourcecode import SourceCode as SourceCode, SourceCodeError as SourceCodeError
 from string import Formatter
-from typing import Any, Iterable
+from typing import Any, Callable, Iterable
 
 class Action:
     name: str
@@ -100,7 +100,7 @@ class ActionManager:
     parent_environ: os._Environ[str] | dict[str, str]
     parent_variables: set[str]
     environ: dict[Any, Any]
-    formatter: Any | Overload(Callable[[object], str], Callable[[_collections_abc.Buffer, str, str], str])
+    formatter: Any | Overload(Callable[[object], str], Callable[[_collections_abc.Buffer, str, str], str])  # type: ignore[valid-type]
     actions: list[Any]
     _env_sep_map: Any
     def __init__(self, interpreter: ActionInterpreter, parent_environ: dict[str, str] | None = None, parent_variables: Iterable[str] | None = None, formatter: Incomplete | None = None, verbose: bool = False, env_sep_map: Incomplete | None = None) -> None:
@@ -437,7 +437,7 @@ class NamespaceFormatter(Formatter):
     initial_namespace: Any
     namespace: Any
     def __init__(self, namespace) -> None: ...
-    def format(self, format_string, *args, **kwargs): ...
+    def format(self, format_string, *args, **kwargs): ...  # type: ignore[override]
     def format_field(self, value, format_spec): ...
     def get_value(self, key, args, kwds): ...
 

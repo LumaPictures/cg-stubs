@@ -8,10 +8,10 @@ from rez.utils.data_utils import AttrDictWrapper as AttrDictWrapper, DelayLoad a
 from rez.utils.formatting import expanduser as expanduser, expandvars as expandvars
 from rez.utils.logging_ import get_debug_printer as get_debug_printer
 from rez.utils.scope import scoped_format as scoped_format
-from rez.utils.typing import Protocol as Protocol
-from rez.vendor import yaml as yaml
-from rez.vendor.schema.schema import And as And, Or as Or, Schema as Schema, SchemaError as SchemaError, Use as Use
-from rez.vendor.yaml.error import YAMLError as YAMLError
+from rez.utils.typing import Protocol as Protocol  # type: ignore[attr-defined]
+from rez.vendor import yaml as yaml  # type: ignore[import-not-found]
+from rez.vendor.schema.schema import And as And, Or as Or, Schema as Schema, SchemaError as SchemaError, Use as Use  # type: ignore[import-not-found]
+from rez.vendor.yaml.error import YAMLError as YAMLError  # type: ignore[import-not-found]
 from typing import Any, TypeVar
 
 T = TypeVar('T')
@@ -88,7 +88,7 @@ class Bool(Setting):
     true_words: Incomplete
     false_words: Incomplete
     all_words = true_words | false_words
-    def _parse_env_var(self, value) -> bool: ...
+    def _parse_env_var(self, value) -> bool: ...  # type: ignore[override]
 
 class OptionalBool(Bool):
     schema: Incomplete

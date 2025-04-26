@@ -1,6 +1,6 @@
 from rez.utils.sourcecode import SourceCode as SourceCode
-from rez.vendor import yaml as yaml
-from rez.vendor.yaml.dumper import SafeDumper as SafeDumper
+from rez.vendor import yaml as yaml  # type: ignore[import-not-found]
+from rez.vendor.yaml.dumper import SafeDumper as SafeDumper  # type: ignore[import-not-found]
 from rez.version import Requirement as Requirement, Version as Version
 
 class _Dumper(SafeDumper):

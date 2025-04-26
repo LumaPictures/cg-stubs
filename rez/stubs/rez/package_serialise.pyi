@@ -5,7 +5,7 @@ from rez.utils.formatting import PackageRequest as PackageRequest, as_block_stri
 from rez.utils.schema import Required as Required, extensible_schema_dict as extensible_schema_dict
 from rez.utils.sourcecode import SourceCode as SourceCode
 from rez.utils.yaml import dump_yaml as dump_yaml
-from rez.vendor.schema.schema import And as And, Optional as Optional, Or as Or, Schema as Schema, Use as Use
+from rez.vendor.schema.schema import And as And, Optional as Optional, Or as Or, Schema as Schema, Use as Use  # type: ignore[import-not-found]
 from rez.version import Version as Version
 
 package_key_order: Incomplete

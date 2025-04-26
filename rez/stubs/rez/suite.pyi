@@ -1,4 +1,4 @@
-import collections.defaultdict[str, list[TypedDict('rez.suite.Tool', {'tool_name': str, 'tool_alias': str, 'context_name': str, 'variant': rez.packages.Variant | set[rez.packages
+import collections
 import rez.packages
 import rez.resolved_context
 from _typeshed import Incomplete
@@ -10,8 +10,8 @@ from rez.utils.data_utils import cached_property as cached_property
 from rez.utils.execution import create_forwarding_script as create_forwarding_script
 from rez.utils.formatting import PackageRequest as PackageRequest, columnise as columnise
 from rez.utils.yaml import dump_yaml as dump_yaml
-from rez.vendor import yaml as yaml
-from rez.vendor.yaml.error import YAMLError as YAMLError
+from rez.vendor import yaml as yaml  # type: ignore[import-not-found]
+from rez.vendor.yaml.error import YAMLError as YAMLError  # type: ignore[import-not-found]
 from typing import TypedDict
 
 class Tool(TypedDict):
@@ -54,11 +54,11 @@ class Suite:
       precedence over context prefix/suffixing.
     """
     load_path: str | None
-    contexts: dict[str, TypedDict('rez.suite.Context', {'name': str, 'context': rez.resolved_context.ResolvedContext, 'tool_aliases': dict[str, str], 'hidden_tools': set[str], 'priority': int, 'prefix_char': str | None, 'loaded': bool, 'prefix': str, 'suffix': str})]
+    contexts: dict[str, TypedDict('rez.suite.Context', {'name': str, 'context': rez.resolved_context.ResolvedContext, 'tool_aliases': dict[str, str], 'hidden_tools': set[str], 'priority': int, 'prefix_char': str | None, 'loaded': bool, 'prefix': str, 'suffix': str})]  # type: ignore[valid-type]
     next_priority: int
-    tools: dict[str, TypedDict('rez.suite.Tool', {'tool_name': str, 'tool_alias': str, 'context_name': str, 'variant': rez.packages.Variant | set[rez.packages.Variant]})] | None
-    tool_conflicts: collections.defaultdict[str, list[TypedDict('rez.suite.Tool', {'tool_name': str, 'tool_alias': str, 'context_name': str, 'variant': rez.packages.Variant | set[rez.packages.Variant]})]] | None
-    hidden_tools: list[TypedDict('rez.suite.Tool', {'tool_name': str, 'tool_alias': str, 'context_name': str, 'variant': rez.packages.Variant | set[rez.packages.Variant]})] | None
+    tools: dict[str, TypedDict('rez.suite.Tool', {'tool_name': str, 'tool_alias': str, 'context_name': str, 'variant': rez.packages.Variant | set[rez.packages.Variant]})] | None  # type: ignore[valid-type]
+    tool_conflicts: collections.defaultdict[str, list[TypedDict('rez.suite.Tool', {'tool_name': str, 'tool_alias': str, 'context_name': str, 'variant': rez.packages.Variant | set[rez.packages.Variant]})]] | None  # type: ignore[valid-type]
+    hidden_tools: list[TypedDict('rez.suite.Tool', {'tool_name': str, 'tool_alias': str, 'context_name': str, 'variant': rez.packages.Variant | set[rez.packages.Variant]})] | None  # type: ignore[valid-type]
     def __init__(self) -> None:
         """Create a suite."""
     @property

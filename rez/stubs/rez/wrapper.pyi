@@ -5,8 +5,8 @@ from rez.resolved_context import ResolvedContext as ResolvedContext
 from rez.utils.colorize import Printer as Printer, critical as critical, heading as heading, local as local
 from rez.utils.data_utils import cached_property as cached_property
 from rez.utils.formatting import columnise as columnise
-from rez.vendor import yaml as yaml
-from rez.vendor.yaml.error import YAMLError as YAMLError
+from rez.vendor import yaml as yaml  # type: ignore[import-not-found]
+from rez.vendor.yaml.error import YAMLError as YAMLError  # type: ignore[import-not-found]
 from typing import Any
 
 class Wrapper:

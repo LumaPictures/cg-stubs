@@ -36,7 +36,7 @@ from rez.utils.resolve_graph import failure_detail_from_graph as failure_detail_
 from rez.utils.sourcecode import SourceCodeError as SourceCodeError
 from rez.utils.which import which as which
 from rez.utils.yaml import dump_yaml as dump_yaml
-from rez.vendor import yaml as yaml
+from rez.vendor import yaml as yaml  # type: ignore[import-not-found]
 from rez.version import Requirement as Requirement, VersionRange as VersionRange
 from typing import Any, Callable, Iterable, NoReturn, Sequence, TypeVar
 

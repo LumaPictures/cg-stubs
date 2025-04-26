@@ -8,8 +8,8 @@ from rez.system import system as system
 from rez.utils.colorize import ColorizedStreamHandler as ColorizedStreamHandler
 from rez.utils.filesystem import forceful_rmtree as forceful_rmtree, rename as rename, safe_listdir as safe_listdir, safe_makedirs as safe_makedirs, safe_remove as safe_remove
 from rez.utils.logging_ import print_warning as print_warning
-from rez.vendor.lockfile import LockFile as LockFile, NotLocked as NotLocked
-from rez.vendor.progress.spinner import PixelSpinner as PixelSpinner
+from rez.vendor.lockfile import LockFile as LockFile, NotLocked as NotLocked  # type: ignore[import-not-found]
+from rez.vendor.progress.spinner import PixelSpinner as PixelSpinner  # type: ignore[import-not-found]
 from typing import Iterable
 
 class PackageCache:

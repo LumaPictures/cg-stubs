@@ -1,10 +1,9 @@
 import _io
-import _io.TextIOWrapper[_io
 import atexit
 from _typeshed import Incomplete
 from collections.abc import Generator
 from rez.exceptions import RezError as RezError
-from rez.vendor.progress.bar import Bar as Bar
+from rez.vendor.progress.bar import Bar as Bar  # type: ignore[import-not-found]
 from typing import Iterable, TypeGuard, TypeVar
 
 T = TypeVar('T')

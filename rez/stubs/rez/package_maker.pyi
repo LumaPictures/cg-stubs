@@ -12,7 +12,7 @@ from rez.utils.filesystem import retain_cwd as retain_cwd
 from rez.utils.formatting import PackageRequest as PackageRequest
 from rez.utils.logging_ import print_warning as print_warning
 from rez.utils.schema import Required as Required, extensible_schema_dict as extensible_schema_dict
-from rez.vendor.schema.schema import And as And, Optional as Optional, Or as Or, Schema as Schema, Use as Use
+from rez.vendor.schema.schema import And as And, Optional as Optional, Or as Or, Schema as Schema, Use as Use  # type: ignore[import-not-found]
 from rez.version import Version as Version
 from typing import Any, Iterator
 

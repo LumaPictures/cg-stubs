@@ -3,9 +3,9 @@ from rez.config import config as config
 from rez.exceptions import PackageRequestError as PackageRequestError
 from rez.utils.execution import Popen as Popen
 from rez.utils.formatting import PackageRequest as PackageRequest
-from rez.vendor.pydot import pydot as pydot
-from rez.vendor.pygraph.algorithms.accessibility import accessibility as accessibility
-from rez.vendor.pygraph.classes.digraph import digraph as digraph
+from rez.vendor.pydot import pydot as pydot  # type: ignore[import-not-found]
+from rez.vendor.pygraph.algorithms.accessibility import accessibility as accessibility  # type: ignore[import-not-found]
+from rez.vendor.pygraph.classes.digraph import digraph as digraph  # type: ignore[import-not-found]
 
 def read_graph_from_string(txt):
     """Read a graph from a string, either in dot format, or our own
