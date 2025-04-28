@@ -1,5 +1,5 @@
+from _typeshed import Incomplete
 from rez.config import config as config
-from typing import Any
 
 class Command:
     '''An interface for registering custom Rez subcommand
@@ -44,9 +44,9 @@ class Command:
             return CommandFoo
 
     '''
-    type_settings: Any
-    settings: Any
+    type_settings: Incomplete
+    settings: Incomplete
     def __init__(self) -> None: ...
     @classmethod
-    def name(cls) -> None:
+    def name(cls) -> str:
         """Return the name of the Command and rez-subcommand."""

@@ -3,7 +3,6 @@ from _typeshed import Incomplete
 from enum import Enum
 from rez.packages import get_developer_package as get_developer_package
 from rez.utils.logging_ import print_debug as print_debug, print_warning as print_warning
-from typing import Any
 
 def get_release_hook_types():
     """Returns the available release hook implementations."""
@@ -21,10 +20,10 @@ class ReleaseHook:
     @classmethod
     def name(cls) -> None:
         """ Return name of source retriever, eg 'git'"""
-    source_path: Any
+    source_path: Incomplete
     package: rez.developer_package.DeveloperPackage
-    type_settings: Any
-    settings: Any
+    type_settings: Incomplete
+    settings: Incomplete
     def __init__(self, source_path) -> None:
         """Create a release hook.
 
@@ -96,7 +95,7 @@ class ReleaseHookEvent(Enum):
     pre_build = ('pre-build', 'build', 'pre_build')
     pre_release = ('pre-release', 'release', 'pre_release')
     post_release = ('post-release', 'release', 'post_release')
-    label: Any
-    noun: Any
-    __name__: Any
+    label = ...
+    noun = ...
+    __name__ = ...
     def __init__(self, label, noun, func_name) -> None: ...

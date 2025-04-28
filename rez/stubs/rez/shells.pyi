@@ -73,7 +73,7 @@ class Shell(ActionInterpreter):
     @classmethod
     def get_syspaths(cls) -> None: ...
     _lines: list[Any]
-    settings: Any
+    settings: Incomplete
     def __init__(self) -> None: ...
     def _addline(self, line: str) -> None: ...
     def get_output(self, style: OutputStyle = ...) -> str: ...  # type: ignore[override]
@@ -95,7 +95,7 @@ class Shell(ActionInterpreter):
         Returns:
             str: Full filepath of executable.
         """
-    def spawn_shell(self, context_file: str, tmpdir, rcfile: Incomplete | None = None, norc: bool = False, stdin: bool = False, command: Incomplete | None = None, env: Incomplete | None = None, quiet: bool = False, pre_command: Incomplete | None = None, add_rez: bool = True, package_commands_sourced_first: Incomplete | None = None, **Popen_args) -> subprocess.Popen:
+    def spawn_shell(self, context_file: str, tmpdir, rcfile: Incomplete | None = None, norc: bool = False, stdin: bool = False, command: Incomplete | None = None, env: Incomplete | None = None, quiet: bool = False, pre_command: str | list[str] | None = None, add_rez: bool = True, package_commands_sourced_first: Incomplete | None = None, **Popen_args) -> subprocess.Popen:
         """Spawn a possibly interactive subshell.
 
         Args:
@@ -218,7 +218,7 @@ class UnixShell(Shell):
             already exist.
         - 'source_bind_files': Whether to source bind files, if they exist.
         """
-    def spawn_shell(self, context_file, tmpdir, rcfile: Incomplete | None = None, norc: bool = False, stdin: bool = False, command: Incomplete | None = None, env: Incomplete | None = None, quiet: bool = False, pre_command: Incomplete | None = None, add_rez: bool = True, package_commands_sourced_first: Incomplete | None = None, **Popen_args): ...
+    def spawn_shell(self, context_file, tmpdir, rcfile: Incomplete | None = None, norc: bool = False, stdin: bool = False, command: Incomplete | None = None, env: Incomplete | None = None, quiet: bool = False, pre_command: str | list[str] | None = None, add_rez: bool = True, package_commands_sourced_first: Incomplete | None = None, **Popen_args): ...
     def resetenv(self, key, value, friends: Incomplete | None = None) -> None: ...
     def info(self, value: str) -> None: ...
     def error(self, value: str) -> None: ...

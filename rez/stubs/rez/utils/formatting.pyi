@@ -1,4 +1,3 @@
-import rez.utils.formatting
 from _typeshed import Incomplete
 from enum import Enum
 from rez.exceptions import PackageRequestError as PackageRequestError
@@ -56,9 +55,9 @@ class ObjectStringFormatter(Formatter):
     error: Incomplete
     empty: Incomplete
     unchanged: Incomplete
-    instance: Any
+    instance: Incomplete
     pretty: bool
-    expand: rez.utils.formatting.StringFormatType
+    expand: StringFormatType
     def __init__(self, instance, pretty: bool = False, expand: StringFormatType = ...) -> None:
         """Create a formatter.
 
@@ -146,7 +145,7 @@ def dict_to_attributes_code(dict_):
     """
 def columnise(rows: Sequence[Sequence[Any]], padding: int = 2) -> list[str]:
     """Print rows of entries in aligned columns."""
-def print_colored_columns(printer, rows, padding: int = 2) -> None:
+def print_colored_columns(printer, rows: Sequence[tuple], padding: int = 2) -> None:
     """Like `columnise`, but with colored rows.
 
     Args:

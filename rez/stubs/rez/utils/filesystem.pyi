@@ -16,8 +16,8 @@ class TempDirs:
     """
     instances_lock: Incomplete
     instances: Incomplete
-    tmpdir: Any
-    prefix: Any
+    tmpdir: Incomplete
+    prefix: Incomplete
     dirs: set[Any]
     lock: _thread.LockType
     def __init__(self, tmpdir, prefix: str = 'rez_') -> None: ...

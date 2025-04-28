@@ -54,10 +54,10 @@ class PackageBaseResourceWrapper(PackageRepositoryResourceWrapper):
     context: rez.resolved_context.ResolvedContext | None
     _late_binding_returnvalues: dict[Any, Any]
     def __init__(self, resource: PackageResource | VariantResource, context: ResolvedContext | None = None) -> None: ...
-    def set_context(self, context: ResolvedContext) -> None: ...
+    def set_context(self, context: ResolvedContext | None) -> None: ...
     def arbitrary_keys(self) -> None: ...
     @property
-    def uri(self): ...
+    def uri(self) -> str: ...
     @property
     def config(self) -> Config:
         """Returns the config for this package.
@@ -93,7 +93,7 @@ class Package(PackageBaseResourceWrapper):
     is_variant: bool
     def __init__(self, resource: PackageResource, context: Incomplete | None = None) -> None: ...
     def __getattr__(self, name: str): ...
-    def arbitrary_keys(self):
+    def arbitrary_keys(self) -> set[str]:  # type: ignore[override]
         """Get the arbitrary keys present in this package.
 
         These are any keys not in the standard list ('name', 'version' etc).
@@ -154,10 +154,10 @@ class Variant(PackageBaseResourceWrapper):
     keys: Incomplete
     is_package: bool
     is_variant: bool
-    _parent: Any
-    def __init__(self, resource: VariantResource, context: Incomplete | None = None, parent: Incomplete | None = None) -> None: ...
+    _parent: Package | None
+    def __init__(self, resource: VariantResource, context: ResolvedContext | None = None, parent: Package | None = None) -> None: ...
     def __getattr__(self, name): ...
-    def arbitrary_keys(self): ...
+    def arbitrary_keys(self) -> set[str]: ...  # type: ignore[override]
     @cached_property
     def qualified_package_name(self) -> str: ...
     @cached_property
@@ -230,7 +230,7 @@ class PackageSearchPath:
 
     For example, $REZ_PACKAGES_PATH refers to a list of repositories.
     """
-    paths: Any
+    paths: Incomplete
     def __init__(self, packages_path) -> None:
         """Create a package repository list.
 

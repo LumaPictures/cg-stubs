@@ -42,8 +42,8 @@ def bundle_context(context, dest_dir, force: bool = False, skip_non_relocatable:
 class _ContextBundler:
     """Performs context bundling.
     """
-    context: Any
-    dest_dir: Any
+    context: Incomplete
+    dest_dir: Incomplete
     force: bool
     skip_non_relocatable: bool
     quiet: bool

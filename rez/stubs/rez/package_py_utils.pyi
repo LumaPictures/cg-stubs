@@ -37,7 +37,7 @@ def expand_requirement(request: str, paths: Incomplete | None = None) -> str:
     Returns:
         str: Expanded request string.
     """
-def expand_requires(*requests):
+def expand_requires(*requests: str) -> list[str]:
     '''Create an expanded requirements list.
 
     Example:
@@ -54,7 +54,7 @@ def expand_requires(*requests):
     Returns:
         list[str]: Expanded requirements.
     '''
-def exec_command(attr: str, cmd: list[str]):
+def exec_command(attr: str, cmd: list[str]) -> tuple[str, str]:
     """Runs a subprocess to calculate a package attribute.
 
     Args:
@@ -64,7 +64,7 @@ def exec_command(attr: str, cmd: list[str]):
     Returns:
         tuple(str): Returns a tuple of (stdout, stderr).
     """
-def exec_python(attr, src, executable: str = 'python'):
+def exec_python(attr: str, src: list[str], executable: str = 'python') -> str:
     """Runs a python subproc to calculate a package attribute.
 
     Args:

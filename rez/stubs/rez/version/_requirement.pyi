@@ -1,9 +1,8 @@
-import rez.version._requirement
 import rez.version._version
 from _typeshed import Incomplete
 from rez.version._util import _Common as _Common
 from rez.version._version import Version as Version, VersionRange as VersionRange
-from typing import Iterator
+from typing import Iterable, Iterator
 
 class VersionedObject(_Common):
     """Definition of a versioned object, eg ``foo-1.0``.
@@ -186,15 +185,15 @@ class RequirementList(_Common):
     optimal form, merging any requirements for common objects. Order of objects
     is retained.
     """
-    requirements_: list[rez.version._requirement.Requirement]
-    conflict_: tuple[rez.version._requirement.Requirement, rez.version._requirement.Requirement] | None
-    requirements_dict: dict[str, rez.version._requirement.Requirement]
+    requirements_: list[Requirement]
+    conflict_: tuple[Requirement, Requirement] | None
+    requirements_dict: dict[str, Requirement]
     names_: set[str]
     conflict_names_: set[str]
-    def __init__(self, requirements: list[Requirement]) -> None:
+    def __init__(self, requirements: Iterable[Requirement]) -> None:
         """
         Args:
-            requirements (list[Requirement]): List of requirements.
+            requirements (Iterable[Requirement]): List of requirements.
         """
     @property
     def requirements(self) -> list[Requirement]:

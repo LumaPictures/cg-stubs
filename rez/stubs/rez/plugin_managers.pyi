@@ -1,4 +1,3 @@
-import rez.plugin_managers
 import rez.utils.data_utils
 import types
 from _typeshed import Incomplete
@@ -118,7 +117,7 @@ class RezPluginManager:
             This is important  because it ensures that rez's copy of
             'rezplugins' is always found first.
     """
-    _plugin_types: dict[str, rez.utils.data_utils.LazySingleton[rez.plugin_managers.RezPluginType]]
+    _plugin_types: dict[str, rez.utils.data_utils.LazySingleton[RezPluginType]]
     def __init__(self) -> None: ...
     @cached_property
     def rezplugins_module_paths(self): ...

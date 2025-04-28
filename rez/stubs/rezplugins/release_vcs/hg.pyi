@@ -1,20 +1,19 @@
 from _typeshed import Incomplete
 from rez.exceptions import ReleaseVCSError
 from rez.release_vcs import ReleaseVCS
-from typing import Any
 
 class HgReleaseVCSError(ReleaseVCSError): ...
 
 class HgReleaseVCS(ReleaseVCS):
     @classmethod
-    def name(cls) -> str: ...  # type: ignore[override]
-    executable: Any
+    def name(cls) -> str: ...
+    executable: str
     patch_path: str
     def __init__(self, pkg_root, vcs_root: Incomplete | None = None) -> None: ...
     @classmethod
     def is_valid_root(cls, path): ...
     @classmethod
-    def search_parents_for_root(cls) -> bool: ...  # type: ignore[override]
+    def search_parents_for_root(cls) -> bool: ...
     def hg(self, *nargs, **kwargs): ...
     def _create_tag_highlevel(self, tag_name, message: Incomplete | None = None):
         """Create a tag on the toplevel repo if there is no patch repo,

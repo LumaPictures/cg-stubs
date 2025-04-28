@@ -1,6 +1,6 @@
 import logging
+import subprocess
 from _typeshed import Incomplete
-from collections.abc import Generator
 from contextlib import contextmanager
 from rez.config import config as config
 from rez.exceptions import PackageCacheError as PackageCacheError
@@ -11,7 +11,7 @@ from rez.utils.filesystem import forceful_rmtree as forceful_rmtree, rename as r
 from rez.utils.logging_ import print_warning as print_warning
 from rez.vendor.lockfile import LockFile as LockFile, NotLocked as NotLocked  # type: ignore[import-not-found]
 from rez.vendor.progress.spinner import PixelSpinner as PixelSpinner  # type: ignore[import-not-found]
-from typing import Iterable
+from typing import Iterable, Iterator
 
 class PackageCache:
     """Package cache.
@@ -70,7 +70,7 @@ class PackageCache:
         Returns:
             str: Cached variant root path, or None if not found.
         """
-    def add_variant(self, variant, force: bool = False, wait_for_copying: bool = False, logger: Incomplete | None = None):
+    def add_variant(self, variant: Variant, force: bool = False, wait_for_copying: bool = False, logger: logging.Logger | None = None) -> tuple[str, int]:
         """Copy a variant's payload into the cache.
 
         The following steps are taken to ensure muti-thread/proc safety, and to
@@ -110,7 +110,7 @@ class PackageCache:
             - str: Path to cached payload
             - int: One of VARIANT_FOUND, VARIANT_CREATED, VARIANT_COPYING, VARIANT_COPY_STALLED
         """
-    def remove_variant(self, variant: Variant):
+    def remove_variant(self, variant: Variant) -> int:
         """Remove a variant from the cache.
 
         Since this removes the associated cached variant payload, there is no
@@ -126,7 +126,7 @@ class PackageCache:
             - VARIANT_NOT_FOUND
             - VARIANT_COPYING
         """
-    def add_variants_async(self, variants):
+    def add_variants_async(self, variants: Iterable[Variant]) -> None:
         """Update the package cache by adding some or all of the given variants.
 
         This method is called when a context is created or sourced. Variants
@@ -139,7 +139,7 @@ class PackageCache:
         """Add the given variants to the package payload cache.
         """
     @staticmethod
-    def _subprocess_package_caching_daemon(path):
+    def _subprocess_package_caching_daemon(path: str) -> subprocess.Popen | None:
         """
         Run the package cache in a daemon process
 
@@ -172,7 +172,7 @@ class PackageCache:
             wait_for_copying (bool): Whether the caching step should block when one of the
                 pending variants is marked as already copying.
         """
-    def clean(self, time_limit: Incomplete | None = None) -> None:
+    def clean(self, time_limit: float | None = None) -> None:
         """Delete unused package cache files.
 
         This should be run periodically via 'rez-pkg-cache --clean'.
@@ -190,7 +190,7 @@ class PackageCache:
                 run 'rez-pkg-cache --clean'.
         """
     @contextmanager
-    def _lock(self) -> Generator[None]: ...
+    def _lock(self) -> Iterator[None]: ...
     def _run_caching_step(self, state, wait_for_copying: bool = False) -> bool: ...
     def _init_logging(self) -> logging.Logger:
         """

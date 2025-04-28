@@ -1,4 +1,3 @@
-import rez.utils.resources
 from _typeshed import Incomplete
 from rez.config import config as config
 from rez.exceptions import ResourceError as ResourceError
@@ -42,7 +41,7 @@ class Resource(metaclass=LazyAttributeMeta):
     def normalize_variables(cls, variables):
         """Give subclasses a chance to standardize values for certain variables
         """
-    variables: Any
+    variables: Incomplete
     def __init__(self, variables: Incomplete | None = None) -> None: ...
     @cached_property
     def handle(self) -> ResourceHandle:
@@ -107,8 +106,8 @@ class ResourcePool:
     resources are created via some factory class, which first checks for the
     existence of the resource before creating one from a pool.
     """
-    resource_classes: dict[str, type[rez.utils.resources.Resource]]
-    cached_get_resource: Any
+    resource_classes: dict[str, type[Resource]]
+    cached_get_resource: Incomplete
     def __init__(self, cache_size: Incomplete | None = None) -> None: ...
     def register_resource(self, resource_class: type[Resource]) -> None: ...
     def get_resource_from_handle(self, resource_handle: ResourceHandle) -> Resource: ...
@@ -135,7 +134,7 @@ class ResourceWrapper(metaclass=AttributeForwardMeta):
     function is provided to help get a list of keys from a resource schema.
     """
     keys: Incomplete
-    wrapped: rez.utils.resources.Resource
+    wrapped: Resource
     def __init__(self, resource: Resource) -> None: ...
     @property
     def resource(self) -> Resource: ...

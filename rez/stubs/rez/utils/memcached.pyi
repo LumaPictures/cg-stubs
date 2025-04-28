@@ -4,8 +4,9 @@ from rez.config import config as config
 from rez.util import get_function_arg_names as get_function_arg_names
 from rez.vendor.memcache.memcache import SERVER_MAX_KEY_LENGTH as SERVER_MAX_KEY_LENGTH  # type: ignore[import-not-found]
 from threading import local
-from typing import Any, Callable, Iterator
+from typing import Any, Callable, Iterator, TypeVar
 
+CallableT = TypeVar('CallableT', bound=Callable)
 cache_interface_version: int
 
 class Client:
@@ -119,7 +120,7 @@ def pool_memcached_connections(func):
     Use this to wrap functions that might make multiple calls to memcached. This
     will cause a single memcached client to be shared for all connections.
     """
-def memcached(servers, key: Incomplete | None = None, from_cache: Incomplete | None = None, to_cache: Incomplete | None = None, time: int = 0, min_compress_len: int = 0, debug: bool = False):
+def memcached(servers, key: Incomplete | None = None, from_cache: Incomplete | None = None, to_cache: Incomplete | None = None, time: int = 0, min_compress_len: int = 0, debug: bool = False) -> Callable[[CallableT], CallableT]:
     '''memcached memoization function decorator.
 
     The wrapped function is expected to return a value that is stored to a
@@ -172,5 +173,5 @@ def memcached(servers, key: Incomplete | None = None, from_cache: Incomplete | N
     '''
 
 class DoNotCache:
-    result: Any
+    result: Incomplete
     def __init__(self, result) -> None: ...

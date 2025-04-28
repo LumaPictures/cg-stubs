@@ -1,19 +1,23 @@
-import types
+import rez.packages
 from _typeshed import Incomplete
+from rez.packages import PackageBaseResourceWrapper as PackageBaseResourceWrapper
 from rez.util import load_module_from_file as load_module_from_file
 from rez.utils.data_utils import cached_property as cached_property
 from rez.utils.formatting import indent as indent
 from rez.utils.logging_ import print_debug as print_debug
-from types import FunctionType, MethodType
-from typing import Any
+from types import CodeType, ModuleType
+from typing import Any, Callable, Generic, TypeVar
 
-def early():
+T = TypeVar('T')
+CallabeT = TypeVar('CallabeT', bound=Callable)
+
+def early() -> Callable[[CallabeT], CallabeT]:
     """Used by functions in package.py to harden to the return value at build time.
 
     The term 'early' refers to the fact these package attribute are evaluated
     early, ie at build time and before a package is installed.
     """
-def late():
+def late() -> Callable[[CallabeT], CallabeT]:
     """Used by functions in package.py that are evaluated lazily.
 
     The term 'late' refers to the fact these package attributes are evaluated
@@ -23,7 +27,7 @@ def late():
     this decorator - otherwise it is understood that you want your attribute to
     be a function, not the return value of that function.
     """
-def include(module_name, *module_names):
+def include(module_name: str, *module_names: str) -> Callable[[CallabeT], CallabeT]:
     """Used by functions in package.py to have access to named modules.
 
     See the 'package_definition_python_path' config setting for more info.
@@ -31,27 +35,27 @@ def include(module_name, *module_names):
 def _add_decorator(fn, name, **kwargs) -> None: ...
 
 class SourceCodeError(Exception):
-    short_msg: Any
-    def __init__(self, msg, short_msg) -> None: ...
+    short_msg: str
+    def __init__(self, msg: str, short_msg: str) -> None: ...
 
 class SourceCodeCompileError(SourceCodeError): ...
 class SourceCodeExecError(SourceCodeError): ...
 
-class SourceCode:
+class SourceCode(Generic[T]):
     """Wrapper for python source code.
 
     This object is aware of the decorators defined in this sourcefile (such as
     'include') and deals with them appropriately.
     """
     source: str
-    func: types.FunctionType | types.MethodType | None
+    func: Callable[[], T] | None
     filepath: str | None
     eval_as_function: bool
-    package: None
+    package: rez.packages.PackageBaseResourceWrapper | None
     funcname: str | None
     decorators: list[dict[Any, Any]]
-    def __init__(self, source: str | None = None, func: FunctionType | MethodType | None = None, filepath: str | None = None, eval_as_function: bool = True) -> None: ...
-    def copy(self) -> SourceCode: ...
+    def __init__(self, source: str | None = None, func: Callable[[], T] | None = None, filepath: str | None = None, eval_as_function: bool = True) -> None: ...
+    def copy(self) -> SourceCode[T]: ...
     def _init_from_func(self) -> None: ...
     @cached_property
     def includes(self) -> set | None: ...
@@ -62,9 +66,9 @@ class SourceCode:
     @property
     def sourcename(self) -> str: ...
     @cached_property
-    def compiled(self): ...
-    def set_package(self, package) -> None: ...
-    def exec_(self, globals_={}): ...
+    def compiled(self) -> CodeType: ...
+    def set_package(self, package: PackageBaseResourceWrapper) -> None: ...
+    def exec_(self, globals_={}) -> T: ...
     def to_text(self, funcname: str) -> str: ...
     def _get_decorator_info(self, name: str) -> dict | None: ...
     def __getstate__(self): ...
@@ -80,6 +84,6 @@ class IncludeModuleManager:
     include_modules_subpath: str
     modules: dict[Any, Any]
     def __init__(self) -> None: ...
-    def load_module(self, name, package): ...
+    def load_module(self, name: str, package: PackageBaseResourceWrapper) -> ModuleType | None: ...
 
 include_module_manager: Incomplete

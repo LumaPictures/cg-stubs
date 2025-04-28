@@ -1,4 +1,3 @@
-import rez.package_order
 import rez.utils.typing
 import rez.version._version
 from _typeshed import Incomplete
@@ -151,8 +150,8 @@ class PerFamilyOrder(PackageOrder):
     """An orderer that applies different orderers to different package families.
     """
     name: str
-    order_dict: dict[str, rez.package_order.PackageOrder]
-    default_order: rez.package_order.PackageOrder | None
+    order_dict: dict[str, PackageOrder]
+    default_order: PackageOrder | None
     def __init__(self, order_dict: dict[str, PackageOrder], default_order: PackageOrder | None = None) -> None:
         """Create a reorderer.
 
@@ -296,7 +295,7 @@ class TimestampPackageOrder(PackageOrder):
 class PackageOrderList(list[PackageOrder]):
     """A list of package orderer.
     """
-    by_package: dict[str, rez.package_order.PackageOrder]
+    by_package: dict[str, PackageOrder]
     dirty: bool
     def __init__(self, *args, **kwargs) -> None: ...
     def to_pod(self) -> list: ...

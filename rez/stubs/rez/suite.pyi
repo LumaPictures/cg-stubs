@@ -12,7 +12,7 @@ from rez.utils.formatting import PackageRequest as PackageRequest, columnise as 
 from rez.utils.yaml import dump_yaml as dump_yaml
 from rez.vendor import yaml as yaml  # type: ignore[import-not-found]
 from rez.vendor.yaml.error import YAMLError as YAMLError  # type: ignore[import-not-found]
-from typing import TypedDict
+from typing import NoReturn, TypedDict
 
 class Tool(TypedDict):
     tool_name: str
@@ -20,7 +20,7 @@ class Tool(TypedDict):
     context_name: str
     variant: Variant | set[Variant]
 
-class Context(TypedDict):
+class Context(TypedDict, total=False):
     name: str
     context: ResolvedContext
     tool_aliases: dict[str, str]
@@ -257,7 +257,7 @@ class Suite:
         """Validate the suite."""
     def to_dict(self): ...
     @classmethod
-    def from_dict(cls, d): ...
+    def from_dict(cls, d) -> Suite: ...
     def save(self, path, verbose: bool = False):
         """Save the suite to disk.
 
@@ -267,16 +267,16 @@ class Suite:
                 exists, an error is raised.
         """
     @classmethod
-    def load(cls, path): ...
+    def load(cls, path: str) -> Suite: ...
     @classmethod
-    def visible_suite_paths(cls, paths: Incomplete | None = None):
+    def visible_suite_paths(cls, paths: list[str] | None = None):
         """Get a list of paths to suites that are visible on $PATH.
 
         Returns:
             List of str.
         """
     @classmethod
-    def load_visible_suites(cls, paths: Incomplete | None = None):
+    def load_visible_suites(cls, paths: list[str] | None = None) -> list[Suite]:
         """Get a list of suites whos bin paths are visible on $PATH.
 
         Returns:
@@ -292,12 +292,12 @@ class Suite:
                 context.
         """
     def _context(self, name: str) -> Context: ...
-    def _context_path(self, name, suite_path: Incomplete | None = None): ...
+    def _context_path(self, name: str, suite_path: Incomplete | None = None): ...
     def _sorted_contexts(self) -> list[Context]: ...
     @property
     def _next_priority(self) -> int: ...
     def _flush_tools(self) -> None: ...
-    def _validate_tool(self, context_name, tool_name) -> None: ...
+    def _validate_tool(self, context_name: str, tool_name: str) -> None: ...
     def _update_tools(self) -> None: ...
 
-def _FWD__invoke_suite_tool_alias(context_name, tool_name, prefix_char: Incomplete | None = None, _script: Incomplete | None = None, _cli_args: Incomplete | None = None) -> None: ...
+def _FWD__invoke_suite_tool_alias(context_name: str, tool_name: str, prefix_char: Incomplete | None = None, _script: Incomplete | None = None, _cli_args: Incomplete | None = None) -> NoReturn: ...

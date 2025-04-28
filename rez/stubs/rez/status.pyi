@@ -2,6 +2,7 @@ from _typeshed import Incomplete
 from rez import __version__ as __version__
 from rez.packages import Package as Package, iter_packages as iter_packages
 from rez.resolved_context import ResolvedContext as ResolvedContext
+from rez.solver import SupportsWrite as SupportsWrite
 from rez.suite import Suite as Suite
 from rez.utils.colorize import Printer as Printer, critical as critical, warning as warning
 from rez.utils.data_utils import cached_property as cached_property
@@ -17,21 +18,21 @@ class Status:
     """
     def __init__(self) -> None: ...
     @cached_property
-    def context_file(self):
+    def context_file(self) -> str | None:
         """Get path to the current context file.
 
         Returns:
             Str, or None if not in a context.
         """
     @cached_property
-    def context(self):
+    def context(self) -> ResolvedContext | None:
         """Get the current context.
 
         Returns:
             `ResolvedContext` or None if not in a context.
         """
     @cached_property
-    def suites(self):
+    def suites(self) -> list[Suite]:
         """Get currently visible suites.
 
         Visible suites are those whos bin path appea on $PATH.
@@ -40,7 +41,7 @@ class Status:
             List of `Suite` objects.
         """
     @cached_property
-    def parent_suite(self):
+    def parent_suite(self) -> Suite | None:
         """Get the current parent suite.
 
         A parent suite exists when a context within a suite is active. That is,
@@ -52,7 +53,7 @@ class Status:
             `Suite` object, or None if there is no current parent suite.
         """
     @cached_property
-    def active_suite_context_name(self):
+    def active_suite_context_name(self) -> str | None:
         """Get the name of the currently active context in a parent suite.
 
         If a parent suite exists, then an active context exists - this is the
@@ -62,7 +63,7 @@ class Status:
             (str) Context name, or None if there is no parent suite (and thus
             no active context).
         """
-    def print_info(self, obj: Incomplete | None = None, buf=...):
+    def print_info(self, obj: Incomplete | None = None, buf: SupportsWrite = ...) -> bool:
         """Print a status message about the given object.
 
         If an object is not provided, status info is shown about the current
@@ -77,7 +78,7 @@ class Status:
                 - A suite filepath;
                 - The name of a context in a visible suite.
         """
-    def print_tools(self, pattern: Incomplete | None = None, buf=...) -> bool:
+    def print_tools(self, pattern: str | None = None, buf: SupportsWrite = ...) -> bool:
         """Print a list of visible tools.
 
         Args:

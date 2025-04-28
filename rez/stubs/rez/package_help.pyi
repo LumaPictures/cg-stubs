@@ -7,6 +7,7 @@ from rez.system import system as system
 from rez.utils.backcompat import convert_old_command_expansions as convert_old_command_expansions
 from rez.utils.execution import Popen as Popen
 from rez.utils.scope import scoped_formatter as scoped_formatter
+from rez.version import VersionRange as VersionRange
 
 class PackageHelp:
     """Object for extracting and viewing help for a package.
@@ -17,7 +18,7 @@ class PackageHelp:
     package: rez.packages.Package | None
     _verbose: bool
     _sections: list[list[str]]
-    def __init__(self, package_name, version_range: Incomplete | None = None, paths: Incomplete | None = None, verbose: bool = False) -> None:
+    def __init__(self, package_name: str, version_range: VersionRange | None = None, paths: Incomplete | None = None, verbose: bool = False) -> None:
         """Create a PackageHelp object.
 
         Args:
@@ -25,10 +26,10 @@ class PackageHelp:
             version_range (`VersionRange`): Versions to search.
         """
     @property
-    def success(self):
+    def success(self) -> bool:
         """Return True if help was found, False otherwise."""
     @property
-    def sections(self):
+    def sections(self) -> list[list[str]]:
         """Returns a list of (name, uri) 2-tuples."""
     def open(self, section_index: int = 0) -> None:
         """Launch a help section."""
@@ -38,4 +39,4 @@ class PackageHelp:
     def open_rez_manual(cls) -> None:
         """Open the Rez user manual."""
     @classmethod
-    def _open_url(cls, url) -> None: ...
+    def _open_url(cls, url: str) -> None: ...

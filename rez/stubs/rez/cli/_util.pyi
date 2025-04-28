@@ -37,7 +37,7 @@ class LazyArgumentParser(ArgumentParser):
     `setup_subparser` is passed 'parser_name', 'parser', and can return a help
     string.
     """
-    setup_subparser: Any
+    setup_subparser: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     def format_help(self):
         """Sets up all sub-parsers when help is requested."""

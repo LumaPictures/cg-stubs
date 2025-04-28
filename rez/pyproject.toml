@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "types-rez"
-version = "3.2.1.3"
+version = "3.2.1.4"
 
 readme = "README.md"
 authors = ["Chad Dombrova"]

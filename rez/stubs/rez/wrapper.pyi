@@ -7,7 +7,6 @@ from rez.utils.data_utils import cached_property as cached_property
 from rez.utils.formatting import columnise as columnise
 from rez.vendor import yaml as yaml  # type: ignore[import-not-found]
 from rez.vendor.yaml.error import YAMLError as YAMLError  # type: ignore[import-not-found]
-from typing import Any
 
 class Wrapper:
     """A Wrapper.
@@ -21,11 +20,11 @@ class Wrapper:
     """
     def __init__(self, filepath) -> None:
         """Create a wrapper given its executable file."""
-    suite_path: Any
-    context_name: Any
-    context: Any
-    tool_name: Any
-    prefix_char: Any
+    suite_path: Incomplete
+    context_name: Incomplete
+    context: Incomplete
+    tool_name: Incomplete
+    prefix_char: Incomplete
     def _init(self, suite_path, context_name, context, tool_name, prefix_char: Incomplete | None = None) -> None: ...
     @cached_property
     def suite(self): ...

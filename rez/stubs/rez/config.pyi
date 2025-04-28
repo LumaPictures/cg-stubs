@@ -20,7 +20,7 @@ class Validatable(Protocol):
     def validate(self, data: T) -> T: ...
 
 class _Deprecation:
-    __removed_in: Any
+    __removed_in: Incomplete
     __extra: Any | str
     def __init__(self, removed_in, extra: Incomplete | None = None) -> None: ...
     def get_message(self, name: str, env_var: bool | str = False): ...
@@ -32,8 +32,8 @@ class Setting:
     settings - plugin settings are validated on load only.
     """
     schema: Validatable
-    config: Any
-    key: Any
+    config: Incomplete
+    key: Incomplete
     def __init__(self, config, key) -> None: ...
     @property
     def _env_var_name(self) -> str: ...

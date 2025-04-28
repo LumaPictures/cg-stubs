@@ -7,7 +7,6 @@ from rez.utils.colorize import Printer as Printer, critical as critical, error a
 from rez.utils.formatting import expand_abbreviations as expand_abbreviations
 from rez.vendor.pygraph.classes.digraph import digraph as digraph  # type: ignore[import-not-found]
 from rez.version import Requirement as Requirement
-from typing import Any
 
 def get_reverse_dependency_tree(package_name: str, depth: int | None = None, paths: list[str] | None = None, build_requires: bool = False, private_build_requires: bool = False) -> tuple[list[list[str]], digraph]:
     """Find packages that depend on the given package.
@@ -51,9 +50,9 @@ class ResourceSearchResult:
 
     Will contain either a package, variant, or name of a package family (str).
     """
-    resource: Any
-    resource_type: Any
-    validation_error: Any
+    resource: Incomplete
+    resource_type: Incomplete
+    validation_error: Incomplete
     def __init__(self, resource, resource_type, validation_error: Incomplete | None = None) -> None: ...
 
 class ResourceSearcher:

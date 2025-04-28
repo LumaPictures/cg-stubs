@@ -1,4 +1,3 @@
-import rez.package_filter
 import rez.version._requirement
 from _typeshed import Incomplete
 from rez.config import config as config
@@ -117,7 +116,7 @@ class PackageFilterList(PackageFilterBase):
     A package is excluded by a filter list iff any filter within the list
     excludes it.
     """
-    filters: list[rez.package_filter.PackageFilter]
+    filters: list[PackageFilter]
     def __init__(self) -> None: ...
     def add_filter(self, package_filter: PackageFilter) -> None:
         """Add a filter to the list.

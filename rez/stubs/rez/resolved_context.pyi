@@ -1,12 +1,10 @@
 import rez.package_filter
 import rez.package_order
 import rez.packages
-import rez.resolved_context
 import rez.resolver
 import rez.solver
 import rez.version._requirement
 from _typeshed import Incomplete
-from collections.abc import Generator
 from contextlib import contextmanager
 from enum import Enum
 from rez import __version__ as __version__, module_root_path as module_root_path, package_order as package_order
@@ -19,7 +17,7 @@ from rez.package_repository import package_repository_manager as package_reposit
 from rez.package_resources import VariantResource as VariantResource
 from rez.packages import Package as Package, Variant as Variant, get_variant as get_variant, iter_packages as iter_packages
 from rez.resolver import Resolver as Resolver, ResolverStatus as ResolverStatus
-from rez.rex import ActionInterpreter as ActionInterpreter, OutputStyle as OutputStyle, Python as Python, RexExecutor as RexExecutor, literal as literal
+from rez.rex import Action as Action, ActionInterpreter as ActionInterpreter, OutputStyle as OutputStyle, Python as Python, RexExecutor as RexExecutor, literal as literal
 from rez.rex_bindings import EphemeralsBinding as EphemeralsBinding, RequirementsBinding as RequirementsBinding, VariantBinding as VariantBinding, VariantsBinding as VariantsBinding, VersionBinding as VersionBinding, intersects as intersects
 from rez.shells import create_shell as create_shell
 from rez.solver import SolverCallbackReturn as SolverCallbackReturn, SolverState as SolverState, SupportsWrite as SupportsWrite
@@ -39,7 +37,7 @@ from rez.utils.which import which as which
 from rez.utils.yaml import dump_yaml as dump_yaml
 from rez.vendor import yaml as yaml  # type: ignore[import-not-found]
 from rez.version import Requirement as Requirement, VersionRange as VersionRange
-from typing import Any, Callable, Iterable, Mapping, NoReturn, Sequence, TypeVar
+from typing import Any, Callable, Iterable, Literal, Mapping, NoReturn, Sequence, TypeVar
 
 CallableT = TypeVar('CallableT', bound=Callable)
 
@@ -69,8 +67,8 @@ class PatchLock(Enum):
     lock_4 = ('Build version updates only (X.X.X.*)', 3)
     lock = ('Exact version', -1)
     __order__ = 'no_lock,lock_2,lock_3,lock_4,lock'
-    description: Any
-    rank: Any
+    description = ...
+    rank = ...
     def __init__(self, description, rank) -> None: ...
 
 def get_lock_request(name: str, version, patch_lock: PatchLock, weak: bool = True) -> PackageRequest | None:
@@ -112,12 +110,12 @@ class ResolvedContext:
     local: Incomplete
     class Callback:
         max_fails: int
-        time_limit: Any
-        callback: Any
+        time_limit: Incomplete
+        callback: Callable[[rez.solver.SolverState], tuple[rez.solver.SolverCallbackReturn, str]] | None
         start_time: float
         buf: rez.solver.SupportsWrite | Any
-        def __init__(self, max_fails: int, time_limit, callback, buf: SupportsWrite | None = None) -> None: ...
-        def __call__(self, state): ...
+        def __init__(self, max_fails: int, time_limit, callback: Callable[[SolverState], tuple[SolverCallbackReturn, str]] | None, buf: SupportsWrite | None = None) -> None: ...
+        def __call__(self, state: SolverState) -> tuple[SolverCallbackReturn, str]: ...
     load_path: str | None
     requested_timestamp: float | None
     timestamp: float | int
@@ -128,20 +126,20 @@ class ResolvedContext:
     verbosity: int
     _package_requests: list[rez.version._requirement.Requirement]
     package_paths: Any | list[str]
-    package_filter: Any | rez.package_filter.PackageFilterList
-    package_orderers: rez.package_order.PackageOrderList
+    package_filter: rez.package_filter.PackageFilterList
+    package_orderers: rez.package_order.PackageOrderList | None
     append_sys_path: bool
-    package_caching: Any
-    package_cache_async: Any
-    default_patch_lock: rez.resolved_context.PatchLock
+    package_caching: bool | Any
+    package_cache_async: bool | Any
+    default_patch_lock: PatchLock
     patch_locks: dict[Any, Any]
     rez_version: str
     rez_path: str
     user: str
-    host: Any
-    platform: Any
-    arch: Any
-    os: Any
+    host: Incomplete
+    platform: Incomplete
+    arch: Incomplete
+    os: Incomplete
     created: int
     status_: rez.resolver.ResolverStatus
     _resolved_packages: list[rez.packages.Variant] | None
@@ -156,7 +154,7 @@ class ResolvedContext:
     pre_resolve_bindings: dict[str, Any] | None
     parent_suite_path: str | None
     suite_context_name: str | None
-    def __init__(self, package_requests: Iterable[str | Requirement], verbosity: int = 0, timestamp: float | None = None, building: bool = False, testing: bool = False, caching: bool | None = None, package_paths: list[str] | None = None, package_filter: PackageFilterList | None = None, package_orderers: list[PackageOrder] | None = None, max_fails: int = -1, add_implicit_packages: bool = True, time_limit: int = -1, callback: Callable[[SolverState], tuple[SolverCallbackReturn, str]] | None = None, package_load_callback: Callable[[Package], Any] | None = None, buf: SupportsWrite | None = None, suppress_passive: bool = False, print_stats: bool = False, package_caching: Incomplete | None = None, package_cache_async: Incomplete | None = None) -> None:
+    def __init__(self, package_requests: Iterable[str | Requirement], verbosity: int = 0, timestamp: float | None = None, building: bool = False, testing: bool = False, caching: bool | None = None, package_paths: list[str] | None = None, package_filter: PackageFilterList | None = None, package_orderers: list[PackageOrder] | None = None, max_fails: int = -1, add_implicit_packages: bool = True, time_limit: int = -1, callback: Callable[[SolverState], tuple[SolverCallbackReturn, str]] | None = None, package_load_callback: Callable[[Package], Any] | None = None, buf: SupportsWrite | None = None, suppress_passive: bool = False, print_stats: bool = False, package_caching: bool | None = None, package_cache_async: bool | None = None) -> None:
         """Perform a package resolve, and store the result.
 
         Args:
@@ -247,9 +245,9 @@ class ResolvedContext:
         and an equivalent resolve. Other details, such as timestamp, are not
         considered.
         """
-    def __hash__(self): ...
+    def __hash__(self) -> int: ...
     @property
-    def has_graph(self):
+    def has_graph(self) -> bool:
         """Return True if the resolve has a graph."""
     def get_resolved_package(self, name: str) -> Variant | None:
         """Returns a `Variant` object or None if the package is not in the
@@ -274,7 +272,7 @@ class ResolvedContext:
         Returns:
             ResolvedContext: The retargeted context.
         """
-    def get_patched_request(self, package_requests: Incomplete | None = None, package_subtractions: Incomplete | None = None, strict: bool = False, rank: int = 0):
+    def get_patched_request(self, package_requests: Incomplete | None = None, package_subtractions: Incomplete | None = None, strict: bool = False, rank: int = 0) -> list[Requirement | PackageRequest | str]:
         """Get a 'patched' request.
 
         A patched request is a copy of this context's request, but with some
@@ -342,7 +340,7 @@ class ResolvedContext:
     def load(cls, path: str) -> ResolvedContext:
         """Load a resolved context from file."""
     @classmethod
-    def read_from_buffer(cls, buf, identifier_str: Incomplete | None = None) -> ResolvedContext | None:
+    def read_from_buffer(cls, buf, identifier_str: str | None = None) -> ResolvedContext:
         """Load the context from a buffer."""
     def get_resolve_diff(self, other: ResolvedContext) -> dict:
         """Get the difference between the resolve in this context and another.
@@ -391,7 +389,7 @@ class ResolvedContext:
                 this option to list 'uri' regardless.
         """
     def print_tools(self, buf: SupportsWrite = ...) -> None: ...
-    def print_resolve_diff(self, other, heading: Incomplete | None = None) -> None:
+    def print_resolve_diff(self, other: ResolvedContext, heading: Literal[True] | None | tuple[str, str] = None) -> None:
         """Print the difference between the resolve of two contexts.
 
         Args:
@@ -480,7 +478,7 @@ class ResolvedContext:
             Dict of ``{tool-name: set([Variant])}``.
         """
     @_on_success
-    def get_shell_code(self, shell: str | None = None, parent_environ: Incomplete | None = None, style=...):
+    def get_shell_code(self, shell: str | None = None, parent_environ: Mapping[str, str] | None = None, style=...) -> str:
         """Get the shell code resulting from intepreting this context.
 
         Args:
@@ -491,7 +489,7 @@ class ResolvedContext:
             style (OutputStyle): Style to format shell code in.
         """
     @_on_success
-    def get_actions(self, parent_environ: Incomplete | None = None):
+    def get_actions(self, parent_environ: Mapping[str, str] | None = None) -> list[Action]:
         """Get the list of rex.Action objects resulting from interpreting this
         context. This is provided mainly for testing purposes.
 
@@ -503,7 +501,7 @@ class ResolvedContext:
             A list of rex.Action subclass instances.
         """
     @_on_success
-    def apply(self, parent_environ: Incomplete | None = None) -> None:
+    def apply(self, parent_environ: Mapping[str, str] | None = None) -> None:
         """Apply the context to the current python session.
 
         Note that this updates os.environ and possibly sys.path, if
@@ -514,7 +512,7 @@ class ResolvedContext:
                 defaults to os.environ if None.
         """
     @_on_success
-    def which(self, cmd, parent_environ: Incomplete | None = None, fallback: bool = False):
+    def which(self, cmd, parent_environ: Mapping[str, str] | None = None, fallback: bool = False):
         """Find a program in the resolved environment.
 
         Args:
@@ -528,7 +526,7 @@ class ResolvedContext:
             Path to the program, or None if the program was not found.
         """
     @_on_success
-    def execute_command(self, args, parent_environ: Incomplete | None = None, **Popen_args):
+    def execute_command(self, args, parent_environ: dict[str, str] | None = None, **Popen_args):
         """Run a command within a resolved context.
 
         This applies the context to a python environ dict, then runs a
@@ -554,7 +552,7 @@ class ResolvedContext:
             This does not alter the current python session.
         """
     @_on_success
-    def execute_rex_code(self, code, filename: Incomplete | None = None, shell: Incomplete | None = None, parent_environ: Mapping[str, str] | None = None, **Popen_args):
+    def execute_rex_code(self, code: str, filename: str | None = None, shell: str | None = None, parent_environ: Mapping[str, str] | None = None, **Popen_args):
         """Run some rex code in the context.
 
         Note:
@@ -663,7 +661,7 @@ class ResolvedContext:
         """
     @classmethod
     @contextmanager
-    def _detect_bundle(cls, path) -> Generator[None]: ...
+    def _detect_bundle(cls, path: str): ...
     @classmethod
     def _get_bundle_path(cls): ...
     @classmethod
@@ -684,9 +682,9 @@ class ResolvedContext:
     def _read_from_buffer(cls, buf, identifier_str: str | None = None) -> ResolvedContext: ...
     @classmethod
     def _load_error(cls, e, path: str | None = None) -> NoReturn: ...
-    def _set_parent_suite(self, suite_path, context_name: str) -> None: ...
+    def _set_parent_suite(self, suite_path: str, context_name: str) -> None: ...
     def _create_executor(self, interpreter: ActionInterpreter, parent_environ: Mapping[str, str] | None) -> RexExecutor: ...
-    def _get_pre_resolve_bindings(self): ...
+    def _get_pre_resolve_bindings(self) -> dict: ...
     @pool_memcached_connections
     def _execute(self, executor: RexExecutor) -> None:
         """Bind various info to the execution context

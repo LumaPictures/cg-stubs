@@ -1,20 +1,19 @@
 from _typeshed import Incomplete
 from rez.exceptions import ReleaseVCSError
 from rez.release_vcs import ReleaseVCS
-from typing import Any
 
 class GitReleaseVCSError(ReleaseVCSError): ...
 
 class GitReleaseVCS(ReleaseVCS):
     schema_dict: Incomplete
     @classmethod
-    def name(cls) -> str: ...  # type: ignore[override]
-    executable: Any
+    def name(cls) -> str: ...
+    executable: str
     def __init__(self, pkg_root, vcs_root: Incomplete | None = None) -> None: ...
     @classmethod
     def is_valid_root(cls, path): ...
     @classmethod
-    def search_parents_for_root(cls) -> bool: ...  # type: ignore[override]
+    def search_parents_for_root(cls) -> bool: ...
     def git(self, *nargs): ...
     def get_relative_to_remote(self):
         """Return the number of commits we are relative to the remote. Negative

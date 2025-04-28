@@ -3,7 +3,7 @@ import rez.solver
 from _typeshed import Incomplete
 from rez.solver import SupportsWrite as SupportsWrite
 from rez.vendor import colorama as colorama  # type: ignore[import-not-found]
-from typing import Any
+from typing import Callable
 
 def colorama_wrap(stream):
     """ Wrap the stream with colorama so that it can display colors on any OS """
@@ -13,7 +13,7 @@ def stream_is_tty(stream):
     Returns:
         bool
     """
-def critical(str_):
+def critical(str_: str) -> str:
     """ Return the string wrapped with the appropriate styling of a critical
     message.  The styling will be determined based on the rez configuration.
 
@@ -132,7 +132,7 @@ def notset(str_):
     Returns:
       str: The string styled with the appropriate escape sequences.
     """
-def _color_level(str_, level):
+def _color_level(str_, level) -> str:
     """ Return the string wrapped with the appropriate styling for the message
     level.  The styling will be determined based on the rez configuration.
 
@@ -144,7 +144,7 @@ def _color_level(str_, level):
     Returns:
       str: The string styled with the appropriate escape sequences.
     """
-def _color(str_, fore_color: Incomplete | None = None, back_color: Incomplete | None = None, styles: Incomplete | None = None):
+def _color(str_, fore_color: Incomplete | None = None, back_color: Incomplete | None = None, styles: Incomplete | None = None) -> str:
     """ Return the string wrapped with the appropriate styling escape sequences.
 
     Args:
@@ -196,8 +196,8 @@ class ColorizedStreamHandler(logging.StreamHandler):
         """
 
 class Printer:
-    colorize: Any
+    colorize: Incomplete
     buf: rez.solver.SupportsWrite
     def __init__(self, buf: SupportsWrite = ...) -> None: ...
     def __call__(self, msg: str = '', style: Incomplete | None = None) -> None: ...
-    def get(self, msg, style: Incomplete | None = None): ...
+    def get(self, msg: str, style: Callable[[str], str] | None = None) -> str: ...

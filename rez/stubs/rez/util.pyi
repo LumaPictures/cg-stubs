@@ -1,9 +1,11 @@
 import _io
 import atexit
+import re
 from _typeshed import Incomplete
 from collections.abc import Generator
 from rez.exceptions import RezError as RezError
 from rez.vendor.progress.bar import Bar as Bar  # type: ignore[import-not-found]
+from types import ModuleType
 from typing import Iterable, TypeGuard, TypeVar
 
 T = TypeVar('T')
@@ -20,11 +22,11 @@ def dedup(seq) -> Generator[Incomplete]:
 
 _find_unsafe: Incomplete
 
-def shlex_join(value: Iterable[str], unsafe_regex: Incomplete | None = None, replacements: Incomplete | None = None, enclose_with: str = '"'):
+def shlex_join(value: Iterable[str], unsafe_regex: Incomplete | None = None, replacements: Iterable[tuple[str | re.Pattern[str], str]] | None = None, enclose_with: str = '"') -> str:
     """Join args into a valid shell command.
     """
-def which(*programs, **shutilwhich_kwargs): ...
-def get_close_matches(term, fields, fuzziness: float = 0.4, key: Incomplete | None = None): ...
+def which(*programs, **shutilwhich_kwargs) -> str | None: ...
+def get_close_matches(term: str, fields, fuzziness: float = 0.4, key: Incomplete | None = None): ...
 def get_close_pkgs(pkg, pkgs, fuzziness: float = 0.4): ...
 def find_last_sublist(list_, sublist):
     """Given a list, find the last occurance of a sublist within it.
@@ -41,7 +43,7 @@ def get_function_arg_names(func):
 
     Gives full list of positional and keyword-only args.
     """
-def load_module_from_file(name: str, filepath: str):
+def load_module_from_file(name: str, filepath: str) -> ModuleType:
     """Load a python module from a sourcefile.
 
     Args:

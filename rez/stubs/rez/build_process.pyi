@@ -15,7 +15,6 @@ from rez.resolved_context import ResolvedContext as ResolvedContext
 from rez.resolver import ResolverStatus as ResolverStatus
 from rez.utils.colorize import Printer as Printer, heading as heading
 from rez.utils.logging_ import print_warning as print_warning
-from typing import Any
 
 debug_print: Incomplete
 
@@ -54,7 +53,7 @@ class BuildProcess:
     ensure_latest: bool
     skip_repo_errors: bool
     ignore_existing_tag: bool
-    build_path: Any
+    build_path: Incomplete
     def __init__(self, working_dir: str, build_system: BuildSystem, package: Incomplete | None = None, vcs: ReleaseVCS | None = None, ensure_latest: bool = True, skip_repo_errors: bool = False, ignore_existing_tag: bool = False, verbose: bool = False, quiet: bool = False) -> None:
         """Create a BuildProcess.
 

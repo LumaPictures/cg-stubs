@@ -1,4 +1,3 @@
-import rez.package_repository
 import rez.utils.resources
 import threading
 from _typeshed import Incomplete
@@ -89,7 +88,7 @@ class PackageRepository:
         Returns:
             True if there are no packages, False if there are at least one.
         """
-    def get_package_family(self, name) -> PackageFamilyResource | None:
+    def get_package_family(self, name: str) -> PackageFamilyResource | None:
         """Get a package family.
 
         Args:
@@ -105,7 +104,7 @@ class PackageRepository:
         Returns:
             `PackageFamilyResource` iterator.
         """
-    def iter_packages(self, package_family_resource) -> Iterator[PackageResource]:
+    def iter_packages(self, package_family_resource: PackageFamilyResource) -> Iterator[PackageResource]:
         """Iterate over the packages within the given family, in no particular
         order.
 
@@ -383,7 +382,7 @@ class PackageRepositoryManager:
     instances, and caches these resources in a resource pool.
     """
     pool: rez.utils.resources.ResourcePool
-    repositories: dict[str, rez.package_repository.PackageRepository]
+    repositories: dict[str, PackageRepository]
     def __init__(self, resource_pool: ResourcePool | None = None) -> None:
         """Create a package repo manager.
 
@@ -403,7 +402,7 @@ class PackageRepositoryManager:
         Returns:
             `PackageRepository` instance.
         '''
-    def are_same(self, path_1, path_2) -> bool:
+    def are_same(self, path_1: str, path_2: str) -> bool:
         """Test that `path_1` and `path_2` refer to the same repository.
 
         This is more reliable than testing that the strings match, since slightly

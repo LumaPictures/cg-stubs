@@ -2,7 +2,6 @@ import rez.package_filter
 import rez.package_order
 import rez.packages
 import rez.resolved_context
-import rez.solver
 import rez.version._requirement
 import rez.version._version
 from _typeshed import Incomplete
@@ -56,8 +55,8 @@ class SolverCallbackReturn(Enum):
     fail = 'Stop the solve and set to most recent failure'
 
 class _Printer:
-    verbosity: Any
-    buf: rez.solver.SupportsWrite | Any
+    verbosity: Incomplete
+    buf: SupportsWrite | Any
     suppress_passive: bool
     pending_sub: str | None
     pending_br: bool
@@ -77,7 +76,7 @@ class SolverState:
     """
     num_solves: int
     num_fails: int
-    phase: rez.solver._ResolvePhase
+    phase: _ResolvePhase
     def __init__(self, num_solves: int, num_fails: int, phase: _ResolvePhase) -> None: ...
     def __str__(self) -> str: ...
 
@@ -88,7 +87,7 @@ class Reduction(_Common):
     """A variant was removed because its dependencies conflicted with another
     scope in the current phase."""
     name: str
-    version: Any
+    version: Incomplete
     variant_index: int | None
     dependency: rez.version._requirement.Requirement
     conflicting_request: rez.version._requirement.Requirement
@@ -118,7 +117,7 @@ class FailureReason(_Common):
 
 class TotalReduction(FailureReason):
     """All of a scope's variants were reduced away."""
-    reductions: list[rez.solver.Reduction]
+    reductions: list[Reduction]
     def __init__(self, reductions: list[Reduction]) -> None: ...
     def involved_requirements(self) -> list[Requirement]: ...
     def description(self) -> str: ...
@@ -128,7 +127,7 @@ class TotalReduction(FailureReason):
 class DependencyConflicts(FailureReason):
     """A common dependency in a scope conflicted with another scope in the
     current phase."""
-    conflicts: list[rez.solver.DependencyConflict]
+    conflicts: list[DependencyConflict]
     def __init__(self, conflicts: list[DependencyConflict]) -> None: ...
     def involved_requirements(self) -> list[Requirement]: ...
     def description(self) -> str: ...
@@ -186,8 +185,8 @@ class _PackageEntry:
     Holds some extra state data, such as whether the variants are sorted.
     """
     package: rez.packages.Package
-    variants: list[rez.solver.PackageVariant]
-    solver: rez.solver.Solver
+    variants: list[PackageVariant]
+    solver: Solver
     sorted: bool
     def __init__(self, package: Package, variants: list[PackageVariant], solver: Solver) -> None: ...
     @property
@@ -221,7 +220,7 @@ class _PackageVariantList(_Common):
     """A list of package variants, loaded lazily.
     """
     package_name: str
-    solver: rez.solver.Solver
+    solver: Solver
     entries: list[list[Any]]
     def __init__(self, package_name: str, solver: Solver) -> None: ...
     def get_intersection(self, range_: VersionRange) -> list[_PackageEntry] | None:
@@ -238,9 +237,9 @@ class _PackageVariantList(_Common):
 
 class _PackageVariantSlice(_Common):
     """A subset of a variant list, but with more dependency-related info."""
-    solver: rez.solver.Solver
+    solver: Solver
     package_name: str
-    entries: list[rez.solver._PackageEntry]
+    entries: list[_PackageEntry]
     extracted_fams: set[Any]
     been_reduced_by: set[Any]
     been_intersected_with: set[Any]
@@ -314,8 +313,8 @@ class _PackageVariantSlice(_Common):
         """
 
 class PackageVariantCache:
-    solver: rez.solver.Solver
-    variant_lists: dict[str, rez.solver._PackageVariantList]
+    solver: Solver
+    variant_lists: dict[str, _PackageVariantList]
     def __init__(self, solver: Solver) -> None: ...
     def get_variant_slice(self, package_name: str, range_: VersionRange) -> _PackageVariantSlice | None:
         """Get a list of variants from the cache.
@@ -334,9 +333,9 @@ class _PackageScope(_Common):
     down.
     """
     package_name: str
-    solver: rez.solver.Solver
-    variant_slice: rez.solver._PackageVariantSlice | None
-    pr: rez.solver._Printer
+    solver: Solver
+    variant_slice: _PackageVariantSlice | None
+    pr: _Printer
     is_ephemeral: bool
     package_request: rez.version._requirement.Requirement
     def __init__(self, package_request: Requirement, solver: Solver) -> None: ...
@@ -395,11 +394,11 @@ class _ResolvePhase(_Common):
     If the resolve phase gets to a point where every package scope is solved,
     then the entire resolve is considered to be solved.
     """
-    solver: rez.solver.Solver
-    failure_reason: rez.solver.FailureReason | None
+    solver: Solver
+    failure_reason: FailureReason | None
     extractions: dict[tuple[str, str], rez.version._requirement.Requirement]
-    status: rez.solver.SolverStatus
-    scopes: list[rez.solver._PackageScope]
+    status: SolverStatus
+    scopes: list[_PackageScope]
     changed_scopes_i: set[int]
     def __init__(self, solver: Solver) -> None: ...
     @property
@@ -462,23 +461,23 @@ class Solver(_Common):
     package_paths: list[str]
     package_filter: rez.package_filter.PackageFilterBase | None
     package_orderers: list[rez.package_order.PackageOrder] | None
-    callback: Callable[[rez.solver.SolverState], tuple[rez.solver.SolverCallbackReturn, str]] | None
+    callback: Callable[[SolverState], tuple[SolverCallbackReturn, str]] | None
     prune_unfailed: bool
     package_load_callback: Callable[[rez.packages.Package], Any] | None
     building: bool
     context: rez.resolved_context.ResolvedContext | None
-    pr: rez.solver._Printer
+    pr: _Printer
     print_stats: bool
-    buf: rez.solver.SupportsWrite | None
+    buf: SupportsWrite | None
     optimised: bool
-    phase_stack: list[rez.solver._ResolvePhase]
-    failed_phase_list: list[rez.solver._ResolvePhase]
+    phase_stack: list[_ResolvePhase]
+    failed_phase_list: list[_ResolvePhase]
     depth_counts: dict[Any, Any]
     solve_begun: bool
     solve_time: float
     load_time: float
     abort_reason: str | None
-    callback_return: rez.solver.SolverCallbackReturn | None
+    callback_return: SolverCallbackReturn | None
     solve_count: int
     extractions_count: int
     intersections_count: int
@@ -492,7 +491,7 @@ class Solver(_Common):
     intersection_test_time: list[float]
     reduction_time: list[float]
     reduction_test_time: list[float]
-    package_cache: rez.solver.PackageVariantCache
+    package_cache: PackageVariantCache
     request_list: rez.version._requirement.RequirementList
     def __init__(self, package_requests: list[Requirement], package_paths: list[str], context: ResolvedContext | None = None, package_filter: PackageFilterBase | None = None, package_orderers: list[PackageOrder] | None = None, callback: Callable[[SolverState], tuple[SolverCallbackReturn, str]] | None = None, building: bool = False, optimised: bool = True, verbosity: int = 0, buf: SupportsWrite | None = None, package_load_callback: Callable[[Package], Any] | None = None, prune_unfailed: bool = True, suppress_passive: bool = False, print_stats: bool = False) -> None:
         """Create a Solver.

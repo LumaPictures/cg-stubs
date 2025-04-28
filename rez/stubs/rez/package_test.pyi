@@ -1,4 +1,3 @@
-import rez.package_test
 import rez.packages
 import typing
 from _typeshed import Incomplete
@@ -42,18 +41,18 @@ class PackageTestRunner:
     Commands can also be a list - in this case, the test process is launched
     directly, rather than interpreted via a shell.
     '''
-    package_request: Any
+    package_request: Incomplete
     use_current_env: bool
-    extra_package_requests: Any
+    extra_package_requests: Incomplete
     stdout: Any | typing.TextIO
     stderr: Any | typing.TextIO
     dry_run: bool
     stop_on_fail: bool
-    cumulative_test_results: Any
+    cumulative_test_results: Incomplete
     context_kwargs: dict[str, Any]
     verbose: int
-    package_paths: Any
-    test_results: rez.package_test.PackageTestResults
+    package_paths: Incomplete
+    test_results: PackageTestResults
     package: rez.packages.Package | None
     contexts: dict[Any, Any]
     stopped_on_fail: bool

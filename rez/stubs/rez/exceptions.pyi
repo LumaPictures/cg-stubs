@@ -1,11 +1,10 @@
 from _typeshed import Incomplete
 from collections.abc import Generator
 from contextlib import contextmanager
-from typing import Any
 
 class RezError(Exception):
     """Base-class Rez error."""
-    value: Any
+    value: Incomplete
     def __init__(self, value: Incomplete | None = None) -> None: ...
     def __str__(self) -> str: ...
 
@@ -67,7 +66,7 @@ class BuildSystemError(BuildError):
 class BuildContextResolveError(BuildError):
     """Raised if unable to resolve the required context when creating the
     environment for a build process."""
-    context: Any
+    context: Incomplete
     def __init__(self, context) -> None: ...
 
 class BuildProcessError(RezError):

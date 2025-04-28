@@ -1,12 +1,11 @@
 import subprocess
-from _typeshed import Incomplete
-from collections.abc import Generator
 from contextlib import contextmanager
 from enum import Enum
 from rez.utils.yaml import dump_yaml as dump_yaml
+from typing import Callable as Callable, Iterable, Iterator
 
 @contextmanager
-def add_sys_paths(paths) -> Generator[None]:
+def add_sys_paths(paths: Iterable[str]) -> Iterator[None]:
     """Add to sys.path, and revert on scope exit.
     """
 
@@ -28,7 +27,7 @@ class ExecutableScriptMode(Enum):
     platform_specific = 3
     both = 4
 
-def create_executable_script(filepath, body, program: Incomplete | None = None, py_script_mode: Incomplete | None = None):
+def create_executable_script(filepath: str, body: str | Callable, program: str | None = None, py_script_mode: ExecutableScriptMode | None = None) -> list[str]:
     '''
     Create an executable script. In case a py_script_mode has been set to create
     a .py script the shell is expected to have the PATHEXT environment
@@ -47,7 +46,7 @@ def create_executable_script(filepath, body, program: Incomplete | None = None, 
         filepath depending on the py_script_mode
 
     '''
-def _get_python_script_files(filepath, py_script_mode, platform):
+def _get_python_script_files(filepath: str, py_script_mode, platform: str) -> list[str]:
     """
     Evaluates the py_script_mode for the requested filepath on the given
     platform.
@@ -61,7 +60,7 @@ def _get_python_script_files(filepath, py_script_mode, platform):
         list of str: filepaths of scripts to create based on inputs
 
     """
-def create_forwarding_script(filepath, module, func_name, *nargs, **kwargs) -> None:
+def create_forwarding_script(filepath: str, module: str | tuple[str, str], func_name: str, *nargs, **kwargs) -> None:
     """Create a 'forwarding' script.
 
     A forwarding script is one that executes some arbitrary Rez function. This

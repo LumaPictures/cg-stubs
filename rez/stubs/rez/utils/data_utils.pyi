@@ -2,7 +2,7 @@ import _thread
 from _typeshed import Incomplete
 from collections.abc import MutableMapping
 from rez.vendor.schema.schema import Optional as Optional, Schema as Schema  # type: ignore[import-not-found]
-from typing import Any, Generic, TypeVar
+from typing import Any, Callable, Generic, TypeVar
 
 T = TypeVar('T')
 
@@ -12,8 +12,8 @@ class ModifyList:
     This can be used in configs to add to list-based settings, rather than
     overwriting them.
     """
-    prepend: Any
-    append: Any
+    prepend: Incomplete
+    append: Incomplete
     def __init__(self, append: Incomplete | None = None, prepend: Incomplete | None = None) -> None: ...
     def apply(self, v): ...
 
@@ -25,7 +25,7 @@ class DelayLoad:
     - yaml (``*.yaml``, ``*.yml``)
     - json (``*.json``)
     """
-    filepath: Any
+    filepath: Incomplete
     def __init__(self, filepath) -> None: ...
     def __str__(self) -> str: ...
     def get_value(self): ...
@@ -65,7 +65,7 @@ def get_dict_diff_str(d1, d2, title):
     """
 cached_property = property
 
-class cached_class_property:
+class cached_class_property(Generic[T]):
     """Simple class property caching descriptor.
 
     Example:
@@ -82,9 +82,9 @@ class cached_class_property:
         >>> Foo.bah
         1
     """
-    func: Any
-    def __init__(self, func, name: Incomplete | None = None) -> None: ...
-    def __get__(self, instance, owner: Incomplete | None = None): ...
+    func: Callable[[Any], T]
+    def __init__(self, func: Callable[[Any], T], name: Incomplete | None = None) -> None: ...
+    def __get__(self, instance, owner: Incomplete | None = None) -> T: ...
 
 class LazySingleton(Generic[T]):
     """A threadsafe singleton that initialises when first referenced."""

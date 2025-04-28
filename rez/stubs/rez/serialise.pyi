@@ -14,7 +14,6 @@ from rez.utils.scope import ScopeContext as ScopeContext
 from rez.utils.sourcecode import SourceCode as SourceCode, early as early, include as include, late as late
 from rez.vendor import yaml as yaml  # type: ignore[import-not-found]
 from rez.vendor.atomicwrites import atomic_write as atomic_write  # type: ignore[import-not-found]
-from typing import Any
 
 tmpdir_manager: Incomplete
 debug_print: Incomplete
@@ -25,7 +24,7 @@ class FileFormat(Enum):
     yaml = ('yaml',)
     txt = ('txt',)
     __order__ = 'py,yaml,txt'
-    extension: Any
+    extension = ...
     def __init__(self, extension) -> None: ...
 
 @contextmanager
@@ -43,7 +42,7 @@ def open_file_for_write(filepath, mode: Incomplete | None = None) -> Generator[I
     Yields:
         File-like object.
     """
-def load_from_file(filepath, format_=..., update_data_callback: Incomplete | None = None, disable_memcache: bool = False):
+def load_from_file(filepath: str, format_=..., update_data_callback: Incomplete | None = None, disable_memcache: bool = False):
     """Load data from a file.
 
     Note:
@@ -60,8 +59,8 @@ def load_from_file(filepath, format_=..., update_data_callback: Incomplete | Non
         dict:
     """
 def _load_from_file__key(filepath, format_, update_data_callback): ...
-def _load_from_file(filepath, format_, update_data_callback): ...
-def _load_file(filepath, format_, update_data_callback, original_filepath: Incomplete | None = None): ...
+def _load_from_file(filepath: str, format_, update_data_callback): ...
+def _load_file(filepath: str, format_, update_data_callback, original_filepath: Incomplete | None = None): ...
 
 _set_objects: Incomplete
 default_objects: Incomplete
@@ -99,7 +98,7 @@ class EarlyThis:
 
     Just exposes raw package data as object attributes.
     """
-    _data: Any
+    _data: Incomplete
     def __init__(self, data) -> None: ...
     def __getattr__(self, attr): ...
 
