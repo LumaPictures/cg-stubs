@@ -3,6 +3,7 @@ import rez.package_order
 import rez.packages
 import rez.resolver
 import rez.solver
+import rez.utils.typing
 import rez.version._requirement
 from _typeshed import Incomplete
 from contextlib import contextmanager
@@ -20,7 +21,7 @@ from rez.resolver import Resolver as Resolver, ResolverStatus as ResolverStatus
 from rez.rex import Action as Action, ActionInterpreter as ActionInterpreter, OutputStyle as OutputStyle, Python as Python, RexExecutor as RexExecutor, literal as literal
 from rez.rex_bindings import EphemeralsBinding as EphemeralsBinding, RequirementsBinding as RequirementsBinding, VariantBinding as VariantBinding, VariantsBinding as VariantsBinding, VersionBinding as VersionBinding, intersects as intersects
 from rez.shells import create_shell as create_shell
-from rez.solver import SolverCallbackReturn as SolverCallbackReturn, SolverState as SolverState, SupportsWrite as SupportsWrite
+from rez.solver import SolverCallbackReturn as SolverCallbackReturn, SolverState as SolverState
 from rez.system import system as system
 from rez.util import dedup as dedup, is_non_string_iterable as is_non_string_iterable
 from rez.utils.colorize import Printer as Printer, critical as critical, heading as heading, implicit as implicit, local as local
@@ -33,6 +34,7 @@ from rez.utils.memcached import pool_memcached_connections as pool_memcached_con
 from rez.utils.platform_ import platform_ as platform_
 from rez.utils.resolve_graph import failure_detail_from_graph as failure_detail_from_graph
 from rez.utils.sourcecode import SourceCodeError as SourceCodeError
+from rez.utils.typing import SupportsWrite as SupportsWrite
 from rez.utils.which import which as which
 from rez.utils.yaml import dump_yaml as dump_yaml
 from rez.vendor import yaml as yaml  # type: ignore[import-not-found]
@@ -113,7 +115,7 @@ class ResolvedContext:
         time_limit: Incomplete
         callback: Callable[[rez.solver.SolverState], tuple[rez.solver.SolverCallbackReturn, str]] | None
         start_time: float
-        buf: rez.solver.SupportsWrite | Any
+        buf: rez.utils.typing.SupportsWrite | Any
         def __init__(self, max_fails: int, time_limit, callback: Callable[[SolverState], tuple[SolverCallbackReturn, str]] | None, buf: SupportsWrite | None = None) -> None: ...
         def __call__(self, state: SolverState) -> tuple[SolverCallbackReturn, str]: ...
     load_path: str | None

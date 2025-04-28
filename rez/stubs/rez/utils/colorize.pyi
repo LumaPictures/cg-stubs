@@ -1,7 +1,7 @@
 import logging
-import rez.solver
+import rez.utils.typing
 from _typeshed import Incomplete
-from rez.solver import SupportsWrite as SupportsWrite
+from rez.utils.typing import SupportsWrite as SupportsWrite
 from rez.vendor import colorama as colorama  # type: ignore[import-not-found]
 from typing import Callable
 
@@ -197,7 +197,7 @@ class ColorizedStreamHandler(logging.StreamHandler):
 
 class Printer:
     colorize: Incomplete
-    buf: rez.solver.SupportsWrite
+    buf: rez.utils.typing.SupportsWrite
     def __init__(self, buf: SupportsWrite = ...) -> None: ...
     def __call__(self, msg: str = '', style: Incomplete | None = None) -> None: ...
     def get(self, msg: str, style: Callable[[str], str] | None = None) -> str: ...

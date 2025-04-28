@@ -24,9 +24,9 @@ class DeveloperPackage(Package):
     includes: set[str] | None
     def __init__(self, resource) -> None: ...
     @property
-    def root(self): ...
+    def root(self) -> str | None: ...
     @classmethod
-    def from_path(cls, path, format: FileFormat | None = None):
+    def from_path(cls, path: str, format: FileFormat | None = None) -> DeveloperPackage:
         """Load a developer package.
 
         A developer package may for example be a package.yaml or package.py in a
@@ -40,7 +40,7 @@ class DeveloperPackage(Package):
         Returns:
             `Package` object.
         """
-    def get_reevaluated(self, objects):
+    def get_reevaluated(self, objects) -> DeveloperPackage:
         """Get a newly loaded and re-evaluated package.
 
         Values in `objects` are made available to early-bound package
@@ -55,7 +55,7 @@ class DeveloperPackage(Package):
             `DeveloperPackage`: New package.
         """
     def _validate_includes(self) -> None: ...
-    def _get_preprocessed(self, data):
+    def _get_preprocessed(self, data: dict) -> tuple[DeveloperPackage, dict] | None:
         """
         Returns:
             (DeveloperPackage, new_data) 2-tuple IF the preprocess function

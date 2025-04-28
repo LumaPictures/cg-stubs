@@ -1,10 +1,10 @@
 from _typeshed import Incomplete
 from rez.package_resources import help_schema as help_schema, late_bound as late_bound
 from rez.serialise import FileFormat as FileFormat
-from rez.solver import SupportsWrite as SupportsWrite
 from rez.utils.formatting import PackageRequest as PackageRequest, as_block_string as as_block_string, dict_to_attributes_code as dict_to_attributes_code, indent as indent
 from rez.utils.schema import Required as Required, extensible_schema_dict as extensible_schema_dict
 from rez.utils.sourcecode import SourceCode as SourceCode
+from rez.utils.typing import SupportsWrite as SupportsWrite
 from rez.utils.yaml import dump_yaml as dump_yaml
 from rez.vendor.schema.schema import And as And, Optional as Optional, Or as Or, Schema as Schema, Use as Use  # type: ignore[import-not-found]
 from rez.version import Version as Version

@@ -2,11 +2,11 @@ from _typeshed import Incomplete
 from rez import __version__ as __version__
 from rez.packages import Package as Package, iter_packages as iter_packages
 from rez.resolved_context import ResolvedContext as ResolvedContext
-from rez.solver import SupportsWrite as SupportsWrite
 from rez.suite import Suite as Suite
 from rez.utils.colorize import Printer as Printer, critical as critical, warning as warning
 from rez.utils.data_utils import cached_property as cached_property
 from rez.utils.formatting import PackageRequest as PackageRequest, print_colored_columns as print_colored_columns
+from rez.utils.typing import SupportsWrite as SupportsWrite
 from rez.utils.which import which as which
 from rez.wrapper import Wrapper as Wrapper
 

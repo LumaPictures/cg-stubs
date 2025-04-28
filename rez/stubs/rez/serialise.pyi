@@ -82,7 +82,7 @@ def set_objects(objects) -> Generator[None]:
     Args:
         objects (dict): Variables to set.
     """
-def load_py(stream, filepath: Incomplete | None = None):
+def load_py(stream, filepath: str = None):  # type: ignore[assignment]
     """Load python-formatted data from a stream.
 
     Args:
@@ -91,7 +91,7 @@ def load_py(stream, filepath: Incomplete | None = None):
     Returns:
         dict:
     """
-def _load_py(stream, filepath: Incomplete | None = None): ...
+def _load_py(stream, filepath: str = None): ...  # type: ignore[assignment]
 
 class EarlyThis:
     """The ``this`` object for ``@early`` bound functions.
@@ -102,7 +102,7 @@ class EarlyThis:
     def __init__(self, data) -> None: ...
     def __getattr__(self, attr): ...
 
-def process_python_objects(data, filepath: Incomplete | None = None):
+def process_python_objects(data: dict, filepath: str | None = None) -> dict:
     """Replace certain values in the given package data dict.
 
     Does things like:
@@ -116,7 +116,7 @@ def process_python_objects(data, filepath: Incomplete | None = None):
     Returns:
         dict: Updated dict.
     """
-def load_yaml(stream, **kwargs):
+def load_yaml(stream, filepath: str = None):  # type: ignore[assignment]
     """Load yaml-formatted data from a stream.
 
     Args:
@@ -125,7 +125,7 @@ def load_yaml(stream, **kwargs):
     Returns:
         dict:
     """
-def load_txt(stream, **kwargs):
+def load_txt(stream, filepath: str = None):  # type: ignore[assignment]
     """Load text data from a stream.
 
     Args:

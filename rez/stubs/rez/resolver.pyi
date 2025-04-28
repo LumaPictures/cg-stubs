@@ -3,19 +3,21 @@ import rez.package_order
 import rez.packages
 import rez.resolved_context
 import rez.solver
+import rez.utils.typing
 import rez.version._requirement
 from _typeshed import Incomplete
 from contextlib import contextmanager
 from enum import Enum
 from rez.config import config as config
 from rez.package_filter import PackageFilterList as PackageFilterList, TimestampRule as TimestampRule
-from rez.package_order import PackageOrder as PackageOrder
+from rez.package_order import PackageOrder as PackageOrder, PackageOrderList as PackageOrderList
 from rez.package_repository import package_repository_manager as package_repository_manager
 from rez.packages import Package as Package, Variant as Variant, get_last_release_time as get_last_release_time, get_variant as get_variant
 from rez.resolved_context import ResolvedContext as ResolvedContext
-from rez.solver import Solver as Solver, SolverCallbackReturn as SolverCallbackReturn, SolverState as SolverState, SolverStatus as SolverStatus, SupportsWrite as SupportsWrite
+from rez.solver import Solver as Solver, SolverCallbackReturn as SolverCallbackReturn, SolverState as SolverState, SolverStatus as SolverStatus
 from rez.utils.logging_ import log_duration as log_duration
 from rez.utils.memcached import Client as Client, memcached_client as memcached_client, pool_memcached_connections as pool_memcached_connections
+from rez.utils.typing import SupportsWrite as SupportsWrite
 from rez.version import Requirement as Requirement
 from typing import Any, Callable, Iterator, TypedDict
 
@@ -50,13 +52,13 @@ class Resolver:
     package_paths: list[str]
     timestamp: float | None
     callback: Callable[[rez.solver.SolverState], tuple[rez.solver.SolverCallbackReturn, str]] | None
-    package_orderers: list[rez.package_order.PackageOrder] | None
+    package_orderers: rez.package_order.PackageOrderList | None
     package_load_callback: Callable[[rez.packages.Package], Any] | None
     building: bool
     testing: bool
     verbosity: bool
     caching: bool
-    buf: rez.solver.SupportsWrite | None
+    buf: rez.utils.typing.SupportsWrite | None
     suppress_passive: bool
     print_stats: bool
     package_orderers_hash: str
@@ -72,7 +74,7 @@ class Resolver:
     solve_time: float | None
     load_time: float | None
     _print: Incomplete
-    def __init__(self, context: ResolvedContext, package_requests: list[Requirement], package_paths: list[str], package_filter: PackageFilterList | None = None, package_orderers: list[PackageOrder] | None = None, timestamp: float | None = 0, callback: Callable[[SolverState], tuple[SolverCallbackReturn, str]] | None = None, building: bool = False, testing: bool = False, verbosity: bool = False, buf: SupportsWrite | None = None, package_load_callback: Callable[[Package], Any] | None = None, caching: bool = True, suppress_passive: bool = False, print_stats: bool = False) -> None:
+    def __init__(self, context: ResolvedContext, package_requests: list[Requirement], package_paths: list[str], package_filter: PackageFilterList | None = None, package_orderers: PackageOrderList | None = None, timestamp: float | None = 0, callback: Callable[[SolverState], tuple[SolverCallbackReturn, str]] | None = None, building: bool = False, testing: bool = False, verbosity: bool = False, buf: SupportsWrite | None = None, package_load_callback: Callable[[Package], Any] | None = None, caching: bool = True, suppress_passive: bool = False, print_stats: bool = False) -> None:
         """Create a Resolver.
 
         Args:

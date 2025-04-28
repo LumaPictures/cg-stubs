@@ -2,6 +2,7 @@ import rez.package_filter
 import rez.package_order
 import rez.packages
 import rez.resolved_context
+import rez.utils.typing
 import rez.version._requirement
 import rez.version._version
 from _typeshed import Incomplete
@@ -10,13 +11,13 @@ from enum import Enum
 from rez.config import config as config
 from rez.exceptions import PackageFamilyNotFoundError as PackageFamilyNotFoundError, PackageNotFoundError as PackageNotFoundError, ResolveError as ResolveError, RezSystemError as RezSystemError
 from rez.package_filter import PackageFilterBase as PackageFilterBase
-from rez.package_order import PackageOrder as PackageOrder
+from rez.package_order import PackageOrderList as PackageOrderList
 from rez.package_repository import package_repo_stats as package_repo_stats
 from rez.packages import Package as Package, Variant as Variant, iter_packages as iter_packages
 from rez.resolved_context import ResolvedContext as ResolvedContext
 from rez.utils.data_utils import cached_property as cached_property
 from rez.utils.logging_ import print_debug as print_debug
-from rez.utils.typing import Protocol as Protocol, SupportsLessThan as SupportsLessThan  # type: ignore[attr-defined]
+from rez.utils.typing import SupportsLessThan as SupportsLessThan, SupportsWrite as SupportsWrite
 from rez.vendor.pygraph.algorithms.accessibility import accessibility as accessibility  # type: ignore[import-not-found]
 from rez.vendor.pygraph.algorithms.cycles import find_cycle as find_cycle  # type: ignore[import-not-found]
 from rez.vendor.pygraph.classes.digraph import digraph as digraph  # type: ignore[import-not-found]
@@ -24,10 +25,6 @@ from rez.version import Requirement as Requirement, RequirementList as Requireme
 from typing import Any, Callable, Generator, Iterator, TypeVar
 
 T = TypeVar('T')
-
-class SupportsWrite(Protocol):
-    def write(self, /, __s: str) -> object: ...
-
 _force_unoptimised_solver: Incomplete
 SOLVER_VERSION: int
 
@@ -56,7 +53,7 @@ class SolverCallbackReturn(Enum):
 
 class _Printer:
     verbosity: Incomplete
-    buf: SupportsWrite | Any
+    buf: rez.utils.typing.SupportsWrite | Any
     suppress_passive: bool
     pending_sub: str | None
     pending_br: bool
@@ -460,7 +457,7 @@ class Solver(_Common):
     max_verbosity: int
     package_paths: list[str]
     package_filter: rez.package_filter.PackageFilterBase | None
-    package_orderers: list[rez.package_order.PackageOrder] | None
+    package_orderers: rez.package_order.PackageOrderList | None
     callback: Callable[[SolverState], tuple[SolverCallbackReturn, str]] | None
     prune_unfailed: bool
     package_load_callback: Callable[[rez.packages.Package], Any] | None
@@ -468,7 +465,7 @@ class Solver(_Common):
     context: rez.resolved_context.ResolvedContext | None
     pr: _Printer
     print_stats: bool
-    buf: SupportsWrite | None
+    buf: rez.utils.typing.SupportsWrite | None
     optimised: bool
     phase_stack: list[_ResolvePhase]
     failed_phase_list: list[_ResolvePhase]
@@ -493,7 +490,7 @@ class Solver(_Common):
     reduction_test_time: list[float]
     package_cache: PackageVariantCache
     request_list: rez.version._requirement.RequirementList
-    def __init__(self, package_requests: list[Requirement], package_paths: list[str], context: ResolvedContext | None = None, package_filter: PackageFilterBase | None = None, package_orderers: list[PackageOrder] | None = None, callback: Callable[[SolverState], tuple[SolverCallbackReturn, str]] | None = None, building: bool = False, optimised: bool = True, verbosity: int = 0, buf: SupportsWrite | None = None, package_load_callback: Callable[[Package], Any] | None = None, prune_unfailed: bool = True, suppress_passive: bool = False, print_stats: bool = False) -> None:
+    def __init__(self, package_requests: list[Requirement], package_paths: list[str], context: ResolvedContext | None = None, package_filter: PackageFilterBase | None = None, package_orderers: PackageOrderList | None = None, callback: Callable[[SolverState], tuple[SolverCallbackReturn, str]] | None = None, building: bool = False, optimised: bool = True, verbosity: int = 0, buf: SupportsWrite | None = None, package_load_callback: Callable[[Package], Any] | None = None, prune_unfailed: bool = True, suppress_passive: bool = False, print_stats: bool = False) -> None:
         """Create a Solver.
 
         Args:

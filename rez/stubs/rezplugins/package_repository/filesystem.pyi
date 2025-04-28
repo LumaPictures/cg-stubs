@@ -3,7 +3,6 @@ import rez.package_resources
 import rez.packages
 import rez.serialise
 from _typeshed import Incomplete
-from collections.abc import Generator
 from contextlib import contextmanager
 from rez.exceptions import PackageMetadataError
 from rez.package_repository import PackageRepository
@@ -13,7 +12,7 @@ from rez.serialise import FileFormat
 from rez.utils.memcached import pool_memcached_connections
 from rez.utils.resources import cached_property as cached_property
 from rez.version import Version
-from typing import Iterator, Self
+from typing import Any, Iterator, Self
 
 debug_print: Incomplete
 format_version: int
@@ -74,7 +73,7 @@ class FileSystemCombinedPackageFamilyResource(PackageFamilyResource):
     def filepath(self): ...
     def _uri(self): ...
     def get_last_release_time(self): ...
-    def iter_packages(self) -> Generator[Incomplete]: ...
+    def iter_packages(self) -> Iterator[FileSystemCombinedPackageResource]: ...
     def _load(self): ...
 
 class FileSystemCombinedPackageResource(PackageResourceHelper):  # type: ignore[misc]
@@ -211,7 +210,7 @@ class FileSystemPackageRepository(PackageRepository):
 
             See #810
         """
-    def install_variant(self, variant_resource: VariantResource, dry_run: bool = False, overrides: Incomplete | None = None) -> VariantResource: ...
+    def install_variant(self, variant_resource: VariantResource, dry_run: bool = False, overrides: dict[str, Any] | None = None) -> VariantResource: ...
     def _copy(self, **kwargs) -> Self:
         """
         Make a copy of the repo that does not share resources with this one.
@@ -231,7 +230,7 @@ class FileSystemPackageRepository(PackageRepository):
     def _get_variants(self, package_resource: PackageResourceHelper) -> list[VariantResource]: ...
     def _get_file(self, path: str, package_filename: Incomplete | None = None) -> tuple[str, FileFormat] | tuple[None, None]: ...
     def _create_family(self, name: str) -> PackageFamilyResource: ...
-    def _create_variant(self, variant: VariantResource, dry_run: bool = False, overrides: Incomplete | None = None) -> VariantResource | None: ...
+    def _create_variant(self, variant: VariantResource, dry_run: bool = False, overrides: dict[str, Any] = None) -> VariantResource | None: ...  # type: ignore[assignment]
     def _on_changed(self, pkg_name: str) -> None:
         """Called when a package is added/removed/changed.
         """
