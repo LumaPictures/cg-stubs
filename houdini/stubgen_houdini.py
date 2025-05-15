@@ -8,6 +8,8 @@ from functools import lru_cache
 import mypy.stubdoc
 import mypy.stubgen
 import mypy.stubgenc
+from mypy.stubgenc import FunctionContext, FunctionSig, SignatureGenerator
+
 from hou_cleanup_config import (
     ADDITIONAL_ENUM_NAMES,
     EXPLICIT_DEFINITIONS,
@@ -17,8 +19,6 @@ from hou_cleanup_config import (
     NON_OPTIONAL_RETURN_TYPES,
     TYPE_ALIASES,
 )
-from mypy.stubgenc import FunctionContext, FunctionSig, SignatureGenerator
-
 from stubgenlib.cpptypeconvert import CppTypeConverter
 from stubgenlib.siggen import (
     AdvancedSigMatcher,

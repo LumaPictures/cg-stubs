@@ -3,7 +3,7 @@ from __future__ import absolute_import, annotations, division, print_function
 import fnmatch
 import re
 from dataclasses import dataclass, field
-from typing import NamedTuple, TypeVar
+from typing import NamedTuple, TypeVar, cast
 
 from mypy.stubdoc import infer_sig_from_docstring
 from mypy.stubgenc import (
@@ -39,22 +39,22 @@ class AdvancedSigMatcher(object):
     # Override argument types
     #   (name_pattern, arg, type): arg_type
     #   e.g. ("*", "flags", "int"): "typing.SupportsInt"
-    arg_type_overrides: dict[tuple[str, str, str | None], str] = field(
-        default_factory=dict
+    arg_type_overrides: dict[tuple[str, str, str | re.Pattern[str] | None], str] = (
+        field(default_factory=dict)
     )
 
     # Override argument types
     #   (name_pattern, type): result_type
     #   e.g. ("*", "int"): "typing.SupportsInt"
-    result_type_overrides: dict[tuple[str, str | None], str] = field(
+    result_type_overrides: dict[tuple[str, str | re.Pattern[str] | None], str] = field(
         default_factory=dict
     )
 
     # Override property types
     #   (name_pattern, type): type
     #   e.g. ("*", "int"): "typing.SupportsInt"
-    property_type_overrides: dict[tuple[str, str | None], str] = field(
-        default_factory=dict
+    property_type_overrides: dict[tuple[str, str | re.Pattern[str] | None], str] = (
+        field(default_factory=dict)
     )
 
     # Types that have implicit alternatives.
@@ -64,8 +64,8 @@ class AdvancedSigMatcher(object):
 
     # Args which should be made Optional[].
     #   (name_pattern, arg, type): Optionality
-    optional_args: dict[tuple[str, str, str | None], Optionality] = field(
-        default_factory=dict
+    optional_args: dict[tuple[str, str, str | re.Pattern[str] | None], Optionality] = (
+        field(default_factory=dict)
     )
 
     # Results which should be made Optional[].
@@ -101,7 +101,7 @@ class AdvancedSigMatcher(object):
             }
         )
         # restructure this so that it can be used with find_result_match
-        self._optional_result: dict[tuple[str, str | None], bool] = {
+        self._optional_result: dict[tuple[str, str | re.Pattern[str] | None], bool] = {
             (name, "*"): True for name in self.optional_result
         }
         # self.arg_name_replacements = {
@@ -116,20 +116,31 @@ class AdvancedSigMatcher(object):
                 return value
         return None
 
-    def _type_match(self, type_match: str | None, arg_type: str | None) -> bool:
+    def _type_match(
+        self,
+        type_match: str | re.Pattern[str] | None,
+        new_value: T,
+        arg_type: str | None,
+    ) -> T | None:
         if arg_type is None:
-            return type_match is None or type_match == "*"
+            return new_value if (type_match is None or type_match == "*") else None
+        elif isinstance(type_match, re.Pattern):
+            if not isinstance(new_value, str):
+                raise ValueError(
+                    f"{type_match} is a regex, but {repr(new_value)} is not a string"
+                )
+            return cast("T | None", type_match.sub(new_value, arg_type))
         elif type_match:
-            return fnmatch.fnmatch(arg_type, type_match)
+            return new_value if fnmatch.fnmatch(arg_type, type_match) else None
         else:
-            return False
+            return None
 
     def find_arg_match(
         self,
         fullname: str,
         arg_name: str,
         arg_type: str | None,
-        items: dict[tuple[str, str, str | None], T],
+        items: dict[tuple[str, str, str | re.Pattern[str] | None], T],
     ) -> T | None:
         """Look for a match in the given dictionary of argument overrides
 
@@ -137,26 +148,24 @@ class AdvancedSigMatcher(object):
         items : key is (name_pattern, arg, type). value is whatever we're trying to find.
         """
         for (method_match, arg_name_match, arg_type_match), value in items.items():
-            if (
-                fnmatch.fnmatch(fullname, method_match)
-                and fnmatch.fnmatch(arg_name, arg_name_match)
-                and self._type_match(arg_type_match, arg_type)
+            if fnmatch.fnmatch(fullname, method_match) and fnmatch.fnmatch(
+                arg_name, arg_name_match
             ):
-                return value
+                return self._type_match(arg_type_match, value, arg_type)
         return None
 
     def find_result_match(
         self,
         fullname: str,
         ret_type: str | None,
-        items: dict[tuple[str, str | None], T],
+        items: dict[tuple[str, str | re.Pattern[str] | None], T],
     ) -> T | None:
         """Look for a match in the given dictionary of argument overrides"""
         for (method_match, ret_type_match), value in items.items():
-            if fnmatch.fnmatch(fullname, method_match) and self._type_match(
-                ret_type_match, ret_type
-            ):
-                return value
+            if fnmatch.fnmatch(fullname, method_match):
+                new_value = self._type_match(ret_type_match, value, ret_type)
+                if new_value is not None:
+                    return new_value
         return None
 
 
@@ -172,12 +181,12 @@ class AdvancedSignatureGenerator(SignatureGenerator):
 
     def __init__(self, fallback_sig_gen=CDocstringSignatureGenerator()) -> None:
         """
-        fallback_sig_gen: used to find a signature when sig_matcher has no matches.
+        fallback_sig_gen: used to find a signature when signature_overrides has no match.
         """
         self.fallback_sig_gen = fallback_sig_gen
 
     def get_signature_str(self, ctx: FunctionContext) -> str | list[str] | None:
-        """Look for a docstring siganture in signature_overrides"""
+        """Look for a docstring signature in signature_overrides"""
         return self.sig_matcher.find_func_match(
             ctx.fullname, self.sig_matcher.signature_overrides
         )

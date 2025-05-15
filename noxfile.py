@@ -284,7 +284,7 @@ def check(
     exclude=LINT_EXCLUDE,
 )
 def ruff(session: nox.Session, options: Options):
-    """Run black code formatter"""
+    """Run ruff code formatter"""
     session.install("ruff==0.11.4")
     session.run("ruff", "format", *options.files(session), log=False)
     session.run("ruff", "check", "--fix", *options.files(session), log=False)
