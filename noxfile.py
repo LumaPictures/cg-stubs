@@ -19,7 +19,6 @@ APPS = [
     "nuke",
     "ocio",
     "openexr",
-    "oiio",
     "pyside",
     "rez",
     "substance_painter",

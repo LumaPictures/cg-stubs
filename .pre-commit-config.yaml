@@ -3,10 +3,10 @@ repos:
 - repo: local
   hooks:
 
-  - id: black
-    name: black
+  - id: ruff
+    name: ruff
     entry: nox
-    args: [-s, black, --no-install, --]
+    args: [-s, ruff, --no-install, --]
     language: system
     pass_filenames: true
     require_serial: true
