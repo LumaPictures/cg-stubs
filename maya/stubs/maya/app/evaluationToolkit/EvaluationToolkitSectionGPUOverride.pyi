@@ -1,24 +1,9 @@
 from PySide6 import QtCore
 from _typeshed import Incomplete
-from maya.app.evaluationToolkit.EvaluationToolkitSectionGPUOutliner import OutlinerWidget as OutlinerWidget
-from maya.app.evaluationToolkit.evaluation_toolkit_utilities import BUTTON_WIDTH as BUTTON_WIDTH, COLUMN_SPACING as COLUMN_SPACING, EvaluationToolkitSection as EvaluationToolkitSection, section_layout as section_layout
-from maya.common.ui import LayoutManager as LayoutManager, callback_tool as callback_tool
-from maya.debug.em_debug_utilities import dbg_deformations_to_dot as dbg_deformations_to_dot, get_default_directory as get_default_directory, open_file as open_file, print_deformer_clusters as print_deformer_clusters, require_evaluation_graph as require_evaluation_graph
-from maya.internal.common.window.custom_control import QtCustomWindowControl as QtCustomWindowControl
+from maya.app.evaluationToolkit.evaluation_toolkit_utilities import EvaluationToolkitSection
+from maya.debug.em_debug_utilities import require_evaluation_graph
 
-kWidgetHeight: int
-kPrintLabel: Incomplete
-kShowLabel: Incomplete
-kOutputFormat: Incomplete
-kOutputLocation: Incomplete
-kIncludePlugsLabel: Incomplete
-kIncludePlugsAnnotation: Incomplete
-kSelectedOnlyLabel: Incomplete
-kSelectedOnlyAnnotation: Incomplete
-kOmitPassthroughsLabel: Incomplete
-kOmitPassthroughsAnnotation: Incomplete
-kReuseModes: Incomplete
-kNoSelectionError: Incomplete
+__all__ = ['EvaluationToolkitSectionGPUOverride']
 
 class QEvaluationToolkitBridge(QtCore.QObject):
     tool: Incomplete

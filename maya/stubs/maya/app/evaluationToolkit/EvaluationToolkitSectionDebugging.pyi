@@ -1,14 +1,8 @@
 from _typeshed import Incomplete
-from maya.app.evaluationToolkit.evaluation_toolkit_utilities import BUTTON_WIDTH as BUTTON_WIDTH, EvaluationToolkitSection as EvaluationToolkitSection, EvaluationToolkitSubsection as EvaluationToolkitSubsection, section_layout as section_layout
-from maya.common.ui import LayoutManager as LayoutManager, callback_tool as callback_tool, showMessageBox as showMessageBox
-from maya.debug.TODO import TODO as TODO
-from maya.debug.emModeManager import emModeManager as emModeManager
-from maya.debug.em_debug_utilities import dbg_graph as dbg_graph, dbg_graph_to_dot as dbg_graph_to_dot, dbg_nodes as dbg_nodes, dbg_scheduling_graph as dbg_scheduling_graph, dbg_scheduling_graph_to_dot as dbg_scheduling_graph_to_dot, dbg_scheduling_types as dbg_scheduling_types, get_default_directory as get_default_directory, get_minimal_scene_objects_from as get_minimal_scene_objects_from, open_file as open_file, require_evaluation_graph as require_evaluation_graph, select_inverse_visible_dag_objects as select_inverse_visible_dag_objects
+from maya.app.evaluationToolkit.evaluation_toolkit_utilities import EvaluationToolkitSection, EvaluationToolkitSubsection
+from maya.debug.em_debug_utilities import require_evaluation_graph
 
-DEBUGGING_TRACES: Incomplete
-LABEL_REMOVE: Incomplete
-LABEL_SHOW: Incomplete
-WIDGET_HEIGHT: int
+__all__ = ['EvaluationToolkitSectionDebugging']
 
 class OutputHelper:
     output_file: Incomplete

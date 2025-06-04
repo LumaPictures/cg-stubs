@@ -1,7 +1,6 @@
 from _typeshed import Incomplete
-from maya.app.ghosting.ghosting_optionvar_states import GhostingPreferenceAllInRange as GhostingPreferenceAllInRange, GhostingPreferenceCustomFrames as GhostingPreferenceCustomFrames, GhostingPreferenceEnabled as GhostingPreferenceEnabled, GhostingPreferenceFarOpacity as GhostingPreferenceFarOpacity, GhostingPreferenceGeometryFilter as GhostingPreferenceGeometryFilter, GhostingPreferenceGhostsStep as GhostingPreferenceGhostsStep, GhostingPreferenceHierarchy as GhostingPreferenceHierarchy, GhostingPreferenceJointFilter as GhostingPreferenceJointFilter, GhostingPreferenceLocatorFilter as GhostingPreferenceLocatorFilter, GhostingPreferenceMode as GhostingPreferenceMode, GhostingPreferenceNearOpacity as GhostingPreferenceNearOpacity, GhostingPreferencePostColour as GhostingPreferencePostColour, GhostingPreferencePostFrames as GhostingPreferencePostFrames, GhostingPreferencePreColour as GhostingPreferencePreColour, GhostingPreferencePreFrames as GhostingPreferencePreFrames, GhostingPreferencePreset as GhostingPreferencePreset, GhostingPreferenceUseDriver as GhostingPreferenceUseDriver
-from maya.app.prefs.OptionVarManager import OptionVarManager as OptionVarManager
-from maya.common.utils import Singleton as Singleton
+
+__all__ = ['initialize_ghosting_preferences', 'GhostingPreferences']
 
 class GhostingPreferences(Incomplete):
     def add_preference(self, option_var) -> None: ...
