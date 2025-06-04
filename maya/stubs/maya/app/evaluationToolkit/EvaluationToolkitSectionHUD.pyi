@@ -1,8 +1,7 @@
 from _typeshed import Incomplete
-from maya.app.evaluationToolkit.evaluation_toolkit_utilities import EvaluationToolkitSection as EvaluationToolkitSection, section_layout as section_layout
-from maya.common.ui import LayoutManager as LayoutManager, callback_tool as callback_tool
-from maya.plugin.evaluator.CacheUiHud import CacheUiHud as CacheUiHud
-from maya.plugin.evaluator.cache_preferences import CP_DBG as CP_DBG
+from maya.app.evaluationToolkit.evaluation_toolkit_utilities import EvaluationToolkitSection
+
+__all__ = ['EvaluationToolkitSectionHUD']
 
 class EvaluationToolkitSectionHUD(EvaluationToolkitSection):
     checkbox_hud_evaluation: Incomplete

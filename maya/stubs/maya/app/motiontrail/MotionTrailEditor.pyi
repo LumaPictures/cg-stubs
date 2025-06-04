@@ -1,54 +1,6 @@
 from _typeshed import Incomplete
-from maya.app.motiontrail.MotionTrailPreferences import all_motion_trails as all_motion_trails, create_motion_trail as create_motion_trail, delete_all_motion_trails as delete_all_motion_trails, delete_motion_trail as delete_motion_trail, last_selected_motion_trail as last_selected_motion_trail, last_selected_motion_trail_node as last_selected_motion_trail_node, last_selected_motion_trail_shape as last_selected_motion_trail_shape, motion_trail_apply_preferences as motion_trail_apply_preferences, motion_trail_set_defaults as motion_trail_set_defaults, perspective_cameras as perspective_cameras, reset_motion_trail_preferences as reset_motion_trail_preferences, selected_motion_trail_nodes as selected_motion_trail_nodes, selected_motion_trails as selected_motion_trails, update_motion_trail as update_motion_trail
-from maya.common.ui import LayoutManager as LayoutManager, callback_tool as callback_tool
-from maya.common.utils import Singleton as Singleton
 
-MOTION_TRAIL_EDITOR_TITLE: Incomplete
-MOTION_TRAIL_NOTHING_SELECTED: Incomplete
-MOTION_TRAIL_UPDATE_TOOLTIP: Incomplete
-MOTION_TRAIL_VISIBILITY_TOOLTIP: Incomplete
-MOTION_TRAIL_POSITION_TOOLTIP: Incomplete
-ID_BUTTON_VISIBILITY: int
-ID_BUTTON_UPDATE: int
-ID_WORKSPACE_CONTROL: str
-ID_MAIN_LAYOUT: str
-ID_MENUBAR: str
-ID_SET_DEFAULTS: str
-ID_LAYOUT_SETTINGS: str
-ID_DRAW_STYLE: str
-ID_DRAW_XRAY: str
-ID_DRAW_MODE: str
-ID_ANCHOR: str
-ID_PATH_MODE: str
-ID_PATH_BEFORE: str
-ID_PATH_BEFORE_AFTER: str
-ID_PATH_AFTER: str
-ID_INCREMENT: str
-ID_PRE_FRAMES: str
-ID_POST_FRAMES: str
-ID_CREATE: str
-ID_LAYOUT_OBJECTS: str
-ID_OBJECT_LIST: str
-ID_LAYOUT_DELETE: str
-ID_DELETE: str
-ID_DELETE_ALL: str
-ID_LAYOUT_EDIT_SETTINGS: str
-ID_EDIT_POSITION: str
-ID_EDIT_POSITION_XYZ: str
-ID_EDIT_POSITION_TOOL: str
-ID_LAYOUT_DISPLAY_SETTINGS: str
-ID_SHOW_KEYS: str
-ID_SHOW_FRAMES: str
-ID_TRAIL_THICKNESS: str
-ID_KEY_SIZE: str
-ID_FRAME_SIZE: str
-ID_KEY_COLOR: str
-ID_FRAME_COLOR: str
-ID_SELECTED_KEY_COLOR: str
-ID_TRAIL_COLOR: str
-ID_TRAIL_ALT_COLOR: str
-ID_SLOW_COLOR: str
-ID_FAST_COLOR: str
+__all__ = ['MotionTrailEditor']
 
 class MotionTrailEditor(Incomplete):
     class DisableUiUpdateScope:

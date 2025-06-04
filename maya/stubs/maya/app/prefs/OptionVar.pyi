@@ -1,8 +1,7 @@
 import unittest
 from _typeshed import Incomplete
-from maya.debug.DebugTrace import DebugTrace as DebugTrace
 
-IN_UNIT_TEST: Incomplete
+__all__ = ['OptionVar', 'OPTION_VAR_TYPE_BOOL', 'OPTION_VAR_TYPE_FLOAT', 'OPTION_VAR_TYPE_INT', 'OPTION_VAR_TYPE_STRING', 'OPTION_VAR_TYPE_RGB', 'OPTION_VAR_TYPE_FLOAT_ARRAY', 'OPTION_VAR_TYPE_INT_ARRAY', 'OPTION_VAR_TYPE_STRING_ARRAY']
 
 class cmds:
     JOBS_ACTIVE: Incomplete
@@ -17,7 +16,6 @@ CREATE_DEBUG_PROXY = IN_UNIT_TEST
 class DebugTrace:
     def dbg(self, _) -> None: ...
 
-DBG: Incomplete
 OPTION_VAR_TYPE_BOOL: int
 OPTION_VAR_TYPE_FLOAT: int
 OPTION_VAR_TYPE_INT: int
@@ -26,27 +24,6 @@ OPTION_VAR_TYPE_RGB: int
 OPTION_VAR_TYPE_FLOAT_ARRAY: int
 OPTION_VAR_TYPE_INT_ARRAY: int
 OPTION_VAR_TYPE_STRING_ARRAY: int
-OPTION_VAR_TYPES: Incomplete
-ENUM_LISTS: Incomplete
-ERR_OV_NOT_BOOL: Incomplete
-ERR_OV_NOT_FLOAT: Incomplete
-ERR_OV_NOT_INT: Incomplete
-ERR_OV_NOT_STRING: Incomplete
-ERR_OV_NOT_FLOAT_ARRAY: Incomplete
-ERR_OV_NOT_INT_ARRAY: Incomplete
-ERR_OV_NOT_STRING_ARRAY: Incomplete
-ERR_OV_NOT_RGB: Incomplete
-ERR_OV_NOT_RGB_INT: Incomplete
-ERR_OV_NOT_RGB_FLOAT: Incomplete
-ERR_OV_NOT_ENUM: Incomplete
-ERR_OV_NOT_LEGAL_ENUM: Incomplete
-ERR_OV_TYPE_UNKNOWN: Incomplete
-
-def var_type_info(var_type): ...
-def is_valid_value_of_type(var_value, var_type): ...
-def option_var_initialize(var_name, var_type, var_value, var_category) -> None: ...
-def option_var_set_value(var_name, var_type, var_value) -> None: ...
-def option_var_get_value(var_name, var_type): ...
 
 class OptionVar:
     CATEGORY_LIST: Incomplete

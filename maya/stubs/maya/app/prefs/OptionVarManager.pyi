@@ -1,5 +1,6 @@
 from _typeshed import Incomplete
-from maya.app.prefs.OptionVar import OptionVar as OptionVar
+
+__all__ = ['OptionVarManager']
 
 class OptionVarManager:
     option_vars: Incomplete

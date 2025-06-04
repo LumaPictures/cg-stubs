@@ -1,6 +1,7 @@
 from _typeshed import Incomplete
-from maya.app.prefs.OptionVar import OPTION_VAR_TYPE_BOOL as OPTION_VAR_TYPE_BOOL, OPTION_VAR_TYPE_FLOAT as OPTION_VAR_TYPE_FLOAT, OPTION_VAR_TYPE_INT as OPTION_VAR_TYPE_INT, OPTION_VAR_TYPE_RGB as OPTION_VAR_TYPE_RGB, OPTION_VAR_TYPE_STRING as OPTION_VAR_TYPE_STRING, OptionVar as OptionVar
-from maya.common.utils import Singleton as Singleton
+from maya.app.prefs.OptionVar import OptionVar
+
+__all__ = ['GhostingPreferenceAllInRange', 'GhostingPreferenceCustomFrames', 'GhostingPreferenceEnabled', 'GhostingPreferenceFarOpacity', 'GhostingPreferenceGeometryFilter', 'GhostingPreferencePostFrames', 'GhostingPreferencePreFrames', 'GhostingPreferenceGhostsStep', 'GhostingPreferenceHierarchy', 'GhostingPreferenceJointFilter', 'GhostingPreferenceLocatorFilter', 'GhostingPreferenceMode', 'GhostingPreferenceNearOpacity', 'GhostingPreferencePostColour', 'GhostingPreferencePreColour', 'GhostingPreferencePreset', 'GhostingPreferenceUseDriver', 'GHOSTING_MODE_PRE_AND_POST_FRAMES', 'GHOSTING_MODE_PRE_FRAMES', 'GHOSTING_MODE_POST_FRAMES', 'GHOSTING_MODE_CUSTOM_FRAMES', 'GHOSTING_MODE_KEYFRAMES', 'GHOSTING_MODE_ALL_KEYFRAMES', 'GHOSTING_MODES', 'GHOSTING_MODE_ATTRIBUTE_VALUES', 'GHOSTING_PRESET_1S', 'GHOSTING_PRESET_2S', 'GHOSTING_PRESET_4S', 'GHOSTING_PRESET_5S', 'GHOSTING_PRESET_10S', 'GHOSTING_PRESET_CUSTOM', 'GHOSTING_PRESETS', 'INDEX_ENUM_ID', 'INDEX_ENUM_NAME', 'INDEX_ENUM_INFO', 'INDEX_ENUM_DATA']
 
 GHOSTING_MODE_PRE_AND_POST_FRAMES: str
 GHOSTING_MODE_PRE_FRAMES: str
@@ -21,7 +22,6 @@ INDEX_ENUM_ID: int
 INDEX_ENUM_NAME: int
 INDEX_ENUM_INFO: int
 INDEX_ENUM_DATA: int
-PREF_CATEGORY: str
 
 class GhostingPreferenceAllInRange(Incomplete):
     ov_id: str
