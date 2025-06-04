@@ -16,6 +16,7 @@ APPS = [
     "houdini",
     "katana",
     "mari",
+    "maya",
     "nuke",
     "ocio",
     "openexr",
@@ -506,7 +507,9 @@ def generate(session: nox.Session, lib: str) -> None:
     """Create the stubs"""
     args = ["-r", "requirements.txt"]
 
-    if lib == "pyside":
+    if lib == "maya":
+        args += ["pymel"]
+    elif lib == "pyside":
         version = get_version(lib, root=True)
         args += [f"PySide2=={version}"]
     elif lib == "ocio":

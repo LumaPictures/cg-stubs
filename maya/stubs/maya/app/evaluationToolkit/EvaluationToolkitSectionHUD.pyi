@@ -1,0 +1,19 @@
+from _typeshed import Incomplete
+from maya.app.evaluationToolkit.evaluation_toolkit_utilities import EvaluationToolkitSection as EvaluationToolkitSection, section_layout as section_layout
+from maya.common.ui import LayoutManager as LayoutManager, callback_tool as callback_tool
+from maya.plugin.evaluator.CacheUiHud import CacheUiHud as CacheUiHud
+from maya.plugin.evaluator.cache_preferences import CP_DBG as CP_DBG
+
+class EvaluationToolkitSectionHUD(EvaluationToolkitSection):
+    checkbox_hud_evaluation: Incomplete
+    checkbox_hud_frame_rate: Incomplete
+    def __init__(self, title, start_closed) -> None: ...
+    @staticmethod
+    def callback_evaluation_hud_changed(tool) -> None: ...
+    @staticmethod
+    def callback_frame_rate_hud_changed(tool) -> None: ...
+    @staticmethod
+    def callback_update_plugin_state(tool, new_state) -> None: ...
+    def update_ui(self) -> None: ...
+    @staticmethod
+    def ui_deleted(tool) -> None: ...

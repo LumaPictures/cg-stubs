@@ -1,5 +1,5 @@
 docstring_parser
-mypy==1.15.0
+# mypy==1.15.0
 # mypy @ git+https://github.com/chadrik/mypy@stubgen/all-fixes
-# mypy @ file:///Users/chad/dev/mypy
+mypy @ file:///Users/chad/dev/mypy
 mypy_baseline
