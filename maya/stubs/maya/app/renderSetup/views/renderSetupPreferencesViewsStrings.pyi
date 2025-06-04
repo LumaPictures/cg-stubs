@@ -1,0 +1,18 @@
+from _typeshed import Incomplete
+
+kRenderSetupTemplatesTitle: Incomplete
+kRenderSettingsPresetsTitle: Incomplete
+kUserTemplatesLocation: Incomplete
+kGlobalTemplatesLocation: Incomplete
+kSelectUserTemplatesLocation: Incomplete
+kSelectGlobalTemplatesLocation: Incomplete
+kUserPresetsLocation: Incomplete
+kGlobalPresetsLocation: Incomplete
+kSelectUserPresetsLocation: Incomplete
+kSelectGlobalPresetsLocation: Incomplete
+kExportRenderSettings: Incomplete
+kInvalidPresetFound: Incomplete
+kDeleteUserRenderSettingsMsg: Incomplete
+kDelete: Incomplete
+kCancel: Incomplete
+kDeleteUserRenderSettings: Incomplete

@@ -1,0 +1,19 @@
+from _typeshed import Incomplete
+from maya.app.ghosting.ghosting_optionvar_states import GhostingPreferenceAllInRange as GhostingPreferenceAllInRange, GhostingPreferenceCustomFrames as GhostingPreferenceCustomFrames, GhostingPreferenceEnabled as GhostingPreferenceEnabled, GhostingPreferenceFarOpacity as GhostingPreferenceFarOpacity, GhostingPreferenceGeometryFilter as GhostingPreferenceGeometryFilter, GhostingPreferenceGhostsStep as GhostingPreferenceGhostsStep, GhostingPreferenceHierarchy as GhostingPreferenceHierarchy, GhostingPreferenceJointFilter as GhostingPreferenceJointFilter, GhostingPreferenceLocatorFilter as GhostingPreferenceLocatorFilter, GhostingPreferenceMode as GhostingPreferenceMode, GhostingPreferenceNearOpacity as GhostingPreferenceNearOpacity, GhostingPreferencePostColour as GhostingPreferencePostColour, GhostingPreferencePostFrames as GhostingPreferencePostFrames, GhostingPreferencePreColour as GhostingPreferencePreColour, GhostingPreferencePreFrames as GhostingPreferencePreFrames, GhostingPreferencePreset as GhostingPreferencePreset, GhostingPreferenceUseDriver as GhostingPreferenceUseDriver
+from maya.app.prefs.OptionVarManager import OptionVarManager as OptionVarManager
+from maya.common.utils import Singleton as Singleton
+
+class GhostingPreferences(Incomplete):
+    def add_preference(self, option_var) -> None: ...
+    def add_non_preference(self, option_var) -> None: ...
+    @staticmethod
+    def callback_state_changed(tool) -> None: ...
+    pref_change_job: Incomplete
+    def monitor_state_changes(self, enable_listening) -> None: ...
+    option_vars: Incomplete
+    monitor_load: bool
+    monitor_unload: bool
+    plugin_clients: Incomplete
+    def __init__(self) -> None: ...
+
+def initialize_ghosting_preferences() -> None: ...

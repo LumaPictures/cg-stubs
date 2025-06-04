@@ -17,6 +17,7 @@ APPS = [
     "houdini",
     "katana",
     "mari",
+    "maya",
     "nuke",
     # "ocio",
     # "openexr",
