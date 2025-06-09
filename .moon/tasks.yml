@@ -1,58 +1,26 @@
 tasks:
-#   fails:
-#     script: 'echo "$project failed" && false'
-#     options:
-#       cache: false
-#       outputStyle: buffer-only-failure
-#
-#   foo:
-#     command: 'echo "foo running"'
-#
-#   bug:
-#     command: 'echo "bug running"'
-# #     options:
-# #       cache: false
-#
-#   lint:
-#     deps: [bug, foo]
-#     command: "echo 'lint running'"
-#
-#
-# tasks:
-#   {%- for os in ["linux", "macos", "windows"] %}
-#     build-{{ os }}:
-#       command: "cargo"
-#       args:
-#         - "--target"
-#         {%- if os == "linux" %}
-#         - "x86_64-unknown-linux-gnu"
-#         {%- elif os == "macos" %}
-#         - "x86_64-apple-darwin"
-#         {%- else %}
-#         - "i686-pc-windows-msvc"
-#         {%- endif %}
-#         - "--verbose"
-#       options:
-#         os: {{ os }}
-#   {%- endfor %}
-#
-#
-# tasks:
-#     build-linux:
-#       command: "cargo"
-#       args: ["--target=x86_64-unknown-linux-gnu", "--verbose"]
-#       options:
-#         os: linux
-#
-#     build-macos:
-#       command: "cargo"
-#       args: ["--target=x86_64-apple-darwin", "--verbose"]
-#       options:
-#         os: macos
-#
-#     build-windows:
-#       command: "cargo"
-#       args: ["--target=i686-pc-windows-msvc", "--verbose"]
-#       options:
-#         os: windows
-#
+    mypy:
+        script: uv run mypy
+
+    mypy-silent:
+        # don't use uv run because we do NOT want the real library present in the venv.
+        # specificallly target ./stubs to silencing errors in tests, etc
+        script: uvx mypy ./stubs | uvx mypy-silent
+
+    generate:
+        script: ./stubgen_${project}.sh
+
+    publish:
+        script: uv publish
+
+    format:
+        script: uvx ruff==0.11.13 format --exit-non-zero-on-format
+
+    check:
+        script: uvx ruff==0.11.13 check --fix --exit-non-zero-on-fix
+
+    lint:
+        deps: [format, check]
+
+    test:
+        script: uv run pytest tests

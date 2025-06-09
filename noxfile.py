@@ -4,6 +4,7 @@ import contextlib
 import os.path
 import pathlib
 import re
+import shutil
 import textwrap
 from dataclasses import dataclass
 from functools import lru_cache
@@ -17,8 +18,8 @@ APPS = [
     "katana",
     "mari",
     "nuke",
-    "ocio",
-    "openexr",
+    # "ocio",
+    # "openexr",
     "pyside",
     "rez",
     "substance_painter",
@@ -418,6 +419,11 @@ def make_packages(path: pathlib.Path = pathlib.Path(".")) -> None:
 
 
 def add_stubs_suffix(path: pathlib.Path) -> None:
+    """Add a -stubs suffix to packages prior to building.
+
+    This ensures that they are PEP 561 compatible when we distribute them, but
+    will be found by mypy as a normal package.
+    """
     import shutil
 
     # do these at the end to improve time to git refresh
@@ -432,12 +438,15 @@ def add_stubs_suffix(path: pathlib.Path) -> None:
                 to_delete.append(backup)
             print(f"Renaming to {newpath}")
             child.rename(newpath)
+            marker = newpath / "py.typed"
+            marker.touch()
+
     for dir in to_delete:
         shutil.rmtree(dir)
 
 
 @contextlib.contextmanager
-def stubs_suffix(session, path: pathlib.Path = pathlib.Path("./stubs")):
+def stubs_suffix(path: pathlib.Path = pathlib.Path("./stubs")):
     """Context manager to add -stubs to all folders in the stubs directory.
 
     We only do this when it's time to package the stubs because mypy and vscode
@@ -463,86 +472,59 @@ def stubs_suffix(session, path: pathlib.Path = pathlib.Path("./stubs")):
 def develop(session: nox.Session, lib: str) -> None:
     """Install the stubs into the current venv"""
     session.chdir(lib)
-    with stubs_suffix(session):
-        try:
-            session.run("poetry", "install", external=True)
-        except nox.command.CommandFailed as err:
-            msg = str(err)
-            if "poetry" in msg:
-                print("You must install poetry>=1.3.2 in the destination venv")
-            raise
+    try:
+        session.run("uv", "sync", external=True)
+    except nox.command.CommandFailed as err:
+        msg = str(err)
+        if "poetry" in msg:
+            print("You must install poetry>=1.3.2 in the destination venv")
+        raise
 
 
-@nox.session(reuse_venv=True)
+@nox.session(venv_backend="none")
 @nox.parametrize("lib", PARAMS + [nox.param("common", id="common")])
 def publish(session: nox.Session, lib: str) -> None:
     """Publish the stub package to PyPI"""
     session.chdir(lib)
-    session.install("poetry")
-    with contextlib.ExitStack() if lib == "common" else stubs_suffix(session):
-        session.run("poetry", "publish", "--build", *session.posargs)
-    output = session.run("poetry", "version", "-s", silent=True)
+    if os.path.exists("dist"):
+        shutil.rmtree("dist")
+    session.run("uv", "build", external=True)
+    session.run("uv", "publish", external=True)
+    output = session.run(
+        "uvx",
+        "--from=toml-cli",
+        "toml",
+        "get",
+        "--toml-path=pyproject.toml",
+        "project.version",
+        silent=True,
+    )
+    print(output)
     assert output is not None
     version = output.splitlines()[-1]
     session.run("git", "tag", f"{lib}/v{version}", external=True)
 
 
-def get_version(directory: str, root=False) -> str:
-    import tomli
-
-    filename = os.path.join(directory, "pyproject.toml")
-    with open(filename, "rb") as f:
-        data = tomli.load(f)
-    version = data["tool"]["poetry"]["version"]
-    if root:
-        return version.rsplit(".", 1)[0]
-    else:
-        return version
-
-
-@nox.session(reuse_venv=True)
+@nox.session(venv_backend="none")
 @nox.parametrize("lib", PARAMS)
 def generate(session: nox.Session, lib: str) -> None:
     """Create the stubs"""
-    args = ["-r", "requirements.txt"]
-
-    if lib == "pyside":
-        version = get_version(lib, root=True)
-        args += [f"PySide2=={version}"]
-    elif lib == "ocio":
-        version = get_version(lib, root=True)
-        args += [f"opencolorio=={version}"]
-    elif lib == "usd":
-        args += ["PySide6==6.5.1.1"]
-    elif lib == "openexr":
-        version = get_version(lib, root=True)
-        args += [f"OpenEXR=={version}", "numpy"]
-    elif lib == "rez":
-        # args += ["git+https://github.com/chadrik/rez@typing", "mypy-silent"]
-        args += ["/Users/chad/dev/rez", "mypy-silent"]
     session.env.pop("PYTHONPATH", None)
-    session.install(*args)
-
     session.chdir(lib)
     session.run(f"./stubgen_{lib}.sh", external=True)
+    add_stubs_suffix(pathlib.Path("stubs"))
     # FIXME: move this to stubgenlib
-    make_packages(pathlib.Path("stubs"))
+    # make_packages(pathlib.Path("stubs"))
 
 
 @nox.session(reuse_venv=True)
 @nox.parametrize("lib", PARAMS)
 def mypy(session: nox.Session, lib: str) -> None:
     """Run mypy type checker"""
-    session.install("-r", "requirements.txt")
     session.chdir(lib)
-
-    if lib == "ocio":
-        session.install("numpy")
-
-    session.run("bash", "-c", "mypy | mypy-baseline filter", external=True)
+    session.run("bash", "-c", "uvx mypy | uvx mypy-baseline filter", external=True)
 
 
 @check(paths=LINT_FILES, pass_filenames=False, tags=["ci", "prepush"])
 def self_mypy(session: nox.Session, options: Options) -> None:
-    session.install("-r", "requirements.txt", "-r", "nox-requirements.txt")
-    session.run("mypy")
+    session.run("uvx", "mypy", external=True)

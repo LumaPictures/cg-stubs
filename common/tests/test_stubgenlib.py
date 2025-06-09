@@ -1,6 +1,6 @@
 from mypy.stubdoc import ArgSig, FunctionSig
 
-import stubgenlib
+from stubgenlib.siggen.boost import infer_sig_from_boost_docstring
 
 # def test_boost_docstrings():
 #     docstr = """
@@ -42,7 +42,7 @@ __init__( (object)arg1 [, (Camera)arg2]) -> None :
 
 __init__( (object)arg1 [, (Matrix4d)transform=Gf.Matrix4d(1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0) [, (object)projection=Gf.Camera.Perspective [, (float)apertureOffset=0.0 [, (Range1f)clippingRange=Gf.Range1f(1.0, 10000.0) [, (object)clippingPlanes=[] [, (float)fStop=0.0]]]]]]) -> None"""
 
-    result = stubgenlib.infer_sig_from_boost_docstring(docstr, "__init__")
+    result = infer_sig_from_boost_docstring(docstr, "__init__")
     import pprint
 
     pprint.pprint(result)
@@ -97,7 +97,7 @@ Find( (object)identifier [, (dict)args={}]) -> Layer :
     
     Returns the open layer with the given filename, or None.  Note that this is a static class method.
 """
-    result = stubgenlib.infer_sig_from_boost_docstring(docstr, "Find")
+    result = infer_sig_from_boost_docstring(docstr, "Find")
     assert result == [
         FunctionSig(
             name="Find",

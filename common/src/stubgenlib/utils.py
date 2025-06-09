@@ -19,7 +19,7 @@ def insert_typevars(import_lines: str, typevars: list[str]) -> str:
 def merge_signatures(
     dest: FunctionSig, other: FunctionSig, force: bool = False
 ) -> FunctionSig:
-    """Merge the `other` signature `dest`, returning a new signature.
+    """Merge the `other` signature into `dest`, returning a new signature.
 
     The other signature can have fewer arguments: args will be matched by position
     for special methods and name otherwise.

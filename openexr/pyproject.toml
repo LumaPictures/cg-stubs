@@ -7,7 +7,7 @@ name = "types-OpenEXR"
 version = "3.3.1.0"
 
 readme = "README.md"
-authors = ["Chad Dombrova"]
+authors = [{name="Chad Dombrova"}]
 description = "python stubs for OpenEXR"
 license = "MIT"
 

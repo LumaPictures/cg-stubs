@@ -1867,7 +1867,7 @@ def main(outdir: str) -> None:
             "--inspect-mode",
             "--include-private",
             "--include-docstrings",
-            f"-o={outdir}",
+            f"-o=stubs",
         ]
     )
     notifier.print_summary()

@@ -1,11 +1,11 @@
 [build-system]
-requires = ["poetry>=1.3.2"]
-build-backend = "poetry.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.poetry]
+[project]
 name = "types-katana"
 readme = "README.md"
-authors = ["Chad Dombrova", "Nathan Rusch"]
+authors = [{name="Chad Dombrova"}, {name="Nathan Rusch"}]
 description = "Unofficial python stubs for Foundry Katana"
 license = "MIT"
 
@@ -24,65 +24,70 @@ homepage = "https://github.com/LumaPictures/cg-stubs"
 
 keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
 
-# FIXME: generate this file and these packages using jinja
-packages = [
-    { include = "_FnKatanaCoreUI-stubs", from = "stubs" },
-    { include = "_PyOpenColorIO-stubs", from = "stubs" },
-    { include = "AssetAPI-stubs", from = "stubs" },
-    { include = "AssetAPI_cmodule-stubs", from = "stubs" },
-    { include = "AssetBrowser-stubs", from = "stubs" },
-    { include = "CacheManager-stubs", from = "stubs" },
-    { include = "Callbacks-stubs", from = "stubs" },
-    { include = "CatalogAPI-stubs", from = "stubs" },
-    { include = "ConditionalStateGrammar-stubs", from = "stubs" },
-    { include = "ConfigurationAPI_cmodule-stubs", from = "stubs" },
-    { include = "DrawingModule-stubs", from = "stubs" },
-    { include = "GeoAPI-stubs", from = "stubs" },
-    { include = "Katana-stubs", from = "stubs" },
-    { include = "KatanaResources-stubs", from = "stubs" },
-    { include = "LoggingAPI-stubs", from = "stubs" },
-    { include = "LookFileBakeAPI-stubs", from = "stubs" },
-    { include = "MachineInfo-stubs", from = "stubs" },
-    { include = "Main-stubs", from = "stubs" },
-    { include = "MediaCacheHandler-stubs", from = "stubs" },
-    { include = "Naming-stubs", from = "stubs" },
-    { include = "NodeGraphView-stubs", from = "stubs" },
-    { include = "NodegraphAPI-stubs", from = "stubs" },
-    { include = "NodegraphAPI_cmodule-stubs", from = "stubs" },
-    { include = "Nodes2DAPI-stubs", from = "stubs" },
-    { include = "Nodes2DAPI_cmodule-stubs", from = "stubs" },
-    { include = "Nodes2DAPI_cmodule-stubs", from = "stubs" },
-    { include = "Nodes3DAPI-stubs", from = "stubs" },
-    { include = "Nodes3DAPI_cmodule-stubs", from = "stubs" },
-    { include = "PackageSuperToolAPI-stubs", from = "stubs" },
-    { include = "PluginAPI-stubs", from = "stubs" },
-    { include = "PluginSystemAPI-stubs", from = "stubs" },
-    { include = "PyFCurve-stubs", from = "stubs" },
-    { include = "PyFnAttribute-stubs", from = "stubs" },
-    { include = "PyFnGeolib-stubs", from = "stubs" },
-    { include = "PyFnGeolibProducers-stubs", from = "stubs" },
-    { include = "PyFnGeolibServices-stubs", from = "stubs" },
-    { include = "PyQt5-stubs", from = "stubs" },
-    { include = "PyResolutionTableFn-stubs", from = "stubs" },
-    { include = "PyUtilModule-stubs", from = "stubs" },
-    { include = "PyXmlIO-stubs", from = "stubs" },
-    { include = "QT4Browser-stubs", from = "stubs" },
-    { include = "QT4Color-stubs", from = "stubs" },
-    { include = "QT4FormWidgets-stubs", from = "stubs" },
-    { include = "QT4GLLayerStack-stubs", from = "stubs" },
-    { include = "QT4Panels-stubs", from = "stubs" },
-    { include = "QT4Widgets-stubs", from = "stubs" },
-    { include = "QTFCurve-stubs", from = "stubs" },
-    { include = "RenderingAPI-stubs", from = "stubs" },
-    { include = "RenderingAPI_cmodule-stubs", from = "stubs" },
-    { include = "RerenderEventMapper-stubs", from = "stubs" },
-    { include = "ResourceFiles-stubs", from = "stubs" },
-    { include = "UI4-stubs", from = "stubs" },
-    { include = "Utils-stubs", from = "stubs" },
-    { include = "ViewerAPI-stubs", from = "stubs" },
-    { include = "WorkQueue-stubs", from = "stubs" },
-    { include = "drawing_cmodule-stubs", from = "stubs" },
+[dependency-groups]
+dev = [
+    "stubgenlib",
 ]
 
-[tool.distutils.bdist_wheel]
-universal = true
+[tool.uv.sources]
+stubgenlib = { path = "../common" }
+
+[tool.hatch.build]
+# FIXME: generate this file and these packages using jinja
+packages = [
+    "stubs/_FnKatanaCoreUI-stubs",
+    "stubs/_PyOpenColorIO-stubs",
+    "stubs/AssetAPI-stubs",
+    "stubs/AssetAPI_cmodule-stubs",
+    "stubs/AssetBrowser-stubs",
+    "stubs/CacheManager-stubs",
+    "stubs/Callbacks-stubs",
+    "stubs/CatalogAPI-stubs",
+    "stubs/ConditionalStateGrammar-stubs",
+    "stubs/ConfigurationAPI_cmodule-stubs",
+    "stubs/DrawingModule-stubs",
+    "stubs/GeoAPI-stubs",
+    "stubs/Katana-stubs",
+    "stubs/KatanaResources-stubs",
+    "stubs/LoggingAPI-stubs",
+    "stubs/LookFileBakeAPI-stubs",
+    "stubs/MachineInfo-stubs",
+    "stubs/Main-stubs",
+    "stubs/MediaCacheHandler-stubs",
+    "stubs/Naming-stubs",
+    "stubs/NodeGraphView-stubs",
+    "stubs/NodegraphAPI-stubs",
+    "stubs/NodegraphAPI_cmodule-stubs",
+    "stubs/Nodes2DAPI-stubs",
+    "stubs/Nodes2DAPI_cmodule-stubs",
+    "stubs/Nodes3DAPI-stubs",
+    "stubs/Nodes3DAPI_cmodule-stubs",
+    "stubs/PackageSuperToolAPI-stubs",
+    "stubs/PluginAPI-stubs",
+    "stubs/PluginSystemAPI-stubs",
+    "stubs/PyFCurve-stubs",
+    "stubs/PyFnAttribute-stubs",
+    "stubs/PyFnGeolib-stubs",
+    "stubs/PyFnGeolibProducers-stubs",
+    "stubs/PyFnGeolibServices-stubs",
+    "stubs/PyQt5-stubs",
+    "stubs/PyResolutionTableFn-stubs",
+    "stubs/PyUtilModule-stubs",
+    "stubs/PyXmlIO-stubs",
+    "stubs/QT4Browser-stubs",
+    "stubs/QT4Color-stubs",
+    "stubs/QT4FormWidgets-stubs",
+    "stubs/QT4GLLayerStack-stubs",
+    "stubs/QT4Panels-stubs",
+    "stubs/QT4Widgets-stubs",
+    "stubs/QTFCurve-stubs",
+    "stubs/RenderingAPI-stubs",
+    "stubs/RenderingAPI_cmodule-stubs",
+    "stubs/RerenderEventMapper-stubs",
+    "stubs/ResourceFiles-stubs",
+    "stubs/UI4-stubs",
+    "stubs/Utils-stubs",
+    "stubs/ViewerAPI-stubs",
+    "stubs/WorkQueue-stubs",
+    "stubs/drawing_cmodule-stubs",
+]

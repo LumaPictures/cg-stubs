@@ -5,6 +5,7 @@ import importlib
 import inspect
 import pydoc
 import re
+import sys
 import typing
 from functools import lru_cache
 from typing import (
@@ -582,12 +583,26 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         imports = super().get_imports()
         return insert_typevars(imports, ["T = typing.TypeVar('T')"])
 
+    def output(self) -> str:
+        output = super().output()
+        if self.module_name == "shiboken2.shiboken2":
+            output += "\nclass Object: ...\n"
+        return output
+
 
 mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[attr-defined,misc]
 mypy.stubgenc.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[misc]
 
 if __name__ == "__main__":
+    from pathlib import Path
+
     # in order to create and inspect object properties we must create an app
     app = QtWidgets.QApplication()
 
-    mypy.stubgen.main()
+    mypy.stubgen.main(["-p=shiboken2", "-p=PySide2", "--include-private", "-o=stubs"])
+
+    init = Path("stubs").joinpath("PySide2", "__init__.pyi")
+    init.write_text(
+        init.read_text()
+        + "__version__: str\n__version_info__: tuple[int, int, float, str, str]\n"
+    )

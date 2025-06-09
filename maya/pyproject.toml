@@ -1,10 +1,10 @@
 [project]
-name = "types-houdini"
-version = "20.5.487.0"
+name = "types-maya"
+version = "2025"
 
-readme = "README.md"
-authors = [{name="Chad Dombrova"}, {name="Ben Andersen"}]
-description = "Unofficial python stubs for SideFX Houdini"
+#readme = "README.md"
+authors = [{name="Chad Dombrova"}]
+description = "Unofficial python stubs for Autodesk Maya"
 license = "MIT"
 
 classifiers = [
@@ -23,6 +23,7 @@ keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
 
 [dependency-groups]
 dev = [
+    "pymel",
     "stubgenlib",
 ]
 
@@ -34,4 +35,4 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build]
-packages = ["stubs/hou-stubs"]
+packages = ["stubs/maya-stubs"]
