@@ -1,13 +1,9 @@
-[build-system]
-requires = ["poetry>=1.3.2"]
-build-backend = "poetry.masonry.api"
-
-[tool.poetry]
+[project]
 name = "types-rez"
 version = "3.2.1.5"
 
 readme = "README.md"
-authors = ["Chad Dombrova"]
+authors = [{name="Chad Dombrova"}]
 description = "python stubs for Rez"
 license = "MIT"
 
@@ -24,14 +20,6 @@ homepage = "https://github.com/LumaPictures/cg-stubs"
 
 keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
 
-packages = [
-    { include = "rez-stubs", from = "stubs" },
-    { include = "rezplugins-stubs", from = "stubs" },
-]
-
-[tool.distutils.bdist_wheel]
-universal = true
-
 [tool.mypy]
 follow_imports = "skip"
 check_untyped_defs = true
@@ -43,3 +31,22 @@ show_error_codes = true
 enable_error_code = [
     "ignore-without-code"
 ]
+
+[dependency-groups]
+dev = [
+    "mypy",
+    "rez",
+]
+
+[tool.uv.sources]
+stubgenlib = { path = "../common" }
+#rez = { path = "/Users/chad/dev/rez" }
+mypy = { git = "https://github.com/chadrik/rez", branch = "typing2" }
+mypy = { git = "https://github.com/chadrik/mypy", branch = "stubgen-rez" }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+packages = ["stubs/rez-stubs"]

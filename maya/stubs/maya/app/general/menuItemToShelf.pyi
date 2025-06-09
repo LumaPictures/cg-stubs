@@ -1,0 +1,3 @@
+__all__ = ['menuItemToShelf']
+
+def menuItemToShelf(shelf, item): ...

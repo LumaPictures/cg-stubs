@@ -1,0 +1,54 @@
+from _typeshed import Incomplete
+
+override: Incomplete
+lowerBound: Incomplete
+renderSetup: Incomplete
+renderLayer: Incomplete
+collection: Incomplete
+selector: Incomplete
+basicSelector: Incomplete
+listItem: Incomplete
+applyOverride: Incomplete
+absOverride: Incomplete
+applyAbsOverride: Incomplete
+relOverride: Incomplete
+applyRelOverride: Incomplete
+applyAbsFloatOverride: Incomplete
+applyRelFloatOverride: Incomplete
+applyAbs3FloatsOverride: Incomplete
+applyRel3FloatsOverride: Incomplete
+applyConnectionOverride: Incomplete
+connectionOverride: Incomplete
+shaderOverride: Incomplete
+materialOverride: Incomplete
+valueOverride: Incomplete
+materialTemplateOverride: Incomplete
+applyAbsBoolOverride: Incomplete
+applyAbsEnumOverride: Incomplete
+childNode: Incomplete
+applyAbsIntOverride: Incomplete
+applyRelIntOverride: Incomplete
+applyAbsStringOverride: Incomplete
+lightsCollection: Incomplete
+renderSettingsCollection: Incomplete
+applyAbs2FloatsOverride: Incomplete
+applyRel2FloatsOverride: Incomplete
+lightsChildCollection: Incomplete
+aovCollection: Incomplete
+aovChildCollection: Incomplete
+simpleSelector: Incomplete
+arnoldAOVChildSelector: Incomplete
+absUniqueOverride: Incomplete
+relUniqueOverride: Incomplete
+connectionUniqueOverride: Incomplete
+renderSettingsChildCollection: Incomplete
+lightsCollectionSelector: Incomplete
+group: Incomplete
+container: Incomplete
+upperBound: Incomplete
+lightItemBase: Incomplete
+lightItem: Incomplete
+lightGroup: Incomplete
+lightEditor: Incomplete
+
+def isRenderSetupType(typeID): ...

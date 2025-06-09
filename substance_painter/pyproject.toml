@@ -1,13 +1,9 @@
-[build-system]
-requires = ["poetry>=1.3.2"]
-build-backend = "poetry.masonry.api"
-
-[tool.poetry]
+[project]
 name = "types-substance_painter"
 version = "2023.8.3.0.0"
 
 readme = "README.md"
-authors = ["Chad Dombrova"]
+authors = [{name="Chad Dombrova"}]
 description = "Unofficial python stubs for Adobe Substance 3D Painter"
 license = "MIT"
 
@@ -25,10 +21,17 @@ homepage = "https://github.com/LumaPictures/cg-stubs"
 
 keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
 
-packages = [
-    { include = "substance_painter-stubs", from = "stubs" },
-    { include = "_substance_painter-stubs", from = "stubs" },
+[dependency-groups]
+dev = [
+    "stubgenlib",
 ]
 
-[tool.distutils.bdist_wheel]
-universal = true
+[tool.uv.sources]
+stubgenlib = { path = "../common" }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+packages = ["stubs/substance_painter-stubs", "stubs/_substance_painter-stubs"]

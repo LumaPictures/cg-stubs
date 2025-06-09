@@ -16,9 +16,10 @@ APPS = [
     "houdini",
     "katana",
     "mari",
+    "maya",
     "nuke",
-    "ocio",
-    "openexr",
+    # "ocio",
+    # "openexr",
     "pyside",
     "rez",
     "substance_painter",
@@ -417,7 +418,14 @@ def make_packages(path: pathlib.Path = pathlib.Path(".")) -> None:
             marker.touch()
 
 
+# FIXME: note that we could avoid this rename if we used hatcing build backend
+#  to remap names.
 def add_stubs_suffix(path: pathlib.Path) -> None:
+    """Add a -stubs suffix to packages prior to building.
+
+    This ensures that they are PEP 561 compatible when we distribute them, but
+    will be found by mypy as a normal package.
+    """
     import shutil
 
     # do these at the end to improve time to git refresh
@@ -465,7 +473,7 @@ def develop(session: nox.Session, lib: str) -> None:
     session.chdir(lib)
     with stubs_suffix(session):
         try:
-            session.run("poetry", "install", external=True)
+            session.run("uv", "sync", external=True)
         except nox.command.CommandFailed as err:
             msg = str(err)
             if "poetry" in msg:
@@ -473,18 +481,19 @@ def develop(session: nox.Session, lib: str) -> None:
             raise
 
 
-@nox.session(reuse_venv=True)
+@nox.session(venv_backend="none")
 @nox.parametrize("lib", PARAMS + [nox.param("common", id="common")])
 def publish(session: nox.Session, lib: str) -> None:
     """Publish the stub package to PyPI"""
     session.chdir(lib)
-    session.install("poetry")
     with contextlib.ExitStack() if lib == "common" else stubs_suffix(session):
-        session.run("poetry", "publish", "--build", *session.posargs)
-    output = session.run("poetry", "version", "-s", silent=True)
-    assert output is not None
-    version = output.splitlines()[-1]
-    session.run("git", "tag", f"{lib}/v{version}", external=True)
+        session.run("uv", "build", *session.posargs)
+
+    # FIXME:
+    # output = session.run("poetry", "version", "-s", silent=True)
+    # assert output is not None
+    # version = output.splitlines()[-1]
+    # session.run("git", "tag", f"{lib}/v{version}", external=True)
 
 
 def get_version(directory: str, root=False) -> str:
@@ -500,49 +509,25 @@ def get_version(directory: str, root=False) -> str:
         return version
 
 
-@nox.session(reuse_venv=True)
+@nox.session(venv_backend="none")
 @nox.parametrize("lib", PARAMS)
 def generate(session: nox.Session, lib: str) -> None:
     """Create the stubs"""
-    args = ["-r", "requirements.txt"]
-
-    if lib == "pyside":
-        version = get_version(lib, root=True)
-        args += [f"PySide2=={version}"]
-    elif lib == "ocio":
-        version = get_version(lib, root=True)
-        args += [f"opencolorio=={version}"]
-    elif lib == "usd":
-        args += ["PySide6==6.5.1.1"]
-    elif lib == "openexr":
-        version = get_version(lib, root=True)
-        args += [f"OpenEXR=={version}", "numpy"]
-    elif lib == "rez":
-        # args += ["git+https://github.com/chadrik/rez@typing", "mypy-silent"]
-        args += ["/Users/chad/dev/rez", "mypy-silent"]
     session.env.pop("PYTHONPATH", None)
-    session.install(*args)
-
     session.chdir(lib)
     session.run(f"./stubgen_{lib}.sh", external=True)
     # FIXME: move this to stubgenlib
-    make_packages(pathlib.Path("stubs"))
+    # make_packages(pathlib.Path("stubs"))
 
 
 @nox.session(reuse_venv=True)
 @nox.parametrize("lib", PARAMS)
 def mypy(session: nox.Session, lib: str) -> None:
     """Run mypy type checker"""
-    session.install("-r", "requirements.txt")
     session.chdir(lib)
-
-    if lib == "ocio":
-        session.install("numpy")
-
-    session.run("bash", "-c", "mypy | mypy-baseline filter", external=True)
+    session.run("bash", "-c", "uvx mypy | uvx mypy-baseline filter", external=True)
 
 
 @check(paths=LINT_FILES, pass_filenames=False, tags=["ci", "prepush"])
 def self_mypy(session: nox.Session, options: Options) -> None:
-    session.install("-r", "requirements.txt", "-r", "nox-requirements.txt")
-    session.run("mypy")
+    session.run("uvx", "mypy")

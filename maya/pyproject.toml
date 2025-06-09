@@ -1,0 +1,38 @@
+[project]
+name = "types-maya"
+version = "2025"
+
+#readme = "README.md"
+authors = [{name="Chad Dombrova"}]
+description = "Unofficial python stubs for Autodesk Maya"
+license = "MIT"
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 2",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Typing :: Stubs Only",
+]
+repository = "https://github.com/LumaPictures/cg-stubs"
+homepage = "https://github.com/LumaPictures/cg-stubs"
+
+keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
+
+[dependency-groups]
+dev = [
+    "pymel",
+    "stubgenlib",
+]
+
+[tool.uv.sources]
+stubgenlib = { path = "../common" }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+packages = ["stubs/maya-stubs"]

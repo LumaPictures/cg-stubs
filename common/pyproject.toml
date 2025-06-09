@@ -1,13 +1,13 @@
-[build-system]
-requires = ["poetry>=1.3.2"]
-build-backend = "poetry.masonry.api"
-
-[tool.poetry]
+[project]
 name = "stubgenlib"
-version = "0.2.0"
+version = "0.3.0"
+
+dependencies = [
+    "mypy >= 1.15.0, < 1.16.0",
+]
 
 #readme = "README.md"
-authors = ["Chad Dombrova"]
+authors = [{name="Chad Dombrova"}]
 description = "Utilities for improving the output of mypy's stubgen tool"
 license = "MIT"
 
@@ -24,5 +24,6 @@ homepage = "https://github.com/LumaPictures/cg-stubs"
 
 keywords = ["mypy", "typing", "stubs"]
 
-[tool.distutils.bdist_wheel]
-universal = true
+[build-system]
+requires = ["uv_build>=0.7.12,<0.8.0"]
+build-backend = "uv_build"

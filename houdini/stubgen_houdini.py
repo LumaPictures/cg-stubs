@@ -495,7 +495,7 @@ enableHouModule()
 
 def main(outdir: str):
     mypy.stubgen.main(
-        ["-m=hou", "--verbose", "--parse-only", "--include-docstrings", "-o", outdir]
+        ["-m=hou", "--verbose", "--parse-only", "--include-docstrings", "-o=stubs"]
     )
 
     # print(AnnotationFixer().transform('Tuple[str, ...]'))
