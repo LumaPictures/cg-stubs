@@ -1,13 +1,9 @@
-[build-system]
-requires = ["poetry>=1.3.2"]
-build-backend = "poetry.masonry.api"
-
-[tool.poetry]
+[project]
 name = "types-PySide2"
 version = "5.15.2.1.7"
 
 readme = "README.md"
-authors = ["Chad Dombrova"]
+authors = [{name="Chad Dombrova"}]
 description = "The most accurate stubs for PySide2"
 license = "MIT"
 
@@ -25,10 +21,19 @@ homepage = "https://github.com/LumaPictures/cg-stubs"
 
 keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
 
-packages = [
-    { include = "PySide2-stubs", from = "stubs" },
-    { include = "shiboken2-stubs", from = "stubs" },
+[dependency-groups]
+dev = [
+    "stubgenlib",
+    # Keep in sync with version:
+    "PySide2==5.15.2.1"
 ]
 
-[tool.distutils.bdist_wheel]
-universal = true
+[tool.uv.sources]
+stubgenlib = { path = "../common" }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+packages = ["stubs/PySide2-stubs", "shiboken2-stubs"]

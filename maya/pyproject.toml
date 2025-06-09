@@ -1,10 +1,10 @@
 [project]
-name = "types-rez"
-version = "3.2.1.5"
+name = "types-maya"
+version = "2025"
 
-readme = "README.md"
+#readme = "README.md"
 authors = [{name="Chad Dombrova"}]
-description = "python stubs for Rez"
+description = "Unofficial python stubs for Autodesk Maya"
 license = "MIT"
 
 classifiers = [
@@ -14,39 +14,25 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Intended Audience :: Developers",
+    "Typing :: Stubs Only",
 ]
 repository = "https://github.com/LumaPictures/cg-stubs"
 homepage = "https://github.com/LumaPictures/cg-stubs"
 
 keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
 
-[tool.mypy]
-follow_imports = "skip"
-check_untyped_defs = true
-files = [
-    "stubs",
-]
-warn_unused_ignores = true
-show_error_codes = true
-enable_error_code = [
-    "ignore-without-code"
-]
-
 [dependency-groups]
 dev = [
-    "mypy",
-    "rez",
+    "pymel",
+    "stubgenlib",
 ]
 
 [tool.uv.sources]
 stubgenlib = { path = "../common" }
-#rez = { path = "/Users/chad/dev/rez" }
-mypy = { git = "https://github.com/chadrik/rez", branch = "typing2" }
-mypy = { git = "https://github.com/chadrik/mypy", branch = "stubgen-rez" }
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build]
-packages = ["stubs/rez-stubs"]
+packages = ["stubs/maya-stubs"]
