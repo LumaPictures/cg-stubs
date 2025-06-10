@@ -1,10 +1,10 @@
 [project]
-name = "types-maya"
-version = "2025"
+name = "types-maya-strict"
+version = "2025.0.0"
 
 #readme = "README.md"
 authors = [{name="Chad Dombrova"}]
-description = "Unofficial python stubs for Autodesk Maya"
+description = "Unofficial python stubs for Autodesk Maya. Strict mode."
 license = "MIT"
 
 classifiers = [
@@ -21,6 +21,18 @@ homepage = "https://github.com/LumaPictures/cg-stubs"
 
 keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
 
+[tool.mypy]
+follow_imports = "skip"
+check_untyped_defs = true
+files = [
+    "stubs",
+]
+warn_unused_ignores = true
+show_error_codes = true
+enable_error_code = [
+    "ignore-without-code"
+]
+
 [dependency-groups]
 dev = [
     "pymel",
@@ -35,4 +47,4 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build]
-packages = ["stubs/maya-stubs"]
+packages = ["stubs/maya-stubs", "stubs/ufe-stubs"]

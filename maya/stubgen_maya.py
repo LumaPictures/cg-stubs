@@ -16,6 +16,7 @@ from stubgenlib.siggen import (
     AdvancedSignatureGenerator,
 )
 from stubgenlib.stubgen.delegate import GeneratorDelegate
+from stubgenlib.utils import add_positional_only_args
 
 stubgenlib.moduleinspect.patch()
 
@@ -191,10 +192,66 @@ class APIStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         )
 
 
+class UFESignatureGenerator(AdvancedSignatureGenerator):
+    sig_matcher = AdvancedSigMatcher(
+        # Override entire function signature:
+        signature_overrides={},
+        # Override argument types
+        #   dict of (name_pattern, arg, type) to arg_type
+        #   type can be str | re.Pattern
+        arg_type_overrides={},
+        # Override result types
+        #   dict of (name_pattern, type) to result_type
+        #   e.g. ("*", "Buffer"): "numpy.ndarray"
+        result_type_overrides={},
+        # Override property types
+        #   dict of (name_pattern, type) to result_type
+        #   e.g. ("*", "Buffer"): "numpy.ndarray"
+        property_type_overrides={},
+        # Types that have implicit alternatives.
+        #   dict of type_str to list of types that can be used instead
+        #   e.g. "PySide2.QtGui.QKeySequence": ["str"],
+        # converts any matching argument to a union of the supported types
+        implicit_arg_types={},
+    )
+
+    def process_sig(
+        self, ctx: mypy.stubgen.FunctionContext, sig: mypy.stubgen.FunctionSig
+    ) -> mypy.stubgen.FunctionSig:
+        # Analyze the signature and add a '/' argument if necessary to mark
+        # arguments which cannot be access by name.
+        return add_positional_only_args(ctx, super().process_sig(ctx, sig))
+
+
+class UFEStubGenerator(mypy.stubgenc.InspectionStubGenerator):
+    def get_sig_generators(self) -> list[SignatureGenerator]:
+        return [
+            UFESignatureGenerator(
+                fallback_sig_gen=DocstringSignatureGenerator(),
+            )
+        ]
+
+    def get_members(self, obj: object) -> list[tuple[str, Any]]:
+        members = super().get_members(obj)
+        # these two objects generate invalid class names, but they don't appear elsewhere
+        # in the stubs.  safe to filter for now.
+        return [
+            m
+            for m in members
+            if not (m[0].startswith("ItemsView") or m[0].startswith("ValuesView"))
+        ]
+
+    def set_defined_names(self, defined_names: set[str]) -> None:
+        super().set_defined_names(defined_names)
+        for typ in ["Set"]:
+            self.add_name(f"typing.{typ}", require=False)
+
+
 delegate = GeneratorDelegate[mypy.stubgen.InspectionStubGenerator](
     rules={
         "maya.api.*": APIStubGenerator,
         "maya.cmds": CmdsStubGenerator,
+        "ufe.PyUfe": UFEStubGenerator,
     },
     fallback=mypy.stubgen.InspectionStubGenerator,
 )
@@ -204,6 +261,8 @@ mypy.stubgenc.InspectionStubGenerator = delegate  # type: ignore[misc]
 
 
 if __name__ == "__main__":
+    import pathlib
+
     parser = argparse.ArgumentParser(description="Python stub generator for Nuke")
     parser.add_argument("outdir", help="The path to the output directory")
     args = parser.parse_args()
@@ -214,7 +273,7 @@ if __name__ == "__main__":
     maya.standalone.initialize()
     print("done")
 
-    mypy.stubgen.main(["-p=maya.app", "--parse-only", f"-o={args.outdir}"])
+    # mypy.stubgen.main(["-p=maya.app", "--parse-only", f"-o={args.outdir}"])
 
     mypy.stubgen.main(
         [
@@ -225,3 +284,11 @@ if __name__ == "__main__":
             f"-o={args.outdir}",
         ]
     )
+
+    outdir = pathlib.Path(args.outdir)
+    init = outdir.joinpath("ufe", "__init__.pyi")
+    init.unlink()
+    init.with_name("PyUfe.pyi").rename(init)
+
+    marker = outdir.joinpath("maya", "py.typed")
+    marker.write_text("partial\n")

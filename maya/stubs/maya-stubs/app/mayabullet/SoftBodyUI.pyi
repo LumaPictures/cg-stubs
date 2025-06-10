@@ -1,3 +1,0 @@
-from maya.app.mayabullet import logger as logger
-
-def updateSoftBodyUI(nodeName) -> None: ...

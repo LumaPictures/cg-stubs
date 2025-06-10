@@ -1,6 +1,0 @@
-from _typeshed import Incomplete
-
-aovNodeTypesTest: Incomplete
-
-def initialize() -> None: ...
-def finalize() -> None: ...

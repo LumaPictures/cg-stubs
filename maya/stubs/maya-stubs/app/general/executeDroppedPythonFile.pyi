@@ -1,3 +1,0 @@
-MY_DROP_FUNC: str
-
-def executeDroppedPythonFile(droppedFile, obj): ...
