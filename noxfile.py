@@ -427,6 +427,7 @@ def add_stubs_suffix(path: pathlib.Path) -> None:
     """
     import shutil
 
+    print("Add -stubs suffixes")
     # do these at the end to improve time to git refresh
     to_delete = []
     for child in path.iterdir():
@@ -523,7 +524,7 @@ def generate(session: nox.Session, lib: str) -> None:
 def mypy(session: nox.Session, lib: str) -> None:
     """Run mypy type checker"""
     session.chdir(lib)
-    session.run("bash", "-c", "uvx mypy | uvx mypy-baseline filter", external=True)
+    session.run("bash", "-c", "uv run mypy | uvx mypy-baseline filter", external=True)
 
 
 @check(paths=LINT_FILES, pass_filenames=False, tags=["ci", "prepush"])

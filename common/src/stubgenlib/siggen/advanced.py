@@ -43,7 +43,7 @@ class AdvancedSigMatcher(object):
         field(default_factory=dict)
     )
 
-    # Override argument types
+    # Override result types
     #   (name_pattern, type): result_type
     #   e.g. ("*", "int"): "typing.SupportsInt"
     result_type_overrides: dict[tuple[str, str | re.Pattern[str] | None], str] = field(
@@ -120,18 +120,18 @@ class AdvancedSigMatcher(object):
         self,
         type_match: str | re.Pattern[str] | None,
         new_value: T,
-        arg_type: str | None,
+        orig_type: str | None,
     ) -> T | None:
-        if arg_type is None:
+        if orig_type is None:
             return new_value if (type_match is None or type_match == "*") else None
         elif isinstance(type_match, re.Pattern):
             if not isinstance(new_value, str):
                 raise ValueError(
                     f"{type_match} is a regex, but {repr(new_value)} is not a string"
                 )
-            return cast("T | None", type_match.sub(new_value, arg_type))
+            return cast("T | None", type_match.sub(new_value, orig_type))
         elif type_match:
-            return new_value if fnmatch.fnmatch(arg_type, type_match) else None
+            return new_value if fnmatch.fnmatch(orig_type, type_match) else None
         else:
             return None
 
@@ -151,7 +151,9 @@ class AdvancedSigMatcher(object):
             if fnmatch.fnmatch(fullname, method_match) and fnmatch.fnmatch(
                 arg_name, arg_name_match
             ):
-                return self._type_match(arg_type_match, value, arg_type)
+                new_value = self._type_match(arg_type_match, value, arg_type)
+                if new_value is not None:
+                    return new_value
         return None
 
     def find_result_match(
@@ -307,10 +309,11 @@ class AdvancedSignatureGenerator(SignatureGenerator):
         self, default_type: str | None, ctx: FunctionContext
     ) -> str | None:
         """Return the type of the given property"""
+        ret_type = self.fallback_sig_gen.get_property_type(default_type, ctx)
         type_override = self.sig_matcher.find_result_match(
-            ctx.fullname, default_type, self.sig_matcher.property_type_overrides
+            ctx.fullname, ret_type, self.sig_matcher.property_type_overrides
         )
         if type_override is not None:
             return type_override
         else:
-            return self.fallback_sig_gen.get_property_type(default_type, ctx)
+            return ret_type

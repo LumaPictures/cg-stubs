@@ -2,13 +2,12 @@ from __future__ import absolute_import, annotations, division, print_function
 
 import argparse
 import inspect
-import sys
 from typing import Any
 
 import mypy.stubgen
 import mypy.stubgenc
 from mypy.stubdoc import ArgSig, FunctionSig
-from mypy.stubgenc import SignatureGenerator
+from mypy.stubgenc import DocstringSignatureGenerator, SignatureGenerator
 from mypy.stubutil import FunctionContext
 
 import stubgenlib.moduleinspect
@@ -16,29 +15,31 @@ from stubgenlib.siggen import (
     AdvancedSigMatcher,
     AdvancedSignatureGenerator,
 )
+from stubgenlib.stubgen.delegate import GeneratorDelegate
 
 stubgenlib.moduleinspect.patch()
-
-import pymel.internal.cmdcache
-
-pymel.internal.cmdcache.CmdCache.version = "2023"
-cmdcache = pymel.internal.cmdcache.CmdCache()
-data = cmdcache.load()
-datamap = dict(zip(cmdcache.cacheNames(), data))
-CMDLIST = datamap["cmdlist"]  # type: pymel.internal.cmdcache.CommandInfo
 
 
 def flag_has_mode(flag_info, mode):
     return mode in flag_info.get("modes", [])
 
 
-class MayaSignatureGenerator(SignatureGenerator):
+class MayaCmdSignatureGenerator(SignatureGenerator):
+    def __init__(self):
+        import pymel.internal.cmdcache
+
+        pymel.internal.cmdcache.CmdCache.version = "2023"
+        cmdcache = pymel.internal.cmdcache.CmdCache()
+        data = cmdcache.load()
+        datamap = dict(zip(cmdcache.cacheNames(), data))
+        self.CMDLIST = datamap["cmdlist"]  # type: pymel.internal.cmdcache.CommandInfo
+
     def get_function_sig(
         self, default_sig: FunctionSig, ctx: FunctionContext
     ) -> list[FunctionSig] | None:
         if ctx.module_name == "maya.cmds":
             try:
-                cmd_info = CMDLIST[ctx.name]
+                cmd_info = self.CMDLIST[ctx.name]
             except KeyError:
                 print(f"No command info found for {ctx.name}")
                 return None
@@ -111,11 +112,16 @@ class MayaSignatureGenerator(SignatureGenerator):
                 continue
 
             typ = self._get_flag_type(flag_info, as_result=False)
-            if flag_has_mode(flag_info, "query") and typ != "bool | int":
+            if flag_has_mode(flag_info, "query") and typ not in [
+                "bool | int",
+                "bool",
+                "int",
+            ]:
                 typ = "bool | int | %s" % typ
 
             add_arg(flag_name, typ)
-            add_arg(short_name, typ)
+            # FIXME: add an option to include/exclude short names
+            # add_arg(short_name, typ)
 
         return new_args
 
@@ -124,21 +130,44 @@ class MayaSignatureGenerator(SignatureGenerator):
     #     pass
 
 
-# FIXME: this class gets instantiated for each module.  break this into two separate classes.
-class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
+class CmdsStubGenerator(mypy.stubgenc.InspectionStubGenerator):
     def get_sig_generators(self) -> list[SignatureGenerator]:
-        return [MayaSignatureGenerator()]
+        return [MayaCmdSignatureGenerator()]
 
     def get_obj_module(self, obj: object) -> str | None:
         """Return module name of the object."""
         module = super().get_obj_module(obj)
-        if (
-            module
-            and self.module_name.startswith("maya.api.Open")
-            and module.startswith("Open")
-        ):
+        if module and inspect.isfunction(obj):
             return self.module_name
-        elif module and self.module_name == "maya.cmds" and inspect.isfunction(obj):
+        return module
+
+    def is_function(self, obj: object) -> bool:
+        return inspect.isbuiltin(obj) or inspect.isfunction(obj)
+
+    def get_members(self, obj: object) -> list[tuple[str, Any]]:
+        members = super().get_members(obj)
+        return sorted(members, key=lambda x: x[0])
+
+    def set_defined_names(self, defined_names: set[str]) -> None:
+        super().set_defined_names(defined_names)
+        for typ in ["Callable"]:
+            self.add_name(f"typing.{typ}", require=False)
+
+
+class APIStubGenerator(mypy.stubgenc.InspectionStubGenerator):
+    def get_sig_generators(self) -> list[SignatureGenerator]:
+        return [DocstringSignatureGenerator()]
+
+    def strip_or_import(self, type_name: str) -> str:
+        try:
+            return super().strip_or_import(type_name)
+        except SyntaxError:
+            return "Incomplete"
+
+    def get_obj_module(self, obj: object) -> str | None:
+        """Return module name of the object."""
+        module = super().get_obj_module(obj)
+        if module and module.startswith("Open"):
             return self.module_name
         return module
 
@@ -149,37 +178,30 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
             return super().is_function(obj)
 
     def is_method(self, class_info: ClassInfo, name: str, obj: object) -> bool:
-        if self.module_name.startswith("maya.api."):
-            return inspect.ismethoddescriptor(obj) or type(obj) in (
-                type(str.index),
-                type(str.__add__),
-                type(str.__new__),
-            )
-        else:
-            # this is valid because it is only called on members of a class
-            return inspect.isfunction(obj)
+        return inspect.ismethoddescriptor(obj) or type(obj) in (
+            type(str.index),
+            type(str.__add__),
+            type(str.__new__),
+        )
 
     def is_classmethod(self, class_info: ClassInfo, name: str, obj: object) -> bool:
-        if self.module_name.startswith("maya.api."):
-            return inspect.isbuiltin(obj) or type(obj).__name__ in (
-                "classmethod",
-                "classmethod_descriptor",
-            )
-        else:
-            return inspect.ismethod(obj)
-
-    def get_members(self, obj: object) -> list[tuple[str, Any]]:
-        members = super().get_members(obj)
-        return sorted(members, key=lambda x: x[0])
-
-    # def set_defined_names(self, defined_names: set[str]) -> None:
-    #     super().set_defined_names(defined_names)
-    #     for typ in ["Any", "Self", "Iterable", "Mapping"]:
-    #         self.add_name(f"typing.{typ}", require=False)
+        return inspect.isbuiltin(obj) or type(obj).__name__ in (
+            "classmethod",
+            "classmethod_descriptor",
+        )
 
 
-mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[attr-defined,misc]
-mypy.stubgenc.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[misc]
+delegate = GeneratorDelegate[mypy.stubgen.InspectionStubGenerator](
+    rules={
+        "maya.api.*": APIStubGenerator,
+        "maya.cmds": CmdsStubGenerator,
+    },
+    fallback=mypy.stubgen.InspectionStubGenerator,
+)
+
+mypy.stubgen.InspectionStubGenerator = delegate  # type: ignore[attr-defined,misc]
+mypy.stubgenc.InspectionStubGenerator = delegate  # type: ignore[misc]
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Python stub generator for Nuke")
@@ -192,13 +214,14 @@ if __name__ == "__main__":
     maya.standalone.initialize()
     print("done")
 
-    sys.argv[1:] = ["-p=maya.app", "--parse-only", f"-o={args.outdir}"]
-    mypy.stubgen.main()
+    mypy.stubgen.main(["-p=maya.app", "--parse-only", f"-o={args.outdir}"])
 
-    sys.argv[1:] = [
-        "-m=maya.cmds",
-        "-p=maya.api",
-        "--inspect-mode",
-        f"-o={args.outdir}",
-    ]
-    mypy.stubgen.main()
+    mypy.stubgen.main(
+        [
+            "-m=maya.cmds",
+            "-p=maya.api",
+            "-p=ufe",
+            "--inspect-mode",
+            f"-o={args.outdir}",
+        ]
+    )
