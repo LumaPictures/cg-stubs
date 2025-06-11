@@ -10,8 +10,12 @@ tasks:
     generate:
         script: ./stubgen_${project}.sh
 
+    build:
+        script: uv build --wheel
+
     publish:
         script: uv publish
+        deps: [^:build]
 
     format:
         script: uvx ruff==0.11.13 format --exit-non-zero-on-format

@@ -490,7 +490,7 @@ def publish(session: nox.Session, lib: str) -> None:
     session.chdir(lib)
     if os.path.exists("dist"):
         shutil.rmtree("dist")
-    session.run("uv", "build", external=True)
+    session.run("uv", "build", "--wheel", external=True)
     session.run("uv", "publish", external=True)
     output = session.run(
         "uvx",
