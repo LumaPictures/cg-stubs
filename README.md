@@ -10,6 +10,7 @@ Supported libraries and applications:
 - [houdini](https://pypi.org/project/types-houdini/)
 - [katana](https://pypi.org/project/types-katana/)
 - [mari](https://pypi.org/project/types-mari/)
+- [maya](https://pypi.org/project/types-maya-strict/)
 - [nuke](https://pypi.org/project/types-nuke/)
 - [opencolorio](https://pypi.org/project/types-opencolorio/)
 - [PySide2](https://pypi.org/project/types-PySide2/)
@@ -27,49 +28,55 @@ pip install types-usd types-houdini types-katana types-mari types-nuke types-ope
 
 ## Generating the stubs
 
-You only need to do this if your goal is to help improve the stubs. Otherwise, just use `pip`, as explained above.
+You only need to do this if your goal is to help improve the stubs. Otherwise, just use `pip`, 
+as explained above.
 
-Building the stubs requires python 3.9 or greater:
+Building the stubs requires python 3.9 or greater.
 
-In the instructions below, replace ocio with your desired package to generate.
+### Step 1: Install `nox`
 
-First, look at `<pkgname>/stubgen_<pkgname>.sh` to see if there are any env vars to set in the `# Custom variables` section.
-Next, build the stubs using [`nox`](https://nox.thea.codes/en/stable/index.html).
+You can do this using [`pipx`](https://github.com/pypa/pipx):
 
-```
-cd cg-stubs
-python3 -m venv .venv
-. .venv/bin/activate
-pip install -r nox-requirements.txt
-nox -s 'generate(ocio)'
-```
-
-If this fails, here's a more foolproof approach:
-
-```
-unset PYTHONPATH
-python3.9 -m venv .venv39
-. .venv39/bin/activate
-python3.9 -m pip install -r nox-requirements.txt
-rm -rf .nox
-python3.9 -m nox -s 'generate(ocio)'
-```
-
-Alternately, you can globally install `nox` using [`pipx`](https://github.com/pypa/pipx)
-
-```commandline
+```bash
 pipx install nox
 ```
 
+Or by creating a virtualenv:
+
+```bash
+cd cg-stubs
+python3 -m venv .venv
+. .venv/bin/activate
+pip install nox
+nox -h
+```
+
+### Step 2: Configure your environment
+
+Look at the `.env` file within the project that you want to build. Either uncomment the necessary 
+environment variables and paste in the proper values, or configure your shell environment to set
+these variables before the next step, for example using a package manager like `rez`.
+
+### Step 3: Run the generate task
+
+Replace `maya` with the project you want to build: 
+
+```bash
+nox -s 'generate(maya)'
+```
+
+
 ### Testing while Developing
 
-The easiest way to use the stubs while you're devleoping them is to create an editable install.  Simply create a `.pth` file in the site-packages directory of the venv where your other deps live:
+The easiest way to use the stubs while you're devleoping them is to create an editable install.  
+Simply create a `.pth` file in the site-packages directory of the venv where your other deps live:
 
 ```
-echo "/path/to/cg-stubs/ocio/stubs/" > /path/to/venv/lib/python3.7/site-packages/ocio.pth
+echo "/path/to/cg-stubs/maya/stubs/" > /path/to/venv/lib/python3.7/site-packages/maya.pth
 ```
 
-The name of the .pth file does not matter.  Note that if you're using the mypy daemon, be sure to run `dmypy stop` to reread freshly modified stubs.
+The name of the .pth file does not matter.  
+Note that if you're using the mypy daemon, be sure to run `dmypy stop` to reread freshly modified stubs.
 
 ### Generating the USD stubs
 
@@ -103,15 +110,9 @@ The Houdini stubs currently use a completely different approach to building whic
 
 ## Publishing to PyPI
 
-To publish to pypi.org, first run the nox installation steps from the Generating section, then run the `publish` task (replacing ocio with the package to publish):
+To publish to pypi.org, first run the nox installation steps from the Generating section, then run 
+the `publish` task (replacing `maya` with the package to publish):
 
 ```
-nox -s 'publish(ocio)'
-```
-
-To publish to a custom registry:
-
-```
-poetry config repositories.pypi-nexus https://nexus.myorg/repository/pypi/
-nox -s 'publish(ocio)' --  --repository pypi-nexus -u pypi -p 'whatever'
+nox -s 'publish(maya)'
 ```

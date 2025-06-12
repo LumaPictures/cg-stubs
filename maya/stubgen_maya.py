@@ -2,6 +2,8 @@ from __future__ import absolute_import, annotations, division, print_function
 
 import argparse
 import inspect
+import re
+import types
 from typing import Any
 
 import mypy.stubgen
@@ -48,7 +50,7 @@ class MayaCmdSignatureGenerator(SignatureGenerator):
             try:
                 cmd_flags = cmd_info["flags"]
             except KeyError:
-                print(f"No flag info found for {ctx.name}")
+                # print(f"No flag info found for {ctx.name}")
                 return None
 
             args = [ArgSig("*args")] + self._get_args(cmd_flags)
@@ -169,7 +171,8 @@ class APIStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         """Return module name of the object."""
         module = super().get_obj_module(obj)
         if module and module.startswith("Open"):
-            return self.module_name
+            # convert "OpenMaya" to "maya.api.OpenMaya"
+            return f"maya.api.{module}"
         return module
 
     def is_function(self, obj: object) -> bool:
@@ -235,11 +238,10 @@ class UFEStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         members = super().get_members(obj)
         # these two objects generate invalid class names, but they don't appear elsewhere
         # in the stubs.  safe to filter for now.
-        return [
-            m
-            for m in members
-            if not (m[0].startswith("ItemsView") or m[0].startswith("ValuesView"))
-        ]
+        if isinstance(obj, types.ModuleType):
+            reg = re.compile("KeysView|ItemsView|ValuesView")
+            return [m for m in members if not reg.match(m[0])]
+        return members
 
     def set_defined_names(self, defined_names: set[str]) -> None:
         super().set_defined_names(defined_names)
@@ -267,11 +269,11 @@ if __name__ == "__main__":
     parser.add_argument("outdir", help="The path to the output directory")
     args = parser.parse_args()
 
-    print("initializing maya")
+    print("Initializing maya")
     import maya.standalone
 
     maya.standalone.initialize()
-    print("done")
+    print("Initialization complete")
 
     # mypy.stubgen.main(["-p=maya.app", "--parse-only", f"-o={args.outdir}"])
 
@@ -285,6 +287,7 @@ if __name__ == "__main__":
         ]
     )
 
+    print("Patching up generated stubs")
     outdir = pathlib.Path(args.outdir)
     init = outdir.joinpath("ufe", "__init__.pyi")
     init.unlink()
@@ -292,3 +295,5 @@ if __name__ == "__main__":
 
     marker = outdir.joinpath("maya", "py.typed")
     marker.write_text("partial\n")
+
+    print("Done")

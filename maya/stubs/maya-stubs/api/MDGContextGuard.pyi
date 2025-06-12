@@ -1,4 +1,4 @@
-import maya.api.OpenMaya as om  # type: ignore
+import maya.api.OpenMaya as om  # type: ignore[import-untyped]
 from typing import Callable, ClassVar
 
 __all__ = ['MDGContextGuard']

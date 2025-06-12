@@ -1,5 +1,7 @@
-import MFnAnimCurve  # type: ignore
+import MFnAnimCurve  # type: ignore[import-not-found]
+import maya.api.OpenMaya  # type: ignore[import-untyped]
 from _typeshed import Incomplete
+from maya.api.OpenMaya import MAnimCurveClipboardItemArray as MAnimCurveClipboardItemArray
 from typing import Any, ClassVar, overload
 
 ourdict: dict
@@ -26,9 +28,9 @@ class MAnimControl:
     @staticmethod
     def setPlaybackBy(float) -> None: ...
     @staticmethod
-    def minTime() -> MTime: ...  # type: ignore
+    def minTime() -> MTime: ...  # type: ignore[name-defined]
     @staticmethod
-    def maxTime() -> MTime: ...  # type: ignore
+    def maxTime() -> MTime: ...  # type: ignore[name-defined]
     @staticmethod
     def setMinTime(MTime) -> None: ...
     @staticmethod
@@ -36,9 +38,9 @@ class MAnimControl:
     @staticmethod
     def setMinMaxTime(*args, **kwargs): ...
     @staticmethod
-    def animationStartTime() -> MTime: ...  # type: ignore
+    def animationStartTime() -> MTime: ...  # type: ignore[name-defined]
     @staticmethod
-    def animationEndTime() -> MTime: ...  # type: ignore
+    def animationEndTime() -> MTime: ...  # type: ignore[name-defined]
     @staticmethod
     def setAnimationStartTime(MTime) -> None: ...
     @staticmethod
@@ -46,7 +48,7 @@ class MAnimControl:
     @staticmethod
     def setAnimationStartEndTime(*args, **kwargs): ...
     @staticmethod
-    def currentTime() -> MTime: ...  # type: ignore
+    def currentTime() -> MTime: ...  # type: ignore[name-defined]
     @staticmethod
     def setCurrentTime(*args, **kwargs): ...
     @staticmethod
@@ -93,14 +95,14 @@ class MAnimCurveClipboard:
     startUnitlessInput: Incomplete
     endUnitlessInput: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
-    def clear(self) -> self: ...  # type: ignore
+    def clear(self) -> self: ...  # type: ignore[name-defined]
     def clipboardItems(self) -> MAnimCurveClipboardItemArray: ...
     @overload
-    def set(self, clipboard) -> self: ...  # type: ignore
+    def set(self, clipboard) -> self: ...  # type: ignore[name-defined]
     @overload
-    def set(self, items) -> self: ...  # type: ignore
+    def set(self, items) -> self: ...  # type: ignore[name-defined]
     @overload
-    def set(self, items, startTime, endTime, startUnitlessInput, endUnitlessInput, strictValidation=...) -> self: ...  # type: ignore
+    def set(self, items, startTime, endTime, startUnitlessInput, endUnitlessInput, strictValidation=...) -> self: ...  # type: ignore[name-defined]
 
 class MAnimCurveClipboardItem:
     animCurve: Incomplete
@@ -109,46 +111,26 @@ class MAnimCurveClipboardItem:
     nodeName: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     def getAddressingInfo(self, *args, **kwargs): ...
-    def setAnimCurve(self, object) -> self: ...  # type: ignore
-    def setAddressingInfo(self, rowCount, childCount, attributeCount) -> self: ...  # type: ignore
-    def setNameInfo(self, nodeName, fullName, leafName) -> self: ...  # type: ignore
+    def setAnimCurve(self, object) -> self: ...  # type: ignore[name-defined]
+    def setAddressingInfo(self, rowCount, childCount, attributeCount) -> self: ...  # type: ignore[name-defined]
+    def setNameInfo(self, nodeName, fullName, leafName) -> self: ...  # type: ignore[name-defined]
     def animCurveType(self) -> MFnAnimCurve.AnimCurveType: ...
 
-class MAnimCurveClipboardItemArray:
-    sizeIncrement: Incomplete
-    def __init__(self, *args, **kwargs) -> None: ...
-    def __len__(self) -> int: ...
-    def __getitem__(self, key): ...
-    def __setitem__(self, key, value) -> None: ...
-    def __delitem__(self, key) -> None: ...
-    def __add__(self, value): ...
-    def __mul__(self, value): ...
-    def __rmul__(self, value): ...
-    def __contains__(self, key) -> bool: ...
-    def __iadd__(self, value): ...
-    def __imul__(self, value): ...
-    def append(self, *args, **kwargs): ...
-    def copy(self, *args, **kwargs): ...
-    def clear(self, *args, **kwargs): ...
-    def insert(self, *args, **kwargs): ...
-    def remove(self, *args, **kwargs): ...
-    def setLength(self, *args, **kwargs): ...
-
-class MAnimMessage(MMessage):  # type: ignore
+class MAnimMessage(maya.api.OpenMaya.MMessage):
     @staticmethod
-    def addAnimCurveEditedCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addAnimCurveEditedCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addAnimKeyframeEditedCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addAnimKeyframeEditedCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addAnimKeyframeEditCheckCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addAnimKeyframeEditCheckCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addNodeAnimKeyframeEditedCallback(animNode, function, clientData=...) -> id: ...  # type: ignore
+    def addNodeAnimKeyframeEditedCallback(animNode, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addPreBakeResultsCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addPreBakeResultsCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addPostBakeResultsCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addPostBakeResultsCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addDisableImplicitControlCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addDisableImplicitControlCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
     def flushAnimKeyframeEditedCallbacks() -> None: ...
 
@@ -167,23 +149,23 @@ class MAnimUtil:
     def isAnimated(MSelectionListselectionList, boolcheckParent) -> bool: ...
     @overload
     @staticmethod
-    def findAnimatedPlugs(MObject, bool) -> MPlugArray: ...  # type: ignore
+    def findAnimatedPlugs(MObject, bool) -> MPlugArray: ...  # type: ignore[name-defined]
     @overload
     @staticmethod
-    def findAnimatedPlugs(MDagPath, bool) -> MPlugArray: ...  # type: ignore
+    def findAnimatedPlugs(MDagPath, bool) -> MPlugArray: ...  # type: ignore[name-defined]
     @overload
     @staticmethod
-    def findAnimatedPlugs(MSelectionListselectionList, boolcheckParent) -> MPlugArray: ...  # type: ignore
+    def findAnimatedPlugs(MSelectionListselectionList, boolcheckParent) -> MPlugArray: ...  # type: ignore[name-defined]
     @staticmethod
-    def findAnimation(MPlug) -> MObjectArray: ...  # type: ignore
+    def findAnimation(MPlug) -> MObjectArray: ...  # type: ignore[name-defined]
     @staticmethod
     def findSetDrivenKeyAnimation(*args, **kwargs): ...
     @staticmethod
     def findConstraint(*args, **kwargs): ...
     @staticmethod
-    def findAnimatablePlugs(MSelectionList) -> MPlugArray: ...  # type: ignore
+    def findAnimatablePlugs(MSelectionList) -> MPlugArray: ...  # type: ignore[name-defined]
 
-class MFnAnimCurve(MFnDependencyNode):  # type: ignore
+class MFnAnimCurve(maya.api.OpenMaya.MFnDependencyNode):  # type: ignore[no-redef]
     kAnimCurveTA: ClassVar[int] = ...
     kAnimCurveTL: ClassVar[int] = ...
     kAnimCurveTT: ClassVar[int] = ...
@@ -234,67 +216,67 @@ class MFnAnimCurve(MFnDependencyNode):  # type: ignore
     postInfinityType: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     @overload
-    def create(self, node, attribute, animCurveType=...) -> MObject: ...  # type: ignore
+    def create(self, node, attribute, animCurveType=...) -> MObject: ...  # type: ignore[name-defined]
     @overload
-    def create(self, plug, animCurveType=...) -> MObject: ...  # type: ignore
-    def timedAnimCurveTypeForPlug(self, plug) -> AnimCurveType: ...  # type: ignore
-    def unitlessAnimCurveTypeForPlug(self, plug) -> AnimCurveType: ...  # type: ignore
-    def evaluate(self, at) -> value: ...  # type: ignore
-    def remove(self, index, change=...) -> self: ...  # type: ignore
-    def addKey(self, at, value, tangentInType=..., tangentOutType=..., change=...) -> unsignedint: ...  # type: ignore
-    def addKeys(self, times, values, tangentInType=..., tangentOutType=..., keepExistingKeys=..., change=...) -> self: ...  # type: ignore
+    def create(self, plug, animCurveType=...) -> MObject: ...  # type: ignore[name-defined]
+    def timedAnimCurveTypeForPlug(self, plug) -> AnimCurveType: ...  # type: ignore[name-defined]
+    def unitlessAnimCurveTypeForPlug(self, plug) -> AnimCurveType: ...  # type: ignore[name-defined]
+    def evaluate(self, at) -> value: ...  # type: ignore[name-defined]
+    def remove(self, index, change=...) -> self: ...  # type: ignore[name-defined]
+    def addKey(self, at, value, tangentInType=..., tangentOutType=..., change=...) -> unsignedint: ...  # type: ignore[name-defined]
+    def addKeys(self, times, values, tangentInType=..., tangentOutType=..., keepExistingKeys=..., change=...) -> self: ...  # type: ignore[name-defined]
     def insertKey(self, *args, **kwargs): ...
-    def addKeysWithTangents(self, times, values, tangentInType=..., tangentOutType=..., tangentInTypeArray=..., tangentOutTypeArray=..., tangentInXArray=..., tangentInYArray=..., tangentOutXArray=..., tangentOutYArray=..., tangentsLockedArray=..., weightsLockedArray=..., convertUnits=..., keepExistingKeys=..., change=...) -> self: ...  # type: ignore
-    def find(self, at) -> unsignedint: ...  # type: ignore
-    def findClosest(self, at) -> unsignedint: ...  # type: ignore
-    def input(self, index) -> MTimeordouble: ...  # type: ignore
-    def value(self, index) -> double: ...  # type: ignore
-    def quaternionW(self, index) -> double: ...  # type: ignore
-    def setValue(self, index, value, change=...) -> self: ...  # type: ignore
-    def setQuaternionW(self, index, quaternionW, change=...) -> self: ...  # type: ignore
-    def setInput(self, index, at, change=...) -> self: ...  # type: ignore
-    def inTangentType(self, index) -> TangentType: ...  # type: ignore
-    def outTangentType(self, index) -> TangentType: ...  # type: ignore
-    def setInTangentType(self, index, tangentType, change=...) -> self: ...  # type: ignore
-    def setOutTangentType(self, index, tangentType, change=...) -> self: ...  # type: ignore
-    def setTangentTypes(self, indexArray, tangentInType=..., tangentOutType=..., change=...) -> self: ...  # type: ignore
+    def addKeysWithTangents(self, times, values, tangentInType=..., tangentOutType=..., tangentInTypeArray=..., tangentOutTypeArray=..., tangentInXArray=..., tangentInYArray=..., tangentOutXArray=..., tangentOutYArray=..., tangentsLockedArray=..., weightsLockedArray=..., convertUnits=..., keepExistingKeys=..., change=...) -> self: ...  # type: ignore[name-defined]
+    def find(self, at) -> unsignedint: ...  # type: ignore[name-defined]
+    def findClosest(self, at) -> unsignedint: ...  # type: ignore[name-defined]
+    def input(self, index) -> MTimeordouble: ...  # type: ignore[name-defined]
+    def value(self, index) -> double: ...  # type: ignore[name-defined]
+    def quaternionW(self, index) -> double: ...  # type: ignore[name-defined]
+    def setValue(self, index, value, change=...) -> self: ...  # type: ignore[name-defined]
+    def setQuaternionW(self, index, quaternionW, change=...) -> self: ...  # type: ignore[name-defined]
+    def setInput(self, index, at, change=...) -> self: ...  # type: ignore[name-defined]
+    def inTangentType(self, index) -> TangentType: ...  # type: ignore[name-defined]
+    def outTangentType(self, index) -> TangentType: ...  # type: ignore[name-defined]
+    def setInTangentType(self, index, tangentType, change=...) -> self: ...  # type: ignore[name-defined]
+    def setOutTangentType(self, index, tangentType, change=...) -> self: ...  # type: ignore[name-defined]
+    def setTangentTypes(self, indexArray, tangentInType=..., tangentOutType=..., change=...) -> self: ...  # type: ignore[name-defined]
     def getTangentXY(self, *args, **kwargs): ...
     def getTangentAngleWeight(self, *args, **kwargs): ...
-    def setTangent(self, index, xOrAngle, yOrWeight, isInTangent, change=..., convertUnits=...) -> self: ...  # type: ignore
-    def setAngle(self, index, setAngle, isInTangent, change=...) -> self: ...  # type: ignore
-    def setWeight(self, index, weight, isInTangent, change=...) -> self: ...  # type: ignore
+    def setTangent(self, index, xOrAngle, yOrWeight, isInTangent, change=..., convertUnits=...) -> self: ...  # type: ignore[name-defined]
+    def setAngle(self, index, setAngle, isInTangent, change=...) -> self: ...  # type: ignore[name-defined]
+    def setWeight(self, index, weight, isInTangent, change=...) -> self: ...  # type: ignore[name-defined]
     def weightsLocked(self, index) -> bool: ...
     def tangentsLocked(self, index) -> bool: ...
-    def setWeightsLocked(self, index, locked, change=...) -> self: ...  # type: ignore
-    def setTangentsLocked(self, index, locked, change=...) -> self: ...  # type: ignore
-    def setIsWeighted(self, isWeighted, change=...) -> self: ...  # type: ignore
+    def setWeightsLocked(self, index, locked, change=...) -> self: ...  # type: ignore[name-defined]
+    def setTangentsLocked(self, index, locked, change=...) -> self: ...  # type: ignore[name-defined]
+    def setIsWeighted(self, isWeighted, change=...) -> self: ...  # type: ignore[name-defined]
     def isBreakdown(self, index) -> bool: ...
-    def setIsBreakdown(self, index, isBreakdown, change=...) -> self: ...  # type: ignore
-    def setPreInfinityType(self, infinityType, change=...) -> self: ...  # type: ignore
-    def setPostInfinityType(self, infinityType, change=...) -> self: ...  # type: ignore
+    def setIsBreakdown(self, index, isBreakdown, change=...) -> self: ...  # type: ignore[name-defined]
+    def setPreInfinityType(self, infinityType, change=...) -> self: ...  # type: ignore[name-defined]
+    def setPostInfinityType(self, infinityType, change=...) -> self: ...  # type: ignore[name-defined]
 
-class MFnGeometryFilter(MFnDependencyNode):  # type: ignore
+class MFnGeometryFilter(maya.api.OpenMaya.MFnDependencyNode):
     deformerSet: Incomplete
     envelope: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
-    def getInputGeometry(self) -> MObjectArray: ...  # type: ignore
-    def getOutputGeometry(self) -> MObjectArray: ...  # type: ignore
-    def getPathAtIndex(self, plugIndex) -> MDagPath: ...  # type: ignore
-    def groupIdAtIndex(self, plugIndex) -> long: ...  # type: ignore
-    def indexForGroupId(self, groupId) -> plugIndex: ...  # type: ignore
-    def indexForOutputConnection(self, connIndex) -> plugIndex: ...  # type: ignore
-    def indexForOutputShape(self, shape) -> plugIndex: ...  # type: ignore
-    def inputShapeAtIndex(self, plugIndex) -> MObject: ...  # type: ignore
-    def numOutputConnections(self) -> long: ...  # type: ignore
-    def outputShapeAtIndex(self, index) -> MObject: ...  # type: ignore
-    def getComponentAtIndex(self, index) -> MObject: ...  # type: ignore
+    def getInputGeometry(self) -> MObjectArray: ...  # type: ignore[name-defined]
+    def getOutputGeometry(self) -> MObjectArray: ...  # type: ignore[name-defined]
+    def getPathAtIndex(self, plugIndex) -> MDagPath: ...  # type: ignore[name-defined]
+    def groupIdAtIndex(self, plugIndex) -> long: ...  # type: ignore[name-defined]
+    def indexForGroupId(self, groupId) -> plugIndex: ...  # type: ignore[name-defined]
+    def indexForOutputConnection(self, connIndex) -> plugIndex: ...  # type: ignore[name-defined]
+    def indexForOutputShape(self, shape) -> plugIndex: ...  # type: ignore[name-defined]
+    def inputShapeAtIndex(self, plugIndex) -> MObject: ...  # type: ignore[name-defined]
+    def numOutputConnections(self) -> long: ...  # type: ignore[name-defined]
+    def outputShapeAtIndex(self, index) -> MObject: ...  # type: ignore[name-defined]
+    def getComponentAtIndex(self, index) -> MObject: ...  # type: ignore[name-defined]
 
 class MFnWeightGeometryFilter(MFnGeometryFilter):
     def __init__(self, *args, **kwargs) -> None: ...
     @overload
-    def getWeights(self, index, components) -> MFloatArray: ...  # type: ignore
+    def getWeights(self, index, components) -> MFloatArray: ...  # type: ignore[name-defined]
     @overload
-    def getWeights(self, path, components) -> MFloatArray: ...  # type: ignore
+    def getWeights(self, path, components) -> MFloatArray: ...  # type: ignore[name-defined]
     @overload
     def setWeight(self, path, index, components, weight, oldValues=...) -> Any: ...
     @overload
@@ -303,13 +285,13 @@ class MFnWeightGeometryFilter(MFnGeometryFilter):
     def setWeight(self, path, components, weight, oldValues=...) -> Any: ...
     @overload
     def setWeight(self, path, components, values) -> Any: ...
-    def getEnvelopeWeights(self, index) -> MFloatArray: ...  # type: ignore
-    def weightPlugStrings(self, list) -> MString: ...  # type: ignore
+    def getEnvelopeWeights(self, index) -> MFloatArray: ...  # type: ignore[name-defined]
+    def weightPlugStrings(self, list) -> MString: ...  # type: ignore[name-defined]
     def getWeightPlugStrings(self, *args, **kwargs): ...
 
-class MFnIkJoint(MFnTransform):  # type: ignore
+class MFnIkJoint(maya.api.OpenMaya.MFnTransform):
     def __init__(self, *args, **kwargs) -> None: ...
-    def create(self, parent=...) -> newjointnodeMObject: ...  # type: ignore
+    def create(self, parent=...) -> newjointnodeMObject: ...  # type: ignore[name-defined]
     def degreesOfFreedom(self, *args, **kwargs): ...
     def hikJointName(self, *args, **kwargs): ...
     def maxRotateDampXRange(self, *args, **kwargs): ...
@@ -351,16 +333,16 @@ class MFnIkJoint(MFnTransform):  # type: ignore
 
 class MFnSkinCluster(MFnGeometryFilter):
     def __init__(self, *args, **kwargs) -> None: ...
-    def getBlendWeights(self, shape, components) -> MDoubleArray: ...  # type: ignore
+    def getBlendWeights(self, shape, components) -> MDoubleArray: ...  # type: ignore[name-defined]
     def getPointsAffectedByInfluence(self, *args, **kwargs): ...
     @overload
-    def getWeights(self, shape, components, influence) -> MDoubleArray: ...  # type: ignore
+    def getWeights(self, shape, components, influence) -> MDoubleArray: ...  # type: ignore[name-defined]
     @overload
-    def getWeights(self, shape, components, influences) -> MDoubleArray: ...  # type: ignore
-    def indexForInfluenceObject(self, influenceObj) -> long: ...  # type: ignore
-    def influenceObjects(self) -> MDagPathArray: ...  # type: ignore
-    def setBlendWeights(self, shape, components, weights) -> self: ...  # type: ignore
+    def getWeights(self, shape, components, influences) -> MDoubleArray: ...  # type: ignore[name-defined]
+    def indexForInfluenceObject(self, influenceObj) -> long: ...  # type: ignore[name-defined]
+    def influenceObjects(self) -> MDagPathArray: ...  # type: ignore[name-defined]
+    def setBlendWeights(self, shape, components, weights) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setWeights(self, shape, components, influence, weight, normalize=..., returnOldWeights=...) -> NoneorMDoubleArray: ...  # type: ignore
+    def setWeights(self, shape, components, influence, weight, normalize=..., returnOldWeights=...) -> NoneorMDoubleArray: ...  # type: ignore[name-defined]
     @overload
-    def setWeights(self, shape, components, influences, weights, normalize=..., returnOldWeights=...) -> NoneorMDoubleArray: ...  # type: ignore
+    def setWeights(self, shape, components, influences, weights, normalize=..., returnOldWeights=...) -> NoneorMDoubleArray: ...  # type: ignore[name-defined]

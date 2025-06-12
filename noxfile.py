@@ -5,6 +5,8 @@ import os.path
 import pathlib
 import re
 import shutil
+import subprocess
+import sys
 import textwrap
 from dataclasses import dataclass
 from functools import lru_cache
@@ -513,8 +515,54 @@ def generate(session: nox.Session, lib: str) -> None:
     """Create the stubs"""
     session.env.pop("PYTHONPATH", None)
     session.chdir(lib)
-    session.run(f"./stubgen_{lib}.sh", external=True)
+    if os.path.exists(f"./stubgen_{lib}.sh"):
+        # Fully custom workflow
+        if sys.platform == "win32":
+            session.run(
+                "powershell.exe",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                f"./stubgen_{lib}.ps1",
+                external=True,
+            )
+        else:
+            session.run(f"./stubgen_{lib}.sh", external=True)
+    elif os.path.exists(".interpreter"):
+        # This is our standard playbook for stubs that are built via a DCC interpreter
+        interp = pathlib.Path(".interpreter").read_text().strip()
+        assert interp
+        # we have to force update stubgenlib because uv will only reinstall if the version
+        # changes.  I looked into creating dynamic versions using hatch-vcs but I could
+        # not get it to work.
+        session.run("uv", "sync", "--reinstall-package=stubgenlib", external=True)
+        # Get the site-packages directory and add it to PYTHONPATH
+        venv_python = (
+            ".venv/Scripts/python.exe"
+            if sys.platform == "win32"
+            else ".venv/bin/python3"
+        )
+        sitepath = session.run(
+            venv_python,
+            "-c",
+            'import sysconfig; print(sysconfig.get_paths()["purelib"])',
+            silent=True,
+        )
+        session.env["PYTHONPATH"] = sitepath.strip()
+        # FIXME: load from .env
+        # session.run("uvx", "--from=python-dotenv[cli]", "dotenv", "run", "--", "mayapy", "-m", "stubgen_maya", "./stubs", external=True)
+        session.run(interp, "-m", "stubgen_maya", "./stubs", external=True)
+    else:
+        # FIXME: implement a workflow around a standard interpreter for rez, pyside, etc
+        raise RuntimeError
+
     add_stubs_suffix(pathlib.Path("stubs"))
+    # this has to happen after the stubs are renamed, because before that, the previous state of the
+    # stubs still exists in the stubs directory (<foo> and <foo>-stubs coexisting until add_stubs_suffix
+    # runs)
+    # FIXME: lock down the version of mypy
+    print("Adding type: ignore statements")
+    subprocess.check_call("uvx mypy ./stubs | uvx mypy-silent", shell=True)
     # FIXME: move this to stubgenlib
     # make_packages(pathlib.Path("stubs"))
 

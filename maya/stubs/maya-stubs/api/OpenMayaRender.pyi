@@ -1,5 +1,6 @@
-import MRenderItem  # type: ignore
+import MRenderItem  # type: ignore[import-not-found]
 from _typeshed import Incomplete
+from maya.api.OpenMayaUI import MUIDrawManager as MUIDrawManager  # type: ignore[import-untyped]
 from typing import Any, ClassVar, overload
 
 ourdict: dict
@@ -11,20 +12,20 @@ class MColorManagementUtilities:
     @staticmethod
     def getColorTransformData(*args, **kwargs): ...
     @staticmethod
-    def getColorTransformCacheIdForInputSpace(inputSpaceName) -> transformId: ...  # type: ignore
+    def getColorTransformCacheIdForInputSpace(inputSpaceName) -> transformId: ...  # type: ignore[name-defined]
     @staticmethod
-    def getColorTransformCacheIdForOutputTransform() -> transformId: ...  # type: ignore
+    def getColorTransformCacheIdForOutputTransform() -> transformId: ...  # type: ignore[name-defined]
     @staticmethod
-    def isColorManagementEnabled() -> Boolean: ...  # type: ignore
+    def isColorManagementEnabled() -> Boolean: ...  # type: ignore[name-defined]
     @staticmethod
-    def isColorManagementAvailable() -> Boolean: ...  # type: ignore
+    def isColorManagementAvailable() -> Boolean: ...  # type: ignore[name-defined]
 
 class MComponentDataIndexing:
     kFaceVertex: ClassVar[int] = ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def indices(self) -> MUintArray: ...  # type: ignore
-    def componentType(self) -> MComponentType: ...  # type: ignore
-    def setComponentType(self, MComponentType) -> self: ...  # type: ignore
+    def indices(self) -> MUintArray: ...  # type: ignore[name-defined]
+    def componentType(self) -> MComponentType: ...  # type: ignore[name-defined]
+    def setComponentType(self, MComponentType) -> self: ...  # type: ignore[name-defined]
 
 class MComponentDataIndexingList:
     def __init__(self, *args, **kwargs) -> None: ...
@@ -32,7 +33,7 @@ class MComponentDataIndexingList:
     def __getitem__(self, key): ...
     def append(self, MComponentDataIndexing) -> bool: ...
     def remove(self, index) -> bool: ...
-    def clear(self) -> self: ...  # type: ignore
+    def clear(self) -> self: ...  # type: ignore[name-defined]
 
 class MFrameContext:
     kWorldMtx: ClassVar[int] = ...
@@ -149,16 +150,16 @@ class MFrameContext:
     def __init__(self, *args, **kwargs) -> None: ...
     @staticmethod
     def semanticToMatrixType(string) -> int: ...
-    def getMatrix(self, int) -> MMatrix: ...  # type: ignore
+    def getMatrix(self, int) -> MMatrix: ...  # type: ignore[name-defined]
     @staticmethod
     def semanticToTupleType(string) -> int: ...
-    def getTuple(self, int) -> MDoubleArray: ...  # type: ignore
+    def getTuple(self, int) -> MDoubleArray: ...  # type: ignore[name-defined]
     def getViewportDimensions(self, *args, **kwargs): ...
     def getGlobalLineWidth(self) -> float: ...
-    def getCurrentCameraPath(self) -> MDagPath: ...  # type: ignore
+    def getCurrentCameraPath(self) -> MDagPath: ...  # type: ignore[name-defined]
     def getCurrentColorRenderTarget(self) -> MRenderTarget: ...
     def getCurrentDepthRenderTarget(self) -> MRenderTarget: ...
-    def objectTypeExclusions(self) -> long: ...  # type: ignore
+    def objectTypeExclusions(self) -> long: ...  # type: ignore[name-defined]
     def classificationExclusions(self, *args, **kwargs): ...
     def getDisplayStyle(self) -> int: ...
     def getLightingMode(self) -> int: ...
@@ -217,15 +218,15 @@ class MLightParameterInformation:
     kShadowDirty: ClassVar[int] = ...
     kDepthRange: ClassVar[int] = ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def parameterList(self) -> listofstring: ...  # type: ignore
+    def parameterList(self) -> listofstring: ...  # type: ignore[name-defined]
     def parameterType(self, string) -> int: ...
     def parameterSemantic(self, string) -> int: ...
-    def parameterNames(self, int) -> listofstring: ...  # type: ignore
+    def parameterNames(self, int) -> listofstring: ...  # type: ignore[name-defined]
     def arrayParameterCount(self, string) -> int: ...
     def getParameter(self, *args, **kwargs): ...
     def getParameterTextureHandle(self, *args, **kwargs): ...
-    def lightType(self) -> string: ...  # type: ignore
-    def lightPath(self) -> MDagPath: ...  # type: ignore
+    def lightType(self) -> string: ...  # type: ignore[name-defined]
+    def lightPath(self) -> MDagPath: ...  # type: ignore[name-defined]
 
 class MPassContext:
     kColorPassSemantic: ClassVar[str] = ...
@@ -257,8 +258,8 @@ class MPassContext:
     kPEPatternPassSemantic: ClassVar[str] = ...
     kNonPEPatternPassSemantic: ClassVar[str] = ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def passIdentifier(self) -> string: ...  # type: ignore
-    def passSemantics(self) -> listofstring: ...  # type: ignore
+    def passIdentifier(self) -> string: ...  # type: ignore[name-defined]
+    def passSemantics(self) -> listofstring: ...  # type: ignore[name-defined]
     def hasShaderOverride(self) -> bool: ...
     def shaderOverrideInstance(self) -> MShaderInstance: ...
 
@@ -266,9 +267,9 @@ class MDrawContext(MFrameContext):
     kFilteredToLightLimit: ClassVar[int] = ...
     kFilteredIgnoreLightLimit: ClassVar[int] = ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def getFrameStamp(self) -> long: ...  # type: ignore
-    def getSceneBox(self) -> MBoundingBox: ...  # type: ignore
-    def getFrustumBox(self) -> MBoundingBox: ...  # type: ignore
+    def getFrameStamp(self) -> long: ...  # type: ignore[name-defined]
+    def getSceneBox(self) -> MBoundingBox: ...  # type: ignore[name-defined]
+    def getFrustumBox(self) -> MBoundingBox: ...  # type: ignore[name-defined]
     def getRenderTargetSize(self, *args, **kwargs): ...
     def getDepthRange(self, *args, **kwargs): ...
     def viewDirectionAlongNegZ(self) -> bool: ...
@@ -340,27 +341,27 @@ class MFragmentManager:
     kHullConstantShader: ClassVar[int] = ...
     kDomainShader: ClassVar[int] = ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def addFragmentGraphFromBuffer(self, buffer) -> string: ...  # type: ignore
-    def addFragmentGraphFromFile(self, fileName) -> string: ...  # type: ignore
+    def addFragmentGraphFromBuffer(self, buffer) -> string: ...  # type: ignore[name-defined]
+    def addFragmentGraphFromFile(self, fileName) -> string: ...  # type: ignore[name-defined]
     def addFragmentPath(self, path) -> bool: ...
-    def addShadeFragmentFromBuffer(self, buffer, hidden) -> string: ...  # type: ignore
-    def addShadeFragmentFromFile(self, fileName, hidden) -> string: ...  # type: ignore
-    def fragmentList(self) -> listofstring: ...  # type: ignore
-    def getEffectOutputDirectory(self) -> string: ...  # type: ignore
+    def addShadeFragmentFromBuffer(self, buffer, hidden) -> string: ...  # type: ignore[name-defined]
+    def addShadeFragmentFromFile(self, fileName, hidden) -> string: ...  # type: ignore[name-defined]
+    def fragmentList(self) -> listofstring: ...  # type: ignore[name-defined]
+    def getEffectOutputDirectory(self) -> string: ...  # type: ignore[name-defined]
     @overload
-    def getFragmentXML(self, fragmentName) -> string: ...  # type: ignore
+    def getFragmentXML(self, fragmentName) -> string: ...  # type: ignore[name-defined]
     @overload
-    def getFragmentXML(self, shadingNode, includeUpstreamNodes=..., objectContext=...) -> string: ...  # type: ignore
-    def getIntermediateGraphOutputDirectory(self) -> string: ...  # type: ignore
+    def getFragmentXML(self, shadingNode, includeUpstreamNodes=..., objectContext=...) -> string: ...  # type: ignore[name-defined]
+    def getIntermediateGraphOutputDirectory(self) -> string: ...  # type: ignore[name-defined]
     def hasFragment(self, string) -> bool: ...
     def removeFragment(self, fragmentName) -> bool: ...
-    def setEffectOutputDirectory(self, string) -> self: ...  # type: ignore
-    def setIntermediateGraphOutputDirectory(self, string) -> self: ...  # type: ignore
+    def setEffectOutputDirectory(self, string) -> self: ...  # type: ignore[name-defined]
+    def setIntermediateGraphOutputDirectory(self, string) -> self: ...  # type: ignore[name-defined]
     def addAutomaticShaderStageInput(self, *args, **kwargs): ...
     def removeAutomaticShaderStageInput(self, int, string) -> bool: ...
     def addDomainShaderInputNameMapping(self, *args, **kwargs): ...
     def removeDomainShaderInputNameMapping(self, string) -> bool: ...
-    def findDomainShaderInputName(self, string) -> string: ...  # type: ignore
+    def findDomainShaderInputName(self, string) -> string: ...  # type: ignore[name-defined]
     def getColorManagementFragmentInfo(self, *args, **kwargs): ...
 
 class MGeometryExtractor:
@@ -370,8 +371,8 @@ class MGeometryExtractor:
     def __init__(self, *args, **kwargs) -> None: ...
     @staticmethod
     def minimumBufferSize(primitiveCount, primitive, primitiveStride=...) -> int: ...
-    def populateIndexBuffer(self, data, primitiveCount, indexDesc) -> self: ...  # type: ignore
-    def populateVertexBuffer(self, data, vertexCount, bufferDesc) -> self: ...  # type: ignore
+    def populateIndexBuffer(self, data, primitiveCount, indexDesc) -> self: ...  # type: ignore[name-defined]
+    def populateVertexBuffer(self, data, vertexCount, bufferDesc) -> self: ...  # type: ignore[name-defined]
     def primitiveCount(self, indexDesc) -> int: ...
     def vertexCount(self) -> int: ...
 
@@ -417,17 +418,17 @@ class MGeometry:
     def createIndexBuffer(self, int) -> MIndexBuffer: ...
     def createVertexBuffer(self, MVertexBufferDescriptor) -> MVertexBuffer: ...
     @staticmethod
-    def dataTypeString(int) -> string: ...  # type: ignore
+    def dataTypeString(int) -> string: ...  # type: ignore[name-defined]
     def deleteIndexBuffer(self, int) -> bool: ...
     def deleteVertexBuffer(self, int) -> bool: ...
     @staticmethod
-    def drawModeString(int) -> string: ...  # type: ignore
+    def drawModeString(int) -> string: ...  # type: ignore[name-defined]
     def indexBuffer(self, int) -> MIndexBuffer: ...
     def indexBufferCount(self) -> int: ...
     @staticmethod
-    def primitiveString(int) -> string: ...  # type: ignore
+    def primitiveString(int) -> string: ...  # type: ignore[name-defined]
     @staticmethod
-    def semanticString(int) -> string: ...  # type: ignore
+    def semanticString(int) -> string: ...  # type: ignore[name-defined]
     def vertexBuffer(self, int) -> MVertexBuffer: ...
     def vertexBufferCount(self) -> int: ...
 
@@ -447,44 +448,44 @@ class MVertexBufferDescriptorList:
     def __len__(self) -> int: ...
     def __getitem__(self, key): ...
     def append(self, MVertexBufferDescriptor) -> bool: ...
-    def clear(self) -> self: ...  # type: ignore
+    def clear(self) -> self: ...  # type: ignore[name-defined]
     def remove(self, index) -> bool: ...
 
 class MVertexBuffer:
     def __init__(self, *args, **kwargs) -> None: ...
-    def acquire(self, size, writeOnly) -> long: ...  # type: ignore
-    def commit(self, long) -> self: ...  # type: ignore
+    def acquire(self, size, writeOnly) -> long: ...  # type: ignore[name-defined]
+    def commit(self, long) -> self: ...  # type: ignore[name-defined]
     def descriptor(self) -> MVertexBufferDescriptor: ...
     def hasCustomResourceHandle(self) -> bool: ...
     @overload
-    def lockResourceHandle(self) -> self: ...  # type: ignore
+    def lockResourceHandle(self) -> self: ...  # type: ignore[name-defined]
     @overload
-    def lockResourceHandle(self) -> Any: ...  # type: ignore
+    def lockResourceHandle(self) -> Any: ...  # type: ignore[overload-cannot-match]
     @overload
-    def lockResourceHandle(self) -> Any: ...  # type: ignore
+    def lockResourceHandle(self) -> Any: ...  # type: ignore[overload-cannot-match]
     @overload
-    def lockResourceHandle(self) -> Any: ...  # type: ignore
+    def lockResourceHandle(self) -> Any: ...  # type: ignore[overload-cannot-match]
     @overload
-    def lockResourceHandle(self) -> Any: ...  # type: ignore
+    def lockResourceHandle(self) -> Any: ...  # type: ignore[overload-cannot-match]
     @overload
-    def lockResourceHandle(self) -> Any: ...  # type: ignore
-    def map(self) -> long: ...  # type: ignore
-    def resourceHandle(self) -> long: ...  # type: ignore
-    def setResourceHandle(self, long, int) -> self: ...  # type: ignore
-    def unload(self) -> self: ...  # type: ignore
-    def unlockResourceHandle(self) -> self: ...  # type: ignore
-    def unmap(self) -> self: ...  # type: ignore
-    def update(self, buffer, destOffset, numVerts, truncateIfSmaller) -> self: ...  # type: ignore
+    def lockResourceHandle(self) -> Any: ...  # type: ignore[overload-cannot-match]
+    def map(self) -> long: ...  # type: ignore[name-defined]
+    def resourceHandle(self) -> long: ...  # type: ignore[name-defined]
+    def setResourceHandle(self, long, int) -> self: ...  # type: ignore[name-defined]
+    def unload(self) -> self: ...  # type: ignore[name-defined]
+    def unlockResourceHandle(self) -> self: ...  # type: ignore[name-defined]
+    def unmap(self) -> self: ...  # type: ignore[name-defined]
+    def update(self, buffer, destOffset, numVerts, truncateIfSmaller) -> self: ...  # type: ignore[name-defined]
     def vertexCount(self) -> int: ...
 
 class MVertexBufferArray:
     def __init__(self, *args, **kwargs) -> None: ...
     def __len__(self) -> int: ...
     def __getitem__(self, key): ...
-    def append(self, MVertexBuffer, name) -> self: ...  # type: ignore
-    def clear(self) -> self: ...  # type: ignore
+    def append(self, MVertexBuffer, name) -> self: ...  # type: ignore[name-defined]
+    def clear(self) -> self: ...  # type: ignore[name-defined]
     def getBuffer(self, string) -> MVertexBuffer: ...
-    def getName(self, int) -> string: ...  # type: ignore
+    def getName(self, int) -> string: ...  # type: ignore[name-defined]
 
 class MIndexBufferDescriptor:
     kVertexPoint: ClassVar[int] = ...
@@ -515,45 +516,45 @@ class MIndexBufferDescriptorList:
     def __len__(self) -> int: ...
     def __getitem__(self, key): ...
     def append(self, MIndexBufferDescriptor) -> bool: ...
-    def clear(self) -> self: ...  # type: ignore
+    def clear(self) -> self: ...  # type: ignore[name-defined]
     def remove(self, index) -> bool: ...
 
 class MIndexBuffer:
     def __init__(self, *args, **kwargs) -> None: ...
-    def acquire(self, size, writeOnly) -> long: ...  # type: ignore
-    def commit(self, long) -> self: ...  # type: ignore
+    def acquire(self, size, writeOnly) -> long: ...  # type: ignore[name-defined]
+    def commit(self, long) -> self: ...  # type: ignore[name-defined]
     def dataType(self) -> int: ...
     def hasCustomResourceHandle(self) -> bool: ...
     @overload
-    def lockResourceHandle(self) -> self: ...  # type: ignore
+    def lockResourceHandle(self) -> self: ...  # type: ignore[name-defined]
     @overload
-    def lockResourceHandle(self) -> Any: ...  # type: ignore
+    def lockResourceHandle(self) -> Any: ...  # type: ignore[overload-cannot-match]
     @overload
-    def lockResourceHandle(self) -> Any: ...  # type: ignore
+    def lockResourceHandle(self) -> Any: ...  # type: ignore[overload-cannot-match]
     @overload
-    def lockResourceHandle(self) -> Any: ...  # type: ignore
+    def lockResourceHandle(self) -> Any: ...  # type: ignore[overload-cannot-match]
     @overload
-    def lockResourceHandle(self) -> Any: ...  # type: ignore
+    def lockResourceHandle(self) -> Any: ...  # type: ignore[overload-cannot-match]
     @overload
-    def lockResourceHandle(self) -> Any: ...  # type: ignore
-    def map(self) -> long: ...  # type: ignore
-    def resourceHandle(self) -> long: ...  # type: ignore
+    def lockResourceHandle(self) -> Any: ...  # type: ignore[overload-cannot-match]
+    def map(self) -> long: ...  # type: ignore[name-defined]
+    def resourceHandle(self) -> long: ...  # type: ignore[name-defined]
     def setResourceHandle(self, *args, **kwargs): ...
     def size(self) -> int: ...
-    def unload(self) -> self: ...  # type: ignore
-    def unlockResourceHandle(self) -> self: ...  # type: ignore
-    def unmap(self) -> self: ...  # type: ignore
-    def update(self, buffer, destOffset, numIndices, truncateIfSmaller) -> self: ...  # type: ignore
+    def unload(self) -> self: ...  # type: ignore[name-defined]
+    def unlockResourceHandle(self) -> self: ...  # type: ignore[name-defined]
+    def unmap(self) -> self: ...  # type: ignore[name-defined]
+    def update(self, buffer, destOffset, numIndices, truncateIfSmaller) -> self: ...  # type: ignore[name-defined]
 
 class MGeometryIndexMapping:
     def __init__(self, *args, **kwargs) -> None: ...
-    def component(self, int) -> MObject: ...  # type: ignore
-    def dagPath(self, int) -> MDagPath: ...  # type: ignore
+    def component(self, int) -> MObject: ...  # type: ignore[name-defined]
+    def dagPath(self, int) -> MDagPath: ...  # type: ignore[name-defined]
     def geometryCount(self) -> int: ...
     def indexLength(self, int) -> int: ...
     def indexStart(self, int) -> int: ...
 
-class MRenderItem:  # type: ignore
+class MRenderItem:  # type: ignore[no-redef]
     sDormantFilledDepthPriority: ClassVar[int] = ...
     sDormantWireDepthPriority: ClassVar[int] = ...
     sHiliteWireDepthPriority: ClassVar[int] = ...
@@ -575,16 +576,16 @@ class MRenderItem:  # type: ignore
     SkipWhenDefaultMaterialActive: ClassVar[int] = ...
     def __init__(self, *args, **kwargs) -> None: ...
     def associateWithIndexBuffer(self, MIndexBuffer) -> bool: ...
-    def availableShaderParameters(self) -> listofstring: ...  # type: ignore
-    def boundingBox(self, space=...) -> MBoundingBox: ...  # type: ignore
-    def setBoundingBox(self, bounds) -> self: ...  # type: ignore
+    def availableShaderParameters(self) -> listofstring: ...  # type: ignore[name-defined]
+    def boundingBox(self, space=...) -> MBoundingBox: ...  # type: ignore[name-defined]
+    def setBoundingBox(self, bounds) -> self: ...  # type: ignore[name-defined]
     def castsShadows(self) -> bool: ...
     def wantConsolidation(self) -> bool: ...
     def getDefaultMaterialHandling(self) -> MRenderItem.DefaultMaterialFiltering: ...
     def isCompatibleWithMayaInstancer(self) -> bool: ...
-    def component(self) -> MObject: ...  # type: ignore
-    def shadingComponent(self) -> MObject: ...  # type: ignore
-    def setAllowIsolateSelectCopy(self, bool) -> self: ...  # type: ignore
+    def component(self) -> MObject: ...  # type: ignore[name-defined]
+    def shadingComponent(self) -> MObject: ...  # type: ignore[name-defined]
+    def setAllowIsolateSelectCopy(self, bool) -> self: ...  # type: ignore[name-defined]
     def allowIsolateSelectCopy(self) -> bool: ...
     def isIsolateSelectCopy(self) -> bool: ...
     @overload
@@ -593,13 +594,13 @@ class MRenderItem:  # type: ignore
     @overload
     @staticmethod
     def create(item) -> MRenderItem: ...
-    def customData(self) -> MUserData: ...  # type: ignore
-    def getCustomData(self) -> MUserData: ...  # type: ignore
+    def customData(self) -> MUserData: ...  # type: ignore[name-defined]
+    def getCustomData(self) -> MUserData: ...  # type: ignore[name-defined]
     def depthPriority(self) -> int: ...
     @staticmethod
     def destroy(item) -> None: ...
     def drawMode(self) -> int: ...
-    def enable(self, bool) -> self: ...  # type: ignore
+    def enable(self, bool) -> self: ...  # type: ignore[name-defined]
     def excludedFromPostEffects(self) -> bool: ...
     def excludedFromDefaultMaterialOverride(self) -> bool: ...
     def geometry(self) -> MGeometry: ...
@@ -608,42 +609,42 @@ class MRenderItem:  # type: ignore
     def isConsolidated(self) -> bool: ...
     def isEnabled(self) -> bool: ...
     def isShaderFromNode(self) -> bool: ...
-    def name(self) -> string: ...  # type: ignore
+    def name(self) -> string: ...  # type: ignore[name-defined]
     def primitive(self) -> int: ...
     def primitiveAndStride(self, *args, **kwargs): ...
     def setPrimitive(self, *args, **kwargs): ...
     def receivesShadows(self) -> bool: ...
     def requiredVertexBuffers(self) -> MVertexBufferDescriptorList: ...
-    def selectionMask(self) -> MSelectionMask: ...  # type: ignore
-    def setCastsShadows(self, bool) -> self: ...  # type: ignore
-    def setWantConsolidation(self, bool) -> self: ...  # type: ignore
+    def selectionMask(self) -> MSelectionMask: ...  # type: ignore[name-defined]
+    def setCastsShadows(self, bool) -> self: ...  # type: ignore[name-defined]
+    def setWantConsolidation(self, bool) -> self: ...  # type: ignore[name-defined]
     def setDefaultMaterialHandling(self, *args, **kwargs): ...
-    def setCompatibleWithMayaInstancer(self, bool) -> self: ...  # type: ignore
-    def setCustomData(self, MUserData) -> self: ...  # type: ignore
-    def setDepthPriority(self, int) -> self: ...  # type: ignore
-    def setDrawMode(self, int) -> self: ...  # type: ignore
-    def setExcludedFromPostEffects(self, bool) -> self: ...  # type: ignore
-    def setExcludedFromDefaultMaterialOverride(self, bool) -> self: ...  # type: ignore
+    def setCompatibleWithMayaInstancer(self, bool) -> self: ...  # type: ignore[name-defined]
+    def setCustomData(self, MUserData) -> self: ...  # type: ignore[name-defined]
+    def setDepthPriority(self, int) -> self: ...  # type: ignore[name-defined]
+    def setDrawMode(self, int) -> self: ...  # type: ignore[name-defined]
+    def setExcludedFromPostEffects(self, bool) -> self: ...  # type: ignore[name-defined]
+    def setExcludedFromDefaultMaterialOverride(self, bool) -> self: ...  # type: ignore[name-defined]
     def setMatrix(self, MMatrix) -> bool: ...
-    def setReceivesShadows(self, bool) -> self: ...  # type: ignore
+    def setReceivesShadows(self, bool) -> self: ...  # type: ignore[name-defined]
     def setSelectionMask(self, *args, **kwargs): ...
     def setShader(self, shader, customStreamName=...) -> bool: ...
-    def setShaderFromNode(self, shaderNode, shapePath, linkLostCb=..., linkLostUserData=..., nonTextured=...) -> self: ...  # type: ignore
-    def setTreatAsTransparent(self, bool) -> self: ...  # type: ignore
-    def setWantSubSceneConsolidation(self, bool) -> self: ...  # type: ignore
-    def sourceDagPath(self) -> MDagPath: ...  # type: ignore
+    def setShaderFromNode(self, shaderNode, shapePath, linkLostCb=..., linkLostUserData=..., nonTextured=...) -> self: ...  # type: ignore[name-defined]
+    def setTreatAsTransparent(self, bool) -> self: ...  # type: ignore[name-defined]
+    def setWantSubSceneConsolidation(self, bool) -> self: ...  # type: ignore[name-defined]
+    def sourceDagPath(self) -> MDagPath: ...  # type: ignore[name-defined]
     def sourceIndexMapping(self) -> MGeometryIndexMapping: ...
     def type(self) -> int: ...
     def wantSubSceneConsolidation(self) -> bool: ...
-    def objectTypeExclusionFlag(self) -> long: ...  # type: ignore
-    def setObjectTypeExclusionFlag(self, long) -> self: ...  # type: ignore
+    def objectTypeExclusionFlag(self) -> long: ...  # type: ignore[name-defined]
+    def setObjectTypeExclusionFlag(self, long) -> self: ...  # type: ignore[name-defined]
 
 class MRenderItemList:
     def __init__(self, *args, **kwargs) -> None: ...
     def __len__(self) -> int: ...
     def __getitem__(self, key): ...
     def append(self, MVertexBufferDescriptor) -> bool: ...
-    def clear(self) -> self: ...  # type: ignore
+    def clear(self) -> self: ...  # type: ignore[name-defined]
     @overload
     def indexOf(self, name) -> int: ...
     @overload
@@ -654,8 +655,8 @@ class MRenderItemList:
 
 class MGeometryRequirements:
     def __init__(self, *args, **kwargs) -> None: ...
-    def addIndexingRequirement(self, MIndexBufferDescriptor) -> self: ...  # type: ignore
-    def addVertexRequirement(self, MVertexBufferDescriptor) -> self: ...  # type: ignore
+    def addIndexingRequirement(self, MIndexBufferDescriptor) -> self: ...  # type: ignore[name-defined]
+    def addVertexRequirement(self, MVertexBufferDescriptor) -> self: ...  # type: ignore[name-defined]
     def indexingRequirements(self) -> MIndexBufferDescriptorList: ...
     def vertexRequirements(self) -> MVertexBufferDescriptorList: ...
 
@@ -678,67 +679,67 @@ class MGeometryUtilities:
     @staticmethod
     def acquireReferenceGeometry(shape, requirements) -> MGeometry: ...
     @staticmethod
-    def displayStatus(path) -> DisplayStatus: ...  # type: ignore
+    def displayStatus(path) -> DisplayStatus: ...  # type: ignore[name-defined]
     @staticmethod
     def releaseReferenceGeometry(geometry) -> None: ...
     @staticmethod
-    def wireframeColor(path) -> MColor: ...  # type: ignore
+    def wireframeColor(path) -> MColor: ...  # type: ignore[name-defined]
 
 class MPxComponentConverter:
     def __init__(self, *args, **kwargs) -> None: ...
-    def addIntersection(self, intersection) -> self: ...  # type: ignore
-    def component(self) -> MObject: ...  # type: ignore
-    def initialize(self, renderItem) -> self: ...  # type: ignore
-    def selectionMask(self) -> MSelectionMask: ...  # type: ignore
+    def addIntersection(self, intersection) -> self: ...  # type: ignore[name-defined]
+    def component(self) -> MObject: ...  # type: ignore[name-defined]
+    def initialize(self, renderItem) -> self: ...  # type: ignore[name-defined]
+    def selectionMask(self) -> MSelectionMask: ...  # type: ignore[name-defined]
 
 class MPxDrawOverride:
-    def __init__(self, obj, callback, isAlwaysDirty=...) -> Any: ...  # type: ignore
-    def addUIDrawables(self, objPath, drawManager, frameContext, data) -> self: ...  # type: ignore
-    def boundingBox(self, objPath, cameraPath) -> MBoundingBox: ...  # type: ignore
+    def __init__(self, obj, callback, isAlwaysDirty=...) -> Any: ...  # type: ignore[misc]
+    def addUIDrawables(self, objPath, drawManager, frameContext, data) -> self: ...  # type: ignore[name-defined]
+    def boundingBox(self, objPath, cameraPath) -> MBoundingBox: ...  # type: ignore[name-defined]
     def disableInternalBoundingBoxDraw(self) -> bool: ...
     def excludedFromPostEffects(self) -> bool: ...
     def isTransparent(self) -> bool: ...
     def hasUIDrawables(self) -> bool: ...
     def isBounded(self, objPath, cameraPath) -> bool: ...
-    def prepareForDraw(self, objPath, cameraPath, frameContext, oldData) -> MUserData: ...  # type: ignore
+    def prepareForDraw(self, objPath, cameraPath, frameContext, oldData) -> MUserData: ...  # type: ignore[name-defined]
     def refineSelectionPath(self, selectInfo, hitItem, path, components, objectMask) -> bool: ...
-    def supportedDrawAPIs(self) -> DrawAPI: ...  # type: ignore
-    def transform(self, objPath, cameraPath) -> MMatrix: ...  # type: ignore
+    def supportedDrawAPIs(self) -> DrawAPI: ...  # type: ignore[name-defined]
+    def transform(self, objPath, cameraPath) -> MMatrix: ...  # type: ignore[name-defined]
     def wantUserSelection(self) -> bool: ...
     def userSelect(self, selectInfo, drawContext, objPath, data, selectionList, worldSpaceHitPts) -> bool: ...
-    def updateSelectionGranularity(self, path, selectionContext) -> self: ...  # type: ignore
+    def updateSelectionGranularity(self, path, selectionContext) -> self: ...  # type: ignore[name-defined]
     @staticmethod
     def pointSnappingActive() -> bool: ...
     def traceCallSequence(self) -> bool: ...
-    def handleTraceMessage(self, message) -> self: ...  # type: ignore
+    def handleTraceMessage(self, message) -> self: ...  # type: ignore[name-defined]
 
 class MPxGeometryOverride:
     def __init__(self, *args, **kwargs) -> None: ...
-    def addUIDrawables(self, path, drawManager, frameContext) -> self: ...  # type: ignore
-    def cleanUp(self) -> self: ...  # type: ignore
+    def addUIDrawables(self, path, drawManager, frameContext) -> self: ...  # type: ignore[name-defined]
+    def cleanUp(self) -> self: ...  # type: ignore[name-defined]
     def hasUIDrawables(self) -> bool: ...
     def isIndexingDirty(self, item) -> bool: ...
     def isStreamDirty(self, desc) -> bool: ...
     @staticmethod
     def pointSnappingActive() -> bool: ...
-    def populateGeometry(self, requirements, renderItems, data) -> self: ...  # type: ignore
+    def populateGeometry(self, requirements, renderItems, data) -> self: ...  # type: ignore[name-defined]
     def refineSelectionPath(self, selectInfo, hitItem, path, components, objectMask) -> bool: ...
-    def supportedDrawAPIs(self) -> DrawAPI: ...  # type: ignore
+    def supportedDrawAPIs(self) -> DrawAPI: ...  # type: ignore[name-defined]
     def configCache(self, evalNode, schema) -> None: ...
-    def updateDG(self) -> self: ...  # type: ignore
-    def updateRenderItems(self, path, list) -> self: ...  # type: ignore
+    def updateDG(self) -> self: ...  # type: ignore[name-defined]
+    def updateRenderItems(self, path, list) -> self: ...  # type: ignore[name-defined]
     def requiresUpdateRenderItems(self, path) -> bool: ...
     def requiresGeometryUpdate(self) -> bool: ...
     def supportsEvaluationManagerParallelUpdate(self) -> bool: ...
     def supportsVP2CustomCaching(self) -> bool: ...
-    def updateSelectionGranularity(self, path, selectionContext) -> self: ...  # type: ignore
+    def updateSelectionGranularity(self, path, selectionContext) -> self: ...  # type: ignore[name-defined]
     def traceCallSequence(self) -> bool: ...
-    def handleTraceMessage(self, message) -> self: ...  # type: ignore
+    def handleTraceMessage(self, message) -> self: ...  # type: ignore[name-defined]
     def getFrameContext(self) -> MFrameContext: ...
 
 class MPxImagePlaneOverride:
     def __init__(self, *args, **kwargs) -> None: ...
-    def supportedDrawAPIs(self) -> DrawAPI: ...  # type: ignore
+    def supportedDrawAPIs(self) -> DrawAPI: ...  # type: ignore[name-defined]
 
 class MPxIndexBufferMutator:
     def __init__(self, *args, **kwargs) -> None: ...
@@ -760,77 +761,77 @@ class MInitFeedback:
 
 class MPxShaderOverride:
     def __init__(self, *args, **kwargs) -> None: ...
-    def activateKey(self, context, key) -> self: ...  # type: ignore
-    def addGeometryRequirement(self, MVertexBufferDescriptor) -> self: ...  # type: ignore
-    def addGeometryRequirements(self, MVertexBufferDescriptorList) -> self: ...  # type: ignore
-    def addIndexingRequirement(self, MIndexBufferDescriptor) -> self: ...  # type: ignore
+    def activateKey(self, context, key) -> self: ...  # type: ignore[name-defined]
+    def addGeometryRequirement(self, MVertexBufferDescriptor) -> self: ...  # type: ignore[name-defined]
+    def addGeometryRequirements(self, MVertexBufferDescriptorList) -> self: ...  # type: ignore[name-defined]
+    def addIndexingRequirement(self, MIndexBufferDescriptor) -> self: ...  # type: ignore[name-defined]
     def addShaderSignature(self, *args, **kwargs): ...
     def boundingBoxExtraScale(self) -> float: ...
     def draw(self, context, renderItemList) -> bool: ...
-    def drawGeometry(self, MDrawContext) -> self: ...  # type: ignore
-    def endUpdate(self) -> self: ...  # type: ignore
+    def drawGeometry(self, MDrawContext) -> self: ...  # type: ignore[name-defined]
+    def endUpdate(self) -> self: ...  # type: ignore[name-defined]
     def handlesConsolidatedGeometry(self) -> bool: ...
     def handlesDraw(self, context) -> bool: ...
     @overload
-    def initialize(self, shader) -> string: ...  # type: ignore
+    def initialize(self, shader) -> string: ...  # type: ignore[name-defined]
     @overload
-    def initialize(self, initContext, initFeedback) -> string: ...  # type: ignore
+    def initialize(self, initContext, initFeedback) -> string: ...  # type: ignore[name-defined]
     def initialize2(self, *args, **kwargs): ...
     def isTransparent(self) -> bool: ...
     def nonTexturedShaderInstance(self, *args, **kwargs): ...
     def overridesDrawState(self) -> bool: ...
     def overridesNonMaterialItems(self) -> bool: ...
     def rebuildAlways(self) -> bool: ...
-    def setGeometryRequirements(self, MShaderInstance) -> self: ...  # type: ignore
+    def setGeometryRequirements(self, MShaderInstance) -> self: ...  # type: ignore[name-defined]
     def shaderInstance(self) -> MShaderInstance: ...
-    def supportedDrawAPIs(self) -> DrawAPI: ...  # type: ignore
+    def supportedDrawAPIs(self) -> DrawAPI: ...  # type: ignore[name-defined]
     def supportsAdvancedTransparency(self) -> bool: ...
-    def terminateKey(self, context, key) -> self: ...  # type: ignore
-    def updateDG(self, object) -> self: ...  # type: ignore
-    def updateDevice(self) -> self: ...  # type: ignore
+    def terminateKey(self, context, key) -> self: ...  # type: ignore[name-defined]
+    def updateDG(self, object) -> self: ...  # type: ignore[name-defined]
+    def updateDevice(self) -> self: ...  # type: ignore[name-defined]
 
 class MAttributeParameterMapping:
     def __init__(self, *args, **kwargs) -> None: ...
     def allowConnection(self) -> bool: ...
     def allowRename(self) -> bool: ...
-    def attributeName(self) -> string: ...  # type: ignore
-    def parameterName(self) -> string: ...  # type: ignore
-    def resolvedParameterName(self) -> string: ...  # type: ignore
+    def attributeName(self) -> string: ...  # type: ignore[name-defined]
+    def parameterName(self) -> string: ...  # type: ignore[name-defined]
+    def resolvedParameterName(self) -> string: ...  # type: ignore[name-defined]
 
 class MAttributeParameterMappingList:
     def __init__(self, *args, **kwargs) -> None: ...
     def __len__(self) -> int: ...
     def __getitem__(self, key): ...
-    def append(self, MAttributeParameterMapping) -> self: ...  # type: ignore
-    def clear(self) -> self: ...  # type: ignore
+    def append(self, MAttributeParameterMapping) -> self: ...  # type: ignore[name-defined]
+    def clear(self) -> self: ...  # type: ignore[name-defined]
     def findByAttributeName(self, attributeName) -> MAttributeParameterMapping: ...
     def findByParameterName(self, parameterName) -> MAttributeParameterMapping: ...
 
 class MPxShadingNodeOverride:
     def __init__(self, *args, **kwargs) -> None: ...
     def allowConnections(self) -> bool: ...
-    def fragmentName(self) -> string: ...  # type: ignore
-    def getCustomMappings(self, mappings) -> self: ...  # type: ignore
-    def outputForConnection(self, sourcePlug, destinationPlug) -> string: ...  # type: ignore
-    def supportedDrawAPIs(self) -> DrawAPI: ...  # type: ignore
-    def updateDG(self) -> self: ...  # type: ignore
+    def fragmentName(self) -> string: ...  # type: ignore[name-defined]
+    def getCustomMappings(self, mappings) -> self: ...  # type: ignore[name-defined]
+    def outputForConnection(self, sourcePlug, destinationPlug) -> string: ...  # type: ignore[name-defined]
+    def supportedDrawAPIs(self) -> DrawAPI: ...  # type: ignore[name-defined]
+    def updateDG(self) -> self: ...  # type: ignore[name-defined]
     @overload
-    def updateShader(self, shader, mappings) -> self: ...  # type: ignore
+    def updateShader(self, shader, mappings) -> self: ...  # type: ignore[name-defined]
     @overload
     def updateShader(self) -> Any: ...
     def valueChangeRequiresFragmentRebuild(self, plug) -> bool: ...
 
 class MSubSceneContainerIterator:
     def __init__(self, *args, **kwargs) -> None: ...
-    def destroy(self) -> self: ...  # type: ignore
+    def destroy(self) -> self: ...  # type: ignore[name-defined]
     def next(self) -> MRenderItem: ...
-    def reset(self) -> self: ...  # type: ignore
+    def reset(self) -> self: ...  # type: ignore[name-defined]
 
 class MSubSceneContainer:
     def __init__(self, *args, **kwargs) -> None: ...
     def __len__(self) -> int: ...
     def add(self, item) -> bool: ...
-    def clear(self) -> self: ...  # type: ignore
+    def clear(self) -> self: ...  # type: ignore[name-defined]
     def count(self) -> int: ...
     def find(self, name) -> MRenderItem: ...
     def getIterator(self) -> MSubSceneContainerIterator: ...
@@ -848,37 +849,37 @@ class MPxSubSceneOverride:
     def getInstancedSelectionPath(self, renderItem, intersection, dagPath) -> bool: ...
     @staticmethod
     def pointSnappingActive() -> bool: ...
-    def removeAllInstances(self, renderItem) -> self: ...  # type: ignore
-    def removeExtraInstanceData(self, renderItem, parameterName) -> self: ...  # type: ignore
-    def removeInstance(self, renderItem, instanceId) -> self: ...  # type: ignore
+    def removeAllInstances(self, renderItem) -> self: ...  # type: ignore[name-defined]
+    def removeExtraInstanceData(self, renderItem, parameterName) -> self: ...  # type: ignore[name-defined]
+    def removeInstance(self, renderItem, instanceId) -> self: ...  # type: ignore[name-defined]
     def requiresUpdate(self, container, frameContext) -> bool: ...
-    def setExtraInstanceData(self, renderItem, parameterName, data, instanceId=...) -> self: ...  # type: ignore
-    def setGeometryForRenderItem(self, renderItem, vertexBuffers, indexBuffer=..., objectBox=...) -> self: ...  # type: ignore
-    def setInstanceTransformArray(self, renderItem, matrixArray) -> self: ...  # type: ignore
-    def supportedDrawAPIs(self) -> DrawAPI: ...  # type: ignore
-    def update(self, container, frameContext) -> self: ...  # type: ignore
-    def updateInstanceTransform(self, renderItem, instanceId, transform) -> self: ...  # type: ignore
-    def updateSelectionGranularity(self, path, selectionContext) -> self: ...  # type: ignore
+    def setExtraInstanceData(self, renderItem, parameterName, data, instanceId=...) -> self: ...  # type: ignore[name-defined]
+    def setGeometryForRenderItem(self, renderItem, vertexBuffers, indexBuffer=..., objectBox=...) -> self: ...  # type: ignore[name-defined]
+    def setInstanceTransformArray(self, renderItem, matrixArray) -> self: ...  # type: ignore[name-defined]
+    def supportedDrawAPIs(self) -> DrawAPI: ...  # type: ignore[name-defined]
+    def update(self, container, frameContext) -> self: ...  # type: ignore[name-defined]
+    def updateInstanceTransform(self, renderItem, instanceId, transform) -> self: ...  # type: ignore[name-defined]
+    def updateSelectionGranularity(self, path, selectionContext) -> self: ...  # type: ignore[name-defined]
 
 class MPxSurfaceShadingNodeOverride(MPxShadingNodeOverride):
     def __init__(self, *args, **kwargs) -> None: ...
-    def bumpAttribute(self) -> string: ...  # type: ignore
-    def primaryColorParameter(self) -> string: ...  # type: ignore
-    def transparencyParameter(self) -> string: ...  # type: ignore
+    def bumpAttribute(self) -> string: ...  # type: ignore[name-defined]
+    def primaryColorParameter(self) -> string: ...  # type: ignore[name-defined]
+    def transparencyParameter(self) -> string: ...  # type: ignore[name-defined]
 
 class MPxVertexBufferGenerator:
     def __init__(self, *args, **kwargs) -> None: ...
-    def createVertexStream(self, object, vertexBuffer, targetIndexing, sharedIndexing, sourceStreams) -> self: ...  # type: ignore
-    def getSourceIndexing(self, object, sourceIndexing) -> self: ...  # type: ignore
-    def getSourceStreams(self, object, sourceStreams) -> self: ...  # type: ignore
+    def createVertexStream(self, object, vertexBuffer, targetIndexing, sharedIndexing, sourceStreams) -> self: ...  # type: ignore[name-defined]
+    def getSourceIndexing(self, object, sourceIndexing) -> self: ...  # type: ignore[name-defined]
+    def getSourceStreams(self, object, sourceStreams) -> self: ...  # type: ignore[name-defined]
 
 class MPxVertexBufferMutator:
     def __init__(self, *args, **kwargs) -> None: ...
-    def modifyVertexStream(self, object, vertexBuffer, targetIndexing) -> self: ...  # type: ignore
+    def modifyVertexStream(self, object, vertexBuffer, targetIndexing) -> self: ...  # type: ignore[name-defined]
 
 class MRenderTargetDescription:
     def __init__(self, *args, **kwargs) -> None: ...
-    def name(self) -> string: ...  # type: ignore
+    def name(self) -> string: ...  # type: ignore[name-defined]
     def width(self) -> int: ...
     def height(self) -> int: ...
     def multiSampleCount(self) -> int: ...
@@ -886,21 +887,21 @@ class MRenderTargetDescription:
     def arraySliceCount(self) -> int: ...
     def isCubeMap(self) -> bool: ...
     def allowsUnorderedAccess(self) -> bool: ...
-    def setName(self, string) -> self: ...  # type: ignore
-    def setWidth(self, int) -> self: ...  # type: ignore
-    def setHeight(self, int) -> self: ...  # type: ignore
-    def setMultiSampleCount(self, int) -> self: ...  # type: ignore
-    def setRasterFormat(self, int) -> self: ...  # type: ignore
-    def setArraySliceCount(self, int) -> self: ...  # type: ignore
-    def setIsCubeMap(self, bool) -> self: ...  # type: ignore
-    def setAllowsUnorderedAccess(self, bool) -> self: ...  # type: ignore
+    def setName(self, string) -> self: ...  # type: ignore[name-defined]
+    def setWidth(self, int) -> self: ...  # type: ignore[name-defined]
+    def setHeight(self, int) -> self: ...  # type: ignore[name-defined]
+    def setMultiSampleCount(self, int) -> self: ...  # type: ignore[name-defined]
+    def setRasterFormat(self, int) -> self: ...  # type: ignore[name-defined]
+    def setArraySliceCount(self, int) -> self: ...  # type: ignore[name-defined]
+    def setIsCubeMap(self, bool) -> self: ...  # type: ignore[name-defined]
+    def setAllowsUnorderedAccess(self, bool) -> self: ...  # type: ignore[name-defined]
     def compatibleWithDescription(self, MRenderTargetDescription) -> bool: ...
 
 class MRenderTarget:
     def __init__(self, *args, **kwargs) -> None: ...
-    def updateDescription(self, MRenderTargetDescription) -> self: ...  # type: ignore
+    def updateDescription(self, MRenderTargetDescription) -> self: ...  # type: ignore[name-defined]
     def targetDescription(self) -> MRenderTargetDescription: ...
-    def resourceHandle(self) -> long: ...  # type: ignore
+    def resourceHandle(self) -> long: ...  # type: ignore[name-defined]
     def rawData(self, *args, **kwargs): ...
     @staticmethod
     def freeRawData(long) -> None: ...
@@ -910,7 +911,7 @@ class MRenderTargetManager:
     def acquireRenderTarget(self, MRenderTargetDescription) -> MRenderTarget: ...
     def acquireRenderTargetFromScreen(self, string) -> MRenderTarget: ...
     def formatSupportsSRGBWrite(self, int) -> bool: ...
-    def releaseRenderTarget(self, MRenderTarget) -> self: ...  # type: ignore
+    def releaseRenderTarget(self, MRenderTarget) -> self: ...  # type: ignore[name-defined]
 
 class MRenderProfile:
     kMayaSoftware: ClassVar[int] = ...
@@ -961,7 +962,7 @@ class MRenderUtilities:
     @staticmethod
     def renderMaterialViewerGeometry(shape, shaderNode, image, cameraMode=..., lightRig=...) -> None: ...
     @staticmethod
-    def swatchBackgroundColor() -> MColor: ...  # type: ignore
+    def swatchBackgroundColor() -> MColor: ...  # type: ignore[name-defined]
 
 class MSelectionContext:
     kNone: ClassVar[int] = ...
@@ -1042,69 +1043,69 @@ class MShaderInstance:
     kAnisotropyShader2: ClassVar[int] = ...
     kDisplacementPosShader: ClassVar[int] = ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def activatePass(self, MDrawContext, int) -> self: ...  # type: ignore
-    def addInputFragment(self, fragmentName, outputName, inputName, promotedInputName=...) -> self: ...  # type: ignore
-    def addInputFragmentForMultiParams(self, fragmentName, uniqueName, outputNames, inputNames, invalidParameterIndices=..., fragmentUsage=...) -> self: ...  # type: ignore
-    def addOutputFragment(self, fragmentName, inputName) -> self: ...  # type: ignore
+    def activatePass(self, MDrawContext, int) -> self: ...  # type: ignore[name-defined]
+    def addInputFragment(self, fragmentName, outputName, inputName, promotedInputName=...) -> self: ...  # type: ignore[name-defined]
+    def addInputFragmentForMultiParams(self, fragmentName, uniqueName, outputNames, inputNames, invalidParameterIndices=..., fragmentUsage=...) -> self: ...  # type: ignore[name-defined]
+    def addOutputFragment(self, fragmentName, inputName) -> self: ...  # type: ignore[name-defined]
     def annotation(self, *args, **kwargs): ...
-    def bind(self, MDrawContext) -> self: ...  # type: ignore
+    def bind(self, MDrawContext) -> self: ...  # type: ignore[name-defined]
     def clone(self) -> MShaderInstance: ...
     def createShaderInstanceWithColorManagementFragment(self, inputColorSpace) -> MShaderInstance: ...
-    def addColorManagementTextures(self) -> self: ...  # type: ignore
+    def addColorManagementTextures(self) -> self: ...  # type: ignore[name-defined]
     def getPassCount(self, MDrawContext) -> int: ...
     def isArrayParameter(self, string) -> bool: ...
     def getArraySize(self, string) -> int: ...
     def isTransparent(self) -> bool: ...
     def parameterDefaultValue(self, *args, **kwargs): ...
-    def parameterList(self) -> listofstring: ...  # type: ignore
-    def parameterSemantic(self, parameterName) -> string: ...  # type: ignore
+    def parameterList(self) -> listofstring: ...  # type: ignore[name-defined]
+    def parameterSemantic(self, parameterName) -> string: ...  # type: ignore[name-defined]
     def parameterType(self, string) -> int: ...
     def passAnnotation(self, *args, **kwargs): ...
     def postDrawCallback(self, *args, **kwargs): ...
     def preDrawCallback(self, *args, **kwargs): ...
-    def resourceName(self, parameterName) -> string: ...  # type: ignore
-    def semantic(self, string) -> string: ...  # type: ignore
+    def resourceName(self, parameterName) -> string: ...  # type: ignore[name-defined]
+    def semantic(self, string) -> string: ...  # type: ignore[name-defined]
     def isVaryingParameter(self, string) -> bool: ...
     @overload
-    def setArrayParameter(self, parameterName, sequenceofbool, int) -> self: ...  # type: ignore
+    def setArrayParameter(self, parameterName, sequenceofbool, int) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setArrayParameter(self, parameterName, sequenceofint, int) -> self: ...  # type: ignore
+    def setArrayParameter(self, parameterName, sequenceofint, int) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setArrayParameter(self, parameterName, sequenceoffloat, int) -> self: ...  # type: ignore
+    def setArrayParameter(self, parameterName, sequenceoffloat, int) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setArrayParameter(self, parameterName, sequenceofMMatrix, int) -> self: ...  # type: ignore
-    def setIsTransparent(self, bool) -> self: ...  # type: ignore
-    def setAsVarying(self, parameterName, bool) -> self: ...  # type: ignore
-    def setSemantic(self, parameterName, string) -> self: ...  # type: ignore
-    def renameParameter(self, parameterName, string) -> self: ...  # type: ignore
+    def setArrayParameter(self, parameterName, sequenceofMMatrix, int) -> self: ...  # type: ignore[name-defined]
+    def setIsTransparent(self, bool) -> self: ...  # type: ignore[name-defined]
+    def setAsVarying(self, parameterName, bool) -> self: ...  # type: ignore[name-defined]
+    def setSemantic(self, parameterName, string) -> self: ...  # type: ignore[name-defined]
+    def renameParameter(self, parameterName, string) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, bool) -> self: ...  # type: ignore
+    def setParameter(self, parameterName, bool) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, int) -> self: ...  # type: ignore
+    def setParameter(self, parameterName, int) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, float) -> self: ...  # type: ignore
+    def setParameter(self, parameterName, float) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, listoffloat) -> self: ...  # type: ignore
+    def setParameter(self, parameterName, listoffloat) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, MFloatVector) -> self: ...  # type: ignore
+    def setParameter(self, parameterName, MFloatVector) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, MMatrix) -> self: ...  # type: ignore
+    def setParameter(self, parameterName, MMatrix) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, MFloatMatrix) -> self: ...  # type: ignore
+    def setParameter(self, parameterName, MFloatMatrix) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, MTexture) -> self: ...  # type: ignore
+    def setParameter(self, parameterName, MTexture) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, MRenderTarget) -> self: ...  # type: ignore
+    def setParameter(self, parameterName, MRenderTarget) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, MSamplerState) -> self: ...  # type: ignore
-    def techniqueNames(self) -> listofstrings: ...  # type: ignore
+    def setParameter(self, parameterName, MSamplerState) -> self: ...  # type: ignore[name-defined]
+    def techniqueNames(self) -> listofstrings: ...  # type: ignore[name-defined]
     def techniqueAnnotation(self, *args, **kwargs): ...
-    def uiName(self, parameterName) -> string: ...  # type: ignore
-    def uiWidget(self, parameterName) -> string: ...  # type: ignore
-    def unbind(self, MDrawContext) -> self: ...  # type: ignore
-    def updateParameters(self, MDrawContext) -> self: ...  # type: ignore
-    def requiredVertexBuffers(self, MVertexBufferDescriptorList) -> self: ...  # type: ignore
-    def writeEffectSourceToFile(self, filePath) -> self: ...  # type: ignore
+    def uiName(self, parameterName) -> string: ...  # type: ignore[name-defined]
+    def uiWidget(self, parameterName) -> string: ...  # type: ignore[name-defined]
+    def unbind(self, MDrawContext) -> self: ...  # type: ignore[name-defined]
+    def updateParameters(self, MDrawContext) -> self: ...  # type: ignore[name-defined]
+    def requiredVertexBuffers(self, MVertexBufferDescriptorList) -> self: ...  # type: ignore[name-defined]
+    def writeEffectSourceToFile(self, filePath) -> self: ...  # type: ignore[name-defined]
 
 class MShaderManager:
     k3dSolidShader: ClassVar[int] = ...
@@ -1136,25 +1137,25 @@ class MShaderManager:
     k3dIsotropicStandardSurfaceShader: ClassVar[int] = ...
     k3dCPVShader: ClassVar[int] = ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def addShaderIncludePath(self, string) -> self: ...  # type: ignore
-    def addShaderPath(self, string) -> self: ...  # type: ignore
+    def addShaderIncludePath(self, string) -> self: ...  # type: ignore[name-defined]
+    def addShaderPath(self, string) -> self: ...  # type: ignore[name-defined]
     def getEffectsBufferShader(self, buffer, size, techniqueName, macros=..., useEffectCache=..., preCb=..., postCb=...) -> MShaderInstance: ...
     def getEffectsFileShader(self, effecsFileName, techniqueName, macros=..., useEffectCache=..., preCb=..., postCb=...) -> MShaderInstance: ...
-    def getEffectsTechniques(self, effecsFileName, macros=..., useEffectCache=...) -> tupleofstrings: ...  # type: ignore
+    def getEffectsTechniques(self, effecsFileName, macros=..., useEffectCache=...) -> tupleofstrings: ...  # type: ignore[name-defined]
     def getFragmentShader(self, fragmentName, structOutputName, decorateFragment, preCb=..., postCb=...) -> MShaderInstance: ...
     def getShaderFromNode(self, shaderNode, shapePath, linkLostCb=..., linkLostUserData=..., preCb=..., postCb=..., nonTextured=...) -> MShaderInstance: ...
     def getStockShader(self, shaderId, preCb=..., postCb=...) -> MShaderInstance: ...
     @staticmethod
     def isSupportedShaderSemantic(string) -> bool: ...
     def releaseShader(self, MShaderInstance) -> None: ...
-    def clearEffectCache(self) -> self: ...  # type: ignore
-    def removeEffectFromCache(self, effecsFileName, techniqueName, macros=...) -> self: ...  # type: ignore
-    def shaderIncludePaths(self) -> listofstrings: ...  # type: ignore
-    def shaderPaths(self) -> listofstrings: ...  # type: ignore
+    def clearEffectCache(self) -> self: ...  # type: ignore[name-defined]
+    def removeEffectFromCache(self, effecsFileName, techniqueName, macros=...) -> self: ...  # type: ignore[name-defined]
+    def shaderIncludePaths(self) -> listofstrings: ...  # type: ignore[name-defined]
+    def shaderPaths(self) -> listofstrings: ...  # type: ignore[name-defined]
     @staticmethod
-    def getLastError() -> string: ...  # type: ignore
+    def getLastError() -> string: ...  # type: ignore[name-defined]
     @staticmethod
-    def getLastErrorSource(displayLineNumber=..., filterSource=..., numSurroundingLines=...) -> string: ...  # type: ignore
+    def getLastErrorSource(displayLineNumber=..., filterSource=..., numSurroundingLines=...) -> string: ...  # type: ignore[name-defined]
 
 class MStateManager:
     kCompareNever: ClassVar[int] = ...
@@ -1176,25 +1177,25 @@ class MStateManager:
     def acquireBlendState(MBlendStateDesc) -> MBlendState: ...
     @staticmethod
     def releaseBlendState(MBlendState) -> None: ...
-    def setBlendState(self, MBlendState) -> self: ...  # type: ignore
+    def setBlendState(self, MBlendState) -> self: ...  # type: ignore[name-defined]
     def getBlendState(self) -> MBlendState: ...
     @staticmethod
     def acquireRasterizerState(MRasterizerStateDesc) -> MRasterizerState: ...
     @staticmethod
     def releaseRasterizerState(MRasterizerState) -> None: ...
-    def setRasterizerState(self, MRasterizerState) -> self: ...  # type: ignore
+    def setRasterizerState(self, MRasterizerState) -> self: ...  # type: ignore[name-defined]
     def getRasterizerState(self) -> MRasterizerState: ...
     @staticmethod
     def acquireDepthStencilState(MDepthStencilStateDesc) -> MDepthStencilState: ...
     @staticmethod
     def releaseDepthStencilState(MDepthStencilState) -> None: ...
-    def setDepthStencilState(self, MDepthStencilState) -> self: ...  # type: ignore
+    def setDepthStencilState(self, MDepthStencilState) -> self: ...  # type: ignore[name-defined]
     def getDepthStencilState(self) -> MDepthStencilState: ...
     @staticmethod
     def acquireSamplerState(MSamplerStateDesc) -> MSamplerState: ...
     @staticmethod
     def releaseSamplerState(MSamplerState) -> None: ...
-    def setSamplerState(self, shader, samplerIndex, samplerState) -> self: ...  # type: ignore
+    def setSamplerState(self, shader, samplerIndex, samplerState) -> self: ...  # type: ignore[name-defined]
     def getSamplerState(self, shader, samplerIndex) -> MSamplerState: ...
     @staticmethod
     def getMaxSamplerCount() -> int: ...
@@ -1230,7 +1231,7 @@ class MBlendState:
     kMaxTargets: ClassVar[int] = ...
     def __init__(self, *args, **kwargs) -> None: ...
     def desc(self) -> MBlendStateDesc: ...
-    def resourceHandle(self) -> long: ...  # type: ignore
+    def resourceHandle(self) -> long: ...  # type: ignore[name-defined]
 
 class MTargetBlendDesc:
     blendEnable: Incomplete
@@ -1242,7 +1243,7 @@ class MTargetBlendDesc:
     alphaBlendOperation: Incomplete
     targetWriteMask: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
-    def setDefaults(self) -> self: ...  # type: ignore
+    def setDefaults(self) -> self: ...  # type: ignore[name-defined]
 
 class MBlendStateDesc:
     alphaToCoverageEnable: Incomplete
@@ -1251,7 +1252,7 @@ class MBlendStateDesc:
     multiSampleMask: Incomplete
     targetBlends: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
-    def setDefaults(self) -> self: ...  # type: ignore
+    def setDefaults(self) -> self: ...  # type: ignore[name-defined]
 
 class MRasterizerState:
     kFillSolid: ClassVar[int] = ...
@@ -1261,7 +1262,7 @@ class MRasterizerState:
     kCullBack: ClassVar[int] = ...
     def __init__(self, *args, **kwargs) -> None: ...
     def desc(self) -> MRasterizerStateDesc: ...
-    def resourceHandle(self) -> long: ...  # type: ignore
+    def resourceHandle(self) -> long: ...  # type: ignore[name-defined]
 
 class MRasterizerStateDesc:
     fillMode: Incomplete
@@ -1276,7 +1277,7 @@ class MRasterizerStateDesc:
     multiSampleEnable: Incomplete
     antialiasedLineEnable: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
-    def setDefaults(self) -> self: ...  # type: ignore
+    def setDefaults(self) -> self: ...  # type: ignore[name-defined]
 
 class MDepthStencilState:
     kKeepStencil: ClassVar[int] = ...
@@ -1289,7 +1290,7 @@ class MDepthStencilState:
     kDecrementStencil: ClassVar[int] = ...
     def __init__(self, *args, **kwargs) -> None: ...
     def desc(self) -> MDepthStencilStateDesc: ...
-    def resourceHandle(self) -> long: ...  # type: ignore
+    def resourceHandle(self) -> long: ...  # type: ignore[name-defined]
 
 class MStencilOpDesc:
     stencilPassOp: Incomplete
@@ -1297,7 +1298,7 @@ class MStencilOpDesc:
     stencilDepthFailOp: Incomplete
     stencilFunc: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
-    def setDefaults(self) -> self: ...  # type: ignore
+    def setDefaults(self) -> self: ...  # type: ignore[name-defined]
 
 class MDepthStencilStateDesc:
     depthEnable: Incomplete
@@ -1310,7 +1311,7 @@ class MDepthStencilStateDesc:
     frontFace: Incomplete
     backFace: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
-    def setDefaults(self) -> self: ...  # type: ignore
+    def setDefaults(self) -> self: ...  # type: ignore[name-defined]
 
 class MSamplerState:
     kMinMagMipPoint: ClassVar[int] = ...
@@ -1328,7 +1329,7 @@ class MSamplerState:
     kTexBorder: ClassVar[int] = ...
     def __init__(self, *args, **kwargs) -> None: ...
     def desc(self) -> MSamplerStateDesc: ...
-    def resourceHandle(self) -> long: ...  # type: ignore
+    def resourceHandle(self) -> long: ...  # type: ignore[name-defined]
 
 class MSamplerStateDesc:
     filter: Incomplete
@@ -1344,21 +1345,21 @@ class MSamplerStateDesc:
     coordCount: Incomplete
     elementIndex: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
-    def setDefaults(self) -> self: ...  # type: ignore
+    def setDefaults(self) -> self: ...  # type: ignore[name-defined]
 
 class MSwatchRenderBase:
     renderQuality: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     @staticmethod
     def cancelCurrentSwatchRender() -> None: ...
-    def cancelParallelRendering(self) -> self: ...  # type: ignore
+    def cancelParallelRendering(self) -> self: ...  # type: ignore[name-defined]
     def doIteration(self) -> bool: ...
-    def finishParallelRender(self) -> self: ...  # type: ignore
-    def image(self) -> MImage: ...  # type: ignore
-    def node(self) -> MObject: ...  # type: ignore
+    def finishParallelRender(self) -> self: ...  # type: ignore[name-defined]
+    def image(self) -> MImage: ...  # type: ignore[name-defined]
+    def node(self) -> MObject: ...  # type: ignore[name-defined]
     def renderParallel(self) -> bool: ...
     def resolution(self) -> int: ...
-    def swatchNode(self) -> MObject: ...  # type: ignore
+    def swatchNode(self) -> MObject: ...  # type: ignore[name-defined]
 
 class MTextureDescription:
     kImage1D: ClassVar[int] = ...
@@ -1388,7 +1389,7 @@ class MTextureDescription:
     fTextureType: Incomplete
     fEnvMapType: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
-    def setToDefault2DTexture(self) -> self: ...  # type: ignore
+    def setToDefault2DTexture(self) -> self: ...  # type: ignore[name-defined]
 
 class MDepthNormalizationDescription:
     fNearClipDistance: Incomplete
@@ -1409,24 +1410,24 @@ class MTextureUpdateRegion:
 class MTexture:
     def __init__(self, *args, **kwargs) -> None: ...
     def hasAlpha(self) -> bool: ...
-    def setHasAlpha(self, bool) -> self: ...  # type: ignore
+    def setHasAlpha(self, bool) -> self: ...  # type: ignore[name-defined]
     def hasZeroAlpha(self) -> bool: ...
-    def setHasZeroAlpha(self, bool) -> self: ...  # type: ignore
+    def setHasZeroAlpha(self, bool) -> self: ...  # type: ignore[name-defined]
     def hasTransparentAlpha(self) -> bool: ...
-    def setHasTransparentAlpha(self, bool) -> self: ...  # type: ignore
-    def resourceHandle(self) -> long: ...  # type: ignore
-    def name(self) -> string: ...  # type: ignore
+    def setHasTransparentAlpha(self, bool) -> self: ...  # type: ignore[name-defined]
+    def resourceHandle(self) -> long: ...  # type: ignore[name-defined]
+    def name(self) -> string: ...  # type: ignore[name-defined]
     def bytesPerPixel(self) -> int: ...
     def textureDescription(self) -> MTextureDescription: ...
     def rawData(self, *args, **kwargs): ...
     @staticmethod
     def freeRawData(long) -> None: ...
-    def update(self, pixelData, generateMipMaps, rowPitch=..., region=...) -> self: ...  # type: ignore
+    def update(self, pixelData, generateMipMaps, rowPitch=..., region=...) -> self: ...  # type: ignore[name-defined]
 
 class MTextureManager:
     def __init__(self, *args, **kwargs) -> None: ...
-    def addImagePath(self, string) -> self: ...  # type: ignore
-    def imagePaths(self) -> listofstrings: ...  # type: ignore
+    def addImagePath(self, string) -> self: ...  # type: ignore[name-defined]
+    def imagePaths(self) -> listofstrings: ...  # type: ignore[name-defined]
     @overload
     def acquireTexture(self, filePath, mipmapLevels=..., layerName=..., alphaChannelIdx=...) -> MTexture: ...
     @overload
@@ -1442,134 +1443,8 @@ class MTextureManager:
     def acquireDepthTexture(self, textureName, image, generateMipMaps=..., normalizationDesc=...) -> MTexture: ...
     @overload
     def acquireDepthTexture(self, textureName, pixelData, width, height, generateMipMaps=..., normalizationDesc=...) -> MTexture: ...
-    def releaseTexture(self, MTexture) -> self: ...  # type: ignore
-    def saveTexture(self, MTexture, string) -> self: ...  # type: ignore
-
-class MUIDrawManager:
-    kDefaultFontSize: ClassVar[int] = ...
-    kSmallFontSize: ClassVar[int] = ...
-    kLeft: ClassVar[int] = ...
-    kCenter: ClassVar[int] = ...
-    kRight: ClassVar[int] = ...
-    kInclineNormal: ClassVar[int] = ...
-    kInclineItalic: ClassVar[int] = ...
-    kInclineOblique: ClassVar[int] = ...
-    kWeightLight: ClassVar[int] = ...
-    kWeightNormal: ClassVar[int] = ...
-    kWeightDemiBold: ClassVar[int] = ...
-    kWeightBold: ClassVar[int] = ...
-    kWeightBlack: ClassVar[int] = ...
-    kStretchUltraCondensed: ClassVar[int] = ...
-    kStretchExtraCondensed: ClassVar[int] = ...
-    kStretchCondensed: ClassVar[int] = ...
-    kStretchSemiCondensed: ClassVar[int] = ...
-    kStretchUnstretched: ClassVar[int] = ...
-    kStretchSemiExpanded: ClassVar[int] = ...
-    kStretchExpanded: ClassVar[int] = ...
-    kStretchExtraExpanded: ClassVar[int] = ...
-    kStretchUltraExpanded: ClassVar[int] = ...
-    kLineNone: ClassVar[int] = ...
-    kLineOverline: ClassVar[int] = ...
-    kLineUnderline: ClassVar[int] = ...
-    kLineStrikeoutLine: ClassVar[int] = ...
-    kSolid: ClassVar[int] = ...
-    kShortDotted: ClassVar[int] = ...
-    kShortDashed: ClassVar[int] = ...
-    kDashed: ClassVar[int] = ...
-    kDotted: ClassVar[int] = ...
-    kFlat: ClassVar[int] = ...
-    kStippled: ClassVar[int] = ...
-    kShaded: ClassVar[int] = ...
-    kPoints: ClassVar[int] = ...
-    kLines: ClassVar[int] = ...
-    kLineStrip: ClassVar[int] = ...
-    kClosedLine: ClassVar[int] = ...
-    kTriangles: ClassVar[int] = ...
-    kTriStrip: ClassVar[int] = ...
-    kNonSelectable: ClassVar[int] = ...
-    kSelectable: ClassVar[int] = ...
-    kAutomatic: ClassVar[int] = ...
-    def __init__(self, *args, **kwargs) -> None: ...
-    @overload
-    def beginDrawable(self, selectability=..., selectionName=...) -> self: ...  # type: ignore
-    @overload
-    def beginDrawable(self) -> Any: ...  # type: ignore
-    def endDrawable(self) -> self: ...  # type: ignore
-    @overload
-    def setColor(self, color) -> self: ...  # type: ignore
-    @overload
-    def setColor(self) -> Any: ...
-    def setColorIndex(self, index) -> self: ...  # type: ignore
-    def setPointSize(self, value) -> self: ...  # type: ignore
-    def setLineWidth(self, value) -> self: ...  # type: ignore
-    @overload
-    def setLineStyle(self, style) -> self: ...  # type: ignore
-    @overload
-    def setLineStyle(self, factor, pattern) -> self: ...  # type: ignore
-    def setPaintStyle(self, style) -> self: ...  # type: ignore
-    def depthPriority(self) -> int: ...
-    def setDepthPriority(self, priority) -> self: ...  # type: ignore
-    def line(self, startPoint, endPoint) -> self: ...  # type: ignore
-    def line2d(self, startPoint, endPoint) -> self: ...  # type: ignore
-    def lineList(self, points, draw2D) -> self: ...  # type: ignore
-    def lineStrip(self, points, draw2D) -> self: ...  # type: ignore
-    @overload
-    def point(self, point) -> self: ...  # type: ignore
-    @overload
-    def point(self, MPoint) -> Any: ...
-    def point2d(self, point) -> self: ...  # type: ignore
-    @overload
-    def points(self, points, draw2D) -> self: ...  # type: ignore
-    @overload
-    def points(self, MPointArray) -> Any: ...
-    def rect(self, center, up, normal, scaleX, scaleY, filled=...) -> self: ...  # type: ignore
-    def rect2d(self, center, up, scaleX, scaleY, filled=...) -> self: ...  # type: ignore
-    def sphere(self, *args, **kwargs): ...
-    def circle(self, *args, **kwargs): ...
-    def circle2d(self, *args, **kwargs): ...
-    def arc(self, *args, **kwargs): ...
-    def arc2d(self, *args, **kwargs): ...
-    def mesh(self, mode, position, normal=..., color=..., index=..., texcoord=...) -> self: ...  # type: ignore
-    def mesh2d(self, mode, position, color=..., index=..., texcoord=...) -> self: ...  # type: ignore
-    @overload
-    def beginDrawInXray(self) -> self: ...  # type: ignore
-    @overload
-    def beginDrawInXray(self) -> Any: ...  # type: ignore
-    @overload
-    def beginDrawInXray(self) -> Any: ...  # type: ignore
-    def endDrawInXray(self) -> self: ...  # type: ignore
-    def cone(self, *args, **kwargs): ...
-    def cylinder(self, center, up, radius, height, subdivisionsAxis, filled=...) -> self: ...  # type: ignore
-    def capsule(self, center, up, radius, height, subdivisionsAxis, subdivisionsHeight, filled=...) -> self: ...  # type: ignore
-    def box(self, center, up, right, scaleX=..., scaleY=..., scaleZ=..., filled=...) -> self: ...  # type: ignore
-    @staticmethod
-    def getFontList() -> listofstrings: ...  # type: ignore
-    def setFontIncline(self, fontIncline) -> self: ...  # type: ignore
-    def setFontWeight(self, fontWeight) -> self: ...  # type: ignore
-    def setFontStretch(self, fontStretch) -> self: ...  # type: ignore
-    def setFontLine(self, fontLine) -> self: ...  # type: ignore
-    def setFontSize(self, fontSize) -> self: ...  # type: ignore
-    def setFontName(self, faceName) -> self: ...  # type: ignore
-    @overload
-    def text(self, position, text, alignment=..., backgroundSize=..., backgroundColor=..., dynamic=...) -> self: ...  # type: ignore
-    @overload
-    def text(self, string) -> Any: ...
-    def text2d(self, position, text, alignment=..., backgroundSize=..., backgroundColor=..., dynamic=...) -> self: ...  # type: ignore
-    @overload
-    def setTexture(self, texture) -> self: ...  # type: ignore
-    @overload
-    def setTexture(self) -> Any: ...
-    @overload
-    def setTextureSampler(self, filter, address) -> self: ...  # type: ignore
-    @overload
-    def setTextureSampler(self) -> Any: ...
-    @overload
-    def setTextureMask(self, mask) -> self: ...  # type: ignore
-    @overload
-    def setTextureMask(self) -> Any: ...
-    def icon(self, position, name, scale) -> self: ...  # type: ignore
-    @staticmethod
-    def getIconNames() -> listofstrings: ...  # type: ignore
+    def releaseTexture(self, MTexture) -> self: ...  # type: ignore[name-defined]
+    def saveTexture(self, MTexture, string) -> self: ...  # type: ignore[name-defined]
 
 class MUniformParameter:
     kTypeUnknown: ClassVar[int] = ...
@@ -1654,25 +1529,25 @@ class MUniformParameter:
     def __init__(self, *args, **kwargs) -> None: ...
     def asBool(self, context) -> bool: ...
     def asFloat(self, context) -> float: ...
-    def asFloatArray(self, context) -> tupleoffloats: ...  # type: ignore
+    def asFloatArray(self, context) -> tupleoffloats: ...  # type: ignore[name-defined]
     def asInt(self, context) -> int: ...
-    def asString(self, context) -> string: ...  # type: ignore
-    def copy(self, source) -> self: ...  # type: ignore
+    def asString(self, context) -> string: ...  # type: ignore[name-defined]
+    def copy(self, source) -> self: ...  # type: ignore[name-defined]
     def hasChanged(self, context) -> bool: ...
     def isATexture(self) -> bool: ...
-    def name(self) -> string: ...  # type: ignore
+    def name(self) -> string: ...  # type: ignore[name-defined]
     def numColumns(self) -> int: ...
     def numElements(self) -> int: ...
     def numRows(self) -> int: ...
-    def plug(self) -> MPlug: ...  # type: ignore
+    def plug(self) -> MPlug: ...  # type: ignore[name-defined]
     def semantic(self) -> int: ...
-    def setBool(self, value) -> self: ...  # type: ignore
-    def setDirty(self) -> self: ...  # type: ignore
-    def setFloat(self, value) -> self: ...  # type: ignore
-    def setFloatArray(self, value) -> self: ...  # type: ignore
-    def setInt(self, value) -> self: ...  # type: ignore
-    def setString(self, value) -> self: ...  # type: ignore
-    def source(self) -> MPlug: ...  # type: ignore
+    def setBool(self, value) -> self: ...  # type: ignore[name-defined]
+    def setDirty(self) -> self: ...  # type: ignore[name-defined]
+    def setFloat(self, value) -> self: ...  # type: ignore[name-defined]
+    def setFloatArray(self, value) -> self: ...  # type: ignore[name-defined]
+    def setInt(self, value) -> self: ...  # type: ignore[name-defined]
+    def setString(self, value) -> self: ...  # type: ignore[name-defined]
+    def source(self) -> MPlug: ...  # type: ignore[name-defined]
     def type(self) -> int: ...
     def userData(self) -> int: ...
 
@@ -1681,7 +1556,7 @@ class MUniformParameterList:
     def __len__(self) -> int: ...
     def __getitem__(self, key): ...
     def append(self, element) -> bool: ...
-    def copy(self, source) -> self: ...  # type: ignore
+    def copy(self, source) -> self: ...  # type: ignore[name-defined]
     def setElement(self, n, element) -> bool: ...
     def setLength(self, length) -> bool: ...
 
@@ -1704,21 +1579,21 @@ class MVaryingParameter:
     kWeight: ClassVar[int] = ...
     kTangent: ClassVar[int] = ...
     kBinormal: ClassVar[int] = ...
-    def __init__(self) -> Any: ...  # type: ignore
-    def addElement(self, child) -> self: ...  # type: ignore
-    def copy(self, source) -> self: ...  # type: ignore
-    def destinationSetName(self) -> string: ...  # type: ignore
+    def __init__(self) -> Any: ...  # type: ignore[misc]
+    def addElement(self, child) -> self: ...  # type: ignore[name-defined]
+    def copy(self, source) -> self: ...  # type: ignore[name-defined]
+    def destinationSetName(self) -> string: ...  # type: ignore[name-defined]
     def dimension(self) -> int: ...
     def elementSize(self) -> int: ...
     def getElement(self, index) -> MVaryingParameter: ...
     def maximumStride(self) -> int: ...
-    def name(self) -> string: ...  # type: ignore
+    def name(self) -> string: ...  # type: ignore[name-defined]
     def numElements(self) -> int: ...
-    def removeElements(self) -> self: ...  # type: ignore
+    def removeElements(self) -> self: ...  # type: ignore[name-defined]
     def semantic(self) -> int: ...
-    def semanticName(self) -> string: ...  # type: ignore
-    def setSource(self, semantic, name) -> self: ...  # type: ignore
-    def sourceSetName(self) -> string: ...  # type: ignore
+    def semanticName(self) -> string: ...  # type: ignore[name-defined]
+    def setSource(self, semantic, name) -> self: ...  # type: ignore[name-defined]
+    def sourceSetName(self) -> string: ...  # type: ignore[name-defined]
     def sourceSemantic(self) -> int: ...
     def type(self) -> int: ...
     def updateId(self) -> int: ...
@@ -1728,7 +1603,7 @@ class MVaryingParameterList:
     def __len__(self) -> int: ...
     def __getitem__(self, key): ...
     def append(self, element) -> bool: ...
-    def copy(self, source) -> self: ...  # type: ignore
+    def copy(self, source) -> self: ...  # type: ignore[name-defined]
     def setElement(self, n, element) -> bool: ...
     def setLength(self, length) -> bool: ...
 
@@ -1813,13 +1688,13 @@ class MRenderer:
     kR32G32B32A32_SINT: ClassVar[int] = ...
     kNumberOfRasterFormats: ClassVar[int] = ...
     @staticmethod
-    def GPUDeviceHandle() -> long: ...  # type: ignore
+    def GPUDeviceHandle() -> long: ...  # type: ignore[name-defined]
     @staticmethod
     def GPUmaximumPrimitiveCount() -> int: ...
     @staticmethod
     def GPUmaximumVertexBufferSize() -> int: ...
     @staticmethod
-    def activeRenderOverride() -> string: ...  # type: ignore
+    def activeRenderOverride() -> string: ...  # type: ignore[name-defined]
     @staticmethod
     def copyTargetToScreen(MRenderTarget) -> bool: ...
     @staticmethod
@@ -1851,7 +1726,7 @@ class MRenderer:
     @staticmethod
     def renderOverrideCount() -> int: ...
     @staticmethod
-    def renderOverrideName() -> string: ...  # type: ignore
+    def renderOverrideName() -> string: ...  # type: ignore[name-defined]
     @staticmethod
     def setGeometryDrawDirty(object, topologyChanged=...) -> None: ...
     @staticmethod
@@ -1887,14 +1762,14 @@ class MRenderOperation:
     kPresentTarget: ClassVar[int] = ...
     def __init__(self, *args, **kwargs) -> None: ...
     def enableSRGBWrite(self) -> bool: ...
-    def name(self) -> string: ...  # type: ignore
+    def name(self) -> string: ...  # type: ignore[name-defined]
     def operationType(self) -> int: ...
-    def targetOverrideList(self) -> listofMRenderTarget: ...  # type: ignore
-    def viewportRectangleOverride(self) -> MFloatPoint: ...  # type: ignore
+    def targetOverrideList(self) -> listofMRenderTarget: ...  # type: ignore[name-defined]
+    def viewportRectangleOverride(self) -> MFloatPoint: ...  # type: ignore[name-defined]
 
 class MUserRenderOperation(MRenderOperation):
     def __init__(self, *args, **kwargs) -> None: ...
-    def addUIDrawables(self, drawManager, frameContext) -> self: ...  # type: ignore
+    def addUIDrawables(self, drawManager, frameContext) -> self: ...  # type: ignore[name-defined]
     def cameraOverride(self) -> MCameraOverride: ...
     def hasUIDrawables(self) -> bool: ...
     def requiresLightData(self) -> bool: ...
@@ -1902,9 +1777,9 @@ class MUserRenderOperation(MRenderOperation):
 
 class MHUDRender(MRenderOperation):
     def __init__(self, *args, **kwargs) -> None: ...
-    def addUIDrawables(self, drawManager2D, frameContext) -> self: ...  # type: ignore
+    def addUIDrawables(self, drawManager2D, frameContext) -> self: ...  # type: ignore[name-defined]
     def hasUIDrawables(self) -> bool: ...
-    def name(self) -> string: ...  # type: ignore
+    def name(self) -> string: ...  # type: ignore[name-defined]
 
 class MPresentTarget(MRenderOperation):
     kCenterBuffer: ClassVar[int] = ...
@@ -1912,8 +1787,8 @@ class MPresentTarget(MRenderOperation):
     kRightBuffer: ClassVar[int] = ...
     def __init__(self, *args, **kwargs) -> None: ...
     def presentDepth(self) -> bool: ...
-    def setPresentDepth(self, bool) -> self: ...  # type: ignore
-    def setTargetBackBuffer(self, int) -> self: ...  # type: ignore
+    def setPresentDepth(self, bool) -> self: ...  # type: ignore[name-defined]
+    def setTargetBackBuffer(self, int) -> self: ...  # type: ignore[name-defined]
     def targetBackBuffer(self) -> int: ...
 
 class MClearOperation(MRenderOperation):
@@ -1932,11 +1807,11 @@ class MClearOperation(MRenderOperation):
     def overridesColors(self) -> bool: ...
     def setClearColor(self, *args, **kwargs): ...
     def setClearColor2(self, *args, **kwargs): ...
-    def setClearDepth(self, float) -> self: ...  # type: ignore
-    def setClearGradient(self, bool) -> self: ...  # type: ignore
-    def setClearStencil(self, int) -> self: ...  # type: ignore
-    def setMask(self, int) -> self: ...  # type: ignore
-    def setOverridesColors(self, bool) -> self: ...  # type: ignore
+    def setClearDepth(self, float) -> self: ...  # type: ignore[name-defined]
+    def setClearGradient(self, bool) -> self: ...  # type: ignore[name-defined]
+    def setClearStencil(self, int) -> self: ...  # type: ignore[name-defined]
+    def setMask(self, int) -> self: ...  # type: ignore[name-defined]
+    def setOverridesColors(self, bool) -> self: ...  # type: ignore[name-defined]
 
 class MSceneRender(MRenderOperation):
     kExcludeNone: ClassVar[int] = ...
@@ -2007,24 +1882,24 @@ class MSceneRender(MRenderOperation):
     kCullFrontFaces: ClassVar[int] = ...
     mClearOperation: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
-    def addPostUIDrawables(self, drawManager, frameContext) -> self: ...  # type: ignore
-    def addPreUIDrawables(self, drawManager, frameContext) -> self: ...  # type: ignore
+    def addPostUIDrawables(self, drawManager, frameContext) -> self: ...  # type: ignore[name-defined]
+    def addPreUIDrawables(self, drawManager, frameContext) -> self: ...  # type: ignore[name-defined]
     def cameraOverride(self) -> MCameraOverride: ...
     def clearOperation(self) -> MClearOperation: ...
     def cullingOverride(self) -> int: ...
     def displayModeOverride(self) -> int: ...
-    def fragmentName(self) -> String: ...  # type: ignore
+    def fragmentName(self) -> String: ...  # type: ignore[name-defined]
     def hasUIDrawables(self) -> bool: ...
     def lightModeOverride(self) -> int: ...
-    def objectSetOverride(self) -> MSelectionList: ...  # type: ignore
+    def objectSetOverride(self) -> MSelectionList: ...  # type: ignore[name-defined]
     def getParameters(self) -> MRenderParameters: ...
-    def getObjectTypeExclusions(self) -> long: ...  # type: ignore
+    def getObjectTypeExclusions(self) -> long: ...  # type: ignore[name-defined]
     def objectTypeExclusions(self) -> int: ...
     def postEffectsOverride(self) -> int: ...
-    def postRender(self) -> self: ...  # type: ignore
-    def postSceneRender(self, context) -> self: ...  # type: ignore
-    def preRender(self) -> self: ...  # type: ignore
-    def preSceneRender(self, context) -> self: ...  # type: ignore
+    def postRender(self) -> self: ...  # type: ignore[name-defined]
+    def postSceneRender(self, context) -> self: ...  # type: ignore[name-defined]
+    def preRender(self) -> self: ...  # type: ignore[name-defined]
+    def preSceneRender(self, context) -> self: ...  # type: ignore[name-defined]
     def renderFilterOverride(self) -> int: ...
     def shaderOverride(self) -> MShaderInstance: ...
     def shadowEnableOverride(self, *args, **kwargs): ...
@@ -2040,68 +1915,68 @@ class MQuadRender(MRenderOperation):
 
 class MRenderOverride:
     def __init__(self, *args, **kwargs) -> None: ...
-    def cleanup(self) -> self: ...  # type: ignore
-    def name(self) -> string: ...  # type: ignore
+    def cleanup(self) -> self: ...  # type: ignore[name-defined]
+    def name(self) -> string: ...  # type: ignore[name-defined]
     def nextRenderOperation(self) -> bool: ...
     def renderOperation(self) -> MRenderOperation: ...
-    def setup(self, destination) -> self: ...  # type: ignore
+    def setup(self, destination) -> self: ...  # type: ignore[name-defined]
     def startOperationIterator(self) -> bool: ...
     def supportedDrawAPIs(self) -> int: ...
-    def uiName(self) -> string: ...  # type: ignore
+    def uiName(self) -> string: ...  # type: ignore[name-defined]
     def getFrameContext(self) -> MFrameContext: ...
     def select(self, frameContext, selectInfo, useDepth, selectionList, worldSpaceHitPts) -> bool: ...
 
 class MRenderParameters:
     def __init__(self, *args, **kwargs) -> None: ...
     def isArrayParameter(self, string) -> bool: ...
-    def parameterList(self) -> listofstring: ...  # type: ignore
+    def parameterList(self) -> listofstring: ...  # type: ignore[name-defined]
     def parameterType(self, string) -> int: ...
-    def semantic(self, string) -> string: ...  # type: ignore
+    def semantic(self, string) -> string: ...  # type: ignore[name-defined]
     @overload
-    def setArrayParameter(self, parameterName, sequenceofbool, int) -> self: ...  # type: ignore
+    def setArrayParameter(self, parameterName, sequenceofbool, int) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setArrayParameter(self, parameterName, sequenceofint, int) -> self: ...  # type: ignore
+    def setArrayParameter(self, parameterName, sequenceofint, int) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setArrayParameter(self, parameterName, sequenceoffloat, int) -> self: ...  # type: ignore
+    def setArrayParameter(self, parameterName, sequenceoffloat, int) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setArrayParameter(self, parameterName, sequenceofMMatrix, int) -> self: ...  # type: ignore
+    def setArrayParameter(self, parameterName, sequenceofMMatrix, int) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, bool) -> self: ...  # type: ignore
+    def setParameter(self, parameterName, bool) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, int) -> self: ...  # type: ignore
+    def setParameter(self, parameterName, int) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, float) -> self: ...  # type: ignore
+    def setParameter(self, parameterName, float) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, listoffloat) -> self: ...  # type: ignore
+    def setParameter(self, parameterName, listoffloat) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, MFloatVector) -> self: ...  # type: ignore
+    def setParameter(self, parameterName, MFloatVector) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, MMatrix) -> self: ...  # type: ignore
+    def setParameter(self, parameterName, MMatrix) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, MFloatMatrix) -> self: ...  # type: ignore
+    def setParameter(self, parameterName, MFloatMatrix) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, MTextureAssignment) -> self: ...  # type: ignore
+    def setParameter(self, parameterName, MTextureAssignment) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, MRenderTargetAssignment) -> self: ...  # type: ignore
+    def setParameter(self, parameterName, MRenderTargetAssignment) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setParameter(self, parameterName, MSamplerState) -> self: ...  # type: ignore
+    def setParameter(self, parameterName, MSamplerState) -> self: ...  # type: ignore[name-defined]
     @overload
-    def getParameter(self, parameterName, bool) -> self: ...  # type: ignore
+    def getParameter(self, parameterName, bool) -> self: ...  # type: ignore[name-defined]
     @overload
-    def getParameter(self, parameterName, int) -> self: ...  # type: ignore
+    def getParameter(self, parameterName, int) -> self: ...  # type: ignore[name-defined]
     @overload
-    def getParameter(self, parameterName, float) -> self: ...  # type: ignore
+    def getParameter(self, parameterName, float) -> self: ...  # type: ignore[name-defined]
     @overload
-    def getParameter(self, parameterName, listoffloat) -> self: ...  # type: ignore
+    def getParameter(self, parameterName, listoffloat) -> self: ...  # type: ignore[name-defined]
     @overload
-    def getParameter(self, parameterName, MFloatVector) -> self: ...  # type: ignore
+    def getParameter(self, parameterName, MFloatVector) -> self: ...  # type: ignore[name-defined]
     @overload
-    def getParameter(self, parameterName, MMatrix) -> self: ...  # type: ignore
+    def getParameter(self, parameterName, MMatrix) -> self: ...  # type: ignore[name-defined]
     @overload
-    def getParameter(self, parameterName, MFloatMatrix) -> self: ...  # type: ignore
+    def getParameter(self, parameterName, MFloatMatrix) -> self: ...  # type: ignore[name-defined]
     @overload
-    def getParameter(self, parameterName, MTextureAssignment) -> self: ...  # type: ignore
+    def getParameter(self, parameterName, MTextureAssignment) -> self: ...  # type: ignore[name-defined]
     @overload
-    def getParameter(self, parameterName, MRenderTargetAssignment) -> self: ...  # type: ignore
+    def getParameter(self, parameterName, MRenderTargetAssignment) -> self: ...  # type: ignore[name-defined]
     @overload
-    def getParameter(self, parameterName, MSamplerStateDesc) -> self: ...  # type: ignore
+    def getParameter(self, parameterName, MSamplerStateDesc) -> self: ...  # type: ignore[name-defined]

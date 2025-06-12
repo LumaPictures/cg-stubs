@@ -1,7 +1,8 @@
-import MFnSet  # type: ignore
-import MItDag  # type: ignore
+import MFnSet  # type: ignore[import-not-found]
+import MItDag  # type: ignore[import-not-found]
 from _typeshed import Incomplete
-from maya.api._OpenMaya_py2 import getStringResource as getStringResource, registerStringResource as registerStringResource, registerStringResources as registerStringResources  # type: ignore
+from maya.api.OpenMayaAnim import MFnDisplayLayer as MFnDisplayLayer, MFnDisplayLayerManager as MFnDisplayLayerManager  # type: ignore[import-untyped]
+from maya.api._OpenMaya_py2 import getStringResource as getStringResource, registerStringResource as registerStringResource, registerStringResources as registerStringResources  # type: ignore[import-untyped]
 from typing import Any, ClassVar, overload
 
 ourdict: dict
@@ -50,8 +51,8 @@ class MArgList:
     def asIntArray(self, index) -> MIntArray: ...
     def asMatrix(self, index) -> MMatrix: ...
     def asPoint(self, index) -> MPoint: ...
-    def asString(self, index) -> string: ...  # type: ignore
-    def asStringArray(self, index) -> listofstrings: ...  # type: ignore
+    def asString(self, index) -> string: ...  # type: ignore[name-defined]
+    def asStringArray(self, index) -> listofstrings: ...  # type: ignore[name-defined]
     def asTime(self, index) -> MTime: ...
     def asVector(self, index) -> MVector: ...
     def flagIndex(self, shortFlag, longFlag=...) -> int: ...
@@ -69,7 +70,7 @@ class MArgParser:
     def commandArgumentMAngle(self, argIndex) -> MAngle: ...
     def commandArgumentMDistance(self, argIndex) -> MDistance: ...
     def commandArgumentMTime(self, argIndex) -> MTime: ...
-    def commandArgumentString(self, argIndex) -> unicodestring: ...  # type: ignore
+    def commandArgumentString(self, argIndex) -> unicodestring: ...  # type: ignore[name-defined]
     def flagArgumentBool(self, flagName, argIndex) -> bool: ...
     def flagArgumentDouble(self, flagName, argIndex) -> float: ...
     def flagArgumentFloat(self, flagName, argIndex) -> float: ...
@@ -77,10 +78,10 @@ class MArgParser:
     def flagArgumentMAngle(self, flagName, argIndex) -> MAngle: ...
     def flagArgumentMDistance(self, flagName, argIndex) -> MDistance: ...
     def flagArgumentMTime(self, flagName, argIndex) -> MTime: ...
-    def flagArgumentString(self, flagName, argIndex) -> string: ...  # type: ignore
+    def flagArgumentString(self, flagName, argIndex) -> string: ...  # type: ignore[name-defined]
     def getFlagArgumentList(self, flagName, occurrence) -> MArgList: ...
     def getFlagArgumentPosition(self, flagName, occurrence) -> int: ...
-    def getObjectStrings(self) -> tupleofunicodestrings: ...  # type: ignore
+    def getObjectStrings(self) -> tupleofunicodestrings: ...  # type: ignore[name-defined]
     def isFlagSet(self, flagName) -> bool: ...
     def numberOfFlagUses(self, flagName) -> int: ...
 
@@ -97,28 +98,28 @@ class MArrayDataBuilder:
     def addElementArray(self, index) -> MArrayDataHandle: ...
     def addLast(self) -> MDataHandle: ...
     def addLastArray(self) -> MArrayDataHandle: ...
-    def copy(self, source) -> self: ...  # type: ignore
-    def growArray(self, amount) -> self: ...  # type: ignore
-    def removeElement(self, index) -> self: ...  # type: ignore
-    def setGrowSize(self, size) -> self: ...  # type: ignore
+    def copy(self, source) -> self: ...  # type: ignore[name-defined]
+    def growArray(self, amount) -> self: ...  # type: ignore[name-defined]
+    def removeElement(self, index) -> self: ...  # type: ignore[name-defined]
+    def setGrowSize(self, size) -> self: ...  # type: ignore[name-defined]
 
 class MArrayDataHandle:
     def __init__(self, *args, **kwargs) -> None: ...
     def __len__(self) -> int: ...
     def builder(self) -> MArrayDataBuilder: ...
-    def copy(self, source) -> self: ...  # type: ignore
+    def copy(self, source) -> self: ...  # type: ignore[name-defined]
     def elementLogicalIndex(self) -> int: ...
     def inputArrayValue(self) -> MArrayDataHandle: ...
     def inputValue(self) -> MDataHandle: ...
     def isDone(self) -> bool: ...
-    def jumpToPhysicalElement(self, position) -> self: ...  # type: ignore
-    def jumpToLogicalElement(self, index) -> self: ...  # type: ignore
+    def jumpToPhysicalElement(self, position) -> self: ...  # type: ignore[name-defined]
+    def jumpToLogicalElement(self, index) -> self: ...  # type: ignore[name-defined]
     def next(self) -> bool: ...
     def outputArrayValue(self) -> MArrayDataHandle: ...
     def outputValue(self) -> MDataHandle: ...
-    def set(self, builder) -> self: ...  # type: ignore
-    def setAllClean(self) -> self: ...  # type: ignore
-    def setClean(self) -> self: ...  # type: ignore
+    def set(self, builder) -> self: ...  # type: ignore[name-defined]
+    def setAllClean(self) -> self: ...  # type: ignore[name-defined]
+    def setClean(self) -> self: ...  # type: ignore[name-defined]
 
 class MAttributePattern:
     def __init__(self, *args, **kwargs) -> None: ...
@@ -144,7 +145,7 @@ class MAttributeIndex:
     def __gt__(self, value) -> bool: ...
     def __ge__(self, value) -> bool: ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def copy(self, source) -> self: ...  # type: ignore
+    def copy(self, source) -> self: ...  # type: ignore[name-defined]
     def getLower(self, *args, **kwargs): ...
     def getUpper(self, *args, **kwargs): ...
     def getValue(self, *args, **kwargs): ...
@@ -153,10 +154,10 @@ class MAttributeIndex:
     def hasUpperBound(self) -> bool: ...
     def hasValidRange(self) -> bool: ...
     def isBounded(self) -> bool: ...
-    def setLower(self, value) -> self: ...  # type: ignore
-    def setType(self, type) -> self: ...  # type: ignore
-    def setUpper(self, value) -> self: ...  # type: ignore
-    def setValue(self, value) -> self: ...  # type: ignore
+    def setLower(self, value) -> self: ...  # type: ignore[name-defined]
+    def setType(self, type) -> self: ...  # type: ignore[name-defined]
+    def setUpper(self, value) -> self: ...  # type: ignore[name-defined]
+    def setValue(self, value) -> self: ...  # type: ignore[name-defined]
     def type(self) -> int: ...
 
 class MAttributeSpec:
@@ -171,7 +172,7 @@ class MAttributeSpec:
     def __init__(self, *args, **kwargs) -> None: ...
     def __len__(self) -> int: ...
     def __getitem__(self, key): ...
-    def copy(self, source) -> self: ...  # type: ignore
+    def copy(self, source) -> self: ...  # type: ignore[name-defined]
 
 class MAttributeSpecArray:
     sizeIncrement: Incomplete
@@ -209,7 +210,7 @@ class MBoundingBox:
 
 class MCacheSchema:
     def __init__(self, *args, **kwargs) -> None: ...
-    def add(self, attribute) -> self: ...  # type: ignore
+    def add(self, attribute) -> self: ...  # type: ignore[name-defined]
     def reset(self) -> Any: ...
 
 class MNodeCacheDisablingInfo:
@@ -387,7 +388,7 @@ class MDagPathArray:
 class MDGContext:
     kNormal: ClassVar[MDGContext] = ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def copy(self, source) -> self: ...  # type: ignore
+    def copy(self, source) -> self: ...  # type: ignore[name-defined]
     def getTime(self, *args, **kwargs): ...
     def isCurrent(self, *args, **kwargs): ...
     def isNormal(self, *args, **kwargs): ...
@@ -397,15 +398,15 @@ class MDGContext:
 
 class MDGModifier:
     def __init__(self, *args, **kwargs) -> None: ...
-    def addAttribute(self, MObjectnode, MObjectattribute) -> self: ...  # type: ignore
-    def addExtensionAttribute(self, MNodeClassnodeClass, MObjectattribute) -> self: ...  # type: ignore
+    def addAttribute(self, MObjectnode, MObjectattribute) -> self: ...  # type: ignore[name-defined]
+    def addExtensionAttribute(self, MNodeClassnodeClass, MObjectattribute) -> self: ...  # type: ignore[name-defined]
     @overload
-    def commandToExecute(self, command) -> self: ...  # type: ignore
+    def commandToExecute(self, command) -> self: ...  # type: ignore[name-defined]
     @overload
     def commandToExecute(self) -> Any: ...
     @overload
-    def commandToExecute(self) -> Any: ...  # type: ignore
-    def connect(self, MPlugsource, MPlugdest) -> self: ...  # type: ignore
+    def commandToExecute(self) -> Any: ...  # type: ignore[overload-cannot-match]
+    def connect(self, MPlugsource, MPlugdest) -> self: ...  # type: ignore[name-defined]
     @overload
     def createNode(self, typeName) -> MObject: ...
     @overload
@@ -413,46 +414,46 @@ class MDGModifier:
     @overload
     def deleteNode(self) -> Any: ...
     @overload
-    def deleteNode(self) -> Any: ...  # type: ignore
-    def disconnect(self, MPlugsource, MPlugdest) -> self: ...  # type: ignore
+    def deleteNode(self) -> Any: ...  # type: ignore[overload-cannot-match]
+    def disconnect(self, MPlugsource, MPlugdest) -> self: ...  # type: ignore[name-defined]
     @overload
-    def doIt(self) -> self: ...  # type: ignore
+    def doIt(self) -> self: ...  # type: ignore[name-defined]
     @overload
-    def doIt(self) -> Any: ...  # type: ignore
+    def doIt(self) -> Any: ...  # type: ignore[overload-cannot-match]
     @overload
-    def doIt(self) -> Any: ...  # type: ignore
+    def doIt(self) -> Any: ...  # type: ignore[overload-cannot-match]
     @overload
-    def doIt(self) -> Any: ...  # type: ignore
-    def linkExtensionAttributeToPlugin(self, MObjectplugin, MObjectattribute) -> self: ...  # type: ignore
-    def newPlugValue(self, MPlugplug, MObjectvalue) -> self: ...  # type: ignore
-    def newPlugValueBool(self, MPlugplug, boolvalue) -> self: ...  # type: ignore
-    def newPlugValueChar(self, MPlugplug, intvalue) -> self: ...  # type: ignore
-    def newPlugValueDouble(self, MPlugplug, floatvalue) -> self: ...  # type: ignore
-    def newPlugValueFloat(self, MPlugplug, floatvalue) -> self: ...  # type: ignore
-    def newPlugValueInt(self, MPlugplug, intvalue) -> self: ...  # type: ignore
-    def newPlugValueMAngle(self, MPlugplug, MAnglevalue) -> self: ...  # type: ignore
-    def newPlugValueMDistance(self, MPlugplug, MDistancevalue) -> self: ...  # type: ignore
-    def newPlugValueMTime(self, MPlugplug, MTimevalue) -> self: ...  # type: ignore
-    def newPlugValueShort(self, MPlugplug, intvalue) -> self: ...  # type: ignore
-    def newPlugValueString(self, MPlugplug, stringvalue) -> self: ...  # type: ignore
+    def doIt(self) -> Any: ...  # type: ignore[overload-cannot-match]
+    def linkExtensionAttributeToPlugin(self, MObjectplugin, MObjectattribute) -> self: ...  # type: ignore[name-defined]
+    def newPlugValue(self, MPlugplug, MObjectvalue) -> self: ...  # type: ignore[name-defined]
+    def newPlugValueBool(self, MPlugplug, boolvalue) -> self: ...  # type: ignore[name-defined]
+    def newPlugValueChar(self, MPlugplug, intvalue) -> self: ...  # type: ignore[name-defined]
+    def newPlugValueDouble(self, MPlugplug, floatvalue) -> self: ...  # type: ignore[name-defined]
+    def newPlugValueFloat(self, MPlugplug, floatvalue) -> self: ...  # type: ignore[name-defined]
+    def newPlugValueInt(self, MPlugplug, intvalue) -> self: ...  # type: ignore[name-defined]
+    def newPlugValueMAngle(self, MPlugplug, MAnglevalue) -> self: ...  # type: ignore[name-defined]
+    def newPlugValueMDistance(self, MPlugplug, MDistancevalue) -> self: ...  # type: ignore[name-defined]
+    def newPlugValueMTime(self, MPlugplug, MTimevalue) -> self: ...  # type: ignore[name-defined]
+    def newPlugValueShort(self, MPlugplug, intvalue) -> self: ...  # type: ignore[name-defined]
+    def newPlugValueString(self, MPlugplug, stringvalue) -> self: ...  # type: ignore[name-defined]
     def pythonCommandToExecute(self) -> Any: ...
-    def removeAttribute(self, MObjectnode, MObjectattribute) -> self: ...  # type: ignore
-    def removeExtensionAttribute(self, MNodeClassnodeClass, MObjectattribute) -> self: ...  # type: ignore
+    def removeAttribute(self, MObjectnode, MObjectattribute) -> self: ...  # type: ignore[name-defined]
+    def removeExtensionAttribute(self, MNodeClassnodeClass, MObjectattribute) -> self: ...  # type: ignore[name-defined]
     def removeExtensionAttributeIfUnset(self, *args, **kwargs): ...
-    def removeMultiInstance(self, MPlugplug, boolbreakConnections) -> self: ...  # type: ignore
+    def removeMultiInstance(self, MPlugplug, boolbreakConnections) -> self: ...  # type: ignore[name-defined]
     def renameAttribute(self, *args, **kwargs): ...
-    def renameNode(self, MObjectnode, stringnewName) -> self: ...  # type: ignore
-    def setNodeLockState(self, MObjectnode, boolnewState) -> self: ...  # type: ignore
-    def undoIt(self) -> self: ...  # type: ignore
+    def renameNode(self, MObjectnode, stringnewName) -> self: ...  # type: ignore[name-defined]
+    def setNodeLockState(self, MObjectnode, boolnewState) -> self: ...  # type: ignore[name-defined]
+    def undoIt(self) -> self: ...  # type: ignore[name-defined]
     def unlinkExtensionAttributeFromPlugin(self, *args, **kwargs): ...
 
 class MDagModifier(MDGModifier):
     def __init__(self, *args, **kwargs) -> None: ...
     @overload
-    def createNode(self, typeName, parent=...) -> newDAGnodeMObject: ...  # type: ignore
+    def createNode(self, typeName, parent=...) -> newDAGnodeMObject: ...  # type: ignore[name-defined]
     @overload
-    def createNode(self, typeId, parent=...) -> newDAGnodeMObject: ...  # type: ignore
-    def reparentNode(self, MObjectnode, newParent=...) -> self: ...  # type: ignore
+    def createNode(self, typeId, parent=...) -> newDAGnodeMObject: ...  # type: ignore[name-defined]
+    def reparentNode(self, MObjectnode, newParent=...) -> self: ...  # type: ignore[name-defined]
 
 class MDataBlock:
     def __init__(self, *args, **kwargs) -> None: ...
@@ -478,15 +479,15 @@ class MDataBlock:
     @overload
     def outputValue(self, attribute) -> MDataHandle: ...
     @overload
-    def setClean(self, plug) -> self: ...  # type: ignore
+    def setClean(self, plug) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setClean(self, attribute) -> self: ...  # type: ignore
-    def setContext(self, ctx) -> self: ...  # type: ignore
+    def setClean(self, attribute) -> self: ...  # type: ignore[name-defined]
+    def setContext(self, ctx) -> self: ...  # type: ignore[name-defined]
 
 class MDataHandle:
     def __init__(self, *args, **kwargs) -> None: ...
-    def acceptedTypeIds(self) -> arrayofMTypeIds: ...  # type: ignore
-    def asAddr(self) -> long: ...  # type: ignore
+    def acceptedTypeIds(self) -> arrayofMTypeIds: ...  # type: ignore[name-defined]
+    def asAddr(self) -> long: ...  # type: ignore[name-defined]
     def asAngle(self) -> MAngle: ...
     def asBool(self) -> bool: ...
     def asChar(self) -> int: ...
@@ -520,7 +521,7 @@ class MDataHandle:
     def asShort(self) -> int: ...
     def asShort2(self, *args, **kwargs): ...
     def asShort3(self, *args, **kwargs): ...
-    def asString(self) -> MString: ...  # type: ignore
+    def asString(self) -> MString: ...  # type: ignore[name-defined]
     def asSubdSurface(self) -> MObject: ...
     def asSubdSurfaceTransformed(self) -> MObject: ...
     def asTime(self) -> MTime: ...
@@ -530,8 +531,8 @@ class MDataHandle:
     def child(self, MPlug) -> MDataHandle: ...
     @overload
     def child(self, MObject) -> MDataHandle: ...
-    def copy(self, src) -> self: ...  # type: ignore
-    def copyWritable(self, src) -> self: ...  # type: ignore
+    def copy(self, src) -> self: ...  # type: ignore[name-defined]
+    def copyWritable(self, src) -> self: ...  # type: ignore[name-defined]
     def data(self) -> MObject: ...
     def geometryTransformMatrix(self) -> MMatrix: ...
     def isGeneric(self, *args, **kwargs): ...
@@ -546,29 +547,29 @@ class MDataHandle:
     def set3Float(self, *args, **kwargs): ...
     def set3Int(self, *args, **kwargs): ...
     def set3Short(self, *args, **kwargs): ...
-    def setBool(self, bool) -> self: ...  # type: ignore
-    def setChar(self, int) -> self: ...  # type: ignore
-    def setClean(self) -> self: ...  # type: ignore
-    def setDouble(self, float) -> self: ...  # type: ignore
-    def setFloat(self, float) -> self: ...  # type: ignore
-    def setGenericBool(self, bool, force) -> self: ...  # type: ignore
-    def setGenericChar(self, int, force) -> self: ...  # type: ignore
-    def setGenericDouble(self, float, force) -> self: ...  # type: ignore
-    def setGenericFloat(self, float, force) -> self: ...  # type: ignore
-    def setGenericInt(self, int, force) -> self: ...  # type: ignore
-    def setGenericShort(self, int, force) -> self: ...  # type: ignore
-    def setInt(self, int) -> self: ...  # type: ignore
-    def setMAngle(self, MAngle) -> self: ...  # type: ignore
-    def setMDistance(self, MDistance) -> self: ...  # type: ignore
-    def setMFloatMatrix(self, MFloatMatrix) -> self: ...  # type: ignore
-    def setMFloatVector(self, MFloatVector) -> self: ...  # type: ignore
-    def setMMatrix(self, MMatrix) -> self: ...  # type: ignore
-    def setMObject(self, MObject) -> self: ...  # type: ignore
-    def setMPxData(self, MPxData) -> self: ...  # type: ignore
-    def setMTime(self, MTime) -> self: ...  # type: ignore
-    def setMVector(self, MVector) -> self: ...  # type: ignore
-    def setShort(self, int) -> self: ...  # type: ignore
-    def setString(self, string) -> self: ...  # type: ignore
+    def setBool(self, bool) -> self: ...  # type: ignore[name-defined]
+    def setChar(self, int) -> self: ...  # type: ignore[name-defined]
+    def setClean(self) -> self: ...  # type: ignore[name-defined]
+    def setDouble(self, float) -> self: ...  # type: ignore[name-defined]
+    def setFloat(self, float) -> self: ...  # type: ignore[name-defined]
+    def setGenericBool(self, bool, force) -> self: ...  # type: ignore[name-defined]
+    def setGenericChar(self, int, force) -> self: ...  # type: ignore[name-defined]
+    def setGenericDouble(self, float, force) -> self: ...  # type: ignore[name-defined]
+    def setGenericFloat(self, float, force) -> self: ...  # type: ignore[name-defined]
+    def setGenericInt(self, int, force) -> self: ...  # type: ignore[name-defined]
+    def setGenericShort(self, int, force) -> self: ...  # type: ignore[name-defined]
+    def setInt(self, int) -> self: ...  # type: ignore[name-defined]
+    def setMAngle(self, MAngle) -> self: ...  # type: ignore[name-defined]
+    def setMDistance(self, MDistance) -> self: ...  # type: ignore[name-defined]
+    def setMFloatMatrix(self, MFloatMatrix) -> self: ...  # type: ignore[name-defined]
+    def setMFloatVector(self, MFloatVector) -> self: ...  # type: ignore[name-defined]
+    def setMMatrix(self, MMatrix) -> self: ...  # type: ignore[name-defined]
+    def setMObject(self, MObject) -> self: ...  # type: ignore[name-defined]
+    def setMPxData(self, MPxData) -> self: ...  # type: ignore[name-defined]
+    def setMTime(self, MTime) -> self: ...  # type: ignore[name-defined]
+    def setMVector(self, MVector) -> self: ...  # type: ignore[name-defined]
+    def setShort(self, int) -> self: ...  # type: ignore[name-defined]
+    def setString(self, string) -> self: ...  # type: ignore[name-defined]
     def type(self) -> int: ...
     def typeId(self) -> MTypeId: ...
     def datablock(self) -> MDataBlock: ...
@@ -710,8 +711,8 @@ class MExternalContentInfoTable:
     def __init__(self, *args, **kwargs) -> None: ...
     def __len__(self) -> int: ...
     def __getitem__(self, key): ...
-    def addResolvedEntry(self, key, unresolvedLocation, resolvedLocation, contextNodeFullName, roles) -> self: ...  # type: ignore
-    def addUnresolvedEntry(self, key, unresolvedLocation, contextNodeFullName, roles=...) -> self: ...  # type: ignore
+    def addResolvedEntry(self, key, unresolvedLocation, resolvedLocation, contextNodeFullName, roles) -> self: ...  # type: ignore[name-defined]
+    def addUnresolvedEntry(self, key, unresolvedLocation, contextNodeFullName, roles=...) -> self: ...  # type: ignore[name-defined]
     def getEntry(self, *args, **kwargs): ...
     def getInfo(self, *args, **kwargs): ...
 
@@ -719,9 +720,9 @@ class MExternalContentLocationTable:
     def __init__(self, *args, **kwargs) -> None: ...
     def __len__(self) -> int: ...
     def __getitem__(self, key): ...
-    def addEntry(self, key, location) -> self: ...  # type: ignore
+    def addEntry(self, key, location) -> self: ...  # type: ignore[name-defined]
     def getEntry(self, *args, **kwargs): ...
-    def getLocation(self, key) -> string: ...  # type: ignore
+    def getLocation(self, key) -> string: ...  # type: ignore[name-defined]
 
 class MFileObject:
     kNone: ClassVar[int] = ...
@@ -735,32 +736,32 @@ class MFileObject:
     kStrict: ClassVar[int] = ...
     resolveMethod: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
-    def copy(self, source) -> self: ...  # type: ignore
+    def copy(self, source) -> self: ...  # type: ignore[name-defined]
     def exists(self, index=...) -> bool: ...
-    def expandedFullName(self) -> string: ...  # type: ignore
-    def expandedPath(self) -> string: ...  # type: ignore
-    def fullName(self, index) -> string: ...  # type: ignore
+    def expandedFullName(self) -> string: ...  # type: ignore[name-defined]
+    def expandedPath(self) -> string: ...  # type: ignore[name-defined]
+    def fullName(self, index) -> string: ...  # type: ignore[name-defined]
     @staticmethod
-    def getResolvedFullName(rawFullName) -> string: ...  # type: ignore
+    def getResolvedFullName(rawFullName) -> string: ...  # type: ignore[name-defined]
     @staticmethod
     def getResolvedFullNameAndExistsStatus(*args, **kwargs): ...
     @staticmethod
     def isAbsolutePath(fileName) -> bool: ...
     def isSet(self) -> bool: ...
-    def overrideResolvedFullName(self, fullFileName, reresolveType=...) -> self: ...  # type: ignore
-    def path(self, index) -> string: ...  # type: ignore
+    def overrideResolvedFullName(self, fullFileName, reresolveType=...) -> self: ...  # type: ignore[name-defined]
+    def path(self, index) -> string: ...  # type: ignore[name-defined]
     def pathCount(self) -> int: ...
-    def rawFullName(self) -> string: ...  # type: ignore
-    def rawName(self) -> string: ...  # type: ignore
-    def rawPath(self) -> string: ...  # type: ignore
+    def rawFullName(self) -> string: ...  # type: ignore[name-defined]
+    def rawName(self) -> string: ...  # type: ignore[name-defined]
+    def rawPath(self) -> string: ...  # type: ignore[name-defined]
     def rawURI(self) -> MURI: ...
-    def resolvedFullName(self) -> string: ...  # type: ignore
-    def resolvedName(self) -> string: ...  # type: ignore
-    def resolvedPath(self) -> string: ...  # type: ignore
-    def setRawFullName(self, fullFileName) -> self: ...  # type: ignore
-    def setRawName(self, fileName) -> self: ...  # type: ignore
-    def setRawPath(self, pathName) -> self: ...  # type: ignore
-    def setRawURI(self, uri) -> self: ...  # type: ignore
+    def resolvedFullName(self) -> string: ...  # type: ignore[name-defined]
+    def resolvedName(self) -> string: ...  # type: ignore[name-defined]
+    def resolvedPath(self) -> string: ...  # type: ignore[name-defined]
+    def setRawFullName(self, fullFileName) -> self: ...  # type: ignore[name-defined]
+    def setRawName(self, fileName) -> self: ...  # type: ignore[name-defined]
+    def setRawPath(self, pathName) -> self: ...  # type: ignore[name-defined]
+    def setRawURI(self, uri) -> self: ...  # type: ignore[name-defined]
 
 class MFloatArray:
     sizeIncrement: Incomplete
@@ -2148,6 +2149,7 @@ class MFn:
     kRotationFromMatrix: ClassVar[int] = ...
     kParentMatrix: ClassVar[int] = ...
     kPolyBevelCutback: ClassVar[int] = ...
+    kOpenPBRSurface: ClassVar[int] = ...
 
 class MFnBase:
     def __init__(self, *args, **kwargs) -> None: ...
@@ -2306,34 +2308,34 @@ class MFnComponent(MFnBase):
 
 class MFnDoubleIndexedComponent(MFnComponent):
     def __init__(self, *args, **kwargs) -> None: ...
-    def addElement(self, uIndex, vIndex) -> self: ...  # type: ignore
+    def addElement(self, uIndex, vIndex) -> self: ...  # type: ignore[name-defined]
     def addElements(self, *args, **kwargs): ...
     def create(self, MFnTypeconstant) -> MObject: ...
     def getCompleteData(self, *args, **kwargs): ...
     def getElement(self, *args, **kwargs): ...
     def getElements(self, *args, **kwargs): ...
-    def setCompleteData(self, numU, numV) -> self: ...  # type: ignore
+    def setCompleteData(self, numU, numV) -> self: ...  # type: ignore[name-defined]
 
 class MFnSingleIndexedComponent(MFnComponent):
     elementMax: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
-    def addElement(self, intelement) -> self: ...  # type: ignore
-    def addElements(self, MIntArray) -> self: ...  # type: ignore
+    def addElement(self, intelement) -> self: ...  # type: ignore[name-defined]
+    def addElements(self, MIntArray) -> self: ...  # type: ignore[name-defined]
     def create(self, MFnTypeconstant) -> MObject: ...
     def element(self, index) -> int: ...
     def getCompleteData(self) -> int: ...
     def getElements(self) -> MIntArray: ...
-    def setCompleteData(self, numElements) -> self: ...  # type: ignore
+    def setCompleteData(self, numElements) -> self: ...  # type: ignore[name-defined]
 
 class MFnTripleIndexedComponent(MFnComponent):
     def __init__(self, *args, **kwargs) -> None: ...
-    def addElement(self, sIndex, tIndex, uIndex) -> self: ...  # type: ignore
+    def addElement(self, sIndex, tIndex, uIndex) -> self: ...  # type: ignore[name-defined]
     def addElements(self, *args, **kwargs): ...
     def create(self, MFnTypeconstant) -> MObject: ...
     def getCompleteData(self, *args, **kwargs): ...
     def getElement(self, *args, **kwargs): ...
     def getElements(self, *args, **kwargs): ...
-    def setCompleteData(self, numS, numT, numU) -> self: ...  # type: ignore
+    def setCompleteData(self, numS, numT, numU) -> self: ...  # type: ignore[name-defined]
 
 class MFnData(MFnBase):
     kInvalid: ClassVar[int] = ...
@@ -2367,16 +2369,16 @@ class MFnData(MFnBase):
 
 class MFnComponentListData(MFnData):
     def __init__(self, *args, **kwargs) -> None: ...
-    def add(self, MObject) -> self: ...  # type: ignore
-    def clear(self) -> self: ...  # type: ignore
+    def add(self, MObject) -> self: ...  # type: ignore[name-defined]
+    def clear(self) -> self: ...  # type: ignore[name-defined]
     def create(self) -> MObject: ...
     def get(self, index) -> MObject: ...
     def length(self) -> int: ...
     def has(self, MObject) -> bool: ...
     @overload
-    def remove(self, MObject) -> self: ...  # type: ignore
+    def remove(self, MObject) -> self: ...  # type: ignore[name-defined]
     @overload
-    def remove(self, index) -> self: ...  # type: ignore
+    def remove(self, index) -> self: ...  # type: ignore[name-defined]
 
 class MFnDoubleArrayData(MFnData):
     def __init__(self, *args, **kwargs) -> None: ...
@@ -2405,23 +2407,23 @@ class MFnGeometryData(MFnData):
     isNotIdentity: Incomplete
     objectGroupCount: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
-    def addObjectGroup(self, id) -> self: ...  # type: ignore
-    def addObjectGroupComponent(self, id, MObjectcomponent) -> self: ...  # type: ignore
-    def changeObjectGroupId(self, sourceId, destId) -> self: ...  # type: ignore
-    def copyObjectGroups(self, MObjectinGeom) -> self: ...  # type: ignore
-    def hasObjectGroup(self, id) -> self: ...  # type: ignore
+    def addObjectGroup(self, id) -> self: ...  # type: ignore[name-defined]
+    def addObjectGroupComponent(self, id, MObjectcomponent) -> self: ...  # type: ignore[name-defined]
+    def changeObjectGroupId(self, sourceId, destId) -> self: ...  # type: ignore[name-defined]
+    def copyObjectGroups(self, MObjectinGeom) -> self: ...  # type: ignore[name-defined]
+    def hasObjectGroup(self, id) -> self: ...  # type: ignore[name-defined]
     def objectGroup(self, index) -> int: ...
     def objectGroupComponent(self, id) -> MObject: ...
-    def objectGroupType(self, id) -> MFnTypeconstant: ...  # type: ignore
-    def removeObjectGroup(self, id) -> self: ...  # type: ignore
-    def removeObjectGroupComponent(self, id, MObjectcomponent) -> self: ...  # type: ignore
-    def setObjectGroupComponent(self, id, MObjectcomponent) -> self: ...  # type: ignore
+    def objectGroupType(self, id) -> MFnTypeconstant: ...  # type: ignore[name-defined]
+    def removeObjectGroup(self, id) -> self: ...  # type: ignore[name-defined]
+    def removeObjectGroupComponent(self, id, MObjectcomponent) -> self: ...  # type: ignore[name-defined]
+    def setObjectGroupComponent(self, id, MObjectcomponent) -> self: ...  # type: ignore[name-defined]
     def hasComponentTag(self, key) -> bool: ...
-    def addComponentTag(self, key) -> self: ...  # type: ignore
-    def removeComponentTag(self, key) -> self: ...  # type: ignore
-    def renameComponentTag(self, key, newKey) -> self: ...  # type: ignore
-    def componentTagType(self, key) -> MFnTypeconstant: ...  # type: ignore
-    def setComponentTagContents(self, key, MObjectcomponent) -> self: ...  # type: ignore
+    def addComponentTag(self, key) -> self: ...  # type: ignore[name-defined]
+    def removeComponentTag(self, key) -> self: ...  # type: ignore[name-defined]
+    def renameComponentTag(self, key, newKey) -> self: ...  # type: ignore[name-defined]
+    def componentTagType(self, key) -> MFnTypeconstant: ...  # type: ignore[name-defined]
+    def setComponentTagContents(self, key, MObjectcomponent) -> self: ...  # type: ignore[name-defined]
     def componentTagContents(self, key) -> MObject: ...
     def componentTags(self) -> MObject: ...
     def objectGroupSubsetState(self, *args, **kwargs): ...
@@ -2646,14 +2648,14 @@ class MFnDagNode(MFnDependencyNode):
     useObjectColor: Incomplete
     objectColorType: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
-    def addChild(self, node, index=..., keepExistingParents=...) -> self: ...  # type: ignore
+    def addChild(self, node, index=..., keepExistingParents=...) -> self: ...  # type: ignore[name-defined]
     def child(self, index) -> MObject: ...
     def childCount(self) -> int: ...
     def create(self, type, name=..., parent=...) -> MObject: ...
     def dagPath(self) -> MDagPath: ...
     def dagRoot(self) -> MObject: ...
     def duplicate(self, instance=..., instanceLeaf=...) -> MObject: ...
-    def fullPathName(self) -> string: ...  # type: ignore
+    def fullPathName(self) -> string: ...  # type: ignore[name-defined]
     def getAllPaths(self) -> MDagPathArray: ...
     def getConnectedSetsAndMembers(self, *args, **kwargs): ...
     def getPath(self) -> MDagPath: ...
@@ -2666,10 +2668,10 @@ class MFnDagNode(MFnDependencyNode):
     def isParentOf(self, node) -> bool: ...
     def parent(self, index) -> MObject: ...
     def parentCount(self) -> int: ...
-    def partialPathName(self) -> string: ...  # type: ignore
-    def removeChild(self, node) -> self: ...  # type: ignore
-    def removeChildAt(self, index) -> self: ...  # type: ignore
-    def setObject(self, MObjectorMDagPath) -> self: ...  # type: ignore
+    def partialPathName(self) -> string: ...  # type: ignore[name-defined]
+    def removeChild(self, node) -> self: ...  # type: ignore[name-defined]
+    def removeChildAt(self, index) -> self: ...  # type: ignore[name-defined]
+    def setObject(self, MObjectorMDagPath) -> self: ...  # type: ignore[name-defined]
     def transformationMatrix(self) -> MMatrix: ...
 
 class MFnAssembly(MFnDagNode):
@@ -2681,40 +2683,40 @@ class MFnAssembly(MFnDagNode):
     def getParentAssembly(self) -> MObject: ...
     def getSubAssemblies(self) -> MObjectArray: ...
     @overload
-    def postLoad(self) -> self: ...  # type: ignore
+    def postLoad(self) -> self: ...  # type: ignore[name-defined]
     @overload
-    def postLoad(self) -> Any: ...  # type: ignore
+    def postLoad(self) -> Any: ...  # type: ignore[overload-cannot-match]
     @overload
-    def postLoad(self) -> Any: ...  # type: ignore
+    def postLoad(self) -> Any: ...  # type: ignore[overload-cannot-match]
     def activate(self, *args, **kwargs): ...
-    def getActive(self) -> MString: ...  # type: ignore
+    def getActive(self) -> MString: ...  # type: ignore[name-defined]
     @overload
     def activateNonRecursive(self) -> Any: ...
     @overload
-    def activateNonRecursive(self) -> Any: ...  # type: ignore
+    def activateNonRecursive(self) -> Any: ...  # type: ignore[overload-cannot-match]
     @overload
     def canActivate(self) -> bool: ...
     @overload
-    def canActivate(self) -> Any: ...  # type: ignore
+    def canActivate(self) -> Any: ...  # type: ignore[overload-cannot-match]
     def isActive(self, representation) -> bool: ...
     def getInitialRep(self, *args, **kwargs): ...
-    def getRepType(self, representation) -> MString: ...  # type: ignore
-    def getRepLabel(self, representation) -> MString: ...  # type: ignore
-    def setRepName(self, representation, newName) -> MString: ...  # type: ignore
-    def setRepLabel(self, representation, label) -> self: ...  # type: ignore
+    def getRepType(self, representation) -> MString: ...  # type: ignore[name-defined]
+    def getRepLabel(self, representation) -> MString: ...  # type: ignore[name-defined]
+    def setRepName(self, representation, newName) -> MString: ...  # type: ignore[name-defined]
+    def setRepLabel(self, representation, label) -> self: ...  # type: ignore[name-defined]
     def repTypes(self, *args, **kwargs): ...
     def canRepApplyEdits(self, representation) -> bool: ...
-    def deleteRepresentation(self, representation) -> self: ...  # type: ignore
-    def deleteAllRepresentations(self) -> self: ...  # type: ignore
+    def deleteRepresentation(self, representation) -> self: ...  # type: ignore[name-defined]
+    def deleteAllRepresentations(self) -> self: ...  # type: ignore[name-defined]
     def isTopLevel(self) -> bool: ...
     def supportsEdits(self) -> bool: ...
     @overload
     def supportsMemberChanges(self) -> bool: ...
     @overload
-    def supportsMemberChanges(self) -> Any: ...  # type: ignore
-    def getRepNamespace(self) -> MString: ...  # type: ignore
+    def supportsMemberChanges(self) -> Any: ...  # type: ignore[overload-cannot-match]
+    def getRepNamespace(self) -> MString: ...  # type: ignore[name-defined]
     def importFile(self) -> Any: ...
-    def getAbsoluteRepNamespace(self) -> MString: ...  # type: ignore
+    def getAbsoluteRepNamespace(self) -> MString: ...  # type: ignore[name-defined]
     def handlesAddEdits(self) -> bool: ...
 
 class MFnCamera(MFnDagNode):
@@ -2775,9 +2777,9 @@ class MFnCamera(MFnDagNode):
     def __init__(self, *args, **kwargs) -> None: ...
     def aspectRatio(self) -> float: ...
     def centerOfInterestPoint(self, space=...) -> MPoint: ...
-    def computeDepthOfField(self, nearLimit=...) -> self: ...  # type: ignore
-    def copyViewFrom(self, otherCamera) -> self: ...  # type: ignore
-    def create(self, parent=...) -> MObject: ...  # type: ignore
+    def computeDepthOfField(self, nearLimit=...) -> self: ...  # type: ignore[name-defined]
+    def copyViewFrom(self, otherCamera) -> self: ...  # type: ignore[name-defined]
+    def create(self, parent=...) -> MObject: ...  # type: ignore[override]
     def eyePoint(self, space=...) -> MPoint: ...
     def getAspectRatioLimits(self, *args, **kwargs): ...
     def getFilmApertureLimits(self, *args, **kwargs): ...
@@ -2794,14 +2796,14 @@ class MFnCamera(MFnDagNode):
     def postProjectionMatrix(self, context=...) -> MFloatMatrix: ...
     def projectionMatrix(self, context=...) -> MFloatMatrix: ...
     def rightDirection(self, space=...) -> MVector: ...
-    def set(self, wsEyeLocation, wsViewDirection, wsUpDirection, horizFieldOfView, aspectRatio) -> self: ...  # type: ignore
-    def setAspectRatio(self, aspectRatio) -> self: ...  # type: ignore
-    def setCenterOfInterestPoint(self, centerOfInterest, space=...) -> self: ...  # type: ignore
-    def setEyePoint(self, eyeLocation, space=...) -> self: ...  # type: ignore
-    def setHorizontalFieldOfView(self, fov) -> self: ...  # type: ignore
-    def setIsOrtho(self, orthoState, useDist=...) -> self: ...  # type: ignore
-    def setNearFarClippingPlanes(self, near, far) -> self: ...  # type: ignore
-    def setVerticalFieldOfView(self, fov) -> self: ...  # type: ignore
+    def set(self, wsEyeLocation, wsViewDirection, wsUpDirection, horizFieldOfView, aspectRatio) -> self: ...  # type: ignore[name-defined]
+    def setAspectRatio(self, aspectRatio) -> self: ...  # type: ignore[name-defined]
+    def setCenterOfInterestPoint(self, centerOfInterest, space=...) -> self: ...  # type: ignore[name-defined]
+    def setEyePoint(self, eyeLocation, space=...) -> self: ...  # type: ignore[name-defined]
+    def setHorizontalFieldOfView(self, fov) -> self: ...  # type: ignore[name-defined]
+    def setIsOrtho(self, orthoState, useDist=...) -> self: ...  # type: ignore[name-defined]
+    def setNearFarClippingPlanes(self, near, far) -> self: ...  # type: ignore[name-defined]
+    def setVerticalFieldOfView(self, fov) -> self: ...  # type: ignore[name-defined]
     def upDirection(self, space=...) -> MVector: ...
     def verticalFieldOfView(self) -> float: ...
     def viewDirection(self, space=...) -> MVector: ...
@@ -2821,7 +2823,7 @@ class MFnContainerNode(MFnDependencyNode):
     def getRootTransform(self) -> MObject: ...
     def getPublishedNodes(self, *args, **kwargs): ...
     def isCurrent(self) -> bool: ...
-    def makeCurrent(self, isCurrent) -> self: ...  # type: ignore
+    def makeCurrent(self, isCurrent) -> self: ...  # type: ignore[name-defined]
     def clear(self) -> Any: ...
 
 class MFnMesh(MFnDagNode):
@@ -2858,63 +2860,63 @@ class MFnMesh(MFnDagNode):
     @staticmethod
     def clearGlobalIntersectionAcceleratorInfo() -> Any: ...
     @staticmethod
-    def globalIntersectionAcceleratorsInfo() -> string: ...  # type: ignore
+    def globalIntersectionAcceleratorsInfo() -> string: ...  # type: ignore[name-defined]
     @staticmethod
     def uniformGridParams(xDiv, yDiv, zDiv) -> MMeshIsectAccelParams: ...
-    def addHoles(self, faceIndex, vertices, loopCounts, mergeVertices=..., pointTolerance=...) -> self: ...  # type: ignore
-    def addPolygon(self, vertices, mergeVertices=..., pointTolerance=..., loopCounts=...) -> faceId: ...  # type: ignore
+    def addHoles(self, faceIndex, vertices, loopCounts, mergeVertices=..., pointTolerance=...) -> self: ...  # type: ignore[name-defined]
+    def addPolygon(self, vertices, mergeVertices=..., pointTolerance=..., loopCounts=...) -> faceId: ...  # type: ignore[name-defined]
     def allIntersections(self) -> Any: ...
     def anyIntersection(self) -> Any: ...
-    def assignColor(self, faceId, vertexIndex, colorId, colorSet=...) -> self: ...  # type: ignore
-    def assignColors(self, colorIds, colorSet=...) -> self: ...  # type: ignore
-    def assignUV(self, faceId, vertexIndex, uvId, uvSet=...) -> self: ...  # type: ignore
-    def assignUVs(self, uvCounts, uvIds, uvSet=...) -> self: ...  # type: ignore
+    def assignColor(self, faceId, vertexIndex, colorId, colorSet=...) -> self: ...  # type: ignore[name-defined]
+    def assignColors(self, colorIds, colorSet=...) -> self: ...  # type: ignore[name-defined]
+    def assignUV(self, faceId, vertexIndex, uvId, uvSet=...) -> self: ...  # type: ignore[name-defined]
+    def assignUVs(self, uvCounts, uvIds, uvSet=...) -> self: ...  # type: ignore[name-defined]
     def booleanOp(self, *args, **kwargs): ...
-    def booleanOps(self, BooleanOperationconstant, MObjectArray, bool) -> self: ...  # type: ignore
-    def cachedIntersectionAcceleratorInfo(self) -> string: ...  # type: ignore
-    def cleanupEdgeSmoothing(self) -> self: ...  # type: ignore
+    def booleanOps(self, BooleanOperationconstant, MObjectArray, bool) -> self: ...  # type: ignore[name-defined]
+    def cachedIntersectionAcceleratorInfo(self) -> string: ...  # type: ignore[name-defined]
+    def cleanupEdgeSmoothing(self) -> self: ...  # type: ignore[name-defined]
     @overload
-    def clearBlindData(self, compType) -> self: ...  # type: ignore
+    def clearBlindData(self, compType) -> self: ...  # type: ignore[name-defined]
     @overload
-    def clearBlindData(self, compType, blindDataId, compId=..., attr=...) -> self: ...  # type: ignore
+    def clearBlindData(self, compType, blindDataId, compId=..., attr=...) -> self: ...  # type: ignore[name-defined]
     @overload
-    def clearColors(self, colorSet=...) -> self: ...  # type: ignore
+    def clearColors(self, colorSet=...) -> self: ...  # type: ignore[name-defined]
     @overload
-    def clearColors(self) -> Any: ...  # type: ignore
+    def clearColors(self) -> Any: ...  # type: ignore[overload-cannot-match]
     @overload
-    def clearUVs(self, uvSet=...) -> self: ...  # type: ignore
+    def clearUVs(self, uvSet=...) -> self: ...  # type: ignore[name-defined]
     @overload
-    def clearUVs(self) -> Any: ...  # type: ignore
+    def clearUVs(self) -> Any: ...  # type: ignore[overload-cannot-match]
     def closestIntersection(self, *args, **kwargs): ...
-    def collapseEdges(self, seqofint) -> self: ...  # type: ignore
-    def collapseFaces(self, seqofint) -> self: ...  # type: ignore
+    def collapseEdges(self, seqofint) -> self: ...  # type: ignore[name-defined]
+    def collapseFaces(self, seqofint) -> self: ...  # type: ignore[name-defined]
     def copy(self, MObject, parent=...) -> MObject: ...
-    def copyInPlace(self, MObject) -> self: ...  # type: ignore
-    def copyUVSet(self, fromName, toName, modifier=...) -> string: ...  # type: ignore
-    def create(self) -> Any: ...  # type: ignore
+    def copyInPlace(self, MObject) -> self: ...  # type: ignore[name-defined]
+    def copyUVSet(self, fromName, toName, modifier=...) -> string: ...  # type: ignore[name-defined]
+    def create(self) -> Any: ...  # type: ignore[override]
     def createBlindDataType(self, *args, **kwargs): ...
-    def createColorSet(self, name, clamped, rep=..., modifier=..., instances=...) -> string: ...  # type: ignore
+    def createColorSet(self, name, clamped, rep=..., modifier=..., instances=...) -> string: ...  # type: ignore[name-defined]
     def createInPlace(self, *args, **kwargs): ...
-    def createUVSet(self, name, modifier=..., instances=...) -> string: ...  # type: ignore
-    def currentColorSetName(self, instance=...) -> string: ...  # type: ignore
-    def currentUVSetName(self, instance=...) -> string: ...  # type: ignore
-    def deleteColorSet(self, colorSet, modifier=..., currentSelection=...) -> self: ...  # type: ignore
-    def deleteUVSet(self, uvSet, modifier=..., currentSelection=...) -> self: ...  # type: ignore
-    def deleteEdge(self, edgeId, modifier=...) -> self: ...  # type: ignore
-    def deleteFace(self, faceId, modifier=...) -> self: ...  # type: ignore
-    def deleteVertex(self, vertexId, modifier=...) -> self: ...  # type: ignore
-    def duplicateFaces(self, faces, translation=...) -> self: ...  # type: ignore
-    def extractFaces(self, faces, translation=...) -> self: ...  # type: ignore
-    def extrudeEdges(self, edges, extrusionCount=..., translation=..., extrudeTogether=..., thickness=..., offset=...) -> self: ...  # type: ignore
-    def extrudeFaces(self, faces, extrusionCount=..., translation=..., extrudeTogether=..., thickness=..., offset=...) -> self: ...  # type: ignore
-    def freeCachedIntersectionAccelerator(self) -> self: ...  # type: ignore
+    def createUVSet(self, name, modifier=..., instances=...) -> string: ...  # type: ignore[name-defined]
+    def currentColorSetName(self, instance=...) -> string: ...  # type: ignore[name-defined]
+    def currentUVSetName(self, instance=...) -> string: ...  # type: ignore[name-defined]
+    def deleteColorSet(self, colorSet, modifier=..., currentSelection=...) -> self: ...  # type: ignore[name-defined]
+    def deleteUVSet(self, uvSet, modifier=..., currentSelection=...) -> self: ...  # type: ignore[name-defined]
+    def deleteEdge(self, edgeId, modifier=...) -> self: ...  # type: ignore[name-defined]
+    def deleteFace(self, faceId, modifier=...) -> self: ...  # type: ignore[name-defined]
+    def deleteVertex(self, vertexId, modifier=...) -> self: ...  # type: ignore[name-defined]
+    def duplicateFaces(self, faces, translation=...) -> self: ...  # type: ignore[name-defined]
+    def extractFaces(self, faces, translation=...) -> self: ...  # type: ignore[name-defined]
+    def extrudeEdges(self, edges, extrusionCount=..., translation=..., extrudeTogether=..., thickness=..., offset=...) -> self: ...  # type: ignore[name-defined]
+    def extrudeFaces(self, faces, extrusionCount=..., translation=..., extrudeTogether=..., thickness=..., offset=...) -> self: ...  # type: ignore[name-defined]
+    def freeCachedIntersectionAccelerator(self) -> self: ...  # type: ignore[name-defined]
     def generateSmoothMesh(self, parent=..., options=...) -> MObject: ...
     def getAssignedUVs(self, *args, **kwargs): ...
     def getAssociatedColorSetInstances(self, colorSet) -> MIntArray: ...
     def getAssociatedUVSetInstances(self, uvSet) -> MIntArray: ...
     def getAssociatedUVSetTextures(self, uvSet) -> MObjectArray: ...
     @overload
-    def getBinaryBlindData(self, compId, compType, blindDataId, attr) -> string: ...  # type: ignore
+    def getBinaryBlindData(self, compId, compType, blindDataId, attr) -> string: ...  # type: ignore[name-defined]
     @overload
     def getBinaryBlindData(self, compType, blindDataId, attr) -> Any: ...
     def getBinormals(self, space=..., uvSet=...) -> MFloatVectorArray: ...
@@ -2928,7 +2930,7 @@ class MFnMesh(MFnDagNode):
     def getClosestPointAndNormal(self, MPoint, space=...) -> Any: ...
     def getColor(self, colorId, colorSet=...) -> MColor: ...
     def getColorIndex(self, faceId, localVertexId, colorSet=...) -> int: ...
-    def getColorRepresentation(self, colorSet) -> ColorRepresentationconstant: ...  # type: ignore
+    def getColorRepresentation(self, colorSet) -> ColorRepresentationconstant: ...  # type: ignore[name-defined]
     def getColors(self, colorSet=...) -> MColorArray: ...
     def getColorSetFamilyNames(self, *args, **kwargs): ...
     def getColorSetNames(self, *args, **kwargs): ...
@@ -2967,7 +2969,7 @@ class MFnMesh(MFnDagNode):
     def getPolygonVertices(self, polygonId) -> MIntArray: ...
     def getSmoothMeshDisplayOptions(self) -> MMeshSmoothOptions: ...
     @overload
-    def getStringBlindData(self, compId, compType, blindDataId, attr) -> string: ...  # type: ignore
+    def getStringBlindData(self, compId, compType, blindDataId, attr) -> string: ...  # type: ignore[name-defined]
     @overload
     def getStringBlindData(self, compType, blindDataId, attr) -> Any: ...
     def getTangentId(self, faceId, vertexId) -> int: ...
@@ -3000,85 +3002,85 @@ class MFnMesh(MFnDagNode):
     def isPolygonUVReversed(self, faceId) -> bool: ...
     def isRightHandedTangent(self, tangentId, uvSet=...) -> bool: ...
     def isUVSetPerInstance(self, uvSet) -> bool: ...
-    def lockFaceVertexNormals(self, seqoffaceIds, seqofvertIds) -> self: ...  # type: ignore
-    def lockVertexNormals(self, sequenceofvertIds) -> self: ...  # type: ignore
+    def lockFaceVertexNormals(self, seqoffaceIds, seqofvertIds) -> self: ...  # type: ignore[name-defined]
+    def lockVertexNormals(self, sequenceofvertIds) -> self: ...  # type: ignore[name-defined]
     def numColors(self, colorSet=...) -> int: ...
     def numUVs(self, uvSet=...) -> int: ...
     def onBoundary(self, faceId) -> bool: ...
     def polygonVertexCount(self, faceId) -> int: ...
-    def removeFaceColors(self, seqoffaceIds) -> self: ...  # type: ignore
-    def removeFaceVertexColors(self, seqoffaceIds, seqofvertexIds) -> self: ...  # type: ignore
-    def removeVertexColors(self, seqofvertexIds) -> self: ...  # type: ignore
-    def renameUVSet(self, origName, newName, modifier=...) -> self: ...  # type: ignore
+    def removeFaceColors(self, seqoffaceIds) -> self: ...  # type: ignore[name-defined]
+    def removeFaceVertexColors(self, seqoffaceIds, seqofvertexIds) -> self: ...  # type: ignore[name-defined]
+    def removeVertexColors(self, seqofvertexIds) -> self: ...  # type: ignore[name-defined]
+    def renameUVSet(self, origName, newName, modifier=...) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setBinaryBlindData(self, compId, compType, blindDataId, attr, data) -> self: ...  # type: ignore
+    def setBinaryBlindData(self, compId, compType, blindDataId, attr, data) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setBinaryBlindData(self, seqofcompId, compType, blindDataId, attr, data) -> self: ...  # type: ignore
+    def setBinaryBlindData(self, seqofcompId, compType, blindDataId, attr, data) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setBoolBlindData(self, compId, compType, blindDataId, attr, data) -> self: ...  # type: ignore
+    def setBoolBlindData(self, compId, compType, blindDataId, attr, data) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setBoolBlindData(self, seqofcompId, compType, blindDataId, attr, data) -> self: ...  # type: ignore
-    def setColor(self, colorId, MColor, colorSet=..., rep=...) -> self: ...  # type: ignore
-    def setColors(self, seqofMColor, colorSet=..., rep=...) -> self: ...  # type: ignore
-    def setCreaseEdges(self, edgeIds, seqoffloat) -> self: ...  # type: ignore
-    def setCreaseVertices(self, edgeIds, seqoffloat) -> self: ...  # type: ignore
-    def setCurrentColorSetName(self, colorSet, modifier=..., currentSelection=...) -> self: ...  # type: ignore
-    def setCurrentUVSetName(self, uvSet, modifier=..., currentSelection=...) -> self: ...  # type: ignore
+    def setBoolBlindData(self, seqofcompId, compType, blindDataId, attr, data) -> self: ...  # type: ignore[name-defined]
+    def setColor(self, colorId, MColor, colorSet=..., rep=...) -> self: ...  # type: ignore[name-defined]
+    def setColors(self, seqofMColor, colorSet=..., rep=...) -> self: ...  # type: ignore[name-defined]
+    def setCreaseEdges(self, edgeIds, seqoffloat) -> self: ...  # type: ignore[name-defined]
+    def setCreaseVertices(self, edgeIds, seqoffloat) -> self: ...  # type: ignore[name-defined]
+    def setCurrentColorSetName(self, colorSet, modifier=..., currentSelection=...) -> self: ...  # type: ignore[name-defined]
+    def setCurrentUVSetName(self, uvSet, modifier=..., currentSelection=...) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setDoubleBlindData(self, compId, compType, blindDataId, attr, data) -> self: ...  # type: ignore
+    def setDoubleBlindData(self, compId, compType, blindDataId, attr, data) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setDoubleBlindData(self, seqofcompId, compType, blindDataId, attr, data) -> self: ...  # type: ignore
+    def setDoubleBlindData(self, seqofcompId, compType, blindDataId, attr, data) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setEdgeSmoothing(self, edgeId, smooth=...) -> self: ...  # type: ignore
+    def setEdgeSmoothing(self, edgeId, smooth=...) -> self: ...  # type: ignore[name-defined]
     @overload
     def setEdgeSmoothing(self) -> Any: ...
     @overload
-    def setEdgeSmoothings(self, edgeIds, smooths) -> self: ...  # type: ignore
+    def setEdgeSmoothings(self, edgeIds, smooths) -> self: ...  # type: ignore[name-defined]
     @overload
     def setEdgeSmoothings(self) -> Any: ...
-    def setFaceColor(self, color, faceId, rep=...) -> self: ...  # type: ignore
-    def setFaceColors(self, colors, faceIds, rep=...) -> self: ...  # type: ignore
-    def setFaceVertexColor(self, color, faceId, vertexId, modifier=..., rep=...) -> self: ...  # type: ignore
-    def setFaceVertexColors(self, colors, faceIds, vertexIds, modifier=..., rep=...) -> self: ...  # type: ignore
-    def setFaceVertexNormal(self, normal, faceId, vertexId, space=..., modifier=...) -> self: ...  # type: ignore
+    def setFaceColor(self, color, faceId, rep=...) -> self: ...  # type: ignore[name-defined]
+    def setFaceColors(self, colors, faceIds, rep=...) -> self: ...  # type: ignore[name-defined]
+    def setFaceVertexColor(self, color, faceId, vertexId, modifier=..., rep=...) -> self: ...  # type: ignore[name-defined]
+    def setFaceVertexColors(self, colors, faceIds, vertexIds, modifier=..., rep=...) -> self: ...  # type: ignore[name-defined]
+    def setFaceVertexNormal(self, normal, faceId, vertexId, space=..., modifier=...) -> self: ...  # type: ignore[name-defined]
     def setFaceVertexNormals(self, *args, **kwargs): ...
     @overload
-    def setFloatBlindData(self, compId, compType, blindDataId, attr, data) -> self: ...  # type: ignore
+    def setFloatBlindData(self, compId, compType, blindDataId, attr, data) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setFloatBlindData(self, seqofcompId, compType, blindDataId, attr, data) -> self: ...  # type: ignore
+    def setFloatBlindData(self, seqofcompId, compType, blindDataId, attr, data) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setIntBlindData(self, compId, compType, blindDataId, attr, data) -> self: ...  # type: ignore
+    def setIntBlindData(self, compId, compType, blindDataId, attr, data) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setIntBlindData(self, seqofcompId, compType, blindDataId, attr, data) -> self: ...  # type: ignore
-    def setInvisibleFaces(self, faceIds, makeVisible=...) -> self: ...  # type: ignore
-    def setIsColorClamped(self, colorSet, clamped) -> self: ...  # type: ignore
-    def setNormals(self, normals, space=...) -> self: ...  # type: ignore
+    def setIntBlindData(self, seqofcompId, compType, blindDataId, attr, data) -> self: ...  # type: ignore[name-defined]
+    def setInvisibleFaces(self, faceIds, makeVisible=...) -> self: ...  # type: ignore[name-defined]
+    def setIsColorClamped(self, colorSet, clamped) -> self: ...  # type: ignore[name-defined]
+    def setNormals(self, normals, space=...) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setPoint(self, vertexId, MPoint, space=...) -> self: ...  # type: ignore
+    def setPoint(self, vertexId, MPoint, space=...) -> self: ...  # type: ignore[name-defined]
     @overload
     def setPoint(self) -> Any: ...
-    def setPoints(self, points, space=...) -> self: ...  # type: ignore
-    def setSmoothMeshDisplayOptions(self, MMeshSmoothOptions) -> self: ...  # type: ignore
-    def setSomeColors(self, colorIds, colors, colorSet=..., rep=...) -> self: ...  # type: ignore
-    def setSomeUVs(self, uvIds, uValues, vValues, uvSet=...) -> self: ...  # type: ignore
+    def setPoints(self, points, space=...) -> self: ...  # type: ignore[name-defined]
+    def setSmoothMeshDisplayOptions(self, MMeshSmoothOptions) -> self: ...  # type: ignore[name-defined]
+    def setSomeColors(self, colorIds, colors, colorSet=..., rep=...) -> self: ...  # type: ignore[name-defined]
+    def setSomeUVs(self, uvIds, uValues, vValues, uvSet=...) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setStringBlindData(self, compId, compType, blindDataId, attr, data) -> self: ...  # type: ignore
+    def setStringBlindData(self, compId, compType, blindDataId, attr, data) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setStringBlindData(self, seqofcompId, compType, blindDataId, attr, data) -> self: ...  # type: ignore
-    def setUV(self, uvId, u, v, uvSet=...) -> self: ...  # type: ignore
-    def setUVs(self, uValues, vValues, uvSet=...) -> self: ...  # type: ignore
-    def setVertexColor(self, color, vertexId, modifier=..., rep=...) -> self: ...  # type: ignore
-    def setVertexColors(self, colors, vertexIds, modifier=..., rep=...) -> self: ...  # type: ignore
-    def setVertexNormal(self, normal, vertexId, space=..., modifier=...) -> self: ...  # type: ignore
+    def setStringBlindData(self, seqofcompId, compType, blindDataId, attr, data) -> self: ...  # type: ignore[name-defined]
+    def setUV(self, uvId, u, v, uvSet=...) -> self: ...  # type: ignore[name-defined]
+    def setUVs(self, uValues, vValues, uvSet=...) -> self: ...  # type: ignore[name-defined]
+    def setVertexColor(self, color, vertexId, modifier=..., rep=...) -> self: ...  # type: ignore[name-defined]
+    def setVertexColors(self, colors, vertexIds, modifier=..., rep=...) -> self: ...  # type: ignore[name-defined]
+    def setVertexNormal(self, normal, vertexId, space=..., modifier=...) -> self: ...  # type: ignore[name-defined]
     def setVertexNormals(self, *args, **kwargs): ...
-    def sortIntersectionFaceTriIds(self, faceIds, triIds=...) -> self: ...  # type: ignore
+    def sortIntersectionFaceTriIds(self, faceIds, triIds=...) -> self: ...  # type: ignore[name-defined]
     def split(self, *args, **kwargs): ...
-    def subdivideEdges(self, edges, numDivisions) -> self: ...  # type: ignore
-    def subdivideFaces(self, faces, numDivisions) -> self: ...  # type: ignore
-    def syncObject(self) -> self: ...  # type: ignore
-    def unlockFaceVertexNormals(self, seqoffaceIds, seqofvertIds) -> self: ...  # type: ignore
-    def unlockVertexNormals(self, sequenceofvertIds) -> self: ...  # type: ignore
-    def updateSurface(self) -> self: ...  # type: ignore
+    def subdivideEdges(self, edges, numDivisions) -> self: ...  # type: ignore[name-defined]
+    def subdivideFaces(self, faces, numDivisions) -> self: ...  # type: ignore[name-defined]
+    def syncObject(self) -> self: ...  # type: ignore[name-defined]
+    def unlockFaceVertexNormals(self, seqoffaceIds, seqofvertIds) -> self: ...  # type: ignore[name-defined]
+    def unlockVertexNormals(self, sequenceofvertIds) -> self: ...  # type: ignore[name-defined]
+    def updateSurface(self) -> self: ...  # type: ignore[name-defined]
 
 class MFnNurbsCurve(MFnDagNode):
     kInvalid: ClassVar[int] = ...
@@ -3101,10 +3103,10 @@ class MFnNurbsCurve(MFnDagNode):
     def area(self, tolerance=...) -> float: ...
     def closestPoint(self, *args, **kwargs): ...
     def copy(self, source, parent=...) -> MObject: ...
-    @overload  # type: ignore
+    @overload  # type: ignore[override]
     def create(self, cvs, knots, degree, form, is2D, rational, parent=...) -> Any: ...
     @overload
-    def create(self, subCurves, parent=...) -> self: ...  # type: ignore
+    def create(self, subCurves, parent=...) -> self: ...  # type: ignore[name-defined]
     def createWithEditPoints(self, eps, degree, form, is2D, rational, uniform, 
 parent=...) -> MObject: ...
     def cvPosition(self, index, space=...) -> MPoint: ...
@@ -3121,16 +3123,16 @@ parent=...) -> MObject: ...
     def knot(self, index) -> float: ...
     def knots(self) -> MDoubleArray: ...
     def length(self, tolerance=...) -> float: ...
-    def makeMultipleEndKnots(self) -> self: ...  # type: ignore
+    def makeMultipleEndKnots(self) -> self: ...  # type: ignore[name-defined]
     def normal(self, param, space=...) -> MVector: ...
-    def removeKnot(self, param, removeAll=...) -> self: ...  # type: ignore
-    def reverse(self) -> self: ...  # type: ignore
-    def setCVPosition(self, index, point, space=...) -> self: ...  # type: ignore
-    def setCVPositions(self, points, space=...) -> self: ...  # type: ignore
-    def setKnot(self, index, param) -> self: ...  # type: ignore
-    def setKnots(self, params, startIndex, endIndex) -> self: ...  # type: ignore
+    def removeKnot(self, param, removeAll=...) -> self: ...  # type: ignore[name-defined]
+    def reverse(self) -> self: ...  # type: ignore[name-defined]
+    def setCVPosition(self, index, point, space=...) -> self: ...  # type: ignore[name-defined]
+    def setCVPositions(self, points, space=...) -> self: ...  # type: ignore[name-defined]
+    def setKnot(self, index, param) -> self: ...  # type: ignore[name-defined]
+    def setKnots(self, params, startIndex, endIndex) -> self: ...  # type: ignore[name-defined]
     def tangent(self, param, space=...) -> MVector: ...
-    def updateCurve(self) -> self: ...  # type: ignore
+    def updateCurve(self) -> self: ...  # type: ignore[name-defined]
 
 class MFnNurbsSurface(MFnDagNode):
     kInvalidBoundary: ClassVar[int] = ...
@@ -3171,10 +3173,10 @@ class MFnNurbsSurface(MFnDagNode):
     numUVs: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     def area(self, space=..., tolerance=...) -> float: ...
-    def assignUV(self, patchId, cornerIndex, uvId) -> self: ...  # type: ignore
-    def assignUVs(self, uvCounts, uvIds) -> self: ...  # type: ignore
+    def assignUV(self, patchId, cornerIndex, uvId) -> self: ...  # type: ignore[name-defined]
+    def assignUVs(self, uvCounts, uvIds) -> self: ...  # type: ignore[name-defined]
     def boundaryType(self, region, boundary) -> int: ...
-    def clearUVs(self) -> self: ...  # type: ignore
+    def clearUVs(self) -> self: ...  # type: ignore[name-defined]
     def closestPoint(self, *args, **kwargs): ...
     def copy(self, source, parent=...) -> MObject: ...
     def create(self, *args, **kwargs): ...
@@ -3211,31 +3213,31 @@ distance=..., exactHit=..., all=...) -> Any: ...
     def knotsInU(self) -> MDoubleArray: ...
     def knotsInV(self) -> MDoubleArray: ...
     def normal(self, uParam, vParam, space=...) -> MVector: ...
-    def numBoundaries(self, region) -> unsignedint: ...  # type: ignore
-    def numEdges(self, region, boundary) -> unsignedint: ...  # type: ignore
+    def numBoundaries(self, region) -> unsignedint: ...  # type: ignore[name-defined]
+    def numEdges(self, region, boundary) -> unsignedint: ...  # type: ignore[name-defined]
     def projectCurve(self, *args, **kwargs): ...
-    def removeKnotInU(self, param, removeAll=...) -> self: ...  # type: ignore
-    def removeKnotInV(self, param, removeAll=...) -> self: ...  # type: ignore
-    def removeOneKnotInU(self, param) -> self: ...  # type: ignore
-    def removeOneKnotInV(self, param) -> self: ...  # type: ignore
-    def setCVPosition(self, uIndex, vIndex, point, space=...) -> self: ...  # type: ignore
-    def setCVPositions(self, points, space=...) -> self: ...  # type: ignore
-    def setKnotInU(self, index, param) -> self: ...  # type: ignore
-    def setKnotInV(self, index, param) -> self: ...  # type: ignore
-    def setKnotsInU(self, params, startIndex, endIndex) -> self: ...  # type: ignore
-    def setKnotsInV(self, params, startIndex, endIndex) -> self: ...  # type: ignore
-    def setUV(self, uvId, u, v) -> self: ...  # type: ignore
-    def setUVs(self, uList, vList) -> self: ...  # type: ignore
+    def removeKnotInU(self, param, removeAll=...) -> self: ...  # type: ignore[name-defined]
+    def removeKnotInV(self, param, removeAll=...) -> self: ...  # type: ignore[name-defined]
+    def removeOneKnotInU(self, param) -> self: ...  # type: ignore[name-defined]
+    def removeOneKnotInV(self, param) -> self: ...  # type: ignore[name-defined]
+    def setCVPosition(self, uIndex, vIndex, point, space=...) -> self: ...  # type: ignore[name-defined]
+    def setCVPositions(self, points, space=...) -> self: ...  # type: ignore[name-defined]
+    def setKnotInU(self, index, param) -> self: ...  # type: ignore[name-defined]
+    def setKnotInV(self, index, param) -> self: ...  # type: ignore[name-defined]
+    def setKnotsInU(self, params, startIndex, endIndex) -> self: ...  # type: ignore[name-defined]
+    def setKnotsInV(self, params, startIndex, endIndex) -> self: ...  # type: ignore[name-defined]
+    def setUV(self, uvId, u, v) -> self: ...  # type: ignore[name-defined]
+    def setUVs(self, uList, vList) -> self: ...  # type: ignore[name-defined]
     def tangents(self, *args, **kwargs): ...
-    def trim(self, regionsToKeepU, regionsToKeepV, keepHistory=...) -> self: ...  # type: ignore
-    def updateSurface(self) -> self: ...  # type: ignore
+    def trim(self, regionsToKeepU, regionsToKeepV, keepHistory=...) -> self: ...  # type: ignore[name-defined]
+    def updateSurface(self) -> self: ...  # type: ignore[name-defined]
 
 class MFnReference(MFnDependencyNode):
     def __init__(self, *args, **kwargs) -> None: ...
     def isValidReference(self) -> bool: ...
-    def fileName(self, boolresolvedName, boolincludePath, boolincludeCopyNumber) -> MString: ...  # type: ignore
-    def associatedNamespace(self, boolshortName) -> MString: ...  # type: ignore
-    def parentFileName(self, boolresolvedName, boolincludePath, boolincludeCopyNumber) -> MString: ...  # type: ignore
+    def fileName(self, boolresolvedName, boolincludePath, boolincludeCopyNumber) -> MString: ...  # type: ignore[name-defined]
+    def associatedNamespace(self, boolshortName) -> MString: ...  # type: ignore[name-defined]
+    def parentFileName(self, boolresolvedName, boolincludePath, boolincludeCopyNumber) -> MString: ...  # type: ignore[name-defined]
     def parentReference(self) -> MObject: ...
     def parentAssembly(self) -> MObject: ...
     def containsNode(self, MObject) -> bool: ...
@@ -3249,7 +3251,7 @@ class MFnReference(MFnDependencyNode):
     @staticmethod
     def setIgnoreReferenceEdits(bool) -> None: ...
 
-class MFnSet(MFnDependencyNode):  # type: ignore
+class MFnSet(MFnDependencyNode):  # type: ignore[no-redef]
     kNone: ClassVar[int] = ...
     kVerticesOnly: ClassVar[int] = ...
     kEdgesOnly: ClassVar[int] = ...
@@ -3260,18 +3262,18 @@ class MFnSet(MFnDependencyNode):  # type: ignore
     def create(self, members, restriction=...) -> MObject: ...
     def getUnion(self, otherSet) -> MSelectionList: ...
     def getIntersection(self, otherSet) -> MSelectionList: ...
-    def clear(self) -> self: ...  # type: ignore
+    def clear(self) -> self: ...  # type: ignore[name-defined]
     def getMembers(self, flatten) -> MSelectionList: ...
-    def addMember(self, object) -> self: ...  # type: ignore
-    def addMembers(self, MSelectionList) -> self: ...  # type: ignore
-    def removeMember(self, object) -> self: ...  # type: ignore
-    def removeMembers(self, MSelectionList) -> self: ...  # type: ignore
+    def addMember(self, object) -> self: ...  # type: ignore[name-defined]
+    def addMembers(self, MSelectionList) -> self: ...  # type: ignore[name-defined]
+    def removeMember(self, object) -> self: ...  # type: ignore[name-defined]
+    def removeMembers(self, MSelectionList) -> self: ...  # type: ignore[name-defined]
     def isMember(self, object) -> bool: ...
-    def intersectsWith(self, otherSet) -> self: ...  # type: ignore
+    def intersectsWith(self, otherSet) -> self: ...  # type: ignore[name-defined]
     def hasRestrictions(self) -> bool: ...
     def restriction(self) -> MFnSet.Restriction: ...
-    def annotation(self) -> string: ...  # type: ignore
-    def setAnnotation(self, annotation) -> self: ...  # type: ignore
+    def annotation(self) -> string: ...  # type: ignore[name-defined]
+    def setAnnotation(self, annotation) -> self: ...  # type: ignore[name-defined]
     def getMemberPaths(self, shading) -> MDagPathArray: ...
 
 class MFnTransform(MFnDagNode):
@@ -3372,22 +3374,6 @@ class MFnPluginData(MFnData):
     def data(self) -> MPxData: ...
     def create(self, id) -> MObject: ...
 
-class MFnDisplayLayer(MFnDependencyNode):
-    def __init__(self, *args, **kwargs) -> None: ...
-    def getMembers(self, members) -> status: ...  # type: ignore
-    def add(self, item) -> status: ...  # type: ignore
-    def remove(self, item) -> status: ...  # type: ignore
-    def contains(self, item) -> bool: ...
-    def containsAncestorInclusive(self, item) -> status: ...  # type: ignore
-
-class MFnDisplayLayerManager(MFnDependencyNode):
-    def __init__(self, *args, **kwargs) -> None: ...
-    @staticmethod
-    def currentDisplayLayerManager() -> MObject: ...
-    def getAllDisplayLayers(self) -> objectarray: ...  # type: ignore
-    def getLayer(self, item) -> status: ...  # type: ignore
-    def getAncestorLayersInclusive(self, item) -> status: ...  # type: ignore
-
 class MGlobal:
     kInteractive: ClassVar[int] = ...
     kBatch: ClassVar[int] = ...
@@ -3448,9 +3434,9 @@ class MGlobal:
     @staticmethod
     def isRedoing() -> bool: ...
     @staticmethod
-    def mayaName() -> string: ...  # type: ignore
+    def mayaName() -> string: ...  # type: ignore[name-defined]
     @staticmethod
-    def mayaVersion() -> string: ...  # type: ignore
+    def mayaVersion() -> string: ...  # type: ignore[name-defined]
     @staticmethod
     def apiVersion() -> int: ...
     @staticmethod
@@ -3502,13 +3488,13 @@ class MGlobal:
     @staticmethod
     def executeCommandOnIdle(string, booldisplayEnabled=...) -> None: ...
     @staticmethod
-    def executeCommandStringResult(string, booldisplayEnabled=..., boolundoEnabled=...) -> stringor[string, string, ...]: ...  # type: ignore
+    def executeCommandStringResult(string, booldisplayEnabled=..., boolundoEnabled=...) -> stringor[string, string, ...]: ...  # type: ignore[name-defined]
     @staticmethod
     def optionVarIntValue(string) -> int: ...
     @staticmethod
-    def optionVarDoubleValue(string) -> double: ...  # type: ignore
+    def optionVarDoubleValue(string) -> double: ...  # type: ignore[name-defined]
     @staticmethod
-    def optionVarStringValue(string) -> MString: ...  # type: ignore
+    def optionVarStringValue(string) -> MString: ...  # type: ignore[name-defined]
     @overload
     @staticmethod
     def setOptionVarValue(string, int) -> bool: ...
@@ -3534,11 +3520,11 @@ class MGlobal:
     @staticmethod
     def resetToDefaultErrorLogPathName() -> None: ...
     @staticmethod
-    def defaultErrorLogPathName() -> string: ...  # type: ignore
+    def defaultErrorLogPathName() -> string: ...  # type: ignore[name-defined]
     @staticmethod
     def setErrorLogPathName(string) -> None: ...
     @staticmethod
-    def errorLogPathName() -> string: ...  # type: ignore
+    def errorLogPathName() -> string: ...  # type: ignore[name-defined]
     @staticmethod
     def errorLoggingIsOn() -> bool: ...
     @overload
@@ -3554,7 +3540,7 @@ class MGlobal:
     @staticmethod
     def doErrorLogEntry(string) -> bool: ...
     @staticmethod
-    def getAbsolutePathToResources() -> string: ...  # type: ignore
+    def getAbsolutePathToResources() -> string: ...  # type: ignore[name-defined]
     @staticmethod
     def disableStow() -> bool: ...
     @staticmethod
@@ -3584,7 +3570,7 @@ class MGlobal:
     @staticmethod
     def upAxis() -> MVector: ...
     @staticmethod
-    def className() -> string: ...  # type: ignore
+    def className() -> string: ...  # type: ignore[name-defined]
 
 class MImage:
     kNoFormat: ClassVar[int] = ...
@@ -3601,29 +3587,29 @@ class MImage:
     @overload
     def depth(self, inbytes) -> Any: ...
     def isRGBA(self) -> bool: ...
-    def setRGBA(self, bool) -> self: ...  # type: ignore
-    def pixels(self) -> long: ...  # type: ignore
-    def floatPixels(self) -> long: ...  # type: ignore
+    def setRGBA(self, bool) -> self: ...  # type: ignore[name-defined]
+    def pixels(self) -> long: ...  # type: ignore[name-defined]
+    def floatPixels(self) -> long: ...  # type: ignore[name-defined]
     def haveDepth(self) -> bool: ...
-    def depthMap(self) -> long: ...  # type: ignore
-    def release(self) -> self: ...  # type: ignore
+    def depthMap(self) -> long: ...  # type: ignore[name-defined]
+    def release(self) -> self: ...  # type: ignore[name-defined]
     def verticalFlip(self) -> bool: ...
-    def create(self, width, height, channels=..., type=...) -> self: ...  # type: ignore
+    def create(self, width, height, channels=..., type=...) -> self: ...  # type: ignore[name-defined]
     def getSize(self, *args, **kwargs): ...
-    def resize(self, width, height, preserveAspectRatio=...) -> self: ...  # type: ignore
-    def setPixels(self, pixels, width, height) -> self: ...  # type: ignore
-    def setFloatPixels(self, pixels, width, height, channels=...) -> self: ...  # type: ignore
+    def resize(self, width, height, preserveAspectRatio=...) -> self: ...  # type: ignore[name-defined]
+    def setPixels(self, pixels, width, height) -> self: ...  # type: ignore[name-defined]
+    def setFloatPixels(self, pixels, width, height, channels=...) -> self: ...  # type: ignore[name-defined]
     def getDepthMapSize(self, *args, **kwargs): ...
     def getDepthMapRange(self, *args, **kwargs): ...
-    def setDepthMap(self, depth, width, heigth) -> self: ...  # type: ignore
+    def setDepthMap(self, depth, width, heigth) -> self: ...  # type: ignore[name-defined]
     @staticmethod
     def filterExists(sourceFormat, targetFormat) -> bool: ...
-    def filter(self, sourceFormat, targetFormat, scale=..., offset=...) -> self: ...  # type: ignore
-    def readFromFile(self, pathname, type=...) -> self: ...  # type: ignore
-    def readFromTextureNode(self, fileTextureObject, type=...) -> self: ...  # type: ignore
-    def readDepthMap(self, pathname) -> self: ...  # type: ignore
-    def writeToFile(self, pathname, outputFormat=...) -> self: ...  # type: ignore
-    def writeToFileWithDepth(self, pathname, outputFormat=..., writeDepth=...) -> self: ...  # type: ignore
+    def filter(self, sourceFormat, targetFormat, scale=..., offset=...) -> self: ...  # type: ignore[name-defined]
+    def readFromFile(self, pathname, type=...) -> self: ...  # type: ignore[name-defined]
+    def readFromTextureNode(self, fileTextureObject, type=...) -> self: ...  # type: ignore[name-defined]
+    def readDepthMap(self, pathname) -> self: ...  # type: ignore[name-defined]
+    def writeToFile(self, pathname, outputFormat=...) -> self: ...  # type: ignore[name-defined]
+    def writeToFileWithDepth(self, pathname, outputFormat=..., writeDepth=...) -> self: ...  # type: ignore[name-defined]
 
 class MIntArray:
     sizeIncrement: Incomplete
@@ -3670,22 +3656,22 @@ class MItCurveCV:
     def __next__(self): ...
     def __init__(self, *args, **kwargs) -> None: ...
     def isDone(self) -> bool: ...
-    def next(self) -> self: ...  # type: ignore
+    def next(self) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self) -> self: ...  # type: ignore
+    def reset(self) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self, curve) -> self: ...  # type: ignore
+    def reset(self, curve) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self, curve, component=...) -> self: ...  # type: ignore
+    def reset(self, curve, component=...) -> self: ...  # type: ignore[name-defined]
     def position(self) -> MPoint: ...
-    def setPosition(self, point, space=...) -> self: ...  # type: ignore
-    def translateBy(self, vector, space=...) -> self: ...  # type: ignore
+    def setPosition(self, point, space=...) -> self: ...  # type: ignore[name-defined]
+    def translateBy(self, vector, space=...) -> self: ...  # type: ignore[name-defined]
     def index(self) -> int: ...
     def currentItem(self) -> MObject: ...
     def hasHistoryOnCreate(self) -> bool: ...
-    def updateCurve(self) -> self: ...  # type: ignore
+    def updateCurve(self) -> self: ...  # type: ignore[name-defined]
 
-class MItDag:  # type: ignore
+class MItDag:  # type: ignore[no-redef]
     kInvalidType: ClassVar[int] = ...
     kDepthFirst: ClassVar[int] = ...
     kBreadthFirst: ClassVar[int] = ...
@@ -3693,27 +3679,27 @@ class MItDag:  # type: ignore
     def __iter__(self): ...
     def __next__(self): ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def iternext(self) -> self: ...  # type: ignore
-    def iter(self) -> self: ...  # type: ignore
+    def iternext(self) -> self: ...  # type: ignore[name-defined]
+    def iter(self) -> self: ...  # type: ignore[name-defined]
     def currentItem(self) -> MObject: ...
-    def depth(self) -> integer: ...  # type: ignore
-    def fullPathName(self) -> MString: ...  # type: ignore
+    def depth(self) -> integer: ...  # type: ignore[name-defined]
+    def fullPathName(self) -> MString: ...  # type: ignore[name-defined]
     def getAllPaths(self) -> MDagPathArray: ...
     def getPath(self) -> MDagPath: ...
-    def instanceCount(self, total) -> Integer: ...  # type: ignore
-    def isDone(self) -> Bool: ...  # type: ignore
-    def isInstanced(self, indirect=...) -> Bool: ...  # type: ignore
-    def next(self) -> self: ...  # type: ignore
-    def partialPathName(self) -> MString: ...  # type: ignore
-    def prune(self) -> self: ...  # type: ignore
+    def instanceCount(self, total) -> Integer: ...  # type: ignore[name-defined]
+    def isDone(self) -> Bool: ...  # type: ignore[name-defined]
+    def isInstanced(self, indirect=...) -> Bool: ...  # type: ignore[name-defined]
+    def next(self) -> self: ...  # type: ignore[name-defined]
+    def partialPathName(self) -> MString: ...  # type: ignore[name-defined]
+    def prune(self) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self) -> self: ...  # type: ignore
+    def reset(self) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self, rootObject, traversalType=..., filterType=...) -> self: ...  # type: ignore
+    def reset(self, rootObject, traversalType=..., filterType=...) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self, rootPath, traversalType=..., filterType=...) -> self: ...  # type: ignore
+    def reset(self, rootPath, traversalType=..., filterType=...) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self, dagInfoObject, rootObjectORrootPath, traversalType=...) -> self: ...  # type: ignore
+    def reset(self, dagInfoObject, rootObjectORrootPath, traversalType=...) -> self: ...  # type: ignore[name-defined]
     @overload
     def root(self) -> MObject: ...
     @overload
@@ -3741,27 +3727,27 @@ class MItDependencyGraph:
     def __iter__(self): ...
     def __next__(self): ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def iternext(self) -> self: ...  # type: ignore
-    def iter(self) -> self: ...  # type: ignore
+    def iternext(self) -> self: ...  # type: ignore[name-defined]
+    def iter(self) -> self: ...  # type: ignore[name-defined]
     def currentNode(self) -> MObject: ...
-    def currentNodeHasUnknownType(self) -> Bool: ...  # type: ignore
+    def currentNodeHasUnknownType(self) -> Bool: ...  # type: ignore[name-defined]
     def currentPlug(self) -> MPlug: ...
     def getNodePath(self) -> MObjectArray: ...
     def getNodesVisited(self) -> MObjectArray: ...
     def getPlugPath(self) -> MPlugArray: ...
     def getPlugsVisited(self) -> MPlugArray: ...
-    def isDone(self) -> Bool: ...  # type: ignore
-    def next(self) -> self: ...  # type: ignore
+    def isDone(self) -> Bool: ...  # type: ignore[name-defined]
+    def next(self) -> self: ...  # type: ignore[name-defined]
     def previousPlug(self) -> MPlug: ...
-    def prune(self) -> self: ...  # type: ignore
-    def reset(self) -> self: ...  # type: ignore
-    def resetFilter(self) -> self: ...  # type: ignore
+    def prune(self) -> self: ...  # type: ignore[name-defined]
+    def reset(self) -> self: ...  # type: ignore[name-defined]
+    def resetFilter(self) -> self: ...  # type: ignore[name-defined]
     @overload
-    def resetTo(self, rootObject, filter=..., direction=..., traversal=..., level=..., relationship=...) -> self: ...  # type: ignore
+    def resetTo(self, rootObject, filter=..., direction=..., traversal=..., level=..., relationship=...) -> self: ...  # type: ignore[name-defined]
     @overload
-    def resetTo(self, rootPlug, filter=..., direction=..., traversal=..., level=..., relationship=...) -> self: ...  # type: ignore
+    def resetTo(self, rootPlug, filter=..., direction=..., traversal=..., level=..., relationship=...) -> self: ...  # type: ignore[name-defined]
     @overload
-    def resetTo(self, infoObject, rootObjectORrootPlug, direction=..., traversal=..., level=..., relationship=...) -> self: ...  # type: ignore
+    def resetTo(self, infoObject, rootObjectORrootPlug, direction=..., traversal=..., level=..., relationship=...) -> self: ...  # type: ignore[name-defined]
     def rootNode(self) -> MObject: ...
     def rootPlug(self) -> MPlug: ...
 
@@ -3769,38 +3755,38 @@ class MItDependencyNodes:
     def __iter__(self): ...
     def __next__(self): ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def iternext(self) -> self: ...  # type: ignore
-    def iter(self) -> self: ...  # type: ignore
+    def iternext(self) -> self: ...  # type: ignore[name-defined]
+    def iter(self) -> self: ...  # type: ignore[name-defined]
     def thisNode(self) -> MObject: ...
-    def isDone(self) -> Bool: ...  # type: ignore
-    def next(self) -> self: ...  # type: ignore
+    def isDone(self) -> Bool: ...  # type: ignore[name-defined]
+    def next(self) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self) -> self: ...  # type: ignore
+    def reset(self) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self, filterType=...) -> self: ...  # type: ignore
+    def reset(self, filterType=...) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self, dagInfoObject) -> self: ...  # type: ignore
+    def reset(self, dagInfoObject) -> self: ...  # type: ignore[name-defined]
 
 class MItGeometry:
     def __iter__(self): ...
     def __next__(self): ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def iternext(self) -> self: ...  # type: ignore
-    def iter(self) -> self: ...  # type: ignore
-    def isDone(self) -> Bool: ...  # type: ignore
-    def next(self) -> self: ...  # type: ignore
+    def iternext(self) -> self: ...  # type: ignore[name-defined]
+    def iter(self) -> self: ...  # type: ignore[name-defined]
+    def isDone(self) -> Bool: ...  # type: ignore[name-defined]
+    def next(self) -> self: ...  # type: ignore[name-defined]
     def position(self) -> MPoint: ...
     def normal(self) -> MVector: ...
-    def setPosition(self) -> MStatus: ...  # type: ignore
+    def setPosition(self) -> MStatus: ...  # type: ignore[name-defined]
     def weight(self) -> MWeight: ...
     def index(self) -> int: ...
     def component(self) -> MObject: ...
     def currentItem(self) -> MObject: ...
     def count(self) -> int: ...
     def exactCount(self) -> int: ...
-    def reset(self) -> self: ...  # type: ignore
-    def allPositions(self) -> MStatus: ...  # type: ignore
-    def setAllPositions(self) -> MStatus: ...  # type: ignore
+    def reset(self) -> self: ...  # type: ignore[name-defined]
+    def allPositions(self) -> MStatus: ...  # type: ignore[name-defined]
+    def setAllPositions(self) -> MStatus: ...  # type: ignore[name-defined]
 
 class MIteratorType:
     kMObject: ClassVar[int] = ...
@@ -3817,45 +3803,45 @@ class MItMeshEdge:
     def __iter__(self): ...
     def __next__(self): ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def iternext(self) -> self: ...  # type: ignore
-    def iter(self) -> self: ...  # type: ignore
+    def iternext(self) -> self: ...  # type: ignore[name-defined]
+    def iter(self) -> self: ...  # type: ignore[name-defined]
     def center(self, space=...) -> MPoint: ...
     def connectedToEdge(self, index) -> bool: ...
     def connectedToFace(self, index) -> bool: ...
     def count(self) -> int: ...
     def currentItem(self) -> MObject: ...
-    def geomChanged(self) -> self: ...  # type: ignore
+    def geomChanged(self) -> self: ...  # type: ignore[name-defined]
     def getConnectedEdges(self) -> MIntArray: ...
     def getConnectedFaces(self) -> MIntArray: ...
     def index(self) -> int: ...
     def isDone(self) -> bool: ...
     def length(self, space=...) -> float: ...
-    def next(self) -> self: ...  # type: ignore
+    def next(self) -> self: ...  # type: ignore[name-defined]
     def numConnectedEdges(self) -> int: ...
     def numConnectedFaces(self) -> int: ...
     def onBoundary(self) -> bool: ...
     def point(self, whichVertex, space=...) -> MPoint: ...
     @overload
-    def reset(self) -> self: ...  # type: ignore
+    def reset(self) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self, mesh) -> self: ...  # type: ignore
+    def reset(self, mesh) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self, mesh, component=...) -> self: ...  # type: ignore
+    def reset(self, mesh, component=...) -> self: ...  # type: ignore[name-defined]
     def setIndex(self, index) -> int: ...
-    def setPoint(self, point, whichVertex, space=...) -> self: ...  # type: ignore
-    def updateSurface(self) -> self: ...  # type: ignore
+    def setPoint(self, point, whichVertex, space=...) -> self: ...  # type: ignore[name-defined]
+    def updateSurface(self) -> self: ...  # type: ignore[name-defined]
     def vertexId(self, whichVertex) -> int: ...
 
 class MItMeshFaceVertex:
     def __iter__(self): ...
     def __next__(self): ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def iternext(self) -> self: ...  # type: ignore
-    def iter(self) -> self: ...  # type: ignore
+    def iternext(self) -> self: ...  # type: ignore[name-defined]
+    def iter(self) -> self: ...  # type: ignore[name-defined]
     def currentItem(self) -> MObject: ...
     def faceId(self) -> int: ...
     def faceVertexId(self) -> int: ...
-    def geomChanged(self) -> self: ...  # type: ignore
+    def geomChanged(self) -> self: ...  # type: ignore[name-defined]
     def getBinormal(self, space=..., uvSet=...) -> MVector: ...
     def getColor(self, colorSetName=...) -> MColor: ...
     def getColorIndex(self, colorSetName=...) -> int: ...
@@ -3866,30 +3852,30 @@ class MItMeshFaceVertex:
     def hasColor(self) -> bool: ...
     def hasUVs(self, uvSet=...) -> bool: ...
     def isDone(self) -> bool: ...
-    def next(self) -> self: ...  # type: ignore
+    def next(self) -> self: ...  # type: ignore[name-defined]
     def normalId(self) -> int: ...
     def position(self, space=...) -> MPoint: ...
     @overload
-    def reset(self) -> self: ...  # type: ignore
+    def reset(self) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self, mesh) -> self: ...  # type: ignore
+    def reset(self, mesh) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self, mesh, component=...) -> self: ...  # type: ignore
+    def reset(self, mesh, component=...) -> self: ...  # type: ignore[name-defined]
     def setIndex(self, *args, **kwargs): ...
     def tangentId(self) -> int: ...
-    def updateSurface(self) -> self: ...  # type: ignore
+    def updateSurface(self) -> self: ...  # type: ignore[name-defined]
     def vertexId(self) -> int: ...
 
 class MItMeshPolygon:
     def __iter__(self): ...
     def __next__(self): ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def iternext(self) -> self: ...  # type: ignore
-    def iter(self) -> self: ...  # type: ignore
+    def iternext(self) -> self: ...  # type: ignore[name-defined]
+    def iter(self) -> self: ...  # type: ignore[name-defined]
     def center(self, space=...) -> MPoint: ...
     def count(self) -> int: ...
     def currentItem(self) -> MObject: ...
-    def geomChanged(self) -> self: ...  # type: ignore
+    def geomChanged(self) -> self: ...  # type: ignore[name-defined]
     def getArea(self, space=...) -> float: ...
     @overload
     def getColor(self, colorSetName=...) -> MColor: ...
@@ -3913,7 +3899,7 @@ class MItMeshPolygon:
     def getUVAtPoint(self, *args, **kwargs): ...
     def getUVIndex(self, vertex, uvSet=...) -> int: ...
     def getUVIndexAndValue(self, *args, **kwargs): ...
-    def getUVSetNames(self) -> listofstrings: ...  # type: ignore
+    def getUVSetNames(self) -> listofstrings: ...  # type: ignore[name-defined]
     def getUVs(self, *args, **kwargs): ...
     def getVertices(self) -> MIntArray: ...
     @overload
@@ -3933,7 +3919,7 @@ class MItMeshPolygon:
     def isPlanar(self) -> bool: ...
     def isStarlike(self) -> bool: ...
     def isUVReversed(self, faceId) -> bool: ...
-    def next(self) -> self: ...  # type: ignore
+    def next(self) -> self: ...  # type: ignore[name-defined]
     def normalIndex(self, vertex) -> int: ...
     def numColors(self, colorSetName=...) -> int: ...
     def numConnectedEdges(self) -> int: ...
@@ -3943,18 +3929,18 @@ class MItMeshPolygon:
     def point(self, index, space=...) -> MPoint: ...
     def polygonVertexCount(self) -> int: ...
     @overload
-    def reset(self) -> self: ...  # type: ignore
+    def reset(self) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self, polyObject) -> self: ...  # type: ignore
+    def reset(self, polyObject) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self, polyObject, component=...) -> self: ...  # type: ignore
+    def reset(self, polyObject, component=...) -> self: ...  # type: ignore[name-defined]
     def setIndex(self, index) -> int: ...
-    def setPoint(self, point, index, space=...) -> self: ...  # type: ignore
-    def setPoints(self, pointArray, space=...) -> self: ...  # type: ignore
-    def setUV(self, vertexId, uvPoint, uvSet=...) -> self: ...  # type: ignore
-    def setUVs(self, uArray, vArray, uvSet=...) -> self: ...  # type: ignore
+    def setPoint(self, point, index, space=...) -> self: ...  # type: ignore[name-defined]
+    def setPoints(self, pointArray, space=...) -> self: ...  # type: ignore[name-defined]
+    def setUV(self, vertexId, uvPoint, uvSet=...) -> self: ...  # type: ignore[name-defined]
+    def setUVs(self, uArray, vArray, uvSet=...) -> self: ...  # type: ignore[name-defined]
     def tangentIndex(self, localVertexIndex) -> int: ...
-    def updateSurface(self) -> self: ...  # type: ignore
+    def updateSurface(self) -> self: ...  # type: ignore[name-defined]
     def vertexIndex(self, index) -> int: ...
     def zeroArea(self) -> bool: ...
     def zeroUVArea(self, uvSet=...) -> bool: ...
@@ -3963,11 +3949,11 @@ class MItMeshVertex:
     def __iter__(self): ...
     def __next__(self): ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def iternext(self) -> self: ...  # type: ignore
-    def iter(self) -> self: ...  # type: ignore
+    def iternext(self) -> self: ...  # type: ignore[name-defined]
+    def iter(self) -> self: ...  # type: ignore[name-defined]
     def count(self) -> int: ...
     def currentItem(self) -> MObject: ...
-    def geomChanged(self) -> self: ...  # type: ignore
+    def geomChanged(self) -> self: ...  # type: ignore[name-defined]
     def getConnectedEdges(self) -> MIntArray: ...
     def getConnectedFaces(self) -> MIntArray: ...
     def getConnectedVertices(self) -> MIntArray: ...
@@ -3995,24 +3981,24 @@ class MItMeshVertex:
     @overload
     def hasColor(self, index) -> bool: ...
     def isDone(self) -> bool: ...
-    def next(self) -> self: ...  # type: ignore
+    def next(self) -> self: ...  # type: ignore[name-defined]
     def numConnectedEdges(self) -> int: ...
     def numConnectedFaces(self) -> int: ...
     def numUVs(self, uvSet=...) -> int: ...
     def onBoundary(self) -> bool: ...
     def position(self, space=...) -> MPoint: ...
     @overload
-    def reset(self) -> self: ...  # type: ignore
+    def reset(self) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self, polyObject) -> self: ...  # type: ignore
+    def reset(self, polyObject) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self, polyObject, component=...) -> self: ...  # type: ignore
+    def reset(self, polyObject, component=...) -> self: ...  # type: ignore[name-defined]
     def setIndex(self, index) -> int: ...
-    def setPosition(self, point, space=...) -> self: ...  # type: ignore
+    def setPosition(self, point, space=...) -> self: ...  # type: ignore[name-defined]
     def setUV(self, *args, **kwargs): ...
-    def setUVs(self, uArray, vArray, faceIds, uvSet=...) -> self: ...  # type: ignore
-    def translateBy(self, vector, space=...) -> self: ...  # type: ignore
-    def updateSurface(self) -> self: ...  # type: ignore
+    def setUVs(self, uArray, vArray, faceIds, uvSet=...) -> self: ...  # type: ignore[name-defined]
+    def translateBy(self, vector, space=...) -> self: ...  # type: ignore[name-defined]
+    def updateSurface(self) -> self: ...  # type: ignore[name-defined]
 
 class MItSelectionList:
     kUnknownItem: ClassVar[int] = ...
@@ -4023,44 +4009,44 @@ class MItSelectionList:
     def __iter__(self): ...
     def __next__(self): ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def iternext(self) -> self: ...  # type: ignore
-    def iter(self) -> self: ...  # type: ignore
+    def iternext(self) -> self: ...  # type: ignore[name-defined]
+    def iter(self) -> self: ...  # type: ignore[name-defined]
     def getDagPath(self) -> MDagPath: ...
     def getComponent(self, *args, **kwargs): ...
     def getDependNode(self) -> MObject: ...
     def getPlug(self) -> MPlug: ...
-    def getStrings(self) -> listofstrings: ...  # type: ignore
+    def getStrings(self) -> listofstrings: ...  # type: ignore[name-defined]
     def hasComponents(self) -> bool: ...
     def isDone(self) -> bool: ...
     def itemType(self) -> int: ...
-    def next(self) -> self: ...  # type: ignore
-    def reset(self) -> self: ...  # type: ignore
-    def setFilter(self, filter) -> self: ...  # type: ignore
+    def next(self) -> self: ...  # type: ignore[name-defined]
+    def reset(self) -> self: ...  # type: ignore[name-defined]
+    def setFilter(self, filter) -> self: ...  # type: ignore[name-defined]
 
 class MItSurfaceCV:
     def __iter__(self): ...
     def __next__(self): ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def iternext(self) -> self: ...  # type: ignore
-    def iter(self) -> self: ...  # type: ignore
+    def iternext(self) -> self: ...  # type: ignore[name-defined]
+    def iter(self) -> self: ...  # type: ignore[name-defined]
     def hasHistoryOnCreate(self) -> bool: ...
     def currentItem(self) -> MObject: ...
     def index(self) -> int: ...
     def uvIndices(self, *args, **kwargs): ...
     def isDone(self) -> bool: ...
     def isRowDone(self) -> bool: ...
-    def next(self) -> self: ...  # type: ignore
-    def nextRow(self) -> self: ...  # type: ignore
+    def next(self) -> self: ...  # type: ignore[name-defined]
+    def nextRow(self) -> self: ...  # type: ignore[name-defined]
     def position(self, space=...) -> MPoint: ...
     @overload
-    def reset(self) -> self: ...  # type: ignore
+    def reset(self) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self, surface, useURows=...) -> self: ...  # type: ignore
+    def reset(self, surface, useURows=...) -> self: ...  # type: ignore[name-defined]
     @overload
-    def reset(self, surface, component, useURows=...) -> self: ...  # type: ignore
-    def setPosition(self, point, space=...) -> self: ...  # type: ignore
-    def translateBy(self, vector, space=...) -> self: ...  # type: ignore
-    def updateSurface(self) -> self: ...  # type: ignore
+    def reset(self, surface, component, useURows=...) -> self: ...  # type: ignore[name-defined]
+    def setPosition(self, point, space=...) -> self: ...  # type: ignore[name-defined]
+    def translateBy(self, vector, space=...) -> self: ...  # type: ignore[name-defined]
+    def updateSurface(self) -> self: ...  # type: ignore[name-defined]
 
 class MMatrix:
     kIdentity: ClassVar[MMatrix] = ...
@@ -4121,7 +4107,7 @@ class MMatrixArray:
 class MMeshIntersector:
     isCreated: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
-    def create(self, mesh, matrix) -> self: ...  # type: ignore
+    def create(self, mesh, matrix) -> self: ...  # type: ignore[name-defined]
     def getClosestPoint(self, referencePoint, maxDistance=...) -> MPointOnMesh: ...
 
 class MMeshIsectAccelParams:
@@ -4153,9 +4139,9 @@ class MMessage:
     kDoNotDoAction: ClassVar[int] = ...
     kDoAction: ClassVar[int] = ...
     @staticmethod
-    def currentCallbackId() -> id: ...  # type: ignore
+    def currentCallbackId() -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def nodeCallbacks(node) -> ids: ...  # type: ignore
+    def nodeCallbacks(node) -> ids: ...  # type: ignore[name-defined]
     @staticmethod
     def removeCallback(id) -> None: ...
     @staticmethod
@@ -4163,9 +4149,9 @@ class MMessage:
 
 class MCameraMessage(MMessage):
     @staticmethod
-    def addBeginManipulationCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addBeginManipulationCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addEndManipulationCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addEndManipulationCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
 
 class MCommandMessage(MMessage):
     kHistory: ClassVar[int] = ...
@@ -4178,17 +4164,17 @@ class MCommandMessage(MMessage):
     kMELProc: ClassVar[int] = ...
     kMELCommand: ClassVar[int] = ...
     @staticmethod
-    def addCommandCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addCommandCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addProcCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addProcCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addCommandOutputCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addCommandOutputCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addCommandOutputFilterCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addCommandOutputFilterCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
 
 class MConditionMessage(MMessage):
     @staticmethod
-    def addConditionCallback(conditionName, function, clientData=...) -> id: ...  # type: ignore
+    def addConditionCallback(conditionName, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
     def getConditionNames(*args, **kwargs): ...
     @staticmethod
@@ -4196,9 +4182,9 @@ class MConditionMessage(MMessage):
 
 class MContainerMessage(MMessage):
     @staticmethod
-    def addPublishAttrCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addPublishAttrCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addBoundAttrCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addBoundAttrCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
 
 class MDagMessage(MMessage):
     kInvalidMsg: ClassVar[int] = ...
@@ -4249,41 +4235,41 @@ class MDagMessage(MMessage):
     kRotatePivotTrans: ClassVar[int] = ...
     kRotateOrient: ClassVar[int] = ...
     @staticmethod
-    def addParentAddedCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addParentAddedCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addParentAddedDagPathCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addParentAddedDagPathCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addParentRemovedCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addParentRemovedCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addParentRemovedDagPathCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addParentRemovedDagPathCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addChildAddedCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addChildAddedCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addChildAddedDagPathCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addChildAddedDagPathCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addChildRemovedCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addChildRemovedCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addChildRemovedDagPathCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addChildRemovedDagPathCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addChildReorderedCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addChildReorderedCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addChildReorderedDagPathCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addChildReorderedDagPathCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addDagCallback(msgType, function, clientData=...) -> id: ...  # type: ignore
+    def addDagCallback(msgType, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addDagDagPathCallback(node, msgType, function, clientData=...) -> id: ...  # type: ignore
+    def addDagDagPathCallback(node, msgType, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addAllDagChangesCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addAllDagChangesCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addAllDagChangesDagPathCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addAllDagChangesDagPathCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addInstanceAddedCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addInstanceAddedCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addInstanceAddedDagPathCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addInstanceAddedDagPathCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addInstanceRemovedCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addInstanceRemovedCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addInstanceRemovedDagPathCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addInstanceRemovedDagPathCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
     def addWorldMatrixModifiedCallback(*args, **kwargs): ...
     @staticmethod
@@ -4291,27 +4277,27 @@ class MDagMessage(MMessage):
 
 class MDGMessage(MMessage):
     @staticmethod
-    def addTimeChangeCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addTimeChangeCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addDelayedTimeChangeCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addDelayedTimeChangeCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addDelayedTimeChangeRunupCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addDelayedTimeChangeRunupCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addForceUpdateCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addForceUpdateCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addNodeAddedCallback(function, nodeType, clientData=...) -> id: ...  # type: ignore
+    def addNodeAddedCallback(function, nodeType, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addNodeRemovedCallback(function, nodeType, clientData=...) -> id: ...  # type: ignore
+    def addNodeRemovedCallback(function, nodeType, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addPreConnectionCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addPreConnectionCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addConnectionCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addConnectionCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addNodeChangeUuidCheckCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addNodeChangeUuidCheckCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
 
 class MEventMessage(MMessage):
     @staticmethod
-    def addEventCallback(eventName, function, clientData=...) -> id: ...  # type: ignore
+    def addEventCallback(eventName, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
     def getEventNames(*args, **kwargs): ...
 
@@ -4346,7 +4332,7 @@ class MLockMessage(MMessage):
     kLockAttr: ClassVar[int] = ...
     kLast: ClassVar[int] = ...
     @staticmethod
-    def setNodeLockDAGQueryCallback(dagPath, function, clientData=...) -> id: ...  # type: ignore
+    def setNodeLockDAGQueryCallback(dagPath, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
     def setNodeLockQueryCallback(*args, **kwargs): ...
     @staticmethod
@@ -4355,17 +4341,17 @@ class MLockMessage(MMessage):
 class MModelMessage(MMessage):
     kActiveListModified: ClassVar[int] = ...
     @staticmethod
-    def addPostDuplicateNodeListCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addPostDuplicateNodeListCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addAfterDuplicateCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addAfterDuplicateCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addBeforeDuplicateCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addBeforeDuplicateCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addCallback(message, function, clientData=...) -> id: ...  # type: ignore
+    def addCallback(message, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addNodeAddedToModelCallback(dagNode, function, clientData=...) -> id: ...  # type: ignore
+    def addNodeAddedToModelCallback(dagNode, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addNodeRemovedFromModelCallback(dagNode, function, clientData=...) -> id: ...  # type: ignore
+    def addNodeRemovedFromModelCallback(dagNode, function, clientData=...) -> id: ...  # type: ignore[valid-type]
 
 class MNodeMessage(MMessage):
     kConnectionMade: ClassVar[int] = ...
@@ -4389,35 +4375,35 @@ class MNodeMessage(MMessage):
     kMakeUnkeyable: ClassVar[int] = ...
     kKeyChangeLast: ClassVar[int] = ...
     @staticmethod
-    def addAttributeAddedOrRemovedCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addAttributeAddedOrRemovedCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addAttributeChangedCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addAttributeChangedCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addKeyableChangeOverride(plug, function, clientData=...) -> id: ...  # type: ignore
+    def addKeyableChangeOverride(plug, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addNameChangedCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addNameChangedCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addNodeAboutToDeleteCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addNodeAboutToDeleteCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addNodeDestroyedCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addNodeDestroyedCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addNodeDirtyCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addNodeDirtyCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addNodeDirtyPlugCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addNodeDirtyPlugCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addNodePreRemovalCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addNodePreRemovalCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addUuidChangedCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addUuidChangedCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
 
 class MObjectSetMessage(MMessage):
     @staticmethod
-    def addSetMembersModifiedCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addSetMembersModifiedCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
 
 class MPolyMessage(MMessage):
     @staticmethod
     def addPolyComponentIdChangedCallback(*args, **kwargs): ...
     @staticmethod
-    def addPolyTopologyChangedCallback(node, function, clientData=...) -> id: ...  # type: ignore
+    def addPolyTopologyChangedCallback(node, function, clientData=...) -> id: ...  # type: ignore[valid-type]
 
 class MSceneMessage(MMessage):
     kSceneUpdate: ClassVar[int] = ...
@@ -4474,25 +4460,25 @@ class MSceneMessage(MMessage):
     kAfterCreateReferenceAndRecordEdits: ClassVar[int] = ...
     kLast: ClassVar[int] = ...
     @staticmethod
-    def addCallback(message, function, clientData=...) -> id: ...  # type: ignore
+    def addCallback(message, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addCheckCallback(message, function, clientData=...) -> id: ...  # type: ignore
+    def addCheckCallback(message, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addCheckFileCallback(message, function, clientData=...) -> id: ...  # type: ignore
+    def addCheckFileCallback(message, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addCheckReferenceCallback(message, function, clientData=...) -> id: ...  # type: ignore
+    def addCheckReferenceCallback(message, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addConnectionFailedCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addConnectionFailedCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addNamespaceRenamedCallback(function, clientData=...) -> id: ...  # type: ignore
+    def addNamespaceRenamedCallback(function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addReferenceCallback(message, function, clientData=...) -> id: ...  # type: ignore
+    def addReferenceCallback(message, function, clientData=...) -> id: ...  # type: ignore[valid-type]
     @staticmethod
-    def addStringArrayCallback(message, function, clientData=...) -> id: ...  # type: ignore
+    def addStringArrayCallback(message, function, clientData=...) -> id: ...  # type: ignore[valid-type]
 
 class MTimerMessage(MMessage):
     @staticmethod
-    def addTimerCallback(period, function, clientData=...) -> id: ...  # type: ignore
+    def addTimerCallback(period, function, clientData=...) -> id: ...  # type: ignore[valid-type]
 
 class MUserEventMessage(MMessage):
     @staticmethod
@@ -4504,23 +4490,23 @@ class MUserEventMessage(MMessage):
     @staticmethod
     def postUserEvent(eventName, clientData=...) -> Any: ...
     @staticmethod
-    def addUserEventCallback(eventName, function, clientData=...) -> id: ...  # type: ignore
+    def addUserEventCallback(eventName, function, clientData=...) -> id: ...  # type: ignore[valid-type]
 
 class MNamespace:
     @staticmethod
     def addNamespace(MStringname, MStringparent=...) -> Any: ...
     @staticmethod
-    def validateName(MStringname) -> MString: ...  # type: ignore
+    def validateName(MStringname) -> MString: ...  # type: ignore[name-defined]
     @staticmethod
-    def currentNamespace() -> MString: ...  # type: ignore
+    def currentNamespace() -> MString: ...  # type: ignore[name-defined]
     @staticmethod
-    def setCurrentNamespace(MStringname) -> MString: ...  # type: ignore
+    def setCurrentNamespace(MStringname) -> MString: ...  # type: ignore[name-defined]
     @staticmethod
     def getNamespaces(*args, **kwargs): ...
     @staticmethod
     def namespaceExists(MStringname) -> bool: ...
     @staticmethod
-    def parentNamespace() -> MString: ...  # type: ignore
+    def parentNamespace() -> MString: ...  # type: ignore[name-defined]
     @staticmethod
     def removeNamespace(MStringname, boolremoveContents=...) -> Any: ...
     @staticmethod
@@ -4530,17 +4516,17 @@ class MNamespace:
     @staticmethod
     def moveNamespace(MStringsrc, MStringdst, boolforce=...) -> Any: ...
     @staticmethod
-    def rootNamespace() -> MString: ...  # type: ignore
+    def rootNamespace() -> MString: ...  # type: ignore[name-defined]
     @staticmethod
     def relativeNames() -> bool: ...
     @staticmethod
     def setRelativeNames(boolnewState) -> Any: ...
     @staticmethod
-    def getNamespaceFromName(MStringfullName) -> MString: ...  # type: ignore
+    def getNamespaceFromName(MStringfullName) -> MString: ...  # type: ignore[name-defined]
     @staticmethod
-    def stripNamespaceFromName(MStringfullName) -> MString: ...  # type: ignore
+    def stripNamespaceFromName(MStringfullName) -> MString: ...  # type: ignore[name-defined]
     @staticmethod
-    def makeNamepathAbsolute(MStringfullName) -> MString: ...  # type: ignore
+    def makeNamepathAbsolute(MStringfullName) -> MString: ...  # type: ignore[name-defined]
 
 class MNodeClass:
     attributeCount: Incomplete
@@ -4599,7 +4585,7 @@ class MObjectHandle:
     def __gt__(self, value) -> bool: ...
     def __ge__(self, value) -> bool: ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def assign(self, source) -> self: ...  # type: ignore
+    def assign(self, source) -> self: ...  # type: ignore[name-defined]
     def hashCode(self) -> int: ...
     def isAlive(self) -> bool: ...
     def isValid(self) -> bool: ...
@@ -4611,9 +4597,9 @@ class MPlane:
     def distanceToPoint(self, point, signed=...) -> float: ...
     def normal(self) -> MVector: ...
     @overload
-    def setPlane(self, a, b, c, d) -> self: ...  # type: ignore
+    def setPlane(self, a, b, c, d) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setPlane(self, n, d) -> self: ...  # type: ignore
+    def setPlane(self, n, d) -> self: ...  # type: ignore[name-defined]
 
 class MPlug:
     kFreeToChange: ClassVar[int] = ...
@@ -4669,7 +4655,7 @@ class MPlug:
     @overload
     def sourceWithConversion(self) -> Any: ...
     @overload
-    def sourceWithConversion(self) -> Any: ...  # type: ignore
+    def sourceWithConversion(self) -> Any: ...  # type: ignore[overload-cannot-match]
     def destinations(self, *args, **kwargs): ...
     def destinationsWithConversions(self) -> Any: ...
     def connectionByPhysicalIndex(self, *args, **kwargs): ...
@@ -4837,11 +4823,11 @@ class MPxData:
     def __init__(self, *args, **kwargs) -> None: ...
     def readASCII(self, argList, endOfTheLastParsedElement) -> int: ...
     def readBinary(self, _in, length) -> int: ...
-    def writeASCII(self) -> string: ...  # type: ignore
+    def writeASCII(self) -> string: ...  # type: ignore[name-defined]
     def writeBinary(self) -> bytearray: ...
-    def copy(self, src) -> self: ...  # type: ignore
+    def copy(self, src) -> self: ...  # type: ignore[name-defined]
     def typeId(self) -> MTypeId: ...
-    def name(self) -> string: ...  # type: ignore
+    def name(self) -> string: ...  # type: ignore[name-defined]
 
 class MPxGeometryData(MPxData):
     matrix: Incomplete
@@ -4850,7 +4836,7 @@ class MPxGeometryData(MPxData):
     def deleteComponentsFromGroups(self, compList, groupIdArray, groupComponentArray) -> bool: ...
     def getMatrix(self, matrix) -> bool: ...
     def iterator(self, componentList, component, useComponents, world=...) -> MPxGeometryIterator: ...
-    def smartCopy(self, srcGeom) -> self: ...  # type: ignore
+    def smartCopy(self, srcGeom) -> self: ...  # type: ignore[name-defined]
     def updateCompleteVertexGroup(self, component) -> bool: ...
 
 class MPxGeometryIterator:
@@ -4867,11 +4853,11 @@ class MPxGeometryIterator:
     def indexUnsimplified(self) -> int: ...
     def isDone(self) -> bool: ...
     def iteratorCount(self) -> int: ...
-    def next(self) -> self: ...  # type: ignore
+    def next(self) -> self: ...  # type: ignore[name-defined]
     def point(self) -> MPoint: ...
-    def reset(self) -> self: ...  # type: ignore
-    def setObject(self, shape) -> self: ...  # type: ignore
-    def setPoint(self, point) -> self: ...  # type: ignore
+    def reset(self) -> self: ...  # type: ignore[name-defined]
+    def setObject(self, shape) -> self: ...  # type: ignore[name-defined]
+    def setPoint(self, point) -> self: ...  # type: ignore[name-defined]
     def setPointGetNext(self, point) -> int: ...
 
 class MPxNode:
@@ -4915,58 +4901,58 @@ class MPxNode:
     def addAttribute() -> Any: ...
     @staticmethod
     def attributeAffects(whenChanges, isAffected) -> None: ...
-    def compute(self, plug, dataBlock) -> self: ...  # type: ignore
+    def compute(self, plug, dataBlock) -> self: ...  # type: ignore[name-defined]
     def preEvaluation(self, context, evalNode) -> None: ...
     def postEvaluation(self, context, evalNode, evalType) -> None: ...
     def getCacheSetup(self, evalNode, disablingInfo, setupInfo, objectArray) -> None: ...
     def configCache(self, evalNode, schema) -> None: ...
-    def transformInvalidationRange(self, plug, timeRange) -> timeRange: ...  # type: ignore
+    def transformInvalidationRange(self, plug, timeRange) -> timeRange: ...  # type: ignore[name-defined]
     def hasInvalidationRangeTransformation(self) -> bool: ...
-    def connectionBroken(self, plug, otherPlug, asSrc) -> self: ...  # type: ignore
-    def connectionMade(self, plug, otherPlug, asSrc) -> self: ...  # type: ignore
-    def copyInternalData(self, node) -> self: ...  # type: ignore
+    def connectionBroken(self, plug, otherPlug, asSrc) -> self: ...  # type: ignore[name-defined]
+    def connectionMade(self, plug, otherPlug, asSrc) -> self: ...  # type: ignore[name-defined]
+    def copyInternalData(self, node) -> self: ...  # type: ignore[name-defined]
     def dependsOn(self, *args, **kwargs): ...
     def doNotWrite(self) -> bool: ...
     def existWithoutInConnections(self) -> bool: ...
     def existWithoutOutConnections(self) -> bool: ...
     def forceCache(self, ctx=...) -> MDataBlock: ...
-    def getFilesToArchive(self, shortName=..., unresolvedName=..., markCouldBeImageSequence=...) -> listofstrings: ...  # type: ignore
+    def getFilesToArchive(self, shortName=..., unresolvedName=..., markCouldBeImageSequence=...) -> listofstrings: ...  # type: ignore[name-defined]
     def getInternalValue(self, plug, dataHandle) -> bool: ...
-    def getInternalValueInContext(self, plug, dataHandle, ctx) -> bool[OBSOLETE]: ...  # type: ignore
+    def getInternalValueInContext(self, plug, dataHandle, ctx) -> bool[OBSOLETE]: ...  # type: ignore[type-arg]
     @staticmethod
     def inheritAttributesFrom(parentClassName) -> None: ...
     @overload
     def internalArrayCount(self, plug) -> int: ...
     @overload
-    def internalArrayCount(self, plug, ctx) -> int[OBSOLETE]: ...  # type: ignore
+    def internalArrayCount(self, plug, ctx) -> int[OBSOLETE]: ...  # type: ignore[type-arg]
     def isAbstractClass(self) -> bool: ...
     def isPassiveOutput(self, plug) -> bool: ...
     def legalConnection(self, *args, **kwargs): ...
     def legalDisconnection(self, *args, **kwargs): ...
     def passThroughToMany(self, plug, plugArray) -> bool: ...
-    def passThroughToOne(self, plug) -> plug: ...  # type: ignore
-    def postConstructor(self) -> self: ...  # type: ignore
+    def passThroughToOne(self, plug) -> plug: ...  # type: ignore[name-defined]
+    def postConstructor(self) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setDependentsDirty(self, plug, plugArray) -> self: ...  # type: ignore
+    def setDependentsDirty(self, plug, plugArray) -> self: ...  # type: ignore[name-defined]
     @overload
     def setDependentsDirty(self) -> Any: ...
     @overload
-    def setDependentsDirty(self) -> Any: ...  # type: ignore
-    def setDoNotWrite(self, bool) -> self: ...  # type: ignore
+    def setDependentsDirty(self) -> Any: ...  # type: ignore[overload-cannot-match]
+    def setDoNotWrite(self, bool) -> self: ...  # type: ignore[name-defined]
     def setExistWithoutInConnections(self, bool) -> bool: ...
     def setExistWithoutOutConnections(self, bool) -> bool: ...
     def setInternalValue(self, plug, dataHandle) -> bool: ...
-    def setInternalValueInContext(self, plug, dataHandle, ctx) -> bool[OBSOLETE]: ...  # type: ignore
-    def setMPSafe(self, bool) -> self: ...  # type: ignore
+    def setInternalValueInContext(self, plug, dataHandle, ctx) -> bool[OBSOLETE]: ...  # type: ignore[type-arg]
+    def setMPSafe(self, bool) -> self: ...  # type: ignore[name-defined]
     def shouldSave(self, *args, **kwargs): ...
     def thisMObject(self) -> MObject: ...
     def type(self) -> int: ...
     def typeId(self) -> MTypeId: ...
-    def typeName(self) -> string: ...  # type: ignore
-    def name(self) -> string: ...  # type: ignore
+    def typeName(self) -> string: ...  # type: ignore[name-defined]
+    def name(self) -> string: ...  # type: ignore[name-defined]
     def addExternalContentForFileAttr(self, table, attr) -> bool: ...
-    def getExternalContent(self, table) -> self: ...  # type: ignore
-    def setExternalContent(self, table) -> self: ...  # type: ignore
+    def getExternalContent(self, table) -> self: ...  # type: ignore[name-defined]
+    def setExternalContent(self, table) -> self: ...  # type: ignore[name-defined]
     def setExternalContentForFileAttr(self, attr, table) -> bool: ...
 
 class MPxSurfaceShape(MPxNode):
@@ -5033,12 +5019,12 @@ class MPxSurfaceShape(MPxNode):
     def boundingBox(self) -> MBoundingBox: ...
     def cachedShapeAttr(self) -> MObject: ...
     def canMakeLive(self) -> bool: ...
-    def childChanged(self, state=...) -> self: ...  # type: ignore
+    def childChanged(self, state=...) -> self: ...  # type: ignore[name-defined]
     @overload
-    def closestPoint(self, toThisPoint, theClosestPoint, tolerance=...) -> self: ...  # type: ignore
+    def closestPoint(self, toThisPoint, theClosestPoint, tolerance=...) -> self: ...  # type: ignore[name-defined]
     @overload
     def closestPoint(self, raySource, rayDirection, theClosestPoint, theClosestNormal, findClosestOnMiss, tolerance=...) -> bool: ...
-    def componentToPlugs(self, component, selectionList) -> self: ...  # type: ignore
+    def componentToPlugs(self, component, selectionList) -> self: ...  # type: ignore[name-defined]
     def convertToTweakNodePlug(self, plug) -> bool: ...
     def createFullRenderGroup(self) -> MObject: ...
     def createFullVertexGroup(self) -> MObject: ...
@@ -5046,7 +5032,7 @@ class MPxSurfaceShape(MPxNode):
     @overload
     def excludeAsPluginShape(self) -> bool: ...
     @overload
-    def excludeAsPluginShape(self) -> Any: ...  # type: ignore
+    def excludeAsPluginShape(self) -> Any: ...  # type: ignore[overload-cannot-match]
     def geometryData(self) -> MObject: ...
     def geometryIteratorSetup(self, componentList, components, forReadOnly=...) -> MPxGeometryIterator: ...
     def getComponentSelectionMask(self) -> MSelectionMask: ...
@@ -5061,12 +5047,12 @@ class MPxSurfaceShape(MPxNode):
     def newControlPointComponent(self) -> MObject: ...
     def pointAtParm(self, atThisParm, evaluatedPoint) -> bool: ...
     def renderGroupComponentType(self) -> int: ...
-    def transformUsing(self, matrix, componentList, cachingMode=..., pointCache=...) -> self: ...  # type: ignore
-    def tweakUsing(self, matrix, componentList, cachingMode, pointCache, handle) -> self: ...  # type: ignore
+    def transformUsing(self, matrix, componentList, cachingMode=..., pointCache=...) -> self: ...  # type: ignore[name-defined]
+    def tweakUsing(self, matrix, componentList, cachingMode, pointCache, handle) -> self: ...  # type: ignore[name-defined]
     def undeleteComponents(self, componentList, undoInfo) -> bool: ...
     def vertexOffsetDirection(self, component, direction, mode, normalize) -> bool: ...
-    def weightedTransformUsing(self, xform, space, componentList, cachingMode, pointCache, freezePlane) -> self: ...  # type: ignore
-    def weightedTweakUsing(self, xform, space, componentList, cachingMode, pointCache, freezePlane, handle) -> self: ...  # type: ignore
+    def weightedTransformUsing(self, xform, space, componentList, cachingMode, pointCache, freezePlane) -> self: ...  # type: ignore[name-defined]
+    def weightedTweakUsing(self, xform, space, componentList, cachingMode, pointCache, freezePlane, handle) -> self: ...  # type: ignore[name-defined]
     def worldShapeOutAttr(self) -> MObject: ...
 
 class MQuaternion:
@@ -5148,13 +5134,13 @@ class MRampAttribute:
 
 class MRichSelection:
     def __init__(self, *args, **kwargs) -> None: ...
-    def clear(self) -> self: ...  # type: ignore
+    def clear(self) -> self: ...  # type: ignore[name-defined]
     def getRawSymmetryMatrix(self, *args, **kwargs): ...
     def getSelection(self) -> MSelectionList: ...
     def getSymmetry(self) -> MSelectionList: ...
     def getSymmetryMatrix(self, MDagPath, space) -> MMatrix: ...
     def getSymmetryPlane(self, MDagPath, space) -> MPlane: ...
-    def setSelection(self, MSelectionList) -> self: ...  # type: ignore
+    def setSelection(self, MSelectionList) -> self: ...  # type: ignore[name-defined]
 
 class MSelectionList:
     kMergeNormal: ClassVar[int] = ...
@@ -5162,11 +5148,11 @@ class MSelectionList:
     kRemoveFromList: ClassVar[int] = ...
     def __init__(self, *args, **kwargs) -> None: ...
     @overload
-    def add(self, pattern, searchChildNamespaces=...) -> self: ...  # type: ignore
+    def add(self, pattern, searchChildNamespaces=...) -> self: ...  # type: ignore[name-defined]
     @overload
-    def add(self, item, mergeWithExisting=...) -> self: ...  # type: ignore
-    def clear(self) -> self: ...  # type: ignore
-    def copy(self, src) -> self: ...  # type: ignore
+    def add(self, item, mergeWithExisting=...) -> self: ...  # type: ignore[name-defined]
+    def clear(self) -> self: ...  # type: ignore[name-defined]
+    def copy(self, src) -> self: ...  # type: ignore[name-defined]
     def getComponent(self, *args, **kwargs): ...
     def getDagPath(self, index) -> MDagPath: ...
     def getDependNode(self, index) -> MObject: ...
@@ -5177,13 +5163,13 @@ class MSelectionList:
     def isEmpty(self) -> bool: ...
     def length(self) -> int: ...
     @overload
-    def merge(self, other, strategy=...) -> self: ...  # type: ignore
+    def merge(self, other, strategy=...) -> self: ...  # type: ignore[name-defined]
     @overload
-    def merge(self, dagPath, component, strategy=...) -> self: ...  # type: ignore
-    def remove(self, index) -> self: ...  # type: ignore
-    def replace(self, index, newItem) -> self: ...  # type: ignore
-    def toggle(self, dagPath, component) -> self: ...  # type: ignore
-    def intersect(self, other, expandToLeaves=...) -> self: ...  # type: ignore
+    def merge(self, dagPath, component, strategy=...) -> self: ...  # type: ignore[name-defined]
+    def remove(self, index) -> self: ...  # type: ignore[name-defined]
+    def replace(self, index, newItem) -> self: ...  # type: ignore[name-defined]
+    def toggle(self, dagPath, component) -> self: ...  # type: ignore[name-defined]
+    def intersect(self, other, expandToLeaves=...) -> self: ...  # type: ignore[name-defined]
 
 class MSelectionMask:
     kSelectHandles: ClassVar[int] = ...
@@ -5271,8 +5257,8 @@ class MSelectionMask:
     kSelectDynamicConstraints: ClassVar[int] = ...
     kSelectNParticles: ClassVar[int] = ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def addMask(self, selType) -> self: ...  # type: ignore
-    def copy(self, source) -> self: ...  # type: ignore
+    def addMask(self, selType) -> self: ...  # type: ignore[name-defined]
+    def copy(self, source) -> self: ...  # type: ignore[name-defined]
     @staticmethod
     def deregisterSelectionType(selTypeName) -> bool: ...
     @staticmethod
@@ -5289,11 +5275,11 @@ class MSelectionMask:
     def registerSelectionType() -> Any: ...
     @overload
     @staticmethod
-    def registerSelectionType() -> Any: ...  # type: ignore
+    def registerSelectionType() -> Any: ...  # type: ignore[overload-cannot-match]
     @overload
-    def setMask(self, mask) -> self: ...  # type: ignore
+    def setMask(self, mask) -> self: ...  # type: ignore[name-defined]
     @overload
-    def setMask(self, selType) -> self: ...  # type: ignore
+    def setMask(self, selType) -> self: ...  # type: ignore[name-defined]
 
 class MSpace:
     kInvalid: ClassVar[int] = ...
@@ -5564,9 +5550,9 @@ class MUintArray:
     def setLength(self, *args, **kwargs): ...
 
 class MUserData:
-    def __init__(self, deleteAfterUse=..., legacy=...) -> Any: ...  # type: ignore
+    def __init__(self, deleteAfterUse=..., legacy=...) -> Any: ...  # type: ignore[misc]
     def deleteAfterUse(self) -> bool: ...
-    def setDeleteAfterUse(self, bool) -> self: ...  # type: ignore
+    def setDeleteAfterUse(self, bool) -> self: ...  # type: ignore[name-defined]
 
 class MURI:
     def __lt__(self, value) -> bool: ...
@@ -5578,43 +5564,43 @@ class MURI:
     def __init__(self, *args, **kwargs) -> None: ...
     @staticmethod
     def isValidURI(uri) -> bool: ...
-    def asString(self) -> string: ...  # type: ignore
-    def getScheme(self) -> string: ...  # type: ignore
-    def getPath(self) -> string: ...  # type: ignore
-    def getFragment(self) -> string: ...  # type: ignore
-    def getFileName(self, boolincludeExtension=...) -> string: ...  # type: ignore
-    def getDirectory(self) -> string: ...  # type: ignore
-    def getAuthority(self) -> string: ...  # type: ignore
-    def getUserInfo(self) -> string: ...  # type: ignore
-    def getUserName(self) -> string: ...  # type: ignore
-    def getPassword(self) -> string: ...  # type: ignore
-    def getHost(self) -> string: ...  # type: ignore
+    def asString(self) -> string: ...  # type: ignore[name-defined]
+    def getScheme(self) -> string: ...  # type: ignore[name-defined]
+    def getPath(self) -> string: ...  # type: ignore[name-defined]
+    def getFragment(self) -> string: ...  # type: ignore[name-defined]
+    def getFileName(self, boolincludeExtension=...) -> string: ...  # type: ignore[name-defined]
+    def getDirectory(self) -> string: ...  # type: ignore[name-defined]
+    def getAuthority(self) -> string: ...  # type: ignore[name-defined]
+    def getUserInfo(self) -> string: ...  # type: ignore[name-defined]
+    def getUserName(self) -> string: ...  # type: ignore[name-defined]
+    def getPassword(self) -> string: ...  # type: ignore[name-defined]
+    def getHost(self) -> string: ...  # type: ignore[name-defined]
     def getPort(self) -> int: ...
-    def getAllQueryItemKeys(self) -> array: ...  # type: ignore
-    def getQueryItemValue(self, key) -> string: ...  # type: ignore
-    def getAllQueryItemValues(self, key) -> array: ...  # type: ignore
-    def getQueryValueDelimiter(self) -> string: ...  # type: ignore
-    def getQueryPairDelimiter(self) -> string: ...  # type: ignore
-    def setScheme(self, string) -> self: ...  # type: ignore
-    def setPath(self, string) -> self: ...  # type: ignore
-    def setFragment(self, string) -> self: ...  # type: ignore
-    def setFileName(self, string) -> self: ...  # type: ignore
-    def setDirectory(self, string) -> self: ...  # type: ignore
-    def setAuthority(self, string) -> self: ...  # type: ignore
-    def setUserInfo(self, string) -> self: ...  # type: ignore
-    def setUserName(self, string) -> self: ...  # type: ignore
-    def setPassword(self, string) -> self: ...  # type: ignore
-    def setHost(self, string) -> self: ...  # type: ignore
-    def setPort(self, int) -> self: ...  # type: ignore
-    def addQueryItem(self, key, value) -> self: ...  # type: ignore
-    def setQueryDelimiters(self, valueDelimiter, pairDelimiter) -> self: ...  # type: ignore
-    def removeQueryItem(self, int) -> self: ...  # type: ignore
-    def removeAllQueryItems(self, int) -> self: ...  # type: ignore
-    def copy(self, source) -> self: ...  # type: ignore
-    def setURI(self, uri) -> self: ...  # type: ignore
+    def getAllQueryItemKeys(self) -> array: ...  # type: ignore[name-defined]
+    def getQueryItemValue(self, key) -> string: ...  # type: ignore[name-defined]
+    def getAllQueryItemValues(self, key) -> array: ...  # type: ignore[name-defined]
+    def getQueryValueDelimiter(self) -> string: ...  # type: ignore[name-defined]
+    def getQueryPairDelimiter(self) -> string: ...  # type: ignore[name-defined]
+    def setScheme(self, string) -> self: ...  # type: ignore[name-defined]
+    def setPath(self, string) -> self: ...  # type: ignore[name-defined]
+    def setFragment(self, string) -> self: ...  # type: ignore[name-defined]
+    def setFileName(self, string) -> self: ...  # type: ignore[name-defined]
+    def setDirectory(self, string) -> self: ...  # type: ignore[name-defined]
+    def setAuthority(self, string) -> self: ...  # type: ignore[name-defined]
+    def setUserInfo(self, string) -> self: ...  # type: ignore[name-defined]
+    def setUserName(self, string) -> self: ...  # type: ignore[name-defined]
+    def setPassword(self, string) -> self: ...  # type: ignore[name-defined]
+    def setHost(self, string) -> self: ...  # type: ignore[name-defined]
+    def setPort(self, int) -> self: ...  # type: ignore[name-defined]
+    def addQueryItem(self, key, value) -> self: ...  # type: ignore[name-defined]
+    def setQueryDelimiters(self, valueDelimiter, pairDelimiter) -> self: ...  # type: ignore[name-defined]
+    def removeQueryItem(self, int) -> self: ...  # type: ignore[name-defined]
+    def removeAllQueryItems(self, int) -> self: ...  # type: ignore[name-defined]
+    def copy(self, source) -> self: ...  # type: ignore[name-defined]
+    def setURI(self, uri) -> self: ...  # type: ignore[name-defined]
     def isEmpty(self) -> bool: ...
     def isValid(self) -> bool: ...
-    def clear(self) -> self: ...  # type: ignore
+    def clear(self) -> self: ...  # type: ignore[name-defined]
 
 class MUuid:
     def __lt__(self, value) -> bool: ...
@@ -5624,10 +5610,10 @@ class MUuid:
     def __gt__(self, value) -> bool: ...
     def __ge__(self, value) -> bool: ...
     def __init__(self, *args, **kwargs) -> None: ...
-    def asString(self) -> string: ...  # type: ignore
-    def copy(self, source) -> self: ...  # type: ignore
+    def asString(self) -> string: ...  # type: ignore[name-defined]
+    def copy(self, source) -> self: ...  # type: ignore[name-defined]
     def valid(self) -> bool: ...
-    def generate(self) -> self: ...  # type: ignore
+    def generate(self) -> self: ...  # type: ignore[name-defined]
 
 class MVector:
     kTolerance: ClassVar[float] = ...
