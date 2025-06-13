@@ -41,7 +41,7 @@ dev = [
 [tool.uv.sources]
 stubgenlib = { path = "../common" , editable=true }
 #rez = { path = "/Users/chad/dev/rez" }
-mypy = { git = "https://github.com/chadrik/rez", branch = "typing2" }
+rez = { git = "https://github.com/chadrik/rez", branch = "typing2" }
 mypy = { git = "https://github.com/chadrik/mypy", branch = "stubgen-rez" }
 
 [build-system]

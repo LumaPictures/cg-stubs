@@ -28,8 +28,9 @@ APPS = [
     "substance_painter",
     "usd",
 ]
-PARAMS = [nox.param(x, id=x) for x in APPS]
+STUB_PROJECTS = [nox.param(x, id=x) for x in APPS]
 
+ALL_PROJECTS = STUB_PROJECTS + [nox.param("common", id="common")]
 
 # TODO: generate pyproject.toml from a jinja template
 
@@ -283,15 +284,15 @@ def check(
     return deco
 
 
-@check(
-    paths=LINT_FILES,
-    exclude=LINT_EXCLUDE,
-)
-def ruff(session: nox.Session, options: Options):
+# @check(
+#     paths=LINT_FILES,
+#     exclude=LINT_EXCLUDE,
+# )
+@nox.session(venv_backend="none")
+def ruff(session: nox.Session):
     """Run ruff code formatter"""
-    session.install("ruff==0.11.4")
-    session.run("ruff", "format", *options.files(session), log=False)
-    session.run("ruff", "check", "--fix", *options.files(session), log=False)
+    session.run("uvx", "--from=ruff==0.11.4", "ruff", "format", log=False)
+    session.run("uvx", "--from=ruff==0.11.4", "ruff", "check", "--fix", log=False)
 
 
 # @check(paths=('**.{yaml|yml}',), venv_backend='none')
@@ -472,7 +473,7 @@ def stubs_suffix(path: pathlib.Path = pathlib.Path("./stubs")):
 
 
 @nox.session(venv_backend="none")
-@nox.parametrize("lib", PARAMS)
+@nox.parametrize("lib", STUB_PROJECTS)
 def develop(session: nox.Session, lib: str) -> None:
     """Install the stubs into the current venv"""
     session.chdir(lib)
@@ -486,7 +487,7 @@ def develop(session: nox.Session, lib: str) -> None:
 
 
 @nox.session(venv_backend="none")
-@nox.parametrize("lib", PARAMS + [nox.param("common", id="common")])
+@nox.parametrize("lib", ALL_PROJECTS)
 def publish(session: nox.Session, lib: str) -> None:
     """Publish the stub package to PyPI"""
     session.chdir(lib)
@@ -510,7 +511,7 @@ def publish(session: nox.Session, lib: str) -> None:
 
 
 @nox.session(venv_backend="none")
-@nox.parametrize("lib", PARAMS)
+@nox.parametrize("lib", STUB_PROJECTS)
 def generate(session: nox.Session, lib: str) -> None:
     """Create the stubs"""
     session.env.pop("PYTHONPATH", None)
@@ -567,14 +568,23 @@ def generate(session: nox.Session, lib: str) -> None:
     # make_packages(pathlib.Path("stubs"))
 
 
-@nox.session(reuse_venv=True)
-@nox.parametrize("lib", PARAMS)
+@nox.session(venv_backend="none")
+@nox.parametrize("lib", ALL_PROJECTS)
 def mypy(session: nox.Session, lib: str) -> None:
     """Run mypy type checker"""
     session.chdir(lib)
-    session.run("bash", "-c", "uv run mypy | uvx mypy-baseline filter", external=True)
+    subprocess.check_call("uv run mypy | uvx mypy-baseline filter", shell=True)
 
 
-@check(paths=LINT_FILES, pass_filenames=False, tags=["ci", "prepush"])
+@nox.session(venv_backend="none")
+@nox.parametrize("lib", ALL_PROJECTS)
+def test(session: nox.Session, lib: str) -> None:
+    """Run mypy type checker"""
+    session.chdir(lib)
+    session.run("uv", "run", "pytest", "tests", *session.posargs, external=True)
+
+
+# @check(paths=LINT_FILES, pass_filenames=False, tags=["ci", "prepush"])
+@nox.session(venv_backend="none")
 def self_mypy(session: nox.Session, options: Options) -> None:
     session.run("uvx", "mypy", external=True)

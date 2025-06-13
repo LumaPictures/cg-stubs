@@ -1,6 +1,7 @@
 from __future__ import absolute_import, annotations, division, print_function
 
 import itertools
+from dataclasses import dataclass, field
 
 from mypy.stubgenc import (
     ArgSig,
@@ -9,11 +10,56 @@ from mypy.stubgenc import (
 )
 
 
+@dataclass
+class ArgGroups:
+    pos_only: list[ArgSig] = field(default_factory=list)
+    pos_or_kw: list[ArgSig] = field(default_factory=list)
+    star_args: ArgSig | None = None
+    kw_only: list[ArgSig] = field(default_factory=list)
+    star_kwargs: ArgSig | None = None
+
+    def all_args(self) -> list[ArgSig]:
+        args = []
+        if self.pos_only:
+            args += self.pos_only + [ArgSig("/", None)]
+        args += self.pos_or_kw
+        if self.star_args:
+            args += [self.star_args]
+        args += self.kw_only
+        if self.star_kwargs:
+            args += [self.star_kwargs]
+        return args
+
+
 def insert_typevars(import_lines: str, typevars: list[str]) -> str:
     imports = import_lines.split("\n")
     if "import typing" not in imports:
         imports.append("import typing")
     return "\n".join(imports + typevars)
+
+
+def merge_args_by_name(
+    dest: list[ArgSig],
+    other: list[ArgSig],
+    force: bool = False,
+    add_extra: bool = False,
+) -> list[ArgSig]:
+    args: list[ArgSig] = []
+    other_args = {arg.name: arg for arg in other}
+    for arg in dest:
+        other_arg = other_args.pop(arg.name, None)
+        if other_arg is not None:
+            if (arg.type is None or force) and other_arg.type is not None:
+                arg = ArgSig(
+                    arg.name,
+                    other_arg.type,
+                    default=arg.default,
+                    default_value=arg.default_value,
+                )
+        args.append(arg)
+    if add_extra:
+        args.extend(other_args.values())
+    return args
 
 
 def merge_signatures(
@@ -24,11 +70,12 @@ def merge_signatures(
     The other signature can have fewer arguments: args will be matched by position
     for special methods and name otherwise.
 
-    If force is True, types from other signature will override this one even if
-    this sig has non-None types.
+    If force is True, types from other signature will override dest one even if
+    dest has non-None types.
     """
-    args: list[ArgSig] = []
     if dest.is_special_method() and len(other.args) == len(dest.args):
+        args: list[ArgSig] = []
+        # ignore argument names for special methods
         for arg, other_arg in zip(dest.args, other.args):
             if (arg.type is None or force) and other_arg.type is not None:
                 arg = ArgSig(
@@ -39,24 +86,80 @@ def merge_signatures(
                 )
             args.append(arg)
     else:
-        other_args = {arg.name: arg for arg in other.args}
-        for arg in dest.args:
-            if arg.name in other_args:
-                other_arg = other_args[arg.name]
-                if (arg.type is None or force) and other_arg.type is not None:
-                    arg = ArgSig(
-                        arg.name,
-                        other_arg.type,
-                        default=arg.default,
-                        default_value=arg.default_value,
-                    )
-            args.append(arg)
+        # TODO: strict mode that ignores donor sig if arg length doesn't match?
+        args = merge_args_by_name(dest.args, other.args)
 
     ret_type = dest.ret_type
     if (ret_type is None or force) and other.ret_type:
         ret_type = other.ret_type
 
     return FunctionSig(name=dest.name, args=args, ret_type=ret_type)
+
+
+def is_star_arg(arg_name):
+    return arg_name == "*" or (
+        len(arg_name) >= 2 and arg_name[0] == "*" and arg_name[1] != "*"
+    )
+
+
+def get_arg_groups(sig: FunctionSig) -> ArgGroups:
+    """
+    def foo(pos_or_kw, **kwargs)
+    def foo(pos_only, /, pos_or_kw, **kwargs)
+    def foo(pos_only, /, pos_or_kw, *, kw_only, **kwargs)
+    def foo(pos_or_kw, *, kw_only, **kwargs)
+    """
+
+    groups = ArgGroups()
+
+    current = groups.pos_or_kw
+
+    for arg in sig.args:
+        if arg.name == "/":
+            groups.pos_only = groups.pos_or_kw
+            current = groups.pos_or_kw = []
+        elif is_star_arg(arg.name):
+            groups.star_args = arg
+            current = groups.kw_only
+        elif arg.name.startswith("**"):
+            groups.star_kwargs = arg
+            current = None
+        else:
+            current.append(arg)
+    return groups
+
+
+def merge_signature_kwargs(
+    dest: FunctionSig,
+    other: FunctionSig,
+    force: bool = False,
+    replace_kwargs=False,
+) -> FunctionSig:
+    """Replace **kwargs with keyword-only arguments.
+
+    This is only safe if dest has **kwargs and source has keyword only args (i.e. a *-arg exists)
+
+    Args:
+        replace_kwargs: if True, remove **kwargs argumenet if any keyword replacements are made
+    """
+    dest_groups = get_arg_groups(dest)
+
+    if dest_groups.star_kwargs is not None:
+        # FIXME: handle name conflicts with other arg groups
+        source_groups = get_arg_groups(other)
+        dest_groups.kw_only = merge_args_by_name(
+            dest_groups.kw_only, source_groups.kw_only, force=force, add_extra=True
+        )
+        if replace_kwargs:
+            dest_groups.star_kwargs = None
+        if source_groups.kw_only and dest_groups.star_args is None:
+            dest_groups.star_args = ArgSig("*")
+
+    ret_type = dest.ret_type
+    if (ret_type is None or force) and other.ret_type:
+        ret_type = other.ret_type
+
+    return FunctionSig(name=dest.name, args=dest_groups.all_args(), ret_type=ret_type)
 
 
 class CFunctionStub:
