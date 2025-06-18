@@ -3,7 +3,7 @@ from __future__ import absolute_import, annotations, division, print_function
 import fnmatch
 import re
 from dataclasses import dataclass, field
-from typing import NamedTuple, TypeVar, cast
+from typing import Literal, NamedTuple, TypeVar, cast
 
 from mypy.stubdoc import infer_sig_from_docstring
 from mypy.stubgenc import (
@@ -181,11 +181,18 @@ class AdvancedSignatureGenerator(SignatureGenerator):
 
     sig_matcher: AdvancedSigMatcher
 
-    def __init__(self, fallback_sig_gen=CDocstringSignatureGenerator()) -> None:
+    def __init__(
+        self,
+        fallback_sig_gen=CDocstringSignatureGenerator(),
+        merge_overrides_with_fallback: bool = False,
+        select_overload_to_merge: Literal["first", "by_index"] = "first",
+    ) -> None:
         """
         fallback_sig_gen: used to find a signature when signature_overrides has no match.
         """
         self.fallback_sig_gen = fallback_sig_gen
+        self.merge_overrides_with_fallback = merge_overrides_with_fallback
+        self.select_overload_to_merge = select_overload_to_merge
 
     def get_signature_str(self, ctx: FunctionContext) -> str | list[str] | None:
         """Look for a docstring signature in signature_overrides"""
@@ -246,7 +253,7 @@ class AdvancedSignatureGenerator(SignatureGenerator):
 
     def process_sigs(
         self, ctx: FunctionContext, results: list[FunctionSig]
-    ) -> list[FunctionSig] | None:
+    ) -> list[FunctionSig]:
         """
         Process all of the signatures
         """
@@ -293,7 +300,22 @@ class AdvancedSignatureGenerator(SignatureGenerator):
         self, default_sig: FunctionSig, ctx: FunctionContext
     ) -> list[FunctionSig] | None:
         """Main override to apply the signature overrides"""
+        from stubgenlib.utils import merge_signature_kwargs
+
         results = self.get_overridden_signatures(ctx)
+        if results and self.merge_overrides_with_fallback:
+            fallback = self.fallback_sig_gen.get_function_sig(default_sig, ctx)
+            if fallback:
+                if self.select_overload_to_merge == "first":
+                    for i, result in enumerate(results):
+                        results[i] = merge_signature_kwargs(result, fallback[0])
+                elif self.select_overload_to_merge == "by_index":
+                    assert len(results) == len(fallback)
+                    for i, (result, fb) in enumerate(zip(results, fallback)):
+                        results[i] = merge_signature_kwargs(result, fb)
+                else:
+                    raise ValueError(self.select_overload_to_merge)
+
         if not results:
             # call the standard docstring-based generator.
             results = self.fallback_sig_gen.get_function_sig(default_sig, ctx)

@@ -27,6 +27,36 @@ def flag_has_mode(flag_info, mode):
     return mode in flag_info.get("modes", [])
 
 
+class MayaCmdAdvSignatureGenerator(AdvancedSignatureGenerator):
+    sig_matcher = AdvancedSigMatcher(
+        # Override entire function signature:
+        signature_overrides={
+            # "maya.cmds.ls": [
+            #     "(*args, lights: Literal[True] = True, **kwargs) -> str",
+            #     "(*args, whatever: Literal[True] = True, **kwargs) -> str",
+            #     "(*args, **kwargs) -> Any",
+            # ]
+        },
+        # Override argument types
+        #   dict of (name_pattern, arg, type) to arg_type
+        #   type can be str | re.Pattern
+        arg_type_overrides={},
+        # Override result types
+        #   dict of (name_pattern, type) to result_type
+        #   e.g. ("*", "Buffer"): "numpy.ndarray"
+        result_type_overrides={},
+        # Override property types
+        #   dict of (name_pattern, type) to result_type
+        #   e.g. ("*", "Buffer"): "numpy.ndarray"
+        property_type_overrides={},
+        # Types that have implicit alternatives.
+        #   dict of type_str to list of types that can be used instead
+        #   e.g. "PySide2.QtGui.QKeySequence": ["str"],
+        # converts any matching argument to a union of the supported types
+        implicit_arg_types={},
+    )
+
+
 class MayaCmdSignatureGenerator(SignatureGenerator):
     def __init__(self):
         import pymel.internal.cmdcache
@@ -135,7 +165,12 @@ class MayaCmdSignatureGenerator(SignatureGenerator):
 
 class CmdsStubGenerator(mypy.stubgenc.InspectionStubGenerator):
     def get_sig_generators(self) -> list[SignatureGenerator]:
-        return [MayaCmdSignatureGenerator()]
+        return [
+            MayaCmdAdvSignatureGenerator(
+                merge_overrides_with_fallback=True,
+                fallback_sig_gen=MayaCmdSignatureGenerator(),
+            )
+        ]
 
     def get_obj_module(self, obj: object) -> str | None:
         """Return module name of the object."""
@@ -153,7 +188,7 @@ class CmdsStubGenerator(mypy.stubgenc.InspectionStubGenerator):
 
     def set_defined_names(self, defined_names: set[str]) -> None:
         super().set_defined_names(defined_names)
-        for typ in ["Callable"]:
+        for typ in ["Callable", "Literal"]:
             self.add_name(f"typing.{typ}", require=False)
 
 
