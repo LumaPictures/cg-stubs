@@ -1,8 +1,8 @@
 import MFnSet  # type: ignore[import-not-found]
 import MItDag  # type: ignore[import-not-found]
 from _typeshed import Incomplete
-from maya.api.OpenMayaAnim import MFnDisplayLayer as MFnDisplayLayer, MFnDisplayLayerManager as MFnDisplayLayerManager  # type: ignore[import-untyped]
-from maya.api._OpenMaya_py2 import getStringResource as getStringResource, registerStringResource as registerStringResource, registerStringResources as registerStringResources  # type: ignore[import-untyped]
+from maya.api.OpenMayaAnim import MFnDisplayLayer as MFnDisplayLayer, MFnDisplayLayerManager as MFnDisplayLayerManager  # type: ignore[attr-defined]
+from maya.api._OpenMaya_py2 import getStringResource as getStringResource, registerStringResource as registerStringResource, registerStringResources as registerStringResources
 from typing import Any, ClassVar, overload
 
 ourdict: dict

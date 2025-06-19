@@ -1,7 +1,7 @@
 import MFnAnimCurve  # type: ignore[import-not-found]
-import maya.api.OpenMaya  # type: ignore[import-untyped]
+import maya.api.OpenMaya
 from _typeshed import Incomplete
-from maya.api.OpenMaya import MAnimCurveClipboardItemArray as MAnimCurveClipboardItemArray
+from maya.api.OpenMaya import MAnimCurveClipboardItemArray as MAnimCurveClipboardItemArray  # type: ignore[attr-defined]
 from typing import Any, ClassVar, overload
 
 ourdict: dict
@@ -291,7 +291,7 @@ class MFnWeightGeometryFilter(MFnGeometryFilter):
 
 class MFnIkJoint(maya.api.OpenMaya.MFnTransform):
     def __init__(self, *args, **kwargs) -> None: ...
-    def create(self, parent=...) -> newjointnodeMObject: ...  # type: ignore[name-defined]
+    def create(self, parent=...) -> newjointnodeMObject: ...  # type: ignore[override]
     def degreesOfFreedom(self, *args, **kwargs): ...
     def hikJointName(self, *args, **kwargs): ...
     def maxRotateDampXRange(self, *args, **kwargs): ...

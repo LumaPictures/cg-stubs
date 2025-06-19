@@ -31,11 +31,11 @@ class MayaCmdAdvSignatureGenerator(AdvancedSignatureGenerator):
     sig_matcher = AdvancedSigMatcher(
         # Override entire function signature:
         signature_overrides={
-            # "maya.cmds.ls": [
-            #     "(*args, lights: Literal[True] = True, **kwargs) -> str",
-            #     "(*args, whatever: Literal[True] = True, **kwargs) -> str",
-            #     "(*args, **kwargs) -> Any",
-            # ]
+            "maya.cmds.ls": [
+                # "(*args, lights: Literal[True] = True, **kwargs) -> str",
+                # "(*args, whatever: Literal[True] = True, **kwargs) -> str",
+                "(*args, **kwargs) -> list[str]",
+            ]
         },
         # Override argument types
         #   dict of (name_pattern, arg, type) to arg_type
@@ -192,6 +192,18 @@ class CmdsStubGenerator(mypy.stubgenc.InspectionStubGenerator):
             self.add_name(f"typing.{typ}", require=False)
 
 
+class MelStubGenerator(mypy.stubgenc.InspectionStubGenerator):
+    def get_obj_module(self, obj: object) -> str | None:
+        """Return module name of the object."""
+        module = super().get_obj_module(obj)
+        if module and inspect.isfunction(obj):
+            return self.module_name
+        return module
+
+    def is_function(self, obj: object) -> bool:
+        return inspect.isbuiltin(obj) or inspect.isfunction(obj)
+
+
 class APIStubGenerator(mypy.stubgenc.InspectionStubGenerator):
     def get_sig_generators(self) -> list[SignatureGenerator]:
         return [DocstringSignatureGenerator()]
@@ -287,7 +299,9 @@ class UFEStubGenerator(mypy.stubgenc.InspectionStubGenerator):
 delegate = GeneratorDelegate[mypy.stubgen.InspectionStubGenerator](
     rules={
         "maya.api.*": APIStubGenerator,
+        "maya.Open*": APIStubGenerator,
         "maya.cmds": CmdsStubGenerator,
+        "maya.mel":  MelStubGenerator,
         "ufe.PyUfe": UFEStubGenerator,
     },
     fallback=mypy.stubgen.InspectionStubGenerator,
@@ -315,7 +329,11 @@ if __name__ == "__main__":
     mypy.stubgen.main(
         [
             "-m=maya.cmds",
+            "-m=maya.mel",
+            "-m=maya.standalone",
             "-p=maya.api",
+            "-m=maya.OpenMaya",
+            "-m=maya.OpenMayaMPx",
             "-p=ufe",
             "--inspect-mode",
             f"-o={args.outdir}",
@@ -324,6 +342,10 @@ if __name__ == "__main__":
 
     print("Patching up generated stubs")
     outdir = pathlib.Path(args.outdir)
+    # maya/__init__
+    outdir.joinpath("maya", "__init__.pyi").touch()
+
+    # ufe/__init__
     init = outdir.joinpath("ufe", "__init__.pyi")
     init.unlink()
     init.with_name("PyUfe.pyi").rename(init)

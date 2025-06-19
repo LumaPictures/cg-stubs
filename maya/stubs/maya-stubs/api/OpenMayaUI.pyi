@@ -1,8 +1,8 @@
 import MSyntax  # type: ignore[import-not-found]
-import maya.api.OpenMaya  # type: ignore[import-untyped]
-import maya.api.OpenMayaRender  # type: ignore[import-untyped]
+import maya.api.OpenMaya
+import maya.api.OpenMayaRender
 from _typeshed import Incomplete
-from maya.api.OpenMaya import MPxManipulatorNode as MPxManipulatorNode
+from maya.api.OpenMaya import MPxManipulatorNode as MPxManipulatorNode  # type: ignore[attr-defined]
 from typing import Any, ClassVar, overload
 
 ourdict: dict
@@ -338,7 +338,7 @@ class MFnCircleSweepManip(MFnManip3D):
     def axisIndex(self) -> int: ...
     def centerIndex(self) -> int: ...
     def connectToAnglePlug(self, anglePlug) -> self: ...  # type: ignore[name-defined]
-    def create(self, manipName=..., angleName=...) -> MObject: ...  # type: ignore[name-defined]
+    def create(self, manipName=..., angleName=...) -> MObject: ...  # type: ignore[override]
     def endCircleIndex(self) -> int: ...
     def setAngle(self, angle) -> self: ...  # type: ignore[name-defined]
     def setCenterPoint(self, centerPoint) -> self: ...  # type: ignore[name-defined]
@@ -362,7 +362,7 @@ class MFnCurveSegmentManip(MFnManip3D):
 class MFnDirectionManip(MFnManip3D):
     def __init__(self, *args, **kwargs) -> None: ...
     def connectToDirectionPlug(self, directionPlug) -> self: ...  # type: ignore[name-defined]
-    def create(self, manipName=..., directionName=...) -> MObject: ...  # type: ignore[name-defined]
+    def create(self, manipName=..., directionName=...) -> MObject: ...  # type: ignore[override]
     def directionIndex(self) -> int: ...
     def endPointIndex(self) -> int: ...
     def setDirection(self, direction) -> self: ...  # type: ignore[name-defined]
@@ -377,7 +377,7 @@ class MFnDiscManip(MFnManip3D):
     def axisIndex(self) -> int: ...
     def centerIndex(self) -> int: ...
     def connectToAnglePlug(self, directionPlug) -> self: ...  # type: ignore[name-defined]
-    def create(self, manipName=..., angleName=...) -> MObject: ...  # type: ignore[name-defined]
+    def create(self, manipName=..., angleName=...) -> MObject: ...  # type: ignore[override]
     def setAngle(self, angle) -> self: ...  # type: ignore[name-defined]
     def setCenterPoint(self, centerPoint) -> self: ...  # type: ignore[name-defined]
     def setNormal(self, normal) -> self: ...  # type: ignore[name-defined]
@@ -389,7 +389,7 @@ class MFnDistanceManip(MFnManip3D):
     scalingFactor: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     def connectToDistancePlug(self, directionPlug) -> self: ...  # type: ignore[name-defined]
-    def create(self, manipName=..., distanceName=...) -> MObject: ...  # type: ignore[name-defined]
+    def create(self, manipName=..., distanceName=...) -> MObject: ...  # type: ignore[override]
     def currentPointIndex(self) -> int: ...
     def directionIndex(self) -> int: ...
     def distanceIndex(self) -> int: ...
@@ -407,7 +407,7 @@ class MFnFreePointTriadManip(MFnManip3D):
     isKeyframeAllOn: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     def connectToPointPlug(self, pointPlug) -> self: ...  # type: ignore[name-defined]
-    def create(self, manipName=..., pointName=...) -> MObject: ...  # type: ignore[name-defined]
+    def create(self, manipName=..., pointName=...) -> MObject: ...  # type: ignore[override]
     def pointIndex(self) -> int: ...
     def setDirection(self, direction) -> self: ...  # type: ignore[name-defined]
     def setDrawArrowHead(self, state) -> self: ...  # type: ignore[name-defined]
@@ -420,7 +420,7 @@ class MFnPointOnCurveManip(MFnManip3D):
     def __init__(self, *args, **kwargs) -> None: ...
     def connectToCurvePlug(self, curvePlug) -> self: ...  # type: ignore[name-defined]
     def connectToParamPlug(self, paramPlug) -> self: ...  # type: ignore[name-defined]
-    def create(self, manipName=..., paramName=...) -> MObject: ...  # type: ignore[name-defined]
+    def create(self, manipName=..., paramName=...) -> MObject: ...  # type: ignore[override]
     def curveIndex(self) -> int: ...
     def curvePoint(self) -> MPoint: ...  # type: ignore[name-defined]
     def paramIndex(self) -> int: ...
@@ -432,7 +432,7 @@ class MFnPointOnSurfaceManip(MFnManip3D):
     def __init__(self, *args, **kwargs) -> None: ...
     def connectToParamPlug(self, paramPlug) -> self: ...  # type: ignore[name-defined]
     def connectToSurfacePlug(self, surfacePlug) -> self: ...  # type: ignore[name-defined]
-    def create(self, manipName=..., paramName=...) -> MObject: ...  # type: ignore[name-defined]
+    def create(self, manipName=..., paramName=...) -> MObject: ...  # type: ignore[override]
     def paramIndex(self) -> int: ...
     def setDrawArrows(self, state) -> self: ...  # type: ignore[name-defined]
     def surfaceIndex(self) -> int: ...
@@ -447,7 +447,7 @@ class MFnRotateManip(MFnManip3D):
     def __init__(self, *args, **kwargs) -> None: ...
     def connectToRotationCenterPlug(self, rotationCenterPlug) -> self: ...  # type: ignore[name-defined]
     def connectToRotationPlug(self, rotationPlug) -> self: ...  # type: ignore[name-defined]
-    def create(self, manipName=..., rotationName=...) -> MObject: ...  # type: ignore[name-defined]
+    def create(self, manipName=..., rotationName=...) -> MObject: ...  # type: ignore[override]
     def displayWithNode(self, node) -> self: ...  # type: ignore[name-defined]
     def rotationCenterIndex(self) -> int: ...
     def rotationIndex(self) -> int: ...
@@ -464,7 +464,7 @@ class MFnScaleManip(MFnManip3D):
     def __init__(self, *args, **kwargs) -> None: ...
     def connectToScaleCenterPlug(self, scaleCenterPlug) -> self: ...  # type: ignore[name-defined]
     def connectToScalePlug(self, scalePlug) -> self: ...  # type: ignore[name-defined]
-    def create(self, manipName=..., scaleName=...) -> MObject: ...  # type: ignore[name-defined]
+    def create(self, manipName=..., scaleName=...) -> MObject: ...  # type: ignore[override]
     def displayWithNode(self, node) -> self: ...  # type: ignore[name-defined]
     def scaleCenterIndex(self) -> int: ...
     def scaleIndex(self) -> int: ...
@@ -474,7 +474,7 @@ class MFnStateManip(MFnManip3D):
     maxStates: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     def connectToStatePlug(self, statePlug) -> self: ...  # type: ignore[name-defined]
-    def create(self, manipName=..., stateName=...) -> MObject: ...  # type: ignore[name-defined]
+    def create(self, manipName=..., stateName=...) -> MObject: ...  # type: ignore[override]
     def positionIndex(self) -> int: ...
     def setInitialState(self, initialState) -> self: ...  # type: ignore[name-defined]
     def state(self) -> int: ...
@@ -487,7 +487,7 @@ class MFnToggleManip(MFnManip3D):
     toggle: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     def connectToTogglePlug(self, togglePlug) -> self: ...  # type: ignore[name-defined]
-    def create(self, manipName=..., toggleName=...) -> MObject: ...  # type: ignore[name-defined]
+    def create(self, manipName=..., toggleName=...) -> MObject: ...  # type: ignore[override]
     def directionIndex(self) -> int: ...
     def lengthIndex(self) -> int: ...
     def startPointIndex(self) -> int: ...

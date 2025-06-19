@@ -1,6 +1,6 @@
 import MRenderItem  # type: ignore[import-not-found]
 from _typeshed import Incomplete
-from maya.api.OpenMayaUI import MUIDrawManager as MUIDrawManager  # type: ignore[import-untyped]
+from maya.api.OpenMayaUI import MUIDrawManager as MUIDrawManager  # type: ignore[attr-defined]
 from typing import Any, ClassVar, overload
 
 ourdict: dict
