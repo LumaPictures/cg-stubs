@@ -1,4 +1,5 @@
 version = 1
+revision = 2
 requires-python = ">=3.10"
 
 [[package]]
@@ -133,7 +134,7 @@ wheels = [
 
 [[package]]
 name = "types-maya-strict"
-version = "2025.0.1"
+version = "2025.0.3"
 source = { editable = "." }
 
 [package.dev-dependencies]

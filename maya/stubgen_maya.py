@@ -30,12 +30,13 @@ def flag_has_mode(flag_info, mode):
 class MayaCmdAdvSignatureGenerator(AdvancedSignatureGenerator):
     sig_matcher = AdvancedSigMatcher(
         # Override entire function signature:
+        # This is particularly useful for creating multiple overloads where the return
+        # type varies based on the args.
         signature_overrides={
-            "maya.cmds.ls": [
-                # "(*args, lights: Literal[True] = True, **kwargs) -> str",
-                # "(*args, whatever: Literal[True] = True, **kwargs) -> str",
-                "(*args, **kwargs) -> list[str]",
-            ]
+            # "maya.cmds.ls": [
+            #     # "(*args, lights: Literal[True] = True, **kwargs) -> str",
+            #     # "(*args, whatever: Literal[True] = True, **kwargs) -> str",
+            # ],
         },
         # Override argument types
         #   dict of (name_pattern, arg, type) to arg_type
@@ -44,7 +45,10 @@ class MayaCmdAdvSignatureGenerator(AdvancedSignatureGenerator):
         # Override result types
         #   dict of (name_pattern, type) to result_type
         #   e.g. ("*", "Buffer"): "numpy.ndarray"
-        result_type_overrides={},
+        result_type_overrides={
+            ("maya.cmds.ls", "*"): "list[str]",
+            ("maya.cmds.list*", "*"): "list[str]",
+        },
         # Override property types
         #   dict of (name_pattern, type) to result_type
         #   e.g. ("*", "Buffer"): "numpy.ndarray"
@@ -333,6 +337,9 @@ if __name__ == "__main__":
             "-m=maya.standalone",
             "-p=maya.api",
             "-m=maya.OpenMaya",
+            "-m=maya.OpenMayaAnim",
+            "-m=maya.OpenMayaRender",
+            "-m=maya.OpenMayaUI",
             "-m=maya.OpenMayaMPx",
             "-p=ufe",
             "--inspect-mode",
