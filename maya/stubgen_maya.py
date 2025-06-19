@@ -33,6 +33,25 @@ class MayaCmdAdvSignatureGenerator(AdvancedSignatureGenerator):
         # This is particularly useful for creating multiple overloads where the return
         # type varies based on the args.
         signature_overrides={
+            "maya.cmds.referenceQuery": [
+                # Using **kwargs here because I'm too lazy to map out all of the valid combinations
+                #  of secondary flags.
+                # str results
+                "(*args, filename: Literal[True], **kwargs) -> str",
+                "(*args, referenceNode: Literal[True], **kwargs) -> str",
+                "(*args, parentNamespace: Literal[True], **kwargs) -> str",
+                "(*args, namespace: Literal[True], **kwargs) -> str",
+                # list[str] results
+                "(*args, nodes: Literal[True], **kwargs) -> list[str]",
+                "(*args, editAttrs: Literal[True], **kwargs) -> list[str]",
+                "(*args, editNodes: Literal[True], **kwargs) -> list[str]",
+                "(*args, editStrings: Literal[True], **kwargs) -> list[str]",
+                # bool results. (actually ints)
+                "(*args, isNodeReferenced: Literal[True], **kwargs) -> bool",
+                "(*args, isExportEdits: Literal[True], **kwargs) -> bool",
+                "(*args, isLoaded: Literal[True], **kwargs) -> bool",
+                "(*args, isPreviewOnly: Literal[True], **kwargs) -> bool",
+            ]
             # "maya.cmds.ls": [
             #     # "(*args, lights: Literal[True] = True, **kwargs) -> str",
             #     # "(*args, whatever: Literal[True] = True, **kwargs) -> str",
@@ -62,6 +81,10 @@ class MayaCmdAdvSignatureGenerator(AdvancedSignatureGenerator):
 
 
 class MayaCmdSignatureGenerator(SignatureGenerator):
+    add_query_overloads = [
+        "playbackOptions",
+    ]
+
     def __init__(self):
         import pymel.internal.cmdcache
 
@@ -88,7 +111,10 @@ class MayaCmdSignatureGenerator(SignatureGenerator):
                 return None
 
             args = [ArgSig("*args")] + self._get_args(cmd_flags)
-            return [FunctionSig(ctx.name, args=args, ret_type="Any")]
+            sigs = [FunctionSig(ctx.name, args=args, ret_type="Any")]
+            if ctx.name in self.add_query_overloads:
+                sigs = self._get_query_overloads(ctx.name, cmd_flags) + sigs
+            return sigs
 
     def _mel_type_to_python_type(self, typ, as_result=False) -> str:
         """Convert a mel type to a python type"""
@@ -97,9 +123,15 @@ class MayaCmdSignatureGenerator(SignatureGenerator):
                 # FIXME: tuple support may be pymel-specific
                 return "str | tuple[float, float] | tuple[float]"
             elif typ == "floatrange":
-                return "str | int | float"
+                if as_result:
+                    return "float"
+                else:
+                    return "str | int | float"
             elif typ == "time":
-                return "int | float"
+                if as_result:
+                    return "float"
+                else:
+                    return "int | float"
             elif typ == "PyNode":
                 return "str"
             elif typ == "script":
@@ -113,9 +145,10 @@ class MayaCmdSignatureGenerator(SignatureGenerator):
         else:
             return typ.__name__
 
-    def _get_flag_type(
+    def _get_arg_type(
         self, flag_info: "pymel.internal.cmdcache.flag_info", as_result=False
     ) -> str:
+        """Get the python type for the command argument."""
         if flag_info["numArgs"] < 2:
             typ = self._mel_type_to_python_type(flag_info["args"], as_result=as_result)
         else:
@@ -130,7 +163,7 @@ class MayaCmdSignatureGenerator(SignatureGenerator):
             typ = "%s | list[%s]" % (typ, typ)
         return typ
 
-    def _get_args(self, cmd_flags, skip=None) -> list[ArgSig]:
+    def _get_args(self, cmd_flags) -> list[ArgSig]:
         """
         Get list of argument definitions (including type) that should replace
         **kwargs
@@ -144,11 +177,7 @@ class MayaCmdSignatureGenerator(SignatureGenerator):
                 used_flags.add(name)
 
         for flag_name, flag_info in cmd_flags.items():
-            short_name = flag_info["shortname"]
-            if skip and (flag_name in skip or short_name in skip):
-                continue
-
-            typ = self._get_flag_type(flag_info, as_result=False)
+            typ = self._get_arg_type(flag_info, as_result=False)
             if flag_has_mode(flag_info, "query") and typ not in [
                 "bool | int",
                 "bool",
@@ -161,6 +190,16 @@ class MayaCmdSignatureGenerator(SignatureGenerator):
             # add_arg(short_name, typ)
 
         return new_args
+
+    def _get_query_overloads(self, name: str, cmd_flags) -> list[FunctionSig]:
+        # FIXME: this does not support supplemental flags that modify the query
+        sigs = []
+        for flag_name, flag_info in cmd_flags.items():
+            if flag_has_mode(flag_info, "query"):
+                args = [ArgSig("*args"), ArgSig("query", type="Literal[True]"), ArgSig(flag_name, type="Literal[True]")]
+                ret_type = self._get_arg_type(flag_info, as_result=True)
+                sigs.append(FunctionSig(name, args=args, ret_type=ret_type))
+        return sigs
 
     # def get_property_type(self, default_type: str | None, ctx: FunctionContext) -> str | None:
     #     """Infer property type from docstring or docstring signature."""
