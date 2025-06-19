@@ -3,16 +3,6 @@ repos:
 - repo: local
   hooks:
 
-  - id: ruff
-    name: ruff
-    entry: nox
-    args: [-s, ruff, --no-install, --]
-    language: system
-    pass_filenames: true
-    require_serial: true
-    stages: [commit, push, manual]
-    files: ^.*[^/]*[.]py$
-
   - id: precommit_gen
     name: precommit_gen
     entry: nox
@@ -22,13 +12,3 @@ repos:
     require_serial: false
     stages: [commit, push]
     files: ^noxfile[.]py$
-
-  - id: self_mypy
-    name: self_mypy
-    entry: nox
-    args: [-s, self_mypy, --no-install, --]
-    language: system
-    pass_filenames: false
-    require_serial: true
-    stages: [manual, push]
-    files: ^.*[^/]*[.]py$
