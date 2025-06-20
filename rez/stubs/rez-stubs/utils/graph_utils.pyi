@@ -7,7 +7,7 @@ from rez.vendor.pydot import pydot as pydot  # type: ignore[import-not-found]
 from rez.vendor.pygraph.algorithms.accessibility import accessibility as accessibility  # type: ignore[import-not-found]
 from rez.vendor.pygraph.classes.digraph import digraph as digraph  # type: ignore[import-not-found]
 
-def read_graph_from_string(txt):
+def read_graph_from_string(txt: str) -> digraph:
     """Read a graph from a string, either in dot format, or our own
     compressed format.
 
@@ -20,7 +20,7 @@ def write_compacted(g):
     Returns:
         str.
     """
-def write_dot(g):
+def write_dot(g: digraph) -> str:
     """Replacement for pygraph.readwrite.dot.write, which is dog slow.
 
     Note:

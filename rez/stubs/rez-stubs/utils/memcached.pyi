@@ -2,7 +2,7 @@ from _typeshed import Incomplete
 from contextlib import contextmanager
 from rez.config import config as config
 from rez.util import get_function_arg_names as get_function_arg_names
-from rez.vendor.memcache.memcache import SERVER_MAX_KEY_LENGTH as SERVER_MAX_KEY_LENGTH  # type: ignore[import-not-found]
+from rez.vendor.memcache.memcache import Client as Client_, SERVER_MAX_KEY_LENGTH as SERVER_MAX_KEY_LENGTH  # type: ignore[import-not-found]
 from threading import local
 from typing import Any, Callable, Iterator, TypeVar
 
@@ -21,12 +21,12 @@ class Client:
         def __bool__(self) -> bool: ...
     miss: Incomplete
     logger: Incomplete
-    servers: list[str] | Any
-    key_hasher: Callable[[Any], Any]
+    servers: list[str]
+    key_hasher: Callable[[str], str]
     _client: Any | None
     debug: bool
     current: str
-    def __init__(self, servers, debug: bool = False) -> None:
+    def __init__(self, servers: str | list[str], debug: bool = False) -> None:
         """Create a memcached client.
 
         Args:
@@ -37,21 +37,21 @@ class Client:
         """
     def __bool__(self) -> bool: ...
     @property
-    def client(self):
+    def client(self) -> Client_:
         """Get the native memcache client.
 
         Returns:
             `memcache.Client` instance.
         """
-    def test_servers(self):
+    def test_servers(self) -> set[str]:
         """Test that memcached servers are servicing requests.
 
         Returns:
             set: URIs of servers that are responding.
         """
-    def set(self, key, val, time: int = 0, min_compress_len: int = 0) -> None:
+    def set(self, key: str, val: Any, time: int = 0, min_compress_len: int = 0) -> None:
         """See memcache.Client."""
-    def get(self, key):
+    def get(self, key: str) -> Any | Client._Miss:
         """See memcache.Client.
 
         Returns:
@@ -59,7 +59,7 @@ class Client:
             from `memcache.Client`, which returns None on cache miss, and thus
             cannot cache the value None itself.
         """
-    def delete(self, key) -> None:
+    def delete(self, key: str) -> None:
         """See memcache.Client."""
     def flush(self, hard: bool = False) -> None:
         """Drop existing entries from the cache.
@@ -69,7 +69,7 @@ class Client:
                 server(s), which affects all users. If False, only the local
                 process is affected.
         """
-    def get_stats(self):
+    def get_stats(self) -> list[tuple]:
         """Get server statistics.
 
         Returns:
@@ -79,24 +79,24 @@ class Client:
         """Reset the server stats."""
     def disconnect(self) -> None:
         """Disconnect from server(s). Behaviour is undefined after this call."""
-    def _qualified_key(self, key) -> str:
+    def _qualified_key(self, key: str) -> str:
         """
         Qualify cache key so that:
         * changes to schemas don't break compatibility (cache_interface_version)
         * we're shielded from potential compatibility bugs in newer versions of
           python-memcached
         """
-    def _get_stats(self, stat_args: Incomplete | None = None): ...
+    def _get_stats(self, stat_args: Incomplete | None = None) -> list[tuple]: ...
     @classmethod
-    def _key_hash(cls, key): ...
+    def _key_hash(cls, key: str) -> str: ...
     @classmethod
-    def _debug_key_hash(cls, key): ...
+    def _debug_key_hash(cls, key: str) -> str: ...
 
 class _ScopedInstanceManager(local):
     clients: dict[tuple[tuple[Any, ...], bool], list[Any]]
     def __init__(self) -> None: ...
     def acquire(self, servers, debug: bool = False) -> tuple[Client, tuple[tuple, bool]]: ...
-    def release(self, key) -> None: ...
+    def release(self, key: tuple[tuple, bool]) -> None: ...
 
 scoped_instance_manager: Incomplete
 
@@ -174,4 +174,4 @@ def memcached(servers, key: Incomplete | None = None, from_cache: Incomplete | N
 
 class DoNotCache:
     result: Incomplete
-    def __init__(self, result) -> None: ...
+    def __init__(self, result: Any) -> None: ...

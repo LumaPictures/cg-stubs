@@ -4,15 +4,19 @@ from _typeshed import Incomplete
 from contextlib import contextmanager
 from rez.config import config as config
 from rez.exceptions import ResourceError as ResourceError
-from rez.package_resources import PackageFamilyResource as PackageFamilyResource, PackageRepositoryResource as PackageRepositoryResource, PackageResource as PackageResource, PackageResourceHelper as PackageResourceHelper, VariantResource as VariantResource
+from rez.package_resources import PackageFamilyResource as PackageFamilyResource, PackageRepositoryResource as PackageRepositoryResource, PackageResource as PackageResource, PackageResourceHelper as PackageResourceHelper, VariantResource as VariantResource, VariantResourceHelper as VariantResourceHelper
 from rez.plugin_managers import plugin_manager as plugin_manager
 from rez.utils.data_utils import cached_property as cached_property
-from rez.utils.resources import Resource as Resource, ResourceHandle as ResourceHandle, ResourcePool as ResourcePool
+from rez.utils.resources import Resource as Resource, ResourceHandle as ResourceHandle, ResourcePool as ResourcePool, ResourceT as ResourceT
 from rez.version import Version as Version
 from rezplugins.package_repository.memory import MemoryPackageRepository
-from typing import Any, Hashable, Iterator
+from typing import Any, Generic, Hashable, Iterator, TypeVar, overload
 
-def get_package_repository_types():
+VariantResourceHelperT = TypeVar('VariantResourceHelperT', bound=VariantResourceHelper)
+PackageResourceHelperT = TypeVar('PackageResourceHelperT', bound=PackageResourceHelper)
+PackageFamilyResourceT = TypeVar('PackageFamilyResourceT', bound=PackageFamilyResource)
+
+def get_package_repository_types() -> list[str]:
     """Returns the available package repository implementations."""
 def create_memory_package_repository(repository_data: dict) -> MemoryPackageRepository:
     """Create a standalone in-memory package repository from the data given.
@@ -39,7 +43,7 @@ class PackageRepositoryGlobalStats(threading.local):
 
 package_repo_stats: Incomplete
 
-class PackageRepository:
+class PackageRepository(Generic[VariantResourceHelperT, PackageResourceHelperT, PackageFamilyResourceT]):
     """Base class for package repositories implemented in the package_repository
     plugin type.
 
@@ -72,7 +76,7 @@ class PackageRepository:
     def clear_caches(self) -> None:
         """Clear any cached resources in the pool."""
     @cached_property
-    def uid(self) -> tuple[str, str]:
+    def uid(self) -> tuple:
         """Returns a unique identifier for this repository.
 
         This must be a persistent identifier, for example a filepath, or
@@ -88,7 +92,7 @@ class PackageRepository:
         Returns:
             True if there are no packages, False if there are at least one.
         """
-    def get_package_family(self, name: str) -> PackageFamilyResource | None:
+    def get_package_family(self, name: str) -> PackageFamilyResourceT | None:
         """Get a package family.
 
         Args:
@@ -97,14 +101,14 @@ class PackageRepository:
         Returns:
             `PackageFamilyResource`, or None if not found.
         """
-    def iter_package_families(self) -> Iterator[PackageFamilyResource]:
+    def iter_package_families(self) -> Iterator[PackageFamilyResourceT]:
         """Iterate over the package families in the repository, in no
         particular order.
 
         Returns:
             `PackageFamilyResource` iterator.
         """
-    def iter_packages(self, package_family_resource: PackageFamilyResource) -> Iterator[PackageResource]:
+    def iter_packages(self, package_family_resource: PackageFamilyResourceT) -> Iterator[PackageResourceHelperT]:
         """Iterate over the packages within the given family, in no particular
         order.
 
@@ -114,7 +118,7 @@ class PackageRepository:
         Returns:
             `PackageResource` iterator.
         """
-    def iter_variants(self, package_resource: PackageResource) -> Iterator[VariantResource]:
+    def iter_variants(self, package_resource: PackageResourceHelperT) -> Iterator[VariantResourceHelperT]:
         """Iterate over the variants within the given package.
 
         Args:
@@ -123,7 +127,7 @@ class PackageRepository:
         Returns:
             `VariantResource` iterator.
         """
-    def get_package(self, name: str, version: Version) -> PackageResourceHelper | None:
+    def get_package(self, name: str, version: Version) -> PackageResourceHelperT | None:
         """Get a package.
 
         Args:
@@ -133,7 +137,7 @@ class PackageRepository:
         Returns:
             `PackageResourceHelper` or None: Matching package, or None if not found.
         """
-    def get_package_from_uri(self, uri: str) -> PackageResource | None:
+    def get_package_from_uri(self, uri: str) -> PackageResourceHelperT | None:
         """Get a package given its URI.
 
         Args:
@@ -143,7 +147,7 @@ class PackageRepository:
             `PackageResource`, or None if the package is not present in this
             package repository.
         """
-    def get_variant_from_uri(self, uri: str) -> VariantResource | None:
+    def get_variant_from_uri(self, uri: str) -> VariantResourceHelperT | None:
         """Get a variant given its URI.
 
         Args:
@@ -220,7 +224,7 @@ class PackageRepository:
             int: Number of packages removed. In dry-run mode, returns the
             number of packages that _would_ be removed.
         """
-    def pre_variant_install(self, variant_resource: VariantResource) -> None:
+    def pre_variant_install(self, variant_resource: VariantResourceHelperT) -> None:
         """Called before a variant is installed.
 
         If any directories are created on disk for the variant to install into,
@@ -229,7 +233,7 @@ class PackageRepository:
         Note that it is the responsibility of the `BuildProcess` to call this
         function at the appropriate time.
         """
-    def on_variant_install_cancelled(self, variant_resource: VariantResource) -> None:
+    def on_variant_install_cancelled(self, variant_resource: VariantResourceHelperT) -> None:
         """Called when a variant installation is cancelled.
 
         This is called after `pre_variant_install`, but before `install_variant`,
@@ -242,7 +246,7 @@ class PackageRepository:
         Note that it is the responsibility of the `BuildProcess` to call this
         function at the appropriate time.
         """
-    def install_variant(self, variant_resource: VariantResource, dry_run: bool = False, overrides: dict[str, Any] | None = None) -> VariantResource:
+    def install_variant(self, variant_resource: VariantResourceHelperT, dry_run: bool = False, overrides: dict[str, Any] | None = None) -> VariantResourceHelperT:
         """Install a variant into this repository.
 
         Use this function to install a variant from some other package repository
@@ -262,7 +266,7 @@ class PackageRepository:
             `VariantResource` object, which is the newly created variant in this
             repository. If `dry_run` is True, None may be returned.
         """
-    def get_equivalent_variant(self, variant_resource: VariantResource) -> VariantResource:
+    def get_equivalent_variant(self, variant_resource: VariantResourceHelperT) -> VariantResourceHelperT:
         """Find a variant in this repository that is equivalent to that given.
 
         A variant is equivalent to another if it belongs to a package of the
@@ -279,7 +283,7 @@ class PackageRepository:
         Returns:
             `VariantResource` object, or None if the variant was not found.
         """
-    def get_parent_package_family(self, package_resource: PackageResourceHelper) -> PackageFamilyResource:
+    def get_parent_package_family(self, package_resource: PackageResourceHelperT) -> PackageFamilyResourceT:
         """Get the parent package family of the given package.
 
         Args:
@@ -288,7 +292,7 @@ class PackageRepository:
         Returns:
             `PackageFamilyResource`.
         """
-    def get_parent_package(self, variant_resource: VariantResource) -> PackageRepositoryResource:
+    def get_parent_package(self, variant_resource: VariantResourceHelperT) -> PackageResourceHelperT:
         """Get the parent package of the given variant.
 
         Args:
@@ -297,7 +301,7 @@ class PackageRepository:
         Returns:
             `PackageResource`.
         """
-    def get_variant_state_handle(self, variant_resource: PackageResource) -> Hashable | None:
+    def get_variant_state_handle(self, variant_resource: VariantResourceHelperT) -> Hashable | None:
         """Get a value that indicates the state of the variant.
 
         This is used for resolve caching. For example, in the 'filesystem'
@@ -311,7 +315,7 @@ class PackageRepository:
         Returns:
             A hashable value.
         """
-    def get_last_release_time(self, package_family_resource: PackageFamilyResource) -> int:
+    def get_last_release_time(self, package_family_resource: PackageFamilyResourceT) -> int:
         """Get the last time a package was added to the given family.
 
         This information is used to cache resolves via memcached. It can be left
@@ -323,26 +327,17 @@ class PackageRepository:
                 the given package family. Zero signifies an unknown last package
                 update time.
         """
-    def make_resource_handle(self, resource_key: str, **variables) -> ResourceHandle:
+    def make_resource_handle(self, resource_key: str, **variables: Any) -> ResourceHandle:
         """Create a `ResourceHandle`
 
         Nearly all `ResourceHandle` creation should go through here, because it
         gives the various resource classes a chance to normalize / standardize
         the resource handles, to improve caching / comparison / etc.
         """
-    def get_resource(self, resource_key: str, **variables) -> Resource:
-        """Get a resource.
-
-        Attempts to get and return a cached version of the resource if
-        available, otherwise a new resource object is created and returned.
-
-        Args:
-            resource_key (`str`):  Name of the type of `Resources` to find
-            variables: data to identify / store on the resource
-
-        Returns:
-            `PackageRepositoryResource` instance.
-        """
+    @overload
+    def get_resource(self, resource_key: type[ResourceT], **variables: Any) -> ResourceT: ...
+    @overload
+    def get_resource(self, resource_key: str, **variables: Any) -> Resource: ...
     def get_resource_from_handle(self, resource_handle: ResourceHandle, verify_repo: bool = True) -> Resource:
         """Get a resource.
 
@@ -350,7 +345,7 @@ class PackageRepository:
             resource_handle (`ResourceHandle`): Handle of the resource.
 
         Returns:
-            `PackageRepositoryResource` instance.
+            `Resource` instance.
         """
     def get_package_payload_path(self, package_name: str, package_version: str | Version | None = None) -> str:
         """Defines where a package's payload should be installed to.
@@ -362,7 +357,7 @@ class PackageRepository:
         Returns:
             str: Path where package's payload should be installed to.
         """
-    def _uid(self) -> tuple[str, str]:
+    def _uid(self) -> tuple:
         """Unique identifier implementation.
 
         You may need to provide your own implementation. For example, consider
@@ -382,7 +377,7 @@ class PackageRepositoryManager:
     instances, and caches these resources in a resource pool.
     """
     pool: rez.utils.resources.ResourcePool
-    repositories: dict[str, PackageRepository]
+    repositories: dict[str, PackageRepository[Any, Any, Any]]
     def __init__(self, resource_pool: ResourcePool | None = None) -> None:
         """Create a package repo manager.
 
@@ -412,7 +407,7 @@ class PackageRepositoryManager:
         Returns:
             True if the paths refer to the same repository, False otherwise.
         """
-    def get_resource(self, resource_key: str, repository_type: str, location: str, **variables) -> Resource:
+    def get_resource(self, resource_key: str, repository_type: str, location: str, **variables: Any) -> Resource:
         """Get a resource.
 
         Attempts to get and return a cached version of the resource if
@@ -435,10 +430,10 @@ class PackageRepositoryManager:
             resource_handle (`ResourceHandle`): Handle of the resource.
 
         Returns:
-            `PackageRepositoryResource` instance.
+            `Resource` instance.
         """
     def clear_caches(self) -> None:
         """Clear all cached data."""
-    def _get_repository(self, path: str, **repo_args) -> PackageRepository: ...
+    def _get_repository(self, path: str, **repo_args: Any) -> PackageRepository: ...
 
 package_repository_manager: Incomplete

@@ -3,6 +3,7 @@ from _typeshed import Incomplete
 from abc import abstractmethod
 from rez.config import Config as Config, config as config, create_config as create_config
 from rez.exceptions import PackageMetadataError as PackageMetadataError, ResourceError as ResourceError
+from rez.package_repository import PackageRepository as PackageRepository
 from rez.packages import Variant as Variant
 from rez.utils.data_utils import AttributeForwardMeta as AttributeForwardMeta, LazyAttributeMeta as LazyAttributeMeta, cached_property as cached_property
 from rez.utils.filesystem import find_matching_symlink as find_matching_symlink
@@ -14,8 +15,11 @@ from rez.utils.sourcecode import SourceCode as SourceCode
 from rez.vendor.schema.schema import And as And, Optional as Optional, Or as Or, Schema as Schema, SchemaError as SchemaError, Use as Use  # type: ignore[import-not-found]
 from rez.version import Requirement as Requirement, Version as Version
 from types import FunctionType, MethodType
-from typing import Any, Iterator
+from typing import Any, Generic, Iterator, TypeVar
 
+VariantResourceHelperT = TypeVar('VariantResourceHelperT', bound='VariantResourceHelper')
+PackageResourceHelperT = TypeVar('PackageResourceHelperT', bound='PackageResourceHelper')
+PackageRepositoryT = TypeVar('PackageRepositoryT', bound='PackageRepository')
 package_release_keys: Incomplete
 package_build_only_keys: Incomplete
 package_rex_keys: Incomplete
@@ -41,11 +45,12 @@ package_pod_schema_dict: Incomplete
 large_string_dict: Incomplete
 package_pod_schema: Incomplete
 
-class PackageRepositoryResource(Resource):
+class PackageRepositoryResource(Resource, Generic[PackageRepositoryT]):
     """Base class for all package-related resources.
     """
     schema_error = PackageMetadataError
     repository_type: str
+    _repository: PackageRepositoryT
     @classmethod
     def normalize_variables(cls, variables): ...
     def __init__(self, variables: Incomplete | None = None) -> None: ...
@@ -62,13 +67,13 @@ class PackageRepositoryResource(Resource):
         uniquely identifies this resource.
         """
 
-class PackageFamilyResource(PackageRepositoryResource):
+class PackageFamilyResource(PackageRepositoryResource[PackageRepositoryT], Generic[PackageRepositoryT, PackageResourceHelperT]):
     """A package family.
 
     A repository implementation's package family resource(s) must derive from
     this class. It must satisfy the schema `package_family_schema`.
     """
-    def iter_packages(self) -> Iterator[PackageResourceHelper]: ...
+    def iter_packages(self) -> Iterator[PackageResourceHelperT]: ...
 
 class PackageResource(PackageRepositoryResource):
     """A package.
@@ -95,7 +100,7 @@ class VariantResource(PackageResource, metaclass=abc.ABCMeta):  # type: ignore[m
     """
     @property
     @abstractmethod
-    def parent(self) -> PackageRepositoryResource: ...
+    def parent(self) -> PackageResourceHelper: ...
     @property
     def index(self) -> int | None: ...
     @cached_property
@@ -114,7 +119,7 @@ class VariantResource(PackageResource, metaclass=abc.ABCMeta):  # type: ignore[m
     @abstractmethod
     def _subpath(self, ignore_shortlinks: bool = False): ...
 
-class PackageResourceHelper(PackageResource, metaclass=abc.ABCMeta):  # type: ignore[misc]
+class PackageResourceHelper(PackageResource, Generic[VariantResourceHelperT], metaclass=abc.ABCMeta):  # type: ignore[misc]
     """PackageResource with some common functionality included.
     """
     variant_key: str
@@ -134,7 +139,7 @@ class PackageResourceHelper(PackageResource, metaclass=abc.ABCMeta):  # type: ig
     def pre_commands(self) -> SourceCode: ...
     @cached_property
     def post_commands(self) -> SourceCode: ...
-    def iter_variants(self) -> Iterator[VariantResourceHelper]: ...
+    def iter_variants(self) -> Iterator[VariantResourceHelperT]: ...
     def _convert_to_rex(self, commands: list[str] | str | FunctionType | MethodType | SourceCode) -> SourceCode: ...
 
 class _Metas(AttributeForwardMeta, LazyAttributeMeta): ...
@@ -156,5 +161,5 @@ class VariantResourceHelper(VariantResource, metaclass=_Metas):  # type: ignore[
     @cached_property
     def variant_requires(self) -> list[Requirement]: ...
     @property
-    def wrapped(self): ...
-    def _load(self) -> None: ...
+    def wrapped(self) -> PackageResourceHelper: ...
+    def _load(self) -> None: ...  # type: ignore[override]

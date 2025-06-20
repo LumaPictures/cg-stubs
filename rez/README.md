@@ -1,5 +1,8 @@
 # python stubs for rez
 
+High quality python type stubs for the [rez](https://github.com/AcademySoftwareFoundation/rez)
+cross-platform package manager.
+
 These stubs are designed to be used with a type checker like `mypy` to provide static type checking of python code, as well as to provide analysis and completion in IDEs like PyCharm and VSCode (with Pylance).
 
 ## Installing

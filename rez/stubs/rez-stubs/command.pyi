@@ -1,5 +1,6 @@
-from _typeshed import Incomplete
+import rez.utils.data_utils
 from rez.config import config as config
+from typing import Any
 
 class Command:
     '''An interface for registering custom Rez subcommand
@@ -44,8 +45,8 @@ class Command:
             return CommandFoo
 
     '''
-    type_settings: Incomplete
-    settings: Incomplete
+    type_settings: rez.utils.data_utils.RO_AttrDictWrapper
+    settings: Any | None
     def __init__(self) -> None: ...
     @classmethod
     def name(cls) -> str:

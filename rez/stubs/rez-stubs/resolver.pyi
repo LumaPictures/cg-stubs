@@ -50,13 +50,13 @@ class Resolver:
     context: rez.resolved_context.ResolvedContext
     package_requests: list[rez.version._requirement.Requirement]
     package_paths: list[str]
-    timestamp: float | None
+    timestamp: int | None
     callback: Callable[[rez.solver.SolverState], tuple[rez.solver.SolverCallbackReturn, str]] | None
     package_orderers: rez.package_order.PackageOrderList | None
     package_load_callback: Callable[[rez.packages.Package], Any] | None
     building: bool
     testing: bool
-    verbosity: bool
+    verbosity: int
     caching: bool
     buf: rez.utils.typing.SupportsWrite | None
     suppress_passive: bool
@@ -68,13 +68,13 @@ class Resolver:
     resolved_packages_: list[rez.packages.Variant] | None
     resolved_ephemerals_: list[rez.version._requirement.Requirement] | None
     failure_description: str | None
-    graph_: None
+    graph_: Any | None
     from_cache: bool
     memcached_servers: Any | None
     solve_time: float | None
     load_time: float | None
     _print: Incomplete
-    def __init__(self, context: ResolvedContext, package_requests: list[Requirement], package_paths: list[str], package_filter: PackageFilterList | None = None, package_orderers: PackageOrderList | None = None, timestamp: float | None = 0, callback: Callable[[SolverState], tuple[SolverCallbackReturn, str]] | None = None, building: bool = False, testing: bool = False, verbosity: bool = False, buf: SupportsWrite | None = None, package_load_callback: Callable[[Package], Any] | None = None, caching: bool = True, suppress_passive: bool = False, print_stats: bool = False) -> None:
+    def __init__(self, context: ResolvedContext, package_requests: list[Requirement], package_paths: list[str], package_filter: PackageFilterList | None = None, package_orderers: PackageOrderList | None = None, timestamp: int | None = 0, callback: Callable[[SolverState], tuple[SolverCallbackReturn, str]] | None = None, building: bool = False, testing: bool = False, verbosity: int = 0, buf: SupportsWrite | None = None, package_load_callback: Callable[[Package], Any] | None = None, caching: bool = True, suppress_passive: bool = False, print_stats: bool = False) -> None:
         """Create a Resolver.
 
         Args:
@@ -121,7 +121,7 @@ class Resolver:
             completed.
         """
     @property
-    def graph(self):
+    def graph(self) -> digraph | None:  # type: ignore[name-defined]
         """Return the resolve graph.
 
         The resolve graph shows unsuccessful as well as successful resolves.
@@ -129,7 +129,7 @@ class Resolver:
         Returns:
             A pygraph.digraph object, or None if the solve has not completed.
         """
-    def _get_variant(self, variant_handle) -> Variant: ...
+    def _get_variant(self, variant_handle: ResourceHandle | dict) -> Variant: ...  # type: ignore[name-defined]
     def _get_cached_solve(self) -> SolverDict | None:
         """Find a memcached resolve.
 

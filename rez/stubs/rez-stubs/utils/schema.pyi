@@ -4,7 +4,7 @@ from rez.vendor.schema.schema import And as And, Optional as Optional, Schema as
 
 Required = Schema
 
-def schema_keys(schema):
+def schema_keys(schema) -> set[str]:
     '''Get the string values of keys in a dict-based schema.
 
     Non-string keys are ignored.
@@ -17,7 +17,7 @@ def schema_keys(schema):
            schema = Schema({Required("foo"): int,
                             Optional("bah"): str})
     '''
-def dict_to_schema(schema_dict, required, allow_custom_keys: bool = True, modifier: Incomplete | None = None):
+def dict_to_schema(schema_dict, required, allow_custom_keys: bool = True, modifier: Incomplete | None = None) -> Validatable:
     """Convert a dict of Schemas into a Schema.
 
     Args:

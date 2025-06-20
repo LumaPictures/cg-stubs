@@ -122,16 +122,16 @@ def copy_or_replace(src: str, dst: str):
 def copytree(src: str, dst: str, symlinks: bool = False, ignore: Incomplete | None = None, hardlinks: bool = False):
     """copytree that supports hard-linking
     """
-def movetree(src, dst) -> None:
+def movetree(src: str, dst: str) -> None:
     """Attempts a move, and falls back to a copy+delete if this fails
     """
-def safe_chmod(path, mode) -> None:
+def safe_chmod(path: str, mode) -> None:
     """Set the permissions mode on path, but only if it differs from the current mode.
     """
-def to_nativepath(path): ...
-def to_ntpath(path): ...
-def to_posixpath(path): ...
-def canonical_path(path, platform: Incomplete | None = None):
+def to_nativepath(path: str): ...
+def to_ntpath(path: str): ...
+def to_posixpath(path: str): ...
+def canonical_path(path: str, platform: Incomplete | None = None):
     """ Resolves symlinks, and formats filepath.
 
     Resolves symlinks, lowercases if filesystem is case-insensitive,
@@ -145,7 +145,7 @@ def canonical_path(path, platform: Incomplete | None = None):
     Returns:
         str: Provided path, formatted for platform.
     """
-def encode_filesystem_name(input_str):
+def encode_filesystem_name(input_str: str):
     '''Encodes an arbitrary unicode string to a generic filesystem-compatible
     non-unicode filename.
 
@@ -193,18 +193,18 @@ def encode_filesystem_name(input_str):
 _FILESYSTEM_TOKEN_RE: Incomplete
 _HEX_RE: Incomplete
 
-def decode_filesystem_name(filename):
+def decode_filesystem_name(filename: str):
     """Decodes a filename encoded using the rules given in encode_filesystem_name
     to a unicode string.
     """
 def test_encode_decode() -> None: ...
-def walk_up_dirs(path) -> Generator[Incomplete]:
+def walk_up_dirs(path: str):
     """Yields absolute directories starting with the given path, and iterating
     up through all it's parents, until it reaches a root directory"""
-def windows_long_path(dos_path):
+def windows_long_path(dos_path: str):
     """Prefix '\\?' for path longer than 259 char (Win32API limitation)
     """
-def rename(src, dst) -> None:
+def rename(src: str, dst: str):
     """Utility function to rename a file or folder src to dst with retrying.
 
     This function uses the built-in `os.rename()` function and falls back to `robocopy` tool

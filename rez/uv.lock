@@ -33,7 +33,7 @@ wheels = [
 [[package]]
 name = "rez"
 version = "3.2.1"
-source = { directory = "../../rez" }
+source = { git = "https://github.com/chadrik/rez?branch=typing2#54c98b15e61fafbea69052b62558a6c89ae00462" }
 
 [[package]]
 name = "types-rez"
@@ -51,7 +51,7 @@ dev = [
 [package.metadata.requires-dev]
 dev = [
     { name = "mypy", git = "https://github.com/chadrik/mypy?branch=stubgen-rez" },
-    { name = "rez", directory = "../../rez" },
+    { name = "rez", git = "https://github.com/chadrik/rez?branch=typing2" },
 ]
 
 [[package]]

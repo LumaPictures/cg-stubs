@@ -51,7 +51,7 @@ class SourceCode(Generic[T]):
     func: Callable[[], T] | None
     filepath: str | None
     eval_as_function: bool
-    package: rez.packages.PackageBaseResourceWrapper | None
+    package: rez.packages.PackageBaseResourceWrapper[Any] | None
     funcname: str | None
     decorators: list[dict[Any, Any]]
     def __init__(self, source: str | None = None, func: Callable[[], T] | None = None, filepath: str | None = None, eval_as_function: bool = True) -> None: ...

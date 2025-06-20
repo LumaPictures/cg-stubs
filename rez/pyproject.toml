@@ -1,6 +1,6 @@
 [project]
 name = "types-rez"
-version = "3.2.1.5"
+version = "3.2.1.6"
 
 readme = "README.md"
 authors = [{name="Chad Dombrova"}]

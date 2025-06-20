@@ -190,7 +190,7 @@ class Config(metaclass=LazyAttributeMeta):
     def debug_printer(self, key: str):
         """Returns a printer object suitably enabled based on the given key."""
     @cached_property
-    def sourced_filepaths(self):
+    def sourced_filepaths(self) -> list[str]:
         """Get the list of files actually sourced to create the config.
 
         Note:
@@ -203,7 +203,7 @@ class Config(metaclass=LazyAttributeMeta):
             List of str: The sourced files.
         """
     @cached_property
-    def plugins(self):
+    def plugins(self) -> _PluginConfigs:
         """Plugin settings are loaded lazily, to avoid loading the plugins
         until necessary."""
     @property
@@ -247,7 +247,7 @@ class _PluginConfigs:
     """Lazy config loading for plugins."""
     def __init__(self, plugin_data) -> None: ...
     def __setattr__(self, attr, value) -> None: ...
-    def __getattr__(self, attr: str) -> Any: ...
+    def __getattr__(self, attr: str) -> RO_AttrDictWrapper: ...
     def __iter__(self): ...
     def override(self, key, value) -> None: ...
     def data(self): ...

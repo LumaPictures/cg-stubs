@@ -1,3 +1,4 @@
+import re
 import rez.version._requirement
 from _typeshed import Incomplete
 from rez.config import config as config
@@ -5,7 +6,7 @@ from rez.exceptions import ConfigurationError as ConfigurationError
 from rez.packages import Package as Package, iter_packages as iter_packages
 from rez.utils.data_utils import cached_class_property as cached_class_property, cached_property as cached_property
 from rez.version import Requirement as Requirement, VersionRange as VersionRange, VersionedObject as VersionedObject
-from typing import Any, Pattern, Self
+from typing import Any, ClassVar, Iterator, Pattern, Self
 
 class PackageFilterBase:
     """Base class for package filters."""
@@ -19,28 +20,28 @@ class PackageFilterBase:
             typing.Optional[Rule]: Rule object that excludes the package, or None if the package was
             not excluded.
         """
-    def add_exclusion(self, rule: Rule):
+    def add_exclusion(self, rule: Rule) -> None:
         """Add an exclusion rule.
 
         Args:
             rule (Rule): Rule to exclude on.
         """
-    def add_inclusion(self, rule: Rule):
+    def add_inclusion(self, rule: Rule) -> None:
         """Add an inclusion rule.
 
         Args:
             rule (Rule): Rule to include on.
         """
     @classmethod
-    def from_pod(cls, data) -> None:
+    def from_pod(cls, data: Any) -> Self:
         """Convert from POD types to equivalent package filter."""
-    def to_pod(self) -> None:
+    def to_pod(self) -> Any:
         """Convert to POD type, suitable for storing in an rxt file.
 
-        Returns:
+        Return type depends on subclass implementation
             dict[str, list[str]]:
         """
-    def iter_packages(self, name: str, range_: VersionRange | str | None = None, paths: Incomplete | None = None):
+    def iter_packages(self, name: str, range_: VersionRange | str | None = None, paths: list[str] | None = None) -> Iterator[Package]:
         """Same as :func:`~rez.packages.iter_packages`, but also applies this filter.
 
         Args:
@@ -75,8 +76,8 @@ class PackageFilter(PackageFilterBase):
     excluded if it matches one or more exclusion rules, and does not match any
     inclusion rules.
     """
-    _excludes: dict[Any, Any]
-    _includes: dict[Any, Any]
+    _excludes: dict[str | None, list[Rule]]
+    _includes: dict[str | None, list[Rule]]
     def __init__(self) -> None: ...
     def excludes(self, package: Package) -> Rule | None: ...
     def add_exclusion(self, rule: Rule) -> None: ...
@@ -86,11 +87,11 @@ class PackageFilter(PackageFilterBase):
 
         Adding rules to the copy will not alter the source.
         """
-    def __and__(self, other):
+    def __and__(self, other: PackageFilter) -> PackageFilter:
         """Combine two filters."""
     def __bool__(self) -> bool: ...
     @cached_property
-    def cost(self):
+    def cost(self) -> float:
         """Get the approximate cost of this filter.
 
         Cost is the total cost of the exclusion rules in this filter. The cost
@@ -100,14 +101,14 @@ class PackageFilter(PackageFilterBase):
             float: The approximate cost of the filter.
         """
     @classmethod
-    def from_pod(cls, data: dict) -> PackageFilter:  # type: ignore[override]
+    def from_pod(cls, data: dict) -> PackageFilter:
         """Convert from POD types to equivalent package filter.
 
         Returns:
             PackageFilter:
         """
-    def to_pod(self) -> dict: ...  # type: ignore[override]
-    def _add_rule(self, rules_dict, rule) -> None: ...
+    def to_pod(self) -> dict[str, list[str]]: ...
+    def _add_rule(self, rules_dict: dict[str | None, list[Rule]], rule: Rule) -> None: ...
     def __str__(self) -> str: ...
 
 class PackageFilterList(PackageFilterBase):
@@ -145,13 +146,13 @@ class PackageFilterList(PackageFilterBase):
         Adding rules to the copy will not alter the source.
         """
     @classmethod
-    def from_pod(cls, data: list[dict]) -> PackageFilterList:  # type: ignore[override]
+    def from_pod(cls, data: list[dict]) -> PackageFilterList:
         """Convert from POD types to equivalent package filter.
 
         Returns:
             PackageFilterList:
         """
-    def to_pod(self) -> list[dict]: ...  # type: ignore[override]
+    def to_pod(self) -> list[dict]: ...
     def __bool__(self) -> bool: ...
     def __str__(self) -> str: ...
     @cached_class_property
@@ -184,10 +185,10 @@ class Rule:
         Returns:
             str | None:
         """
-    def cost(self) -> None:
+    def cost(self) -> int:
         """Relative cost of filter. Cheaper filters are applied first."""
     @classmethod
-    def parse_rule(cls, txt: str):
+    def parse_rule(cls, txt: str) -> Rule:
         """Parse a rule from a string.
 
         See :data:`package_filter` for an overview of valid strings.
@@ -199,7 +200,7 @@ class Rule:
             Rule:
         """
     @classmethod
-    def _parse(cls, txt: str):
+    def _parse(cls, txt: str) -> Rule:
         """Create a rule from a string.
 
         Returns:
@@ -207,18 +208,19 @@ class Rule:
             of this rule type.
         """
     @classmethod
-    def _parse_label(cls, txt: str): ...
+    def _parse_label(cls, txt: str) -> tuple[str | None, str]: ...
     @classmethod
     def _extract_family(cls, txt: str) -> str | None: ...
     def __repr__(self) -> str: ...
-    family_re: Incomplete
-    label_re: Incomplete
+    family_re: ClassVar[re.Pattern[str]]
+    label_re: ClassVar[re.Pattern[str]]
 
 class RegexRuleBase(Rule):
     regex: Pattern[str]
     txt: str
+    def __init__(self, s: str) -> None: ...
     def match(self, package: Package) -> bool: ...
-    def cost(self) -> int: ...  # type: ignore[override]
+    def cost(self) -> int: ...
     @classmethod
     def _parse(cls, txt: str) -> Self: ...
     def __str__(self) -> str: ...
@@ -265,8 +267,8 @@ class RangeRule(Rule):
     _requirement: rez.version._requirement.Requirement
     _family: Incomplete
     def __init__(self, requirement: Requirement) -> None: ...
-    def match(self, package) -> bool: ...
-    def cost(self) -> int: ...  # type: ignore[override]
+    def match(self, package: Package) -> bool: ...
+    def cost(self) -> int: ...
     @classmethod
     def _parse(cls, txt: str) -> Self: ...
     def __str__(self) -> str: ...
@@ -298,7 +300,7 @@ class TimestampRule(Rule):
     reverse: bool
     match_untimestamped: bool
     _family: Incomplete
-    def __init__(self, timestamp: int, family: Incomplete | None = None, reverse: bool = False, match_untimestamped: bool = False) -> None:
+    def __init__(self, timestamp: int, family: str | None = None, reverse: bool = False, match_untimestamped: bool = False) -> None:
         """Create a timestamp rule.
 
         Args:
@@ -310,11 +312,11 @@ class TimestampRule(Rule):
                 packages.
         """
     def match(self, package: Package) -> bool: ...
-    def cost(self) -> int: ...  # type: ignore[override]
+    def cost(self) -> int: ...
     @classmethod
-    def after(cls, timestamp, family: Incomplete | None = None) -> Self: ...
+    def after(cls, timestamp: int, family: str | None = None) -> Self: ...
     @classmethod
-    def before(cls, timestamp, family: Incomplete | None = None) -> Self: ...
+    def before(cls, timestamp: int, family: str | None = None) -> Self: ...
     @classmethod
-    def _parse(cls, txt) -> Self: ...
+    def _parse(cls, txt: str) -> Self: ...
     def __str__(self) -> str: ...

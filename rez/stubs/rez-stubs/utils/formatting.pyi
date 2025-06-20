@@ -1,6 +1,8 @@
 from _typeshed import Incomplete
 from enum import Enum
 from rez.exceptions import PackageRequestError as PackageRequestError
+from rez.rex import RexExecutor as RexExecutor
+from rez.utils import colorize as colorize
 from rez.version import Requirement as Requirement
 from string import Formatter
 from typing import Any, Mapping, Sequence
@@ -13,7 +15,7 @@ FORMAT_VAR_REGSTR: str
 FORMAT_VAR_REGEX: Incomplete
 invalid_package_names: Incomplete
 
-def is_valid_package_name(name, raise_error: bool = False):
+def is_valid_package_name(name: str, raise_error: bool = False) -> bool:
     """Test the validity of a package name string.
 
     Args:
@@ -39,7 +41,7 @@ class PackageRequest(Requirement):
         foo 1.3+
     '''
     ephemeral: bool
-    def __init__(self, s) -> None: ...
+    def __init__(self, s: str) -> None: ...
 
 class StringFormatType(Enum):
     """Behaviour of key expansion when using `ObjectStringFormatter`."""
@@ -58,7 +60,7 @@ class ObjectStringFormatter(Formatter):
     instance: Incomplete
     pretty: bool
     expand: StringFormatType
-    def __init__(self, instance, pretty: bool = False, expand: StringFormatType = ...) -> None:
+    def __init__(self, instance: Any, pretty: bool = False, expand: StringFormatType = ...) -> None:
         """Create a formatter.
 
         Args:
@@ -68,9 +70,9 @@ class ObjectStringFormatter(Formatter):
                 and parentheses removed.
             expand: `StringFormatType`.
         """
-    def convert_field(self, value, conversion): ...
-    def get_field(self, field_name, args, kwargs): ...
-    def get_value(self, key, args, kwds): ...
+    def convert_field(self, value: Any, conversion: str | None) -> Any: ...
+    def get_field(self, field_name: str, args: Sequence[Any], kwargs: Mapping[str, Any]) -> Any: ...
+    def get_value(self, key: int | str, args: Sequence[Any], kwds: Mapping[str, Any]) -> Any: ...
 
 class StringFormatMixin:
     """Turn any object into a string formatter.
@@ -80,7 +82,7 @@ class StringFormatMixin:
     """
     format_expand: Incomplete
     format_pretty: bool
-    def format(self, s, pretty: Incomplete | None = None, expand: Incomplete | None = None):
+    def format(self, s: str, pretty: bool | None = None, expand: StringFormatType | None = None) -> str:
         '''Format a string.
 
         Args:
@@ -96,7 +98,7 @@ class StringFormatMixin:
             The formatting string.
         '''
 
-def expand_abbreviations(txt, fields):
+def expand_abbreviations(txt: str, fields: list[str]) -> str:
     '''Expand abbreviations in a format string.
 
     If an abbreviation does not match a field, or matches multiple fields, it
@@ -128,9 +130,9 @@ def expandvars(text: str, environ: Mapping[str, str] | None = None) -> str:
     Returns:
         The expanded string.
     """
-def indent(txt: str):
+def indent(txt: str) -> str:
     """Indent the given text by 4 spaces."""
-def dict_to_attributes_code(dict_):
+def dict_to_attributes_code(dict_: dict) -> str:
     """Given a nested dict, generate a python code equivalent.
 
     Example:
@@ -145,7 +147,7 @@ def dict_to_attributes_code(dict_):
     """
 def columnise(rows: Sequence[Sequence[Any]], padding: int = 2) -> list[str]:
     """Print rows of entries in aligned columns."""
-def print_colored_columns(printer, rows: Sequence[tuple], padding: int = 2) -> None:
+def print_colored_columns(printer: colorize.Printer, rows: Sequence[tuple], padding: int = 2) -> None:
     """Like `columnise`, but with colored rows.
 
     Args:
@@ -157,19 +159,19 @@ def print_colored_columns(printer, rows: Sequence[tuple], padding: int = 2) -> N
 
 time_divs: Incomplete
 
-def readable_time_duration(secs):
+def readable_time_duration(secs: int) -> str:
     """Convert number of seconds into human readable form, eg '3.2 hours'.
     """
 
 memory_divs: Incomplete
 
-def readable_memory_size(bytes_):
+def readable_memory_size(bytes_: int) -> str:
     """Convert number of bytes into human-readable form.
 
     This method rounds to 1 decimal place eg '1.2 Kb'.
     """
-def _readable_units(value, divs, plural_aware: bool = False): ...
-def get_epoch_time_from_str(s):
+def _readable_units(value: int, divs: tuple[tuple[int, str, int], ...], plural_aware: bool = False) -> str: ...
+def get_epoch_time_from_str(s: str) -> int:
     """Convert a string into epoch time. Examples of valid strings:
 
         1418350671  # already epoch time
@@ -179,7 +181,7 @@ def get_epoch_time_from_str(s):
 
 positional_suffix: Incomplete
 
-def positional_number_string(n) -> str:
+def positional_number_string(n: int) -> str:
     """Print the position string equivalent of a positive integer. Examples:
 
         0: zeroeth
@@ -200,7 +202,7 @@ def expanduser(path: str) -> str:
     string '~packagename' may inadvertently convert to a homedir, if a package
     happens to match a username.
     """
-def as_block_string(txt) -> str:
+def as_block_string(txt: str) -> str:
     """Return a string formatted as a python block comment string, like the one
     you're currently reading. Special characters are escaped if necessary.
     """
@@ -208,11 +210,11 @@ def as_block_string(txt) -> str:
 _header_br: Incomplete
 _header_br_minor: Incomplete
 
-def header_comment(executor, txt: str) -> None:
+def header_comment(executor: RexExecutor, txt: str) -> None:
     """Convenience for creating header-like comment in a rex executor.
 
     Args:
         executor (`RexExecutor`): Executor.
         txt (str): Comment text.
     """
-def minor_header_comment(executor, txt: str) -> None: ...
+def minor_header_comment(executor: RexExecutor, txt: str) -> None: ...

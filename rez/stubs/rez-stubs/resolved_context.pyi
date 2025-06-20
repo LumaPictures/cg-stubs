@@ -34,13 +34,16 @@ from rez.utils.memcached import pool_memcached_connections as pool_memcached_con
 from rez.utils.platform_ import platform_ as platform_
 from rez.utils.resolve_graph import failure_detail_from_graph as failure_detail_from_graph
 from rez.utils.sourcecode import SourceCodeError as SourceCodeError
-from rez.utils.typing import SupportsWrite as SupportsWrite
+from rez.utils.typing import SupportsRead as SupportsRead, SupportsWrite as SupportsWrite
 from rez.utils.which import which as which
 from rez.utils.yaml import dump_yaml as dump_yaml
 from rez.vendor import yaml as yaml  # type: ignore[import-not-found]
-from rez.version import Requirement as Requirement, VersionRange as VersionRange
-from typing import Any, Callable, Iterable, Literal, Mapping, NoReturn, Sequence, TypeVar
+from rez.vendor.pygraph.classes.digraph import digraph as digraph  # type: ignore[import-not-found]
+from rez.version import Requirement as Requirement, Version as Version, VersionRange as VersionRange
+from subprocess import Popen
+from typing import Any, Callable, Iterable, Iterator, Literal, Mapping, NoReturn, Sequence, TypeVar, overload
 
+T = TypeVar('T')
 CallableT = TypeVar('CallableT', bound=Callable)
 
 class RezToolsVisibility(Enum):
@@ -69,11 +72,11 @@ class PatchLock(Enum):
     lock_4 = ('Build version updates only (X.X.X.*)', 3)
     lock = ('Exact version', -1)
     __order__ = 'no_lock,lock_2,lock_3,lock_4,lock'
-    description = ...
-    rank = ...
-    def __init__(self, description, rank) -> None: ...
+    description: str
+    rank: int
+    def __init__(self, description: str, rank: int) -> None: ...
 
-def get_lock_request(name: str, version, patch_lock: PatchLock, weak: bool = True) -> PackageRequest | None:
+def get_lock_request(name: str, version: Version, patch_lock: PatchLock, weak: bool = True) -> PackageRequest | None:
     """Given a package and patch lock, return the equivalent request.
 
     For example, for object 'foo-1.2.1' and lock type 'lock_3', the equivalent
@@ -112,11 +115,11 @@ class ResolvedContext:
     local: Incomplete
     class Callback:
         max_fails: int
-        time_limit: Incomplete
+        time_limit: int
         callback: Callable[[rez.solver.SolverState], tuple[rez.solver.SolverCallbackReturn, str]] | None
         start_time: float
         buf: rez.utils.typing.SupportsWrite | Any
-        def __init__(self, max_fails: int, time_limit, callback: Callable[[SolverState], tuple[SolverCallbackReturn, str]] | None, buf: SupportsWrite | None = None) -> None: ...
+        def __init__(self, max_fails: int, time_limit: int, callback: Callable[[SolverState], tuple[SolverCallbackReturn, str]] | None, buf: SupportsWrite | None = None) -> None: ...
         def __call__(self, state: SolverState) -> tuple[SolverCallbackReturn, str]: ...
     load_path: str | None
     requested_timestamp: float | None
@@ -274,7 +277,7 @@ class ResolvedContext:
         Returns:
             ResolvedContext: The retargeted context.
         """
-    def get_patched_request(self, package_requests: Incomplete | None = None, package_subtractions: Incomplete | None = None, strict: bool = False, rank: int = 0) -> list[Requirement | PackageRequest | str]:
+    def get_patched_request(self, package_requests: list[PackageRequest] | None = None, package_subtractions: list[str] | None = None, strict: bool = False, rank: int = 0) -> list[Requirement | PackageRequest | str]:
         """Get a 'patched' request.
 
         A patched request is a copy of this context's request, but with some
@@ -311,17 +314,10 @@ class ResolvedContext:
             list[PackageRequest]: PackageRequests objects that can be used to construct a
             new :class:`ResolvedContext` object.
         """
-    def graph(self, as_dot: bool = False):
-        """Get the resolve graph.
-
-        Args:
-            as_dot: If True, get the graph as a dot-language string. Otherwise,
-                a pygraph.digraph object is returned.
-
-        Returns:
-            A string or `pygraph.digraph` object, or None if there is no graph
-            associated with the resolve.
-        """
+    @overload
+    def graph(self, as_dot: Literal[True]) -> str | None: ...
+    @overload
+    def graph(self, as_dot: Literal[False] = False) -> digraph | None: ...
     def save(self, path: str) -> None:
         """Save the resolved context to file."""
     def write_to_buffer(self, buf: SupportsWrite) -> None:
@@ -342,7 +338,7 @@ class ResolvedContext:
     def load(cls, path: str) -> ResolvedContext:
         """Load a resolved context from file."""
     @classmethod
-    def read_from_buffer(cls, buf, identifier_str: str | None = None) -> ResolvedContext:
+    def read_from_buffer(cls, buf: SupportsRead, identifier_str: str | None = None) -> ResolvedContext:
         """Load the context from a buffer."""
     def get_resolve_diff(self, other: ResolvedContext) -> dict:
         """Get the difference between the resolve in this context and another.
@@ -404,18 +400,10 @@ class ResolvedContext:
                 - 2-tuple: Use the given two strings as headings - the first is
                   the heading for `self`, the second for `other`.
         """
-    @_on_success
-    def get_dependency_graph(self, as_dot: bool = False):
-        """Generate the dependency graph.
-
-        The dependency graph is a simpler subset of the resolve graph. It
-        contains package name nodes connected directly to their dependencies.
-        Weak references and conflict requests are not included in the graph.
-        The dependency graph does not show conflicts.
-
-        Returns:
-            `pygraph.digraph` object.
-        """
+    @overload
+    def get_dependency_graph(self, as_dot: Literal[False]) -> digraph: ...
+    @overload
+    def get_dependency_graph(self, as_dot: Literal[True]) -> str: ...
     @_on_success
     def validate(self) -> None:
         """Validate the context."""
@@ -480,7 +468,7 @@ class ResolvedContext:
             Dict of ``{tool-name: set([Variant])}``.
         """
     @_on_success
-    def get_shell_code(self, shell: str | None = None, parent_environ: Mapping[str, str] | None = None, style=...) -> str:
+    def get_shell_code(self, shell: str | None = None, parent_environ: Mapping[str, str] | None = None, style: OutputStyle = ...) -> str:
         """Get the shell code resulting from intepreting this context.
 
         Args:
@@ -514,7 +502,7 @@ class ResolvedContext:
                 defaults to os.environ if None.
         """
     @_on_success
-    def which(self, cmd, parent_environ: Mapping[str, str] | None = None, fallback: bool = False):
+    def which(self, cmd: str, parent_environ: Mapping[str, str] | None = None, fallback: bool = False) -> str | None:
         """Find a program in the resolved environment.
 
         Args:
@@ -528,7 +516,7 @@ class ResolvedContext:
             Path to the program, or None if the program was not found.
         """
     @_on_success
-    def execute_command(self, args, parent_environ: dict[str, str] | None = None, **Popen_args):
+    def execute_command(self, args: str | Iterable[str], parent_environ: dict[str, str] | None = None, **Popen_args: Any) -> Popen:
         """Run a command within a resolved context.
 
         This applies the context to a python environ dict, then runs a
@@ -554,7 +542,7 @@ class ResolvedContext:
             This does not alter the current python session.
         """
     @_on_success
-    def execute_rex_code(self, code: str, filename: str | None = None, shell: str | None = None, parent_environ: Mapping[str, str] | None = None, **Popen_args):
+    def execute_rex_code(self, code: str, filename: str | None = None, shell: str | None = None, parent_environ: Mapping[str, str] | None = None, **Popen_args: Any) -> Popen:
         """Run some rex code in the context.
 
         Note:
@@ -573,7 +561,7 @@ class ResolvedContext:
             subprocess.Popen: Subprocess object for the shell process.
         """
     @_on_success
-    def execute_shell(self, shell: str | None = None, parent_environ: Mapping[str, str] | None = None, rcfile: str | None = None, norc: bool = False, stdin: bool = False, command: str | Sequence[str] | None = None, quiet: bool = False, block: bool | None = None, actions_callback: Callable[[RexExecutor], Any] | None = None, post_actions_callback: Callable[[RexExecutor], Any] | None = None, context_filepath: Incomplete | None = None, start_new_session: bool = False, detached: bool = False, pre_command: Incomplete | None = None, **Popen_args):
+    def execute_shell(self, shell: str | None = None, parent_environ: Mapping[str, str] | None = None, rcfile: str | None = None, norc: bool = False, stdin: bool = False, command: str | Sequence[str] | None = None, quiet: bool = False, block: bool | None = None, actions_callback: Callable[[RexExecutor], Any] | None = None, post_actions_callback: Callable[[RexExecutor], Any] | None = None, context_filepath: str | None = None, start_new_session: bool = False, detached: bool = False, pre_command: str | list[str] | None = None, **Popen_args: Any) -> Popen:
         """Spawn a possibly-interactive shell.
 
         Args:
@@ -663,11 +651,11 @@ class ResolvedContext:
         """
     @classmethod
     @contextmanager
-    def _detect_bundle(cls, path: str): ...
+    def _detect_bundle(cls, path: str) -> Iterator[None]: ...
     @classmethod
-    def _get_bundle_path(cls): ...
+    def _get_bundle_path(cls) -> str | None: ...
     @classmethod
-    def _adjust_variant_for_bundling(cls, handle, out) -> None:
+    def _adjust_variant_for_bundling(cls, handle: dict, out: bool) -> None:
         """
         Deals with making variant pkg repo ref relative/nonrelative to take
         bundling into account.
@@ -681,9 +669,9 @@ class ResolvedContext:
     def _init_context_tracking_payload_base(cls) -> None: ...
     def _track_context(self, context_data, action: str) -> None: ...
     @classmethod
-    def _read_from_buffer(cls, buf, identifier_str: str | None = None) -> ResolvedContext: ...
+    def _read_from_buffer(cls, buf: SupportsRead, identifier_str: str | None = None) -> ResolvedContext: ...
     @classmethod
-    def _load_error(cls, e, path: str | None = None) -> NoReturn: ...
+    def _load_error(cls, e: Exception, path: str | None = None) -> NoReturn: ...
     def _set_parent_suite(self, suite_path: str, context_name: str) -> None: ...
     def _create_executor(self, interpreter: ActionInterpreter, parent_environ: Mapping[str, str] | None) -> RexExecutor: ...
     def _get_pre_resolve_bindings(self) -> dict: ...

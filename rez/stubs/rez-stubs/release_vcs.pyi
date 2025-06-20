@@ -1,4 +1,5 @@
 import rez.developer_package
+import rez.utils.data_utils
 from _typeshed import Incomplete
 from rez.exceptions import ReleaseVCSError as ReleaseVCSError
 from rez.packages import get_developer_package as get_developer_package
@@ -6,6 +7,7 @@ from rez.util import which as which
 from rez.utils.execution import Popen as Popen
 from rez.utils.filesystem import walk_up_dirs as walk_up_dirs
 from rez.utils.logging_ import print_debug as print_debug
+from typing import Any
 
 def get_release_vcs_types() -> list[str]:
     """Returns the available VCS implementations - git, hg etc."""
@@ -18,8 +20,8 @@ class ReleaseVCS:
     vcs_root: str
     pkg_root: str
     package: rez.developer_package.DeveloperPackage
-    type_settings: Incomplete
-    settings: Incomplete
+    type_settings: rez.utils.data_utils.RO_AttrDictWrapper
+    settings: Any | None
     def __init__(self, pkg_root: str, vcs_root: str | None = None) -> None: ...
     @classmethod
     def name(cls) -> str:

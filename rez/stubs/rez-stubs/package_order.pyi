@@ -26,7 +26,7 @@ class PackageOrder:
     """Package reorderer base class."""
     name: str
     _packages: list[str]
-    def __init__(self, packages: Iterable[str] | None = None) -> None:
+    def __init__(self, packages: list[str] | None = None) -> None:
         """
         Args:
             packages: If not provided, PackageOrder applies to all packages.
@@ -65,7 +65,7 @@ class PackageOrder:
     @staticmethod
     def _get_package_name_from_iterable(iterable: Iterable[Package], key: Callable[[Any], Package] | None = None) -> str | None:
         """Utility method for getting a package from an iterable"""
-    def sort_key(self, package_name: str, version_like) -> SupportsLessThan:
+    def sort_key(self, package_name: str, version_like: Version | _LowerBound | _UpperBound | _Bound | VersionRange | None) -> SupportsLessThan:
         """Returns a sort key usable for sorting packages within the same family
 
         Args:
@@ -129,7 +129,7 @@ class SortedOrder(PackageOrder):
     """
     name: str
     descending: bool
-    def __init__(self, descending: bool, packages: Incomplete | None = None) -> None: ...
+    def __init__(self, descending: bool, packages: list[str] | None = None) -> None: ...
     def sort_key_implementation(self, package_name: str, version: Version) -> SupportsLessThan: ...
     def __str__(self) -> str: ...
     def __eq__(self, other): ...
@@ -194,7 +194,7 @@ class VersionSplitPackageOrder(PackageOrder):
     """
     name: str
     first_version: rez.version._version.Version
-    def __init__(self, first_version: Version, packages: Incomplete | None = None) -> None:
+    def __init__(self, first_version: Version, packages: list[str] | None = None) -> None:
         """Create a reorderer.
 
         Args:
@@ -262,7 +262,7 @@ class TimestampPackageOrder(PackageOrder):
     rank: int
     _cached_first_after: dict[Any, Any]
     _cached_sort_key: dict[Any, Any]
-    def __init__(self, timestamp: int, rank: int = 0, packages: Incomplete | None = None) -> None:
+    def __init__(self, timestamp: int, rank: int = 0, packages: list[str] | None = None) -> None:
         """Create a reorderer.
 
         Args:
@@ -271,10 +271,10 @@ class TimestampPackageOrder(PackageOrder):
             rank (int): If non-zero, allow version changes at this rank or above
                 past the timestamp.
         """
-    def _get_first_after(self, package_family: str):
+    def _get_first_after(self, package_family: str) -> Version | None:
         """Get the first package version that is after the timestamp"""
-    def _calc_first_after(self, package_family: str): ...
-    def _calc_sort_key(self, package_name: str, version): ...
+    def _calc_first_after(self, package_family: str) -> Version | None: ...
+    def _calc_sort_key(self, package_name: str, version: Version) -> SupportsLessThan: ...
     def sort_key_implementation(self, package_name: str, version: Version) -> SupportsLessThan: ...
     def __str__(self) -> str: ...
     def __eq__(self, other): ...
@@ -315,7 +315,7 @@ class PackageOrderList(list[PackageOrder]):
 
 def to_pod(orderer: PackageOrder) -> dict: ...
 def from_pod(data: dict[str, Any]) -> PackageOrder: ...
-def get_orderer(package_name: str, orderers: PackageOrderList | dict[str, PackageOrder] | None = None): ...
+def get_orderer(package_name: str, orderers: PackageOrderList | dict[str, PackageOrder] | None = None) -> PackageOrder: ...
 def register_orderer(cls) -> bool:
     """Register an orderer
 

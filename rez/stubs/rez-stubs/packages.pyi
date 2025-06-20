@@ -1,28 +1,31 @@
 import rez.resolved_context
 from _typeshed import Incomplete
-from collections.abc import Generator
 from rez.config import Config as Config, config as config
 from rez.developer_package import DeveloperPackage as DeveloperPackage
 from rez.exceptions import PackageFamilyNotFoundError as PackageFamilyNotFoundError, ResourceError as ResourceError
 from rez.package_repository import PackageRepository as PackageRepository, package_repository_manager as package_repository_manager
-from rez.package_resources import PackageFamilyResource as PackageFamilyResource, PackageResource as PackageResource, VariantResource as VariantResource, late_requires_schema as late_requires_schema, package_family_schema as package_family_schema, package_release_keys as package_release_keys, package_schema as package_schema, variant_schema as variant_schema
+from rez.package_resources import PackageFamilyResource as PackageFamilyResource, PackageRepositoryResource as PackageRepositoryResource, PackageResource as PackageResource, PackageResourceHelper as PackageResourceHelper, VariantResource as VariantResource, VariantResourceHelper as VariantResourceHelper, late_requires_schema as late_requires_schema, package_family_schema as package_family_schema, package_release_keys as package_release_keys, package_schema as package_schema, variant_schema as variant_schema
 from rez.package_serialise import dump_package_data as dump_package_data
 from rez.resolved_context import ResolvedContext as ResolvedContext
 from rez.serialise import FileFormat as FileFormat
 from rez.utils import reraise as reraise
 from rez.utils.data_utils import cached_property as cached_property
 from rez.utils.formatting import StringFormatMixin as StringFormatMixin, StringFormatType as StringFormatType
-from rez.utils.resources import ResourceHandle as ResourceHandle, ResourceWrapper as ResourceWrapper
+from rez.utils.resources import Resource as Resource, ResourceHandle as ResourceHandle, ResourceWrapper as ResourceWrapper
 from rez.utils.schema import schema_keys as schema_keys
 from rez.utils.sourcecode import SourceCode as SourceCode
+from rez.utils.typing import SupportsWrite as SupportsWrite
 from rez.version import Requirement as Requirement, Version as Version, VersionRange as VersionRange, VersionedObject as VersionedObject
 from typing import Any, Iterator, Literal, TypeVar, overload
 
+T = TypeVar('T')
 PackageT = TypeVar('PackageT', bound='Package')
+PackageRepositoryResourceT = TypeVar('PackageRepositoryResourceT', bound=PackageRepositoryResource)
+PackageOrVariantResourceT = TypeVar('PackageOrVariantResourceT', 'PackageResourceHelper', VariantResourceHelper)
 
-class PackageRepositoryResourceWrapper(ResourceWrapper, StringFormatMixin):
+class PackageRepositoryResourceWrapper(ResourceWrapper[PackageRepositoryResourceT], StringFormatMixin):
     format_expand: Incomplete
-    def validated_data(self): ...
+    def validated_data(self) -> dict: ...
     @property
     def repository(self) -> PackageRepository:
         """The package repository this resource comes from.
@@ -31,7 +34,7 @@ class PackageRepositoryResourceWrapper(ResourceWrapper, StringFormatMixin):
             `PackageRepository`.
         """
 
-class PackageFamily(PackageRepositoryResourceWrapper):
+class PackageFamily(PackageRepositoryResourceWrapper[PackageFamilyResource]):
     """A package family.
 
     Note:
@@ -47,15 +50,15 @@ class PackageFamily(PackageRepositoryResourceWrapper):
             `Package` iterator.
         """
 
-class PackageBaseResourceWrapper(PackageRepositoryResourceWrapper):
+class PackageBaseResourceWrapper(PackageRepositoryResourceWrapper[PackageOrVariantResourceT]):
     """Abstract base class for `Package` and `Variant`.
     """
     late_bind_schemas: Incomplete
     context: rez.resolved_context.ResolvedContext | None
     _late_binding_returnvalues: dict[Any, Any]
-    def __init__(self, resource: PackageResource | VariantResource, context: ResolvedContext | None = None) -> None: ...
+    def __init__(self, resource: PackageOrVariantResourceT, context: ResolvedContext | None = None) -> None: ...
     def set_context(self, context: ResolvedContext | None) -> None: ...
-    def arbitrary_keys(self) -> None: ...
+    def arbitrary_keys(self) -> set[str]: ...
     @property
     def uri(self) -> str: ...
     @property
@@ -68,7 +71,7 @@ class PackageBaseResourceWrapper(PackageRepositoryResourceWrapper):
     @cached_property
     def is_local(self) -> bool:
         """Returns True if the package is in the local package repository"""
-    def print_info(self, buf: Incomplete | None = None, format_=..., skip_attributes: Incomplete | None = None, include_release: bool = False) -> None:
+    def print_info(self, buf: SupportsWrite | None = None, format_: FileFormat = ..., skip_attributes: list[str] | None = None, include_release: bool = False) -> None:
         """Print the contents of the package.
 
         Args:
@@ -78,10 +81,10 @@ class PackageBaseResourceWrapper(PackageRepositoryResourceWrapper):
             include_release (bool): If True, include release-related attributes,
                 such as 'timestamp' and 'changelog'
         """
-    def _wrap_forwarded(self, key, value): ...
-    def _eval_late_binding(self, sourcecode: SourceCode): ...
+    def _wrap_forwarded(self, key: str, value: Any) -> Any: ...
+    def _eval_late_binding(self, sourcecode: SourceCode[T]) -> T: ...
 
-class Package(PackageBaseResourceWrapper):
+class Package(PackageBaseResourceWrapper[PackageResourceHelper]):
     """A package.
 
     Warning:
@@ -91,9 +94,9 @@ class Package(PackageBaseResourceWrapper):
     keys: Incomplete
     is_package: bool
     is_variant: bool
-    def __init__(self, resource: PackageResource, context: Incomplete | None = None) -> None: ...
-    def __getattr__(self, name: str): ...
-    def arbitrary_keys(self) -> set[str]:  # type: ignore[override]
+    def __init__(self, resource: PackageResourceHelper, context: ResolvedContext | None = None) -> None: ...
+    def __getattr__(self, name: str) -> Any: ...
+    def arbitrary_keys(self) -> set[str]:
         """Get the arbitrary keys present in this package.
 
         These are any keys not in the standard list ('name', 'version' etc).
@@ -137,14 +140,14 @@ class Package(PackageBaseResourceWrapper):
         Returns:
             `Variant` iterator.
         """
-    def get_variant(self, index: Incomplete | None = None) -> Variant | None:
+    def get_variant(self, index: int | None = None) -> Variant | None:
         """Get the variant with the associated index.
 
         Returns:
             `Variant` object, or None if no variant with the given index exists.
         """
 
-class Variant(PackageBaseResourceWrapper):
+class Variant(PackageBaseResourceWrapper[VariantResourceHelper]):
     """A package variant.
 
     Warning:
@@ -155,9 +158,9 @@ class Variant(PackageBaseResourceWrapper):
     is_package: bool
     is_variant: bool
     _parent: Package | None
-    def __init__(self, resource: VariantResource, context: ResolvedContext | None = None, parent: Package | None = None) -> None: ...
-    def __getattr__(self, name): ...
-    def arbitrary_keys(self) -> set[str]: ...  # type: ignore[override]
+    def __init__(self, resource: VariantResourceHelper, context: ResolvedContext | None = None, parent: Package | None = None) -> None: ...
+    def __getattr__(self, name: str) -> Any: ...
+    def arbitrary_keys(self) -> set[str]: ...
     @cached_property
     def qualified_package_name(self) -> str: ...
     @cached_property
@@ -223,27 +226,27 @@ class Variant(PackageBaseResourceWrapper):
             specified repository. If `dry_run` is True, None may be returned.
         """
     @property
-    def _non_shortlinked_subpath(self): ...
+    def _non_shortlinked_subpath(self) -> str: ...
 
 class PackageSearchPath:
     """A list of package repositories.
 
     For example, $REZ_PACKAGES_PATH refers to a list of repositories.
     """
-    paths: Incomplete
-    def __init__(self, packages_path) -> None:
+    paths: list[str]
+    def __init__(self, packages_path: list[str]) -> None:
         """Create a package repository list.
 
         Args:
             packages_path (list of str): List of package repositories.
         """
-    def iter_packages(self, name, range_: Incomplete | None = None) -> Generator[Incomplete]:
+    def iter_packages(self, name: str, range_: VersionRange | str | None = None) -> Iterator[Package]:
         """See `iter_packages`.
 
         Returns:
             `Package` iterator.
         """
-    def __contains__(self, package) -> bool:
+    def __contains__(self, package: Package | Variant) -> bool:
         """See if a package is in this list of repositories.
 
         Note:
@@ -258,9 +261,9 @@ class PackageSearchPath:
             otherwise.
         """
     @cached_property
-    def _repository_uids(self): ...
+    def _repository_uids(self) -> set[tuple[str, str]]: ...
 
-def iter_package_families(paths: list[str] | None = None):
+def iter_package_families(paths: list[str] | None = None) -> Iterator[PackageFamily]:
     """Iterate over package families, in no particular order.
 
     Note that multiple package families with the same name can be returned.
@@ -303,7 +306,7 @@ def get_package(name: str, version: Version | str, paths: list[str] | None = Non
     Returns:
         `Package` object, or None if the package was not found.
     """
-def get_package_family_from_repository(name: str, path: str):
+def get_package_family_from_repository(name: str, path: str) -> PackageFamily | None:
     """Get a package family from a repository.
 
     Args:
@@ -312,7 +315,7 @@ def get_package_family_from_repository(name: str, path: str):
     Returns:
         `PackageFamily` object, or None if the family was not found.
     """
-def get_package_from_repository(name: str, version, path: str):
+def get_package_from_repository(name: str, version: Version | str, path: str) -> Package | None:
     """Get a package from a repository.
 
     Args:
@@ -322,7 +325,7 @@ def get_package_from_repository(name: str, version, path: str):
     Returns:
         `Package` object, or None if the package was not found.
     """
-def get_package_from_handle(package_handle):
+def get_package_from_handle(package_handle: ResourceHandle | dict) -> Package:
     """Create a package given its handle (or serialized dict equivalent)
 
     Args:
@@ -333,7 +336,7 @@ def get_package_from_handle(package_handle):
     Returns:
         `Package`.
     """
-def get_package_from_string(txt: str, paths: list[str] | None = None):
+def get_package_from_string(txt: str, paths: list[str] | None = None) -> Package | None:
     """Get a package given a string.
 
     Args:
@@ -355,9 +358,9 @@ def get_developer_package(path: str, format: FileFormat | None = None) -> Develo
         `DeveloperPackage`.
     """
 @overload
-def create_package(name: str, data, package_cls: type[PackageT]) -> PackageT: ...
+def create_package(name: str, data: dict, package_cls: type[PackageT]) -> PackageT: ...
 @overload
-def create_package(name: str, data) -> Package: ...
+def create_package(name: str, data: dict) -> Package: ...
 def get_variant(variant_handle: ResourceHandle | dict, context: ResolvedContext | None = None) -> Variant:
     """Create a variant given its handle (or serialized dict equivalent)
 
@@ -395,7 +398,7 @@ def get_variant_from_uri(uri: str, paths: list[str] | None = None) -> Variant | 
     Returns:
         `Variant`, or None if the variant could not be found.
     """
-def get_last_release_time(name: str, paths: list[str] | None = None) -> int:
+def get_last_release_time(name: str, paths: list[str] | None = None) -> float:
     """Returns the most recent time this package was released.
 
     Note that releasing a variant into an already-released package is also
@@ -410,7 +413,7 @@ def get_last_release_time(name: str, paths: list[str] | None = None) -> int:
         int: Epoch time of last package release, or zero if this cannot be
         determined.
     """
-def get_completions(prefix: str, paths: list[str] | None = None, family_only: bool = False):
+def get_completions(prefix: str, paths: list[str] | None = None, family_only: bool = False) -> set[str]:
     '''Get autocompletion options given a prefix string.
 
     Example:
@@ -447,4 +450,4 @@ def get_latest_package_from_string(txt: str, paths: list[str] | None = None, err
         `Package` object, or None if no package is found.
     """
 def _get_families(name: str, paths: list[str] | None = None) -> list[tuple[PackageRepository, PackageFamilyResource]]: ...
-def _check_class(resource, cls) -> None: ...
+def _check_class(resource: Resource, cls: type[Resource]) -> None: ...
