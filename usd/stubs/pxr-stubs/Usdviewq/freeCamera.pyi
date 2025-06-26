@@ -28,7 +28,7 @@ class FreeCamera(PySide6.QtCore.QObject):
     rotPhi: Incomplete
     rotTheta: Incomplete
     verticalAperture: Incomplete
-    def __init__(self, isZUp, fov: float = ..., aspectRatio: float = ..., overrideNear: Incomplete | None = ..., overrideFar: Incomplete | None = ...) -> None:
+    def __init__(self, isZUp, fov: float = ..., aspectRatio: float = ..., overrideNear, overrideFar) -> None:
         """FreeCamera can be either a Z up or Y up camera, based on 'zUp'"""
     def AdjustDistance(self, scaleFactor):
         '''Scales the distance of the freeCamera from it\'s center typically by

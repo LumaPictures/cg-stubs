@@ -93,7 +93,12 @@ def merge_signatures(
     if (ret_type is None or force) and other.ret_type:
         ret_type = other.ret_type
 
-    return FunctionSig(name=dest.name, args=args, ret_type=ret_type)
+    new_sig = FunctionSig(name=dest.name, args=args, ret_type=ret_type)
+    other_docstring = getattr(other, "docstring", None)
+    dest_docstring = getattr(dest, "docstring", None)
+    if other_docstring is not None or dest_docstring is not None:
+        new_sig.docstring = dest_docstring or other_docstring
+    return new_sig
 
 
 def is_star_arg(arg_name):
@@ -159,7 +164,12 @@ def merge_signature_kwargs(
     if (ret_type is None or force) and other.ret_type:
         ret_type = other.ret_type
 
-    return FunctionSig(name=dest.name, args=dest_groups.all_args(), ret_type=ret_type)
+    new_sig = FunctionSig(name=dest.name, args=dest_groups.all_args(), ret_type=ret_type)
+    other_docstring = getattr(other, "docstring", None)
+    dest_docstring = getattr(dest, "docstring", None)
+    if other_docstring is not None or dest_docstring is not None:
+        new_sig.docstring = dest_docstring or other_docstring
+    return new_sig
 
 
 class CFunctionStub:

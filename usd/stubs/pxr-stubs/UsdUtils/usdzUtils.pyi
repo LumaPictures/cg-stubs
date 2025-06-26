@@ -1,7 +1,6 @@
 # mypy: disable-error-code="misc, override, no-redef"
 
 import types
-from _typeshed import Incomplete
 
 class UsdzAssetIterator:
     """
@@ -12,7 +11,7 @@ class UsdzAssetIterator:
     Note that root layer of the usdz package might not be compliant which can
     cause UsdzAssetIterator to raise an exception while repacking on exit.
     """
-    def __init__(self, usdzFile, verbose, parentDir: Incomplete | None = ...) -> None: ...
+    def __init__(self, usdzFile, verbose, parentDir) -> None: ...
     def AllAssets(self):
         """
         Generator for all assets packed in the usdz package, respecting nested

@@ -1,6 +1,5 @@
 # mypy: disable-error-code="misc, override, no-redef"
 
-from _typeshed import Incomplete
 from types import ModuleType
 from typing import ClassVar
 
@@ -70,7 +69,7 @@ def GetFramePlaceholder(frameFormat):
 
     If no such placeholder exists in the frame format string, None is returned.
     """
-def ValidateCmdlineArgs(argsParser, args, frameFormatArgName: Incomplete | None = ...):
+def ValidateCmdlineArgs(argsParser, args, frameFormatArgName):
     """
     Validates the frame-related arguments in args parsed by argsParser.
 

@@ -2,7 +2,6 @@
 
 import pxr.Plug as Plug
 import pxr.Tf as Tf
-from _typeshed import Incomplete
 from pxr.Tf import PluginContainerTfType as PluginContainerTfType
 
 class CommandPlugin:
@@ -44,7 +43,7 @@ class DeferredImport:
     # This will raise an ImportError because `math.foo` doesn\'t really exist.
     foo(0)
     '''
-    def __init__(self, moduleName, packageName: Incomplete | None = ...) -> None: ...
+    def __init__(self, moduleName, packageName) -> None: ...
     def __getattr__(self, attr):
         """Returns a function which calls the target function of the module and
                 passes along any parameters. The module is lazy-imported when a function
@@ -79,7 +78,7 @@ class PluginContainer:
 class PluginMenu:
     """Object which adds Usdview command plugins to a QMenu."""
     def __init__(self, qMenu) -> None: ...
-    def addItem(self, commandPlugin, shortcut: Incomplete | None = ...):
+    def addItem(self, commandPlugin, shortcut):
         """Add a new command plugin to the menu. Optionally, provide a hotkey/
                 shortcut.
         """

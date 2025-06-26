@@ -40,7 +40,7 @@ class UsdviewApi:
         """Updates the main UI views"""
     def UpdateViewport(self):
         """Schedules a redraw."""
-    def _ExportSession(self, stagePath, defcamName: str = ..., imgWidth: Incomplete | None = ..., imgHeight: Incomplete | None = ...):
+    def _ExportSession(self, stagePath, defcamName: str = ..., imgWidth, imgHeight):
         """Export the free camera (if currently active) and session layer to a
                 USD file at the specified stagePath that references the current-viewed
                 stage.

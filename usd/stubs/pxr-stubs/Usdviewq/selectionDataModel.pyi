@@ -4,7 +4,6 @@ import PySide6.QtCore
 import pxr.Gf as Gf
 import pxr.Sdf as Sdf
 import typing
-from _typeshed import Incomplete
 from pxr.Usdviewq.customAttributes import BoundingBoxAttribute as BoundingBoxAttribute, ComputedPropertyFactory as ComputedPropertyFactory, ComputedPropertyNames as ComputedPropertyNames, LocalToWorldXformAttribute as LocalToWorldXformAttribute
 from typing import Callable, ClassVar
 
@@ -29,7 +28,7 @@ class SelectionDataModel(PySide6.QtCore.QObject):
     signalPrimSelectionChanged: ClassVar[PySide6.QtCore.Signal] = ...
     signalPropSelectionChanged: ClassVar[PySide6.QtCore.Signal] = ...
     staticMetaObject: ClassVar[PySide6.QtCore.QMetaObject] = ...
-    def __init__(self, rootDataModel, _computedPropFactory: Incomplete | None = ...) -> None: ...
+    def __init__(self, rootDataModel, _computedPropFactory) -> None: ...
     def _buildPropPath(self, primPath, propName):
         """Build a new property path from a prim path and a property name."""
     def _computedPropSelectionChanged(self):

@@ -1,30 +1,33 @@
-from __future__ import absolute_import, annotations, division, print_function
-
 # FIXME:  maybe we can kill two birds with one stone if we change this code to inject
 #  valid signatures into docstrings instead of generating stubs.
 # - Run stubgen a first time (we use stubgen just to piggy back the object crawling behavior).
 #   During first pass we write sigs to __doc__, or alternately write we write __DOC.py files.
 #   disable pyi generation during this crawl.
 # - run stubgen a second time, this time parsing the new docstrings with signatures, and writing pyi as normal
-# Notes
-# - python args do not always match cpp args
-# - many classes (Sdf.Spec, Sdf.VariantSpec, Sdf.Path) add a self arg to methods.
-#   I have a good heuristic to determine which are self-args
-# - some arguments are pointer results. in most cases we can safely assume that these will be added
-#   as tuple results, but there are a few exceptions
-#       pxr.Sdf.Layer.CanApply: the tuple result is conditional on the main return result
-#       pxr.Sdf.PrimSpec.CanSetName: ptr result is ignored
-#       pxr.Sdf.Path.GetAllTargetPathsRecursively: ptr is the main result
-#       pxr.Sdf.Path.IsValidPathString: returns a tuple-like Sdf_PathIsValidPathStringResult
-# - only a few methods seem to properly handle std::string
-# - it seems that free functions are not collected by the pixar parser. some of these are added as static
-#   methods to python classes: e.g. SdfPathFindLongestPrefix -> Path.FindLongestPrefix
-# - it's apparent that the order of overloads differs between boost and doxygen for at least some functions:
-#   pxr.Sdf.CopySpec, pxr.Usd.TraverseInstanceProxies.  FIXED (mostly)
-# - Matrix3dArray and other math types in Vt don't seem to be in the docs
-# - some wrapped c++ functions don't turn pointers into return types, such as UsdSkelExpandConstantInfluencesToVarying
-# - the stubs for Sdf.ValueTypeNames can be improved with some more work on stubgen.  FIXED
-# - boost python sigs do not always include defaults for keyword args.  See UsdGeom.BBoxCache.__init__
+"""
+Notes
+ - python args do not always match cpp args
+ - many classes (Sdf.Spec, Sdf.VariantSpec, Sdf.Path) add a self arg to methods.
+   I have a good heuristic to determine which are self-args
+ - some arguments are pointer results. in most cases we can safely assume that these will be added
+   as tuple results, but there are a few exceptions
+       pxr.Sdf.Layer.CanApply: the tuple result is conditional on the main return result
+       pxr.Sdf.PrimSpec.CanSetName: ptr result is ignored
+       pxr.Sdf.Path.GetAllTargetPathsRecursively: ptr is the main result
+       pxr.Sdf.Path.IsValidPathString: returns a tuple-like Sdf_PathIsValidPathStringResult
+ - only a few methods seem to properly handle std::string
+ - it seems that free functions are not collected by the pixar parser. some of these are added as static
+   methods to python classes: e.g. SdfPathFindLongestPrefix -> Path.FindLongestPrefix
+ - it's apparent that the order of overloads differs between boost and doxygen for at least some functions:
+   pxr.Sdf.CopySpec, pxr.Usd.TraverseInstanceProxies.  FIXED (mostly)
+ - Matrix3dArray and other math types in Vt don't seem to be in the docs
+ - some wrapped c++ functions don't turn pointers into return types, such as UsdSkelExpandConstantInfluencesToVarying
+ - the stubs for Sdf.ValueTypeNames can be improved with some more work on stubgen.  FIXED
+ - boost python sigs do not always include defaults for keyword args.  See UsdGeom.BBoxCache.__init__
+"""
+
+from __future__ import absolute_import, annotations, division, print_function
+
 import inspect
 import os
 import pathlib
@@ -429,7 +432,13 @@ class TypeInfo(CppTypeConverter):
 
     @classmethod
     def py_array_to_sub_type(cls, py_type: str) -> str | None:
-        """Takes a short or full python path"""
+        """Takes a short or full python path
+
+        ex.
+
+        TokenArray -> str
+        Vec2dArray -> float
+        """
         m = re.search(
             r"\b((Int|UInt|Bool|Vec|Short|Double|Half|Quat|Range|Rect|Char|Float|Token|Matrix).*)Array$",
             py_type,
@@ -582,6 +591,8 @@ class TypeInfo(CppTypeConverter):
                 self._populate_map(docElemPath + [child])
 
     def populate(self) -> None:
+        """Use the parser included with USD to gather data and processed docstrings from doxygen.
+        """
         parser = Parser()
         parser.parseDoxygenIndexFile(self.xml_index_file)
         # The parser calls `writer.getDocString() to fill in the `DocElement.doc` attribute.
@@ -923,7 +934,7 @@ def get_sigs_from_cpp_overloads(
         if py_ret_type == "T":
             py_ret_type = "Any"
         cpp_sigs_with_ptrs.append(
-            FunctionSig(ctx.name, args_ptr, py_ret_type, docstring)
+            FunctionSig(ctx.name, args_ptr, ret_type=py_ret_type, docstring=docstring)
         )
 
         if ptr_results:
@@ -938,7 +949,7 @@ def get_sigs_from_cpp_overloads(
             else:
                 py_ret_type = results[0]
         cpp_sigs_without_ptrs.append(
-            FunctionSig(ctx.name, args_no_ptr, py_ret_type, docstring)
+            FunctionSig(ctx.name, args_no_ptr, ret_type=py_ret_type, docstring=docstring)
         )
     return cpp_sigs_with_ptrs, cpp_sigs_without_ptrs
 
@@ -1001,8 +1012,8 @@ class SignatureMatcher(Generic[T]):
         raise NotImplementedError
 
     def _validate_match(
-        self, sig1: FunctionSig, sig2: FunctionSig, info: MatchInfo, key: T
-    ) -> None:
+        self, ctx: FunctionContext, sig1: FunctionSig, sig2: FunctionSig, info: MatchInfo, key: T
+    ) -> bool:
         """Ensure signatures are equal"""
         # compare using format_sig because it doesn't include the docstring by default
         if sig1.format_sig() != sig2.format_sig():
@@ -1010,7 +1021,10 @@ class SignatureMatcher(Generic[T]):
                 f"  (prev:  kind={info.kind:<10}, key={info.key})  {sig1.format_sig()}"
             )
             msg2 = f"  (new:   kind={self.name:<10}, key={key})  {sig2.format_sig()}"
-            raise TypeError(f"Sigs not equal\n{msg1}\n{msg2}")
+            notifier.warn("Sigs not equal", ctx.module_name, f"\n{msg1}\n{msg2}")
+            return False
+        else:
+            return True
 
     def match(
         self,
@@ -1049,6 +1063,7 @@ class SignatureMatcher(Generic[T]):
                     )
                     if self.validate:
                         self._validate_match(
+                            ctx,
                             tracker.matches[py_overload_id],
                             cpp_sigs[0],
                             tracker.successes[py_overload_id],
@@ -1149,6 +1164,7 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureF
         py_type: str,
         ctx: FunctionContext,
         is_result: bool,
+        default_value: str | None = None,
         fallback_type: str | None = None,
     ) -> str:
         """
@@ -1424,7 +1440,7 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureF
                 index1 = all_args.index(args1)
                 # replace the use of a default argument with an empty overload
                 sigs[index1].args[0].default = False
-                return [FunctionSig("__init__", [], None)] + sigs
+                return [FunctionSig("__init__", args=[], ret_type=None)] + sigs
         return sigs
 
     def _processs_sigs(
@@ -1637,7 +1653,7 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureF
                         FunctionSig(
                             py_sig.name,
                             args,
-                            return_type,
+                            ret_type=return_type,
                             docstring=cpp_sig.docstring,
                         )
                     )
@@ -1694,14 +1710,14 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureF
             and len(sigs) == 1
             and [x.name for x in sigs[0].args] == ["tupleargs", "dictkwds"]
         ):
-            sigs = [FunctionSig("__init__", [], "None")]
+            sigs = [FunctionSig("__init__", args=[], ret_type="None")]
 
         return self._processs_sigs(sigs, ctx)
 
     def get_property_type(
         self, default_type: str | None, ctx: FunctionContext
     ) -> str | None:
-        sigs = [FunctionSig(ctx.name, [], None)]
+        sigs = [FunctionSig(ctx.name, args=[], ret_type=None)]
         sigs = self._processs_sigs(sigs, ctx)
         ctx.docstring = sigs[0].docstring or ctx.docstring
         ret_type = sigs[0].ret_type
@@ -1875,3 +1891,12 @@ def main(outdir: str) -> None:
         "Could not find C++ info for overload"
     ) / notifier.get_key_count("*Total overloads*")
     print("Overload coverage {:.2f}%".format((1 - percent) * 100))
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Python stub generator for Nuke")
+    parser.add_argument("outdir", help="The path to the output directory")
+    args = parser.parse_args()
+    main(args.outdir)

@@ -1,6 +1,5 @@
 # mypy: disable-error-code="misc, override, no-redef"
 
-from _typeshed import Incomplete
 from typing import Callable, ClassVar
 
 class ConfigManager:
@@ -47,7 +46,7 @@ class ConfigManager:
             close (expected behavior of usdview before the advent of
             ConfigManager). If isEphemeral, we won't save no matter what
         """
-    def save(self, newName: Incomplete | None = ...):
+    def save(self, newName):
         """Saves the current state to the specified config
 
                 Parameters
@@ -71,7 +70,7 @@ class Settings(StateSource):
     buffer. On save, this object tells its children to save their current
     states, then saves the buffer back to the state file.
     """
-    def __init__(self, version, stateFilePath: Incomplete | None = ...) -> None: ...
+    def __init__(self, version, stateFilePath) -> None: ...
     def _getState(self):
         """Gets the buffered state rather than asking its parent for its state.
         """
@@ -107,7 +106,7 @@ class StateSource:
         """Validate a value against a StateProp."""
     def onSaveState(self, state):
         """Save the source's state properties to a dict."""
-    def stateProperty(self, name, default, propType: Incomplete | None = ..., validator: Callable = ...):
+    def stateProperty(self, name, default, propType, validator: Callable = ...):
         """Validates and creates a new StateProp for this source. The property's
                 value is returned so this method can be used during StateSource
                 initialization."""
