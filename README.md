@@ -59,11 +59,16 @@ these variables before the next step, for example using a package manager like `
 
 ### Step 3: Run the generate task
 
-Replace `maya` with the project you want to build: 
+Replace `maya` with the project you want to build:
 
 ```bash
 nox -s 'generate(maya)'
 ```
+
+> [!NOTE]
+> Some generators have extra options. For example, you can generate stubs for
+> specific Maya versions by running `nox -s 'generate(maya) --
+> --maya-version=2025`. See each individual subfolders to learn more.
 
 
 ### Testing while Developing

@@ -552,7 +552,7 @@ def generate(session: nox.Session, lib: str) -> None:
         session.env["PYTHONPATH"] = sitepath.strip()
         # FIXME: load from .env
         # session.run("uvx", "--from=python-dotenv[cli]", "dotenv", "run", "--", "mayapy", "-m", "stubgen_maya", "./stubs", external=True)
-        session.run(interp, "-m", "stubgen_maya", "./stubs", external=True)
+        session.run(interp, "-m", "stubgen_maya", "./stubs", *session.posargs, external=True)
     else:
         # FIXME: implement a workflow around a standard interpreter for rez, pyside, etc
         raise RuntimeError
