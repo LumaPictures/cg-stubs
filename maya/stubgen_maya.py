@@ -2,6 +2,7 @@ from __future__ import absolute_import, annotations, division, print_function
 
 import argparse
 import inspect
+import os
 import re
 import types
 from typing import Any
@@ -21,6 +22,9 @@ from stubgenlib.stubgen.delegate import GeneratorDelegate
 from stubgenlib.utils import add_positional_only_args
 
 stubgenlib.moduleinspect.patch()
+
+
+_MAYA_VERSION = os.getenv("MAYA_VERSION", "2025")
 
 
 def flag_has_mode(flag_info, mode):
@@ -88,7 +92,7 @@ class MayaCmdSignatureGenerator(SignatureGenerator):
     def __init__(self):
         import pymel.internal.cmdcache
 
-        pymel.internal.cmdcache.CmdCache.version = "2023"
+        pymel.internal.cmdcache.CmdCache.version = _MAYA_VERSION
         cmdcache = pymel.internal.cmdcache.CmdCache()
         data = cmdcache.load()
         datamap = dict(zip(cmdcache.cacheNames(), data))
@@ -359,7 +363,14 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Python stub generator for Nuke")
     parser.add_argument("outdir", help="The path to the output directory")
+    parser.add_argument(
+        "--maya-version",
+        default="2025",
+        help="The major version to generate stubs for. e.g. 2023, 2024, 2025, etc.",
+    )
     args = parser.parse_args()
+
+    _MAYA_VERSION = args.maya_version
 
     print("Initializing maya")
     import maya.standalone
