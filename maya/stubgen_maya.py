@@ -5,7 +5,7 @@ import inspect
 import os
 import re
 import types
-from typing import Any
+from typing import Any, Iterable
 
 import mypy.stubgen
 import mypy.stubgenc
@@ -25,10 +25,37 @@ stubgenlib.moduleinspect.patch()
 
 
 _MAYA_VERSION = os.getenv("MAYA_VERSION", "2025")
+_FlagsType = Iterable[tuple[str, "pymel.internal.cmdcache.flag_info"]]
 
 
 def flag_has_mode(flag_info, mode):
     return mode in flag_info.get("modes", [])
+
+
+def _strip_arguments(omit: set[str], sigs: Iterable[FunctionSig]) -> list[FunctionSig]:
+    """Remove any argument that matches `omit` from `sigs`.
+
+    Args:
+        sigs: All of the callable function signatures to return as a new copy.
+        omit: The function signature argument(s) to omit.
+
+    Returns:
+        All-new copies of `sigs` but with `omit` excluded.
+    """
+    output: list[FunctionSig] = []
+
+    for signature in sigs:
+        args = [arg for arg in signature.args if arg.name not in omit]
+        output.append(
+            FunctionSig(
+                name=signature.name,
+                args=args,
+                ret_type=signature.ret_type,
+                type_args=signature.type_args,
+            )
+        )
+
+    return output
 
 
 class MayaCmdAdvSignatureGenerator(AdvancedSignatureGenerator):
@@ -85,6 +112,20 @@ class MayaCmdAdvSignatureGenerator(AdvancedSignatureGenerator):
 
 
 class MayaCmdSignatureGenerator(SignatureGenerator):
+    """A special way of auto-generating type-hint signatures for `maya.cmds`.
+
+    It works by iterating over the flags in a function with `query=True` and
+    recording its return value. In short, if a function supports `query=True`
+    this might be able to auto-type-hint it! But for other functions, this
+    class is not useful. For those situations,
+    see :attr:`MayaCmdAdvSignatureGenerator.sig_matcher` instead.
+    """
+
+    add_edit_overloads = [
+        "sets",
+        "workspaceControl",
+    ]
+
     add_query_overloads = [
         "playbackOptions",
     ]
@@ -116,8 +157,22 @@ class MayaCmdSignatureGenerator(SignatureGenerator):
 
             args = [ArgSig("*args")] + self._get_args(cmd_flags)
             sigs = [FunctionSig(ctx.name, args=args, ret_type="Any")]
+            flag_pairs = list(cmd_flags.items())
+
             if ctx.name in self.add_query_overloads:
-                sigs = self._get_query_overloads(ctx.name, cmd_flags) + sigs
+                sigs = self._get_query_overloads(ctx.name, flag_pairs) + sigs
+
+            if ctx.name in self.add_edit_overloads:
+                # NOTE: For the safety's sake, we currently are only doing this
+                # for known functions. But in the future we could maybe run
+                # this on any function.
+                #
+                edit_sigs = self._get_edit_overloads(ctx.name, flag_pairs)
+
+                if edit_sigs:
+                    sigs = _strip_arguments({"edit"}, sigs)
+                    sigs = edit_sigs + sigs
+
             return sigs
 
     def _mel_type_to_python_type(self, typ, as_result=False) -> str:
@@ -195,10 +250,65 @@ class MayaCmdSignatureGenerator(SignatureGenerator):
 
         return new_args
 
-    def _get_query_overloads(self, name: str, cmd_flags) -> list[FunctionSig]:
+    def _get_edit_overloads(self, name: str, flags: _FlagsType) -> list[FunctionSig]:
+        """Add function signature(s) for `edit=True`-style function calls.
+
+        Example:
+            >>> cmds.polySphere("pSphere1", edit=True, radius=10)
+
+        Args:
+            name: The cmds function name. e.g. `"keyTangent"` (from `cmds.keyTangent`).
+            flags: All parameter flag data that we know about, for this function.
+
+        Returns:
+            If `edit=True` is found, return any signature(s) needed.
+            Otherwise return nothing.
+
+        """
+        sigs: list[FunctionSig] = []
+        edit_flags = [
+            (flag_name, flag_info)
+            for flag_name, flag_info in flags
+            if flag_has_mode(flag_info, "edit")
+        ]
+
+        if not edit_flags:
+            return []
+
+        args = [
+            ArgSig("*args"),
+            ArgSig("edit", type="Literal[True]"),
+            *[
+                ArgSig(
+                    flag_name,
+                    type=self._get_arg_type(flag_info, as_result=False),
+                    default=True,
+                )
+                for flag_name, flag_info in edit_flags
+            ],
+        ]
+        sigs.append(FunctionSig(name, args=args, ret_type="None"))
+
+        return sigs
+
+    def _get_query_overloads(self, name: str, flags: _FlagsType) -> list[FunctionSig]:
+        """Make a function signature for every queriable flag.
+
+        e.g. if `flags` has 10 queriable values then this function returns 10
+        signatures, one each.
+
+        Args:
+            name: The cmds function name. e.g. `"keyTangent"` (from `cmds.keyTangent`).
+            flags: All parameter flag data that we know about, for this function.
+
+        Returns:
+            If `edit=True` is found, return any signature(s) needed.
+            Otherwise return nothing.
+
+        """
         # FIXME: this does not support supplemental flags that modify the query
-        sigs = []
-        for flag_name, flag_info in cmd_flags.items():
+        sigs: list[FunctionSig] = []
+        for flag_name, flag_info in flags:
             if flag_has_mode(flag_info, "query"):
                 args = [ArgSig("*args"), ArgSig("query", type="Literal[True]"), ArgSig(flag_name, type="Literal[True]")]
                 ret_type = self._get_arg_type(flag_info, as_result=True)
