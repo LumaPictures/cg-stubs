@@ -156,11 +156,6 @@ class MayaCmdSignatureGenerator(SignatureGenerator):
     see :attr:`MayaCmdAdvSignatureGenerator.sig_matcher` instead.
     """
 
-    add_edit_overloads = [
-        "sets",
-        "workspaceControl",
-    ]
-
     add_exists_overloads = [
         "control",
         "menu",
@@ -206,17 +201,12 @@ class MayaCmdSignatureGenerator(SignatureGenerator):
 
             has_edit_sigs = False
 
-            if ctx.name in self.add_edit_overloads:
-                # NOTE: For the safety's sake, we currently are only doing this
-                # for known functions. But in the future we could maybe run
-                # this on any function.
-                #
-                edit_sigs = self._get_edit_overloads(ctx.name, flag_pairs)
+            edit_sigs = self._get_edit_overloads(ctx.name, flag_pairs)
 
-                if edit_sigs:
-                    has_edit_sigs = True
-                    sigs = _strip_arguments({"edit"}, sigs)
-                    sigs = edit_sigs + sigs
+            if edit_sigs:
+                has_edit_sigs = True
+                sigs = _strip_arguments({"edit"}, sigs)
+                sigs = edit_sigs + sigs
 
             if ctx.name in self.add_exists_overloads:
                 exists_sigs = self._get_exists_overloads(ctx.name, cmd_flags)
