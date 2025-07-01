@@ -112,7 +112,7 @@ class AdvancedSigMatcher(object):
     def find_func_match(self, fullname: str, items: dict[str, T]) -> T | None:
         """Look for a match in the given dictionary of function/method overrides"""
         for pattern, value in items.items():
-            if fnmatch.fnmatch(fullname, pattern):
+            if fnmatch.fnmatchcase(fullname, pattern):
                 return value
         return None
 
@@ -131,7 +131,7 @@ class AdvancedSigMatcher(object):
                 )
             return cast("T | None", type_match.sub(new_value, orig_type))
         elif type_match:
-            return new_value if fnmatch.fnmatch(orig_type, type_match) else None
+            return new_value if fnmatch.fnmatchcase(orig_type, type_match) else None
         else:
             return None
 
@@ -148,7 +148,7 @@ class AdvancedSigMatcher(object):
         items : key is (name_pattern, arg, type). value is whatever we're trying to find.
         """
         for (method_match, arg_name_match, arg_type_match), value in items.items():
-            if fnmatch.fnmatch(fullname, method_match) and fnmatch.fnmatch(
+            if fnmatch.fnmatchcase(fullname, method_match) and fnmatch.fnmatchcase(
                 arg_name, arg_name_match
             ):
                 new_value = self._type_match(arg_type_match, value, arg_type)
@@ -164,7 +164,7 @@ class AdvancedSigMatcher(object):
     ) -> T | None:
         """Look for a match in the given dictionary of argument overrides"""
         for (method_match, ret_type_match), value in items.items():
-            if fnmatch.fnmatch(fullname, method_match):
+            if fnmatch.fnmatchcase(fullname, method_match):
                 new_value = self._type_match(ret_type_match, value, ret_type)
                 if new_value is not None:
                     return new_value

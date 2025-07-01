@@ -20,6 +20,6 @@ class GeneratorDelegate(Generic[T]):
 
     def __call__(self, module_name: str, *args: Any, **kwargs: Any) -> T:
         for pattern, generator in self.rules.items():
-            if fnmatch.fnmatch(module_name, pattern):
+            if fnmatch.fnmatchcase(module_name, pattern):
                 return generator(module_name, *args, **kwargs)
         return self.fallback(module_name, *args, **kwargs)

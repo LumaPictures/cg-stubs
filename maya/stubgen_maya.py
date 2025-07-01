@@ -64,6 +64,19 @@ class MayaCmdAdvSignatureGenerator(AdvancedSignatureGenerator):
         # This is particularly useful for creating multiple overloads where the return
         # type varies based on the args.
         signature_overrides={
+            "maya.cmds.connectionInfo": [
+                # NOTE: These are all known possible signatures for `connectionInfo`
+                "(attribute: str, destinationFromSource: Literal[True]) -> list[str]",
+                "(attribute: str, getExactDestination: Literal[True]) -> str",
+                "(attribute: str, getLockedAncestor: Literal[True]) -> str",
+                "(attribute: str, getSource: Literal[True]) -> str",
+                "(attribute: str, isDestination: Literal[True]) -> bool",
+                "(attribute: str, isExactDestination: Literal[True]) -> bool",
+                "(attribute: str, isExactSource: Literal[True]) -> bool",
+                "(attribute: str, isLocked: Literal[True]) -> bool",
+                "(attribute: str, isSource: Literal[True]) -> bool",
+                "(attribute: str, sourceFromDestination: Literal[True]) -> str",
+            ],
             "maya.cmds.referenceQuery": [
                 # Using **kwargs here because I'm too lazy to map out all of the valid combinations
                 #  of secondary flags.
@@ -96,8 +109,30 @@ class MayaCmdAdvSignatureGenerator(AdvancedSignatureGenerator):
         #   dict of (name_pattern, type) to result_type
         #   e.g. ("*", "Buffer"): "numpy.ndarray"
         result_type_overrides={
+            ("maya.cmds.connectAttr", "*"): "None",
+            ("maya.cmds.createNode", "*"): "str",
+            ("maya.cmds.disconnectAttr", "*"): "None",
+            ("maya.cmds.listAnimatable", "*"): "list[str]",
+            ("maya.cmds.listAttr", "*"): "list[str] | None",
+            ("maya.cmds.listConnections", "*"): "list[str] | None",
+            ("maya.cmds.listHistory", "*"): "list[str]",
+            ("maya.cmds.listRelatives", "*"): "list[str] | None",
+            ("maya.cmds.listSets", "*"): "list[str] | None",
+            ("maya.cmds.list*", "*"): "list[str] | None",
+            ("maya.cmds.loadPlugin", "*"): "None",
             ("maya.cmds.ls", "*"): "list[str]",
-            ("maya.cmds.list*", "*"): "list[str]",
+            ("maya.cmds.objExists", "*"): "bool",
+            ("maya.cmds.rename", "*"): "None",
+            ("maya.cmds.setAttr", "*"): "None",
+            ("maya.cmds.setKeyframe", "*"): "None",
+            ("maya.cmds.undo", "*"): "None",
+            ("maya.cmds.unloadPlugin", "*"): "None",
+
+            # NOTE: `maya.cmds.nodeType` has some flags that look like they
+            # might return bool, such as `isTypeName`. They do not. They always
+            # return a string.
+            #
+            ("maya.cmds.nodeType", "*"): "str",
         },
         # Override property types
         #   dict of (name_pattern, type) to result_type
