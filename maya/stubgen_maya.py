@@ -126,6 +126,13 @@ class MayaCmdSignatureGenerator(SignatureGenerator):
         "workspaceControl",
     ]
 
+    add_exists_overloads = [
+        "control",
+        "menu",
+        "shelfLayout",
+        "window",
+    ]
+
     add_query_overloads = [
         "playbackOptions",
     ]
@@ -162,6 +169,8 @@ class MayaCmdSignatureGenerator(SignatureGenerator):
             if ctx.name in self.add_query_overloads:
                 sigs = self._get_query_overloads(ctx.name, flag_pairs) + sigs
 
+            has_edit_sigs = False
+
             if ctx.name in self.add_edit_overloads:
                 # NOTE: For the safety's sake, we currently are only doing this
                 # for known functions. But in the future we could maybe run
@@ -170,8 +179,19 @@ class MayaCmdSignatureGenerator(SignatureGenerator):
                 edit_sigs = self._get_edit_overloads(ctx.name, flag_pairs)
 
                 if edit_sigs:
+                    has_edit_sigs = True
                     sigs = _strip_arguments({"edit"}, sigs)
                     sigs = edit_sigs + sigs
+
+            if ctx.name in self.add_exists_overloads:
+                exists_sigs = self._get_exists_overloads(ctx.name, cmd_flags)
+
+                if exists_sigs:
+                    if has_edit_sigs:
+                        exists_sigs = _strip_arguments({"edit"}, exists_sigs)
+
+                    sigs = _strip_arguments({"exists"}, sigs)
+                    sigs = exists_sigs + sigs
 
             return sigs
 
@@ -288,6 +308,46 @@ class MayaCmdSignatureGenerator(SignatureGenerator):
             ],
         ]
         sigs.append(FunctionSig(name, args=args, ret_type="None"))
+
+        return sigs
+
+    def _get_exists_overloads(self, name: str, flags) -> list[FunctionSig]:
+        """If the function `name` has `exists=True`, create a function signature for it.
+
+        Args:
+            name: Some cmds function name. e.g. `"joint"` (from `cmds.joint`).
+            flags: All parameter flag data that we know about, for this function.
+
+        Returns:
+            If `exists=True` is found, return any signature(s) needed.
+            Otherwise return nothing.
+
+        """
+        exists_flag = flags.get("exists")
+
+        if not exists_flag:
+            return []
+
+        if not flag_has_mode(exists_flag, "query"):
+            args = [ArgSig("*args"), ArgSig("exists", type="Literal[True]")]
+
+            return [FunctionSig(name, args=args, ret_type="bool")]
+
+        sigs: list[FunctionSig] = []
+
+        for flag_name, flag_info in flags.items():
+            # NOTE: Some maya commands can only call `exists=True` when
+            # `query=True` is also included.
+            #
+            # Example: `cmds.file(file_path, query=True, exists=True)`
+            #
+            args = [
+                ArgSig("*args"),
+                ArgSig("query", type="Literal[True]"),
+                ArgSig("exists", type="Literal[True]"),
+                ArgSig(flag_name, type=self._get_arg_type(flag_info, as_result=False))
+            ]
+            sigs.append(FunctionSig(name, args=args, ret_type="bool"))
 
         return sigs
 
