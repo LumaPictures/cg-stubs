@@ -1,3 +1,10 @@
+# /// script
+# dependencies = [
+#   "nox>=2024.04.15",
+#   "python-dotenv",
+# ]
+# ///
+
 from __future__ import annotations
 
 import contextlib
@@ -72,25 +79,6 @@ LINT_FILES = ("**/*.py",)
 
 # Standard set of "special" python files that are not linted
 LINT_EXCLUDE = ()
-
-
-def multiline(s: str) -> str:
-    """Indicate to ruamel.ymal to format the string as mult-line"""
-    from ruamel.yaml.scalarstring import LiteralScalarString
-
-    if "\n" in s:
-        return LiteralScalarString(textwrap.dedent(s).strip("\n"))
-    else:
-        return s
-
-
-def flatlist(*s: Any) -> list:
-    """Indicate to ruamel.ymal to format the list on a single line"""
-    from ruamel.yaml.comments import CommentedSeq
-
-    l = CommentedSeq(s)
-    l.fa.set_flow_style()
-    return l
 
 
 def glob_to_regex(pattern: str) -> str:
@@ -282,6 +270,25 @@ def check(
         return wrapper
 
     return deco
+
+
+def load_dotenv() -> dict[str, str]:
+    env = os.environ.copy()
+    env.pop("PYTHONPATH", None)
+
+    try:
+        import dotenv
+    except ImportError:
+        print(".env files not supported. Upgrade nox")
+        return env
+
+    if os.path.exists(".env"):
+        env_path = os.path.realpath(".env")
+        print(f"Loading environment variables from {env_path}")
+        config = dotenv.dotenv_values(env_path)
+        print(config)
+        env.update(config)
+    return env
 
 
 # @check(
@@ -490,11 +497,15 @@ def develop(session: nox.Session, lib: str) -> None:
 @nox.parametrize("lib", ALL_PROJECTS)
 def publish(session: nox.Session, lib: str) -> None:
     """Publish the stub package to PyPI"""
+
+    env = load_dotenv()
+
     session.chdir(lib)
+
     if os.path.exists("dist"):
         shutil.rmtree("dist")
     session.run("uv", "build", "--wheel", external=True)
-    session.run("uv", "publish", external=True)
+    session.run("uv", "publish", env=env, external=True)
     output = session.run(
         "uvx",
         "--from=toml-cli",
@@ -514,8 +525,9 @@ def publish(session: nox.Session, lib: str) -> None:
 @nox.parametrize("lib", STUB_PROJECTS)
 def generate(session: nox.Session, lib: str) -> None:
     """Create the stubs"""
-    session.env.pop("PYTHONPATH", None)
     session.chdir(lib)
+    env = load_dotenv()
+
     if os.path.exists(f"./stubgen_{lib}.sh"):
         # Fully custom workflow
         if sys.platform == "win32":
@@ -526,9 +538,10 @@ def generate(session: nox.Session, lib: str) -> None:
                 "-File",
                 f"./stubgen_{lib}.ps1",
                 external=True,
+                env=env,
             )
         else:
-            session.run(f"./stubgen_{lib}.sh", external=True)
+            session.run(f"./stubgen_{lib}.sh", env=env, external=True)
     elif os.path.exists(".interpreter"):
         # This is our standard playbook for stubs that are built via a DCC interpreter
         interp = pathlib.Path(".interpreter").read_text().strip()
@@ -549,10 +562,10 @@ def generate(session: nox.Session, lib: str) -> None:
             'import sysconfig; print(sysconfig.get_paths()["purelib"])',
             silent=True,
         )
-        session.env["PYTHONPATH"] = sitepath.strip()
+        env["PYTHONPATH"] = sitepath.strip()
         # FIXME: load from .env
-        # session.run("uvx", "--from=python-dotenv[cli]", "dotenv", "run", "--", "mayapy", "-m", "stubgen_maya", "./stubs", external=True)
-        session.run(interp, "-m", "stubgen_maya", "./stubs", *session.posargs, external=True)
+        # session.run("uvx", "--from=python-dotenv[cli]", "dotenv", "run", "--", interp, "-m", "stubgen_maya", "./stubs", external=True)
+        subprocess.check_call([interp, "-m", f"stubgen_{lib}", "./stubs"] + session.posargs, env=env)
     else:
         # FIXME: implement a workflow around a standard interpreter for rez, pyside, etc
         raise RuntimeError
@@ -564,8 +577,6 @@ def generate(session: nox.Session, lib: str) -> None:
     # FIXME: lock down the version of mypy
     print("Adding type: ignore statements")
     subprocess.check_call("uvx mypy ./stubs | uvx mypy-silent", shell=True)
-    # FIXME: move this to stubgenlib
-    # make_packages(pathlib.Path("stubs"))
 
 
 @nox.session(venv_backend="none")
@@ -573,7 +584,7 @@ def generate(session: nox.Session, lib: str) -> None:
 def mypy(session: nox.Session, lib: str) -> None:
     """Run mypy type checker"""
     session.chdir(lib)
-    subprocess.check_call("uv run mypy | uvx mypy-baseline filter", shell=True)
+    session.run("uv", "run", "mypy")
 
 
 @nox.session(venv_backend="none")
@@ -581,7 +592,10 @@ def mypy(session: nox.Session, lib: str) -> None:
 def test(session: nox.Session, lib: str) -> None:
     """Run mypy type checker"""
     session.chdir(lib)
-    session.run("uv", "run", "pytest", "tests", *session.posargs, external=True)
+    env = load_dotenv()
+    session.run(
+        "uv", "run", "pytest", "tests", *session.posargs, env=env, external=True
+    )
 
 
 # @check(paths=LINT_FILES, pass_filenames=False, tags=["ci", "prepush"])

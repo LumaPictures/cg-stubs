@@ -11,7 +11,7 @@ import mypy.stubgen
 import mypy.stubgenc
 from mypy.stubdoc import ArgSig, FunctionSig
 from mypy.stubgenc import DocstringSignatureGenerator, SignatureGenerator
-from mypy.stubutil import FunctionContext
+from mypy.stubutil import ClassInfo, FunctionContext
 
 import stubgenlib.moduleinspect
 from stubgenlib.siggen import (
@@ -395,7 +395,11 @@ class MayaCmdSignatureGenerator(SignatureGenerator):
         sigs: list[FunctionSig] = []
         for flag_name, flag_info in flags:
             if flag_has_mode(flag_info, "query"):
-                args = [ArgSig("*args"), ArgSig("query", type="Literal[True]"), ArgSig(flag_name, type="Literal[True]")]
+                args = [
+                    ArgSig("*args"),
+                    ArgSig("query", type="Literal[True]"),
+                    ArgSig(flag_name, type="Literal[True]"),
+                ]
                 ret_type = self._get_arg_type(flag_info, as_result=True)
                 sigs.append(FunctionSig(name, args=args, ret_type=ret_type))
         return sigs
@@ -422,9 +426,11 @@ class CmdsStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         return module
 
     def is_function(self, obj: object) -> bool:
+        # many of the commands are detected as builtin because they are compiled
         return inspect.isbuiltin(obj) or inspect.isfunction(obj)
 
     def get_members(self, obj: object) -> list[tuple[str, Any]]:
+        # sort members because there's so damn many of them
         members = super().get_members(obj)
         return sorted(members, key=lambda x: x[0])
 
@@ -451,6 +457,7 @@ class APIStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         return [DocstringSignatureGenerator()]
 
     def strip_or_import(self, type_name: str) -> str:
+        # some type annotations are invalid: stop them from aborting the whole process
         try:
             return super().strip_or_import(type_name)
         except SyntaxError:
@@ -459,18 +466,22 @@ class APIStubGenerator(mypy.stubgenc.InspectionStubGenerator):
     def get_obj_module(self, obj: object) -> str | None:
         """Return module name of the object."""
         module = super().get_obj_module(obj)
+        # the maya.api.Open* modules think their module name is maya.Open*
         if module and module.startswith("Open"):
             # convert "OpenMaya" to "maya.api.OpenMaya"
             return f"maya.api.{module}"
         return module
 
     def is_function(self, obj: object) -> bool:
-        if self.module_name == "maya.cmds" or self.module_name.startswith("maya.api."):
-            return inspect.isbuiltin(obj) or inspect.isfunction(obj)
-        else:
-            return super().is_function(obj)
+        # many of the functions are detected as builtin because they are compiled
+        return inspect.isbuiltin(obj) or inspect.isfunction(obj)
 
     def is_method(self, class_info: ClassInfo, name: str, obj: object) -> bool:
+        # Note: this and other overrides on this class are the default behavior for modules
+        # detected as c-modules, however maya.Open* and maya.api.Open* modules are .py files
+        # which *contain* many C-extension objects, thus they confuse the stub generator.
+
+        # Look into setting self.is_c_module and self.resort_members to simplify this.
         return inspect.ismethoddescriptor(obj) or type(obj) in (
             type(str.index),
             type(str.__add__),
@@ -543,7 +554,7 @@ delegate = GeneratorDelegate[mypy.stubgen.InspectionStubGenerator](
         "maya.api.*": APIStubGenerator,
         "maya.Open*": APIStubGenerator,
         "maya.cmds": CmdsStubGenerator,
-        "maya.mel":  MelStubGenerator,
+        "maya.mel": MelStubGenerator,
         "ufe.PyUfe": UFEStubGenerator,
     },
     fallback=mypy.stubgen.InspectionStubGenerator,
@@ -594,14 +605,16 @@ if __name__ == "__main__":
 
     print("Patching up generated stubs")
     outdir = pathlib.Path(args.outdir)
-    # maya/__init__
+    # make an empty maya/__init__.pyi
     outdir.joinpath("maya", "__init__.pyi").touch()
 
-    # ufe/__init__
+    # replace the useless ufe/__init__.pyi with ufe/PyUfe.pyi
     init = outdir.joinpath("ufe", "__init__.pyi")
     init.unlink()
     init.with_name("PyUfe.pyi").rename(init)
 
+    # indicate to type checkers that the stub package does not have full coverage
+    # (it's missing maya.app, for example)
     marker = outdir.joinpath("maya", "py.typed")
     marker.write_text("partial\n")
 

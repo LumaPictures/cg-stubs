@@ -122,6 +122,11 @@ class AdvancedSigMatcher(object):
         new_value: T,
         orig_type: str | None,
     ) -> T | None:
+        """Return the matched type or None if there was no match.
+
+        if type_match is a regular expression, the new_value may be altered by subsitutions,
+        otherwise the value returned will be new_value.
+        """
         if orig_type is None:
             return new_value if (type_match is None or type_match == "*") else None
         elif isinstance(type_match, re.Pattern):
