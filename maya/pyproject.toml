@@ -1,6 +1,6 @@
 [project]
 name = "types-maya-strict"
-version = "2025.0.4"
+version = "2025.0.5"
 
 #readme = "README.md"
 authors = [{name="Chad Dombrova"}]
