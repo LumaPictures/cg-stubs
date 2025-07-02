@@ -36,3 +36,9 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["stubs/mari-stubs"]
+
+[tool.hatch.build]
+# uv+hatch does not write anything to the installed .pth file if the contents
+# of the package do no include .py files.  Adding this ensures the .pth file
+# is written correctly
+dev-mode-dirs = ["stubs"]

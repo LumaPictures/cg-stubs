@@ -39,3 +39,29 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["stubs/pxr-stubs", "stubs/Boost-stubs"]
+
+[tool.hatch.build]
+# uv+hatch does not write anything to the installed .pth file if the contents
+# of the package do no include .py files.  Adding this ensures the .pth file
+# is written correctly
+dev-mode-dirs = ["stubs"]
+
+
+[tool.mypy]
+# adding the stubs directory is not necessary because we're using `uv run mypy`
+# which adds a .pth file to the site-packcages directory
+files = ["tests"]
+python_version = "3.9"
+check_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = "PySide6.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "UsdSchemaExamples.*"
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = "pxr.Usdviewq.usdviewApi"
+disable_error_code = "arg-type"

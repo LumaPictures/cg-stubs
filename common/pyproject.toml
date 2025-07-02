@@ -32,3 +32,15 @@ dev = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+
+[tool.mypy]
+follow_imports = "silent"
+check_untyped_defs = true
+files = ["src", "tests"]
+
+#[mypy-PySide2.*]
+#ignore_missing_imports = true
+#
+#[mypy-lark.*]
+#ignore_missing_imports =
