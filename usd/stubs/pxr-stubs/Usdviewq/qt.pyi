@@ -1,11 +1,5 @@
-# mypy: disable-error-code="misc, override, no-redef"
+from PySide6 import QtCore as QtCore, QtGui as QtActionWidgets, QtGui as QtGui, QtOpenGL as QtOpenGL, QtWidgets as QtWidgets
+from PySide6.QtGui import QSurfaceFormat as QGLFormat
+from PySide6.QtOpenGLWidgets import QOpenGLWidget as QGLWidget
 
-PySideModule: str
-
-def GetPySideModule():
-    """Returns name of PySide module used by usdview,
-        e.g. 'PySide2' or 'PySide6'"""
-def bindTexture(self, qimage): ...
-def initQGLWidget(self, glFormat, parent): ...
-def isContextInitialised(self): ...
-def releaseTexture(self, tex): ...
+__all__ = ['QtCore', 'QtGui', 'QtWidgets', 'QtOpenGL', 'QGLWidget', 'QGLFormat', 'QtActionWidgets']

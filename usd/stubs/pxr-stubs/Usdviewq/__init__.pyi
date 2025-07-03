@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 import Boost.Python
 import pxr.Ar
 import pxr.Sdf
@@ -23,7 +21,7 @@ class ContainerDataSource(Boost.Python.instance):
     @overload
     def Get(self, arg2: object, /) -> Any: ...
     @overload
-    def Get(self, arg2: DataSourceLocator, /) -> Any: ...
+    def Get(self, arg2: DataSourceLocator, /) -> Any: ...  # type: ignore[overload-cannot-match]
     def GetNames(self) -> list: ...
 
 class DataSourceBase(Boost.Python.instance):
@@ -51,7 +49,7 @@ class DataSourceLocator(Boost.Python.instance):
     @overload
     def Append(self, arg2: object, /) -> DataSourceLocator: ...
     @overload
-    def Append(self, arg2: DataSourceLocator, /) -> DataSourceLocator: ...
+    def Append(self, arg2: DataSourceLocator, /) -> DataSourceLocator: ...  # type: ignore[overload-cannot-match]
     def GetCommonPrefix(self, arg2: DataSourceLocator, /) -> DataSourceLocator: ...
     def GetElement(self, arg2: int, /) -> Any: ...
     def GetElementCount(self) -> int: ...
@@ -115,7 +113,7 @@ class HydraObserver(Boost.Python.instance):
 
         This display name is currently derived from the C++ typename.
         """
-    def GetInputDisplayNames(self, _inputIndices: IndexList, /) -> list[str]:
+    def GetInputDisplayNames(self, _inputIndices: IndexList, /) -> list[str]:  # type: ignore[name-defined]
         """
         Starting from the currently targeted HdSceneIndex, each value in the
         C{inputIndices} is treated as an index into the result of
@@ -126,14 +124,14 @@ class HydraObserver(Boost.Python.instance):
         the display names of the return value of GetInputScenes is returned.
         Otherwise, the return value is empty.
         """
-    def GetPendingNotices(self) -> list[NoticeEntry]:
+    def GetPendingNotices(self) -> list[NoticeEntry]:  # type: ignore[name-defined]
         """
         Returns (and clears) any accumulated scene change notices.
 
 
         Consumers of this follow a polling rather than callback pattern.
         """
-    def GetPrim(self, _primPath: pxr.Sdf.Path | str, /) -> HdSceneIndexPrim:
+    def GetPrim(self, _primPath: pxr.Sdf.Path | str, /) -> HdSceneIndexPrim:  # type: ignore[name-defined]
         """
         Returns the prim type and data source for the specified C{primPath}
         for the actively observer scene index.
@@ -155,7 +153,7 @@ class HydraObserver(Boost.Python.instance):
 
         Consumers of this follow a polling rather than callback pattern.
         """
-    def TargetToInputSceneIndex(self, _inputIndices: IndexList, /) -> bool:
+    def TargetToInputSceneIndex(self, _inputIndices: IndexList, /) -> bool:  # type: ignore[name-defined]
         """
         Starting from the currently targeted HdSceneIndex, each value in the
         C{inputIndices} is treated as an index into the result of

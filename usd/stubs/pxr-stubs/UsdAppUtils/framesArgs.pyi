@@ -1,7 +1,16 @@
-# mypy: disable-error-code="misc, override, no-redef"
+from _typeshed import Incomplete
+from pxr import UsdUtils as UsdUtils
 
-from types import ModuleType
-from typing import ClassVar
+def _GetFloatStringPrecision(floatString):
+    """
+    Gets the floating point precision specified by floatString.
+
+    floatString can either contain an actual float in string form, or it can be
+    a frame placeholder. We simply split the string on the dot (.) and return
+    the length of the part after the dot, if any.
+
+    If there is no dot in the string, a precision of zero is assumed.
+    """
 
 class FrameSpecIterator:
     """
@@ -14,14 +23,15 @@ class FrameSpecIterator:
     be used to validate that the frame placeholder in a frame format string has
     enough precision to uniquely identify every frame without collisions.
     """
-    FRAMESPEC_SEPARATOR: ClassVar[str] = ...
-    UsdUtils: ClassVar[ModuleType] = ...
+    FRAMESPEC_SEPARATOR: str
+    _minFloatPrecision: int
+    _timeCodeRanges: Incomplete
     def __init__(self, frameSpec) -> None: ...
     def __iter__(self): ...
     @property
     def minFloatPrecision(self): ...
 
-def AddCmdlineArgs(argsParser, altDefaultTimeHelpText: str = ..., altFramesHelpText: str = ...):
+def AddCmdlineArgs(argsParser, altDefaultTimeHelpText: str = '', altFramesHelpText: str = '') -> None:
     """
     Adds frame-related command line arguments to argsParser.
 
@@ -33,6 +43,17 @@ def AddCmdlineArgs(argsParser, altDefaultTimeHelpText: str = ..., altFramesHelpT
     '--frames' must be given a FrameSpec (or a comma-separated list of
     multiple FrameSpecs), and 'frames' will be a FrameSpecIterator which when
     iterated will yield the time codes specified by the FrameSpec(s).
+    """
+def GetFramePlaceholder(frameFormat):
+    """
+    Gets the frame placeholder in a frame format string.
+
+    This function expects the input frameFormat string to contain exactly one
+    frame placeholder. The placeholder must be composed of exactly one or two
+    groups of one or more hashes ('#'), and if there are two, they must be
+    separated by a dot ('.').
+
+    If no such placeholder exists in the frame format string, None is returned.
     """
 def ConvertFramePlaceholderToFloatSpec(frameFormat):
     """
@@ -58,18 +79,7 @@ def ConvertFramePlaceholderToFloatSpec(frameFormat):
     placeholder, this function will return None, indicating that this frame
     format string cannot be used when operating with a frame range.
     """
-def GetFramePlaceholder(frameFormat):
-    """
-    Gets the frame placeholder in a frame format string.
-
-    This function expects the input frameFormat string to contain exactly one
-    frame placeholder. The placeholder must be composed of exactly one or two
-    groups of one or more hashes ('#'), and if there are two, they must be
-    separated by a dot ('.').
-
-    If no such placeholder exists in the frame format string, None is returned.
-    """
-def ValidateCmdlineArgs(argsParser, args, frameFormatArgName):
+def ValidateCmdlineArgs(argsParser, args, frameFormatArgName: Incomplete | None = None):
     """
     Validates the frame-related arguments in args parsed by argsParser.
 
@@ -88,14 +98,4 @@ def ValidateCmdlineArgs(argsParser, args, frameFormatArgName):
     that the value is ready to use with the str.format(frame=<timeCode>)
     method. If a frame range is not provided as an argument, then it is an
     error to include a frame placeholder in the frame format string.
-    """
-def _GetFloatStringPrecision(floatString):
-    """
-    Gets the floating point precision specified by floatString.
-
-    floatString can either contain an actual float in string form, or it can be
-    a frame placeholder. We simply split the string on the dot (.) and return
-    the length of the part after the dot, if any.
-
-    If there is no dot in the string, a precision of zero is assumed.
     """

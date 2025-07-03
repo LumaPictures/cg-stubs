@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 import Boost.Python
 import pxr.Ar
 import types
@@ -174,7 +172,7 @@ class Debug(Boost.Python.instance):
         of all debug symbols set by this call are returned as a vector.
         """
     @staticmethod
-    def SetOutputFile(_file: FILE, /) -> None:
+    def SetOutputFile(_file: FILE, /) -> None:  # type: ignore[name-defined]
         """
         Direct debug output to *either* stdout or stderr.
 
@@ -587,7 +585,7 @@ class Notice(Boost.Python.instance):
 
         Register a listener as being interested in a TfNotice type from any sender.  The notice listener does not get sender as an argument."""
     @overload
-    def Send(self, _s: Sender, /) -> int:
+    def Send(self, _s: Sender, /) -> int:  # type: ignore[name-defined]
         """
         Deliver the notice to interested listeners, returning the number of
         interested listeners.
@@ -606,7 +604,7 @@ class Notice(Boost.Python.instance):
         C{Register()} was called in.
         """
     @overload
-    def Send(self, arg2: object, /) -> int:
+    def Send(self, arg2: object, /) -> int:  # type: ignore[overload-cannot-match]
         """    Send(sender) 
 
             sender : object 
@@ -1260,7 +1258,7 @@ class Type(Boost.Python.instance):
         type.
         """
     @property
-    def pythonClass(self) -> PyObjWrapper:
+    def pythonClass(self) -> PyObjWrapper:  # type: ignore[name-defined]
         """
         Return the Python class object for this type.
 
@@ -1303,7 +1301,7 @@ class WindowsImportWrapper:
     __exit__: ClassVar[Callable] = ...
 
 class _ClassWithClassMethod(Boost.Python.instance):
-    Test: ClassVar[method] = ...
+    Test: ClassVar[method] = ...  # type: ignore[name-defined]
     __instance_size__: ClassVar[int] = ...
     def __init__(self) -> None: ...
 
@@ -1356,14 +1354,14 @@ class _Enum(Boost.Python.instance):
         def GetValueFromName(name: str | pxr.Ar.ResolvedPath) -> Any: ...
 
     class TestKeywords(Tf_PyEnumWrapper):
-        False_: ClassVar[TestKeywords] = ...
-        None_: ClassVar[TestKeywords] = ...
-        True_: ClassVar[TestKeywords] = ...
+        False_: ClassVar[TestKeywords] = ...  # type: ignore[name-defined]
+        None_: ClassVar[TestKeywords] = ...  # type: ignore[name-defined]
+        True_: ClassVar[TestKeywords] = ...  # type: ignore[name-defined]
         _baseName: ClassVar[str] = ...
         allValues: ClassVar[tuple] = ...
-        global_: ClassVar[TestKeywords] = ...
-        import_: ClassVar[TestKeywords] = ...
-        print_: ClassVar[TestKeywords] = ...
+        global_: ClassVar[TestKeywords] = ...  # type: ignore[name-defined]
+        import_: ClassVar[TestKeywords] = ...  # type: ignore[name-defined]
+        print_: ClassVar[TestKeywords] = ...  # type: ignore[name-defined]
         def __init__(self, *args, **kwargs) -> None:
             """Raises an exception
             This class cannot be instantiated from Python
@@ -1372,9 +1370,9 @@ class _Enum(Boost.Python.instance):
         def GetValueFromName(name: str | pxr.Ar.ResolvedPath) -> Any: ...
 
     class TestScopedEnum(Tf_PyEnumWrapper):
-        Alef: ClassVar[TestScopedEnum] = ...
-        Bet: ClassVar[TestScopedEnum] = ...
-        Gimel: ClassVar[TestScopedEnum] = ...
+        Alef: ClassVar[TestScopedEnum] = ...  # type: ignore[name-defined]
+        Bet: ClassVar[TestScopedEnum] = ...  # type: ignore[name-defined]
+        Gimel: ClassVar[TestScopedEnum] = ...  # type: ignore[name-defined]
         _baseName: ClassVar[str] = ...
         allValues: ClassVar[tuple] = ...
         def __init__(self, *args, **kwargs) -> None:
@@ -1397,7 +1395,7 @@ class _TestBase(Boost.Python.instance):
     @overload
     def Virtual(self) -> str: ...
     @overload
-    def Virtual(self) -> None: ...
+    def Virtual(self) -> None: ...  # type: ignore[overload-cannot-match]
     def Virtual2(self) -> None: ...
     def Virtual3(self, arg2: str | pxr.Ar.ResolvedPath, /) -> None: ...
     def Virtual4(self) -> str: ...
@@ -1414,7 +1412,7 @@ class _TestBase(Boost.Python.instance):
 
 class _TestDerived(_TestBase):
     def __init__(self) -> None: ...
-    def Virtual(self) -> str: ...
+    def Virtual(self) -> str: ...  # type: ignore[override]
     def Virtual2(self) -> None: ...
     def Virtual3(self, arg2: str | pxr.Ar.ResolvedPath, /) -> None: ...
     def __bool__(self) -> bool:

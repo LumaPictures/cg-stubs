@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 import Boost.Python
 import pxr.Ar
 import pxr.Sdf
@@ -1249,7 +1247,7 @@ class MapFunction(Boost.Python.instance):
         For a null function, MapSourceToTarget() always returns an empty path.
         """
     @property
-    def sourceToTargetMap(self) -> PathMap:
+    def sourceToTargetMap(self) -> PathMap:  # type: ignore[name-defined]
         """
         The set of path mappings, from source to target.
         """

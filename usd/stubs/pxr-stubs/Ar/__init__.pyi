@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 import Boost.Python
 import pxr.Tf
 import types

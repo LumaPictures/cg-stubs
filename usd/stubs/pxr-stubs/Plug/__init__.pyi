@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 import Boost.Python
 import pxr.Ar
 import pxr.Tf
@@ -107,7 +105,7 @@ class Plugin(Boost.Python.instance):
         Returns C{true} if the plugin is resource-only.
         """
     @property
-    def metadata(self) -> JsObject:
+    def metadata(self) -> JsObject:  # type: ignore[name-defined]
         """
         Returns the dictionary containing meta-data for the plugin.
         """

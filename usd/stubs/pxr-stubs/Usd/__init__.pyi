@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 import Boost.Python
 import pxr.Ar
 import pxr.Gf
@@ -1771,7 +1769,7 @@ class CollectionAPI(APISchemaBase):
         invalid C{prim}
         '''
     @overload
-    def __init__(self, _schemaObj: Prim, _name: str | pxr.Ar.ResolvedPath, /) -> None:
+    def __init__(self, _schemaObj: Prim, _name: str | pxr.Ar.ResolvedPath, /) -> None:  # type: ignore[overload-cannot-match]
         """
         Construct a UsdCollectionAPI on the prim held by C{schemaObj} with
         name C{name}.
@@ -2753,7 +2751,7 @@ class ModelAPI(APISchemaBase):
         Return true if this prim represents a model group, based on its kind
         metadata.
         """
-    def IsKind(self, baseKind: str | pxr.Ar.ResolvedPath, validation: pxr.Kind.Validation = ...) -> bool:
+    def IsKind(self, baseKind: str | pxr.Ar.ResolvedPath, validation: pxr.Kind.Validation = ...) -> bool:  # type: ignore[name-defined]
         '''
         Return true if the prim\'s kind metadata is or inherits from
         C{baseKind} as defined by the Kind Registry.
@@ -3125,7 +3123,7 @@ class Notice(Boost.Python.instance):
             This is an overloaded member function, provided for convenience. It
             differs from the above function only in what argument(s) it accepts.
             """
-        def GetChangedInfoOnlyPaths(self) -> PathRange:
+        def GetChangedInfoOnlyPaths(self) -> PathRange:  # type: ignore[name-defined]
             '''
             Return the set of paths that have only info changes (those that do not
             affect the structure of cached UsdPrims on a UsdStage) in
@@ -3144,7 +3142,7 @@ class Notice(Boost.Python.instance):
             by"object resync"paths, but are *not* subsumed by other types of
             changes, like"resolved asset path resyncs".
             '''
-        def GetResolvedAssetPathsResyncedPaths(self) -> PathRange:
+        def GetResolvedAssetPathsResyncedPaths(self) -> PathRange:  # type: ignore[name-defined]
             """
             Return the set of paths affected by changes that may cause asset path
             values to resolve to different locations, even though the asset path
@@ -3163,7 +3161,7 @@ class Notice(Boost.Python.instance):
             subtree at'/foo'are invalidated, so the path'/foo/bar'will not appear,
             but asset paths on that prim should be considered invalidated.
             """
-        def GetResyncedPaths(self) -> PathRange:
+        def GetResyncedPaths(self) -> PathRange:  # type: ignore[name-defined]
             """
             Return the set of paths that are resynced in lexicographical order.
 
@@ -5588,7 +5586,7 @@ class PrimCompositionQuery(Boost.Python.instance):
         """
     @overload
     def __init__(self, prim: Prim) -> None: ...
-    def GetCompositionArcs(self) -> list[PrimCompositionQueryArc]:
+    def GetCompositionArcs(self) -> list[PrimCompositionQueryArc]:  # type: ignore[name-defined]
         """
         Return a list of composition arcs for this query's prim using the
         current query filter.
@@ -9902,7 +9900,7 @@ class TimeCode(Boost.Python.instance):
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, arg2: TimeCode | float | pxr.Sdf.TimeCode, /) -> None: ...
+    def __init__(self, arg2: TimeCode | float | pxr.Sdf.TimeCode, /) -> None: ...  # type: ignore[overload-cannot-match]
     @staticmethod
     def Default() -> TimeCode:
         """

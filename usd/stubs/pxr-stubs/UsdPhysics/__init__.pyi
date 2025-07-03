@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 import Boost.Python
 import pxr.Ar
 import pxr.Sdf
@@ -2865,7 +2863,7 @@ class RigidBodyAPI(pxr.Usd.APISchemaBase):
 
         UsdPrim::RemoveAPI()
         """
-    def ComputeMassProperties(self, _massInfoFn: MassInformationFn, /) -> tuple:
+    def ComputeMassProperties(self, _massInfoFn: MassInformationFn, /) -> tuple:  # type: ignore[name-defined]
         """
         Compute mass properties of the rigid body C{diagonalInertia} Computed
         diagonal of the inertial tensor for the rigid body.

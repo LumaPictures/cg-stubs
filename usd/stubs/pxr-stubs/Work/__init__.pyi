@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 __MFB_FULL_PACKAGE_NAME: str
 
 def GetConcurrencyLimit() -> int:

@@ -3,17 +3,17 @@ from __future__ import absolute_import, print_function
 from typing import Iterable, Iterator
 
 
-class Barator:
+class ImplementsIter:
     def __iter__(self) -> Iterator[str]:
         yield "foo"
 
 
-class Barable:
+class ImplementsIter2:
     def __iter__(self) -> Iterable[str]:
         yield "foo"
 
 
-class Barext:
+class ImplementsNext:
     def __init__(self):
         self.called = False
 
@@ -24,16 +24,36 @@ class Barext:
         return "foo"
 
 
-class Barator2:
-    def __iter__(self) -> Barext:
-        return Barext()
+class ImplementsIter3:
+    def __iter__(self) -> ImplementsNext:
+        return ImplementsNext()
 
 
-"foo" in Barator()
-print(list(Barator()))
+class ProperIterator:
+    def __init__(self):
+        self.called = False
 
-"foo" in Barable()
-print(list(Barable()))
+    def __iter__(self) -> Iterator[str]:
+        return self
 
-"foo" in Barator2()
-print(list(Barator2()))
+    def __next__(self) -> str:
+        if self.called:
+            raise StopIteration
+        self.called = True
+        return "foo"
+
+
+def test_contains():
+    # even though these all work at runtime, mypy complains.
+    # see https://github.com/LumaPictures/cg-stubs/issues/9
+    assert "foo" in ImplementsIter()
+    print(list(ImplementsIter()))  # type: ignore[call-overload]
+
+    assert "foo" in ImplementsIter2()  # type: ignore[operator]
+    print(list(ImplementsIter2()))  # type: ignore[call-overload]
+
+    assert "foo" in ImplementsIter3()  # type: ignore[operator]
+    print(list(ImplementsIter3()))  # type: ignore[call-overload]
+
+    assert "foo" in ProperIterator()
+    print(list(ProperIterator()))

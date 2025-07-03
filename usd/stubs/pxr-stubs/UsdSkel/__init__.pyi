@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 import Boost.Python
 import pxr.Ar
 import pxr.Gf
@@ -2123,7 +2121,7 @@ class Topology(Boost.Python.instance):
     @overload
     def __init__(self, arg2: object, /) -> None: ...
     @overload
-    def __init__(self, arg2: pxr.Vt.TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> None: ...
+    def __init__(self, arg2: pxr.Vt.TokenArray | typing.Iterable[pxr.Ar.ResolvedPath] | typing.Iterable[str], /) -> None: ...  # type: ignore[overload-cannot-match]
     def GetNumJoints(self) -> int: ...
     def GetParent(self, _index: int, /) -> int:
         """

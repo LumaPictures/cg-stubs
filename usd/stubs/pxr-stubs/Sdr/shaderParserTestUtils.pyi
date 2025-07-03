@@ -1,28 +1,32 @@
-# mypy: disable-error-code="misc, override, no-redef"
+from pxr import Ndr as Ndr, Sdr as Sdr, Tf as Tf
 
-import pxr.Ndr as Ndr
-import pxr.Sdr as Sdr
-import pxr.Tf as Tf
-from pxr.Sdf import SdfTypes as SdfTypes
-
-def GetType(property):
-    """
-    Given a property (SdrShaderProperty), return the SdfValueTypeName type.
-    """
 def IsNodeOSL(node):
     """
     Determines if the given node has an OSL source type.
     """
-def TestBasicNode(node, nodeSourceType, nodeDefinitionURI, nodeImplementationURI):
+def GetType(property):
     """
-    Test basic, non-shader-specific correctness on the specified node.
+    Given a property (SdrShaderProperty), return the SdfValueTypeName type.
     """
-def TestBasicProperties(node):
+def TestBasicProperties(node) -> None:
     """
     Test the correctness of the properties on the specified node (only the
     non-shading-specific aspects).
     """
-def TestShaderPropertiesNode(node):
+def TestShadingProperties(node) -> None:
+    """
+    Test the correctness of the properties on the specified node (only the
+    shading-specific aspects).
+    """
+def TestBasicNode(node, nodeSourceType, nodeDefinitionURI, nodeImplementationURI) -> None:
+    """
+    Test basic, non-shader-specific correctness on the specified node.
+    """
+def TestShaderSpecificNode(node) -> None:
+    """
+    Test shader-specific correctness on the specified node.
+    """
+def TestShaderPropertiesNode(node) -> None:
     """
     Tests property correctness on the specified shader node, which must be
     one of the following pre-defined nodes:
@@ -36,13 +40,4 @@ def TestShaderPropertiesNode(node):
     * The shader property has the expected SdfValueTypeName
     * If the shader property has a default value, the default value's type
       matches the shader property's type
-    """
-def TestShaderSpecificNode(node):
-    """
-    Test shader-specific correctness on the specified node.
-    """
-def TestShadingProperties(node):
-    """
-    Test the correctness of the properties on the specified node (only the
-    shading-specific aspects).
     """

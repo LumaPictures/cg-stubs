@@ -1,19 +1,23 @@
-# mypy: disable-error-code="misc, override, no-redef"
+from .attributeValueEditorUI import Ui_AttributeValueEditor as Ui_AttributeValueEditor
+from .common import GetPropertyColor as GetPropertyColor, UIPropertyValueSourceColors as UIPropertyValueSourceColors
+from .qt import QtCore as QtCore, QtWidgets as QtWidgets
+from .scalarTypes import ToString as ToString
+from _typeshed import Incomplete
+from pxr import Usd as Usd
 
-import PySide6.QtCore
-import PySide6.QtWidgets
-import pxr.Usd as Usd
-from pxr.Usdviewq.attributeValueEditorUI import Ui_AttributeValueEditor as Ui_AttributeValueEditor
-from pxr.Usdviewq.common import GetPropertyColor as GetPropertyColor, UIPropertyValueSourceColors as UIPropertyValueSourceColors
-from pxr.Usdviewq.scalarTypes import ToString as ToString
-from typing import ClassVar
-
-class AttributeValueEditor(PySide6.QtWidgets.QWidget):
-    editComplete: ClassVar[PySide6.QtCore.Signal] = ...
-    staticMetaObject: ClassVar[PySide6.QtCore.QMetaObject] = ...
+class AttributeValueEditor(QtWidgets.QWidget):
+    editComplete: Incomplete
+    _ui: Incomplete
+    _defaultView: Incomplete
+    _extraAttrViews: Incomplete
     def __init__(self, parent) -> None: ...
+    _appController: Incomplete
+    def setAppController(self, appController) -> None: ...
+    _primPath: Incomplete
+    _attribute: Incomplete
+    _isSet: bool
+    def populate(self, primPath, propName) -> None: ...
     def _FindView(self, attr): ...
-    def clear(self): ...
-    def populate(self, primPath, propName): ...
-    def refresh(self): ...
-    def setAppController(self, appController): ...
+    _val: Incomplete
+    def refresh(self) -> None: ...
+    def clear(self) -> None: ...

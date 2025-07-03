@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 import Boost.Python
 import pxr.Ar
 import pxr.Usd
@@ -60,7 +58,7 @@ class AggregateNode(Boost.Python.instance):
         Returns the node's id.
         """
     @property
-    def inclusiveTime(self) -> TimeStamp:
+    def inclusiveTime(self) -> TimeStamp:  # type: ignore[name-defined]
         """
         Returns the total time of this node ands its children.
         """

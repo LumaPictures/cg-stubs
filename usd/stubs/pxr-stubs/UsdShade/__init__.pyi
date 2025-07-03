@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 import Boost.Python
 import pxr.Ar
 import pxr.Ndr
@@ -1125,7 +1123,7 @@ class Input(Boost.Python.instance):
 
         in favor of calling GetValueProducingAttributes
         """
-    def GetValueProducingAttributes(self, shaderOutputsOnly: bool = ...) -> list[Attribute]:
+    def GetValueProducingAttributes(self, shaderOutputsOnly: bool = ...) -> list[Attribute]:  # type: ignore[name-defined]
         """
         Find what is connected to this Input recursively.
 
@@ -3128,7 +3126,7 @@ class Output(Boost.Python.instance):
         Get the"scene description"value type name of the attribute associated
         with the output.
         '''
-    def GetValueProducingAttributes(self, shaderOutputsOnly: bool = ...) -> list[Attribute]:
+    def GetValueProducingAttributes(self, shaderOutputsOnly: bool = ...) -> list[Attribute]:  # type: ignore[name-defined]
         """
         Find what is connected to this Output recursively.
 
@@ -3573,7 +3571,7 @@ class ShaderDefUtils(Boost.Python.instance):
         represent them in SdrShaderNode metadata.
         """
     @staticmethod
-    def GetShaderProperties(shaderDef: ConnectableAPI) -> list[[pxr.Ndr.Property]]:
+    def GetShaderProperties(shaderDef: ConnectableAPI) -> list[[pxr.Ndr.Property]]:  # type: ignore[valid-type]
         """
         Gets all input and output properties of the given C{shaderDef} and
         translates them into NdrProperties that can be used as the properties
@@ -3717,7 +3715,7 @@ class Utils(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def GetValueProducingAttributes(input: Input, shaderOutputsOnly: bool = ...) -> list[Attribute]:
+    def GetValueProducingAttributes(input: Input, shaderOutputsOnly: bool = ...) -> list[Attribute]:  # type: ignore[name-defined]
         """
         Find what is connected to an Input or Output recursively.
 
@@ -3767,7 +3765,7 @@ class Utils(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def GetValueProducingAttributes(output: Output, shaderOutputsOnly: bool = ...) -> list[Attribute]:
+    def GetValueProducingAttributes(output: Output, shaderOutputsOnly: bool = ...) -> list[Attribute]:  # type: ignore[name-defined]
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.

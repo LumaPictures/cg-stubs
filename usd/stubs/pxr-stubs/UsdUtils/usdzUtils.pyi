@@ -1,6 +1,18 @@
-# mypy: disable-error-code="misc, override, no-redef"
+from _typeshed import Incomplete
+from collections.abc import Generator
+from contextlib import contextmanager as contextmanager
 
-import types
+def _Print(msg) -> None: ...
+def _Err(msg) -> None: ...
+def _AllowedUsdzExtensions(): ...
+def _AllowedUsdExtensions(): ...
+def ExtractUsdzPackage(usdzFile, extractDir, recurse, verbose, force):
+    """
+    Given a usdz package usdzFile, extracts the contents of the archive under
+    the extractDir directory. Since usdz packages can contain other usdz
+    packages, recurse flag can be used to extract the nested structure
+    appropriately.
+    """
 
 class UsdzAssetIterator:
     """
@@ -11,30 +23,22 @@ class UsdzAssetIterator:
     Note that root layer of the usdz package might not be compliant which can
     cause UsdzAssetIterator to raise an exception while repacking on exit.
     """
-    def __init__(self, usdzFile, verbose, parentDir) -> None: ...
-    def AllAssets(self):
+    _tmpDir: Incomplete
+    extractDir: Incomplete
+    usdzFile: Incomplete
+    verbose: Incomplete
+    def __init__(self, usdzFile, verbose, parentDir: Incomplete | None = None) -> None: ...
+    def _ExtractedFiles(self): ...
+    @staticmethod
+    def _CreateUsdzPackage(usdzFile, filesToAdd, verbose): ...
+    def __enter__(self): ...
+    def __exit__(self, excType: type[BaseException] | None, excVal: BaseException | None, excTB: types.TracebackType | None) -> None: ...  # type: ignore[name-defined]
+    def UsdAssets(self) -> Generator[Incomplete, Incomplete]:
+        """
+        Generator for UsdAssets respecting nested usdz assets.
+        """
+    def AllAssets(self) -> Generator[Incomplete, Incomplete]:
         """
         Generator for all assets packed in the usdz package, respecting nested
         usdz assets.
         """
-    def UsdAssets(self):
-        """
-        Generator for UsdAssets respecting nested usdz assets.
-        """
-    @staticmethod
-    def _CreateUsdzPackage(usdzFile, filesToAdd, verbose): ...
-    def _ExtractedFiles(self): ...
-    def __enter__(self): ...
-    def __exit__(self, excType: type[BaseException] | None, excVal: BaseException | None, excTB: types.TracebackType | None): ...
-
-def ExtractUsdzPackage(usdzFile, extractDir, recurse, verbose, force):
-    """
-    Given a usdz package usdzFile, extracts the contents of the archive under
-    the extractDir directory. Since usdz packages can contain other usdz
-    packages, recurse flag can be used to extract the nested structure
-    appropriately.
-    """
-def _AllowedUsdExtensions(): ...
-def _AllowedUsdzExtensions(): ...
-def _Err(msg): ...
-def _Print(msg): ...

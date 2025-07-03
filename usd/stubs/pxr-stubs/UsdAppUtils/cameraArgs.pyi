@@ -1,6 +1,6 @@
-# mypy: disable-error-code="misc, override, no-redef"
+from _typeshed import Incomplete
 
-def AddCmdlineArgs(argsParser, defaultValue, altHelpText: str = ...):
+def AddCmdlineArgs(argsParser, defaultValue: Incomplete | None = None, altHelpText: str = ''):
     """
     Adds camera-related command line arguments to argsParser.
 

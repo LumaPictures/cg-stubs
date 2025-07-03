@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 import pxr.Usd
 
 __MFB_FULL_PACKAGE_NAME: str

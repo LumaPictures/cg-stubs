@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 import Boost.Python
 import pxr.Gf
 import pxr.Tf
@@ -59,7 +57,7 @@ class KeyFrame(Boost.Python.instance):
     rightLen: Incomplete
     rightSlope: Incomplete
     tangentSymmetryBroken: bool
-    time: Time
+    time: Time  # type: ignore[name-defined]
     value: Any
     @overload
     def __init__(self, time: float = ..., value: Any = ..., knotType: KnotType = ..., leftSlope: Any = ..., rightSlope: Any = ..., leftLen: float = ..., rightLen: float = ...) -> None:
@@ -193,7 +191,7 @@ class Spline(Boost.Python.instance):
     @overload
     def __init__(self, arg2: object, arg3: object = ..., arg4: object = ..., arg5: LoopParams = ..., /) -> None: ...
     @overload
-    def __init__(self, arg2: object, arg3: object, /) -> None: ...
+    def __init__(self, arg2: object, arg3: object, /) -> None: ...  # type: ignore[overload-cannot-match]
     def BakeSplineLoops(self) -> None: ...
     @overload
     def Breakdown(self, arg2: object, arg3: object, arg4: bool, arg5: float, /) -> dict:
@@ -217,7 +215,7 @@ class Spline(Boost.Python.instance):
         existing key frames at the given times.
         """
     @overload
-    def Breakdown(self, _times: float, _type: KnotType, _flatTangents: bool, _tangentLength: float, _values: typing.Iterable[Any] = ..., /) -> tuple[None, pxr.Gf.Interval, KeyFrameMap]:
+    def Breakdown(self, _times: float, _type: KnotType, _flatTangents: bool, _tangentLength: float, _values: typing.Iterable[Any] = ..., /) -> tuple[None, pxr.Gf.Interval, KeyFrameMap]:  # type: ignore[name-defined]
         """
         Breaks down simultaneously at several times.
 
@@ -514,7 +512,7 @@ class Spline(Boost.Python.instance):
         Equality operator.
         """
     @overload
-    def __getitem__(self, arg2: float, /) -> KeyFrame: ...
+    def __getitem__(self, arg2: float, /) -> KeyFrame: ...  # type: ignore[overload-overlap]
     @overload
     def __getitem__(self, arg2: object, /) -> list: ...
     def __iter__(self) -> Any: ...
@@ -592,14 +590,14 @@ class TsTest_SampleTimes(Boost.Python.instance):
         @overload
         def __init__(self, arg2: float, arg3: bool, /) -> None: ...
         @overload
-        def __init__(self, arg2: SampleTime, /) -> None: ...
+        def __init__(self, arg2: SampleTime, /) -> None: ...  # type: ignore[name-defined]
         def __eq__(self, other: object) -> bool: ...
         def __lt__(self, other: object) -> bool: ...
         def __ne__(self, other: object) -> bool: ...
     @overload
     def __init__(self, times: object = ...) -> None: ...
     @overload
-    def __init__(self, arg2: TsTest_SplineData, /) -> None: ...
+    def __init__(self, arg2: TsTest_SplineData, /) -> None: ...  # type: ignore[overload-cannot-match]
     def AddExtrapolationTimes(self, extrapolationFactor: float) -> None: ...
     def AddKnotTimes(self) -> None: ...
     def AddStandardTimes(self) -> None: ...
@@ -623,7 +621,7 @@ class TsTest_SplineData(Boost.Python.instance):
         method: Incomplete
         slope: Incomplete
         @overload
-        def __init__(self, arg2: Extrapolation, /) -> None: ...
+        def __init__(self, arg2: Extrapolation, /) -> None: ...  # type: ignore[name-defined]
         @overload
         def __init__(self, method: object = ..., slope: float = ..., loopMode: object = ...) -> None: ...
         def __eq__(self, other: object) -> bool: ...
@@ -648,7 +646,7 @@ class TsTest_SplineData(Boost.Python.instance):
         protoStart: Incomplete
         valueOffset: Incomplete
         @overload
-        def __init__(self, arg2: InnerLoopParams, /) -> None: ...
+        def __init__(self, arg2: InnerLoopParams, /) -> None: ...  # type: ignore[name-defined]
         @overload
         def __init__(self, enabled: object = ..., protoStart: object = ..., protoEnd: object = ..., preLoopStart: object = ..., postLoopEnd: object = ..., closedEnd: object = ..., valueOffset: object = ...) -> None: ...
         def IsValid(self) -> bool: ...
@@ -678,7 +676,7 @@ class TsTest_SplineData(Boost.Python.instance):
         time: Incomplete
         value: Incomplete
         @overload
-        def __init__(self, arg2: Knot, /) -> None: ...
+        def __init__(self, arg2: Knot, /) -> None: ...  # type: ignore[name-defined]
         @overload
         def __init__(self, time: object = ..., nextSegInterpMethod: object = ..., value: object = ..., preValue: object = ..., preSlope: object = ..., postSlope: object = ..., preLen: object = ..., postLen: object = ..., preAuto: object = ..., postAuto: object = ...) -> None: ...
         def __eq__(self, other: object) -> bool: ...

@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 import Boost.Python
 import pxr.Ar
 import pxr.Sdf
@@ -97,14 +95,14 @@ class DiscoveryPlugin(Boost.Python.instance):
         aware of.
         """
     @overload
-    def DiscoverNodes(self, arg2: DiscoveryPluginContext, /) -> Any: ...
+    def DiscoverNodes(self, arg2: DiscoveryPluginContext, /) -> Any: ...  # type: ignore[overload-cannot-match]
     @overload
     def GetSearchURIs(self) -> None:
         """
         Gets the URIs that this plugin is searching for nodes in.
         """
     @overload
-    def GetSearchURIs(self) -> Any: ...
+    def GetSearchURIs(self) -> Any: ...  # type: ignore[overload-cannot-match]
     def __bool__(self) -> bool:
         """True if this object has not expired.  False otherwise."""
     def __eq__(self, other: object) -> bool:
@@ -796,7 +794,7 @@ class _FilesystemDiscoveryPlugin(DiscoveryPlugin):
     def __init__(self) -> None: ...
     @overload
     def __init__(self, arg2: object, /) -> None: ...
-    def DiscoverNodes(self, arg2: DiscoveryPluginContext, /) -> list: ...
+    def DiscoverNodes(self, arg2: DiscoveryPluginContext, /) -> list: ...  # type: ignore[override]
     def GetSearchURIs(self) -> Any: ...
     def __bool__(self) -> bool:
         """True if this object has not expired.  False otherwise."""
@@ -825,7 +823,7 @@ def FsHelpersDiscoverFiles(searchPaths: typing.Iterable[str | pxr.Ar.ResolvedPat
     returned by discovery themselves, but can be parsed to generate the
     discovery results.
     """
-def FsHelpersDiscoverNodes(searchPaths: typing.Iterable[str | pxr.Ar.ResolvedPath], allowedExtensions: typing.Iterable[str | pxr.Ar.ResolvedPath], followSymlinks: bool = ..., context: DiscoveryPluginContext = ...) -> tuple[NodeDiscoveryResultVec, DiscoveryPluginContext]:
+def FsHelpersDiscoverNodes(searchPaths: typing.Iterable[str | pxr.Ar.ResolvedPath], allowedExtensions: typing.Iterable[str | pxr.Ar.ResolvedPath], followSymlinks: bool = ..., context: DiscoveryPluginContext = ...) -> tuple[NodeDiscoveryResultVec, DiscoveryPluginContext]:  # type: ignore[name-defined]
     """
     Returns a vector of discovery results that have been found while
     walking the given search paths.

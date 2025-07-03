@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 import Boost.Python
 import pxr.Ar
 import pxr.CameraUtil
@@ -132,7 +130,7 @@ class Engine(Boost.Python.instance):
         """
         Returns the list of renderer settings.
         """
-    def InvokeRendererCommand(self, command: str | pxr.Ar.ResolvedPath, args: HdCommandArgs = ...) -> bool:
+    def InvokeRendererCommand(self, command: str | pxr.Ar.ResolvedPath, args: HdCommandArgs = ...) -> bool:  # type: ignore[name-defined]
         """
         Invokes command on the active render delegate.
 

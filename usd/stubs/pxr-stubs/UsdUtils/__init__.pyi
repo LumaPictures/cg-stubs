@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 import Boost.Python
 import pxr.Ar
 import pxr.Sdf
@@ -41,7 +39,7 @@ class CoalescingDiagnosticDelegate(Boost.Python.instance):
 
         This method clears the pending diagnostics.
         """
-    def TakeUncoalescedDiagnostics(self) -> list[[pxr.Tf.DiagnosticBase]]:
+    def TakeUncoalescedDiagnostics(self) -> list[[pxr.Tf.DiagnosticBase]]:  # type: ignore[valid-type]
         """
         Get all pending diagnostics without any coalescing.
 
@@ -633,7 +631,7 @@ def ComputeAllDependencies(assetPath: pxr.Sdf.AssetPath | str, processingFunc: t
 
     Returns true if the given asset was resolved correctly.
     """
-def ComputeCollectionIncludesAndExcludes(includedRootPaths: typing.Iterable[pxr.Sdf.Path | str], usdStage: pxr.Usd.Stage, minInclusionRatio: float = ..., maxNumExcludesBelowInclude: int = ..., minIncludeExcludeCollectionSize: int = ..., pathsToIgnore: PathHashSet = ...) -> tuple[list[pxr.Sdf.Path], list[pxr.Sdf.Path]]:
+def ComputeCollectionIncludesAndExcludes(includedRootPaths: typing.Iterable[pxr.Sdf.Path | str], usdStage: pxr.Usd.Stage, minInclusionRatio: float = ..., maxNumExcludesBelowInclude: int = ..., minIncludeExcludeCollectionSize: int = ..., pathsToIgnore: PathHashSet = ...) -> tuple[list[pxr.Sdf.Path], list[pxr.Sdf.Path]]:  # type: ignore[name-defined]
     '''
     Computes the optimal set of paths to include and the set of paths to
     exclude below includes paths, in order to encode
@@ -965,7 +963,7 @@ def FlattenLayerStack(stage: pxr.Usd.Stage, tag: str | pxr.Ar.ResolvedPath = ...
     converted to"append", and"reorder"will be discarded.
     '''
 @overload
-def FlattenLayerStack(stage: pxr.Usd.Stage, resolveAssetPathFn: ResolveAssetPathFn, tag: str | pxr.Ar.ResolvedPath = ...) -> pxr.Sdf.Layer:
+def FlattenLayerStack(stage: pxr.Usd.Stage, resolveAssetPathFn: ResolveAssetPathFn, tag: str | pxr.Ar.ResolvedPath = ...) -> pxr.Sdf.Layer:  # type: ignore[name-defined]
     '''
     Flatten the root layer stack of the given C{stage} into a single layer
     with the given optional C{tag} and using the C{resolveAssetPathFn} to
@@ -1214,7 +1212,7 @@ def LocalizeAsset(assetPath: pxr.Sdf.AssetPath | str, localizationDirectory: str
     reference to a directory path), the dependency is ignored and the
     contents of the directory are not included in the created package.
     """
-def ModifyAssetPaths(layer: pxr.Sdf.Layer, modifyFn: ModifyAssetPathFn) -> None:
+def ModifyAssetPaths(layer: pxr.Sdf.Layer, modifyFn: ModifyAssetPathFn) -> None:  # type: ignore[name-defined]
     """
     Helper function that visits every asset path in C{layer}, calls
     C{modifyFn} and replaces the value with the return value of

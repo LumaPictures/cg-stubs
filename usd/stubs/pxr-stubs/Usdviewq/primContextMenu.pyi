@@ -1,10 +1,7 @@
-# mypy: disable-error-code="misc, override, no-redef"
+from .primContextMenuItems import _GetContextMenuItems as _GetContextMenuItems
+from .qt import QtWidgets as QtWidgets
+from _typeshed import Incomplete
 
-import PySide6.QtCore
-import PySide6.QtWidgets
-from pxr.Usdviewq.primContextMenuItems import _GetContextMenuItems as _GetContextMenuItems
-from typing import ClassVar
-
-class PrimContextMenu(PySide6.QtWidgets.QMenu):
-    staticMetaObject: ClassVar[PySide6.QtCore.QMetaObject] = ...
+class PrimContextMenu(QtWidgets.QMenu):
+    _menuItems: Incomplete
     def __init__(self, parent, item, appController) -> None: ...

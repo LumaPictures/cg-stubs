@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 import Boost.Python
 import pxr.Ar
 import pxr.Gf
@@ -206,7 +204,7 @@ class BBoxCache(Boost.Python.instance):
         See ComputeWorldBound() for notes on performance and error handling.
         """
     @overload
-    def ComputeUntransformedBound(self, prim: pxr.Usd.Prim, pathsToSkip: typing.Iterable[pxr.Sdf.Path | str], ctmOverrides: pxr.Tf.HashMap[pxr.Sdf.Path | str, pxr.Gf.Matrix4d, pxr.Sdf.Path.Hash]) -> pxr.Gf.BBox3d:
+    def ComputeUntransformedBound(self, prim: pxr.Usd.Prim, pathsToSkip: typing.Iterable[pxr.Sdf.Path | str], ctmOverrides: pxr.Tf.HashMap[pxr.Sdf.Path | str, pxr.Gf.Matrix4d, pxr.Sdf.Path.Hash]) -> pxr.Gf.BBox3d:  # type: ignore[name-defined]
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -243,7 +241,7 @@ class BBoxCache(Boost.Python.instance):
         C{prim} is invalid, this method will abort the program; therefore it
         is the client's responsibility to ensure C{prim} is valid.
         """
-    def ComputeWorldBoundWithOverrides(self, prim: pxr.Usd.Prim, pathsToSkip: typing.Iterable[pxr.Sdf.Path | str], primOverride: pxr.Gf.Matrix4d, ctmOverrides: pxr.Tf.HashMap[pxr.Sdf.Path | str, pxr.Gf.Matrix4d, pxr.Sdf.Path.Hash]) -> pxr.Gf.BBox3d:
+    def ComputeWorldBoundWithOverrides(self, prim: pxr.Usd.Prim, pathsToSkip: typing.Iterable[pxr.Sdf.Path | str], primOverride: pxr.Gf.Matrix4d, ctmOverrides: pxr.Tf.HashMap[pxr.Sdf.Path | str, pxr.Gf.Matrix4d, pxr.Sdf.Path.Hash]) -> pxr.Gf.BBox3d:  # type: ignore[name-defined]
         """
         Computes the bound of the prim's descendents in world space while
         excluding the subtrees rooted at the paths in C{pathsToSkip}.
@@ -2680,7 +2678,7 @@ class Curves(PointBased):
         preserves SchemaBase state.
         """
     @staticmethod
-    def ComputeExtent(points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], widths: pxr.Vt.FloatArray | typing.Iterable[float]) -> pxr.Vt.Vec3fArray:
+    def ComputeExtent(points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], widths: pxr.Vt.FloatArray | typing.Iterable[float]) -> pxr.Vt.Vec3fArray:  # type: ignore[override]
         """
         Compute the extent for the curves defined by points and widths.
 
@@ -7096,7 +7094,7 @@ class PointBased(Gprim):
         it preserves SchemaBase state.
         """
     @staticmethod
-    def ComputeExtent(points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]]) -> pxr.Vt.Vec3fArray:
+    def ComputeExtent(points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]]) -> pxr.Vt.Vec3fArray:  # type: ignore[override]
         """
         Compute the extent for the point cloud defined by points.
 
@@ -8372,7 +8370,7 @@ class Points(PointBased):
         preserves SchemaBase state.
         """
     @staticmethod
-    def ComputeExtent(points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], widths: pxr.Vt.FloatArray | typing.Iterable[float]) -> pxr.Vt.Vec3fArray:
+    def ComputeExtent(points: pxr.Vt.Vec3fArray | typing.Iterable[list[float]] | typing.Iterable[pxr.Gf.Vec3f] | typing.Iterable[tuple[float, float, float]], widths: pxr.Vt.FloatArray | typing.Iterable[float]) -> pxr.Vt.Vec3fArray:  # type: ignore[override]
         """
         Compute the extent for the point cloud defined by points and widths.
 

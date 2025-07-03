@@ -1,6 +1,4 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
-def AddCmdlineArgs(argsParser, defaultValue: str = ..., altHelpText: str = ...):
+def AddCmdlineArgs(argsParser, defaultValue: str = 'sRGB', altHelpText: str = '') -> None:
     """
     Adds color-related command line arguments to argsParser.
 

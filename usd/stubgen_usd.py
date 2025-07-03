@@ -40,6 +40,7 @@ from functools import lru_cache
 from typing import Any, Callable, DefaultDict, Generic, Iterator, NamedTuple, TypeVar
 
 import doxygenlib.cdWriterDocstring  # type: ignore[import]
+import mypy.moduleinspect
 import mypy.stubgen
 import mypy.stubgenc
 import mypy.stubutil
@@ -432,7 +433,9 @@ class TypeInfo(CppTypeConverter):
 
     @classmethod
     def py_array_to_sub_type(cls, py_type: str) -> str | None:
-        """Takes a short or full python path
+        """Given an array type return the contained python type.
+
+        Takes a short or full python path
 
         ex.
 
@@ -495,7 +498,7 @@ class TypeInfo(CppTypeConverter):
                 r"\s+implicitly_convertible<\s*(?P<from>(%s|:)+),\s*(?P<to>(%s|:)+)\s*>\(\)"
                 % (self.IDENTIFIER, self.IDENTIFIER)
             )
-            result = defaultdict(set)
+            convertible = defaultdict(set)
             for line in output.split("\n"):
                 line = line.strip()
                 if line:
@@ -510,10 +513,12 @@ class TypeInfo(CppTypeConverter):
                         match = m.groupdict()
                         from_type = process_parsed_type(match["from"])
                         to_type = process_parsed_type(match["to"])
-                        result[to_type].add(from_type)
+                        convertible[to_type].add(from_type)
                     elif self.verbose:
                         print("no match", line)
-            print("Parsing found {} implicitly convertible types".format(len(result)))
+            print(
+                "Parsing found {} implicitly convertible types".format(len(convertible))
+            )
 
             # data types: vec, matrix, etc
             import pxr.Gf  # type: ignore[import]
@@ -526,10 +531,10 @@ class TypeInfo(CppTypeConverter):
                     else:
                         data_type = "float"
                     if isinstance(dimension, int) and dimension > 1:
-                        result[f"pxr.Gf.{name}"].add(
+                        convertible[f"pxr.Gf.{name}"].add(
                             "tuple[{}]".format(", ".join([data_type] * dimension))
                         )
-                        result[f"pxr.Gf.{name}"].add(f"list[{data_type}]")
+                        convertible[f"pxr.Gf.{name}"].add(f"list[{data_type}]")
 
             # array types
             import pxr.Vt  # type: ignore[import]
@@ -538,12 +543,12 @@ class TypeInfo(CppTypeConverter):
                 sub_type = self.py_array_to_sub_type(name)
                 if sub_type:
                     sub_types = {sub_type}
-                    sub_types.update(result[sub_type])
-                    result[f"pxr.Vt.{name}"].update(
+                    sub_types.update(convertible[sub_type])
+                    convertible[f"pxr.Vt.{name}"].update(
                         f"typing.Iterable[{sub_type}]" for sub_type in sorted(sub_types)
                     )
 
-            self._implicitly_convertible_types = dict(result)
+            self._implicitly_convertible_types = dict(convertible)
 
         if not self._implicitly_convertible_types:
             raise RuntimeError("Could not find implicitly convertible types")
@@ -591,8 +596,7 @@ class TypeInfo(CppTypeConverter):
                 self._populate_map(docElemPath + [child])
 
     def populate(self) -> None:
-        """Use the parser included with USD to gather data and processed docstrings from doxygen.
-        """
+        """Use the parser included with USD to gather data and processed docstrings from doxygen."""
         parser = Parser()
         parser.parseDoxygenIndexFile(self.xml_index_file)
         # The parser calls `writer.getDocString() to fill in the `DocElement.doc` attribute.
@@ -949,7 +953,9 @@ def get_sigs_from_cpp_overloads(
             else:
                 py_ret_type = results[0]
         cpp_sigs_without_ptrs.append(
-            FunctionSig(ctx.name, args_no_ptr, ret_type=py_ret_type, docstring=docstring)
+            FunctionSig(
+                ctx.name, args_no_ptr, ret_type=py_ret_type, docstring=docstring
+            )
         )
     return cpp_sigs_with_ptrs, cpp_sigs_without_ptrs
 
@@ -1012,7 +1018,12 @@ class SignatureMatcher(Generic[T]):
         raise NotImplementedError
 
     def _validate_match(
-        self, ctx: FunctionContext, sig1: FunctionSig, sig2: FunctionSig, info: MatchInfo, key: T
+        self,
+        ctx: FunctionContext,
+        sig1: FunctionSig,
+        sig2: FunctionSig,
+        info: MatchInfo,
+        key: T,
     ) -> bool:
         """Ensure signatures are equal"""
         # compare using format_sig because it doesn't include the docstring by default
@@ -1328,7 +1339,7 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureF
 
     def _set_class_docstring(self, ctx: FunctionContext) -> None:
         """
-        Find docstings parsed from Doxygen and set them on the context.
+        Find docstings parsed from Doxygen and set them on the class_info of the context.
         """
         if not ctx.class_info:
             return
@@ -1443,7 +1454,7 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureF
                 return [FunctionSig("__init__", args=[], ret_type=None)] + sigs
         return sigs
 
-    def _processs_sigs(
+    def _process_sigs(
         self, sigs: list[FunctionSig], ctx: FunctionContext
     ) -> list[FunctionSig]:
         """
@@ -1676,6 +1687,8 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureF
     def get_function_sig(
         self, default_sig: FunctionSig, ctx: FunctionContext
     ) -> list[FunctionSig] | None:
+        # Note: this is an override of AdvancedSignatureGenerator, but it does not call super.
+
         if ctx.name == "__iter__":
             # stubgen has functionality to add __iter__ when __getitem__ is present to get
             # around an issue with mypy, but we can't process it with infer_sig_from_boost_docstring
@@ -1712,16 +1725,20 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureF
         ):
             sigs = [FunctionSig("__init__", args=[], ret_type="None")]
 
-        return self._processs_sigs(sigs, ctx)
+        return self._process_sigs(sigs, ctx)
 
     def get_property_type(
         self, default_type: str | None, ctx: FunctionContext
     ) -> str | None:
+        doc_ret_type = self.fallback_sig_gen.get_property_type(default_type, ctx)
+        type_override = self.sig_matcher.find_result_match(
+            ctx.fullname, doc_ret_type, self.sig_matcher.property_type_overrides
+        )
         sigs = [FunctionSig(ctx.name, args=[], ret_type=None)]
-        sigs = self._processs_sigs(sigs, ctx)
+        sigs = self._process_sigs(sigs, ctx)
+        # set the docstring on the context, so that it can be written into the stub, if applicable
         ctx.docstring = sigs[0].docstring or ctx.docstring
-        ret_type = sigs[0].ret_type
-        return ret_type or default_type
+        return type_override or sigs[0].ret_type or default_type
 
 
 def remove_redundant_submodule(module_name: str) -> tuple[str, bool]:
@@ -1760,10 +1777,6 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         if module_name:
             return remove_redundant_submodule(module_name)[0]
         return None
-
-    def output(self) -> str:
-        output = super().output()
-        return '# mypy: disable-error-code="misc, override, no-redef"\n\n' + output
 
     def get_type_fullname(self, typ: type) -> str:
         type_name = super().get_type_fullname(typ)
@@ -1814,6 +1827,39 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         else:
             return imports
 
+
+# Note: another option is to override stubgen.collect_build_targets
+def find_module_path_and_all_py3(
+    inspect: mypy.moduleinspect.ModuleInspect, module: str, verbose: bool
+) -> tuple[str | None, list[str] | None] | None:
+    """Find module and determine __all__ for a Python 3 module.
+
+    Return None if the module is a C or pyc-only module.
+    Return (module_path, __all__) if it is a Python module.
+    Raise CantImport if import failed.
+    """
+    result = mypy.stubutil.find_module_path_and_all_py3(inspect, module, verbose)
+    if result:
+        # FIXME: drive this using GeneratorDelegate?
+        module_name, is_c_module = remove_redundant_submodule(module)
+        if is_c_module:
+            return None
+        if module == "pxr.Usdviewq.qt":
+            mod_path, _ = result
+            mod_all = [
+                "QtCore",
+                "QtGui",
+                "QtWidgets",
+                "QtOpenGL",
+                "QGLWidget",
+                "QGLFormat",
+                "QtActionWidgets",
+            ]
+            return mod_path, mod_all
+    return result
+
+
+mypy.stubgen.find_module_path_and_all_py3 = find_module_path_and_all_py3
 
 mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[misc]
 mypy.stubgenc.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[misc]
@@ -1880,7 +1926,8 @@ def main(outdir: str) -> None:
         packages
         + [
             "--verbose",
-            "--inspect-mode",
+            # we override find_module_path_and_all_py3 to force certain modules to inspect-mode
+            # "--inspect-mode",
             "--include-private",
             "--include-docstrings",
             f"-o=stubs",

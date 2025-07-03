@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 import Boost.Python
 import pxr.Gf
 import pxr.Tf
@@ -182,7 +180,7 @@ def ConformWindow(frustum: pxr.Gf.Frustum, policy: ConformWindowPolicy, targetAs
     applying C{policy}.
     """
 @overload
-def ConformedWindow(window: pxr.Gf.Range2d | list[float] | tuple[float, float], policy: ConformWindowPolicy, targetAspect: float) -> pxr.Gf.Range2d:
+def ConformedWindow(window: pxr.Gf.Range2d | list[float] | tuple[float, float], policy: ConformWindowPolicy, targetAspect: float) -> pxr.Gf.Range2d:  # type: ignore[overload-overlap]
     """
     Conforms the given C{projectionMatrix} to have aspect ratio
     C{targetAspect} by applying C{policy}.
@@ -196,7 +194,7 @@ def ConformedWindow(window: pxr.Gf.Range2d | list[float] | tuple[float, float], 
     signs of the resulting matrix.
     """
 @overload
-def ConformedWindow(window: pxr.Gf.Vec2d | list[float] | tuple[float, float], policy: ConformWindowPolicy, targetAspect: float) -> pxr.Gf.Vec2d:
+def ConformedWindow(window: pxr.Gf.Vec2d | list[float] | tuple[float, float], policy: ConformWindowPolicy, targetAspect: float) -> pxr.Gf.Vec2d:  # type: ignore[overload-overlap]
     """
     Returns a window with aspect ratio C{targetAspect} by applying
     C{policy} to C{window} where C{window} is encoded as GfRange2d.

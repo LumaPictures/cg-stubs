@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 import pxr.Ar
 import pxr.Usd
 import pxr.UsdShade

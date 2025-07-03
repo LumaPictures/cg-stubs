@@ -26,12 +26,13 @@ dev = [
     "stubgenlib",
     "PySide6==6.5.1.1",
     "mypy",  # this is here to make tool.uv.sources work
+    "pytest",
 ]
 
 [tool.uv.sources]
 stubgenlib = { path = "../common" , editable=true }
-mypy = { git = "https://github.com/chadrik/mypy", branch = "stubgen/all-fixes-usd" }
-#mypy = { path = "/Users/chad/dev/mypy", editable=true }
+#mypy = { git = "https://github.com/chadrik/mypy", branch = "stubgen/all-fixes-usd" }
+mypy = { path = "/Users/chad/dev/mypy", editable=true }
 
 [build-system]
 requires = ["hatchling"]

@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc, override, no-redef"
-
 import Boost.Python
 import pxr.Ar
 import pxr.Tf
@@ -148,7 +146,7 @@ class BBox3d(Boost.Python.instance):
         Sets the axis-aligned box and transformation matrix.
         """
     @overload
-    def Set(self, arg2: Range3d | list[float] | tuple[float, float, float], arg3: Matrix4d, /) -> BBox3d: ...
+    def Set(self, arg2: Range3d | list[float] | tuple[float, float, float], arg3: Matrix4d, /) -> BBox3d: ...  # type: ignore[overload-cannot-match]
     def SetHasZeroAreaPrimitives(self, _hasThem: bool, /) -> None:
         """
         Sets the zero-area primitives flag to the given value.
@@ -499,7 +497,7 @@ class DualQuatf(Boost.Python.instance):
         Construct from GfDualQuatd.
         """
     @overload
-    def __init__(self, _other: DualQuatf | DualQuath, /) -> None:
+    def __init__(self, _other: DualQuatf | DualQuath, /) -> None:  # type: ignore[overload-cannot-match]
         """
         Implicitly convert from GfDualQuath.
         """
@@ -653,12 +651,12 @@ class DualQuath(Boost.Python.instance):
         Construct from GfDualQuatd.
         """
     @overload
-    def __init__(self, _other: DualQuatf | DualQuath, /) -> None:
+    def __init__(self, _other: DualQuatf | DualQuath, /) -> None:  # type: ignore[overload-cannot-match]
         """
         Construct from GfDualQuatf.
         """
     @overload
-    def __init__(self, arg2: DualQuath, /) -> None: ...
+    def __init__(self, arg2: DualQuath, /) -> None: ...  # type: ignore[overload-cannot-match]
     def GetConjugate(self) -> DualQuath:
         """
         Returns the conjugate of this dual quaternion.
@@ -1745,7 +1743,7 @@ class Matrix2d(Boost.Python.instance):
     def __getitem__(self, arg2: int, /) -> Vec2d: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Matrix2d, /) -> Any: ...
-    @overload
+    @overload  # type: ignore[misc]
     def __imul__(self, arg2: Matrix2d, /) -> Any: ...
     @overload
     def __imul__(self, arg2: float, /) -> Any: ...
@@ -1916,7 +1914,7 @@ class Matrix2f(Boost.Python.instance):
     def __getitem__(self, arg2: int, /) -> Vec2f: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Matrix2f, /) -> Any: ...
-    @overload
+    @overload  # type: ignore[misc]
     def __imul__(self, arg2: Matrix2f, /) -> Any: ...
     @overload
     def __imul__(self, arg2: float, /) -> Any: ...
@@ -2180,7 +2178,7 @@ class Matrix3d(Boost.Python.instance):
     def __getitem__(self, arg2: int, /) -> Vec3d: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Matrix3d, /) -> Any: ...
-    @overload
+    @overload  # type: ignore[misc]
     def __imul__(self, arg2: Matrix3d, /) -> Any: ...
     @overload
     def __imul__(self, arg2: float, /) -> Any: ...
@@ -2448,7 +2446,7 @@ class Matrix3f(Boost.Python.instance):
     def __getitem__(self, arg2: int, /) -> Vec3f: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Matrix3f, /) -> Any: ...
-    @overload
+    @overload  # type: ignore[misc]
     def __imul__(self, arg2: Matrix3f, /) -> Any: ...
     @overload
     def __imul__(self, arg2: float, /) -> Any: ...
@@ -2853,7 +2851,7 @@ class Matrix4d(Boost.Python.instance):
         Sets the matrix to zero.
         """
     @overload
-    def Transform(self, _vec: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
+    def Transform(self, _vec: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:  # type: ignore[overload-overlap]
         """
         Transforms the row vector *vec* by the matrix, returning the result.
 
@@ -2872,7 +2870,7 @@ class Matrix4d(Boost.Python.instance):
         in that it returns a different value type.
         """
     @overload
-    def TransformAffine(self, _vec: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
+    def TransformAffine(self, _vec: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:  # type: ignore[overload-overlap]
         """
         Transforms the row vector *vec* by the matrix, returning the result.
 
@@ -2892,7 +2890,7 @@ class Matrix4d(Boost.Python.instance):
         (0, 0, 0, 1)).
         """
     @overload
-    def TransformDir(self, _vec: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
+    def TransformDir(self, _vec: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:  # type: ignore[overload-overlap]
         """
         Transforms row vector *vec* by the matrix, returning the result.
 
@@ -2939,7 +2937,7 @@ class Matrix4d(Boost.Python.instance):
     def __getitem__(self, arg2: int, /) -> Vec4d: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Matrix4d, /) -> Any: ...
-    @overload
+    @overload  # type: ignore[misc]
     def __imul__(self, arg2: Matrix4d, /) -> Any: ...
     @overload
     def __imul__(self, arg2: float, /) -> Any: ...
@@ -3348,7 +3346,7 @@ class Matrix4f(Boost.Python.instance):
         Sets the matrix to zero.
         """
     @overload
-    def Transform(self, _vec: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
+    def Transform(self, _vec: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:  # type: ignore[overload-overlap]
         """
         Transforms the row vector *vec* by the matrix, returning the result.
 
@@ -3367,7 +3365,7 @@ class Matrix4f(Boost.Python.instance):
         in that it returns a different value type.
         """
     @overload
-    def TransformAffine(self, _vec: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
+    def TransformAffine(self, _vec: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:  # type: ignore[overload-overlap]
         """
         Transforms the row vector *vec* by the matrix, returning the result.
 
@@ -3387,7 +3385,7 @@ class Matrix4f(Boost.Python.instance):
         (0, 0, 0, 1)).
         """
     @overload
-    def TransformDir(self, _vec: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
+    def TransformDir(self, _vec: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:  # type: ignore[overload-overlap]
         """
         Transforms row vector *vec* by the matrix, returning the result.
 
@@ -3434,7 +3432,7 @@ class Matrix4f(Boost.Python.instance):
     def __getitem__(self, arg2: int, /) -> Vec4f: ...
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Matrix4f, /) -> Any: ...
-    @overload
+    @overload  # type: ignore[misc]
     def __imul__(self, arg2: Matrix4f, /) -> Any: ...
     @overload
     def __imul__(self, arg2: float, /) -> Any: ...
@@ -3529,7 +3527,7 @@ class MultiInterval(Boost.Python.instance):
         """
         Return the complement of this set.
         """
-    def GetContainingInterval(self, _x: float, /) -> pxr.Usd.PrimSiblingIterator:
+    def GetContainingInterval(self, _x: float, /) -> pxr.Usd.PrimSiblingIterator:  # type: ignore[name-defined]
         """
         Returns an iterator identifying the interval that contains x.
 
@@ -3541,7 +3539,7 @@ class MultiInterval(Boost.Python.instance):
         """
         Returns the full interval (-inf, inf).
         """
-    def GetNextNonContainingInterval(self, _x: float, /) -> pxr.Usd.PrimSiblingIterator:
+    def GetNextNonContainingInterval(self, _x: float, /) -> pxr.Usd.PrimSiblingIterator:  # type: ignore[name-defined]
         """
         Returns an iterator identifying the first (lowest) interval whose
         minimum value is>x.
@@ -3549,7 +3547,7 @@ class MultiInterval(Boost.Python.instance):
 
         If no such interval exists, returns end().
         """
-    def GetPriorNonContainingInterval(self, _x: float, /) -> pxr.Usd.PrimSiblingIterator:
+    def GetPriorNonContainingInterval(self, _x: float, /) -> pxr.Usd.PrimSiblingIterator:  # type: ignore[name-defined]
         """
         Returns an iterator identifying the last (highest) interval whose
         maximum value is<x.
@@ -4043,7 +4041,7 @@ class Quatf(Boost.Python.instance):
         Construct from GfQuatd.
         """
     @overload
-    def __init__(self, _other: Quatf | Quath, /) -> None:
+    def __init__(self, _other: Quatf | Quath, /) -> None:  # type: ignore[overload-cannot-match]
         """
         Implicitly convert from GfQuath.
         """
@@ -4188,12 +4186,12 @@ class Quath(Boost.Python.instance):
         Construct from GfQuatd.
         """
     @overload
-    def __init__(self, _other: Quatf | Quath, /) -> None:
+    def __init__(self, _other: Quatf | Quath, /) -> None:  # type: ignore[overload-cannot-match]
         """
         Construct from GfQuatf.
         """
     @overload
-    def __init__(self, arg2: Quath, /) -> None: ...
+    def __init__(self, arg2: Quath, /) -> None: ...  # type: ignore[overload-cannot-match]
     def GetConjugate(self) -> Quath:
         """
         Return this quaternion's conjugate, which is the quaternion with the
@@ -5610,7 +5608,7 @@ class Rotation(Boost.Python.instance):
         The passed vectors need not be unit length.
         """
     @overload
-    def TransformDir(self, _vec: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
+    def TransformDir(self, _vec: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:  # type: ignore[overload-overlap]
         """
         Transforms row vector C{vec} by the rotation, returning the result.
         """
@@ -5694,7 +5692,7 @@ class Size2(Boost.Python.instance):
         """
     def __iadd__(self, arg2: Size2 | list[float] | tuple[float, float], /) -> Any: ...
     def __idiv__(self, arg2: int, /) -> Any: ...
-    def __imul__(self, arg2: int, /) -> Any: ...
+    def __imul__(self, arg2: int, /) -> Any: ...  # type: ignore[misc]
     def __isub__(self, arg2: Size2 | list[float] | tuple[float, float], /) -> Any: ...
     def __itruediv__(self, arg2: int, /) -> Size2: ...
     def __len__(self) -> int: ...
@@ -5759,7 +5757,7 @@ class Size3(Boost.Python.instance):
         """
     def __iadd__(self, arg2: Size3 | list[float] | tuple[float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: int, /) -> Any: ...
-    def __imul__(self, arg2: int, /) -> Any: ...
+    def __imul__(self, arg2: int, /) -> Any: ...  # type: ignore[misc]
     def __isub__(self, arg2: Size3 | list[float] | tuple[float, float, float], /) -> Any: ...
     def __itruediv__(self, arg2: int, /) -> Size3: ...
     def __len__(self) -> int: ...
@@ -6035,11 +6033,11 @@ class Vec2d(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, arg2: int, /) -> float: ...
+    def __getitem__(self, arg2: int, /) -> float: ...  # type: ignore[overload-cannot-match]
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec2d | list[float] | tuple[float, float], /) -> Any: ...
     def __idiv__(self, arg2: float, /) -> Any: ...
-    def __imul__(self, arg2: float, /) -> Any: ...
+    def __imul__(self, arg2: float, /) -> Any: ...  # type: ignore[misc]
     def __isub__(self, arg2: Vec2d | list[float] | tuple[float, float], /) -> Any: ...
     def __itruediv__(self, arg2: float, /) -> Vec2d: ...
     def __len__(self) -> int: ...
@@ -6170,11 +6168,11 @@ class Vec2f(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, arg2: int, /) -> float: ...
+    def __getitem__(self, arg2: int, /) -> float: ...  # type: ignore[overload-cannot-match]
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec2f | list[float] | tuple[float, float], /) -> Any: ...
     def __idiv__(self, arg2: float, /) -> Any: ...
-    def __imul__(self, arg2: float, /) -> Any: ...
+    def __imul__(self, arg2: float, /) -> Any: ...  # type: ignore[misc]
     def __isub__(self, arg2: Vec2f | list[float] | tuple[float, float], /) -> Any: ...
     def __itruediv__(self, arg2: float, /) -> Vec2f: ...
     def __len__(self) -> int: ...
@@ -6302,11 +6300,11 @@ class Vec2h(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, arg2: int, /) -> Any: ...
+    def __getitem__(self, arg2: int, /) -> Any: ...  # type: ignore[overload-cannot-match]
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec2h | list[float] | tuple[float, float], /) -> Any: ...
     def __idiv__(self, arg2: object, /) -> Any: ...
-    def __imul__(self, arg2: float, /) -> Any: ...
+    def __imul__(self, arg2: float, /) -> Any: ...  # type: ignore[misc]
     def __isub__(self, arg2: Vec2h | list[float] | tuple[float, float], /) -> Any: ...
     def __itruediv__(self, arg2: object, /) -> Vec2h: ...
     def __len__(self) -> int: ...
@@ -6384,11 +6382,11 @@ class Vec2i(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, arg2: int, /) -> int: ...
+    def __getitem__(self, arg2: int, /) -> int: ...  # type: ignore[overload-cannot-match]
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec2i | list[int] | Size2 | tuple[int, int], /) -> Any: ...
     def __idiv__(self, arg2: int, /) -> Any: ...
-    def __imul__(self, arg2: float, /) -> Any: ...
+    def __imul__(self, arg2: float, /) -> Any: ...  # type: ignore[misc]
     def __isub__(self, arg2: Vec2i | list[int] | Size2 | tuple[int, int], /) -> Any: ...
     def __itruediv__(self, arg2: int, /) -> Vec2i: ...
     def __len__(self) -> int: ...
@@ -6550,11 +6548,11 @@ class Vec3d(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, arg2: int, /) -> float: ...
+    def __getitem__(self, arg2: int, /) -> float: ...  # type: ignore[overload-cannot-match]
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec3d | list[float] | tuple[float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: float, /) -> Any: ...
-    def __imul__(self, arg2: float, /) -> Any: ...
+    def __imul__(self, arg2: float, /) -> Any: ...  # type: ignore[misc]
     def __isub__(self, arg2: Vec3d | list[float] | tuple[float, float, float], /) -> Any: ...
     def __itruediv__(self, arg2: float, /) -> Vec3d: ...
     def __len__(self) -> int: ...
@@ -6717,11 +6715,11 @@ class Vec3f(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, arg2: int, /) -> float: ...
+    def __getitem__(self, arg2: int, /) -> float: ...  # type: ignore[overload-cannot-match]
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec3f | list[float] | tuple[float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: float, /) -> Any: ...
-    def __imul__(self, arg2: float, /) -> Any: ...
+    def __imul__(self, arg2: float, /) -> Any: ...  # type: ignore[misc]
     def __isub__(self, arg2: Vec3f | list[float] | tuple[float, float, float], /) -> Any: ...
     def __itruediv__(self, arg2: float, /) -> Vec3f: ...
     def __len__(self) -> int: ...
@@ -6881,11 +6879,11 @@ class Vec3h(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, arg2: int, /) -> Any: ...
+    def __getitem__(self, arg2: int, /) -> Any: ...  # type: ignore[overload-cannot-match]
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: object, /) -> Any: ...
-    def __imul__(self, arg2: float, /) -> Any: ...
+    def __imul__(self, arg2: float, /) -> Any: ...  # type: ignore[misc]
     def __isub__(self, arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Any: ...
     def __itruediv__(self, arg2: object, /) -> Vec3h: ...
     def __len__(self) -> int: ...
@@ -6969,11 +6967,11 @@ class Vec3i(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, arg2: int, /) -> int: ...
+    def __getitem__(self, arg2: int, /) -> int: ...  # type: ignore[overload-cannot-match]
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec3i | list[int] | Size3 | tuple[int, int, int], /) -> Any: ...
     def __idiv__(self, arg2: int, /) -> Any: ...
-    def __imul__(self, arg2: float, /) -> Any: ...
+    def __imul__(self, arg2: float, /) -> Any: ...  # type: ignore[misc]
     def __isub__(self, arg2: Vec3i | list[int] | Size3 | tuple[int, int, int], /) -> Any: ...
     def __itruediv__(self, arg2: int, /) -> Vec3i: ...
     def __len__(self) -> int: ...
@@ -7114,11 +7112,11 @@ class Vec4d(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, arg2: int, /) -> float: ...
+    def __getitem__(self, arg2: int, /) -> float: ...  # type: ignore[overload-cannot-match]
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec4d | list[float] | tuple[float, float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: float, /) -> Any: ...
-    def __imul__(self, arg2: float, /) -> Any: ...
+    def __imul__(self, arg2: float, /) -> Any: ...  # type: ignore[misc]
     def __isub__(self, arg2: Vec4d | list[float] | tuple[float, float, float, float], /) -> Any: ...
     def __itruediv__(self, arg2: float, /) -> Vec4d: ...
     def __len__(self) -> int: ...
@@ -7259,11 +7257,11 @@ class Vec4f(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, arg2: int, /) -> float: ...
+    def __getitem__(self, arg2: int, /) -> float: ...  # type: ignore[overload-cannot-match]
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec4f | list[float] | tuple[float, float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: float, /) -> Any: ...
-    def __imul__(self, arg2: float, /) -> Any: ...
+    def __imul__(self, arg2: float, /) -> Any: ...  # type: ignore[misc]
     def __isub__(self, arg2: Vec4f | list[float] | tuple[float, float, float, float], /) -> Any: ...
     def __itruediv__(self, arg2: float, /) -> Vec4f: ...
     def __len__(self) -> int: ...
@@ -7401,11 +7399,11 @@ class Vec4h(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, arg2: int, /) -> Any: ...
+    def __getitem__(self, arg2: int, /) -> Any: ...  # type: ignore[overload-cannot-match]
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec4h | list[float] | tuple[float, float, float, float], /) -> Any: ...
     def __idiv__(self, arg2: object, /) -> Any: ...
-    def __imul__(self, arg2: float, /) -> Any: ...
+    def __imul__(self, arg2: float, /) -> Any: ...  # type: ignore[misc]
     def __isub__(self, arg2: Vec4h | list[float] | tuple[float, float, float, float], /) -> Any: ...
     def __itruediv__(self, arg2: object, /) -> Vec4h: ...
     def __len__(self) -> int: ...
@@ -7493,11 +7491,11 @@ class Vec4i(Boost.Python.instance):
         Indexing.
         """
     @overload
-    def __getitem__(self, arg2: int, /) -> int: ...
+    def __getitem__(self, arg2: int, /) -> int: ...  # type: ignore[overload-cannot-match]
     def __hash__(self) -> int: ...
     def __iadd__(self, arg2: Vec4i | list[int] | tuple[int, int, int, int], /) -> Any: ...
     def __idiv__(self, arg2: int, /) -> Any: ...
-    def __imul__(self, arg2: float, /) -> Any: ...
+    def __imul__(self, arg2: float, /) -> Any: ...  # type: ignore[misc]
     def __isub__(self, arg2: Vec4i | list[int] | tuple[int, int, int, int], /) -> Any: ...
     def __itruediv__(self, arg2: int, /) -> Vec4i: ...
     def __len__(self) -> int: ...
@@ -7526,27 +7524,27 @@ def Absf(arg1: float, /) -> float:
 
     Use instead of Abs() to return the absolute value of f as a float instead of a double."""
 @overload
-def ApplyGamma(_v: Vec3f | list[float] | tuple[float, float, float], _gamma: float, /) -> Vec3f:
+def ApplyGamma(_v: Vec3f | list[float] | tuple[float, float, float], _gamma: float, /) -> Vec3f:  # type: ignore[overload-overlap]
     """
     Return a new vector with each component of C{v} raised to the power
     C{gamma}.
     """
 @overload
-def ApplyGamma(_v: Vec3d | list[float] | tuple[float, float, float], _gamma: float, /) -> Vec3d:
+def ApplyGamma(_v: Vec3d | list[float] | tuple[float, float, float], _gamma: float, /) -> Vec3d:  # type: ignore[overload-overlap]
     """
     Return a new vector with each component of C{v} raised to the power
     C{gamma}.
     """
 @overload
-def ApplyGamma(_v: Vec3h | list[float] | tuple[float, float, float], _gamma: float, /) -> Vec3h: ...
+def ApplyGamma(_v: Vec3h | list[float] | tuple[float, float, float], _gamma: float, /) -> Vec3h: ...  # type: ignore[overload-overlap]
 @overload
-def ApplyGamma(_v: Vec4f | list[float] | tuple[float, float, float, float], _gamma: float, /) -> Vec4f:
+def ApplyGamma(_v: Vec4f | list[float] | tuple[float, float, float, float], _gamma: float, /) -> Vec4f:  # type: ignore[overload-overlap]
     """
     Return a new vector with the first three components of C{v} raised to
     the power C{gamma} and the fourth component unchanged.
     """
 @overload
-def ApplyGamma(_v: Vec4d | list[float] | tuple[float, float, float, float], _gamma: float, /) -> Vec4d:
+def ApplyGamma(_v: Vec4d | list[float] | tuple[float, float, float, float], _gamma: float, /) -> Vec4d:  # type: ignore[overload-overlap]
     """
     Return a new vector with the first three components of C{v} raised to
     the power C{gamma} and the fourth component unchanged.
@@ -7578,7 +7576,7 @@ def Clampf(arg1: float, arg2: float, arg3: float, /) -> float:
 
     Use instead of Clamp() to return the clamped value of f as a float instead of a double."""
 @overload
-def CompDiv(_left: Vec4d | list[float] | tuple[float, float, float, float], _right: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d:
+def CompDiv(_left: Vec4d | list[float] | tuple[float, float, float, float], _right: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d:  # type: ignore[overload-overlap]
     """
     Returns component-wise quotient of vectors.
 
@@ -7588,23 +7586,23 @@ def CompDiv(_left: Vec4d | list[float] | tuple[float, float, float, float], _rig
 @overload
 def CompDiv(arg1: float, arg2: float, /) -> float: ...
 @overload
-def CompDiv(arg1: Vec2h | list[float] | tuple[float, float], arg2: Vec2h | list[float] | tuple[float, float], /) -> Vec2h: ...
+def CompDiv(arg1: Vec2h | list[float] | tuple[float, float], arg2: Vec2h | list[float] | tuple[float, float], /) -> Vec2h: ...  # type: ignore[overload-overlap]
 @overload
-def CompDiv(arg1: Vec2f | list[float] | tuple[float, float], arg2: Vec2f | list[float] | tuple[float, float], /) -> Vec2f: ...
+def CompDiv(arg1: Vec2f | list[float] | tuple[float, float], arg2: Vec2f | list[float] | tuple[float, float], /) -> Vec2f: ...  # type: ignore[overload-overlap]
 @overload
-def CompDiv(arg1: Vec2d | list[float] | tuple[float, float], arg2: Vec2d | list[float] | tuple[float, float], /) -> Vec2d: ...
+def CompDiv(arg1: Vec2d | list[float] | tuple[float, float], arg2: Vec2d | list[float] | tuple[float, float], /) -> Vec2d: ...  # type: ignore[overload-overlap]
 @overload
-def CompDiv(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...
+def CompDiv(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...  # type: ignore[overload-overlap]
 @overload
-def CompDiv(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f: ...
+def CompDiv(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f: ...  # type: ignore[overload-overlap]
 @overload
-def CompDiv(arg1: Vec3d | list[float] | tuple[float, float, float], arg2: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d: ...
+def CompDiv(arg1: Vec3d | list[float] | tuple[float, float, float], arg2: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d: ...  # type: ignore[overload-overlap]
 @overload
-def CompDiv(arg1: Vec4h | list[float] | tuple[float, float, float, float], arg2: Vec4h | list[float] | tuple[float, float, float, float], /) -> Vec4h: ...
+def CompDiv(arg1: Vec4h | list[float] | tuple[float, float, float, float], arg2: Vec4h | list[float] | tuple[float, float, float, float], /) -> Vec4h: ...  # type: ignore[overload-overlap]
 @overload
 def CompDiv(arg1: Vec4f | list[float] | tuple[float, float, float, float], arg2: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f: ...
 @overload
-def CompMult(_left: Vec4d | list[float] | tuple[float, float, float, float], _right: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d:
+def CompMult(_left: Vec4d | list[float] | tuple[float, float, float, float], _right: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d:  # type: ignore[overload-overlap]
     """
     Returns component-wise multiplication of vectors.
 
@@ -7614,60 +7612,60 @@ def CompMult(_left: Vec4d | list[float] | tuple[float, float, float, float], _ri
 @overload
 def CompMult(arg1: float, arg2: float, /) -> float: ...
 @overload
-def CompMult(arg1: Vec2h | list[float] | tuple[float, float], arg2: Vec2h | list[float] | tuple[float, float], /) -> Vec2h: ...
+def CompMult(arg1: Vec2h | list[float] | tuple[float, float], arg2: Vec2h | list[float] | tuple[float, float], /) -> Vec2h: ...  # type: ignore[overload-overlap]
 @overload
-def CompMult(arg1: Vec2f | list[float] | tuple[float, float], arg2: Vec2f | list[float] | tuple[float, float], /) -> Vec2f: ...
+def CompMult(arg1: Vec2f | list[float] | tuple[float, float], arg2: Vec2f | list[float] | tuple[float, float], /) -> Vec2f: ...  # type: ignore[overload-overlap]
 @overload
-def CompMult(arg1: Vec2d | list[float] | tuple[float, float], arg2: Vec2d | list[float] | tuple[float, float], /) -> Vec2d: ...
+def CompMult(arg1: Vec2d | list[float] | tuple[float, float], arg2: Vec2d | list[float] | tuple[float, float], /) -> Vec2d: ...  # type: ignore[overload-overlap]
 @overload
-def CompMult(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...
+def CompMult(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...  # type: ignore[overload-overlap]
 @overload
-def CompMult(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f: ...
+def CompMult(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f: ...  # type: ignore[overload-overlap]
 @overload
-def CompMult(arg1: Vec3d | list[float] | tuple[float, float, float], arg2: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d: ...
+def CompMult(arg1: Vec3d | list[float] | tuple[float, float, float], arg2: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d: ...  # type: ignore[overload-overlap]
 @overload
-def CompMult(arg1: Vec4h | list[float] | tuple[float, float, float, float], arg2: Vec4h | list[float] | tuple[float, float, float, float], /) -> Vec4h: ...
+def CompMult(arg1: Vec4h | list[float] | tuple[float, float, float, float], arg2: Vec4h | list[float] | tuple[float, float, float, float], /) -> Vec4h: ...  # type: ignore[overload-overlap]
 @overload
 def CompMult(arg1: Vec4f | list[float] | tuple[float, float, float, float], arg2: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f: ...
 @overload
-def ConvertDisplayToLinear(_v: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
+def ConvertDisplayToLinear(_v: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:  # type: ignore[overload-overlap]
     """
     Given a vec, C{v}, representing an RGB(A) color in the system's
     display gamma space, return an energy-linear vec of the same type.
     """
 @overload
-def ConvertDisplayToLinear(_v: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d: ...
+def ConvertDisplayToLinear(_v: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d: ...  # type: ignore[overload-overlap]
 @overload
-def ConvertDisplayToLinear(_v: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...
+def ConvertDisplayToLinear(_v: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...  # type: ignore[overload-overlap]
 @overload
-def ConvertDisplayToLinear(_v: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f: ...
+def ConvertDisplayToLinear(_v: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f: ...  # type: ignore[overload-overlap]
 @overload
-def ConvertDisplayToLinear(_v: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d: ...
+def ConvertDisplayToLinear(_v: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d: ...  # type: ignore[overload-overlap]
 @overload
 def ConvertDisplayToLinear(_v: Vec4h | list[float] | tuple[float, float, float, float], /) -> Vec4h: ...
 @overload
-def ConvertLinearToDisplay(_v: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:
+def ConvertLinearToDisplay(_v: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f:  # type: ignore[overload-overlap]
     """
     Given a vec, C{v}, representing an energy-linear RGB(A) color, return
     a vec of the same type converted to the system's display gamma.
     """
 @overload
-def ConvertLinearToDisplay(_v: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d: ...
+def ConvertLinearToDisplay(_v: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d: ...  # type: ignore[overload-overlap]
 @overload
-def ConvertLinearToDisplay(_v: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...
+def ConvertLinearToDisplay(_v: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...  # type: ignore[overload-overlap]
 @overload
-def ConvertLinearToDisplay(_v: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f: ...
+def ConvertLinearToDisplay(_v: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f: ...  # type: ignore[overload-overlap]
 @overload
-def ConvertLinearToDisplay(_v: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d: ...
+def ConvertLinearToDisplay(_v: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d: ...  # type: ignore[overload-overlap]
 @overload
 def ConvertLinearToDisplay(_v: Vec4h | list[float] | tuple[float, float, float, float], /) -> Vec4h: ...
 @overload
-def Cross(_v1: Vec3d | list[float] | tuple[float, float, float], _v2: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
+def Cross(_v1: Vec3d | list[float] | tuple[float, float, float], _v2: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:  # type: ignore[overload-overlap]
     """
     Returns the cross product of C{v1} and C{v2}.
     """
 @overload
-def Cross(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...
+def Cross(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...  # type: ignore[overload-overlap]
 @overload
 def Cross(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f: ...
 def DegreesToRadians(_degrees: float, /) -> float:
@@ -7685,17 +7683,17 @@ def Dot(_left: Vec4i | list[int] | tuple[int, int, int, int], _right: Vec4i | li
 @overload
 def Dot(arg1: DualQuatd | DualQuatf | DualQuath, arg2: DualQuatd | DualQuatf | DualQuath, /) -> float: ...
 @overload
-def Dot(arg1: DualQuatf | DualQuath, arg2: DualQuatf | DualQuath, /) -> float: ...
+def Dot(arg1: DualQuatf | DualQuath, arg2: DualQuatf | DualQuath, /) -> float: ...  # type: ignore[overload-cannot-match]
 @overload
-def Dot(arg1: DualQuath, arg2: DualQuath, /) -> Any: ...
+def Dot(arg1: DualQuath, arg2: DualQuath, /) -> Any: ...  # type: ignore[overload-cannot-match]
 @overload
 def Dot(arg1: float, arg2: float, /) -> float: ...
 @overload
 def Dot(arg1: Quatd | Quatf | Quath, arg2: Quatd | Quatf | Quath, /) -> float: ...
 @overload
-def Dot(arg1: Quatf | Quath, arg2: Quatf | Quath, /) -> float: ...
+def Dot(arg1: Quatf | Quath, arg2: Quatf | Quath, /) -> float: ...  # type: ignore[overload-cannot-match]
 @overload
-def Dot(arg1: Quath, arg2: Quath, /) -> Any: ...
+def Dot(arg1: Quath, arg2: Quath, /) -> Any: ...  # type: ignore[overload-cannot-match]
 @overload
 def Dot(arg1: Quaternion, arg2: Quaternion, /) -> float: ...
 @overload
@@ -7945,7 +7943,7 @@ def Floorf(arg1: float, /) -> float:
 
     Use instead of Floor() to return the floor of f as a float instead of a double."""
 @overload
-def GetComplement(_a: Vec4d | list[float] | tuple[float, float, float, float], _b: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d:
+def GetComplement(_a: Vec4d | list[float] | tuple[float, float, float, float], _b: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d:  # type: ignore[overload-overlap]
     """
     Returns the orthogonal complement of C{a.GetProjection(b)} .
 
@@ -7956,19 +7954,19 @@ def GetComplement(_a: Vec4d | list[float] | tuple[float, float, float, float], _
 
     """
 @overload
-def GetComplement(arg1: Vec2h | list[float] | tuple[float, float], arg2: Vec2h | list[float] | tuple[float, float], /) -> Vec2h: ...
+def GetComplement(arg1: Vec2h | list[float] | tuple[float, float], arg2: Vec2h | list[float] | tuple[float, float], /) -> Vec2h: ...  # type: ignore[overload-overlap]
 @overload
-def GetComplement(arg1: Vec2f | list[float] | tuple[float, float], arg2: Vec2f | list[float] | tuple[float, float], /) -> Vec2f: ...
+def GetComplement(arg1: Vec2f | list[float] | tuple[float, float], arg2: Vec2f | list[float] | tuple[float, float], /) -> Vec2f: ...  # type: ignore[overload-overlap]
 @overload
-def GetComplement(arg1: Vec2d | list[float] | tuple[float, float], arg2: Vec2d | list[float] | tuple[float, float], /) -> Vec2d: ...
+def GetComplement(arg1: Vec2d | list[float] | tuple[float, float], arg2: Vec2d | list[float] | tuple[float, float], /) -> Vec2d: ...  # type: ignore[overload-overlap]
 @overload
-def GetComplement(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...
+def GetComplement(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...  # type: ignore[overload-overlap]
 @overload
-def GetComplement(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f: ...
+def GetComplement(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f: ...  # type: ignore[overload-overlap]
 @overload
-def GetComplement(arg1: Vec3d | list[float] | tuple[float, float, float], arg2: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d: ...
+def GetComplement(arg1: Vec3d | list[float] | tuple[float, float, float], arg2: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d: ...  # type: ignore[overload-overlap]
 @overload
-def GetComplement(arg1: Vec4h | list[float] | tuple[float, float, float, float], arg2: Vec4h | list[float] | tuple[float, float, float, float], /) -> Vec4h: ...
+def GetComplement(arg1: Vec4h | list[float] | tuple[float, float, float, float], arg2: Vec4h | list[float] | tuple[float, float, float, float], /) -> Vec4h: ...  # type: ignore[overload-overlap]
 @overload
 def GetComplement(arg1: Vec4f | list[float] | tuple[float, float, float, float], arg2: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f: ...
 def GetDisplayGamma() -> float:
@@ -7976,7 +7974,7 @@ def GetDisplayGamma() -> float:
     Return the system display gamma.
     """
 @overload
-def GetHomogenized(_v: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d:
+def GetHomogenized(_v: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d:  # type: ignore[overload-overlap]
     """
     Returns a vector which is C{v} homogenized.
 
@@ -8007,7 +8005,7 @@ def GetLength(arg1: Vec4h | list[float] | tuple[float, float, float, float], /) 
 @overload
 def GetLength(arg1: Vec4f | list[float] | tuple[float, float, float, float], /) -> float: ...
 @overload
-def GetNormalized(_v: Vec4d | list[float] | tuple[float, float, float, float], _eps: float = ..., /) -> Vec4d:
+def GetNormalized(_v: Vec4d | list[float] | tuple[float, float, float, float], _eps: float = ..., /) -> Vec4d:  # type: ignore[overload-overlap]
     """
     Returns a normalized (unit-length) vector with the same direction as
     C{v}.
@@ -8017,23 +8015,23 @@ def GetNormalized(_v: Vec4d | list[float] | tuple[float, float, float, float], _
     divided by C{eps} is returned.
     """
 @overload
-def GetNormalized(arg1: Vec2h | list[float] | tuple[float, float], arg2: object = ..., /) -> Vec2h: ...
+def GetNormalized(arg1: Vec2h | list[float] | tuple[float, float], arg2: object = ..., /) -> Vec2h: ...  # type: ignore[overload-overlap]
 @overload
-def GetNormalized(arg1: Vec2f | list[float] | tuple[float, float], arg2: float = ..., /) -> Vec2f: ...
+def GetNormalized(arg1: Vec2f | list[float] | tuple[float, float], arg2: float = ..., /) -> Vec2f: ...  # type: ignore[overload-overlap]
 @overload
-def GetNormalized(arg1: Vec2d | list[float] | tuple[float, float], arg2: float = ..., /) -> Vec2d: ...
+def GetNormalized(arg1: Vec2d | list[float] | tuple[float, float], arg2: float = ..., /) -> Vec2d: ...  # type: ignore[overload-overlap]
 @overload
-def GetNormalized(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: object = ..., /) -> Vec3h: ...
+def GetNormalized(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: object = ..., /) -> Vec3h: ...  # type: ignore[overload-overlap]
 @overload
-def GetNormalized(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: float = ..., /) -> Vec3f: ...
+def GetNormalized(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: float = ..., /) -> Vec3f: ...  # type: ignore[overload-overlap]
 @overload
-def GetNormalized(arg1: Vec3d | list[float] | tuple[float, float, float], arg2: float = ..., /) -> Vec3d: ...
+def GetNormalized(arg1: Vec3d | list[float] | tuple[float, float, float], arg2: float = ..., /) -> Vec3d: ...  # type: ignore[overload-overlap]
 @overload
-def GetNormalized(arg1: Vec4h | list[float] | tuple[float, float, float, float], arg2: object = ..., /) -> Vec4h: ...
+def GetNormalized(arg1: Vec4h | list[float] | tuple[float, float, float, float], arg2: object = ..., /) -> Vec4h: ...  # type: ignore[overload-overlap]
 @overload
 def GetNormalized(arg1: Vec4f | list[float] | tuple[float, float, float, float], arg2: float = ..., /) -> Vec4f: ...
 @overload
-def GetProjection(_a: Vec4d | list[float] | tuple[float, float, float, float], _b: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d:
+def GetProjection(_a: Vec4d | list[float] | tuple[float, float, float, float], _b: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d:  # type: ignore[overload-overlap]
     """
     Returns the projection of C{a} onto C{b}.
 
@@ -8044,23 +8042,23 @@ def GetProjection(_a: Vec4d | list[float] | tuple[float, float, float, float], _
 
     """
 @overload
-def GetProjection(arg1: Vec2h | list[float] | tuple[float, float], arg2: Vec2h | list[float] | tuple[float, float], /) -> Vec2h: ...
+def GetProjection(arg1: Vec2h | list[float] | tuple[float, float], arg2: Vec2h | list[float] | tuple[float, float], /) -> Vec2h: ...  # type: ignore[overload-overlap]
 @overload
-def GetProjection(arg1: Vec2f | list[float] | tuple[float, float], arg2: Vec2f | list[float] | tuple[float, float], /) -> Vec2f: ...
+def GetProjection(arg1: Vec2f | list[float] | tuple[float, float], arg2: Vec2f | list[float] | tuple[float, float], /) -> Vec2f: ...  # type: ignore[overload-overlap]
 @overload
-def GetProjection(arg1: Vec2d | list[float] | tuple[float, float], arg2: Vec2d | list[float] | tuple[float, float], /) -> Vec2d: ...
+def GetProjection(arg1: Vec2d | list[float] | tuple[float, float], arg2: Vec2d | list[float] | tuple[float, float], /) -> Vec2d: ...  # type: ignore[overload-overlap]
 @overload
-def GetProjection(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...
+def GetProjection(arg1: Vec3h | list[float] | tuple[float, float, float], arg2: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...  # type: ignore[overload-overlap]
 @overload
-def GetProjection(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f: ...
+def GetProjection(arg1: Vec3f | list[float] | tuple[float, float, float], arg2: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f: ...  # type: ignore[overload-overlap]
 @overload
-def GetProjection(arg1: Vec3d | list[float] | tuple[float, float, float], arg2: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d: ...
+def GetProjection(arg1: Vec3d | list[float] | tuple[float, float, float], arg2: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d: ...  # type: ignore[overload-overlap]
 @overload
-def GetProjection(arg1: Vec4h | list[float] | tuple[float, float, float, float], arg2: Vec4h | list[float] | tuple[float, float, float, float], /) -> Vec4h: ...
+def GetProjection(arg1: Vec4h | list[float] | tuple[float, float, float, float], arg2: Vec4h | list[float] | tuple[float, float, float, float], /) -> Vec4h: ...  # type: ignore[overload-overlap]
 @overload
 def GetProjection(arg1: Vec4f | list[float] | tuple[float, float, float, float], arg2: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f: ...
 @overload
-def HomogeneousCross(_a: Vec4f | list[float] | tuple[float, float, float, float], _b: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f:
+def HomogeneousCross(_a: Vec4f | list[float] | tuple[float, float, float, float], _b: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f:  # type: ignore[overload-overlap]
     """
     Homogenizes C{a} and C{b} and then performs the cross product on the
     first three elements of each.
@@ -8113,7 +8111,7 @@ def IsClose(arg1: Vec4h | list[float] | tuple[float, float, float, float], arg2:
 @overload
 def IsClose(arg1: Vec4f | list[float] | tuple[float, float, float, float], arg2: Vec4f | list[float] | tuple[float, float, float, float], arg3: float, /) -> bool: ...
 @overload
-def Lerp(_alpha: float, _a: Vec4d | list[float] | tuple[float, float, float, float], _b: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d:
+def Lerp(_alpha: float, _a: Vec4d | list[float] | tuple[float, float, float, float], _b: Vec4d | list[float] | tuple[float, float, float, float], /) -> Vec4d:  # type: ignore[overload-overlap]
     """
     Linear interpolation function.
 
@@ -8127,17 +8125,17 @@ def Lerp(_alpha: float, _a: Vec4d | list[float] | tuple[float, float, float, flo
 @overload
 def Lerp(arg1: float, arg2: float, arg3: float, /) -> float: ...
 @overload
-def Lerp(arg1: float, arg2: Vec2i | list[int] | Size2 | tuple[int, int], arg3: Vec2i | list[int] | Size2 | tuple[int, int], /) -> Vec2i: ...
+def Lerp(arg1: float, arg2: Vec2i | list[int] | Size2 | tuple[int, int], arg3: Vec2i | list[int] | Size2 | tuple[int, int], /) -> Vec2i: ...  # type: ignore[overload-overlap]
 @overload
 def Lerp(arg1: float, arg2: Vec3i | list[int] | Size3 | tuple[int, int, int], arg3: Vec3i | list[int] | Size3 | tuple[int, int, int], /) -> Vec3i: ...
 @overload
-def Lerp(arg1: float, arg2: Vec2f | list[float] | tuple[float, float], arg3: Vec2f | list[float] | tuple[float, float], /) -> Vec2f: ...
+def Lerp(arg1: float, arg2: Vec2f | list[float] | tuple[float, float], arg3: Vec2f | list[float] | tuple[float, float], /) -> Vec2f: ...  # type: ignore[overload-overlap]
 @overload
-def Lerp(arg1: float, arg2: Vec3f | list[float] | tuple[float, float, float], arg3: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f: ...
+def Lerp(arg1: float, arg2: Vec3f | list[float] | tuple[float, float, float], arg3: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f: ...  # type: ignore[overload-overlap]
 @overload
-def Lerp(arg1: float, arg2: Vec4f | list[float] | tuple[float, float, float, float], arg3: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f: ...
+def Lerp(arg1: float, arg2: Vec4f | list[float] | tuple[float, float, float, float], arg3: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec4f: ...  # type: ignore[overload-overlap]
 @overload
-def Lerp(arg1: float, arg2: Vec2d | list[float] | tuple[float, float], arg3: Vec2d | list[float] | tuple[float, float], /) -> Vec2d: ...
+def Lerp(arg1: float, arg2: Vec2d | list[float] | tuple[float, float], arg3: Vec2d | list[float] | tuple[float, float], /) -> Vec2d: ...  # type: ignore[overload-overlap]
 @overload
 def Lerp(arg1: float, arg2: Vec3d | list[float] | tuple[float, float, float], arg3: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d: ...
 def Lerpf(arg1: float, arg2: float, arg3: float, /) -> float:
@@ -8170,11 +8168,11 @@ def Max(arg1: float, arg2: float, arg3: float, arg4: float, /) -> float: ...
 @overload
 def Max(arg1: float, arg2: float, arg3: float, arg4: float, arg5: float, /) -> float: ...
 @overload
-def Max(arg1: int, arg2: int, arg3: int, /) -> int: ...
+def Max(arg1: int, arg2: int, arg3: int, /) -> int: ...  # type: ignore[overload-cannot-match]
 @overload
-def Max(arg1: int, arg2: int, arg3: int, arg4: int, /) -> int: ...
+def Max(arg1: int, arg2: int, arg3: int, arg4: int, /) -> int: ...  # type: ignore[overload-cannot-match]
 @overload
-def Max(arg1: int, arg2: int, arg3: int, arg4: int, arg5: int, /) -> int: ...
+def Max(arg1: int, arg2: int, arg3: int, arg4: int, arg5: int, /) -> int: ...  # type: ignore[overload-cannot-match]
 @overload
 def Min(_a1: int, _a2: int, /) -> int:
     """
@@ -8189,11 +8187,11 @@ def Min(arg1: float, arg2: float, arg3: float, arg4: float, /) -> float: ...
 @overload
 def Min(arg1: float, arg2: float, arg3: float, arg4: float, arg5: float, /) -> float: ...
 @overload
-def Min(arg1: int, arg2: int, arg3: int, /) -> int: ...
+def Min(arg1: int, arg2: int, arg3: int, /) -> int: ...  # type: ignore[overload-cannot-match]
 @overload
-def Min(arg1: int, arg2: int, arg3: int, arg4: int, /) -> int: ...
+def Min(arg1: int, arg2: int, arg3: int, arg4: int, /) -> int: ...  # type: ignore[overload-cannot-match]
 @overload
-def Min(arg1: int, arg2: int, arg3: int, arg4: int, arg5: int, /) -> int: ...
+def Min(arg1: int, arg2: int, arg3: int, arg4: int, arg5: int, /) -> int: ...  # type: ignore[overload-cannot-match]
 def Mod(_a: float, _b: float, /) -> float:
     '''
     The mod function with"correct"behaviour for negative numbers.
@@ -8246,7 +8244,7 @@ def Powf(arg1: float, arg2: float, /) -> float:
 
     Use instead of Pow() to return the power of f as a float instead of a double."""
 @overload
-def Project(_v: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec3f:
+def Project(_v: Vec4f | list[float] | tuple[float, float, float, float], /) -> Vec3f:  # type: ignore[overload-overlap]
     """
     Projects homogeneous C{v} into Euclidean space and returns the result
     as a Vec3f.
@@ -8285,20 +8283,20 @@ def Sgn(_v: int, /) -> int:
 @overload
 def Sgn(arg1: float, /) -> float: ...
 @overload
-def Slerp(_alpha: float, _v0: Vec3d | list[float] | tuple[float, float, float], _v1: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:
+def Slerp(_alpha: float, _v0: Vec3d | list[float] | tuple[float, float, float], _v1: Vec3d | list[float] | tuple[float, float, float], /) -> Vec3d:  # type: ignore[overload-overlap]
     """
     Spherical linear interpolation in three dimensions.
     """
 @overload
 def Slerp(arg1: float, arg2: Quatd | Quatf | Quath, arg3: Quatd | Quatf | Quath, /) -> Quatd: ...
 @overload
-def Slerp(arg1: float, arg2: Quatf | Quath, arg3: Quatf | Quath, /) -> Quatf: ...
+def Slerp(arg1: float, arg2: Quatf | Quath, arg3: Quatf | Quath, /) -> Quatf: ...  # type: ignore[overload-cannot-match]
 @overload
-def Slerp(arg1: float, arg2: Quath, arg3: Quath, /) -> Quath: ...
+def Slerp(arg1: float, arg2: Quath, arg3: Quath, /) -> Quath: ...  # type: ignore[overload-cannot-match]
 @overload
 def Slerp(arg1: float, arg2: Quaternion, arg3: Quaternion, /) -> Quaternion: ...
 @overload
-def Slerp(arg1: float, arg2: Vec3h | list[float] | tuple[float, float, float], arg3: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...
+def Slerp(arg1: float, arg2: Vec3h | list[float] | tuple[float, float, float], arg3: Vec3h | list[float] | tuple[float, float, float], /) -> Vec3h: ...  # type: ignore[overload-overlap]
 @overload
 def Slerp(arg1: float, arg2: Vec3f | list[float] | tuple[float, float, float], arg3: Vec3f | list[float] | tuple[float, float, float], /) -> Vec3f: ...
 @overload
@@ -8312,7 +8310,7 @@ def Sqr(_x: Vec4d | list[float] | tuple[float, float, float, float], /) -> float
 @overload
 def Sqr(arg1: float, /) -> float: ...
 @overload
-def Sqr(arg1: int, /) -> float: ...
+def Sqr(arg1: int, /) -> float: ...  # type: ignore[overload-cannot-match]
 @overload
 def Sqr(arg1: Vec2i | list[int] | Size2 | tuple[int, int], /) -> float: ...
 @overload

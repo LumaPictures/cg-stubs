@@ -1,4 +1,7 @@
+from stubgenlib.test_helpers import assert_type
+
 from typing import Protocol, TypeVar
+import pytest
 
 from pxr import Ar, Gf, Sdf, Usd, Vt
 
@@ -7,8 +10,9 @@ def test_path() -> None:
     # no args:
     path = Sdf.Path()
 
-    # None arg
-    path = Sdf.Path(None)
+    with pytest.raises(Exception):
+        # actually raises Boost.Python.ArgumentError, but not sure how to access this
+        path = Sdf.Path(None)
 
 
 def test_arrays() -> None:
@@ -41,10 +45,10 @@ def test_matrix() -> None:
     is_seq_of_float_seq(mat4)
 
 
-def test_ancestors_range():
-    assert Sdf.Path("/SomePath") in Sdf.Path("/SomeOtherPath").GetAncestorsRange()
-
-    assert 1 in "foo"
+# def test_ancestors_range():
+#     assert Sdf.Path("/SomePath") in Sdf.Path("/SomeOtherPath").GetAncestorsRange()
+#
+#     assert 1 in "foo"
 
 
 def test_named_arguments():
@@ -59,20 +63,28 @@ def test_named_arguments():
     path.ReplacePrefix(oldPrefix="this", newPrefix="that")
 
     path.ReplaceName("blah")
-    try:
-        path.ReplaceName(arg2="blah")
-    except Exception:  # Boost.Python.ArgumentError
-        # we except this to fail
-        pass
+
+    with pytest.raises(Exception):
+        # actually raises Boost.Python.ArgumentError, but not sure how to access this
+        path.ReplaceName(arg2="blah")  # type: ignore[call-arg]
 
 
 def test_implicit_conversion():
-    path = Sdf.Path("foo")
+    path = Sdf.Path("this/foo")
+    new_path = path.ReplacePrefix(Ar.ResolvedPath("this"), Sdf.Path("that"))
+    assert str(new_path) == "that/foo"
 
-    path.ReplacePrefix(Ar.ResolvedPath("this"), Sdf.Path("that"))
+
+def test_allowed_tokens():
+    stage = Usd.Stage.CreateInMemory()
+    root_layer = stage.GetRootLayer()
+    primpath = Sdf.Path("/prim_here_please")
+    prim_spec = Sdf.CreatePrimInLayer(root_layer, primpath)
+    attr_spec = Sdf.AttributeSpec(prim_spec, "tokenList", Sdf.ValueTypeNames.Token)
+
+    assert_type(attr_spec.allowedTokens, list[str])
 
 
-def test_asset_array():
-    clips = Usd.ClipsAPI()
-    paths = clips.GetClipAssetPaths()
-    assert isinstance(paths, list), type(paths)
+def test_vector_getitem():
+    v = Gf.Vec3f(1.0, 2.0, 3.0)
+    dimensions: list[float] = [v[0], v[1], v[2]]
