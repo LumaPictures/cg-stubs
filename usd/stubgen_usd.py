@@ -1151,7 +1151,10 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureF
                 "(self, size: int, array: typing.Iterable) -> None",
                 "(self, size: int) -> None",
             ],
-        }
+        },
+        arg_type_overrides={
+            ("pxr.Gf.Vec*.__getitem__", "_i", "int"): "slice",
+        },
     )
 
     def __init__(self):
@@ -1458,7 +1461,7 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureF
                 return [FunctionSig("__init__", args=[], ret_type=None)] + sigs
         return sigs
 
-    def _process_sigs(
+    def _process_usd_sigs(
         self, sigs: list[FunctionSig], ctx: FunctionContext
     ) -> list[FunctionSig]:
         """
@@ -1729,7 +1732,10 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureF
         ):
             sigs = [FunctionSig("__init__", args=[], ret_type="None")]
 
-        return self._process_sigs(sigs, ctx)
+        # perform usd-specific signature augmentation
+        sigs = self._process_usd_sigs(sigs, ctx)
+        # now do the advanced matcher
+        return self.process_sigs(ctx, sigs)
 
     def get_property_type(
         self, default_type: str | None, ctx: FunctionContext
@@ -1739,7 +1745,7 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureF
             ctx.fullname, doc_ret_type, self.sig_matcher.property_type_overrides
         )
         sigs = [FunctionSig(ctx.name, args=[], ret_type=None)]
-        sigs = self._process_sigs(sigs, ctx)
+        sigs = self._process_usd_sigs(sigs, ctx)
         # set the docstring on the context, so that it can be written into the stub, if applicable
         ctx.docstring = sigs[0].docstring or ctx.docstring
         return type_override or sigs[0].ret_type or default_type
