@@ -78,7 +78,7 @@ class BoundableLightBase(pxr.UsdGeom.Boundable):
         See UsdLuxLightAPI::CreateSpecularAttr() .
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> BoundableLightBase:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> BoundableLightBase:
         """
         Return a UsdLuxBoundableLightBase holding the prim adhering to this
         schema at C{path} on C{stage}.
@@ -206,7 +206,7 @@ class CylinderLight(BoundableLightBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> CylinderLight:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> CylinderLight:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -232,7 +232,7 @@ class CylinderLight(BoundableLightBase):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> CylinderLight:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> CylinderLight:
         """
         Return a UsdLuxCylinderLight holding the prim adhering to this schema
         at C{path} on C{stage}.
@@ -357,7 +357,7 @@ class DiskLight(BoundableLightBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> DiskLight:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> DiskLight:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -383,7 +383,7 @@ class DiskLight(BoundableLightBase):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> DiskLight:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> DiskLight:
         """
         Return a UsdLuxDiskLight holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -468,7 +468,7 @@ class DistantLight(NonboundableLightBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> DistantLight:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> DistantLight:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -494,7 +494,7 @@ class DistantLight(NonboundableLightBase):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> DistantLight:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> DistantLight:
         """
         Return a UsdLuxDistantLight holding the prim adhering to this schema
         at C{path} on C{stage}.
@@ -633,7 +633,7 @@ class DomeLight(NonboundableLightBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> DomeLight:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> DomeLight:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -659,7 +659,7 @@ class DomeLight(NonboundableLightBase):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> DomeLight:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> DomeLight:
         """
         Return a UsdLuxDomeLight holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -896,7 +896,7 @@ class DomeLight_1(NonboundableLightBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> DomeLight_1:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> DomeLight_1:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -922,7 +922,7 @@ class DomeLight_1(NonboundableLightBase):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> DomeLight_1:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> DomeLight_1:
         """
         Return a UsdLuxDomeLight_1 holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -1099,7 +1099,7 @@ class GeometryLight(NonboundableLightBase):
         when to use Get vs Create.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> GeometryLight:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> GeometryLight:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -1125,7 +1125,7 @@ class GeometryLight(NonboundableLightBase):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> GeometryLight:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> GeometryLight:
         """
         Return a UsdLuxGeometryLight holding the prim adhering to this schema
         at C{path} on C{stage}.
@@ -1414,7 +1414,7 @@ class LightAPI(pxr.Usd.APISchemaBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> LightAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> LightAPI:
         """
         Return a UsdLuxLightAPI holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -1883,7 +1883,7 @@ class LightFilter(pxr.UsdGeom.Xformable):
         C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> LightFilter:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> LightFilter:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -1909,7 +1909,7 @@ class LightFilter(pxr.UsdGeom.Xformable):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> LightFilter:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> LightFilter:
         """
         Return a UsdLuxLightFilter holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -2285,7 +2285,7 @@ class LightListAPI(pxr.Usd.APISchemaBase):
         when to use Get vs Create.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> LightListAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> LightListAPI:
         """
         Return a UsdLuxLightListAPI holding the prim adhering to this schema
         at C{path} on C{stage}.
@@ -2351,7 +2351,7 @@ class LightListAPI(pxr.Usd.APISchemaBase):
         Mark any stored lightlist as invalid, by setting the
         lightList:cacheBehavior attribute to ignore.
         """
-    def StoreLightList(self, _unknownArg1: typing.Iterable[pxr.Sdf.Path | str], /) -> None:
+    def StoreLightList(self, _unknownArg1: typing.Iterable[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str], /) -> None:
         '''
         Store the given paths as the lightlist for this prim.
 
@@ -2495,7 +2495,7 @@ class ListAPI(pxr.Usd.APISchemaBase):
         when to use Get vs Create.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> ListAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> ListAPI:
         """
         Return a UsdLuxListAPI holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -2561,7 +2561,7 @@ class ListAPI(pxr.Usd.APISchemaBase):
         Mark any stored lightlist as invalid, by setting the
         lightList:cacheBehavior attribute to ignore.
         """
-    def StoreLightList(self, _unknownArg1: typing.Iterable[pxr.Sdf.Path | str], /) -> None:
+    def StoreLightList(self, _unknownArg1: typing.Iterable[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str], /) -> None:
         '''
         Store the given paths as the lightlist for this prim.
 
@@ -2661,7 +2661,7 @@ class MeshLightAPI(pxr.Usd.APISchemaBase):
         UsdPrim::RemoveAPI()
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> MeshLightAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> MeshLightAPI:
         """
         Return a UsdLuxMeshLightAPI holding the prim adhering to this schema
         at C{path} on C{stage}.
@@ -2756,7 +2756,7 @@ class NonboundableLightBase(pxr.UsdGeom.Xformable):
         See UsdLuxLightAPI::CreateSpecularAttr() .
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> NonboundableLightBase:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> NonboundableLightBase:
         """
         Return a UsdLuxNonboundableLightBase holding the prim adhering to this
         schema at C{path} on C{stage}.
@@ -2857,7 +2857,7 @@ class PluginLight(pxr.UsdGeom.Xformable):
         it preserves SchemaBase state.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> PluginLight:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> PluginLight:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -2883,7 +2883,7 @@ class PluginLight(pxr.UsdGeom.Xformable):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> PluginLight:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> PluginLight:
         """
         Return a UsdLuxPluginLight holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -2952,7 +2952,7 @@ class PluginLightFilter(LightFilter):
         (schemaObj.GetPrim()), as it preserves SchemaBase state.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> PluginLightFilter:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> PluginLightFilter:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -2978,7 +2978,7 @@ class PluginLightFilter(LightFilter):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> PluginLightFilter:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> PluginLightFilter:
         """
         Return a UsdLuxPluginLightFilter holding the prim adhering to this
         schema at C{path} on C{stage}.
@@ -3065,7 +3065,7 @@ class PortalLight(BoundableLightBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> PortalLight:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> PortalLight:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -3091,7 +3091,7 @@ class PortalLight(BoundableLightBase):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> PortalLight:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> PortalLight:
         """
         Return a UsdLuxPortalLight holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -3217,7 +3217,7 @@ class RectLight(BoundableLightBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> RectLight:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> RectLight:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -3243,7 +3243,7 @@ class RectLight(BoundableLightBase):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> RectLight:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> RectLight:
         """
         Return a UsdLuxRectLight holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -3490,7 +3490,7 @@ class ShadowAPI(pxr.Usd.APISchemaBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> ShadowAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> ShadowAPI:
         """
         Return a UsdLuxShadowAPI holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -3826,7 +3826,7 @@ class ShapingAPI(pxr.Usd.APISchemaBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> ShapingAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> ShapingAPI:
         """
         Return a UsdLuxShapingAPI holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -4059,7 +4059,7 @@ class SphereLight(BoundableLightBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> SphereLight:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> SphereLight:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -4085,7 +4085,7 @@ class SphereLight(BoundableLightBase):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> SphereLight:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> SphereLight:
         """
         Return a UsdLuxSphereLight holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -4326,7 +4326,7 @@ class VolumeLightAPI(pxr.Usd.APISchemaBase):
         UsdPrim::RemoveAPI()
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> VolumeLightAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> VolumeLightAPI:
         """
         Return a UsdLuxVolumeLightAPI holding the prim adhering to this schema
         at C{path} on C{stage}.

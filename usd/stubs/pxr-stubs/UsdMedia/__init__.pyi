@@ -134,7 +134,7 @@ class AssetPreviewsAPI(pxr.Usd.APISchemaBase):
         UsdEditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> AssetPreviewsAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> AssetPreviewsAPI:
         """
         Return a UsdMediaAssetPreviewsAPI holding the prim adhering to this
         schema at C{path} on C{stage}.
@@ -341,7 +341,7 @@ class SpatialAudio(pxr.UsdGeom.Xformable):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> SpatialAudio:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> SpatialAudio:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -367,7 +367,7 @@ class SpatialAudio(pxr.UsdGeom.Xformable):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> SpatialAudio:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> SpatialAudio:
         """
         Return a UsdMediaSpatialAudio holding the prim adhering to this schema
         at C{path} on C{stage}.

@@ -23,7 +23,7 @@ class FrameRecorder(Boost.Python.instance):
     underlying HGI device. This is not required for Metal or Vulkan.
     """
     __instance_size__: ClassVar[int] = ...
-    def __init__(self, rendererPluginId: str | pxr.Ar.ResolvedPath = ..., gpuEnabled: bool = ..., renderSettingsPrimPath: pxr.Sdf.Path | str = ...) -> None:
+    def __init__(self, rendererPluginId: str | pxr.Ar.ResolvedPath = ..., gpuEnabled: bool = ..., renderSettingsPrimPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str = ...) -> None:
         """
         The C{rendererPluginId} argument indicates the renderer plugin that
         Hyrda should use.
@@ -117,7 +117,7 @@ class FrameRecorder(Boost.Python.instance):
         this UsdAppUtilsFrameRecorder instance has disabled the GPU.
         """
 
-def GetCameraAtPath(stage: pxr.Usd.Stage, cameraPath: pxr.Sdf.Path | str) -> pxr.UsdGeom.Camera:
+def GetCameraAtPath(stage: pxr.Usd.Stage, cameraPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> pxr.UsdGeom.Camera:
     """
     Gets the UsdGeomCamera matching C{cameraPath} from the USD stage
     C{stage}.

@@ -113,7 +113,7 @@ class Cache(Boost.Python.instance):
         symmetry, or payloads, and without populating the prim stack and
         gathering its dependencies.
         """
-    def ComputeAttributeConnectionPaths(self, relPath: pxr.Sdf.Path | str, localOnly: bool = ..., stopProperty: pxr.Sdf.Spec = ..., includeStopProperty: bool = ...) -> tuple:
+    def ComputeAttributeConnectionPaths(self, relPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, localOnly: bool = ..., stopProperty: pxr.Sdf.Spec = ..., includeStopProperty: bool = ...) -> tuple:
         """
         Compute the attribute connection paths for the attribute at
         C{attributePath} into C{paths}.
@@ -139,7 +139,7 @@ class Cache(Boost.Python.instance):
         creating a new layer stack. It'll be unchanged if the layer stack
         already existed.
         """
-    def ComputePrimIndex(self, _primPath: pxr.Sdf.Path | str, /) -> tuple:
+    def ComputePrimIndex(self, _primPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> tuple:
         """
         Compute and return a reference to the cached result for the prim index
         for the given path.
@@ -148,7 +148,7 @@ class Cache(Boost.Python.instance):
         C{allErrors} will contain any errors encountered while performing this
         operation.
         """
-    def ComputePropertyIndex(self, _propPath: pxr.Sdf.Path | str, /) -> tuple:
+    def ComputePropertyIndex(self, _propPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> tuple:
         """
         Compute and return a reference to the cached result for the property
         index for the given path.
@@ -157,7 +157,7 @@ class Cache(Boost.Python.instance):
         C{allErrors} will contain any errors encountered while performing this
         operation.
         """
-    def ComputeRelationshipTargetPaths(self, relPath: pxr.Sdf.Path | str, localOnly: bool = ..., stopProperty: pxr.Sdf.Spec = ..., includeStopProperty: bool = ...) -> tuple:
+    def ComputeRelationshipTargetPaths(self, relPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, localOnly: bool = ..., stopProperty: pxr.Sdf.Spec = ..., includeStopProperty: bool = ...) -> tuple:
         """
         Compute the relationship target paths for the relationship at
         C{relationshipPath} into C{paths}.
@@ -175,18 +175,18 @@ class Cache(Boost.Python.instance):
         """
         Returns every computed & cached layer stack that includes C{layer}.
         """
-    def FindPrimIndex(self, _primPath: pxr.Sdf.Path | str, /) -> PrimIndex:
+    def FindPrimIndex(self, _primPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> PrimIndex:
         """
         Returns a pointer to the cached computed prim index for the given
         path, or None if it has not been computed.
         """
-    def FindPropertyIndex(self, _propPath: pxr.Sdf.Path | str, /) -> PropertyIndex:
+    def FindPropertyIndex(self, _propPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> PropertyIndex:
         """
         Returns a pointer to the cached computed property index for the given
         path, or None if it has not been computed.
         """
-    def FindSiteDependencies(self, siteLayerStack: LayerStack, sitePath: pxr.Sdf.Path | str, dependencyType: int = ..., recurseOnSite: bool = ..., recurseOnIndex: bool = ..., filterForExistingCachesOnly: bool = ...) -> list: ...
-    def GetDynamicFileFormatArgumentDependencyData(self, _primIndexPath: pxr.Sdf.Path | str, /) -> DynamicFileFormatDependencyData:
+    def FindSiteDependencies(self, siteLayerStack: LayerStack, sitePath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, dependencyType: int = ..., recurseOnSite: bool = ..., recurseOnIndex: bool = ..., filterForExistingCachesOnly: bool = ...) -> list: ...
+    def GetDynamicFileFormatArgumentDependencyData(self, _primIndexPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> DynamicFileFormatDependencyData:
         """
         Returns the dynamic file format dependency data object for the prim
         index with the given C{primIndexPath}.
@@ -196,7 +196,7 @@ class Cache(Boost.Python.instance):
         prim index for the path or if the prim index has no dynamic file
         formats that it depends on.
         """
-    def GetExpressionVariablesFromLayerStackUsedByPrim(self, layerStack: pxr.Sdf.Path | str, primIndexPath: LayerStack) -> list[str]:
+    def GetExpressionVariablesFromLayerStackUsedByPrim(self, layerStack: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, primIndexPath: LayerStack) -> list[str]:
         """
         Returns the set of expression variables in C{layerStack} that are used
         by the prim index at C{primIndexPath}.
@@ -290,7 +290,7 @@ class Cache(Boost.Python.instance):
         this cache's root layer. See documentation on RequestLayerMuting for
         more details.
         """
-    def IsPayloadIncluded(self, _path: pxr.Sdf.Path | str, /) -> bool:
+    def IsPayloadIncluded(self, _path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> bool:
         """
         Return true if the payload is included for the given path.
         """
@@ -361,7 +361,7 @@ class Cache(Boost.Python.instance):
         of layers which are muted or unmuted by this call to
         RequestLayerMuting.
         """
-    def RequestPayloads(self, _pathsToInclude: typing.Iterable[pxr.Sdf.Path | str], _pathsToExclude: typing.Iterable[pxr.Sdf.Path | str], /) -> None:
+    def RequestPayloads(self, _pathsToInclude: typing.Iterable[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str], _pathsToExclude: typing.Iterable[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str], /) -> None:
         """
         Request payloads to be included or excluded from composition.
 
@@ -421,7 +421,7 @@ class Dependency(Boost.Python.instance):
     indexPath: Incomplete
     mapFunc: Incomplete
     sitePath: Incomplete
-    def __init__(self, arg2: pxr.Sdf.Path | str, arg3: pxr.Sdf.Path | str, arg4: MapFunction, /) -> None: ...
+    def __init__(self, arg2: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, arg3: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, arg4: MapFunction, /) -> None: ...
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
 
@@ -1038,14 +1038,14 @@ class MapExpression(Boost.Python.instance):
         """
         Create a new PcpMapExpression representing the inverse of f.
         """
-    def MapSourceToTarget(self, path: pxr.Sdf.Path | str) -> pxr.Sdf.Path:
+    def MapSourceToTarget(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> pxr.Sdf.Path:
         """
         Map a path in the source namespace to the target.
 
 
         If the path is not in the domain, returns an empty path.
         """
-    def MapTargetToSource(self, path: pxr.Sdf.Path | str) -> pxr.Sdf.Path:
+    def MapTargetToSource(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> pxr.Sdf.Path:
         """
         Map a path in the target namespace to the source.
 
@@ -1161,7 +1161,7 @@ class MapFunction(Boost.Python.instance):
         Returns an identity path mapping.
         """
     @overload
-    def MapSourceToTarget(self, path: pxr.Sdf.Path | str) -> pxr.Sdf.Path:
+    def MapSourceToTarget(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> pxr.Sdf.Path:
         """
         Map a path in the source namespace to the target.
 
@@ -1189,7 +1189,7 @@ class MapFunction(Boost.Python.instance):
         translated and were replaced with SdfPathPattern::Nothing().
         """
     @overload
-    def MapTargetToSource(self, path: pxr.Sdf.Path | str) -> pxr.Sdf.Path:
+    def MapTargetToSource(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> pxr.Sdf.Path:
         """
         Map a path in the target namespace to the source.
 
@@ -1474,7 +1474,7 @@ class PrimIndex(Boost.Python.instance):
         If no such node exists, returns an invalid PcpNodeRef.
         """
     @overload
-    def GetNodeProvidingSpec(self, layer: pxr.Sdf.Layer, path: pxr.Sdf.Path | str) -> NodeRef:
+    def GetNodeProvidingSpec(self, layer: pxr.Sdf.Layer, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> NodeRef:
         """
         Returns the node that brings opinions from the Sd prim spec at
         C{layer} and C{path} into this prim index.
@@ -1568,14 +1568,14 @@ class _TestChangeProcessor(Boost.Python.instance):
     def __enter__(self) -> _TestChangeProcessor: ...
     def __exit__(self, type: type[BaseException] | None, value: BaseException | None, traceback: types.TracebackType | None) -> None: ...
 
-def BuildPrimPropertyIndex(_propertyPath: pxr.Sdf.Path | str, _cache: Cache, _owningPrimIndex: PrimIndex, /) -> tuple:
+def BuildPrimPropertyIndex(_propertyPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, _cache: Cache, _owningPrimIndex: PrimIndex, /) -> tuple:
     """
     Builds a prim property index for the property at C{propertyPath}.
 
 
     C{allErrors} will contain any errors encountered.
     """
-def TranslatePathFromNodeToRoot(_sourceNode: NodeRef, /, sourceNode: pxr.Sdf.Path | str) -> pxr.Sdf.Path:
+def TranslatePathFromNodeToRoot(_sourceNode: NodeRef, /, sourceNode: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> pxr.Sdf.Path:
     """
     Translates C{pathInNodeNamespace} from the namespace of the prim index
     node C{sourceNode} to the namespace of the prim index's root node.
@@ -1595,7 +1595,7 @@ def TranslatePathFromNodeToRoot(_sourceNode: NodeRef, /, sourceNode: pxr.Sdf.Pat
     namespace of the prim spec represented by C{sourceNode} to the
     composed scene namespace.
     """
-def TranslatePathFromRootToNode(_destNode: NodeRef, /, destNode: pxr.Sdf.Path | str) -> pxr.Sdf.Path:
+def TranslatePathFromRootToNode(_destNode: NodeRef, /, destNode: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> pxr.Sdf.Path:
     """
     Translates C{pathInRootNamespace} from the namespace of the root of
     the prim index that C{destNode} belongs to to the namespace of

@@ -56,7 +56,7 @@ class Engine(Boost.Python.instance):
     @overload
     def __init__(self, _params: Engine.Parameters, /) -> None: ...
     @overload
-    def __init__(self, _driver: pxr.Sdf.Path | str, _rendererPluginId: str | pxr.Ar.ResolvedPath, _gpuEnabled: bool, /) -> None:
+    def __init__(self, _driver: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, _rendererPluginId: str | pxr.Ar.ResolvedPath, _gpuEnabled: bool, /) -> None:
         """
         An HdDriver, containing the Hgi of your choice, can be optionally
         passed in during construction.
@@ -72,7 +72,7 @@ class Engine(Boost.Python.instance):
         """
     @overload
     def __init__(self) -> None: ...
-    def AddSelected(self, _path: pxr.Sdf.Path | str, _instanceIndex: int, /) -> None:
+    def AddSelected(self, _path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, _instanceIndex: int, /) -> None:
         """
         Add a path with instanceIndex to the list of prim paths that should be
         included in selection highlighting.
@@ -195,11 +195,11 @@ class Engine(Boost.Python.instance):
 
         Returns C{true} if successful.
         """
-    def SetActiveRenderSettingsPrimPath(self, _unknownArg1: pxr.Sdf.Path | str, /) -> None:
+    def SetActiveRenderSettingsPrimPath(self, _unknownArg1: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> None:
         """
         Set active render settings prim to use to drive rendering.
         """
-    def SetCameraPath(self, _id: pxr.Sdf.Path | str, /) -> None:
+    def SetCameraPath(self, _id: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> None:
         """
         Scene camera API Set the scene camera path to use for rendering.
         """
@@ -289,7 +289,7 @@ class Engine(Boost.Python.instance):
         """
         Sets a renderer setting's value.
         """
-    def SetSelected(self, _paths: typing.Iterable[pxr.Sdf.Path | str], /) -> None:
+    def SetSelected(self, _paths: typing.Iterable[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str], /) -> None:
         """
         Sets (replaces) the list of prim paths that should be included in
         selection highlighting.

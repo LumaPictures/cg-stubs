@@ -338,12 +338,12 @@ class BatchNamespaceEdit(Boost.Python.instance):
         Add a namespace edit.
         """
     @overload
-    def Add(self, _currentPath: Path | str, _newPath: Path | str, _index: int, /) -> None:
+    def Add(self, _currentPath: Path | pxr.Ar.ResolvedPath | str, _newPath: Path | pxr.Ar.ResolvedPath | str, _index: int, /) -> None:
         """
         Add a namespace edit.
         """
     @overload
-    def Add(self, arg2: Path | str, arg3: Path | str, /) -> None: ...
+    def Add(self, arg2: Path | pxr.Ar.ResolvedPath | str, arg3: Path | pxr.Ar.ResolvedPath | str, /) -> None: ...
     def Process(self, hasObjectAtPath: HasObjectAtPath, canEdit: CanEdit, fixBackpointers: bool = ...) -> tuple:  # type: ignore[name-defined]
         """
         Validate the edits and generate a possibly more efficient edit
@@ -1389,7 +1389,7 @@ class Layer(Boost.Python.instance):
     def DumpLayerInfo() -> None:
         """Debug helper to examine content of the current layer registry and
         the asset/real path of all layers in the registry."""
-    def EraseTimeSample(self, _path: Path | str, _time: float, /) -> None: ...
+    def EraseTimeSample(self, _path: Path | pxr.Ar.ResolvedPath | str, _time: float, /) -> None: ...
     def Export(self, filename: str | pxr.Ar.ResolvedPath, comment: str | pxr.Ar.ResolvedPath = ..., args: dict = ...) -> bool:
         """
         Exports this layer to a file.
@@ -1482,7 +1482,7 @@ class Layer(Boost.Python.instance):
         """
         Returns the asset name associated with this layer.
         """
-    def GetAttributeAtPath(self, _path: Path | str, /) -> AttributeSpec:
+    def GetAttributeAtPath(self, _path: Path | pxr.Ar.ResolvedPath | str, /) -> AttributeSpec:
         """
         Returns an attribute at the given C{path}.
 
@@ -1491,7 +1491,7 @@ class Layer(Boost.Python.instance):
         more specifically typed version of C{GetObjectAtPath()} .
         """
     def GetBracketingTimeSamples(self, _time: float, /) -> tuple: ...
-    def GetBracketingTimeSamplesForPath(self, _path: Path | str, _time: float, /) -> tuple: ...
+    def GetBracketingTimeSamplesForPath(self, _path: Path | pxr.Ar.ResolvedPath | str, _time: float, /) -> tuple: ...
     def GetCompositionAssetDependencies(self) -> list[str]:
         """
         Return paths of all assets this layer depends on due to composition
@@ -1559,8 +1559,8 @@ class Layer(Boost.Python.instance):
         """
         Returns the set of muted layer paths.
         """
-    def GetNumTimeSamplesForPath(self, _path: Path | str, /) -> int: ...
-    def GetObjectAtPath(self, _path: Path | str, /) -> Spec:
+    def GetNumTimeSamplesForPath(self, _path: Path | pxr.Ar.ResolvedPath | str, /) -> int: ...
+    def GetObjectAtPath(self, _path: Path | pxr.Ar.ResolvedPath | str, /) -> Spec:
         """
         Returns the object at the given C{path}.
 
@@ -1570,7 +1570,7 @@ class Layer(Boost.Python.instance):
 
         Returns C{None} if there is no object at C{path}.
         """
-    def GetPrimAtPath(self, _path: Path | str, /) -> PrimSpec:
+    def GetPrimAtPath(self, _path: Path | pxr.Ar.ResolvedPath | str, /) -> PrimSpec:
         """
         Returns the prim at the given C{path}.
 
@@ -1578,7 +1578,7 @@ class Layer(Boost.Python.instance):
         Returns C{None} if there is no prim at C{path}. This is simply a more
         specifically typed version of C{GetObjectAtPath()} .
         """
-    def GetPropertyAtPath(self, _path: Path | str, /) -> PropertySpec:
+    def GetPropertyAtPath(self, _path: Path | pxr.Ar.ResolvedPath | str, /) -> PropertySpec:
         """
         Returns a property at the given C{path}.
 
@@ -1586,7 +1586,7 @@ class Layer(Boost.Python.instance):
         Returns C{None} if there is no property at C{path}. This is simply a
         more specifically typed version of C{GetObjectAtPath()} .
         """
-    def GetRelationshipAtPath(self, _path: Path | str, /) -> RelationshipSpec:
+    def GetRelationshipAtPath(self, _path: Path | pxr.Ar.ResolvedPath | str, /) -> RelationshipSpec:
         """
         Returns a relationship at the given C{path}.
 
@@ -1708,7 +1708,7 @@ class Layer(Boost.Python.instance):
         Returns C{true} if the current layer is muted.
         """
     def ListAllTimeSamples(self) -> list[float]: ...
-    def ListTimeSamplesForPath(self, _path: Path | str, /) -> list[float]: ...
+    def ListTimeSamplesForPath(self, _path: Path | pxr.Ar.ResolvedPath | str, /) -> list[float]: ...
     @staticmethod
     def New(fileFormat: FileFormat, identifier: str | pxr.Ar.ResolvedPath, args: dict = ...) -> Layer:
         """
@@ -1740,7 +1740,7 @@ class Layer(Boost.Python.instance):
 
         An optional C{tag} may be specified. See CreateAnonymous for details.
         """
-    def QueryTimeSample(self, arg2: Path | str, arg3: float, /) -> Any: ...
+    def QueryTimeSample(self, arg2: Path | pxr.Ar.ResolvedPath | str, arg3: float, /) -> Any: ...
     def Reload(self, force: bool = ...) -> bool:
         """
         Reloads the layer from its persistent representation.
@@ -1842,7 +1842,7 @@ class Layer(Boost.Python.instance):
         """
         Sets permission to save.
         """
-    def SetTimeSample(self, arg2: Path | str, arg3: float, arg4: object, /) -> None: ...
+    def SetTimeSample(self, arg2: Path | pxr.Ar.ResolvedPath | str, arg3: float, arg4: object, /) -> None: ...
     @staticmethod
     def SplitIdentifier(_identifier: str | pxr.Ar.ResolvedPath, /) -> tuple:
         """
@@ -1867,7 +1867,7 @@ class Layer(Boost.Python.instance):
 
         Source layer is unmodified.
         """
-    def Traverse(self, path: Path | str, func: typing.Callable[[Path | str], None]) -> None: ...
+    def Traverse(self, path: Path | pxr.Ar.ResolvedPath | str, func: typing.Callable[[Path | pxr.Ar.ResolvedPath | str], None]) -> None: ...
     def UpdateAssetInfo(self) -> None:
         """
         Update layer asset information.
@@ -2162,24 +2162,24 @@ class ListEditorProxy_SdfPathKeyPolicy(Boost.Python.instance):
         """Raises an exception
         This class cannot be instantiated from Python
         """
-    def Add(self, arg2: Path | str, /) -> None: ...
-    def Append(self, arg2: Path | str, /) -> None: ...
+    def Add(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> None: ...
+    def Append(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> None: ...
     @overload
     def ApplyEditsToList(self, arg2: object, /) -> list: ...
     @overload
     def ApplyEditsToList(self, arg2: object, arg3: object, /) -> list: ...
     def ClearEdits(self) -> bool: ...
     def ClearEditsAndMakeExplicit(self) -> bool: ...
-    def ContainsItemEdit(self, item: Path | str, onlyAddOrExplicit: bool = ...) -> bool: ...
+    def ContainsItemEdit(self, item: Path | pxr.Ar.ResolvedPath | str, onlyAddOrExplicit: bool = ...) -> bool: ...
     def CopyItems(self, arg2: ListEditorProxy_SdfPathKeyPolicy, /) -> bool: ...
-    def Erase(self, arg2: Path | str, /) -> None: ...
+    def Erase(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> None: ...
     def GetAddedOrExplicitItems(self) -> tuple: ...
     def GetAppliedItems(self) -> tuple: ...
     def ModifyItemEdits(self, arg2: object, /) -> None: ...
-    def Prepend(self, arg2: Path | str, /) -> None: ...
-    def Remove(self, arg2: Path | str, /) -> None: ...
-    def RemoveItemEdits(self, arg2: Path | str, /) -> None: ...
-    def ReplaceItemEdits(self, arg2: Path | str, arg3: Path | str, /) -> None: ...
+    def Prepend(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> None: ...
+    def Remove(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> None: ...
+    def RemoveItemEdits(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> None: ...
+    def ReplaceItemEdits(self, arg2: Path | pxr.Ar.ResolvedPath | str, arg3: Path | pxr.Ar.ResolvedPath | str, /) -> None: ...
     @property
     def isExpired(self): ...
     @property
@@ -2350,20 +2350,20 @@ class ListProxy_SdfPathKeyPolicy(Boost.Python.instance):
         """
     def ApplyEditsToList(self, arg2: object, /) -> Any: ...
     def ApplyList(self, arg2: ListProxy_SdfPathKeyPolicy, /) -> None: ...
-    def append(self, arg2: Path | str, /) -> None: ...
+    def append(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> None: ...
     def clear(self) -> None: ...
     def copy(self) -> list: ...
-    def count(self, arg2: Path | str, /) -> int: ...
-    def index(self, arg2: Path | str, /) -> int: ...
-    def insert(self, arg2: int, arg3: Path | str, /) -> None: ...
-    def remove(self, arg2: Path | str, /) -> None: ...
-    def replace(self, arg2: Path | str, arg3: Path | str, /) -> None: ...
+    def count(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> int: ...
+    def index(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> int: ...
+    def insert(self, arg2: int, arg3: Path | pxr.Ar.ResolvedPath | str, /) -> None: ...
+    def remove(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> None: ...
+    def replace(self, arg2: Path | pxr.Ar.ResolvedPath | str, arg3: Path | pxr.Ar.ResolvedPath | str, /) -> None: ...
     @overload
     def __delitem__(self, arg2: int, /) -> None: ...
     @overload
     def __delitem__(self, arg2: object, /) -> None: ...
     @overload
-    def __delitem__(self, arg2: Path | str, /) -> None: ...  # type: ignore[overload-cannot-match]
+    def __delitem__(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> None: ...  # type: ignore[overload-cannot-match]
     def __eq__(self, other: object) -> bool: ...
     def __ge__(self, other: object) -> bool: ...
     @overload
@@ -2376,7 +2376,7 @@ class ListProxy_SdfPathKeyPolicy(Boost.Python.instance):
     def __lt__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     @overload
-    def __setitem__(self, arg2: int, arg3: Path | str, /) -> None: ...
+    def __setitem__(self, arg2: int, arg3: Path | pxr.Ar.ResolvedPath | str, /) -> None: ...
     @overload
     def __setitem__(self, arg2: object, arg3: object, /) -> None: ...
     @property
@@ -2580,28 +2580,28 @@ class MapEditProxy___1_map_SdfPath__SdfPath____1_less_SdfPath_____1_allocator___
     def clear(self) -> None: ...
     def copy(self, arg2: object, /) -> None: ...
     @overload
-    def get(self, arg2: Path | str, /) -> Any: ...
+    def get(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> Any: ...
     @overload
-    def get(self, arg2: Path | str, arg3: Path | str, /) -> Path: ...
+    def get(self, arg2: Path | pxr.Ar.ResolvedPath | str, arg3: Path | pxr.Ar.ResolvedPath | str, /) -> Path: ...
     def items(self) -> MapEditProxy___1_map_SdfPath__SdfPath____1_less_SdfPath_____1_allocator___1_pair_SdfPath_const__SdfPath____Iterator: ...
     def keys(self) -> MapEditProxy___1_map_SdfPath__SdfPath____1_less_SdfPath_____1_allocator___1_pair_SdfPath_const__SdfPath____KeyIterator: ...
-    def pop(self, arg2: Path | str, /) -> Path: ...
+    def pop(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> Path: ...
     def popitem(self) -> tuple: ...
-    def setdefault(self, arg2: Path | str, arg3: Path | str, /) -> Path: ...
+    def setdefault(self, arg2: Path | pxr.Ar.ResolvedPath | str, arg3: Path | pxr.Ar.ResolvedPath | str, /) -> Path: ...
     @overload
     def update(self, arg2: dict, /) -> None: ...
     @overload
     def update(self, arg2: list, /) -> None: ...
     def values(self) -> MapEditProxy___1_map_SdfPath__SdfPath____1_less_SdfPath_____1_allocator___1_pair_SdfPath_const__SdfPath____ValueIterator: ...
     def __bool__(self) -> bool: ...
-    def __contains__(self, arg2: Path | str, /) -> bool: ...
-    def __delitem__(self, arg2: Path | str, /) -> None: ...
+    def __contains__(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> bool: ...
+    def __delitem__(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> None: ...
     def __eq__(self, other: object) -> bool: ...
-    def __getitem__(self, arg2: Path | str, /) -> Path: ...
+    def __getitem__(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> Path: ...
     def __iter__(self) -> MapEditProxy___1_map_SdfPath__SdfPath____1_less_SdfPath_____1_allocator___1_pair_SdfPath_const__SdfPath____KeyIterator: ...
     def __len__(self) -> int: ...
     def __ne__(self, other: object) -> bool: ...
-    def __setitem__(self, arg2: Path | str, arg3: Path | str, /) -> None: ...
+    def __setitem__(self, arg2: Path | pxr.Ar.ResolvedPath | str, arg3: Path | pxr.Ar.ResolvedPath | str, /) -> None: ...
     @property
     def expired(self): ...
 
@@ -2678,35 +2678,35 @@ class NamespaceEdit(Boost.Python.instance):
         The default edit maps the empty path to the empty path.
         """
     @overload
-    def __init__(self, _currentPath_: Path | str, _newPath_: Path | str, _index_: int = ..., /) -> None:
+    def __init__(self, _currentPath_: Path | pxr.Ar.ResolvedPath | str, _newPath_: Path | pxr.Ar.ResolvedPath | str, _index_: int = ..., /) -> None:
         """
         The fully general edit.
         """
     @staticmethod
-    def Remove(_currentPath: Path | str, /) -> NamespaceEdit:
+    def Remove(_currentPath: Path | pxr.Ar.ResolvedPath | str, /) -> NamespaceEdit:
         """
         Returns a namespace edit that removes the object at C{currentPath}.
         """
     @staticmethod
-    def Rename(_currentPath: Path | str, _name: str | pxr.Ar.ResolvedPath, /) -> NamespaceEdit:
+    def Rename(_currentPath: Path | pxr.Ar.ResolvedPath | str, _name: str | pxr.Ar.ResolvedPath, /) -> NamespaceEdit:
         """
         Returns a namespace edit that renames the prim or property at
         C{currentPath} to C{name}.
         """
     @staticmethod
-    def Reorder(_currentPath: Path | str, _index: int, /) -> NamespaceEdit:
+    def Reorder(_currentPath: Path | pxr.Ar.ResolvedPath | str, _index: int, /) -> NamespaceEdit:
         """
         Returns a namespace edit to reorder the prim or property at
         C{currentPath} to index C{index}.
         """
     @staticmethod
-    def Reparent(_currentPath: Path | str, _newParentPath: Path | str, _index: int, /) -> NamespaceEdit:
+    def Reparent(_currentPath: Path | pxr.Ar.ResolvedPath | str, _newParentPath: Path | pxr.Ar.ResolvedPath | str, _index: int, /) -> NamespaceEdit:
         """
         Returns a namespace edit to reparent the prim or property at
         C{currentPath} to be under C{newParentPath} at index C{index}.
         """
     @staticmethod
-    def ReparentAndRename(_currentPath: Path | str, _newParentPath: Path | str, _name: str | pxr.Ar.ResolvedPath, _index: int, /) -> NamespaceEdit:
+    def ReparentAndRename(_currentPath: Path | pxr.Ar.ResolvedPath | str, _newParentPath: Path | pxr.Ar.ResolvedPath | str, _name: str | pxr.Ar.ResolvedPath, _index: int, /) -> NamespaceEdit:
         """
         Returns a namespace edit to reparent the prim or property at
         C{currentPath} to be under C{newParentPath} at index C{index} with the
@@ -2973,7 +2973,7 @@ class Path(Boost.Python.instance):
                 """
             def __next__(self) -> Path: ...
         __instance_size__: ClassVar[int] = ...
-        def __init__(self, arg2: Path | str, /) -> None: ...
+        def __init__(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> None: ...
         def GetPath(self) -> Path: ...
         def __iter__(self) -> _iterator: ...
 
@@ -3003,7 +3003,7 @@ class Path(Boost.Python.instance):
     @overload
     def __init__(self, arg2: object, /) -> None: ...
     @overload
-    def __init__(self, arg2: Path | str = ..., /) -> None: ...
+    def __init__(self, arg2: Path | pxr.Ar.ResolvedPath | str = ..., /) -> None: ...
     def AppendChild(self, _childName: str | pxr.Ar.ResolvedPath, /) -> Path:
         """
         Creates a path by appending an element for C{childName} to this path.
@@ -3032,7 +3032,7 @@ class Path(Boost.Python.instance):
 
         This path must be a prim property or relational attribute path.
         """
-    def AppendMapper(self, _targetPath: Path | str, /) -> Path:
+    def AppendMapper(self, _targetPath: Path | pxr.Ar.ResolvedPath | str, /) -> Path:
         """
         Creates a path by appending a mapper element for C{targetPath}.
 
@@ -3046,7 +3046,7 @@ class Path(Boost.Python.instance):
 
         This path must be a mapper path.
         """
-    def AppendPath(self, _newSuffix: Path | str, /) -> Path:
+    def AppendPath(self, _newSuffix: Path | pxr.Ar.ResolvedPath | str, /) -> Path:
         """
         Creates a path by appending a given relative path to this path.
 
@@ -3071,7 +3071,7 @@ class Path(Boost.Python.instance):
 
         This path must be a target path.
         """
-    def AppendTarget(self, _targetPath: Path | str, /) -> Path:
+    def AppendTarget(self, _targetPath: Path | pxr.Ar.ResolvedPath | str, /) -> Path:
         """
         Creates a path by appending an element for C{targetPath}.
 
@@ -3108,11 +3108,11 @@ class Path(Boost.Python.instance):
         mapper path.
         """
     @staticmethod
-    def FindLongestPrefix(arg2: Path | str, /) -> Any: ...
+    def FindLongestPrefix(arg2: Path | pxr.Ar.ResolvedPath | str, /) -> Any: ...
     @staticmethod
-    def FindLongestStrictPrefix(arg2: Path | str, /) -> Any: ...
+    def FindLongestStrictPrefix(arg2: Path | pxr.Ar.ResolvedPath | str, /) -> Any: ...
     @staticmethod
-    def FindPrefixedRange(arg2: Path | str, /) -> Any:
+    def FindPrefixedRange(arg2: Path | pxr.Ar.ResolvedPath | str, /) -> Any:
         """
         Find the subrange of the sorted range [ *begin*, *end*) that includes
         all paths prefixed by *path*.
@@ -3153,13 +3153,13 @@ class Path(Boost.Python.instance):
         longest to shortest (the opposite of the order of the prefixes
         returned by GetPrefixes).
         """
-    def GetCommonPrefix(self, _path: Path | str, /) -> Path:
+    def GetCommonPrefix(self, _path: Path | pxr.Ar.ResolvedPath | str, /) -> Path:
         """
         Returns a path with maximal length that is a prefix path of both this
         path and C{path}.
         """
     @staticmethod
-    def GetConciseRelativePaths(_paths: typing.Iterable[Path | str], /) -> list[Path]:
+    def GetConciseRelativePaths(_paths: typing.Iterable[Path | pxr.Ar.ResolvedPath | str], /) -> list[Path]:
         """
         Given some vector of paths, get a vector of concise unambiguous
         relative paths.
@@ -3239,7 +3239,7 @@ class Path(Boost.Python.instance):
         Returns a pair of empty strings if this path is not a variant
         selection path.
         """
-    def HasPrefix(self, _prefix: Path | str, /) -> bool:
+    def HasPrefix(self, _prefix: Path | pxr.Ar.ResolvedPath | str, /) -> bool:
         """
         Return true if both this path and *prefix* are not the empty path and
         this path has *prefix* as a prefix.
@@ -3361,7 +3361,7 @@ class Path(Boost.Python.instance):
     @staticmethod
     def JoinIdentifier(arg1: object, /) -> str: ...
     @overload
-    def MakeAbsolutePath(self, _anchor: Path | str, /) -> Path:
+    def MakeAbsolutePath(self, _anchor: Path | pxr.Ar.ResolvedPath | str, /) -> Path:
         """
         Returns the absolute form of this path using C{anchor} as the relative
         basis.
@@ -3375,9 +3375,9 @@ class Path(Boost.Python.instance):
         If this path is already an absolute path, just return a copy.
         """
     @overload
-    def MakeAbsolutePath(self, arg2: Path | str, /) -> Path: ...  # type: ignore[overload-cannot-match]
+    def MakeAbsolutePath(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> Path: ...  # type: ignore[overload-cannot-match]
     @overload
-    def MakeRelativePath(self, _anchor: Path | str, /) -> Path:
+    def MakeRelativePath(self, _anchor: Path | pxr.Ar.ResolvedPath | str, /) -> Path:
         """
         Returns the relative form of this path using C{anchor} as the relative
         basis.
@@ -3394,16 +3394,16 @@ class Path(Boost.Python.instance):
         dots.
         """
     @overload
-    def MakeRelativePath(self, arg2: Path | str, /) -> Path: ...  # type: ignore[overload-cannot-match]
+    def MakeRelativePath(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> Path: ...  # type: ignore[overload-cannot-match]
     @staticmethod
-    def RemoveAncestorPaths(_paths: list[Path] | list[str], /) -> list:
+    def RemoveAncestorPaths(_paths: list[Path] | list[pxr.Ar.ResolvedPath] | list[str], /) -> list:
         """
         Remove all elements of *paths* that prefix other elements in *paths*.
 
 
         As a side-effect, the result is left in sorted order.
         """
-    def RemoveCommonSuffix(self, _otherPath: Path | str, /, stopAtRootPrim: bool = ...) -> tuple:
+    def RemoveCommonSuffix(self, _otherPath: Path | pxr.Ar.ResolvedPath | str, /, stopAtRootPrim: bool = ...) -> tuple:
         """
         Find and remove the longest common suffix from two paths.
 
@@ -3422,7 +3422,7 @@ class Path(Boost.Python.instance):
         and /B if C{stopAtRootPrim} is C{true} but /A and / if it's C{false}.
         """
     @staticmethod
-    def RemoveDescendentPaths(_paths: list[Path] | list[str], /) -> list:
+    def RemoveDescendentPaths(_paths: list[Path] | list[pxr.Ar.ResolvedPath] | list[str], /) -> list:
         """
         Remove all elements of *paths* that are prefixed by other elements in
         *paths*.
@@ -3455,7 +3455,7 @@ class Path(Boost.Python.instance):
         ->'/Merida.ty'ReplaceName('/Merida.tx[targ].tx','ty')
         ->'/Merida.tx[targ].ty'
         """
-    def ReplacePrefix(self, oldPrefix: Path | str, newPrefix: Path | str, fixTargetPaths: bool = ...) -> Path:
+    def ReplacePrefix(self, oldPrefix: Path | pxr.Ar.ResolvedPath | str, newPrefix: Path | pxr.Ar.ResolvedPath | str, fixTargetPaths: bool = ...) -> Path:
         """
         Returns a path with all occurrences of the prefix path C{oldPrefix}
         replaced with the prefix path C{newPrefix}.
@@ -3468,7 +3468,7 @@ class Path(Boost.Python.instance):
         do zero or one path prefix replacements, if not the number of
         replacements can be greater than one.
         """
-    def ReplaceTargetPath(self, _newTargetPath: Path | str, /) -> Path:
+    def ReplaceTargetPath(self, _newTargetPath: Path | pxr.Ar.ResolvedPath | str, /) -> Path:
         """
         Replaces the relational attribute's target path.
 
@@ -3791,7 +3791,7 @@ class PathExpression(Boost.Python.instance):
             """
             Return the string representation of this pattern.
             """
-        def SetPrefix(self, prefix: Path | str) -> None:
+        def SetPrefix(self, prefix: Path | pxr.Ar.ResolvedPath | str) -> None:
             """
             Set this pattern's non-speculative prefix (leading path components
             with no wildcards and no predicates).
@@ -3895,7 +3895,7 @@ class PathExpression(Boost.Python.instance):
 
         default-constructed or constructed from a string with invalid syntax.
         """
-    def MakeAbsolute(self, anchor: Path | str) -> PathExpression:
+    def MakeAbsolute(self, anchor: Path | pxr.Ar.ResolvedPath | str) -> PathExpression:
         """
         Return a new expression created by making any relative path prefixes
         in this expression absolute by SdfPath::MakeAbsolutePath() .
@@ -3935,7 +3935,7 @@ class PathExpression(Boost.Python.instance):
 
         This is the same as a default-constructed SdfPathExpression.
         """
-    def ReplacePrefix(self, oldPrefix: Path | str, newPrefix: Path | str) -> PathExpression:
+    def ReplacePrefix(self, oldPrefix: Path | pxr.Ar.ResolvedPath | str, newPrefix: Path | pxr.Ar.ResolvedPath | str) -> PathExpression:
         """
         Return a new expression created by replacing literal path prefixes
         that start with C{oldPrefix} with C{newPrefix}.
@@ -4015,7 +4015,7 @@ class PathListOp(Boost.Python.instance):
     def CreateExplicit(explicitItems: object = ...) -> PathListOp: ...
     def GetAddedOrExplicitItems(self) -> Any: ...
     def GetAppliedItems(self) -> Any: ...
-    def HasItem(self, arg2: Path | str, /) -> bool: ...
+    def HasItem(self, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
     def __ne__(self, other: object) -> bool: ...
@@ -4040,7 +4040,7 @@ class Payload(Boost.Python.instance):
     layerOffset: LayerOffset
     primPath: Path
     @overload
-    def __init__(self, assetPath: str | pxr.Ar.ResolvedPath = ..., primPath: Path | str = ..., layerOffset: LayerOffset = ...) -> None:
+    def __init__(self, assetPath: str | pxr.Ar.ResolvedPath = ..., primPath: Path | pxr.Ar.ResolvedPath | str = ..., layerOffset: LayerOffset = ...) -> None:
         """
         Create a payload.
 
@@ -4560,7 +4560,7 @@ class PrimSpec(Spec):
         """
         Clears the references for this prim.
         """
-    def GetAttributeAtPath(self, _path: Path | str, /) -> AttributeSpec:
+    def GetAttributeAtPath(self, _path: Path | pxr.Ar.ResolvedPath | str, /) -> AttributeSpec:
         """
         Returns an attribute given its C{path}.
 
@@ -4568,7 +4568,7 @@ class PrimSpec(Spec):
         Returns invalid handle if there is no attribute at C{path}. This is
         simply a more specifically typed version of GetObjectAtPath.
         """
-    def GetObjectAtPath(self, _path: Path | str, /) -> Spec:
+    def GetObjectAtPath(self, _path: Path | pxr.Ar.ResolvedPath | str, /) -> Spec:
         """
         Returns the object for the given C{path}.
 
@@ -4579,7 +4579,7 @@ class PrimSpec(Spec):
 
         Returns invalid handle if there is no object at C{path}.
         """
-    def GetPrimAtPath(self, _path: Path | str, /) -> PrimSpec:
+    def GetPrimAtPath(self, _path: Path | pxr.Ar.ResolvedPath | str, /) -> PrimSpec:
         """
         Returns a prim given its C{path}.
 
@@ -4587,7 +4587,7 @@ class PrimSpec(Spec):
         Returns invalid handle if there is no prim at C{path}. This is simply
         a more specifically typed version of GetObjectAtPath.
         """
-    def GetPropertyAtPath(self, _path: Path | str, /) -> PropertySpec:
+    def GetPropertyAtPath(self, _path: Path | pxr.Ar.ResolvedPath | str, /) -> PropertySpec:
         """
         Returns a property given its C{path}.
 
@@ -4595,7 +4595,7 @@ class PrimSpec(Spec):
         Returns invalid handle if there is no property at C{path}. This is
         simply a more specifically typed version of GetObjectAtPath.
         """
-    def GetRelationshipAtPath(self, _path: Path | str, /) -> RelationshipSpec:
+    def GetRelationshipAtPath(self, _path: Path | pxr.Ar.ResolvedPath | str, /) -> RelationshipSpec:
         """
         Returns a relationship given its C{path}.
 
@@ -4886,7 +4886,7 @@ class Reference(Boost.Python.instance):
     """
     __instance_size__: ClassVar[int] = ...
     @overload
-    def __init__(self, assetPath: str | pxr.Ar.ResolvedPath = ..., primPath: Path | str = ..., layerOffset: LayerOffset = ..., customData: dict = ...) -> None:
+    def __init__(self, assetPath: str | pxr.Ar.ResolvedPath = ..., primPath: Path | pxr.Ar.ResolvedPath | str = ..., layerOffset: LayerOffset = ..., customData: dict = ...) -> None:
         """
         Creates a reference with all its meta data.
 
@@ -5016,7 +5016,7 @@ class RelationshipSpec(PropertySpec):
         Creates and returns a new relationship for the given prim. The
         C{owner} will own the newly created relationship.
         """
-    def RemoveTargetPath(self, _path: Path | str, /, preserveTargetOrder: bool = ...) -> None:
+    def RemoveTargetPath(self, _path: Path | pxr.Ar.ResolvedPath | str, /, preserveTargetOrder: bool = ...) -> None:
         """
         Removes the specified target path.
 
@@ -5026,7 +5026,7 @@ class RelationshipSpec(PropertySpec):
         called on the list editor instead of RemoveItemEdits(). This preserves
         the ordered items list.
         """
-    def ReplaceTargetPath(self, _oldPath: Path | str, _newPath: Path | str, /) -> None:
+    def ReplaceTargetPath(self, _oldPath: Path | pxr.Ar.ResolvedPath | str, _newPath: Path | pxr.Ar.ResolvedPath | str, /) -> None:
         """
         Updates the specified target path.
 
@@ -6098,7 +6098,7 @@ def ConvertUnit(_fromUnit: pxr.Tf.Enum, _toUnit: pxr.Tf.Enum, /) -> float:
     example, both of type SdfLengthUnit).
     """
 @overload
-def CopySpec(srcLayer: Layer, srcPath: Path | str, dstLayer: Layer, dstPath: Path | str, shouldCopyValueFn: ShouldCopyValueFn, shouldCopyChildrenFn: ShouldCopyChildrenFn) -> bool:  # type: ignore[name-defined]
+def CopySpec(srcLayer: Layer, srcPath: Path | pxr.Ar.ResolvedPath | str, dstLayer: Layer, dstPath: Path | pxr.Ar.ResolvedPath | str, shouldCopyValueFn: ShouldCopyValueFn, shouldCopyChildrenFn: ShouldCopyChildrenFn) -> bool:  # type: ignore[name-defined]
     """
     Utility function for copying spec data at C{srcPath} in C{srcLayer} to
     C{destPath} in C{destLayer}.
@@ -6128,7 +6128,7 @@ def CopySpec(srcLayer: Layer, srcPath: Path | str, dstLayer: Layer, dstPath: Pat
     appended, deleted, and/or ordered, as needed.
     """
 @overload
-def CopySpec(srcLayer: Layer, srcPath: Path | str, dstLayer: Layer, dstPath: Path | str) -> bool:
+def CopySpec(srcLayer: Layer, srcPath: Path | pxr.Ar.ResolvedPath | str, dstLayer: Layer, dstPath: Path | pxr.Ar.ResolvedPath | str) -> bool:
     """
     Utility function for copying spec data at C{srcPath} in C{srcLayer} to
     C{destPath} in C{destLayer}.
@@ -6157,7 +6157,7 @@ def CopySpec(srcLayer: Layer, srcPath: Path | str, dstLayer: Layer, dstPath: Pat
     paths, and internal sub-root references that target an object beneath
     C{srcPath} will be remapped to target objects beneath C{dstPath}.
     """
-def CreatePrimInLayer(_layer: Layer, _primPath: Path | str, /) -> PrimSpec:
+def CreatePrimInLayer(_layer: Layer, _primPath: Path | pxr.Ar.ResolvedPath | str, /) -> PrimSpec:
     """
     Convenience function to create a prim at the given path, and any
     necessary parent prims, in the given layer.
@@ -6169,7 +6169,7 @@ def CreatePrimInLayer(_layer: Layer, _primPath: Path | str, /) -> PrimSpec:
     The new specs are created with SdfSpecifierOver and an empty type.
     primPath must be a valid prim path.
     """
-def CreateVariantInLayer(_layer: Layer, _primPath: Path | str, _variantSetName: str | pxr.Ar.ResolvedPath, _variantName: str | pxr.Ar.ResolvedPath, /) -> VariantSpec:
+def CreateVariantInLayer(_layer: Layer, _primPath: Path | pxr.Ar.ResolvedPath | str, _variantSetName: str | pxr.Ar.ResolvedPath, _variantName: str | pxr.Ar.ResolvedPath, /) -> VariantSpec:
     """
     Convenience function to create a variant spec for a given variant set
     and a prim at the given path with.
@@ -6211,9 +6211,9 @@ def Equal(arg1: list, arg2: AssetPathArray, /) -> pxr.Vt.BoolArray: ...
 @overload
 def Equal(arg1: PathArray, arg2: PathArray, /) -> pxr.Vt.BoolArray: ...
 @overload
-def Equal(arg1: Path | str, arg2: PathArray, /) -> pxr.Vt.BoolArray: ...
+def Equal(arg1: Path | pxr.Ar.ResolvedPath | str, arg2: PathArray, /) -> pxr.Vt.BoolArray: ...
 @overload
-def Equal(arg1: PathArray, arg2: Path | str, /) -> pxr.Vt.BoolArray: ...
+def Equal(arg1: PathArray, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> pxr.Vt.BoolArray: ...
 @overload
 def Equal(arg1: PathArray, arg2: tuple, /) -> pxr.Vt.BoolArray: ...
 @overload
@@ -6257,7 +6257,7 @@ def GetValueTypeNameForValue(_value: Any, /) -> ValueTypeName:
     If you provide a value that does not return true for
     SdfValueHasValidType, the return value is unspecified.
     """
-def JustCreatePrimAttributeInLayer(layer: Layer, attrPath: Path | str, typeName: ValueTypeName, variability: Variability = ..., isCustom: bool = ...) -> bool:
+def JustCreatePrimAttributeInLayer(layer: Layer, attrPath: Path | pxr.Ar.ResolvedPath | str, typeName: ValueTypeName, variability: Variability = ..., isCustom: bool = ...) -> bool:
     """
     Convenience function to create an attributeSpec on a primSpec at the
     given path, and any necessary parent primSpecs, in the given layer.
@@ -6273,7 +6273,7 @@ def JustCreatePrimAttributeInLayer(layer: Layer, attrPath: Path | str, typeName:
     false and issue an error if we fail to author the required scene
     description.
     """
-def JustCreatePrimInLayer(_layer: Layer, _primPath: Path | str, /) -> bool:
+def JustCreatePrimInLayer(_layer: Layer, _primPath: Path | pxr.Ar.ResolvedPath | str, /) -> bool:
     """
     Convenience function to create a prim at the given path, and any
     necessary parent prims, in the given layer.
@@ -6303,9 +6303,9 @@ def NotEqual(arg1: list, arg2: AssetPathArray, /) -> pxr.Vt.BoolArray: ...
 @overload
 def NotEqual(arg1: PathArray, arg2: PathArray, /) -> pxr.Vt.BoolArray: ...
 @overload
-def NotEqual(arg1: Path | str, arg2: PathArray, /) -> pxr.Vt.BoolArray: ...
+def NotEqual(arg1: Path | pxr.Ar.ResolvedPath | str, arg2: PathArray, /) -> pxr.Vt.BoolArray: ...
 @overload
-def NotEqual(arg1: PathArray, arg2: Path | str, /) -> pxr.Vt.BoolArray: ...
+def NotEqual(arg1: PathArray, arg2: Path | pxr.Ar.ResolvedPath | str, /) -> pxr.Vt.BoolArray: ...
 @overload
 def NotEqual(arg1: PathArray, arg2: tuple, /) -> pxr.Vt.BoolArray: ...
 @overload
@@ -6338,6 +6338,6 @@ def ValueHasValidType(_value: Any, /) -> bool:
     """
 def _DumpPathStats() -> None: ...
 def _MakeBasicMatchEval(arg1: object, /) -> Any: ...
-def _PathGetDebuggerPathText(arg1: Path | str, /) -> str: ...
+def _PathGetDebuggerPathText(arg1: Path | pxr.Ar.ResolvedPath | str, /) -> str: ...
 def _PathStress() -> None: ...
 def _TestTakeOwnership(arg1: object, /) -> None: ...

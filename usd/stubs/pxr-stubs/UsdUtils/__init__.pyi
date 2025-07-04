@@ -598,7 +598,7 @@ class UsdStageStatsKeys(Boost.Python.instance):
         This class cannot be instantiated from Python
         """
 
-def AuthorCollection(collectionName: str | pxr.Ar.ResolvedPath, usdPrim: pxr.Usd.Prim, pathsToInclude: typing.Iterable[pxr.Sdf.Path | str], pathsToExclude: typing.Iterable[pxr.Sdf.Path | str] = ...) -> pxr.Usd.CollectionAPI:
+def AuthorCollection(collectionName: str | pxr.Ar.ResolvedPath, usdPrim: pxr.Usd.Prim, pathsToInclude: typing.Iterable[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str], pathsToExclude: typing.Iterable[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str] = ...) -> pxr.Usd.CollectionAPI:
     """
     Authors a collection named C{collectionName} on the given prim,
     C{usdPrim} with the given set of included paths ( C{pathsToInclude})
@@ -631,7 +631,7 @@ def ComputeAllDependencies(assetPath: pxr.Sdf.AssetPath | str, processingFunc: t
 
     Returns true if the given asset was resolved correctly.
     """
-def ComputeCollectionIncludesAndExcludes(includedRootPaths: typing.Iterable[pxr.Sdf.Path | str], usdStage: pxr.Usd.Stage, minInclusionRatio: float = ..., maxNumExcludesBelowInclude: int = ..., minIncludeExcludeCollectionSize: int = ..., pathsToIgnore: PathHashSet = ...) -> tuple[list[pxr.Sdf.Path], list[pxr.Sdf.Path]]:  # type: ignore[name-defined]
+def ComputeCollectionIncludesAndExcludes(includedRootPaths: typing.Iterable[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str], usdStage: pxr.Usd.Stage, minInclusionRatio: float = ..., maxNumExcludesBelowInclude: int = ..., minIncludeExcludeCollectionSize: int = ..., pathsToIgnore: PathHashSet = ...) -> tuple[list[pxr.Sdf.Path], list[pxr.Sdf.Path]]:  # type: ignore[name-defined]
     '''
     Computes the optimal set of paths to include and the set of paths to
     exclude below includes paths, in order to encode
@@ -774,7 +774,7 @@ def CopyLayerMetadata(source: pxr.Sdf.Layer, destination: pxr.Sdf.Layer, skipSub
 
     C{true} on success, C{false} on error.
     """
-def CreateCollections(assignments: typing.Iterable[tuple[str | pxr.Ar.ResolvedPath, typing.Iterable[pxr.Sdf.Path | str]]], usdPrim: pxr.Usd.Prim, minInclusionRatio: float = ..., maxNumExcludesBelowInclude: int = ..., minIncludeExcludeCollectionSize: int = ...) -> list[pxr.Usd.CollectionAPI]:
+def CreateCollections(assignments: typing.Iterable[tuple[str | pxr.Ar.ResolvedPath, typing.Iterable[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str]]], usdPrim: pxr.Usd.Prim, minInclusionRatio: float = ..., maxNumExcludesBelowInclude: int = ..., minIncludeExcludeCollectionSize: int = ...) -> list[pxr.Usd.CollectionAPI]:
     """
     Given a vector of (collection-name, path-set) pairs, C{assignments},
     creates and returns a vector of collections that include subtrees of
@@ -1074,7 +1074,7 @@ def GetPrefName() -> str:
 
     By default the name is"pref".
     '''
-def GetPrimAtPathWithForwarding(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> pxr.Usd.Prim:
+def GetPrimAtPathWithForwarding(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> pxr.Usd.Prim:
     '''
     If a valid UsdPrim already exists at C{path} on the USD stage
     C{stage}, returns it.
@@ -1226,7 +1226,7 @@ def ModifyAssetPaths(layer: pxr.Sdf.Layer, modifyFn: ModifyAssetPathFn) -> None:
     paths were authored: we can replace all paths with their fully
     resolved equivalents, for example.
     """
-def StitchClips(resultLayer: pxr.Sdf.Layer, clipLayerFiles: typing.Iterable[str | pxr.Ar.ResolvedPath], clipPath: pxr.Sdf.Path | str, startFrame: float = ..., endFrame: float = ..., interpolateMissingClipValues: bool = ..., clipSet: str | pxr.Ar.ResolvedPath = ...) -> bool:
+def StitchClips(resultLayer: pxr.Sdf.Layer, clipLayerFiles: typing.Iterable[str | pxr.Ar.ResolvedPath], clipPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, startFrame: float = ..., endFrame: float = ..., interpolateMissingClipValues: bool = ..., clipSet: str | pxr.Ar.ResolvedPath = ...) -> bool:
     """
     A function that creates layers that use USD Value Clips to effectively
     merge the time samples in the given C{clipLayers} under C{clipPath}
@@ -1298,7 +1298,7 @@ def StitchClips(resultLayer: pxr.Sdf.Layer, clipLayerFiles: typing.Iterable[str 
     Note: an invalid clip path(because the prim doesn't exist in the
     aggregate topologyLayer) will result in a TF_CODING_ERROR.
     """
-def StitchClipsManifest(manifestLayer: pxr.Sdf.Layer, topologyLayer: pxr.Sdf.Layer, clipPath: typing.Iterable[str | pxr.Ar.ResolvedPath], clipLayerFiles: pxr.Sdf.Path | str) -> bool:
+def StitchClipsManifest(manifestLayer: pxr.Sdf.Layer, topologyLayer: pxr.Sdf.Layer, clipPath: typing.Iterable[str | pxr.Ar.ResolvedPath], clipLayerFiles: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
     """
     A function which creates a clip manifest from the set of
     C{clipLayerFiles} for use in USD's Value Clips system.
@@ -1318,7 +1318,7 @@ def StitchClipsManifest(manifestLayer: pxr.Sdf.Layer, topologyLayer: pxr.Sdf.Lay
     C{clipPrimPath} The manifest will contain attributes from this prim
     and its descendants in C{clipLayerFiles}.
     """
-def StitchClipsTemplate(resultLayer: pxr.Sdf.Layer, topologyLayer: pxr.Sdf.Layer, manifestLayer: pxr.Sdf.Layer, clipPath: pxr.Sdf.Path | str, templatePath: str | pxr.Ar.ResolvedPath, startTimeCode: float, endTimeCode: float, stride: float, activeOffset: float = ..., interpolateMissingClipValues: bool = ..., clipSet: str | pxr.Ar.ResolvedPath = ...) -> bool:
+def StitchClipsTemplate(resultLayer: pxr.Sdf.Layer, topologyLayer: pxr.Sdf.Layer, manifestLayer: pxr.Sdf.Layer, clipPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, templatePath: str | pxr.Ar.ResolvedPath, startTimeCode: float, endTimeCode: float, stride: float, activeOffset: float = ..., interpolateMissingClipValues: bool = ..., clipSet: str | pxr.Ar.ResolvedPath = ...) -> bool:
     '''
     A function which authors clip template metadata on a particular prim
     in a result layer, as well as adding the topologyLayer to the list of
@@ -1419,7 +1419,7 @@ def StitchLayers(strongLayer: pxr.Sdf.Layer, weakLayer: pxr.Sdf.Layer) -> None:
          will be used.
 
     '''
-def UninstancePrimAtPath(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> pxr.Usd.Prim:
+def UninstancePrimAtPath(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> pxr.Usd.Prim:
     """
     Given a path, uninstances all the instanced prims in the namespace
     chain and returns the resulting prim at the requested path.

@@ -1,4 +1,5 @@
 import Boost.Python
+import pxr.Ar
 import pxr.Sdf
 import pxr.Tf
 import pxr.Usd
@@ -68,7 +69,7 @@ class Backdrop(pxr.Usd.Typed):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Backdrop:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Backdrop:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -94,7 +95,7 @@ class Backdrop(pxr.Usd.Typed):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Backdrop:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Backdrop:
         """
         Return a UsdUIBackdrop holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -286,7 +287,7 @@ class NodeGraphNodeAPI(pxr.Usd.APISchemaBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> NodeGraphNodeAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> NodeGraphNodeAPI:
         """
         Return a UsdUINodeGraphNodeAPI holding the prim adhering to this
         schema at C{path} on C{stage}.
@@ -577,7 +578,7 @@ class SceneGraphPrimAPI(pxr.Usd.APISchemaBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> SceneGraphPrimAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> SceneGraphPrimAPI:
         """
         Return a UsdUISceneGraphPrimAPI holding the prim adhering to this
         schema at C{path} on C{stage}.

@@ -64,7 +64,7 @@ class Field3DAsset(FieldAsset):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Field3DAsset:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Field3DAsset:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -90,7 +90,7 @@ class Field3DAsset(FieldAsset):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Field3DAsset:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Field3DAsset:
         """
         Return a UsdVolField3DAsset holding the prim adhering to this schema
         at C{path} on C{stage}.
@@ -246,7 +246,7 @@ class FieldAsset(FieldBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> FieldAsset:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> FieldAsset:
         """
         Return a UsdVolFieldAsset holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -409,7 +409,7 @@ class FieldBase(pxr.UsdGeom.Xformable):
         preserves SchemaBase state.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> FieldBase:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> FieldBase:
         """
         Return a UsdVolFieldBase holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -492,7 +492,7 @@ class OpenVDBAsset(FieldAsset):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> OpenVDBAsset:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> OpenVDBAsset:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -518,7 +518,7 @@ class OpenVDBAsset(FieldAsset):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> OpenVDBAsset:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> OpenVDBAsset:
         """
         Return a UsdVolOpenVDBAsset holding the prim adhering to this schema
         at C{path} on C{stage}.
@@ -702,7 +702,7 @@ class Volume(pxr.UsdGeom.Gprim):
         The name lookup automatically applies the field relationship
         namespacing, if it isn't specified in the name token.
         """
-    def CreateFieldRelationship(self, name: str | pxr.Ar.ResolvedPath, fieldPath: pxr.Sdf.Path | str) -> bool:
+    def CreateFieldRelationship(self, name: str | pxr.Ar.ResolvedPath, fieldPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         '''
         Creates a relationship on this volume that targets the specified
         field.
@@ -726,7 +726,7 @@ class Volume(pxr.UsdGeom.Gprim):
         token.
         '''
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Volume:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Volume:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -752,7 +752,7 @@ class Volume(pxr.UsdGeom.Gprim):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Volume:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Volume:
         """
         Return a UsdVolVolume holding the prim adhering to this schema at
         C{path} on C{stage}.

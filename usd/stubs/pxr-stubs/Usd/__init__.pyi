@@ -244,7 +244,7 @@ class Attribute(Property):
         """
         Construct an invalid attribute.
         """
-    def AddConnection(self, source: pxr.Sdf.Path | str, position: ListPosition = ...) -> bool:
+    def AddConnection(self, source: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, position: ListPosition = ...) -> bool:
         """
         Adds C{source} to the list of connections, in the position specified
         by C{position}.
@@ -583,7 +583,7 @@ class Attribute(Property):
         If the attribute has been blocked, then return C{true} if and only if
         it has a fallback value.
         """
-    def RemoveConnection(self, source: pxr.Sdf.Path | str) -> bool:
+    def RemoveConnection(self, source: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Removes C{target} from the list of targets.
 
@@ -617,7 +617,7 @@ class Attribute(Property):
 
         GetColorSpace() UsdStage Color Configuration API
         """
-    def SetConnections(self, sources: typing.Iterable[pxr.Sdf.Path | str]) -> bool:
+    def SetConnections(self, sources: typing.Iterable[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str]) -> bool:
         """
         Make the authoring layer's opinion of the connection list explicit,
         and set exactly to C{sources}.
@@ -1012,7 +1012,7 @@ class ClipsAPI(APISchemaBase):
         UsdClipsAPISetNames
         """
     @staticmethod
-    def GenerateClipManifestFromLayers(clipLayers: list[pxr.Sdf.Layer], clipPrimPath: pxr.Sdf.Path | str) -> pxr.Sdf.Layer:
+    def GenerateClipManifestFromLayers(clipLayers: list[pxr.Sdf.Layer], clipPrimPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> pxr.Sdf.Layer:
         """
         Create a clip manifest containing entries for all attributes in the
         given C{clipLayers} that belong to the prim at C{clipPrimPath} and all
@@ -1025,7 +1025,7 @@ class ClipsAPI(APISchemaBase):
         failure.
         """
     @staticmethod
-    def Get(stage: Stage, path: pxr.Sdf.Path | str) -> ClipsAPI:
+    def Get(stage: Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> ClipsAPI:
         """
         Return a UsdClipsAPI holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -1925,7 +1925,7 @@ class CollectionAPI(APISchemaBase):
         sparsely (when it makes sense to do so) if C{writeSparsely} is C{true}
         - the default for C{writeSparsely} is C{false}.
         """
-    def ExcludePath(self, pathToExclude: pxr.Sdf.Path | str) -> bool:
+    def ExcludePath(self, pathToExclude: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Excludes or removes the given path, C{pathToExclude} from the
         collection.
@@ -1944,7 +1944,7 @@ class CollectionAPI(APISchemaBase):
         """
     @overload
     @staticmethod
-    def Get(stage: Stage, path: pxr.Sdf.Path | str) -> CollectionAPI:
+    def Get(stage: Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> CollectionAPI:
         """
         Return a UsdCollectionAPI holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -1988,7 +1988,7 @@ class CollectionAPI(APISchemaBase):
         """
     @overload
     @staticmethod
-    def GetCollection(stage: Stage, collectionPath: pxr.Sdf.Path | str) -> CollectionAPI:
+    def GetCollection(stage: Stage, collectionPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> CollectionAPI:
         """
         Returns the collection represented by the given collection path,
         C{collectionPath} on the given USD stage.
@@ -2187,7 +2187,7 @@ class CollectionAPI(APISchemaBase):
         when HasNoIncludedPaths() returns false. For example, if the included
         objects are unloaded or if the included objects are also excluded.
         """
-    def IncludePath(self, pathToInclude: pxr.Sdf.Path | str) -> bool:
+    def IncludePath(self, pathToInclude: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Includes or adds the given path, C{pathToInclude} in the collection.
 
@@ -2202,7 +2202,7 @@ class CollectionAPI(APISchemaBase):
         UsdCollectionAPI::ExcludePath()
         """
     @staticmethod
-    def IsCollectionAPIPath(_path: pxr.Sdf.Path | str, /) -> bool:
+    def IsCollectionAPIPath(_path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> bool:
         """
         Checks if the given path C{path} is of an API schema of type
         CollectionAPI.
@@ -2439,7 +2439,7 @@ class EditTarget(Boost.Python.instance):
         and layer stack identifier.
         '''
     @staticmethod
-    def ForLocalDirectVariant(layer: pxr.Sdf.Layer, varSelPath: pxr.Sdf.Path | str) -> EditTarget:
+    def ForLocalDirectVariant(layer: pxr.Sdf.Layer, varSelPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> EditTarget:
         """
         Convenience constructor for editing a direct variant in a local
         LayerStack.
@@ -2457,7 +2457,7 @@ class EditTarget(Boost.Python.instance):
         Returns the PcpMapFunction representing the map from source specs
         (including any variant selections) to the stage.
         """
-    def GetPrimSpecForScenePath(self, scenePath: pxr.Sdf.Path | str) -> pxr.Sdf.PrimSpec:
+    def GetPrimSpecForScenePath(self, scenePath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> pxr.Sdf.PrimSpec:
         """
         Convenience function for getting the PrimSpec in the edit target's
         layer for *scenePath*.
@@ -2469,8 +2469,8 @@ class EditTarget(Boost.Python.instance):
         mapping from *scenePath* to a SdfPrimSpec path in the layer, return
         null.
         """
-    def GetPropertySpecForScenePath(self, scenePath: pxr.Sdf.Path | str) -> pxr.Sdf.PropertySpec: ...
-    def GetSpecForScenePath(self, scenePath: pxr.Sdf.Path | str) -> pxr.Sdf.PrimSpec: ...
+    def GetPropertySpecForScenePath(self, scenePath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> pxr.Sdf.PropertySpec: ...
+    def GetSpecForScenePath(self, scenePath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> pxr.Sdf.PrimSpec: ...
     def IsNull(self) -> bool:
         """
         Return true if this EditTarget is null.
@@ -2486,7 +2486,7 @@ class EditTarget(Boost.Python.instance):
 
         Edit targets are considered valid when they have a layer.
         """
-    def MapToSpecPath(self, scenePath: pxr.Sdf.Path | str) -> pxr.Sdf.Path:
+    def MapToSpecPath(self, scenePath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> pxr.Sdf.Path:
         """
         Map the provided *scenePath* into a SdfSpec path for the EditTarget's
         layer, according to the EditTarget's mapping.
@@ -2534,7 +2534,7 @@ class Inherits(Boost.Python.instance):
         """Raises an exception
         This class cannot be instantiated from Python
         """
-    def AddInherit(self, primPath: pxr.Sdf.Path | str, position: ListPosition = ...) -> bool:
+    def AddInherit(self, primPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, position: ListPosition = ...) -> bool:
         """
         Adds a path to the inheritPaths listOp at the current EditTarget, in
         the position specified by C{position}.
@@ -2560,12 +2560,12 @@ class Inherits(Boost.Python.instance):
         """
         Return the prim this object is bound to.
         """
-    def RemoveInherit(self, primPath: pxr.Sdf.Path | str) -> bool:
+    def RemoveInherit(self, primPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Removes the specified path from the inheritPaths listOp at the current
         EditTarget.
         """
-    def SetInherits(self, _items: typing.Iterable[pxr.Sdf.Path | str], /) -> bool:
+    def SetInherits(self, _items: typing.Iterable[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str], /) -> bool:
         """
         Explicitly set the inherited paths, potentially blocking weaker
         opinions that add or remove items, returning true on success, false if
@@ -2656,7 +2656,7 @@ class ModelAPI(APISchemaBase):
         preserves SchemaBase state.
         """
     @staticmethod
-    def Get(stage: Stage, path: pxr.Sdf.Path | str) -> ModelAPI:
+    def Get(stage: Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> ModelAPI:
         """
         Return a UsdModelAPI holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -2869,7 +2869,7 @@ class NamespaceEditor(Boost.Python.instance):
         Returns true if the prim provides a valid possible composed prim path;
         returns false and emits a coding error if not.
         """
-    def DeletePrimAtPath(self, _path: pxr.Sdf.Path | str, /) -> bool:
+    def DeletePrimAtPath(self, _path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> bool:
         """
         Adds an edit operation to delete the composed prim at the given
         C{path} from this namespace editor's stage.
@@ -2889,7 +2889,7 @@ class NamespaceEditor(Boost.Python.instance):
         Returns true if the property provides a valid possible composed
         property path; returns false and emits a coding error if not.
         """
-    def DeletePropertyAtPath(self, _path: pxr.Sdf.Path | str, /) -> bool:
+    def DeletePropertyAtPath(self, _path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> bool:
         """
         Adds an edit operation to delete the composed property at the given
         C{path} from this namespace editor's stage.
@@ -2898,7 +2898,7 @@ class NamespaceEditor(Boost.Python.instance):
         Returns true if the path is a valid possible composed property path;
         returns false and emits a coding error if not.
         """
-    def MovePrimAtPath(self, _path: pxr.Sdf.Path | str, _newPath: pxr.Sdf.Path | str, /) -> bool:
+    def MovePrimAtPath(self, _path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, _newPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> bool:
         """
         Adds an edit operation to move the composed prim at the given C{path}
         on this namespace editor's stage to instead be at the path C{newPath}.
@@ -2908,7 +2908,7 @@ class NamespaceEditor(Boost.Python.instance):
         Returns true if both paths are valid possible composed prim path;
         returns false and emits a coding error if not.
         """
-    def MovePropertyAtPath(self, _path: pxr.Sdf.Path | str, _newPath: pxr.Sdf.Path | str, /) -> bool:
+    def MovePropertyAtPath(self, _path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, _newPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> bool:
         """
         Adds an edit operation to move the composed property at the given
         C{path} on this namespace editor's stage to instead be at the path
@@ -3118,7 +3118,7 @@ class Notice(Boost.Python.instance):
             composed value returned by GetMetadata() will not have changed.
             """
         @overload
-        def GetChangedFields(self, _path: pxr.Sdf.Path | str, /) -> list[str]:
+        def GetChangedFields(self, _path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> list[str]:
             """
             This is an overloaded member function, provided for convenience. It
             differs from the above function only in what argument(s) it accepts.
@@ -3189,7 +3189,7 @@ class Notice(Boost.Python.instance):
             See GetChangedFields for more details.
             """
         @overload
-        def HasChangedFields(self, _path: pxr.Sdf.Path | str, /) -> bool:
+        def HasChangedFields(self, _path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> bool:
             """
             This is an overloaded member function, provided for convenience. It
             differs from the above function only in what argument(s) it accepts.
@@ -3767,7 +3767,7 @@ class Payloads(Boost.Python.instance):
         """Raises an exception
         This class cannot be instantiated from Python
         """
-    def AddInternalPayload(self, primPath: pxr.Sdf.Path | str, layerOffset: pxr.Sdf.LayerOffset = ..., position: ListPosition = ...) -> bool:
+    def AddInternalPayload(self, primPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, layerOffset: pxr.Sdf.LayerOffset = ..., position: ListPosition = ...) -> bool:
         """
         Add an internal payload to the specified prim.
 
@@ -3789,7 +3789,7 @@ class Payloads(Boost.Python.instance):
         listOps.
         """
     @overload
-    def AddPayload(self, assetPath: str | pxr.Ar.ResolvedPath, primPath: pxr.Sdf.Path | str, layerOffset: pxr.Sdf.LayerOffset = ..., position: ListPosition = ...) -> bool:
+    def AddPayload(self, assetPath: str | pxr.Ar.ResolvedPath, primPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, layerOffset: pxr.Sdf.LayerOffset = ..., position: ListPosition = ...) -> bool:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -4284,7 +4284,7 @@ class Prim(Object):
           }
 
         '''
-    def GetAttributeAtPath(self, path: pxr.Sdf.Path | str) -> Attribute:
+    def GetAttributeAtPath(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Attribute:
         """
         Returns the attribute at C{path} on the same stage as this prim.
 
@@ -4520,7 +4520,7 @@ class Prim(Object):
         See Prim predicate flags and UsdPrimDefaultPredicate for more
         information.
         """
-    def GetObjectAtPath(self, path: pxr.Sdf.Path | str) -> Object:
+    def GetObjectAtPath(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Object:
         """
         Returns the object at C{path} on the same stage as this prim.
 
@@ -4547,7 +4547,7 @@ class Prim(Object):
         UsdPrimCompositionQuery to query the payload arcs that are composed by
         this prim.
         """
-    def GetPrimAtPath(self, path: pxr.Sdf.Path | str) -> Prim:
+    def GetPrimAtPath(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Prim:
         """
         Returns the prim at C{path} on the same stage as this prim.
 
@@ -4741,7 +4741,7 @@ class Prim(Object):
           }
 
         '''
-    def GetPropertyAtPath(self, path: pxr.Sdf.Path | str) -> Property:
+    def GetPropertyAtPath(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Property:
         """
         Returns the property at C{path} on the same stage as this prim.
 
@@ -4814,7 +4814,7 @@ class Prim(Object):
           }
 
         '''
-    def GetRelationshipAtPath(self, path: pxr.Sdf.Path | str) -> Relationship:
+    def GetRelationshipAtPath(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Relationship:
         """
         Returns the relationship at C{path} on the same stage as this prim.
 
@@ -5263,7 +5263,7 @@ class Prim(Object):
         otherwise.
         """
     @staticmethod
-    def IsPathInPrototype(path: pxr.Sdf.Path | str) -> bool:
+    def IsPathInPrototype(path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Return true if the given C{path} identifies a prototype prim or a prim
         or property descendant of a prototype prim, false otherwise.
@@ -5282,7 +5282,7 @@ class Prim(Object):
         IsInPrototype
         """
     @staticmethod
-    def IsPrototypePath(path: pxr.Sdf.Path | str) -> bool:
+    def IsPrototypePath(path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Return true if the given C{path} identifies a prototype prim, false
         otherwise.
@@ -5472,14 +5472,14 @@ class Prim(Object):
         Payloads: Impact of Using and Not Using
         """
     @overload
-    def SetPayload(self, assetPath: str | pxr.Ar.ResolvedPath, primPath: pxr.Sdf.Path | str) -> bool:
+    def SetPayload(self, assetPath: str | pxr.Ar.ResolvedPath, primPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Deprecated
 
         Shorthand for SetPayload(SdfPayload(assetPath, primPath)).
         """
     @overload
-    def SetPayload(self, layer: pxr.Sdf.Layer, primPath: pxr.Sdf.Path | str) -> bool:
+    def SetPayload(self, layer: pxr.Sdf.Layer, primPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Deprecated
 
@@ -5800,7 +5800,7 @@ class PrimDefinition(Boost.Python.instance):
         This class cannot be instantiated from Python
         """
     @overload
-    def FlattenTo(self, layer: pxr.Sdf.Layer, path: pxr.Sdf.Path | str, newSpecSpecifier: pxr.Sdf.Specifier = ...) -> bool:
+    def FlattenTo(self, layer: pxr.Sdf.Layer, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, newSpecSpecifier: pxr.Sdf.Specifier = ...) -> bool:
         '''
         Copies the contents of this prim definition to a prim spec on the
         given C{layer} at the given C{path}.
@@ -6681,7 +6681,7 @@ class References(Boost.Python.instance):
         """Raises an exception
         This class cannot be instantiated from Python
         """
-    def AddInternalReference(self, primPath: pxr.Sdf.Path | str, layerOffset: pxr.Sdf.LayerOffset = ..., position: ListPosition = ...) -> bool:
+    def AddInternalReference(self, primPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, layerOffset: pxr.Sdf.LayerOffset = ..., position: ListPosition = ...) -> bool:
         """
         Add an internal reference to the specified prim.
 
@@ -6702,7 +6702,7 @@ class References(Boost.Python.instance):
         List Editing for details on list editing and composition of listOps.
         """
     @overload
-    def AddReference(self, assetPath: str | pxr.Ar.ResolvedPath, primPath: pxr.Sdf.Path | str, layerOffset: pxr.Sdf.LayerOffset = ..., position: ListPosition = ...) -> bool:
+    def AddReference(self, assetPath: str | pxr.Ar.ResolvedPath, primPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, layerOffset: pxr.Sdf.LayerOffset = ..., position: ListPosition = ...) -> bool:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -6851,7 +6851,7 @@ class Relationship(Property):
         """
         Construct an invalid relationship.
         """
-    def AddTarget(self, target: pxr.Sdf.Path | str, position: ListPosition = ...) -> bool:
+    def AddTarget(self, target: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, position: ListPosition = ...) -> bool:
         """
         Adds C{target} to the list of targets, in the position specified by
         C{position}.
@@ -6938,7 +6938,7 @@ class Relationship(Property):
         Note that this may include opinions that clear targets and may not
         indicate that target paths will exist for this relationship.
         """
-    def RemoveTarget(self, target: pxr.Sdf.Path | str) -> bool:
+    def RemoveTarget(self, target: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Removes C{target} from the list of targets.
 
@@ -6947,7 +6947,7 @@ class Relationship(Property):
         will cause an error to be issued. It is not valid to author targets to
         these objects.
         """
-    def SetTargets(self, targets: typing.Iterable[pxr.Sdf.Path | str]) -> bool:
+    def SetTargets(self, targets: typing.Iterable[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str]) -> bool:
         """
         Make the authoring layer's opinion of the targets list explicit, and
         set exactly to C{targets}.
@@ -7714,7 +7714,7 @@ class Specializes(Boost.Python.instance):
         """Raises an exception
         This class cannot be instantiated from Python
         """
-    def AddSpecialize(self, primPath: pxr.Sdf.Path | str, position: ListPosition = ...) -> bool:
+    def AddSpecialize(self, primPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, position: ListPosition = ...) -> bool:
         """
         Adds a path to the specializes listOp at the current EditTarget, in
         the position specified by C{position}.
@@ -7728,12 +7728,12 @@ class Specializes(Boost.Python.instance):
         """
         Return the prim this object is bound to.
         """
-    def RemoveSpecialize(self, primPath: pxr.Sdf.Path | str) -> bool:
+    def RemoveSpecialize(self, primPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Removes the specified path from the specializes listOp at the current
         EditTarget.
         """
-    def SetSpecializes(self, _items: typing.Iterable[pxr.Sdf.Path | str], /) -> bool:
+    def SetSpecializes(self, _items: typing.Iterable[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str], /) -> bool:
         """
         Explicitly set specializes paths, potentially blocking weaker opinions
         that add or remove items, returning true on success, false if the edit
@@ -7873,7 +7873,7 @@ class Stage(Boost.Python.instance):
 
         Dictionary-valued Metadata
         """
-    def CreateClassPrim(self, rootPrimPath: pxr.Sdf.Path | str) -> Prim:
+    def CreateClassPrim(self, rootPrimPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Prim:
         """
         Author an *SdfPrimSpec* with *specifier* == *SdfSpecifierClass* for
         the class at root prim path C{path} at the current EditTarget.
@@ -7989,7 +7989,7 @@ class Stage(Boost.Python.instance):
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
         """
-    def DefinePrim(self, path: pxr.Sdf.Path | str, typeName: str | pxr.Ar.ResolvedPath = ...) -> Prim:
+    def DefinePrim(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, typeName: str | pxr.Ar.ResolvedPath = ...) -> Prim:
         """
         Attempt to ensure a *UsdPrim* at C{path} is defined (according to
         UsdPrim::IsDefined() ) on this stage.
@@ -8065,7 +8065,7 @@ class Stage(Boost.Python.instance):
 
         See UsdStage::Flatten for details of the flattening transformation.
         """
-    def FindLoadable(self, rootPath: pxr.Sdf.Path | str = ...) -> list[pxr.Sdf.Path]:
+    def FindLoadable(self, rootPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str = ...) -> list[pxr.Sdf.Path]:
         """
         Returns an SdfPathSet of all paths that can be loaded.
 
@@ -8113,7 +8113,7 @@ class Stage(Boost.Python.instance):
 
         Finally, any deactivated prims will be pruned from the result.
         """
-    def GetAttributeAtPath(self, path: pxr.Sdf.Path | str) -> Attribute:
+    def GetAttributeAtPath(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Attribute:
         """
         Return the UsdAttribute at C{path}, or an invalid UsdAttribute if none
         exists.
@@ -8293,7 +8293,7 @@ class Stage(Boost.Python.instance):
         """
         Returns a vector of all layers that have been muted on this stage.
         """
-    def GetObjectAtPath(self, path: pxr.Sdf.Path | str) -> Object:
+    def GetObjectAtPath(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Object:
         """
         Return the UsdObject at C{path}, or an invalid UsdObject if none
         exists.
@@ -8334,7 +8334,7 @@ class Stage(Boost.Python.instance):
         """
         Return this stage's population mask.
         """
-    def GetPrimAtPath(self, path: pxr.Sdf.Path | str) -> Prim:
+    def GetPrimAtPath(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Prim:
         '''
         Return the UsdPrim at C{path}, or an invalid UsdPrim if none exists.
 
@@ -8347,7 +8347,7 @@ class Stage(Boost.Python.instance):
         scene description, and therefore is safe to use as a"reader"in the Usd
         multi-threading model.
         '''
-    def GetPropertyAtPath(self, path: pxr.Sdf.Path | str) -> Property:
+    def GetPropertyAtPath(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Property:
         """
         Return the UsdProperty at C{path}, or an invalid UsdProperty if none
         exists.
@@ -8376,7 +8376,7 @@ class Stage(Boost.Python.instance):
         opening or creating the stage, in which case this method returns an
         invalid UsdPrim.
         '''
-    def GetRelationshipAtPath(self, path: pxr.Sdf.Path | str) -> Relationship:
+    def GetRelationshipAtPath(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Relationship:
         """
         Return the UsdAttribute at C{path}, or an invalid UsdAttribute if none
         exists.
@@ -8537,7 +8537,7 @@ class Stage(Boost.Python.instance):
         contents. As such, UsdStage::Open may still fail even if this function
         returns true.
         """
-    def Load(self, path: pxr.Sdf.Path | str = ..., policy: LoadPolicy = ...) -> Prim:
+    def Load(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str = ..., policy: LoadPolicy = ...) -> Prim:
         """
         Modify this stage's load rules to load the prim at C{path}, its
         ancestors, and all of its descendants if C{policy} is
@@ -8549,7 +8549,7 @@ class Stage(Boost.Python.instance):
 
         See Working Set Management for more information.
         """
-    def LoadAndUnload(self, loadSet: typing.Iterable[pxr.Sdf.Path | str], unloadSet: typing.Iterable[pxr.Sdf.Path | str], policy: LoadPolicy = ...) -> None:
+    def LoadAndUnload(self, loadSet: typing.Iterable[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str], unloadSet: typing.Iterable[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str], policy: LoadPolicy = ...) -> None:
         """
         Unload and load the given path sets.
 
@@ -8774,7 +8774,7 @@ class Stage(Boost.Python.instance):
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
         """
-    def OverridePrim(self, path: pxr.Sdf.Path | str) -> Prim:
+    def OverridePrim(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Prim:
         """
         Attempt to ensure a *UsdPrim* at C{path} exists on this stage.
 
@@ -8815,7 +8815,7 @@ class Stage(Boost.Python.instance):
         the only consumer of its layers, you should only call Reload() when
         you are assured no other threads may be reading from any Stages.
         """
-    def RemovePrim(self, path: pxr.Sdf.Path | str) -> bool:
+    def RemovePrim(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Remove all scene description for the given C{path} and its subtree *in
         the current UsdEditTarget*.
@@ -9090,7 +9090,7 @@ class Stage(Boost.Python.instance):
 
         UsdPrimRange::Stage()
         """
-    def Unload(self, path: pxr.Sdf.Path | str = ...) -> None:
+    def Unload(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str = ...) -> None:
         """
         Modify this stage's load rules to unload the prim and its descendants
         specified by C{path}.
@@ -9574,11 +9574,11 @@ class StageLoadRules(Boost.Python.instance):
         """
     @overload
     def __init__(self, _unknownArg1: StageLoadRules, /) -> None: ...
-    def AddRule(self, path: pxr.Sdf.Path | str, rule: StageLoadRules.Rule) -> None:
+    def AddRule(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, rule: StageLoadRules.Rule) -> None:
         """
         Add a literal rule. If there's already a rule for C{path}, replace it.
         """
-    def GetEffectiveRuleForPath(self, path: pxr.Sdf.Path | str) -> StageLoadRules.Rule:
+    def GetEffectiveRuleForPath(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> StageLoadRules.Rule:
         '''
         Return the"effective"rule for the given C{path}.
 
@@ -9594,7 +9594,7 @@ class StageLoadRules(Boost.Python.instance):
         """
         Return all the rules as a vector.
         """
-    def IsLoaded(self, path: pxr.Sdf.Path | str) -> bool:
+    def IsLoaded(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Return true if the given C{path} is considered loaded by these rules,
         or false if it is considered unloaded.
@@ -9602,12 +9602,12 @@ class StageLoadRules(Boost.Python.instance):
 
         This is equivalent to GetEffectiveRuleForPath(path) != NoneRule.
         """
-    def IsLoadedWithAllDescendants(self, path: pxr.Sdf.Path | str) -> bool:
+    def IsLoadedWithAllDescendants(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Return true if the given C{path} and all descendants are considered
         loaded by these rules; false otherwise.
         """
-    def IsLoadedWithNoDescendants(self, path: pxr.Sdf.Path | str) -> bool:
+    def IsLoadedWithNoDescendants(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Return true if the given C{path} and is considered loaded, but none of
         its descendants are considered loaded by these rules; false otherwise.
@@ -9620,7 +9620,7 @@ class StageLoadRules(Boost.Python.instance):
 
         This is equivalent to default-constructed UsdStageLoadRules.
         """
-    def LoadAndUnload(self, loadSet: typing.Iterable[pxr.Sdf.Path | str], unloadSet: typing.Iterable[pxr.Sdf.Path | str], policy: LoadPolicy) -> None:
+    def LoadAndUnload(self, loadSet: typing.Iterable[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str], unloadSet: typing.Iterable[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str], policy: LoadPolicy) -> None:
         """
         Add rules as if Unload() was called for each element of C{unloadSet}
         followed by calls to either LoadWithDescendants() (if C{policy} is
@@ -9633,7 +9633,7 @@ class StageLoadRules(Boost.Python.instance):
         """
         Return rules that load no payloads.
         """
-    def LoadWithDescendants(self, path: pxr.Sdf.Path | str) -> None:
+    def LoadWithDescendants(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> None:
         """
         Add a rule indicating that C{path}, all its ancestors, and all its
         descendants shall be loaded.
@@ -9646,7 +9646,7 @@ class StageLoadRules(Boost.Python.instance):
         the rule created in the first call. See AddRule() for more direct
         manipulation.
         """
-    def LoadWithoutDescendants(self, path: pxr.Sdf.Path | str) -> None:
+    def LoadWithoutDescendants(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> None:
         """
         Add a rule indicating that C{path} and all its ancestors but none of
         its descendants shall be loaded.
@@ -9665,11 +9665,11 @@ class StageLoadRules(Boost.Python.instance):
         Remove any redundant rules to make the set of rules as small as
         possible without changing behavior.
         """
-    def SetRules(self, rules: typing.Iterable[tuple[pxr.Sdf.Path | str, StageLoadRules.Rule]]) -> None:
+    def SetRules(self, rules: typing.Iterable[tuple[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, StageLoadRules.Rule]]) -> None:
         """
         Set literal rules, must be sorted by SdfPath::operator< .
         """
-    def Unload(self, path: pxr.Sdf.Path | str) -> None:
+    def Unload(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> None:
         """
         Add a rule indicating that C{path} and all its descendants shall be
         unloaded.
@@ -9740,7 +9740,7 @@ class StagePopulationMask(Boost.Python.instance):
         to this mask.
         """
     @overload
-    def Add(self, _path: pxr.Sdf.Path | str, /) -> StagePopulationMask:
+    def Add(self, _path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> StagePopulationMask:
         """
         Assign this mask to be its union with C{path} and return a reference
         to this mask.
@@ -9753,7 +9753,7 @@ class StagePopulationMask(Boost.Python.instance):
 
         This is the mask that contains the absolute root path.
         """
-    def GetIncludedChildNames(self, path: pxr.Sdf.Path | str) -> tuple:
+    def GetIncludedChildNames(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> tuple:
         """
         Return true if this mask includes any child prims beneath C{path},
         false otherwise.
@@ -9777,7 +9777,7 @@ class StagePopulationMask(Boost.Python.instance):
         Return a mask that is the union of this and C{other}.
         """
     @overload
-    def GetUnion(self, path: pxr.Sdf.Path | str) -> StagePopulationMask:
+    def GetUnion(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> StagePopulationMask:
         """
         Return a mask that is the union of this and a mask containing the
         single C{path}.
@@ -9792,7 +9792,7 @@ class StagePopulationMask(Boost.Python.instance):
         includes.
         """
     @overload
-    def Includes(self, path: pxr.Sdf.Path | str) -> bool:
+    def Includes(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Return true if this mask includes C{path}.
 
@@ -9800,7 +9800,7 @@ class StagePopulationMask(Boost.Python.instance):
         This is true if C{path} is one of the paths in this mask, or if it is
         either a descendant or an ancestor of one of the paths in this mask.
         """
-    def IncludesSubtree(self, path: pxr.Sdf.Path | str) -> bool:
+    def IncludesSubtree(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Return true if this mask includes C{path} and all paths descendant to
         C{path}.
@@ -10039,7 +10039,7 @@ class Typed(SchemaBase):
         preserves SchemaBase state.
         """
     @staticmethod
-    def Get(stage: Stage, path: pxr.Sdf.Path | str) -> Typed:
+    def Get(stage: Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Typed:
         """
         Return a UsdTyped holding the prim adhering to this schema at C{path}
         on C{stage}.
@@ -10073,9 +10073,9 @@ class UsdCollectionMembershipQuery(Boost.Python.instance):
     def GetIncludedCollections(self) -> list: ...
     def HasExcludes(self) -> bool: ...
     @overload
-    def IsPathIncluded(self, path: pxr.Sdf.Path | str) -> bool: ...
+    def IsPathIncluded(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool: ...
     @overload
-    def IsPathIncluded(self, path: pxr.Sdf.Path | str, parentExpansionRule: object) -> bool: ...
+    def IsPathIncluded(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, parentExpansionRule: object) -> bool: ...
     def __eq__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
     def __ne__(self, other: object) -> bool: ...

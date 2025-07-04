@@ -1,4 +1,5 @@
 import Boost.Python
+import pxr.Ar
 import pxr.Sdf
 import pxr.Tf
 import pxr.Usd
@@ -61,7 +62,7 @@ class GenerativeProcedural(pxr.UsdGeom.Boundable):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> GenerativeProcedural:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> GenerativeProcedural:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -87,7 +88,7 @@ class GenerativeProcedural(pxr.UsdGeom.Boundable):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> GenerativeProcedural:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> GenerativeProcedural:
         """
         Return a UsdProcGenerativeProcedural holding the prim adhering to this
         schema at C{path} on C{stage}.

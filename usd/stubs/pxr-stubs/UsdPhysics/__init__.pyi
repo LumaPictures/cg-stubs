@@ -96,7 +96,7 @@ class ArticulationRootAPI(pxr.Usd.APISchemaBase):
         UsdPrim::RemoveAPI()
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> ArticulationRootAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> ArticulationRootAPI:
         """
         Return a UsdPhysicsArticulationRootAPI holding the prim adhering to
         this schema at C{path} on C{stage}.
@@ -221,7 +221,7 @@ class CollisionAPI(pxr.Usd.APISchemaBase):
         for when to use Get vs Create.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> CollisionAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> CollisionAPI:
         """
         Return a UsdPhysicsCollisionAPI holding the prim adhering to this
         schema at C{path} on C{stage}.
@@ -346,7 +346,7 @@ class CollisionGroup(pxr.Usd.Typed):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> CollisionGroup:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> CollisionGroup:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -372,7 +372,7 @@ class CollisionGroup(pxr.Usd.Typed):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> CollisionGroup:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> CollisionGroup:
         """
         Return a UsdPhysicsCollisionGroup holding the prim adhering to this
         schema at C{path} on C{stage}.
@@ -506,7 +506,7 @@ class DistanceJoint(Joint):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> DistanceJoint:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> DistanceJoint:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -532,7 +532,7 @@ class DistanceJoint(Joint):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> DistanceJoint:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> DistanceJoint:
         """
         Return a UsdPhysicsDistanceJoint holding the prim adhering to this
         schema at C{path} on C{stage}.
@@ -756,7 +756,7 @@ class DriveAPI(pxr.Usd.APISchemaBase):
         """
     @overload
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> DriveAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> DriveAPI:
         """
         Return a UsdPhysicsDriveAPI holding the prim adhering to this schema
         at C{path} on C{stage}.
@@ -940,7 +940,7 @@ class DriveAPI(pxr.Usd.APISchemaBase):
         force, acceleration
         '''
     @staticmethod
-    def IsPhysicsDriveAPIPath(_path: pxr.Sdf.Path | str, /) -> bool:
+    def IsPhysicsDriveAPIPath(_path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> bool:
         """
         Checks if the given path C{path} is of an API schema of type
         PhysicsDriveAPI.
@@ -1043,7 +1043,7 @@ class FilteredPairsAPI(pxr.Usd.APISchemaBase):
         for when to use Get vs Create.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> FilteredPairsAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> FilteredPairsAPI:
         """
         Return a UsdPhysicsFilteredPairsAPI holding the prim adhering to this
         schema at C{path} on C{stage}.
@@ -1101,7 +1101,7 @@ class FixedJoint(Joint):
         as it preserves SchemaBase state.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> FixedJoint:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> FixedJoint:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -1127,7 +1127,7 @@ class FixedJoint(Joint):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> FixedJoint:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> FixedJoint:
         """
         Return a UsdPhysicsFixedJoint holding the prim adhering to this schema
         at C{path} on C{stage}.
@@ -1288,7 +1288,7 @@ class Joint(pxr.UsdGeom.Imageable):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Joint:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Joint:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -1314,7 +1314,7 @@ class Joint(pxr.UsdGeom.Imageable):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Joint:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Joint:
         """
         Return a UsdPhysicsJoint holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -1632,7 +1632,7 @@ class LimitAPI(pxr.Usd.APISchemaBase):
         """
     @overload
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> LimitAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> LimitAPI:
         """
         Return a UsdPhysicsLimitAPI holding the prim adhering to this schema
         at C{path} on C{stage}.
@@ -1729,7 +1729,7 @@ class LimitAPI(pxr.Usd.APISchemaBase):
         proper namespace prefix.
         """
     @staticmethod
-    def IsPhysicsLimitAPIPath(_path: pxr.Sdf.Path | str, /) -> bool:
+    def IsPhysicsLimitAPIPath(_path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> bool:
         """
         Checks if the given path C{path} is of an API schema of type
         PhysicsLimitAPI.
@@ -1872,7 +1872,7 @@ class MassAPI(pxr.Usd.APISchemaBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> MassAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> MassAPI:
         """
         Return a UsdPhysicsMassAPI holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -2145,7 +2145,7 @@ class MaterialAPI(pxr.Usd.APISchemaBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> MaterialAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> MaterialAPI:
         """
         Return a UsdPhysicsMaterialAPI holding the prim adhering to this
         schema at C{path} on C{stage}.
@@ -2346,7 +2346,7 @@ class MeshCollisionAPI(pxr.Usd.APISchemaBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> MeshCollisionAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> MeshCollisionAPI:
         """
         Return a UsdPhysicsMeshCollisionAPI holding the prim adhering to this
         schema at C{path} on C{stage}.
@@ -2472,7 +2472,7 @@ class PrismaticJoint(Joint):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> PrismaticJoint:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> PrismaticJoint:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -2498,7 +2498,7 @@ class PrismaticJoint(Joint):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> PrismaticJoint:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> PrismaticJoint:
         """
         Return a UsdPhysicsPrismaticJoint holding the prim adhering to this
         schema at C{path} on C{stage}.
@@ -2653,7 +2653,7 @@ class RevoluteJoint(Joint):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> RevoluteJoint:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> RevoluteJoint:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -2679,7 +2679,7 @@ class RevoluteJoint(Joint):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> RevoluteJoint:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> RevoluteJoint:
         """
         Return a UsdPhysicsRevoluteJoint holding the prim adhering to this
         schema at C{path} on C{stage}.
@@ -2931,7 +2931,7 @@ class RigidBodyAPI(pxr.Usd.APISchemaBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> RigidBodyAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> RigidBodyAPI:
         """
         Return a UsdPhysicsRigidBodyAPI holding the prim adhering to this
         schema at C{path} on C{stage}.
@@ -3113,7 +3113,7 @@ class Scene(pxr.Usd.Typed):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Scene:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Scene:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -3139,7 +3139,7 @@ class Scene(pxr.Usd.Typed):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Scene:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Scene:
         """
         Return a UsdPhysicsScene holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -3273,7 +3273,7 @@ class SphericalJoint(Joint):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> SphericalJoint:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> SphericalJoint:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -3299,7 +3299,7 @@ class SphericalJoint(Joint):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> SphericalJoint:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> SphericalJoint:
         """
         Return a UsdPhysicsSphericalJoint holding the prim adhering to this
         schema at C{path} on C{stage}.

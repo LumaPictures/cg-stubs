@@ -1,4 +1,5 @@
 import Boost.Python
+import pxr.Ar
 import pxr.Sdf
 import pxr.Tf
 import pxr.Usd
@@ -112,7 +113,7 @@ class GenerativeProceduralAPI(pxr.Usd.APISchemaBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> GenerativeProceduralAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> GenerativeProceduralAPI:
         """
         Return a UsdHydraGenerativeProceduralAPI holding the prim adhering to
         this schema at C{path} on C{stage}.

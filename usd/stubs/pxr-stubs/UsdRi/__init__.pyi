@@ -141,7 +141,7 @@ class MaterialAPI(pxr.Usd.APISchemaBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> MaterialAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> MaterialAPI:
         """
         Return a UsdRiMaterialAPI holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -251,9 +251,9 @@ class MaterialAPI(pxr.Usd.APISchemaBase):
         '''
         Returns the"volume"output associated with the material.
         '''
-    def SetDisplacementSource(self, _displacementPath: pxr.Sdf.Path | str, /) -> bool: ...
-    def SetSurfaceSource(self, _surfacePath: pxr.Sdf.Path | str, /) -> bool: ...
-    def SetVolumeSource(self, _volumePath: pxr.Sdf.Path | str, /) -> bool: ...
+    def SetDisplacementSource(self, _displacementPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> bool: ...
+    def SetSurfaceSource(self, _surfacePath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> bool: ...
+    def SetVolumeSource(self, _volumePath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> bool: ...
     @staticmethod
     def _GetStaticTfType() -> pxr.Tf.Type: ...
     def __bool__(self) -> bool: ...
@@ -349,7 +349,7 @@ class RenderPassAPI(pxr.Usd.APISchemaBase):
         UsdPrim::RemoveAPI()
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> RenderPassAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> RenderPassAPI:
         """
         Return a UsdRiRenderPassAPI holding the prim adhering to this schema
         at C{path} on C{stage}.
@@ -517,7 +517,7 @@ class SplineAPI(pxr.Usd.APISchemaBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> SplineAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> SplineAPI:
         """
         Return a UsdRiSplineAPI holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -711,7 +711,7 @@ class StatementsAPI(pxr.Usd.APISchemaBase):
         differs from the above function only in what argument(s) it accepts.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> StatementsAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> StatementsAPI:
         """
         Return a UsdRiStatementsAPI holding the prim adhering to this schema
         at C{path} on C{stage}.

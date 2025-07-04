@@ -1,4 +1,5 @@
 import Boost.Python
+import pxr.Ar
 import pxr.Sdf
 import pxr.Tf
 import pxr.Usd
@@ -43,7 +44,7 @@ class DenoisePass(pxr.Usd.Typed):
         as it preserves SchemaBase state.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> DenoisePass:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> DenoisePass:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -69,7 +70,7 @@ class DenoisePass(pxr.Usd.Typed):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> DenoisePass:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> DenoisePass:
         """
         Return a UsdRenderDenoisePass holding the prim adhering to this schema
         at C{path} on C{stage}.
@@ -211,7 +212,7 @@ class Pass(pxr.Usd.Typed):
         when to use Get vs Create.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Pass:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Pass:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -237,7 +238,7 @@ class Pass(pxr.Usd.Typed):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Pass:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Pass:
         """
         Return a UsdRenderPass holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -482,7 +483,7 @@ class Product(SettingsBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Product:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Product:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -508,7 +509,7 @@ class Product(SettingsBase):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Product:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Product:
         """
         Return a UsdRenderProduct holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -663,7 +664,7 @@ class Settings(SettingsBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Settings:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Settings:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -689,7 +690,7 @@ class Settings(SettingsBase):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Settings:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Settings:
         """
         Return a UsdRenderSettings holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -924,7 +925,7 @@ class SettingsBase(pxr.Usd.Typed):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> SettingsBase:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> SettingsBase:
         """
         Return a UsdRenderSettingsBase holding the prim adhering to this
         schema at C{path} on C{stage}.
@@ -1303,7 +1304,7 @@ class Var(pxr.Usd.Typed):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Var:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Var:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -1329,7 +1330,7 @@ class Var(pxr.Usd.Typed):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Var:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Var:
         """
         Return a UsdRenderVar holding the prim adhering to this schema at
         C{path} on C{stage}.

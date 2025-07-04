@@ -204,7 +204,7 @@ class BBoxCache(Boost.Python.instance):
         See ComputeWorldBound() for notes on performance and error handling.
         """
     @overload
-    def ComputeUntransformedBound(self, prim: pxr.Usd.Prim, pathsToSkip: typing.Iterable[pxr.Sdf.Path | str], ctmOverrides: pxr.Tf.HashMap[pxr.Sdf.Path | str, pxr.Gf.Matrix4d, pxr.Sdf.Path.Hash]) -> pxr.Gf.BBox3d:  # type: ignore[name-defined]
+    def ComputeUntransformedBound(self, prim: pxr.Usd.Prim, pathsToSkip: typing.Iterable[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str], ctmOverrides: pxr.Tf.HashMap[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, pxr.Gf.Matrix4d, pxr.Sdf.Path.Hash]) -> pxr.Gf.BBox3d:  # type: ignore[name-defined]
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -241,7 +241,7 @@ class BBoxCache(Boost.Python.instance):
         C{prim} is invalid, this method will abort the program; therefore it
         is the client's responsibility to ensure C{prim} is valid.
         """
-    def ComputeWorldBoundWithOverrides(self, prim: pxr.Usd.Prim, pathsToSkip: typing.Iterable[pxr.Sdf.Path | str], primOverride: pxr.Gf.Matrix4d, ctmOverrides: pxr.Tf.HashMap[pxr.Sdf.Path | str, pxr.Gf.Matrix4d, pxr.Sdf.Path.Hash]) -> pxr.Gf.BBox3d:  # type: ignore[name-defined]
+    def ComputeWorldBoundWithOverrides(self, prim: pxr.Usd.Prim, pathsToSkip: typing.Iterable[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str], primOverride: pxr.Gf.Matrix4d, ctmOverrides: pxr.Tf.HashMap[pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, pxr.Gf.Matrix4d, pxr.Sdf.Path.Hash]) -> pxr.Gf.BBox3d:  # type: ignore[name-defined]
         """
         Computes the bound of the prim's descendents in world space while
         excluding the subtrees rooted at the paths in C{pathsToSkip}.
@@ -768,7 +768,7 @@ class BasisCurves(Curves):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> BasisCurves:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> BasisCurves:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -794,7 +794,7 @@ class BasisCurves(Curves):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> BasisCurves:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> BasisCurves:
         """
         Return a UsdGeomBasisCurves holding the prim adhering to this schema
         at C{path} on C{stage}.
@@ -1017,7 +1017,7 @@ class Boundable(Xformable):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Boundable:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Boundable:
         """
         Return a UsdGeomBoundable holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -1295,7 +1295,7 @@ class Camera(Xformable):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Camera:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Camera:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -1321,7 +1321,7 @@ class Camera(Xformable):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Camera:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Camera:
         """
         Return a UsdGeomCamera holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -1750,7 +1750,7 @@ class Capsule(Gprim):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Capsule:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Capsule:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -1776,7 +1776,7 @@ class Capsule(Gprim):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Capsule:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Capsule:
         """
         Return a UsdGeomCapsule holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -1982,7 +1982,7 @@ class Capsule_1(Gprim):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Capsule_1:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Capsule_1:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -2008,7 +2008,7 @@ class Capsule_1(Gprim):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Capsule_1:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Capsule_1:
         """
         Return a UsdGeomCapsule_1 holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -2226,7 +2226,7 @@ class Cone(Gprim):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Cone:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Cone:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -2252,7 +2252,7 @@ class Cone(Gprim):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Cone:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Cone:
         """
         Return a UsdGeomCone holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -2539,7 +2539,7 @@ class Cube(Gprim):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Cube:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Cube:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -2565,7 +2565,7 @@ class Cube(Gprim):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Cube:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Cube:
         """
         Return a UsdGeomCube holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -2713,7 +2713,7 @@ class Curves(PointBased):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Curves:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Curves:
         """
         Return a UsdGeomCurves holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -2904,7 +2904,7 @@ class Cylinder(Gprim):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Cylinder:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Cylinder:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -2930,7 +2930,7 @@ class Cylinder(Gprim):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Cylinder:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Cylinder:
         """
         Return a UsdGeomCylinder holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -3133,7 +3133,7 @@ class Cylinder_1(Gprim):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Cylinder_1:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Cylinder_1:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -3159,7 +3159,7 @@ class Cylinder_1(Gprim):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Cylinder_1:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Cylinder_1:
         """
         Return a UsdGeomCylinder_1 holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -3394,7 +3394,7 @@ class Gprim(Boundable):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Gprim:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Gprim:
         """
         Return a UsdGeomGprim holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -3670,7 +3670,7 @@ class HermiteCurves(Curves):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> HermiteCurves:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> HermiteCurves:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -3696,7 +3696,7 @@ class HermiteCurves(Curves):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> HermiteCurves:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> HermiteCurves:
         """
         Return a UsdGeomHermiteCurves holding the prim adhering to this schema
         at C{path} on C{stage}.
@@ -4053,7 +4053,7 @@ class Imageable(pxr.Usd.Typed):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Imageable:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Imageable:
         """
         Return a UsdGeomImageable holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -4510,7 +4510,7 @@ class Mesh(PointBased):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Mesh:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Mesh:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -4536,7 +4536,7 @@ class Mesh(PointBased):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Mesh:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Mesh:
         """
         Return a UsdGeomMesh holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -5275,7 +5275,7 @@ class ModelAPI(pxr.Usd.APISchemaBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> ModelAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> ModelAPI:
         """
         Return a UsdGeomModelAPI holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -5756,7 +5756,7 @@ class MotionAPI(pxr.Usd.APISchemaBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> MotionAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> MotionAPI:
         """
         Return a UsdGeomMotionAPI holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -5971,7 +5971,7 @@ class NurbsCurves(Curves):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> NurbsCurves:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> NurbsCurves:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -5997,7 +5997,7 @@ class NurbsCurves(Curves):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> NurbsCurves:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> NurbsCurves:
         """
         Return a UsdGeomNurbsCurves holding the prim adhering to this schema
         at C{path} on C{stage}.
@@ -6364,7 +6364,7 @@ class NurbsPatch(PointBased):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> NurbsPatch:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> NurbsPatch:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -6390,7 +6390,7 @@ class NurbsPatch(PointBased):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> NurbsPatch:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> NurbsPatch:
         """
         Return a UsdGeomNurbsPatch holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -6894,7 +6894,7 @@ class Plane(Gprim):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Plane:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Plane:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -6920,7 +6920,7 @@ class Plane(Gprim):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Plane:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Plane:
         """
         Return a UsdGeomPlane holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -7204,7 +7204,7 @@ class PointBased(Gprim):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> PointBased:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> PointBased:
         """
         Return a UsdGeomPointBased holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -7948,7 +7948,7 @@ class PointInstancer(Boundable):
         honors masking.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> PointInstancer:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> PointInstancer:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -7974,7 +7974,7 @@ class PointInstancer(Boundable):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> PointInstancer:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> PointInstancer:
         """
         Return a UsdGeomPointInstancer holding the prim adhering to this
         schema at C{path} on C{stage}.
@@ -8405,7 +8405,7 @@ class Points(PointBased):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Points:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Points:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -8431,7 +8431,7 @@ class Points(PointBased):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Points:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Points:
         """
         Return a UsdGeomPoints holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -9033,7 +9033,7 @@ class Primvar(Boost.Python.instance):
 
         GetElementSize()
         """
-    def SetIdTarget(self, _path: pxr.Sdf.Path | str, /) -> bool:
+    def SetIdTarget(self, _path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> bool:
         """
         This primvar must be of String or StringArray type for this method to
         succeed.
@@ -9357,7 +9357,7 @@ class PrimvarsAPI(pxr.Usd.APISchemaBase):
         Which Method to Use to Retrieve Primvars
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> PrimvarsAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> PrimvarsAPI:
         """
         Return a UsdGeomPrimvarsAPI holding the prim adhering to this schema
         at C{path} on C{stage}.
@@ -9525,7 +9525,7 @@ class Scope(Imageable):
         preserves SchemaBase state.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Scope:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Scope:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -9551,7 +9551,7 @@ class Scope(Imageable):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Scope:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Scope:
         """
         Return a UsdGeomScope holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -9629,7 +9629,7 @@ class Sphere(Gprim):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Sphere:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Sphere:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -9655,7 +9655,7 @@ class Sphere(Gprim):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Sphere:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Sphere:
         """
         Return a UsdGeomSphere holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -9834,7 +9834,7 @@ class Subset(pxr.Usd.Typed):
         is passed in for C{familyType} and C{familyName}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Subset:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Subset:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -9860,7 +9860,7 @@ class Subset(pxr.Usd.Typed):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Subset:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Subset:
         """
         Return a UsdGeomSubset holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -10200,7 +10200,7 @@ class TetMesh(PointBased):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> TetMesh:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> TetMesh:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -10238,7 +10238,7 @@ class TetMesh(PointBased):
         the tetrahedra have  the correct orientation.
         '''
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> TetMesh:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> TetMesh:
         """
         Return a UsdGeomTetMesh holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -10667,7 +10667,7 @@ class VisibilityAPI(pxr.Usd.APISchemaBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> VisibilityAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> VisibilityAPI:
         """
         Return a UsdGeomVisibilityAPI holding the prim adhering to this schema
         at C{path} on C{stage}.
@@ -10864,7 +10864,7 @@ class Xform(Xformable):
         preserves SchemaBase state.
         """
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Xform:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Xform:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -10890,7 +10890,7 @@ class Xform(Xformable):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Xform:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Xform:
         """
         Return a UsdGeomXform holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -11156,7 +11156,7 @@ class XformCommonAPI(pxr.Usd.APISchemaBase):
         explicitly takes a rotation order.)
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> XformCommonAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> XformCommonAPI:
         """
         Return a UsdGeomXformCommonAPI holding the prim adhering to this
         schema at C{path} on C{stage}.
@@ -12001,7 +12001,7 @@ class Xformable(Imageable):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Xformable:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Xformable:
         """
         Return a UsdGeomXformable holding the prim adhering to this schema at
         C{path} on C{stage}.

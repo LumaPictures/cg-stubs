@@ -157,7 +157,7 @@ class ConnectableAPI(pxr.Usd.APISchemaBase):
         """
     @overload
     @staticmethod
-    def ConnectToSource(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, sourcePath: pxr.Sdf.Path | str) -> bool:
+    def ConnectToSource(shadingAttr: pxr.Usd.Attribute | pxr.UsdGeom.ConstraintTarget | pxr.UsdGeom.Primvar | pxr.UsdGeom.XformOp | Input | Output, sourcePath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         This is an overloaded member function, provided for convenience. It
         differs from the above function only in what argument(s) it accepts.
@@ -228,7 +228,7 @@ class ConnectableAPI(pxr.Usd.APISchemaBase):
         ConnectToSource() .
         '''
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> ConnectableAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> ConnectableAPI:
         """
         Return a UsdShadeConnectableAPI holding the prim adhering to this
         schema at C{path} on C{stage}.
@@ -452,7 +452,7 @@ class ConnectionSourceInfo(Boost.Python.instance):
     @overload
     def __init__(self, output: Output) -> None: ...
     @overload
-    def __init__(self, _stage: pxr.Usd.Stage, _sourcePath: pxr.Sdf.Path | str, /) -> None:
+    def __init__(self, _stage: pxr.Usd.Stage, _sourcePath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> None:
         """
         Construct the information for this struct from a property path.
 
@@ -546,7 +546,7 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
 
         UsdPrim::RemoveAPI()
         '''
-    def ApplyAndBind(self, name: str | pxr.Ar.ResolvedPath, path: pxr.Sdf.Path | str) -> bool:
+    def ApplyAndBind(self, name: str | pxr.Ar.ResolvedPath, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         A convinience API for clients to use to Apply schema in accordance
         with new UsdShadeCoordSysAPI schema constructs and appropriate Bind
@@ -558,7 +558,7 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
         Deprecated
         """
     @overload
-    def Bind(self, name: str | pxr.Ar.ResolvedPath, path: pxr.Sdf.Path | str) -> bool:
+    def Bind(self, name: str | pxr.Ar.ResolvedPath, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Bind the name to the given path.
 
@@ -577,7 +577,7 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
         behavior.
         """
     @overload
-    def Bind(self, path: pxr.Sdf.Path | str) -> bool:
+    def Bind(self, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Bind the name to the given path.
 
@@ -729,7 +729,7 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
         """
     @overload
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> CoordSysAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> CoordSysAPI:
         """
         Return a UsdShadeCoordSysAPI holding the prim adhering to this schema
         at C{path} on C{stage}.
@@ -867,7 +867,7 @@ class CoordSysAPI(pxr.Usd.APISchemaBase):
         Which implies it has the appropriate binding relationship(s).
         """
     @staticmethod
-    def IsCoordSysAPIPath(_path: pxr.Sdf.Path | str, /) -> bool:
+    def IsCoordSysAPIPath(_path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> bool:
         """
         Checks if the given path C{path} is of an API schema of type
         CoordSysAPI.
@@ -975,7 +975,7 @@ class Input(Boost.Python.instance):
         differs from the above function only in what argument(s) it accepts.
         """
     @overload
-    def ConnectToSource(self, sourcePath: pxr.Sdf.Path | str) -> bool:
+    def ConnectToSource(self, sourcePath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Authors a connection for this Input to the source at the given path.
 
@@ -1460,7 +1460,7 @@ class Material(NodeGraph):
         requested renderContext.
         '''
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Material:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Material:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -1486,7 +1486,7 @@ class Material(NodeGraph):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Material:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Material:
         """
         Return a UsdShadeMaterial holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -1704,7 +1704,7 @@ class Material(NodeGraph):
 
         An empty Material is equivalent to clearing the base Material.
         """
-    def SetBaseMaterialPath(self, baseLookPath: pxr.Sdf.Path | str) -> None:
+    def SetBaseMaterialPath(self, baseLookPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> None:
         """
         Set the path to the base Material of this Material.
 
@@ -2101,7 +2101,7 @@ class MaterialBindingAPI(pxr.Usd.APISchemaBase):
         materials to be bound most often to subsets of faces on meshes.
         '''
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> MaterialBindingAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> MaterialBindingAPI:
         """
         Return a UsdShadeMaterialBindingAPI holding the prim adhering to this
         schema at C{path} on C{stage}.
@@ -2441,7 +2441,7 @@ class NodeDefAPI(pxr.Usd.APISchemaBase):
         - the default for C{writeSparsely} is C{false}.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> NodeDefAPI:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> NodeDefAPI:
         """
         Return a UsdShadeNodeDefAPI holding the prim adhering to this schema
         at C{path} on C{stage}.
@@ -2830,7 +2830,7 @@ class NodeGraph(pxr.Usd.Typed):
         the"outputs:"namespace.
         '''
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> NodeGraph:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> NodeGraph:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -2856,7 +2856,7 @@ class NodeGraph(pxr.Usd.Typed):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> NodeGraph:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> NodeGraph:
         """
         Return a UsdShadeNodeGraph holding the prim adhering to this schema at
         C{path} on C{stage}.
@@ -3010,7 +3010,7 @@ class Output(Boost.Python.instance):
         differs from the above function only in what argument(s) it accepts.
         """
     @overload
-    def ConnectToSource(self, sourcePath: pxr.Sdf.Path | str) -> bool:
+    def ConnectToSource(self, sourcePath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> bool:
         """
         Authors a connection for this Output to the source at the given path.
 
@@ -3345,7 +3345,7 @@ class Shader(pxr.Usd.Typed):
         their value is assumed to be computed externally.
         '''
     @staticmethod
-    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Shader:
+    def Define(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Shader:
         """
         Attempt to ensure a *UsdPrim* adhering to this schema at C{path} is
         defined (according to UsdPrim::IsDefined() ) on this stage.
@@ -3371,7 +3371,7 @@ class Shader(pxr.Usd.Typed):
         overrides the opinion at the current EditTarget.
         """
     @staticmethod
-    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | str) -> Shader:
+    def Get(stage: pxr.Usd.Stage, path: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str) -> Shader:
         """
         Return a UsdShadeShader holding the prim adhering to this schema at
         C{path} on C{stage}.

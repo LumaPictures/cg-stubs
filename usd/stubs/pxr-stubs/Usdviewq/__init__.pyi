@@ -101,7 +101,7 @@ class HydraObserver(Boost.Python.instance):
         """
         Clears any accumulated scene change notices.
         """
-    def GetChildPrimPaths(self, _primPath: pxr.Sdf.Path | str, /) -> list[pxr.Sdf.Path]:
+    def GetChildPrimPaths(self, _primPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> list[pxr.Sdf.Path]:
         """
         Returns the paths of the immediate children of the specified
         C{primPath} for the actively observer scene index.
@@ -131,7 +131,7 @@ class HydraObserver(Boost.Python.instance):
 
         Consumers of this follow a polling rather than callback pattern.
         """
-    def GetPrim(self, _primPath: pxr.Sdf.Path | str, /) -> HdSceneIndexPrim:  # type: ignore[name-defined]
+    def GetPrim(self, _primPath: pxr.Sdf.Path | pxr.Ar.ResolvedPath | str, /) -> HdSceneIndexPrim:  # type: ignore[name-defined]
         """
         Returns the prim type and data source for the specified C{primPath}
         for the actively observer scene index.

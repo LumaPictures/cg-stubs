@@ -550,6 +550,8 @@ class TypeInfo(CppTypeConverter):
 
             # manual updates
             convertible["pxr.Tf.Type"].add("type[pxr.Usd.SchemaBase]")
+            convertible["pxr.Sdf.Path"].add("pxr.Ar.ResolvedPath")
+
             self._implicitly_convertible_types = dict(convertible)
 
         if not self._implicitly_convertible_types:
