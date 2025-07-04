@@ -11421,7 +11421,7 @@ class XformOp(Boost.Python.instance):
         Returns the Type enum associated with the given C{opTypeToken}.
         """
     @staticmethod
-    def GetOpTypeToken(_opType: pxr.Tf.Type, /) -> str:
+    def GetOpTypeToken(_opType: pxr.Tf.Type | type[pxr.Usd.SchemaBase], /) -> str:
         """
         Returns the TfToken used to encode the given C{opType}.
 

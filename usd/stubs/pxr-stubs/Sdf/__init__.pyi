@@ -1,6 +1,7 @@
 import Boost.Python
 import pxr.Ar
 import pxr.Tf
+import pxr.Usd
 import pxr.Vt
 import types
 import typing
@@ -847,7 +848,7 @@ class FileFormat(Boost.Python.instance):
         Returns true if C{file} can be read by this format.
         """
     @staticmethod
-    def FindAllDerivedFileFormatExtensions(_baseType: pxr.Tf.Type, /) -> list[str]:
+    def FindAllDerivedFileFormatExtensions(_baseType: pxr.Tf.Type | type[pxr.Usd.SchemaBase], /) -> list[str]:
         """
         Returns a set containing the extension(s) corresponding to all
         registered file formats that derive from C{baseType}.

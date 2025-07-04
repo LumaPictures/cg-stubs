@@ -348,7 +348,7 @@ class ConnectableAPI(pxr.Usd.APISchemaBase):
         methods of the schemas involved.
         """
     @staticmethod
-    def HasConnectableAPI(schemaType: pxr.Tf.Type) -> bool:
+    def HasConnectableAPI(schemaType: pxr.Tf.Type | type[pxr.Usd.SchemaBase]) -> bool:
         """
         Return true if the C{schemaType} has a valid connectableAPIBehavior
         registered, false otherwise.

@@ -548,6 +548,8 @@ class TypeInfo(CppTypeConverter):
                         f"typing.Iterable[{sub_type}]" for sub_type in sorted(sub_types)
                     )
 
+            # manual updates
+            convertible["pxr.Tf.Type"].add("type[pxr.Usd.SchemaBase]")
             self._implicitly_convertible_types = dict(convertible)
 
         if not self._implicitly_convertible_types:

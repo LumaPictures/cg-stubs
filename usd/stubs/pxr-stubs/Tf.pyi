@@ -1,5 +1,6 @@
 import Boost.Python
 import pxr.Ar
+import pxr.Usd
 import types
 import typing
 from typing import Any, Callable, ClassVar, overload
@@ -1106,8 +1107,8 @@ class Type(Boost.Python.instance):
 
         """
     @overload
-    def __init__(self, _info: Type, /) -> None: ...
-    def AddAlias(self, _base: Type, _name: str | pxr.Ar.ResolvedPath, /) -> None:
+    def __init__(self, _info: Type | type[pxr.Usd.SchemaBase], /) -> None: ...
+    def AddAlias(self, _base: Type | type[pxr.Usd.SchemaBase], _name: str | pxr.Ar.ResolvedPath, /) -> None:
         """
         Add an alias name for this type under the given base type.
 
@@ -1151,7 +1152,7 @@ class Type(Boost.Python.instance):
 
         AddAlias
         """
-    def GetAliases(self, _derivedType: Type, /) -> tuple:
+    def GetAliases(self, _derivedType: Type | type[pxr.Usd.SchemaBase], /) -> tuple:
         """
         Returns a vector of the aliases registered for the derivedType under
         this, the base type.
@@ -1200,7 +1201,7 @@ class Type(Boost.Python.instance):
         type is specified with no bases, it is implicitly considered to derive
         from the root type.
         """
-    def IsA(self, _queryType: Type, /) -> bool:
+    def IsA(self, _queryType: Type | type[pxr.Usd.SchemaBase], /) -> bool:
         """
         Return true if this type is the same as or derived from C{queryType}.
 

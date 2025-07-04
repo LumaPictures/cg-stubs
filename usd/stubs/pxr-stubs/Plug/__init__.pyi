@@ -1,6 +1,7 @@
 import Boost.Python
 import pxr.Ar
 import pxr.Tf
+import pxr.Usd
 import typing
 from typing import overload
 
@@ -43,7 +44,7 @@ class Plugin(Boost.Python.instance):
         """Raises an exception
         This class cannot be instantiated from Python
         """
-    def DeclaresType(self, type: pxr.Tf.Type, includeSubclasses: bool = ...) -> bool:
+    def DeclaresType(self, type: pxr.Tf.Type | type[pxr.Usd.SchemaBase], includeSubclasses: bool = ...) -> bool:
         """
         Returns true if C{type} is declared by this plugin.
 
@@ -60,7 +61,7 @@ class Plugin(Boost.Python.instance):
         If verification fails an empty path is returned. Relative paths are
         relative to the plugin's resource path.
         """
-    def GetMetadataForType(self, _type: pxr.Tf.Type, /) -> dict:
+    def GetMetadataForType(self, _type: pxr.Tf.Type | type[pxr.Usd.SchemaBase], /) -> dict:
         """
         Returns the metadata sub-dictionary for a particular type.
         """
@@ -391,7 +392,7 @@ class Registry(Boost.Python.instance):
     '''
     def __init__(self) -> None: ...
     @staticmethod
-    def FindDerivedTypeByName(_base: pxr.Tf.Type, _typeName: str | pxr.Ar.ResolvedPath, /) -> pxr.Tf.Type:
+    def FindDerivedTypeByName(_base: pxr.Tf.Type | type[pxr.Usd.SchemaBase], _typeName: str | pxr.Ar.ResolvedPath, /) -> pxr.Tf.Type:
         """
         Retrieve the C{TfType} that derives from C{base} and has the given
         alias or type name C{typeName}.
@@ -422,7 +423,7 @@ class Registry(Boost.Python.instance):
         Plug-In Discovery & Registration
         """
     @staticmethod
-    def GetAllDerivedTypes(_base: pxr.Tf.Type, /) -> tuple:
+    def GetAllDerivedTypes(_base: pxr.Tf.Type | type[pxr.Usd.SchemaBase], /) -> tuple:
         """
         Return the set of all types derived (directly or indirectly) from
         *base*.
@@ -445,7 +446,7 @@ class Registry(Boost.Python.instance):
         Plug-In Discovery & Registration
         """
     @staticmethod
-    def GetDirectlyDerivedTypes(_base: pxr.Tf.Type, /) -> tuple:
+    def GetDirectlyDerivedTypes(_base: pxr.Tf.Type | type[pxr.Usd.SchemaBase], /) -> tuple:
         """
         Return a vector of types derived directly from *base*.
 
@@ -453,7 +454,7 @@ class Registry(Boost.Python.instance):
         Use this function if you expect that plugins may provide types derived
         from *base*. Otherwise, use *TfType::GetDirectlyDerivedTypes*.
         """
-    def GetPluginForType(self, _t: pxr.Tf.Type, /) -> Plugin:
+    def GetPluginForType(self, _t: pxr.Tf.Type | type[pxr.Usd.SchemaBase], /) -> Plugin:
         """
         Returns the plug-in for the given type, or a null pointer if there is
         no registered plug-in.
@@ -467,7 +468,7 @@ class Registry(Boost.Python.instance):
 
         Plug-In Discovery & Registration
         """
-    def GetStringFromPluginMetaData(self, _type: pxr.Tf.Type, _key: str | pxr.Ar.ResolvedPath, /) -> str:
+    def GetStringFromPluginMetaData(self, _type: pxr.Tf.Type | type[pxr.Usd.SchemaBase], _key: str | pxr.Ar.ResolvedPath, /) -> str:
         """
         Looks for a string associated with *type* and *key* and returns it, or
         an empty string if *type* or *key* are not found.

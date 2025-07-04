@@ -702,7 +702,7 @@ class StatementsAPI(pxr.Usd.APISchemaBase):
         C{riType}.
         '''
     @overload
-    def CreateRiAttribute(self, name: str | pxr.Ar.ResolvedPath, tfType: pxr.Tf.Type, nameSpace: str | pxr.Ar.ResolvedPath = ...) -> pxr.Usd.Attribute:
+    def CreateRiAttribute(self, name: str | pxr.Ar.ResolvedPath, tfType: pxr.Tf.Type | type[pxr.Usd.SchemaBase], nameSpace: str | pxr.Ar.ResolvedPath = ...) -> pxr.Usd.Attribute:
         """
         Creates an attribute of the given C{tfType}.
 

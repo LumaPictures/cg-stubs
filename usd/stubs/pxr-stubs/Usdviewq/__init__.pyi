@@ -221,7 +221,7 @@ class Utils(Boost.Python.instance):
         it is imageable.
         """
     @staticmethod
-    def _GetAllPrimsOfType(_stage: pxr.Usd.Stage, _schemaType: pxr.Tf.Type, /) -> list[pxr.Usd.Prim]:
+    def _GetAllPrimsOfType(_stage: pxr.Usd.Stage, _schemaType: pxr.Tf.Type | type[pxr.Usd.SchemaBase], /) -> list[pxr.Usd.Prim]:
         """
         For the given C{stage} and C{schemaType}, return all active, defined
         prims that either match the schemaType exactly or are a descendant

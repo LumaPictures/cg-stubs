@@ -2,6 +2,7 @@ import Boost.Python
 import pxr.Ar
 import pxr.Sdf
 import pxr.Tf
+import pxr.Usd
 import typing
 from _typeshed import Incomplete
 from typing import Any, ClassVar, overload
@@ -686,7 +687,7 @@ class Registry(Boost.Python.instance):
         filesystem paths.
         """
     def SetExtraDiscoveryPlugins(self, arg2: list, /) -> None: ...
-    def SetExtraParserPlugins(self, _pluginTypes: typing.Iterable[pxr.Tf.Type], /) -> None:
+    def SetExtraParserPlugins(self, _pluginTypes: typing.Iterable[pxr.Tf.Type | type[pxr.Usd.SchemaBase]], /) -> None:
         """
         Allows the client to set any additional parser plugins that would
         otherwise NOT be found through the plugin system.

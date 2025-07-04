@@ -3941,12 +3941,12 @@ class Prim(Object):
              applying valid API schemas.
         """
     @overload
-    def ApplyAPI(self, schemaType: pxr.Tf.Type) -> bool:
+    def ApplyAPI(self, schemaType: pxr.Tf.Type | type[SchemaBase]) -> bool:
         """
         This is an overload of ApplyAPI that takes a TfType C{schemaType}.
         """
     @overload
-    def ApplyAPI(self, schemaType: pxr.Tf.Type, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
+    def ApplyAPI(self, schemaType: pxr.Tf.Type | type[SchemaBase], instanceName: str | pxr.Ar.ResolvedPath) -> bool:
         """
         This is an overload of ApplyAPI with C{instanceName} that takes a
         TfType C{schemaType}.
@@ -3986,14 +3986,14 @@ class Prim(Object):
 
         """
     @overload
-    def CanApplyAPI(self, schemaType: pxr.Tf.Type) -> _CanApplyAPIResult:
+    def CanApplyAPI(self, schemaType: pxr.Tf.Type | type[SchemaBase]) -> _CanApplyAPIResult:
         """
         This is an overload of CanApplyAPI that takes a TfType C{schemaType}.
 
 
         """
     @overload
-    def CanApplyAPI(self, schemaType: pxr.Tf.Type, instanceName: str | pxr.Ar.ResolvedPath) -> _CanApplyAPIResult:
+    def CanApplyAPI(self, schemaType: pxr.Tf.Type | type[SchemaBase], instanceName: str | pxr.Ar.ResolvedPath) -> _CanApplyAPIResult:
         """
         This is an overload of CanApplyAPI with C{instanceName} that takes a
         TfType C{schemaType}.
@@ -4920,12 +4920,12 @@ class Prim(Object):
         prim IsA.
         """
     @overload
-    def HasAPI(self, schemaType: pxr.Tf.Type) -> bool:
+    def HasAPI(self, schemaType: pxr.Tf.Type | type[SchemaBase]) -> bool:
         """
         This is an overload of HasAPI that takes a TfType C{schemaType}.
         """
     @overload
-    def HasAPI(self, schemaType: pxr.Tf.Type, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
+    def HasAPI(self, schemaType: pxr.Tf.Type | type[SchemaBase], instanceName: str | pxr.Ar.ResolvedPath) -> bool:
         """
         This is an overload of HasAPI with C{instanceName} that takes a TfType
         C{schemaType}.
@@ -5011,14 +5011,14 @@ class Prim(Object):
         C{instanceName} must be non-empty, otherwise it is a coding error.
         """
     @overload
-    def HasAPIInFamily(self, schemaType: pxr.Tf.Type, versionPolicy: SchemaRegistry.VersionPolicy) -> bool:
+    def HasAPIInFamily(self, schemaType: pxr.Tf.Type | type[SchemaBase], versionPolicy: SchemaRegistry.VersionPolicy) -> bool:
         """
         Overload for convenience of HasAPIInFamily that finds a registered
         schema for the given C{schemaType} and uses that schema's family and
         version.
         """
     @overload
-    def HasAPIInFamily(self, schemaType: pxr.Tf.Type, versionPolicy: SchemaRegistry.VersionPolicy, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
+    def HasAPIInFamily(self, schemaType: pxr.Tf.Type | type[SchemaBase], versionPolicy: SchemaRegistry.VersionPolicy, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
         """
         Overload for convenience of HasAPIInFamily that finds a registered
         schema for the given C{schemaType} and uses that schema's family and
@@ -5123,7 +5123,7 @@ class Prim(Object):
         opinions.
         """
     @overload
-    def IsA(self, schemaType: pxr.Tf.Type) -> bool:
+    def IsA(self, schemaType: pxr.Tf.Type | type[SchemaBase]) -> bool:
         """
         This is an overload of IsA that takes a TfType C{schemaType}.
         """
@@ -5200,7 +5200,7 @@ class Prim(Object):
         version filter provided by C{schemaVersion} and C{versionPolicy}.
         """
     @overload
-    def IsInFamily(self, schemaType: pxr.Tf.Type, versionPolicy: SchemaRegistry.VersionPolicy) -> bool:
+    def IsInFamily(self, schemaType: pxr.Tf.Type | type[SchemaBase], versionPolicy: SchemaRegistry.VersionPolicy) -> bool:
         """
         Overload for convenience of IsInFamily that finds a registered schema
         for the given C{schemaType} and uses that schema's family and version.
@@ -5348,12 +5348,12 @@ class Prim(Object):
         this prim, a null resolve target is returned.
         """
     @overload
-    def RemoveAPI(self, schemaType: pxr.Tf.Type) -> bool:
+    def RemoveAPI(self, schemaType: pxr.Tf.Type | type[SchemaBase]) -> bool:
         """
         This is an overload of RemoveAPI that takes a TfType C{schemaType}.
         """
     @overload
-    def RemoveAPI(self, schemaType: pxr.Tf.Type, instanceName: str | pxr.Ar.ResolvedPath) -> bool:
+    def RemoveAPI(self, schemaType: pxr.Tf.Type | type[SchemaBase], instanceName: str | pxr.Ar.ResolvedPath) -> bool:
         """
         This is an overload of RemoveAPI with C{instanceName} that takes a
         TfType C{schemaType}.
@@ -7265,7 +7265,7 @@ class SchemaRegistry(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def FindSchemaInfo(schemaType: pxr.Tf.Type) -> SchemaRegistry.SchemaInfo:
+    def FindSchemaInfo(schemaType: pxr.Tf.Type | type[SchemaBase]) -> SchemaRegistry.SchemaInfo:
         """
         Finds and returns the schema info for a registered schema with the
         given C{schemaType}.
@@ -7328,7 +7328,7 @@ class SchemaRegistry(Boost.Python.instance):
         to"list for just the schema name itself.
         '''
     @staticmethod
-    def GetAPISchemaTypeName(schemaType: pxr.Tf.Type) -> str:
+    def GetAPISchemaTypeName(schemaType: pxr.Tf.Type | type[SchemaBase]) -> str:
         """
         Return the type name in the USD schema for API schema types only from
         the given registered C{schemaType}.
@@ -7356,7 +7356,7 @@ class SchemaRegistry(Boost.Python.instance):
         type lists returned by this function do not.
         """
     @staticmethod
-    def GetConcreteSchemaTypeName(schemaType: pxr.Tf.Type) -> str:
+    def GetConcreteSchemaTypeName(schemaType: pxr.Tf.Type | type[SchemaBase]) -> str:
         """
         Return the type name in the USD schema for concrete prim types only
         from the given registered C{schemaType}.
@@ -7405,7 +7405,7 @@ class SchemaRegistry(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def GetSchemaKind(primType: pxr.Tf.Type) -> SchemaKind:
+    def GetSchemaKind(primType: pxr.Tf.Type | type[SchemaBase]) -> SchemaKind:
         """
         Returns the kind of the schema the given C{schemaType} represents.
 
@@ -7426,7 +7426,7 @@ class SchemaRegistry(Boost.Python.instance):
         plugin information.
         """
     @staticmethod
-    def GetSchemaTypeName(schemaType: pxr.Tf.Type) -> str:
+    def GetSchemaTypeName(schemaType: pxr.Tf.Type | type[SchemaBase]) -> str:
         """
         Return the type name in the USD schema for prims or API schemas of the
         given registered C{schemaType}.
@@ -7493,7 +7493,7 @@ class SchemaRegistry(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def IsAbstract(primType: pxr.Tf.Type) -> bool:
+    def IsAbstract(primType: pxr.Tf.Type | type[SchemaBase]) -> bool:
         """
         Returns true if the prim type C{primType} is an abstract schema type
         and, unlike a concrete type, is not instantiable in scene description.
@@ -7542,7 +7542,7 @@ class SchemaRegistry(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def IsAppliedAPISchema(apiSchemaType: pxr.Tf.Type) -> bool:
+    def IsAppliedAPISchema(apiSchemaType: pxr.Tf.Type | type[SchemaBase]) -> bool:
         """
         Returns true if C{apiSchemaType} is an applied API schema type.
         """
@@ -7554,7 +7554,7 @@ class SchemaRegistry(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def IsConcrete(primType: pxr.Tf.Type) -> bool:
+    def IsConcrete(primType: pxr.Tf.Type | type[SchemaBase]) -> bool:
         """
         Returns true if the prim type C{primType} is instantiable in scene
         description.
@@ -7580,7 +7580,7 @@ class SchemaRegistry(Boost.Python.instance):
         """
     @overload
     @staticmethod
-    def IsMultipleApplyAPISchema(apiSchemaType: pxr.Tf.Type) -> bool:
+    def IsMultipleApplyAPISchema(apiSchemaType: pxr.Tf.Type | type[SchemaBase]) -> bool:
         """
         Returns true if C{apiSchemaType} is a multiple-apply API schema type.
         """
@@ -7603,7 +7603,7 @@ class SchemaRegistry(Boost.Python.instance):
         namespace delimiter.
         '''
     @staticmethod
-    def IsTyped(primType: pxr.Tf.Type) -> bool:
+    def IsTyped(primType: pxr.Tf.Type | type[SchemaBase]) -> bool:
         """
         Returns true if the prim type C{primType} inherits from UsdTyped.
         """
