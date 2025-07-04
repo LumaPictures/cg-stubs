@@ -1155,6 +1155,9 @@ class UsdBoostDocstringSignatureGenerator(AdvancedSignatureGenerator, SignatureF
         arg_type_overrides={
             ("pxr.Gf.Vec*.__getitem__", "_i", "int"): "slice",
         },
+        property_type_overrides={
+            ("pxr.Sdf.AttributeSpec.allowedTokens", "*"): "list[str]",
+        },
     )
 
     def __init__(self):
