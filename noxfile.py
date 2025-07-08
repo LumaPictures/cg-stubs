@@ -28,7 +28,7 @@ APPS = [
     "mari",
     "maya",
     "nuke",
-    # "ocio",
+    "ocio",
     # "openexr",
     "pyside",
     "rez",

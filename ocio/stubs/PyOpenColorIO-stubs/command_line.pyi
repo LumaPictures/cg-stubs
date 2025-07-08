@@ -1,0 +1,6 @@
+from _typeshed import Incomplete
+
+BIN_DIR: Incomplete
+
+def call_program(name, args): ...
+def main() -> None: ...
