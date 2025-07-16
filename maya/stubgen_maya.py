@@ -1,7 +1,12 @@
 from __future__ import absolute_import, annotations, division, print_function
 
+from collections import abc
 import argparse
+import copy
+import fnmatch
+import importlib
 import inspect
+import logging
 import os
 import re
 import types
@@ -27,9 +32,91 @@ stubgenlib.moduleinspect.patch()
 _MAYA_VERSION = os.getenv("MAYA_VERSION", "2025")
 _FlagsType = Iterable[tuple[str, "pymel.internal.cmdcache.flag_info"]]
 
+_API_DOCTSTRING_BLOCK_EXPRESSION = re.compile(
+    r"""
+    (?:
+        \s* \* .+                   # Find the start of a `" * foo (bar)"` line.
+        (?:
+            \n(?:\ {4,}|\t)\ .*     # Check for indented continuation lines
+        )*                          # Allow 0+ continuation lines, if any
+        (?:\n|$)                    # Stop checking for blocks at these terminator(s)
+    )+
+    """,
+    re.VERBOSE | re.MULTILINE,
+)
 
-def flag_has_mode(flag_info, mode):
-    return mode in flag_info.get("modes", [])
+_API_DOCSTRING_TYPE_EXPRESSION = re.compile(
+    # This expression grabs the `"* foo (bar)"` portions of a Maya-API docstring
+    #
+    # Example: `help(OpenMaya.MDataBlock.inputValue)`
+    #
+    # ```
+    # ...
+    #
+    # * plug (MPlug) - the plug whose data you wish to access
+    # * attribute (MObject) - the attribute of the node that you want to access
+    # ```
+    #
+    r"""
+    ^\s*\*\s+                      # A typical line beginning
+
+    (?P<name>\w+)
+
+    .*                            # Sometimes there's little notes, omit them.
+                                  # e.g. `" * foo [OUT] (MPoint)"`.
+                                  # See `help(maya.api.OpenMaya.MPxSurfaceShape.pointAtParm)`
+                                  # for an example
+
+    \((?P<type>[^)]+)\)
+    """,
+    re.VERBOSE | re.MULTILINE,
+)
+
+_NAMESPACE_SEPARATOR = "."
+_UNKNOWN_TYPE = "Incomplete"
+
+_LOGGER = logging.getLogger(__name__)
+
+
+def _is_protected_module(name: str) -> bool:
+    """Check if module `name` is protected or private.
+
+    Args:
+        name: Some module namespace. e.g. `"maya.api._OpenMaya_py2"`.
+
+    Returns:
+        If any section of the import is private / protected, return `True`.
+
+    """
+    return any(part for part in name.split(_NAMESPACE_SEPARATOR) if part.startswith("_"))
+
+
+def _get_fixed_type_name(name: str) -> str:
+    """Replace Autodesk's raw, weird `name` with a real Python type.
+
+    Sometimes the Maya documentation will write `"float*"` instead of
+    `"list[float]"` or `"seq of ints"` instead of `"list[int]"` or `"string"`
+    instead of `"str"`. This function catches those cases.
+
+    Args:
+        name: Some raw Autodesk-docstring-provided type name.
+
+    Returns:
+        A known Python type, if any.
+
+    """
+    if name.lower().endswith(" constant"):
+        # NOTE: This is the only case that we can see currently. Maybe we would
+        # want to just make an exception for this one case instead?
+        #
+        # Example: `help(maya.api.OpenMaya.MItMeshEdge.center)`
+        #
+        # ...
+        # * space (MSpace constant) - The  transformation space
+        #
+        name = name[:-1 * len(" constant")]
+
+    return name
 
 
 def _strip_arguments(omit: set[str], sigs: Iterable[FunctionSig]) -> list[FunctionSig]:
@@ -56,6 +143,10 @@ def _strip_arguments(omit: set[str], sigs: Iterable[FunctionSig]) -> list[Functi
         )
 
     return output
+
+
+def flag_has_mode(flag_info, mode):
+    return mode in flag_info.get("modes", [])
 
 
 class MayaCmdAdvSignatureGenerator(AdvancedSignatureGenerator):
@@ -144,6 +235,368 @@ class MayaCmdAdvSignatureGenerator(AdvancedSignatureGenerator):
         # converts any matching argument to a union of the supported types
         implicit_arg_types={},
     )
+
+
+class _ApiDocstringGenerator(DocstringSignatureGenerator):
+    """Parse Maya docstrings for function signature details.
+
+    The Maya Python 2.0 API may have a docstring like this:
+
+    `help(maya.api.OpenMaya.MDataBlock.inputValue)`
+
+    ```
+    Help on method_descriptor:
+
+    inputValue(...)
+        inputValue(plug) -> MDataHandle
+        inputValue(attribute) -> MDataHandle
+
+        Gets a handle to this data block ...
+
+        * plug (MPlug) - the plug whose data you wish to access
+         OR
+        * attribute (MObject) - the attribute of the node that you want to access
+    ```
+
+    The top portion are the overloads and the bottom portions are the argument
+    + types. The base class, `DocstringSignatureGenerator` already does a good
+    job finding the signatures. But the bottom portion is where all the types
+    are and is also what this subclass focuses on parsing.
+
+    Important:
+        This class will usually not work as expected for Maya OpenMaya 1.0 API
+        because their docstrings lack the details (we can't parse what we don't have).
+
+    """
+
+    sig_matcher = AdvancedSigMatcher(
+        # Override entire function signature:
+        signature_overrides={},
+        # Override argument types
+        #   dict of (name_pattern, arg, type) to arg_type
+        #   type can be str | re.Pattern
+        arg_type_overrides={
+            ("*", "*", "Bool"): "bool",
+            ("*", "*", "MString"): "str",  # NOTE: This may be too aggressive but is probably okay.
+            ("*", "*", "string"): "str",
+            ("*", "*", "string"): "str",
+            ("*", "*", "unicodestring"): "str",
+            ("*", "*", "unsigned char*"): "list[bytes]",
+            ("*", "*", "unsigned int"): "int",
+            ("*", "*", r"float\*"): "MFloatArray | list[float]",
+            ("*", "colorSet", "*"): "str",
+            ("*", "int", "*"): "int",
+            ("*", "string", "*"): "str",
+            ("*", "unicodestring", "*"): "str",
+            ("*", "uvSet", "*"): "str",
+            ("maya.api.OpenMaya.*", "space", "*"): "MSpace",
+            ("maya.api.OpenMaya.MFnMesh.*", "modifier", "*"): "MDGModifier",
+        },
+        # Override result types
+        #   dict of (name_pattern, type) to result_type
+        #   e.g. ("*", "Buffer"): "numpy.ndarray"
+        result_type_overrides={
+            ("*", "Bool"): "bool",
+            ("*", "Integer"): "int",
+            ("*", "MString"): "str",  # NOTE: This may be too aggressive but is probably okay.
+            ("*", "double"): "float",
+            ("*", "integer"): "int",
+            ("*", "long"): "float",
+            ("*", "self"): "Self",
+            ("*", "string"): "str",
+            ("*", "unicodestring"): "str",
+            ("*", "unsigned int"): "int",
+            ("*", "unsignedint"): "int",
+        },
+        # Override property types
+        #   dict of (name_pattern, type) to result_type
+        #   e.g. ("*", "Buffer"): "numpy.ndarray"
+        property_type_overrides={},
+        # Types that have implicit alternatives.
+        #   dict of type_str to list of types that can be used instead
+        #   e.g. "PySide2.QtGui.QKeySequence": ["str"],
+        # converts any matching argument to a union of the supported types
+        implicit_arg_types={},
+    )
+
+    def _get_fixed_arg_type_name(
+        self,
+        arg: ArgSig,
+        context: str,
+        options: abc.MutableMapping[str, str],
+    ) -> str | None:
+        """Suggest a new data type for `arg`, if needed.
+
+        Args:
+            arg:
+                Some argument from some function to check.
+            context:
+                The fully-qualified function / method name.
+                e.g. `"maya.api.OpenMaya.FooClass.barMethod"`.
+            options:
+                Extra fallback argument types to choose from.
+
+        Returns:
+            The found type name.
+
+        """
+        type_ = arg.type or options.get(arg.name)
+
+        if type_:
+            type_ = _get_fixed_type_name(type_)
+
+        match = self.sig_matcher.find_arg_match(
+            context, arg.name, type_, self.sig_matcher.arg_type_overrides
+        )
+
+        return match or type_
+
+    def _get_fixed_return_type_name(self, type_name: str | None, context: str) -> str:
+        """Suggest a new data type based on `type_name`, if needed.
+
+        Args:
+            type_name:
+                An expected return type. `None` means "we don't know or have a guess".
+            context:
+                The fully-qualified function / method name.
+                e.g. `"maya.api.OpenMaya.FooClass.barMethod"`.
+
+        Returns:
+            The found type name, if any.
+
+        """
+        if not type_name:
+            return None
+
+        type_name = _get_fixed_type_name(type_name)
+
+        return self.sig_matcher.find_result_match(
+            context, type_name, self.sig_matcher.result_type_overrides
+        ) or type_name
+
+    def _get_fixed_signature(self, sig: FunctionSig, context: str) -> FunctionSig:
+        """Fix any obvious return type or argument type issues on `sig`.
+
+        Example:
+            Some functions will claim to return `"string"`, this function will
+            force `"string"` -> `"str"`.
+
+            - `help(maya.api.OpenMaya.MArgList.asString)`
+            - `help(maya.api.OpenMaya.MFileObject.expandedFullName)`
+
+        Args:
+            sig:
+                Some function signature that we can modify safely.
+            context:
+                The fully-qualified function / method name.
+                e.g. `"maya.api.OpenMaya.FooClass.barMethod"`.
+
+        Returns:
+            The new signature.
+
+        """
+        return_type = None
+
+        if sig.ret_type:
+            return_type = _get_fixed_type_name(sig.ret_type)
+
+        args: list[ArgSig] = []
+
+        for arg in sig.args:
+            arg = copy.deepcopy(arg)
+            arg.type = self._get_fixed_arg_type_name(arg, context, {})
+            args.append(arg)
+
+        return FunctionSig(
+            name=sig.name,
+            args=args,
+            ret_type=self._get_fixed_return_type_name(return_type, context),
+            type_args=sig.type_args,
+        )
+
+    def _get_matching_function_sigs(
+        self,
+        signatures: Iterable[FunctionSig],
+        args_per_signature: Sequence[abc.MutableMapping[str, str]],
+        context: str,
+    ) -> list[FunctionSig]:
+        """Generate a function signature for all of `signatures`.
+
+        Args:
+            signatures:
+                Some function signature that we can modify safely.
+            args_per_signature:
+                The expected argument name and type for each of `signatures`.
+            context:
+                The fully-qualified function / method name.
+                e.g. `"maya.api.OpenMaya.FooClass.barMethod"`.
+
+        Returns:
+            All computed signatures.
+
+        """
+        output: list[FunctionSig] = []
+        index = -1
+
+        for sig in signatures:
+            if not sig.args:
+                # NOTE: When a function takes no arguments, it doesn't get
+                # written about in the docstring.
+                #
+                # Example: `help(maya.api.OpenMaya.MItSurfaceCV.reset)`.
+                #
+                # It has 3 signatures but only 2 docstring blocks. So we skip here
+                #
+                continue
+
+            index += 1
+
+            try:
+                arg_types = args_per_signature[index]
+            except IndexError:
+                _LOGGER.error(
+                    'Signature "%s" has out-of-range "%s" for "%s" data.',
+                    context,
+                    index,
+                    args_per_signature,
+                )
+
+                continue
+
+            args: list[ArgSig] = []
+
+            for arg in sig.args:
+                args.append(
+                    ArgSig(
+                        name=arg.name,
+                        type=self._get_fixed_arg_type_name(arg, context, arg_types),
+                        default=arg.default,
+                        default_value=arg.default_value,
+                    )
+                )
+
+            output.append(
+                FunctionSig(
+                    name=sig.name,
+                    args=args,
+                    ret_type=self._get_fixed_return_type_name(sig.ret_type, context),
+                    type_args=sig.type_args,
+                )
+            )
+
+        return output
+
+    def _get_mismatched_function_sigs(
+        self,
+        signatures: Iterable[FunctionSig],
+        context: str,
+        options: abc.MutableMapping[str, str],
+    ) -> list[FunctionSig]:
+        """Generate `signatures`, given some uneven number of argument `options`.
+
+        Note:
+            Some docstrings don't match their overrides.
+
+            `help(maya.api.OpenMayaAnim.MFnWeightGeometryFilter.setWeight)`
+
+            - Has 4 signatures but only 1 docstring block.
+            - That block is meant to apply to all signatures.
+
+            This method handles situations like that.
+
+        Args:
+            signatures:
+                Some function signature that we can modify safely.
+            context:
+                The fully-qualified function / method name.
+                e.g. `"maya.api.OpenMaya.FooClass.barMethod"`.
+            options:
+                Some unique argument types to choose from, while type-hinting.
+
+        Returns:
+            All computed signatures.
+
+        """
+        output: list[FunctionSig] = []
+
+        for sig in signatures:
+            args: list[str] = []
+
+            for arg in sig.args:
+                args.append(
+                    ArgSig(
+                        name=arg.name,
+                        type=self._get_fixed_arg_type_name(arg, context, options),
+                        default=arg.default,
+                        default_value=arg.default_value,
+                    )
+                )
+
+            output.append(
+                FunctionSig(
+                    name=sig.name,
+                    args=args,
+                    ret_type=self._get_fixed_return_type_name(sig.ret_type, context),
+                    type_args=sig.type_args,
+                )
+            )
+
+        return output
+
+    def get_function_sig(
+        self, default_sig: FunctionSig, ctx: FunctionContext
+    ) -> list[FunctionSig] | None:
+        """Find all function signatures for some Function `ctx`.
+
+        Args:
+            default_sig: The signature to fallback to.
+            ctx: Data to parse into function signatures.
+
+        Returns:
+            The found signatures, if any.
+
+        """
+        signatures = [
+            self._get_fixed_signature(sig, ctx.fullname)
+            for sig in super().get_function_sig(default_sig, ctx) or []
+        ]
+
+        if not signatures:
+            return signatures
+
+        if not ctx.docstring:
+            return signatures
+
+        docstring_blocks = _API_DOCTSTRING_BLOCK_EXPRESSION.findall(ctx.docstring)
+
+        if not docstring_blocks:
+            return signatures
+
+        all_arg_types_by_signature: list[dict[str, str]] = []
+        all_arg_types: dict[str, str] = {}
+        has_overloads = False
+
+        for block in docstring_blocks:
+            arg_types: dict[str, str] = {}
+
+            for name, type_ in _API_DOCSTRING_TYPE_EXPRESSION.findall(block):
+                if name not in all_arg_types:
+                    all_arg_types[name] = type_
+                else:
+                    # SEE: :meth:`_ApiDocstringGenerator._get_mismatched_function_sigs`
+                    # for details on why we need this.
+                    #
+                    has_overloads = True
+
+                arg_types[name] = type_
+
+            if arg_types:
+                all_arg_types_by_signature.append(arg_types)
+
+        if not has_overloads:
+            return self._get_mismatched_function_sigs(signatures, ctx.fullname, all_arg_types)
+
+        return self._get_matching_function_sigs(signatures, all_arg_types_by_signature, ctx.fullname)
 
 
 class MayaCmdSignatureGenerator(SignatureGenerator):
@@ -453,15 +906,134 @@ class MelStubGenerator(mypy.stubgenc.InspectionStubGenerator):
 
 
 class APIStubGenerator(mypy.stubgenc.InspectionStubGenerator):
+    def __init__(
+        self,
+        module_name: str,
+        known_modules: list[str],
+        doc_dir: str = "",
+        _all_: list[str] | None = None,
+        include_private: bool = False,
+        export_less: bool = False,
+        include_docstrings: bool = False,
+        module: ModuleType | None = None,
+    ):
+        """Force `from typing import ..., Self, ...` to be included in the .pyi file."""
+        super().__init__(
+            module_name=module_name,
+            known_modules=known_modules,
+            doc_dir=doc_dir,
+            _all_=_all_,
+            include_private=include_private,
+            export_less=export_less,
+            include_docstrings=include_docstrings,
+            module=module,
+        )
+
+        # NOTE: A number of Maya signatures use typing.Self so we make it available
+        self.import_tracker.add_import_from("typing", [("Self", None)])
+
+        self._initialize_maya_imports()
+
+    def _initialize_maya_imports(self) -> None:
+        """Make the module aware of any Maya-related imports.
+
+        These imports will only be added to a generated .pyi file if some type
+        annotation is found that matches it.
+
+        """
+        if fnmatch.fnmatch(self.module_name, "maya.api.*"):
+            external_modules = [
+                module
+                for module in self.known_modules
+                if module.startswith("maya.api.")
+            ]
+        else:
+            external_modules = [
+                module for module in self.known_modules
+                if module.startswith("maya.") and not module.startswith("maya.api.")
+            ]
+
+        for module, members in sorted(
+            self._get_external_module_members(external_modules).items()
+        ):
+            self.import_tracker.add_import_from(
+                module,
+                # NOTE: Maya types start with an "M" - e.g. MDagPath, MObject, etc.
+                [(member, None) for member in members if member.startswith("M")],
+            )
+
+    def _get_external_module_members(self, modules: Iterable[str]) -> dict[str, list[str]]:
+        """Find all members (classes, functions, attributes) from `modules`.
+
+        Args:
+            modules:
+                All external modules that we assume are valid to import in the
+                current module.
+
+        Returns:
+            The found module-member associations.
+
+        """
+        result: dict[str, list[str]] = {}
+
+        for module_name in modules:
+            if module_name == self.module_name:
+                # NOTE: Prevent this instance from treating itself as an
+                # external dependency by accident.
+                #
+                continue
+
+            if _is_protected_module(module_name):
+                # NOTE: Ignore private modules, we don't want to import their types.
+                continue
+
+            try:
+                module = importlib.import_module(module_name)
+            except ImportError:
+                _LOGGER.exception('Module "%s" could not be imported.', module_name)
+
+                continue
+            else:
+                result[module_name] = [member[0] for member in inspect.getmembers(module)]
+
+        return result
+
     def get_sig_generators(self) -> list[SignatureGenerator]:
-        return [DocstringSignatureGenerator()]
+        return [_ApiDocstringGenerator()]
+
+    def process_inferred_sigs(self, inferred: list[FunctionSig]) -> None:
+        """Add `"Incomplete"` to any signatures in `inferred` which don't have types.
+
+        Args:
+            inferred: Function signatures that may be partially-defined.
+
+        """
+        for index, sig in enumerate(inferred):
+            arguments = sig.args
+
+            if sig.is_special_method():
+                # NOTE: We ignore the `self` / `cls` bound argument
+                arguments = arguments[1:]
+
+            for arg in arguments:
+                if not arg.type:
+                    arg.type = _UNKNOWN_TYPE
+
+            if not sig.ret_type:
+                # NOTE: `sig.ret_type` is immutable so we have to get creative
+                # here. Don't worry though, the mypy source code runs this
+                # exact same code so it should be safe to do.
+                #
+                inferred[index] = sig._replace(ret_type=_UNKNOWN_TYPE)
+
+        super().process_inferred_sigs(inferred)
 
     def strip_or_import(self, type_name: str) -> str:
         # some type annotations are invalid: stop them from aborting the whole process
         try:
             return super().strip_or_import(type_name)
         except SyntaxError:
-            return "Incomplete"
+            return _UNKNOWN_TYPE
 
     def get_obj_module(self, obj: object) -> str | None:
         """Return module name of the object."""
