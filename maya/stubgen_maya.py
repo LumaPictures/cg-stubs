@@ -119,6 +119,32 @@ def _get_fixed_type_name(name: str) -> str:
     return name
 
 
+def _fix_type_if_needed(type_: str) -> str:
+    """Try to split and enrich `type_`, if needed.
+
+    Example:
+        >>> _fix_type_if_needed("str or int")   # "int | str"
+        >>> _fix_type_if_needed("0 or 1")   # "Literal[0] | Literal[1]"
+
+    Args:
+        type_: Some type or multiple types to split out.
+
+    Returns:
+        A mypy-compatible type-hint to represent `type_`.
+
+    """
+    cleaned: list[str] = []
+
+    for part in re.split(r"\s+or\s+", type_):
+        if stripped := part.strip():
+            if stripped.isdigit():
+                stripped = f"Literal[{stripped}]"
+
+            cleaned.append(stripped)
+
+    return " | ".join(cleaned)
+
+
 def _strip_arguments(omit: set[str], sigs: Iterable[FunctionSig]) -> list[FunctionSig]:
     """Remove any argument that matches `omit` from `sigs`.
 
@@ -580,6 +606,8 @@ class _ApiDocstringGenerator(DocstringSignatureGenerator):
             arg_types: dict[str, str] = {}
 
             for name, type_ in _API_DOCSTRING_TYPE_EXPRESSION.findall(block):
+                type_ = _fix_type_if_needed(type_)
+
                 if name not in all_arg_types:
                     all_arg_types[name] = type_
                 else:
@@ -930,7 +958,7 @@ class APIStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         )
 
         # NOTE: A number of Maya signatures use typing.Self so we make it available
-        self.import_tracker.add_import_from("typing", [("Self", None)])
+        self.import_tracker.add_import_from("typing", [("Literal", None), ("Self", None)])
 
         self._initialize_maya_imports()
 

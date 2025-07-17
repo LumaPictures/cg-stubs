@@ -134,7 +134,7 @@ wheels = [
 
 [[package]]
 name = "types-maya-strict"
-version = "2025.0.4"
+version = "2025.0.5"
 source = { editable = "." }
 
 [package.dev-dependencies]
