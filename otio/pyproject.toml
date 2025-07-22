@@ -1,0 +1,52 @@
+[project]
+name = "types-OpenTimelineIO"
+version = "0.17.0.0"
+
+readme = "README.md"
+authors = [{name="Chad Dombrova"}]
+description = "python stubs for the Flow Production Tracking python API"
+license = "MIT"
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 2",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+]
+repository = "https://github.com/LumaPictures/cg-stubs"
+homepage = "https://github.com/LumaPictures/cg-stubs"
+
+keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
+
+[tool.mypy]
+follow_imports = "skip"
+check_untyped_defs = true
+files = [
+    "stubs",
+]
+warn_unused_ignores = true
+show_error_codes = true
+enable_error_code = [
+    "ignore-without-code"
+]
+
+[dependency-groups]
+dev = [
+    "mypy",
+    "OpenTimelineIO==0.17.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["stubs/shotgun_api3-stubs"]
+
+[tool.hatch.build]
+# uv+hatch does not write anything to the installed .pth file if the contents
+# of the package do no include .py files.  Adding this ensures the .pth file
+# is written correctly
+dev-mode-dirs = ["stubs"]

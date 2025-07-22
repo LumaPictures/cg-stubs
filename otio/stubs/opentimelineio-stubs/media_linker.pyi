@@ -1,0 +1,23 @@
+from . import core as core, exceptions as exceptions, plugins as plugins
+
+class MediaLinkingPolicy:
+    """Enum describing different media linker policies"""
+    DoNotLinkMedia: str
+    ForceDefaultLinker: str
+
+def available_media_linker_names():
+    """Return a string list of the available media linker plugins."""
+def from_name(name):
+    """Fetch the media linker object by the name of the adapter directly."""
+def default_media_linker(): ...
+def linked_media_reference(target_clip, media_linker_name=..., media_linker_argument_map=None): ...
+
+class MediaLinker(plugins.PythonPlugin):  # type: ignore[name-defined]
+    _serializable_label: str
+    def __init__(self, name=None, filepath=None) -> None: ...
+    def link_media_reference(self, in_clip, media_linker_argument_map=None): ...
+    def is_default_linker(self): ...
+    def plugin_info_map(self):
+        """Adds extra adapter-specific information to call to the parent fn."""
+    def __str__(self) -> str: ...
+    def __repr__(self) -> str: ...

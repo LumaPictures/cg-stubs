@@ -17,12 +17,12 @@ import re
 import mypy.stubdoc
 import mypy.stubgen
 import mypy.stubgenc
-from mypy.stubgenc import DocstringSignatureGenerator, SignatureGenerator
 from mypy.fastparse import parse_type_comment
+from mypy.stubgenc import DocstringSignatureGenerator, SignatureGenerator
 
 from stubgenlib.siggen import (
-    AdvancedSignatureGenerator,
     AdvancedSigMatcher,
+    AdvancedSignatureGenerator,
 )
 from stubgenlib.utils import add_positional_only_args
 
@@ -107,9 +107,9 @@ def get_colored_diff(old_text: str, new_text: str):
     """
     import difflib
 
-    red = '\033[31m'
-    green = '\033[32m'
-    reset = '\033[0m'
+    red = "\033[31m"
+    green = "\033[32m"
+    reset = "\033[0m"
 
     diff = difflib.unified_diff(
         old_text.splitlines(keepends=True),
@@ -118,9 +118,9 @@ def get_colored_diff(old_text: str, new_text: str):
     )
     lines = []
     for line in diff:
-        if line.startswith('-'):
+        if line.startswith("-"):
             lines.append(f"{red}{line}{reset}")
-        elif line.startswith('+'):
+        elif line.startswith("+"):
             lines.append(f"{green}{line}{reset}")
         else:
             lines.append(line)
@@ -129,20 +129,17 @@ def get_colored_diff(old_text: str, new_text: str):
 
 def main() -> None:
     import argparse
-    import pathlib
     import os
+    import pathlib
     import sys
 
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--out-path",
-        help="Directory to write the stubs."
-    )
+    parser.add_argument("--out-path", help="Directory to write the stubs.")
     parser.add_argument(
         "--validate-path",
         default=None,
         help="If provided, compare the generated stub to this file. Exits with code 2 if the "
-             "contents differ."
+        "contents differ.",
     )
     args = parser.parse_args()
     if not args.out_path:
@@ -181,7 +178,10 @@ def main() -> None:
     ) + new_text
     dest_path.write_text(new_text)
 
-    if args.validate_path and os.environ.get("GITHUB_ACTIONS", "false").lower() == "true":
+    if (
+        args.validate_path
+        and os.environ.get("GITHUB_ACTIONS", "false").lower() == "true"
+    ):
         # in CI, validate that what has been committed to the repo is what we expect.
         validate_path = pathlib.Path(args.validate_path)
 
@@ -194,8 +194,10 @@ def main() -> None:
             print("Stub verification failed!")
             print("Changes to the source code have resulted in a change to the stubs.")
             print(get_colored_diff(old_text, new_text))
-            print("Run `cmake /path/to/source; cmake --build . --target pystubs` locally and "
-                  "commit the results for review.")
+            print(
+                "Run `cmake /path/to/source; cmake --build . --target pystubs` locally and "
+                "commit the results for review."
+            )
             sys.exit(2)
 
 
