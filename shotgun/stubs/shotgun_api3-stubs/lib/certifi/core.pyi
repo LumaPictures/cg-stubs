@@ -1,0 +1,9 @@
+from _typeshed import Incomplete
+
+def exit_cacert_ctx() -> None: ...
+
+_CACERT_CTX: Incomplete
+_CACERT_PATH: Incomplete
+
+def where() -> str: ...
+def contents() -> str: ...

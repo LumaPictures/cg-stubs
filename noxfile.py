@@ -32,6 +32,7 @@ APPS = [
     # "openexr",
     "pyside",
     "rez",
+    "shotgun",
     "substance_painter",
     "usd",
 ]
@@ -528,7 +529,12 @@ def generate(session: nox.Session, lib: str) -> None:
     session.chdir(lib)
     env = load_dotenv()
 
-    if os.path.exists(f"./stubgen_{lib}.sh"):
+    if sys.platform == "win32":
+        script = f"./stubgen_{lib}.ps1"
+    else:
+        script = f"./stubgen_{lib}.sh"
+
+    if os.path.exists(script):
         # Fully custom workflow
         if sys.platform == "win32":
             session.run(
@@ -536,12 +542,12 @@ def generate(session: nox.Session, lib: str) -> None:
                 "-ExecutionPolicy",
                 "Bypass",
                 "-File",
-                f"./stubgen_{lib}.ps1",
+                script,
                 external=True,
                 env=env,
             )
         else:
-            session.run(f"./stubgen_{lib}.sh", env=env, external=True)
+            session.run(script, env=env, external=True)
     elif os.path.exists(".interpreter"):
         # This is our standard playbook for stubs that are built via a DCC interpreter
         interp = pathlib.Path(".interpreter").read_text().strip()
@@ -565,10 +571,12 @@ def generate(session: nox.Session, lib: str) -> None:
         env["PYTHONPATH"] = sitepath.strip()
         # FIXME: load from .env
         # session.run("uvx", "--from=python-dotenv[cli]", "dotenv", "run", "--", interp, "-m", "stubgen_maya", "./stubs", external=True)
-        subprocess.check_call([interp, "-m", f"stubgen_{lib}", "./stubs"] + session.posargs, env=env)
+        subprocess.check_call(
+            [interp, "-m", f"stubgen_{lib}", "./stubs"] + session.posargs, env=env
+        )
     else:
         # FIXME: implement a workflow around a standard interpreter for rez, pyside, etc
-        raise RuntimeError
+        raise RuntimeError(f"Could not find {script} or .interpreter")
 
     add_stubs_suffix(pathlib.Path("stubs"))
     # this has to happen after the stubs are renamed, because before that, the previous state of the
