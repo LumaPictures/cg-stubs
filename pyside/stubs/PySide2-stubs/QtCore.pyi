@@ -5,6 +5,10 @@ import shiboken2
 import typing
 T = typing.TypeVar('T')
 import typing_extensions
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
 
 QtCriticalMsg: QtMsgType
 QtDebugMsg: QtMsgType
@@ -2041,7 +2045,7 @@ class QCoreApplication(QObject):
     @staticmethod
     def installTranslator(messageFile: QTranslator) -> bool: ...
     @staticmethod
-    def instance(cls: typing.Type[T]) -> T: ...
+    def instance() -> Self: ...
     @staticmethod
     def isQuitLockEnabled() -> bool: ...
     @staticmethod
