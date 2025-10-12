@@ -9,6 +9,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QGL(shiboken2.Object):
     class FormatOption:
         AccumBuffer: typing.ClassVar[QGL.FormatOption] = ...

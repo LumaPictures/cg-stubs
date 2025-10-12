@@ -8,6 +8,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QSql(shiboken2.Object):
     class Location:
         AfterLastRow: typing.ClassVar[QSql.Location] = ...

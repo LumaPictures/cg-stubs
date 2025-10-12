@@ -5,6 +5,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QOpenGLFunctions_1_0(PySide2.QtGui.QAbstractOpenGLFunctions):
     def __init__(self) -> None: ...
     def glAccum(self, op: int, value: float) -> None: ...

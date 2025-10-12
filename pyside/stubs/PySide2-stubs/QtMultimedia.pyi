@@ -10,6 +10,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QAbstractAudioDeviceInfo(PySide2.QtCore.QObject):
     staticMetaObject: typing.ClassVar[PySide2.QtCore.QMetaObject] = ...
     def __init__(self, destroyed: typing.Callable = ..., objectName: str = ..., objectNameChanged: typing.Callable = ...) -> None: ...

@@ -7,6 +7,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QAbstractItemModelReplica(PySide2.QtCore.QAbstractItemModel):
     initialized: typing.ClassVar[PySide2.QtCore.Signal] = ...
     staticMetaObject: typing.ClassVar[PySide2.QtCore.QMetaObject] = ...

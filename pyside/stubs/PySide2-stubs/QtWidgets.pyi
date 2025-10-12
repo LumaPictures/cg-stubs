@@ -9,6 +9,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QAbstractButton(QWidget):
     clicked: typing.ClassVar[PySide2.QtCore.Signal] = ...
     pressed: typing.ClassVar[PySide2.QtCore.Signal] = ...

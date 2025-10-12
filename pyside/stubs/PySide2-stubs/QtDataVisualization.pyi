@@ -8,6 +8,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QtDataVisualization(shiboken2.Object):
     class Q3DBars(QtDataVisualization.QAbstract3DGraph):
         barSpacingChanged: typing.ClassVar[PySide2.QtCore.Signal] = ...

@@ -7,6 +7,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QGraphicsSvgItem(PySide2.QtWidgets.QGraphicsObject):
     staticMetaObject: typing.ClassVar[PySide2.QtCore.QMetaObject] = ...
     @typing.overload

@@ -13,6 +13,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QWebEngineCertificateError(shiboken2.Object):
     class Error:
         CertificateAuthorityInvalid: typing.ClassVar[QWebEngineCertificateError.Error] = ...

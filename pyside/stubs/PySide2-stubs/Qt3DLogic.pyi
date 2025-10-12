@@ -7,6 +7,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class Qt3DLogic(shiboken2.Object):
     class QFrameAction(PySide2.Qt3DCore.Qt3DCore.QComponent):
         staticMetaObject: typing.ClassVar[PySide2.QtCore.QMetaObject] = ...

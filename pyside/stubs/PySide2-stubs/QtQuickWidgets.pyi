@@ -10,6 +10,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QQuickWidget(PySide2.QtWidgets.QWidget):
     class ResizeMode:
         SizeRootObjectToView: typing.ClassVar[QQuickWidget.ResizeMode] = ...

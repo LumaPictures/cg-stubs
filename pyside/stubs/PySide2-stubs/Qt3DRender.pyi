@@ -9,6 +9,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class Qt3DRender(shiboken2.Object):
     class API:
         DirectX: typing.ClassVar[Qt3DRender.API] = ...

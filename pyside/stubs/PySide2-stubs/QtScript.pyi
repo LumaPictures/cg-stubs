@@ -8,6 +8,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QScriptClass(shiboken2.Object):
     class Extension:
         Callable: typing.ClassVar[QScriptClass.Extension] = ...

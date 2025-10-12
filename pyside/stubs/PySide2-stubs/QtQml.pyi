@@ -8,6 +8,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class ListProperty(PySide2.QtCore.Property):
     def __init__(self, type: type, append: typing.Callable, at: typing.Callable | None = ..., clear: typing.Callable | None = ..., count: typing.Callable | None = ...) -> None: ...
 

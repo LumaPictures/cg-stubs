@@ -8,6 +8,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QMacPasteboardMime(shiboken2.Object):
     class QMacPasteboardMimeType:
         MIME_ALL: typing.ClassVar[QMacPasteboardMime.QMacPasteboardMimeType] = ...

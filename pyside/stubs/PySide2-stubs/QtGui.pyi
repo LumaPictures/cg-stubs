@@ -7,6 +7,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QAbstractOpenGLFunctions(shiboken2.Object):
     def __init__(self) -> None: ...
     def initializeOpenGLFunctions(self) -> bool: ...

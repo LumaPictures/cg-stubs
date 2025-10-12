@@ -7,6 +7,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QDomAttr(QDomNode):
     @typing.overload
     def __init__(self, x: QDomAttr) -> None: ...

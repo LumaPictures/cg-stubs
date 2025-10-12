@@ -323,6 +323,8 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
             "*.__gt__": "(self, other: object) -> bool",
             "*.__le__": "(self, other: object) -> bool",
             "*.__ge__": "(self, other: object) -> bool",
+            # Slot
+            "*.Slot.__call__": "(self, _func: typing.Callable[P, T]) -> typing.Callable[P, T]",
         },
         # Types that have implicit alternatives.
         implicit_arg_types={
@@ -347,6 +349,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
             ("*", "format", "typing.Union[bytes,NoneType]"): "typing.Optional[str]",
             ("*", "role", "int"): "PySide2.QtCore.Qt.ItemDataRole",
             ("*.addAction", "*", "object"): "typing.Callable[[], typing.Any]",
+            ("*.Slot.__init__", "result", "*"): "type",
         },
         # Find and replace argument names
         # arg_name_replacements = {
@@ -581,7 +584,7 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
 
     def get_imports(self) -> str:
         imports = super().get_imports()
-        return insert_typevars(imports, ["T = typing.TypeVar('T')"])
+        return insert_typevars(imports, ["T = typing.TypeVar('T')", "P = typing.ParamSpec('P')"])
 
     def output(self) -> str:
         output = super().output()

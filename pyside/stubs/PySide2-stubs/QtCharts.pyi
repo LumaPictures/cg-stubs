@@ -10,6 +10,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QtCharts(shiboken2.Object):
     class QAbstractAxis(PySide2.QtCore.QObject):
         class AxisType:

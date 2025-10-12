@@ -7,6 +7,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QScriptEngineDebugger(PySide2.QtCore.QObject):
     class DebuggerAction:
         ClearConsoleAction: typing.ClassVar[QScriptEngineDebugger.DebuggerAction] = ...

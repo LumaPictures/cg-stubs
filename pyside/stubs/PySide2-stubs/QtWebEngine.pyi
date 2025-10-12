@@ -5,6 +5,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QtWebEngine(shiboken2.Object):
     @classmethod
     def __init__(cls, *args, **kwargs) -> None: ...

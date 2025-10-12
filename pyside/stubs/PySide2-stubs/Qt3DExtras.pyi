@@ -10,6 +10,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class Qt3DExtras(shiboken2.Object):
     class QAbstractCameraController(PySide2.Qt3DCore.Qt3DCore.QEntity):
         class InputState(shiboken2.Object):

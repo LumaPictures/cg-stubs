@@ -7,6 +7,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QSerialPort(PySide2.QtCore.QIODevice):
     class BaudRate:
         Baud115200: typing.ClassVar[QSerialPort.BaudRate] = ...

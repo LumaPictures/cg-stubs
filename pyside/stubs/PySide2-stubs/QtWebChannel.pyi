@@ -6,6 +6,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QWebChannel(PySide2.QtCore.QObject):
     blockUpdatesChanged: typing.ClassVar[PySide2.QtCore.Signal] = ...
     staticMetaObject: typing.ClassVar[PySide2.QtCore.QMetaObject] = ...

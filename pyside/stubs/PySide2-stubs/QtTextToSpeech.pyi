@@ -7,6 +7,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QTextToSpeech(PySide2.QtCore.QObject):
     class State:
         BackendError: typing.ClassVar[QTextToSpeech.State] = ...

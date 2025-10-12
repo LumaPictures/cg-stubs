@@ -9,6 +9,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QGeoCodeReply(PySide2.QtCore.QObject):
     class Error:
         CombinationError: typing.ClassVar[QGeoCodeReply.Error] = ...

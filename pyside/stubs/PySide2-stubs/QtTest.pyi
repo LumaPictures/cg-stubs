@@ -8,6 +8,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QTest(shiboken2.Object):
     class KeyAction:
         Click: typing.ClassVar[QTest.KeyAction] = ...

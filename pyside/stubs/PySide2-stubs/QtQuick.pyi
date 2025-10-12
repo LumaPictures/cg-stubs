@@ -9,6 +9,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QQuickAsyncImageProvider(QQuickImageProvider):
     def __init__(self) -> None: ...
     def requestImageResponse(self, id: str, requestedSize: PySide2.QtCore.QSize) -> QQuickImageResponse: ...

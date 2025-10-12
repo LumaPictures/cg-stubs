@@ -10,6 +10,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class Qt3DAnimation(shiboken2.Object):
     class QAbstractAnimation(PySide2.QtCore.QObject):
         class AnimationType:

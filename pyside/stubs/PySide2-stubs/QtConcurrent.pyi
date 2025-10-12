@@ -7,6 +7,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QFutureQString(shiboken2.Object):
     @typing.overload
     def __init__(self, QFutureQString: QFutureQString) -> None: ...

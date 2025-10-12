@@ -8,6 +8,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QMaskGenerator(PySide2.QtCore.QObject):
     destroyed: typing.ClassVar[PySide2.QtCore.Signal] = ...
     objectNameChanged: typing.ClassVar[PySide2.QtCore.Signal] = ...

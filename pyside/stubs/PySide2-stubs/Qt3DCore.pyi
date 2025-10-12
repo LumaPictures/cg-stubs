@@ -8,6 +8,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class Qt3DCore(shiboken2.Object):
     class ChangeFlag:
         AllChanges: typing.ClassVar[Qt3DCore.ChangeFlag] = ...

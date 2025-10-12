@@ -4,6 +4,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 __version__: str
 __version_info__: tuple
 

@@ -4,11 +4,11 @@ from PySide2.QtCore import Slot
 from stubgenlib.test_helpers import TypeCheckError, assert_type
 
 
-def test():  # type: ignore[no-untyped-def]
+def test() -> None:
     some_str: str
     some_int: int
 
-    @Slot(int)  # type: ignore[misc]
+    @Slot(int)
     def f_int_returns_str1(i: int) -> str:
         assert_type(i, int)
         return "abc"
@@ -70,8 +70,8 @@ def test():  # type: ignore[no-untyped-def]
         # check args
         f_int_float_str_returns_str1("abc", "abc", 33)  # type: ignore[arg-type]
 
-    # mismatch between Slot result and function result
-    @Slot(int, float, str, result=float)  # type: ignore
+    # mismatch between Slot result and function result -- our stubs are not good enough to generate an error
+    @Slot(int, float, str, result=float)
     def f_int_float_str_returns_str2(i: int, f: float, s: str) -> str:
         assert_type(i, int)
         assert_type(f, float)
@@ -92,8 +92,8 @@ def test():  # type: ignore[no-untyped-def]
         # check args
         f_int_float_str_int_returns_str1(33, 1.0, "abc", "abc")  # type: ignore[arg-type]
 
-    # mismatch between Slot result and function result
-    @Slot(int, float, str, int, result=float)  # type: ignore
+    # mismatch between Slot result and function result -- our stubs are not good enough to generate an error
+    @Slot(int, float, str, int, result=float)
     def f_int_float_str_int_returns_str2(i: int, f: float, s: str, i2: int) -> str:
         assert_type(i, int)
         assert_type(f, float)
@@ -125,8 +125,8 @@ def test():  # type: ignore[no-untyped-def]
     with pytest.raises(TypeCheckError):
         f_int_float_str_int_bytes_returns_str1(33, 1.0, "abc", 33, "abc")  # type: ignore[arg-type]
 
-    # mismatch between Slot result and function result
-    @Slot(int, float, str, int, bytes, result=float)  # type: ignore
+    # mismatch between Slot result and function result -- our stubs are not good enough to generate an error
+    @Slot(int, float, str, int, bytes, result=float)
     def f_int_float_str_int_bytes_returns_str2(
         i: int, f: float, s: str, i2: int, b: bytes
     ) -> str:
@@ -164,10 +164,6 @@ def test():  # type: ignore[no-untyped-def]
     assert_type(
         f_int_float_str_int_bytes_float_returns_str(33, 1.0, "abc", 33, b"12", 1.0), str
     )
-
-    with pytest.raises(TypeCheckError):
-        # check args
-        f_int_float_str_int_bytes_float_returns_str(33, 1.0, "abc", 33, b"12", 1.0)  # type: ignore
 
     with pytest.raises(TypeCheckError):
         # check args

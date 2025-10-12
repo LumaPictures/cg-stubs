@@ -8,6 +8,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QWebEngineCookieStore(PySide2.QtCore.QObject):
     cookieAdded: typing.ClassVar[PySide2.QtCore.Signal] = ...
     cookieRemoved: typing.ClassVar[PySide2.QtCore.Signal] = ...

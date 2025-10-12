@@ -9,6 +9,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class Qt3DInput(shiboken2.Object):
     class QAbstractActionInput(PySide2.Qt3DCore.Qt3DCore.QNode):
         staticMetaObject: typing.ClassVar[PySide2.QtCore.QMetaObject] = ...

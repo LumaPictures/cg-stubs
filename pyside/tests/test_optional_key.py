@@ -3,7 +3,7 @@ from __future__ import absolute_import, print_function
 import pytest
 
 
-@pytest.mark.skip(reason="can't import pyside_stubgen")
+@pytest.mark.skip(reason="can't import pyside_stubgen")  # type: ignore[misc]
 def test_optiona_key() -> None:
     from stubgen_pyside import OptionalKey
 

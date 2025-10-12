@@ -9,6 +9,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QAbstractPrintDialog(PySide2.QtWidgets.QDialog):
     class PrintDialogOption:
         DontUseSheet: typing.ClassVar[QAbstractPrintDialog.PrintDialogOption] = ...

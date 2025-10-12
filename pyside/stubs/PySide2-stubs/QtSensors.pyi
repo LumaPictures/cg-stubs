@@ -7,6 +7,7 @@ import typing
 import typing_extensions
 
 T = typing.TypeVar('T')
+P = typing.ParamSpec('P')
 class QAccelerometer(QSensor):
     class AccelerationMode:
         Combined: typing.ClassVar[QAccelerometer.AccelerationMode] = ...
