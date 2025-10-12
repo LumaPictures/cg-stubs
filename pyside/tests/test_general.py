@@ -10,7 +10,7 @@ from PySide2 import QtCore, QtGui, QtQuick, QtWidgets
 pyside_version = PySide2.__version_info__
 
 
-def test_qapplication():
+def test_qapplication() -> None:
     def slotAppStateChanged(*args: Any) -> None:
         pass
 
@@ -19,15 +19,15 @@ def test_qapplication():
     QtWidgets.QApplication.processEvents()
 
 
-def test_qaction():
+def test_qaction() -> None:
     a = QtWidgets.QAction()
     a.setShortcut("Ctrl+F")
 
 
-@pytest.mark.skipif(
+@pytest.mark.skipif(  # type: ignore[misc]
     pyside_version <= (5, 14), reason="causes crash in PySide2 < 5.14.2.3"
 )
-def test_qbytearray():
+def test_qbytearray() -> None:
     byte_array = QtCore.QByteArray(b"foo")
     b: bytes
     b = byte_array[0]
@@ -39,32 +39,32 @@ def test_qbytearray():
         assert isinstance(x, bytes)
 
 
-def test_qcoreapplication():
+def test_qcoreapplication() -> None:
     s: str = "abc"
-    s = QtCore.QCoreApplication.translate("GitFlowAdvanceIntBranch", "hidden", None)
+    s = QtCore.QCoreApplication.translate("GitFlowAdvanceIntBranch", "hidden", None)  # type: ignore[arg-type]
     s = QtCore.QCoreApplication.translate(
         "GitFlowAdvanceIntBranch", "hidden", "some help"
     )
     assert isinstance(s, str)
 
 
-def test_qdate():
+def test_qdate() -> None:
     d = QtCore.QDate(datetime.date(1980, 3, 31))
     assert d.daysTo(datetime.date(1981, 3, 31)) == 365
 
 
-def test_qdatetime():
+def test_qdatetime() -> None:
     d = QtCore.QDateTime(datetime.datetime(1980, 3, 31))
     assert d.daysTo(datetime.datetime(1981, 3, 31)) == 365
 
 
-def test_qdialog():
+def test_qdialog() -> None:
     d = QtWidgets.QDialog()
     f = d.exec_
     f = d.exec
 
 
-def test_qdialogbuttonbox():
+def test_qdialogbuttonbox() -> None:
     a: QtWidgets.QDialogButtonBox.StandardButtons
     a = (
         QtWidgets.QDialogButtonBox.StandardButton.Ok
@@ -76,13 +76,13 @@ def test_qdialogbuttonbox():
     e = a | a
 
 
-def test_qguiapplication():
+def test_qguiapplication() -> None:
     app: QtGui.QGuiApplication
     app = QtGui.QGuiApplication.instance()
     app.setOverrideCursor(QtCore.Qt.CursorShape.WaitCursor)
 
 
-def test_qicon():
+def test_qicon() -> None:
     icon = QtGui.QIcon()
     icon.addPixmap(
         QtGui.QPixmap(":/img/multigit-logo-256.png"),
@@ -91,12 +91,12 @@ def test_qicon():
     )
 
 
-def test_qlabel():
+def test_qlabel() -> None:
     l = QtWidgets.QLabel()
     l.setAlignment(QtCore.Qt.AlignCenter)
 
 
-def test_qmessagebox():
+def test_qmessagebox() -> None:
     multiple_buttons = QtWidgets.QMessageBox.StandardButtons()
     multiple_buttons = (
         QtWidgets.QMessageBox.StandardButton.Ok
@@ -123,7 +123,7 @@ def test_qmessagebox():
     one_button = QtWidgets.QMessageBox.Ok
 
 
-def test_qobject():
+def test_qobject() -> None:
     o1 = QtWidgets.QWidget()
     o2 = QtWidgets.QWidget(o1)
     o3 = QtCore.QObject(o1)
@@ -147,7 +147,7 @@ def test_qobject():
     d = o1.findChildren(QtWidgets.QWidget, "")
 
 
-def test_qpainter():
+def test_qpainter() -> None:
     painter = QtGui.QPainter()
 
     painter.beginNativePainting()
@@ -204,7 +204,7 @@ def test_qpainter():
     painter.end()
 
 
-def test_qpixmap():
+def test_qpixmap() -> None:
     emptyPixmap = QtGui.QPixmap(16, 16)
     emptyPixmap.fill(QtCore.Qt.transparent)
     # we currenly choose not to allow str literals because it is too ambiguous.
@@ -214,7 +214,7 @@ def test_qpixmap():
     emptyPixmap.fill(0xFFFFFF)
 
 
-def test_qpolygon():
+def test_qpolygon() -> None:
     point: QtCore.QPoint
     point_list: List[QtCore.QPoint]
 
@@ -242,28 +242,28 @@ def test_qpolygon():
     assert type(polygon) == QtGui.QPolygon
 
 
-def test_qprocess():
+def test_qprocess() -> None:
     v = int(QtCore.QProcess.ExitStatus.NormalExit)
 
 
-def test_qprogressdialog():
+def test_qprogressdialog() -> None:
     qp = QtWidgets.QProgressDialog()
     qp.setCancelButton(None)
 
 
-def test_qpropertyanimation():
+def test_qpropertyanimation() -> None:
     dialog = QtWidgets.QDialog()
     anim = QtCore.QPropertyAnimation(dialog)
     anim.setPropertyName("geometry".encode("ascii"))
     assert isinstance(anim.propertyName(), QtCore.QByteArray)
 
 
-def test_qquickitem():
+def test_qquickitem() -> None:
     qi = QtQuick.QQuickItem()
     qi.setCursor(QtCore.Qt.WaitCursor)
 
 
-def test_qsize():
+def test_qsize() -> None:
     qs1 = QtCore.QSize(1, 2)
     qs2 = QtCore.QSize(3, 4)
     qs3 = QtCore.QSize(5, 6)
@@ -334,7 +334,7 @@ def test_qsize():
     assert type(qsf3) == QtCore.QSizeF
 
 
-def test_qspaceritem():
+def test_qspaceritem() -> None:
     # in C++ the size args are named hPolicy and vPolicy, but in PySide they
     # renamed to hData and vData, but both are valid.
     s = QtWidgets.QSpacerItem(
@@ -351,14 +351,14 @@ def test_qspaceritem():
     )
 
 
-def test_qsplitter():
+def test_qsplitter() -> None:
     s = QtWidgets.QSplitter()
     b: QtCore.QByteArray
     b = s.saveState()
     assert isinstance(b, QtCore.QByteArray)
 
 
-def test_qtimer():
+def test_qtimer() -> None:
     timout_sig_unbound: QtCore.Signal = QtCore.QTimer.timeout
     assert isinstance(timout_sig_unbound, QtCore.Signal)
 
@@ -369,7 +369,7 @@ def test_qtimer():
     timer.timeout.connect(lambda: None)
 
 
-def test_qtreewidget():
+def test_qtreewidget() -> None:
     t = QtWidgets.QTreeWidget()
     item = t.topLevelItem(400)
     assert item is None
@@ -377,7 +377,7 @@ def test_qtreewidget():
     item = None
 
 
-def test_qtreewidgetitem():
+def test_qtreewidgetitem() -> None:
     t = QtWidgets.QTreeWidgetItem()
 
     b = True  # type: bool
@@ -396,23 +396,23 @@ def test_qtreewidgetitem():
     t.data(0, QtCore.Qt.ToolTipRole)
 
 
-def test_qversion():
+def test_qversion() -> None:
     s = ""  # type: str
     s = QtCore.qVersion()
     assert isinstance(s, str)
 
 
-def test_qwidget():
+def test_qwidget() -> None:
     w = QtWidgets.QWidget()
     w.setCursor(QtCore.Qt.WaitCursor)
 
 
-def test_qwindow():
+def test_qwindow() -> None:
     w = QtGui.QWindow()
     w.setCursor(QtCore.Qt.WaitCursor)
 
 
-def test_signal_slot():
+def test_signal_slot() -> None:
     class SomeClassWithSignal(QtCore.QObject):
         signal_no_arg: ClassVar[QtCore.Signal] = QtCore.Signal()
         signal_str: ClassVar[QtCore.Signal] = QtCore.Signal(str)
@@ -444,7 +444,7 @@ def test_signal_slot():
     assert isinstance(connection, bool)
 
 
-def test_qbrush_implicit_args():
+def test_qbrush_implicit_args() -> None:
     painter = QtGui.QPainter()
     grad = QtGui.QLinearGradient(0, 0, 0, 100)
     grad.setColorAt(0.0, QtGui.QColor(0, 0, 0, 0))
@@ -456,8 +456,8 @@ def test_qbrush_implicit_args():
     painter.setBrush(QtCore.Qt.GlobalColor.black)
 
 
-@pytest.mark.skipif(pyside_version < (5, 14), reason="fails in PySide2 < 5.14.2.3")
-def test_iterability():
+@pytest.mark.skipif(pyside_version < (5, 14), reason="fails in PySide2 < 5.14.2.3")  # type: ignore[misc]
+def test_iterability() -> None:
     # works with list or iterator
     option1 = QtCore.QCommandLineOption(["one", "won"])
     option2 = QtCore.QCommandLineOption(iter(["two", "too"]))
@@ -492,6 +492,6 @@ def test_iterability():
     assert combo.count() == 3
 
 
-def test_fonts():
+def test_fonts() -> None:
     w = QtWidgets.QTextEdit()
     w.setFontWeight(QtGui.QFont.DemiBold)

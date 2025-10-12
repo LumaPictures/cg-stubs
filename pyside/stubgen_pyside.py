@@ -495,11 +495,9 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
 
     def process_sigs(
         self, ctx: FunctionContext, results: list[FunctionSig]
-    ) -> list[FunctionSig] | None:
+    ) -> list[FunctionSig]:
         if self.is_flag_type(ctx):
             return results
-
-        results = reduce_overloads(results)
 
         if (
             ctx.class_info is not None
@@ -507,6 +505,8 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
             and ctx.name == "__init__"
         ):
             add_property_args(ctx.class_info.cls, results)
+
+        results = reduce_overloads(results, preserve_order=False)
 
         return super().process_sigs(ctx, results)
 

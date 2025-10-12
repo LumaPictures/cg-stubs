@@ -4,9 +4,9 @@ import PySide2.QtWidgets
 import _typeshed
 import collections
 import typing
-T = typing.TypeVar('T')
 import typing_extensions
 
+T = typing.TypeVar('T')
 class QScriptEngineDebugger(PySide2.QtCore.QObject):
     class DebuggerAction:
         ClearConsoleAction: typing.ClassVar[QScriptEngineDebugger.DebuggerAction] = ...

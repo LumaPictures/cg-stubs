@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.10"
 
 [[package]]
@@ -161,13 +161,17 @@ wheels = [
 [[package]]
 name = "stubgenlib"
 version = "0.3.0"
-source = { directory = "../common" }
+source = { editable = "../common" }
 dependencies = [
     { name = "mypy" },
+    { name = "typeguard" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "mypy", specifier = ">=1.15.0,<1.16.0" }]
+requires-dist = [
+    { name = "mypy", specifier = ">=1.15.0,<1.17.0" },
+    { name = "typeguard" },
+]
 
 [package.metadata.requires-dev]
 dev = [{ name = "pytest" }]
@@ -212,6 +216,18 @@ wheels = [
 ]
 
 [[package]]
+name = "typeguard"
+version = "4.4.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c7/68/71c1a15b5f65f40e91b65da23b8224dad41349894535a97f63a52e462196/typeguard-4.4.4.tar.gz", hash = "sha256:3a7fd2dffb705d4d0efaed4306a704c89b9dee850b688f060a8b1615a79e5f74", size = 75203, upload-time = "2025-06-18T09:56:07.624Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1b/a9/e3aee762739c1d7528da1c3e06d518503f8b6c439c35549b53735ba52ead/typeguard-4.4.4-py3-none-any.whl", hash = "sha256:b5f562281b6bfa1f5492470464730ef001646128b180769880468bd84b68b09e", size = 34874, upload-time = "2025-06-18T09:56:05.999Z" },
+]
+
+[[package]]
 name = "types-pyside2"
 version = "5.15.2.1.7"
 source = { editable = "." }
@@ -231,7 +247,7 @@ dev = [
     { name = "mypy-baseline" },
     { name = "pyside2", specifier = "==5.15.2.1" },
     { name = "pytest" },
-    { name = "stubgenlib", directory = "../common" },
+    { name = "stubgenlib", editable = "../common" },
 ]
 
 [[package]]

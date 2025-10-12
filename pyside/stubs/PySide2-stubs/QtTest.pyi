@@ -5,9 +5,9 @@ import _typeshed
 import collections
 import shiboken2
 import typing
-T = typing.TypeVar('T')
 import typing_extensions
 
+T = typing.TypeVar('T')
 class QTest(shiboken2.Object):
     class KeyAction:
         Click: typing.ClassVar[QTest.KeyAction] = ...

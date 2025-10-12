@@ -4,9 +4,9 @@ import _typeshed
 import collections
 import shiboken2
 import typing
-T = typing.TypeVar('T')
 import typing_extensions
 
+T = typing.TypeVar('T')
 class Qt3DLogic(shiboken2.Object):
     class QFrameAction(PySide2.Qt3DCore.Qt3DCore.QComponent):
         staticMetaObject: typing.ClassVar[PySide2.QtCore.QMetaObject] = ...

@@ -4,7 +4,7 @@ import pytest
 
 
 @pytest.mark.skip(reason="can't import pyside_stubgen")
-def test_optiona_key():
+def test_optiona_key() -> None:
     from stubgen_pyside import OptionalKey
 
     assert OptionalKey("foo") == None

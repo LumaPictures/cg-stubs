@@ -211,7 +211,40 @@ def sig_sort_key(py_sig: FunctionSig) -> tuple[int, tuple[str, ...]]:
     return (len(py_sig.args), tuple([arg.name for arg in py_sig.args]))
 
 
-def reduce_overloads(sigs: list[FunctionSig]) -> list[FunctionSig]:
+def remove_overlapping_overloads(
+    sigs: list[FunctionSig], preserve_order: bool = True
+) -> list[FunctionSig]:
+    if len(sigs) <= 1:
+        return sigs
+
+    # when searching for overlapping sigs, we must search in order of decreasing specificity
+    sorted_sigs = sorted(sigs, key=sig_sort_key, reverse=True)
+    # find singatures that overlap with other overloads
+    redundant = []
+    for a, b in itertools.combinations(sorted_sigs, 2):
+        if contains_other_overload(a, b):
+            redundant.append(b)
+        elif contains_other_overload(b, a):
+            redundant.append(a)
+    if preserve_order:
+        results = sigs
+    else:
+        results = sorted_sigs
+
+    # now filter
+    results = [sig for sig in results if sig not in redundant]
+
+    if not results:
+        print("removed too much")
+        for x in sigs:
+            print(x)
+        raise ValueError
+    return results
+
+
+def reduce_overloads(
+    sigs: list[FunctionSig], preserve_order: bool = True
+) -> list[FunctionSig]:
     """
     Remove unsupported and redundant overloads.
 
@@ -220,6 +253,10 @@ def reduce_overloads(sigs: list[FunctionSig]) -> list[FunctionSig]:
       mixing these and does not correctly analyze them. We have to drop one, and we've chosen
       to remove classmethods.  It is possible to implement a "universalmethod" decorator, but
       we could not use overloads to distinguish their arguments.
+
+    preserve_order : if False, order functions so that functions with more arguments are
+      before those with fewer.  This is likley the desired behavior, but at some point the order
+      was reversed, so it is now opt-in.
     """
     # remove dups (FunctionSig is not hashable, so it's a bit cumbersome)
     new_sigs = []
@@ -235,24 +272,7 @@ def reduce_overloads(sigs: list[FunctionSig]) -> list[FunctionSig]:
     if classmethods and instancmethods:
         new_sigs = instancmethods
 
-    if len(new_sigs) <= 1:
-        return new_sigs
-
-    sigs = sorted(new_sigs, key=sig_sort_key, reverse=True)
-    redundant = []
-    for a, b in itertools.combinations(sigs, 2):
-        if contains_other_overload(a, b):
-            redundant.append(b)
-        elif contains_other_overload(b, a):
-            redundant.append(a)
-    results = [sig for sig in new_sigs if sig not in redundant]
-    if not results:
-        print("removed too much")
-        for x in sigs:
-            print(x)
-        raise ValueError
-    # results.reverse()
-    return results
+    return remove_overlapping_overloads(new_sigs, preserve_order=preserve_order)
 
 
 def contains_other_overload(sig: FunctionSig, other: FunctionSig) -> bool:

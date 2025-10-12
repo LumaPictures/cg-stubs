@@ -1,6 +1,7 @@
 # mypy: no-warn-unreachable
 
 import sys
+from typing import Union
 
 if sys.version_info[:2] >= (3, 8):
     pass
@@ -39,10 +40,10 @@ def assert_type_of_value_multiFlag(value: MultiFlagClass) -> None:
 def test_on_one_flag_class() -> None:
     oneFlagValue1 = oneFlagRefValue1
     oneFlagValue2 = oneFlagRefValue2
-    oneFlagValueTest = oneFlagValue1  # type: OneFlagClass
-    intValue = 0  # type: int
-    oneOrMultiFlagValueTest = oneFlagValue1  # type: Union[OneFlagClass, MultiFlagClass]
-    oneFlagOrIntValue = oneFlagValue1  # type: Union[int, OneFlagClass]
+    oneFlagValueTest: OneFlagClass = oneFlagValue1
+    intValue = 0
+    oneOrMultiFlagValueTest: Union[OneFlagClass, MultiFlagClass] = oneFlagValue1
+    oneFlagOrIntValue: Union[int, OneFlagClass] = oneFlagValue1
 
     # upcast from OneFlagClass to int is forbidden
     intValue = oneFlagValue1  # type: ignore[assignment]
@@ -82,32 +83,32 @@ def test_on_one_flag_class() -> None:
     oneOrMultiFlagValueTest = oneFlagValue1  # reset type and value
     assert_type_of_value_oneFlag(oneOrMultiFlagValueTest)
     oneOrMultiFlagValueTest |= oneFlagValue2
-    assert_type_of_value_multiFlag(oneOrMultiFlagValueTest)  # type: ignore[arg-type]	# mypy limitation here
+    assert_type_of_value_multiFlag(oneOrMultiFlagValueTest)
 
     oneOrMultiFlagValueTest = oneFlagValue1  # reset type and value
     assert_type_of_value_oneFlag(oneOrMultiFlagValueTest)
     oneOrMultiFlagValueTest |= 1
-    assert_type_of_value_multiFlag(oneOrMultiFlagValueTest)  # type: ignore[arg-type]	# mypy limitation here
+    assert_type_of_value_multiFlag(oneOrMultiFlagValueTest)
 
     oneOrMultiFlagValueTest = oneFlagValue1  # reset type and value
     assert_type_of_value_oneFlag(oneOrMultiFlagValueTest)
     oneOrMultiFlagValueTest &= 1
-    assert_type_of_value_multiFlag(oneOrMultiFlagValueTest)  # type: ignore[arg-type]	# mypy limitation here
+    assert_type_of_value_multiFlag(oneOrMultiFlagValueTest)
 
     oneOrMultiFlagValueTest = oneFlagValue1  # reset type and value
     assert_type_of_value_oneFlag(oneOrMultiFlagValueTest)
     oneOrMultiFlagValueTest &= oneFlagValue2
-    assert_type_of_value_multiFlag(oneOrMultiFlagValueTest)  # type: ignore[arg-type]	# mypy limitation here
+    assert_type_of_value_multiFlag(oneOrMultiFlagValueTest)
 
     oneOrMultiFlagValueTest = oneFlagValue1  # reset type and value
     assert_type_of_value_oneFlag(oneOrMultiFlagValueTest)
     oneOrMultiFlagValueTest ^= 1
-    assert_type_of_value_multiFlag(oneOrMultiFlagValueTest)  # type: ignore[arg-type]	# mypy limitation here
+    assert_type_of_value_multiFlag(oneOrMultiFlagValueTest)
 
     oneOrMultiFlagValueTest = oneFlagValue1  # reset type and value
     assert_type_of_value_oneFlag(oneOrMultiFlagValueTest)
     oneOrMultiFlagValueTest ^= oneFlagValue2
-    assert_type_of_value_multiFlag(oneOrMultiFlagValueTest)  # type: ignore[arg-type]	# mypy limitation here
+    assert_type_of_value_multiFlag(oneOrMultiFlagValueTest)
 
     # +/- operations are forbidden
     pytest.raises(TypeError, lambda: oneFlagValue1 + 1)  # type: ignore[operator]

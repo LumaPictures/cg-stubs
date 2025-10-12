@@ -1,9 +1,9 @@
 import _typeshed
 import collections
 import typing
-T = typing.TypeVar('T')
 import typing_extensions
 
+T = typing.TypeVar('T')
 __version__: str
 __version_info__: tuple
 
