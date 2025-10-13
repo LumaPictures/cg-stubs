@@ -25,7 +25,7 @@ keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
 follow_imports = "skip"
 check_untyped_defs = true
 files = [
-    "stubs",
+    "stubgen_maya.py",
 ]
 warn_unused_ignores = true
 show_error_codes = true
