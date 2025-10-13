@@ -590,9 +590,13 @@ def generate(session: nox.Session, lib: str) -> None:
     # this has to happen after the stubs are renamed, because before that, the previous state of the
     # stubs still exists in the stubs directory (<foo> and <foo>-stubs coexisting until add_stubs_suffix
     # runs)
-    # FIXME: lock down the version of mypy
+    # FIXME: lock down the version of mypy (actually, I think this is locked by the pyproject.toml)
     print("Adding type: ignore statements")
-    subprocess.check_call("uv run --no-dev mypy stubs | uvx mypy-silent", shell=True)
+    result = subprocess.run(
+        ["uv", "run", "--no-dev", "mypy", "stubs"], text=True, capture_output=True
+    )
+    # print(result.stdout)
+    subprocess.run(["uvx", "mypy-silent"], check=True, text=True, input=result.stdout)
 
 
 @nox.session(venv_backend="none")
@@ -600,7 +604,12 @@ def generate(session: nox.Session, lib: str) -> None:
 def mypy(session: nox.Session, lib: str) -> None:
     """Run mypy type checker"""
     session.chdir(lib)
-    session.run("uv", "run", "mypy")
+    # We recommend that projects exclude the stubs from their mypy configuturation.
+    # They should be corrected by mypy-silent during generation, but also
+    # there's a bug with mypy-silent and multiple error codes: https://github.com/whtsky/mypy-silent/pull/44
+    # Ultimatley, due to variations betweeen versions of mypy it's not actually possible to get the
+    # stubs to pass all the time for everyone anyway.
+    subprocess.run(["uv", "run", "mypy"])
 
 
 @nox.session(venv_backend="none")

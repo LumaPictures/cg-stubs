@@ -7,7 +7,9 @@ from __future__ import annotations
 
 # IMPORT THIRD-PARTY LIBRARIES
 from pxr import Sdf, Usd, Vt
+
 from stubgenlib.test_helpers import assert_type
+
 
 def test():
     """Run the main execution of this module."""
@@ -31,7 +33,9 @@ def test():
     model.SetClipTemplateStride(1, template_set_name)
     model.SetClipPrimPath("/Template", template_set_name)
 
-    paths = assert_type(model.GetClipAssetPaths(non_template_set_name), list[Sdf.AssetPath])
+    paths = assert_type(
+        model.GetClipAssetPaths(non_template_set_name), list[Sdf.AssetPath]
+    )
     assert paths == [Sdf.AssetPath("./non_template_clip.usda")]
 
     assert_type(model.GetClipActive(), Vt.Vec2dArray)

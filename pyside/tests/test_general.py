@@ -82,7 +82,7 @@ def test_qaction() -> None:
     a.setShortcut("Ctrl+F")
 
 
-@pytest.mark.skipif(  # type: ignore[misc]
+@pytest.mark.skipif(
     pyside_version <= (5, 14), reason="causes crash in PySide2 < 5.14.2.3"
 )
 def test_qbytearray() -> None:
@@ -98,12 +98,16 @@ def test_qbytearray() -> None:
 
 
 def test_qcoreapplication() -> None:
-    s: str = "abc"
-    s = QtCore.QCoreApplication.translate("GitFlowAdvanceIntBranch", "hidden", None)  # type: ignore[arg-type]
-    s = QtCore.QCoreApplication.translate(
-        "GitFlowAdvanceIntBranch", "hidden", "some help"
+    assert_type(
+        QtCore.QCoreApplication.translate("GitFlowAdvanceIntBranch", "hidden", None),
+        str,
     )
-    assert isinstance(s, str)
+    assert_type(
+        QtCore.QCoreApplication.translate(
+            "GitFlowAdvanceIntBranch", "hidden", "some help"
+        ),
+        str,
+    )
 
 
 def test_qdate() -> None:
@@ -525,7 +529,7 @@ def test_qbrush_implicit_args() -> None:
     painter.setBrush(QtCore.Qt.GlobalColor.black)
 
 
-@pytest.mark.skipif(pyside_version < (5, 14), reason="fails in PySide2 < 5.14.2.3")  # type: ignore[misc]
+@pytest.mark.skipif(pyside_version < (5, 14), reason="fails in PySide2 < 5.14.2.3")
 def test_iterability() -> None:
     # works with list or iterator
     option1 = QtCore.QCommandLineOption(["one", "won"])

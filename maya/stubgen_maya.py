@@ -1,6 +1,5 @@
 from __future__ import absolute_import, annotations, division, print_function
 
-from collections import abc
 import argparse
 import copy
 import fnmatch
@@ -10,6 +9,7 @@ import logging
 import os
 import re
 import types
+from collections import abc
 from typing import Any, Iterable
 
 import mypy.stubgen
@@ -88,7 +88,9 @@ def _is_protected_module(name: str) -> bool:
         If any section of the import is private / protected, return `True`.
 
     """
-    return any(part for part in name.split(_NAMESPACE_SEPARATOR) if part.startswith("_"))
+    return any(
+        part for part in name.split(_NAMESPACE_SEPARATOR) if part.startswith("_")
+    )
 
 
 def _get_fixed_type_name(name: str) -> str:
@@ -114,7 +116,7 @@ def _get_fixed_type_name(name: str) -> str:
         # ...
         # * space (MSpace constant) - The  transformation space
         #
-        name = name[:-1 * len(" constant")]
+        name = name[: -1 * len(" constant")]
 
     return name
 
@@ -212,7 +214,7 @@ class MayaCmdAdvSignatureGenerator(AdvancedSignatureGenerator):
                 "(*args, isExportEdits: Literal[True], **kwargs) -> bool",
                 "(*args, isLoaded: Literal[True], **kwargs) -> bool",
                 "(*args, isPreviewOnly: Literal[True], **kwargs) -> bool",
-            ]
+            ],
             # "maya.cmds.ls": [
             #     # "(*args, lights: Literal[True] = True, **kwargs) -> str",
             #     # "(*args, whatever: Literal[True] = True, **kwargs) -> str",
@@ -244,7 +246,6 @@ class MayaCmdAdvSignatureGenerator(AdvancedSignatureGenerator):
             ("maya.cmds.setKeyframe", "*"): "None",
             ("maya.cmds.undo", "*"): "None",
             ("maya.cmds.unloadPlugin", "*"): "None",
-
             # NOTE: `maya.cmds.nodeType` has some flags that look like they
             # might return bool, such as `isTypeName`. They do not. They always
             # return a string.
@@ -303,7 +304,11 @@ class _ApiDocstringGenerator(DocstringSignatureGenerator):
         #   type can be str | re.Pattern
         arg_type_overrides={
             ("*", "*", "Bool"): "bool",
-            ("*", "*", "MString"): "str",  # NOTE: This may be too aggressive but is probably okay.
+            (
+                "*",
+                "*",
+                "MString",
+            ): "str",  # NOTE: This may be too aggressive but is probably okay.
             ("*", "*", "string"): "str",
             ("*", "*", "string"): "str",
             ("*", "*", "unicodestring"): "str",
@@ -324,7 +329,10 @@ class _ApiDocstringGenerator(DocstringSignatureGenerator):
         result_type_overrides={
             ("*", "Bool"): "bool",
             ("*", "Integer"): "int",
-            ("*", "MString"): "str",  # NOTE: This may be too aggressive but is probably okay.
+            (
+                "*",
+                "MString",
+            ): "str",  # NOTE: This may be too aggressive but is probably okay.
             ("*", "double"): "float",
             ("*", "integer"): "int",
             ("*", "long"): "float",
@@ -396,9 +404,12 @@ class _ApiDocstringGenerator(DocstringSignatureGenerator):
 
         type_name = _get_fixed_type_name(type_name)
 
-        return self.sig_matcher.find_result_match(
-            context, type_name, self.sig_matcher.result_type_overrides
-        ) or type_name
+        return (
+            self.sig_matcher.find_result_match(
+                context, type_name, self.sig_matcher.result_type_overrides
+            )
+            or type_name
+        )
 
     def _get_fixed_signature(self, sig: FunctionSig, context: str) -> FunctionSig:
         """Fix any obvious return type or argument type issues on `sig`.
@@ -622,9 +633,13 @@ class _ApiDocstringGenerator(DocstringSignatureGenerator):
                 all_arg_types_by_signature.append(arg_types)
 
         if not has_overloads:
-            return self._get_mismatched_function_sigs(signatures, ctx.fullname, all_arg_types)
+            return self._get_mismatched_function_sigs(
+                signatures, ctx.fullname, all_arg_types
+            )
 
-        return self._get_matching_function_sigs(signatures, all_arg_types_by_signature, ctx.fullname)
+        return self._get_matching_function_sigs(
+            signatures, all_arg_types_by_signature, ctx.fullname
+        )
 
 
 class MayaCmdSignatureGenerator(SignatureGenerator):
@@ -851,7 +866,7 @@ class MayaCmdSignatureGenerator(SignatureGenerator):
                 ArgSig("*args"),
                 ArgSig("query", type="Literal[True]"),
                 ArgSig("exists", type="Literal[True]"),
-                ArgSig(flag_name, type=self._get_arg_type(flag_info, as_result=False))
+                ArgSig(flag_name, type=self._get_arg_type(flag_info, as_result=False)),
             ]
             sigs.append(FunctionSig(name, args=args, ret_type="bool"))
 
@@ -958,7 +973,9 @@ class APIStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         )
 
         # NOTE: A number of Maya signatures use typing.Self so we make it available
-        self.import_tracker.add_import_from("typing", [("Literal", None), ("Self", None)])
+        self.import_tracker.add_import_from(
+            "typing", [("Literal", None), ("Self", None)]
+        )
 
         self._initialize_maya_imports()
 
@@ -977,7 +994,8 @@ class APIStubGenerator(mypy.stubgenc.InspectionStubGenerator):
             ]
         else:
             external_modules = [
-                module for module in self.known_modules
+                module
+                for module in self.known_modules
                 if module.startswith("maya.") and not module.startswith("maya.api.")
             ]
 
@@ -990,7 +1008,9 @@ class APIStubGenerator(mypy.stubgenc.InspectionStubGenerator):
                 [(member, None) for member in members if member.startswith("M")],
             )
 
-    def _get_external_module_members(self, modules: Iterable[str]) -> dict[str, list[str]]:
+    def _get_external_module_members(
+        self, modules: Iterable[str]
+    ) -> dict[str, list[str]]:
         """Find all members (classes, functions, attributes) from `modules`.
 
         Args:
@@ -1022,7 +1042,9 @@ class APIStubGenerator(mypy.stubgenc.InspectionStubGenerator):
 
                 continue
             else:
-                result[module_name] = [member[0] for member in inspect.getmembers(module)]
+                result[module_name] = [
+                    member[0] for member in inspect.getmembers(module)
+                ]
 
         return result
 

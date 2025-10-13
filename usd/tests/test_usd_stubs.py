@@ -1,9 +1,9 @@
-from stubgenlib.test_helpers import assert_type
-
 from typing import Protocol, TypeVar
-import pytest
 
+import pytest
 from pxr import Ar, Gf, Sdf, Usd, Vt
+
+from stubgenlib.test_helpers import assert_type
 
 
 def test_path() -> None:

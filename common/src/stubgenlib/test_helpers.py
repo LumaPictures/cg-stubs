@@ -3,10 +3,10 @@ from __future__ import absolute_import, print_function
 from typing import TYPE_CHECKING
 
 import typeguard
-from typeguard import TypeCheckError
+from typeguard import TypeCheckError as TypeCheckError
 
 if TYPE_CHECKING:
-    from typing_extensions import assert_type
+    from typing_extensions import assert_type as assert_type
 else:
 
     def assert_type(val, typ, /):

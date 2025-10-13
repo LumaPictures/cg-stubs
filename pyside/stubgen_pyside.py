@@ -25,7 +25,7 @@ from mypy.stubutil import (
     FunctionContext,
     SignatureGenerator,
 )
-from PySide2 import QtCore, QtWidgets  # type: ignore[import-not-found]
+from PySide2 import QtCore, QtWidgets
 
 from stubgenlib.siggen import (
     AdvancedSigMatcher,
@@ -35,7 +35,6 @@ from stubgenlib.siggen import (
 from stubgenlib.utils import (
     insert_typevars,
     remove_overlapping_overloads,
-    remove_unhashable_duplicates,
 )
 
 cache = lru_cache(maxsize=None)
@@ -310,7 +309,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
             "*.QAbstractItemModel.mimeData": "(self, indexes: list[PySide2.QtCore.QModelIndex]) -> PySide2.QtCore.QMimeData",
             "*.QStandardItemModel.mimeData": "(self, indexes: list[PySide2.QtCore.QModelIndex]) -> PySide2.QtCore.QMimeData",
             # * Fix return type for `QApplication.instance()` and `QGuiApplication.instance()` :
-            "*.QCoreApplication.instance": "() -> typing.Self",
+            "*.QCoreApplication.instance": "(cls: type[typing_extensions.Self]) -> typing_extensions.Self",
             # * Fix return type for `QObject.findChild()` and `QObject.findChildren()` :
             "*.QObject.findChild": "(self, arg__1: type[T], arg__2: str = ...) -> T",
             "*.QObject.findChildren": [
@@ -418,7 +417,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
         "__rsub__": "(self, other: typing.SupportsInt) -> {}",
         "__invert__": "(self) -> {}",
     }
-    new_members = {
+    new_members: dict[str, list[tuple[str, object]]] = {
         # can use any method as a stand-in.  signatures will come from _signature_overrides
         "QByteArray": [
             ("__bytes__", QtCore.QByteArray.__len__),
@@ -718,12 +717,21 @@ P = typing.ParamSpec('P')\n"""
             ):
                 decorators = ["@classmethod"]
 
+        # quick and dirty fix
+        if (
+            len(methods) == 1
+            and decorators == ["@staticmethod"]
+            and methods[0].args
+            and methods[0].args[0].name == "cls"
+        ):
+            decorators = ["@classmethod"]
+
         lines += super().format_func_def(methods, is_coroutine, decorators, docstring)
 
         return lines
 
 
-mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[attr-defined,misc]
+mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[attr-defined]
 mypy.stubgenc.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[misc]
 
 if __name__ == "__main__":

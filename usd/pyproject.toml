@@ -51,7 +51,10 @@ dev-mode-dirs = ["stubs"]
 [tool.mypy]
 # adding the stubs directory is not necessary because we're using `uv run mypy`
 # which adds a .pth file to the site-packcages directory
-files = ["tests"]
+files = [
+    "stubgen_usd.py",
+    "tests",
+]
 python_version = "3.9"
 check_untyped_defs = true
 

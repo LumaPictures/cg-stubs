@@ -4,6 +4,7 @@
 # IMPORT THIRD-PARTY LIBRARIES
 from pxr import Usd
 
+
 def test():
     """Run the main execution of the current script."""
     stage = Usd.Stage.Open("fixtures/over.usda")
