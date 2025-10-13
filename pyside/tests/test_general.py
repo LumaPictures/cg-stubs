@@ -1,13 +1,68 @@
 from __future__ import absolute_import, print_function
 
 import datetime
+import sys
 from typing import Any, ClassVar, List
 
 import PySide2
 import pytest
 from PySide2 import QtCore, QtGui, QtQuick, QtWidgets
 
+from stubgenlib.test_helpers import assert_type
+
 pyside_version = PySide2.__version_info__
+
+
+def test_qmenu1() -> None:
+    # FIXME: these tests are very slow, but I can't figure out how to make them faster
+    self = QtWidgets.QWidget()
+    pos = QtCore.QPoint(0, 0)
+
+    # Add actions to the menu
+    action1 = QtWidgets.QAction("Action 1")
+    menu1 = QtWidgets.QMenu(self)
+    menu1.addAction(action1)
+    menu1.exec_(pos, at=action1)
+
+
+def test_qmenu() -> None:
+    self = QtWidgets.QWidget()
+    pos = QtCore.QPoint(0, 0)
+    action = QtWidgets.QAction("Action 1")
+    QtWidgets.QMenu.exec_([action], pos, action, self)
+
+
+def test_qmenu2() -> None:
+    self = QtWidgets.QWidget()
+    pos = QtCore.QPoint(0, 0)
+    action2 = QtWidgets.QAction("Action 1")
+    menu2 = QtWidgets.QMenu(self)
+    menu2.exec_([action2], pos, action2, self)
+
+
+def test_qmenu3() -> None:
+    self = QtWidgets.QWidget()
+    action3 = QtWidgets.QAction("Action 1")
+    menu3 = QtWidgets.QMenu(self)
+    # Add actions to the menu
+    menu3.addAction(action3)
+    menu3.exec_()
+
+
+def test_qmenu_failures() -> None:
+    with pytest.raises(Exception):
+        QtWidgets.QMenu.exec_(actions)  # type: ignore
+
+    if False:
+        # these cause python to crash
+        with pytest.raises(Exception):
+            QtWidgets.QMenu.exec_(pos)  # type: ignore
+
+        with pytest.raises(Exception):
+            QtWidgets.QMenu.exec_()  # type: ignore
+
+        with pytest.raises(Exception):
+            QtWidgets.QMenu(self).exec_(None)  # type: ignore
 
 
 def test_qapplication() -> None:
@@ -15,6 +70,9 @@ def test_qapplication() -> None:
         pass
 
     app = QtWidgets.QApplication.instance()
+    assert_type(app.instance(), QtWidgets.QApplication)
+    assert_type(app, QtWidgets.QApplication)
+
     app.applicationStateChanged.connect(slotAppStateChanged)
     QtWidgets.QApplication.processEvents()
 
@@ -51,6 +109,17 @@ def test_qcoreapplication() -> None:
 def test_qdate() -> None:
     d = QtCore.QDate(datetime.date(1980, 3, 31))
     assert d.daysTo(datetime.date(1981, 3, 31)) == 365
+
+    assert QtCore.QDate.isValid(2025, 1, 1) is True
+    assert QtCore.QDate(2025, 1, 1).isValid() is True
+
+    with pytest.raises(Exception):
+        # it is not acceptable to call the instance method with an argument
+        QtCore.QDate(2025, 1, 1).isValid("BAD")  # type: ignore[call-overload]
+
+    with pytest.raises(Exception):
+        # confirm that the static method fails with the wrong arguments
+        QtCore.QDate.isValid("BAD")  # type: ignore[call-arg, arg-type]
 
 
 def test_qdatetime() -> None:
@@ -495,3 +564,11 @@ def test_iterability() -> None:
 def test_fonts() -> None:
     w = QtWidgets.QTextEdit()
     w.setFontWeight(QtGui.QFont.DemiBold)
+
+
+def test_qfile() -> None:
+    current_file: str | None = sys.modules[__name__].__file__
+    assert current_file is not None
+    qfile = QtCore.QFile(current_file)
+    assert qfile.exists() is True
+    assert QtCore.QFile.exists(current_file) is True

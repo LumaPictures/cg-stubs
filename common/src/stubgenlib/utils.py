@@ -2,12 +2,15 @@ from __future__ import absolute_import, annotations, division, print_function
 
 import itertools
 from dataclasses import dataclass, field
+from typing import Iterable, TypeVar
 
 from mypy.stubgenc import (
     ArgSig,
     FunctionContext,
     FunctionSig,
 )
+
+T = TypeVar("T")
 
 
 @dataclass
@@ -212,7 +215,7 @@ def sig_sort_key(py_sig: FunctionSig) -> tuple[int, tuple[str, ...]]:
 
 
 def remove_overlapping_overloads(
-    sigs: list[FunctionSig], preserve_order: bool = True
+    sigs: list[FunctionSig], sort: bool = False
 ) -> list[FunctionSig]:
     if len(sigs) <= 1:
         return sigs
@@ -226,24 +229,38 @@ def remove_overlapping_overloads(
             redundant.append(b)
         elif contains_other_overload(b, a):
             redundant.append(a)
-    if preserve_order:
-        results = sigs
-    else:
+    if sort:
         results = sorted_sigs
+    else:
+        results = sigs
 
     # now filter
     results = [sig for sig in results if sig not in redundant]
 
     if not results:
-        print("removed too much")
+        msg = "removed too many overlapping overloads\n"
+        msg += f"  signatures:\n"
         for x in sigs:
-            print(x)
-        raise ValueError
+            msg += f"    {x}\n"
+        msg += f"  redundant:\n"
+        for x in sigs:
+            msg += f"    {x}\n"
+        raise ValueError(msg)
     return results
 
 
+def remove_unhashable_duplicates(objects: Iterable[T]) -> list[T]:
+    """General utility to remove objects from the input iterable that evaluate as equal."""
+    result = []
+    for x in objects:
+        if x not in result:
+            result.append(x)
+    return result
+
+
 def reduce_overloads(
-    sigs: list[FunctionSig], preserve_order: bool = True
+    sigs: list[FunctionSig],
+    sort: bool = False,
 ) -> list[FunctionSig]:
     """
     Remove unsupported and redundant overloads.
@@ -254,25 +271,21 @@ def reduce_overloads(
       to remove classmethods.  It is possible to implement a "universalmethod" decorator, but
       we could not use overloads to distinguish their arguments.
 
-    preserve_order : if False, order functions so that functions with more arguments are
+    sort : if True, order functions so that functions with more arguments are
       before those with fewer.  This is likley the desired behavior, but at some point the order
       was reversed, so it is now opt-in.
     """
-    # remove dups (FunctionSig is not hashable, so it's a bit cumbersome)
-    new_sigs = []
     classmethods = []
     instancmethods = []
-    for sig in sigs:
-        if sig not in new_sigs:
-            if sig.args and sig.args[0].name == "self":
-                instancmethods.append(sig)
-            else:
-                classmethods.append(sig)
-            new_sigs.append(sig)
+    new_sigs = remove_unhashable_duplicates(sigs)
+    for sig in new_sigs:
+        if sig.args and sig.args[0].name == "self":
+            instancmethods.append(sig)
+        else:
+            classmethods.append(sig)
     if classmethods and instancmethods:
         new_sigs = instancmethods
-
-    return remove_overlapping_overloads(new_sigs, preserve_order=preserve_order)
+    return remove_overlapping_overloads(new_sigs, sort=sort)
 
 
 def contains_other_overload(sig: FunctionSig, other: FunctionSig) -> bool:

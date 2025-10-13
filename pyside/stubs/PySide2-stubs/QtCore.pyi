@@ -8,6 +8,464 @@ import typing_extensions
 
 T = typing.TypeVar('T')
 P = typing.ParamSpec('P')
+class _add_QDate_isValid_overloads:
+    """
+    Overloads for QDate.isValid.
+
+    This descriptor-based workflow allows us to describe overloads that mix static and instance
+    methods. 
+    """
+    class StaticOverloads:
+        class isValid:
+            @staticmethod
+            def __call__(y: int, m: int, d: int) -> bool: ...
+
+    class InstanceOverloads:
+        class isValid:
+            @typing.overload
+            def __call__(self) -> bool: ...
+            @typing.overload
+            def __call__(self, y: int, m: int, d: int) -> bool: ...
+
+    def __init__(self, cb: typing.Callable) -> None: ...
+
+    @typing.overload
+    def __get__(self, object: None, owner: typing.Any) -> StaticOverloads.isValid: ...
+
+    @typing.overload
+    def __get__(self, object: QDate, owner: typing.Any) -> InstanceOverloads.isValid: ...
+
+class _add_QFile_copy_overloads:
+    """
+    Overloads for QFile.copy.
+
+    This descriptor-based workflow allows us to describe overloads that mix static and instance
+    methods. 
+    """
+    class StaticOverloads:
+        class copy:
+            @staticmethod
+            def __call__(fileName: str, newName: str) -> bool: ...
+
+    class InstanceOverloads:
+        class copy:
+            @typing.overload
+            def __call__(self, newName: str) -> bool: ...
+            @typing.overload
+            def __call__(self, fileName: str, newName: str) -> bool: ...
+
+    def __init__(self, cb: typing.Callable) -> None: ...
+
+    @typing.overload
+    def __get__(self, object: None, owner: typing.Any) -> StaticOverloads.copy: ...
+
+    @typing.overload
+    def __get__(self, object: QFile, owner: typing.Any) -> InstanceOverloads.copy: ...
+
+class _add_QFile_exists_overloads:
+    """
+    Overloads for QFile.exists.
+
+    This descriptor-based workflow allows us to describe overloads that mix static and instance
+    methods. 
+    """
+    class StaticOverloads:
+        class exists:
+            @staticmethod
+            def __call__(fileName: str) -> bool: ...
+
+    class InstanceOverloads:
+        class exists:
+            @typing.overload
+            def __call__(self) -> bool: ...
+            @typing.overload
+            def __call__(self, fileName: str) -> bool: ...
+
+    def __init__(self, cb: typing.Callable) -> None: ...
+
+    @typing.overload
+    def __get__(self, object: None, owner: typing.Any) -> StaticOverloads.exists: ...
+
+    @typing.overload
+    def __get__(self, object: QFile, owner: typing.Any) -> InstanceOverloads.exists: ...
+
+class _add_QFile_link_overloads:
+    """
+    Overloads for QFile.link.
+
+    This descriptor-based workflow allows us to describe overloads that mix static and instance
+    methods. 
+    """
+    class StaticOverloads:
+        class link:
+            @staticmethod
+            def __call__(oldname: str, newName: str) -> bool: ...
+
+    class InstanceOverloads:
+        class link:
+            @typing.overload
+            def __call__(self, newName: str) -> bool: ...
+            @typing.overload
+            def __call__(self, oldname: str, newName: str) -> bool: ...
+
+    def __init__(self, cb: typing.Callable) -> None: ...
+
+    @typing.overload
+    def __get__(self, object: None, owner: typing.Any) -> StaticOverloads.link: ...
+
+    @typing.overload
+    def __get__(self, object: QFile, owner: typing.Any) -> InstanceOverloads.link: ...
+
+class _add_QFile_moveToTrash_overloads:
+    """
+    Overloads for QFile.moveToTrash.
+
+    This descriptor-based workflow allows us to describe overloads that mix static and instance
+    methods. 
+    """
+    class StaticOverloads:
+        class moveToTrash:
+            @staticmethod
+            def __call__(fileName: str) -> tuple[bool, str]: ...
+
+    class InstanceOverloads:
+        class moveToTrash:
+            @typing.overload
+            def __call__(self) -> bool: ...
+            @typing.overload
+            def __call__(self, fileName: str) -> tuple[bool, str]: ...
+
+    def __init__(self, cb: typing.Callable) -> None: ...
+
+    @typing.overload
+    def __get__(self, object: None, owner: typing.Any) -> StaticOverloads.moveToTrash: ...
+
+    @typing.overload
+    def __get__(self, object: QFile, owner: typing.Any) -> InstanceOverloads.moveToTrash: ...
+
+class _add_QFile_permissions_overloads:
+    """
+    Overloads for QFile.permissions.
+
+    This descriptor-based workflow allows us to describe overloads that mix static and instance
+    methods. 
+    """
+    class StaticOverloads:
+        class permissions:
+            @staticmethod
+            def __call__(filename: str) -> QFileDevice.Permissions | QFileDevice.Permission: ...
+
+    class InstanceOverloads:
+        class permissions:
+            @typing.overload
+            def __call__(self) -> QFileDevice.Permissions | QFileDevice.Permission: ...
+            @typing.overload
+            def __call__(self, filename: str) -> QFileDevice.Permissions | QFileDevice.Permission: ...
+
+    def __init__(self, cb: typing.Callable) -> None: ...
+
+    @typing.overload
+    def __get__(self, object: None, owner: typing.Any) -> StaticOverloads.permissions: ...
+
+    @typing.overload
+    def __get__(self, object: QFile, owner: typing.Any) -> InstanceOverloads.permissions: ...
+
+class _add_QFile_readLink_overloads:
+    """
+    Overloads for QFile.readLink.
+
+    This descriptor-based workflow allows us to describe overloads that mix static and instance
+    methods. 
+    """
+    class StaticOverloads:
+        class readLink:
+            @staticmethod
+            def __call__(fileName: str) -> str: ...
+
+    class InstanceOverloads:
+        class readLink:
+            @typing.overload
+            def __call__(self) -> str: ...
+            @typing.overload
+            def __call__(self, fileName: str) -> str: ...
+
+    def __init__(self, cb: typing.Callable) -> None: ...
+
+    @typing.overload
+    def __get__(self, object: None, owner: typing.Any) -> StaticOverloads.readLink: ...
+
+    @typing.overload
+    def __get__(self, object: QFile, owner: typing.Any) -> InstanceOverloads.readLink: ...
+
+class _add_QFile_remove_overloads:
+    """
+    Overloads for QFile.remove.
+
+    This descriptor-based workflow allows us to describe overloads that mix static and instance
+    methods. 
+    """
+    class StaticOverloads:
+        class remove:
+            @staticmethod
+            def __call__(fileName: str) -> bool: ...
+
+    class InstanceOverloads:
+        class remove:
+            @typing.overload
+            def __call__(self) -> bool: ...
+            @typing.overload
+            def __call__(self, fileName: str) -> bool: ...
+
+    def __init__(self, cb: typing.Callable) -> None: ...
+
+    @typing.overload
+    def __get__(self, object: None, owner: typing.Any) -> StaticOverloads.remove: ...
+
+    @typing.overload
+    def __get__(self, object: QFile, owner: typing.Any) -> InstanceOverloads.remove: ...
+
+class _add_QFile_rename_overloads:
+    """
+    Overloads for QFile.rename.
+
+    This descriptor-based workflow allows us to describe overloads that mix static and instance
+    methods. 
+    """
+    class StaticOverloads:
+        class rename:
+            @staticmethod
+            def __call__(oldName: str, newName: str) -> bool: ...
+
+    class InstanceOverloads:
+        class rename:
+            @typing.overload
+            def __call__(self, newName: str) -> bool: ...
+            @typing.overload
+            def __call__(self, oldName: str, newName: str) -> bool: ...
+
+    def __init__(self, cb: typing.Callable) -> None: ...
+
+    @typing.overload
+    def __get__(self, object: None, owner: typing.Any) -> StaticOverloads.rename: ...
+
+    @typing.overload
+    def __get__(self, object: QFile, owner: typing.Any) -> InstanceOverloads.rename: ...
+
+class _add_QFile_resize_overloads:
+    """
+    Overloads for QFile.resize.
+
+    This descriptor-based workflow allows us to describe overloads that mix static and instance
+    methods. 
+    """
+    class StaticOverloads:
+        class resize:
+            @staticmethod
+            def __call__(filename: str, sz: int) -> bool: ...
+
+    class InstanceOverloads:
+        class resize:
+            @typing.overload
+            def __call__(self, sz: int) -> bool: ...
+            @typing.overload
+            def __call__(self, filename: str, sz: int) -> bool: ...
+
+    def __init__(self, cb: typing.Callable) -> None: ...
+
+    @typing.overload
+    def __get__(self, object: None, owner: typing.Any) -> StaticOverloads.resize: ...
+
+    @typing.overload
+    def __get__(self, object: QFile, owner: typing.Any) -> InstanceOverloads.resize: ...
+
+class _add_QFile_setPermissions_overloads:
+    """
+    Overloads for QFile.setPermissions.
+
+    This descriptor-based workflow allows us to describe overloads that mix static and instance
+    methods. 
+    """
+    class StaticOverloads:
+        class setPermissions:
+            @staticmethod
+            def __call__(filename: str, permissionSpec: QFileDevice.Permissions | QFileDevice.Permission) -> bool: ...
+
+    class InstanceOverloads:
+        class setPermissions:
+            @typing.overload
+            def __call__(self, permissionSpec: QFileDevice.Permissions | QFileDevice.Permission) -> bool: ...
+            @typing.overload
+            def __call__(self, filename: str, permissionSpec: QFileDevice.Permissions | QFileDevice.Permission) -> bool: ...
+
+    def __init__(self, cb: typing.Callable) -> None: ...
+
+    @typing.overload
+    def __get__(self, object: None, owner: typing.Any) -> StaticOverloads.setPermissions: ...
+
+    @typing.overload
+    def __get__(self, object: QFile, owner: typing.Any) -> InstanceOverloads.setPermissions: ...
+
+class _add_QFile_symLinkTarget_overloads:
+    """
+    Overloads for QFile.symLinkTarget.
+
+    This descriptor-based workflow allows us to describe overloads that mix static and instance
+    methods. 
+    """
+    class StaticOverloads:
+        class symLinkTarget:
+            @staticmethod
+            def __call__(fileName: str) -> str: ...
+
+    class InstanceOverloads:
+        class symLinkTarget:
+            @typing.overload
+            def __call__(self) -> str: ...
+            @typing.overload
+            def __call__(self, fileName: str) -> str: ...
+
+    def __init__(self, cb: typing.Callable) -> None: ...
+
+    @typing.overload
+    def __get__(self, object: None, owner: typing.Any) -> StaticOverloads.symLinkTarget: ...
+
+    @typing.overload
+    def __get__(self, object: QFile, owner: typing.Any) -> InstanceOverloads.symLinkTarget: ...
+
+class _add_QFileInfo_exists_overloads:
+    """
+    Overloads for QFileInfo.exists.
+
+    This descriptor-based workflow allows us to describe overloads that mix static and instance
+    methods. 
+    """
+    class StaticOverloads:
+        class exists:
+            @staticmethod
+            def __call__(file: str) -> bool: ...
+
+    class InstanceOverloads:
+        class exists:
+            @typing.overload
+            def __call__(self) -> bool: ...
+            @typing.overload
+            def __call__(self, file: str) -> bool: ...
+
+    def __init__(self, cb: typing.Callable) -> None: ...
+
+    @typing.overload
+    def __get__(self, object: None, owner: typing.Any) -> StaticOverloads.exists: ...
+
+    @typing.overload
+    def __get__(self, object: QFileInfo, owner: typing.Any) -> InstanceOverloads.exists: ...
+
+class _add_QObject_connect_overloads:
+    """
+    Overloads for QObject.connect.
+
+    This descriptor-based workflow allows us to describe overloads that mix static and instance
+    methods. 
+    """
+    class StaticOverloads:
+        class connect:
+            @staticmethod
+            @typing.overload
+            def __call__(arg__1: QObject, arg__2: bytes, arg__3: typing.Callable, type: Qt.ConnectionType = ...) -> bool: ...
+            @staticmethod
+            @typing.overload
+            def __call__(sender: QObject, signal: QMetaMethod, receiver: QObject, method: QMetaMethod, type: Qt.ConnectionType = ...) -> QMetaObject.Connection: ...
+            @staticmethod
+            @typing.overload
+            def __call__(sender: QObject, signal: bytes, receiver: QObject, member: bytes, type: Qt.ConnectionType = ...) -> QMetaObject.Connection: ...
+
+    class InstanceOverloads:
+        class connect:
+            @typing.overload
+            def __call__(self, arg__1: bytes, arg__2: typing.Callable, type: Qt.ConnectionType = ...) -> bool: ...
+            @typing.overload
+            def __call__(self, arg__1: bytes, arg__2: QObject, arg__3: bytes, type: Qt.ConnectionType = ...) -> bool: ...
+            @typing.overload
+            def __call__(self, sender: QObject, signal: bytes, member: bytes, type: Qt.ConnectionType = ...) -> QMetaObject.Connection: ...
+            @typing.overload
+            def __call__(self, arg__1: QObject, arg__2: bytes, arg__3: typing.Callable, type: Qt.ConnectionType = ...) -> bool: ...
+            @typing.overload
+            def __call__(self, sender: QObject, signal: QMetaMethod, receiver: QObject, method: QMetaMethod, type: Qt.ConnectionType = ...) -> QMetaObject.Connection: ...
+            @typing.overload
+            def __call__(self, sender: QObject, signal: bytes, receiver: QObject, member: bytes, type: Qt.ConnectionType = ...) -> QMetaObject.Connection: ...
+
+    def __init__(self, cb: typing.Callable) -> None: ...
+
+    @typing.overload
+    def __get__(self, object: None, owner: typing.Any) -> StaticOverloads.connect: ...
+
+    @typing.overload
+    def __get__(self, object: QObject, owner: typing.Any) -> InstanceOverloads.connect: ...
+
+class _add_QProcess_startDetached_overloads:
+    """
+    Overloads for QProcess.startDetached.
+
+    This descriptor-based workflow allows us to describe overloads that mix static and instance
+    methods. 
+    """
+    class StaticOverloads:
+        class startDetached:
+            @staticmethod
+            @typing.overload
+            def __call__(command: str) -> bool: ...
+            @staticmethod
+            @typing.overload
+            def __call__(program: str, arguments: typing.Iterable[str]) -> bool: ...
+            @staticmethod
+            @typing.overload
+            def __call__(program: str, arguments: typing.Iterable[str], workingDirectory: str) -> tuple[bool, int]: ...
+
+    class InstanceOverloads:
+        class startDetached:
+            @typing.overload
+            def __call__(self) -> tuple[bool, int]: ...
+            @typing.overload
+            def __call__(self, command: str) -> bool: ...
+            @typing.overload
+            def __call__(self, program: str, arguments: typing.Iterable[str]) -> bool: ...
+            @typing.overload
+            def __call__(self, program: str, arguments: typing.Iterable[str], workingDirectory: str) -> tuple[bool, int]: ...
+
+    def __init__(self, cb: typing.Callable) -> None: ...
+
+    @typing.overload
+    def __get__(self, object: None, owner: typing.Any) -> StaticOverloads.startDetached: ...
+
+    @typing.overload
+    def __get__(self, object: QProcess, owner: typing.Any) -> InstanceOverloads.startDetached: ...
+
+class _add_QTime_isValid_overloads:
+    """
+    Overloads for QTime.isValid.
+
+    This descriptor-based workflow allows us to describe overloads that mix static and instance
+    methods. 
+    """
+    class StaticOverloads:
+        class isValid:
+            @staticmethod
+            def __call__(h: int, m: int, s: int, ms: int = ...) -> bool: ...
+
+    class InstanceOverloads:
+        class isValid:
+            @typing.overload
+            def __call__(self) -> bool: ...
+            @typing.overload
+            def __call__(self, h: int, m: int, s: int, ms: int = ...) -> bool: ...
+
+    def __init__(self, cb: typing.Callable) -> None: ...
+
+    @typing.overload
+    def __get__(self, object: None, owner: typing.Any) -> StaticOverloads.isValid: ...
+
+    @typing.overload
+    def __get__(self, object: QTime, owner: typing.Any) -> InstanceOverloads.isValid: ...
+
 QtCriticalMsg: QtMsgType
 QtDebugMsg: QtMsgType
 QtFatalMsg: QtMsgType
@@ -2043,7 +2501,7 @@ class QCoreApplication(QObject):
     @staticmethod
     def installTranslator(messageFile: QTranslator) -> bool: ...
     @staticmethod
-    def instance(cls: type[T]) -> T: ...
+    def instance() -> typing.Self: ...  # type: ignore[name-defined]
     @staticmethod
     def isQuitLockEnabled() -> bool: ...
     @staticmethod
@@ -2654,8 +3112,8 @@ class QDate(shiboken2.Object):
     @staticmethod
     def isLeapYear(year: int) -> bool: ...
     def isNull(self) -> bool: ...
-    @staticmethod
-    def isValid(self) -> bool: ...
+    @_add_QDate_isValid_overloads
+    def isValid(self) -> typing.Any: ...
     @staticmethod
     def longDayName(weekday: int, type: QDate.MonthNameType = ...) -> str: ...
     @staticmethod
@@ -3932,8 +4390,8 @@ class QFile(QFileDevice):
     def __init__(self, name: str, aboutToClose: typing.Callable = ..., bytesWritten: typing.Callable = ..., channelBytesWritten: typing.Callable = ..., channelReadyRead: typing.Callable = ..., destroyed: typing.Callable = ..., objectName: str = ..., objectNameChanged: typing.Callable = ..., readChannelFinished: typing.Callable = ..., readyRead: typing.Callable = ...) -> None: ...
     @typing.overload
     def __init__(self, aboutToClose: typing.Callable = ..., bytesWritten: typing.Callable = ..., channelBytesWritten: typing.Callable = ..., channelReadyRead: typing.Callable = ..., destroyed: typing.Callable = ..., objectName: str = ..., objectNameChanged: typing.Callable = ..., readChannelFinished: typing.Callable = ..., readyRead: typing.Callable = ...) -> None: ...
-    @staticmethod
-    def copy(self, newName: str) -> bool: ...
+    @_add_QFile_copy_overloads
+    def copy(self) -> typing.Any: ...
     @typing.overload
     @staticmethod
     def decodeName(localFileName: QByteArray | bytes) -> str: ...
@@ -3942,33 +4400,33 @@ class QFile(QFileDevice):
     def decodeName(localFileName: bytes) -> str: ...  # type: ignore[overload-cannot-match]
     @staticmethod
     def encodeName(fileName: str) -> QByteArray: ...
-    @staticmethod
-    def exists(self) -> bool: ...
+    @_add_QFile_exists_overloads
+    def exists(self) -> typing.Any: ...
     def fileName(self) -> str: ...
-    @staticmethod
-    def link(self, newName: str) -> bool: ...
-    @staticmethod
-    def moveToTrash(self) -> bool: ...
+    @_add_QFile_link_overloads
+    def link(self) -> typing.Any: ...
+    @_add_QFile_moveToTrash_overloads
+    def moveToTrash(self) -> typing.Any: ...
     @typing.overload
     def open(self, fd: int, ioFlags: QIODevice.OpenMode | QIODevice.OpenModeFlag, handleFlags: QFileDevice.FileHandleFlags | QFileDevice.FileHandleFlag = ...) -> bool: ...
     @typing.overload
     def open(self, flags: QIODevice.OpenMode | QIODevice.OpenModeFlag) -> bool: ...
-    @staticmethod
-    def permissions(self) -> QFileDevice.Permissions | QFileDevice.Permission: ...  # type: ignore[override]
-    @staticmethod
-    def readLink(self) -> str: ...
-    @staticmethod
-    def remove(self) -> bool: ...
-    @staticmethod
-    def rename(self, newName: str) -> bool: ...
-    @staticmethod
-    def resize(self, sz: int) -> bool: ...  # type: ignore[override]
+    @_add_QFile_permissions_overloads
+    def permissions(self) -> typing.Any: ...
+    @_add_QFile_readLink_overloads
+    def readLink(self) -> typing.Any: ...
+    @_add_QFile_remove_overloads
+    def remove(self) -> typing.Any: ...
+    @_add_QFile_rename_overloads
+    def rename(self) -> typing.Any: ...
+    @_add_QFile_resize_overloads
+    def resize(self) -> typing.Any: ...
     def setFileName(self, name: str) -> None: ...
-    @staticmethod
-    def setPermissions(self, permissionSpec: QFileDevice.Permissions | QFileDevice.Permission) -> bool: ...  # type: ignore[override]
+    @_add_QFile_setPermissions_overloads
+    def setPermissions(self) -> typing.Any: ...
     def size(self) -> int: ...
-    @staticmethod
-    def symLinkTarget(self) -> str: ...
+    @_add_QFile_symLinkTarget_overloads
+    def symLinkTarget(self) -> typing.Any: ...
 
 class QFileDevice(QIODevice):
     class FileError:
@@ -4264,8 +4722,8 @@ class QFileInfo(shiboken2.Object):
     def completeSuffix(self) -> str: ...
     def created(self) -> QDateTime: ...
     def dir(self) -> QDir: ...
-    @staticmethod
-    def exists(self) -> bool: ...
+    @_add_QFileInfo_exists_overloads
+    def exists(self) -> typing.Any: ...
     def fileName(self) -> str: ...
     def filePath(self) -> str: ...
     def group(self) -> str: ...
@@ -8185,6 +8643,7 @@ class QMutex(QBasicMutex):
     def __init__(self) -> None: ...
     def isRecursive(self) -> bool: ...
     def lock(self) -> None: ...
+    @typing.overload  # type: ignore[misc]
     def tryLock(self, timeout: int = ...) -> bool: ...
     def try_lock(self) -> bool: ...
     def unlock(self) -> None: ...
@@ -8208,15 +8667,8 @@ class QObject(shiboken2.Object):
     def blockSignals(self, b: bool) -> bool: ...
     def childEvent(self, event: QChildEvent) -> None: ...
     def children(self) -> list[QObject]: ...
-    @typing.overload
-    @staticmethod
-    def connect(self, sender: QObject, signal: bytes, member: bytes, type: Qt.ConnectionType = ...) -> QMetaObject.Connection: ...
-    @typing.overload
-    @staticmethod
-    def connect(self, arg__1: bytes, arg__2: QObject, arg__3: bytes, type: Qt.ConnectionType = ...) -> bool: ...
-    @typing.overload
-    @staticmethod
-    def connect(self, arg__1: bytes, arg__2: typing.Callable, type: Qt.ConnectionType = ...) -> bool: ...
+    @_add_QObject_connect_overloads
+    def connect(self) -> typing.Any: ...
     def connectNotify(self, signal: QMetaMethod) -> None: ...
     def customEvent(self, event: QEvent) -> None: ...
     def deleteLater(self) -> None: ...
@@ -8778,8 +9230,8 @@ class QProcess(QIODevice):
     def start(self, command: str, mode: QIODevice.OpenMode | QIODevice.OpenModeFlag = ...) -> None: ...
     @typing.overload
     def start(self, mode: QIODevice.OpenMode | QIODevice.OpenModeFlag = ...) -> None: ...
-    @staticmethod
-    def startDetached(self) -> tuple[bool, int]: ...
+    @_add_QProcess_startDetached_overloads
+    def startDetached(self) -> typing.Any: ...
     def state(self) -> QProcess.ProcessState: ...
     @staticmethod
     def systemEnvironment() -> list[str]: ...
@@ -11481,8 +11933,8 @@ class QTime(shiboken2.Object):
     def fromString(s: str, f: Qt.DateFormat = ...) -> QTime: ...
     def hour(self) -> int: ...
     def isNull(self) -> bool: ...
-    @staticmethod
-    def isValid(self) -> bool: ...
+    @_add_QTime_isValid_overloads
+    def isValid(self) -> typing.Any: ...
     def minute(self) -> int: ...
     def msec(self) -> int: ...
     def msecsSinceStartOfDay(self) -> int: ...
