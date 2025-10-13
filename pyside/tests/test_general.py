@@ -584,3 +584,11 @@ def test_qline() -> None:
     # Get line as tuple: (x1, y1, x2, y2)
     coords = line.toTuple()
     assert_type(coords, tuple[Any, ...])
+
+
+def test_signal_connect() -> None:
+    b = QtWidgets.QComboBox()
+    b.editTextChanged.connect(print, QtCore.Qt.QueuedConnection)
+
+    with pytest.raises(Exception):
+        b.editTextChanged.connect(print, None)  # type: ignore

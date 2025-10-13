@@ -28,6 +28,7 @@ This project uses mypy's official `stubgen` tool to directly generate stubs, wit
 * Added all signals and made new-style signal patterns work
   * e.g. `myobject.mysignal.connect(func)` and `myobject.mysignal[type].connect(func)`
   * Fixed slot arg of `SignalInstance.connect()` to be `typing.Callable` instead of `object`
+  * Fix type arg of `SignalInstance.connect()` to be `QtCore.Qt.ConnectionType` instead of `type | None`
   * Fixed `Signal.emit()`
   * Fixed `Signal.connect()` return value to `bool` instead of `None`
   * Fixed `Object.disconnect()`

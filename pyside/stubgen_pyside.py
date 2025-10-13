@@ -245,7 +245,8 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
             "*.Signal.__getitem__": "(self, index) -> SignalInstance",
             "*.SignalInstance.__getitem__": "(self, index) -> SignalInstance",
             # * Fix slot arg of `SignalInstance.connect()` to be `typing.Callable` instead of `object`
-            "*.SignalInstance.connect": "(self, slot: typing.Callable, type: typing.Union[type,None] = ...) -> bool",
+            # * Fix type arg of `SignalInstance.connect()` to be `QtCore.Qt.ConnectionType` instead of `type | None`
+            "*.SignalInstance.connect": "(self, slot: typing.Callable, type: PySide2.QtCore.Qt.ConnectionType = ...) -> bool",
             "*.SignalInstance.disconnect": "(self, slot: typing.Union[typing.Callable,None] = ...) -> None",
             "*.QObject.disconnect": [
                 "(cls, arg__1: PySide2.QtCore.QObject, arg__2: str = ..., arg__3: typing.Callable = ...) -> bool",
