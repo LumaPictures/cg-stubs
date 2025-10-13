@@ -576,3 +576,11 @@ def test_qfile() -> None:
     qfile = QtCore.QFile(current_file)
     assert qfile.exists() is True
     assert QtCore.QFile.exists(current_file) is True
+
+
+def test_qline() -> None:
+    line = QtCore.QLineF(1, 2, 3, 4)
+
+    # Get line as tuple: (x1, y1, x2, y2)
+    coords = line.toTuple()
+    assert_type(coords, tuple[Any, ...])

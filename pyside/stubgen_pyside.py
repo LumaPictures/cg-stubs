@@ -282,14 +282,6 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
             # * Fix `QByteArray.__iter__()` to iterate over `bytes`
             # * Fix support for `bytes(QByteArray(b'foo'))`
             "*.QByteArray.__bytes__": "(self) -> bytes",
-            # FIXME: make this a general rule
-            # * Replace `object` with `typing.Any` in return types
-            "*.QSettings.value": (
-                "(self, arg__1: str, defaultValue: typing.Union[typing.Any, None] = ..., "
-                "type: typing.Union[typing.Any, None] = ...) -> typing.Any"
-            ),
-            "*.QModelIndex.internalPointer": "(self) -> typing.Any",
-            "*.QPersistentModelIndex.internalPointer": "(self) -> typing.Any",
             # Fix other flags:
             "*.QSortFilterProxyModel.filterRole": "(self) -> PySide2.QtCore.Qt.ItemDataRole",
             "*.QStandardItem.type": "(self) -> PySide2.QtGui.QStandardItem.ItemType",
@@ -368,6 +360,11 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
             ): "list[PySide2.QtCore.QModelIndex]",
         },
         result_type_overrides={
+            ("*.toTuple", "object"): "tuple",
+            ("*.__iter__", "object"): "typing.Iterator",
+            # * Replace `object` with `typing.Any` in return types
+            ("*", "object"): "typing.Any",
+            # * Fix arguments that accept `QModelIndex` which were typed as `int` in many places
             ("*.selectedIndexes", "*"): "list[PySide2.QtCore.QModelIndex]",
             (
                 "*.QItemSelectionModel.selectedColumns",
