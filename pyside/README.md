@@ -45,6 +45,12 @@ This project uses mypy's official `stubgen` tool to directly generate stubs, wit
   * `QSettings.value() -> Any`
   * `QModelIndex.internalPointer() -> Any`
   * `QPersistentModelIndex.internalPointer() -> Any`
+* Many PySide methods can be called as both instance methods and as static methods, with each overload
+  having a different function signature. `mypy` disallows this kind of mixing of static and non-static
+  overloads, but these stubs support most of these esoteric methods using a special decorator called
+  `@_staticmethod_or_instancemethod`.
+  Any method in the stubs with this decorator can be called as a static method with the specified
+  arguments, or as an instance method with no arguments.
 
 ### Specific fixes
 

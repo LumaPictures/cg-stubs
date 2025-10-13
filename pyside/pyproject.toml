@@ -26,8 +26,15 @@ dev = [
     "stubgenlib",
     "mypy-baseline",
     "pytest",
+    "pytest-xdist[psutil]",
     # Keep in sync with version:
     "PySide2==5.15.2.1",
+]
+
+[tool.pytest.ini_options]
+addopts = [
+    "-n 6",
+    "-v",
 ]
 
 [tool.uv.sources]

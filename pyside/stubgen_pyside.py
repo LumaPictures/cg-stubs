@@ -32,7 +32,11 @@ from stubgenlib.siggen import (
     AdvancedSignatureGenerator,
     Optionality,
 )
-from stubgenlib.utils import insert_typevars, reduce_overloads
+from stubgenlib.utils import (
+    insert_typevars,
+    remove_overlapping_overloads,
+    remove_unhashable_duplicates,
+)
 
 cache = lru_cache(maxsize=None)
 
@@ -236,8 +240,8 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
             # * Add all signals and make all new-style signal patterns work.  e.g.
             # `myobject.mysignal.connect(func) and `myobject.mysignal[type].connect(func)`
             "*.Signal.__get__": [
-                "(self, instance: None, owner: typing.Type[QObject]) -> Signal",
-                "(self, instance: QObject, owner: typing.Type[QObject]) -> SignalInstance",
+                "(self, instance: None, owner: type[QObject]) -> Signal",
+                "(self, instance: QObject, owner: type[QObject]) -> SignalInstance",
             ],
             "*.Signal.__getitem__": "(self, index) -> SignalInstance",
             "*.SignalInstance.__getitem__": "(self, index) -> SignalInstance",
@@ -306,13 +310,13 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
             "*.QAbstractItemModel.mimeData": "(self, indexes: list[PySide2.QtCore.QModelIndex]) -> PySide2.QtCore.QMimeData",
             "*.QStandardItemModel.mimeData": "(self, indexes: list[PySide2.QtCore.QModelIndex]) -> PySide2.QtCore.QMimeData",
             # * Fix return type for `QApplication.instance()` and `QGuiApplication.instance()` :
-            "*.QCoreApplication.instance": "(cls: typing.Type[T]) -> T",
+            "*.QCoreApplication.instance": "() -> typing.Self",
             # * Fix return type for `QObject.findChild()` and `QObject.findChildren()` :
-            "*.QObject.findChild": "(self, arg__1: typing.Type[T], arg__2: str = ...) -> T",
+            "*.QObject.findChild": "(self, arg__1: type[T], arg__2: str = ...) -> T",
             "*.QObject.findChildren": [
-                "(self, arg__1: typing.Type[T], arg__2: QRegExp = ...) -> list[T]",
-                "(self, arg__1: typing.Type[T], arg__2: QRegularExpression = ...) -> list[T]",
-                "(self, arg__1: typing.Type[T], arg__2: str = ...) -> list[T]",
+                "(self, arg__1: type[T], arg__2: QRegExp = ...) -> list[T]",
+                "(self, arg__1: type[T], arg__2: QRegularExpression = ...) -> list[T]",
+                "(self, arg__1: type[T], arg__2: str = ...) -> list[T]",
             ],
             "*.qVersion": "() -> str",
             # FIXME: this can be handled by merging with the default sig
@@ -509,12 +513,39 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
         ):
             add_property_args(ctx.class_info.cls, results)
 
-        results = reduce_overloads(results, preserve_order=False)
-
-        return super().process_sigs(ctx, results)
+        # remove duplicates: FunctionSig is not hashable!
+        new_sigs = []
+        for sig in results:
+            if sig not in new_sigs:
+                new_sigs.append(sig)
+        return super().process_sigs(ctx, new_sigs)
 
 
 class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
+    OVERLOAD_TEMPLATE = '''\
+class {overload_class_name}:
+    """
+    Overloads for {class_name}.{method_name}.
+
+    This descriptor-based workflow allows us to describe overloads that mix static and instance
+    methods. 
+    """
+    class StaticOverloads:
+        class {method_name}:
+{static_body}
+
+    class InstanceOverloads:
+        class {method_name}:
+{instance_body}
+
+    def __init__(self, cb: typing.Callable) -> None: ...
+
+    @typing.overload
+    def __get__(self, object: None, owner: typing.Any) -> StaticOverloads.{method_name}: ...
+
+    @typing.overload
+    def __get__(self, object: {class_name}, owner: typing.Any) -> InstanceOverloads.{method_name}: ...\n\n'''
+
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         if not _flag_group_to_item:
@@ -522,6 +553,8 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
             for known_module_name in self.known_modules:
                 module = importlib.import_module(known_module_name)
                 self.walk_objects(module, seen)
+        self.current_function_context: FunctionContext | None = None
+        self.custom_overloads: list[str] = []
 
     def walk_objects(self, obj: object, seen: set[type]) -> None:
         for _, child in self.get_members(obj):
@@ -584,13 +617,110 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
 
     def get_imports(self) -> str:
         imports = super().get_imports()
-        return insert_typevars(imports, ["T = typing.TypeVar('T')", "P = typing.ParamSpec('P')"])
+
+        boilerplate = """\
+T = typing.TypeVar('T')
+P = typing.ParamSpec('P')\n"""
+
+        for custom_overload in self.custom_overloads:
+            boilerplate += custom_overload
+
+        return insert_typevars(imports, boilerplate.splitlines(keepends=False))
 
     def output(self) -> str:
         output = super().output()
         if self.module_name == "shiboken2.shiboken2":
             output += "\nclass Object: ...\n"
         return output
+
+    def get_default_function_sig(
+        self, func: object, ctx: FunctionContext
+    ) -> FunctionSig:
+        self.current_function_context = ctx
+        return super().get_default_function_sig(func, ctx)
+
+    def format_func_def(
+        self,
+        sigs: list[FunctionSig],
+        is_coroutine: bool = False,
+        decorators: list[str] | None = None,
+        docstring: str | None = None,
+    ) -> list[str]:
+        """
+        Handle methods that can be used as both static methods and instance methods.
+        """
+        lines: list[str] = []
+        staticmethods = []
+        instancemethods = []
+        for sig in sigs:
+            if sig.args and sig.args[0].name == "self":
+                instancemethods.append(sig)
+            else:
+                staticmethods.append(sig)
+
+        if staticmethods and instancemethods:
+            # mypy does not support overloads that mix class/static methods and instance methods.
+            assert self.current_function_context is not None
+            assert self.current_function_context.class_info is not None
+            method_name = self.current_function_context.name
+            class_name = self.current_function_context.class_info.name
+
+            staticmethods = [sig._replace(name="__call__") for sig in staticmethods]
+            static_body = super().format_func_def(
+                staticmethods,
+                decorators=["@staticmethod"]
+                + (["@typing.overload"] if len(staticmethods) > 1 else []),
+            )
+
+            instancemethods = [sig._replace(name="__call__") for sig in instancemethods]
+            # add static methods to instance methods, because they can also be called from an
+            # instance:
+            instancemethods += [
+                sig._replace(name="__call__", args=[ArgSig("self")] + sig.args)
+                for sig in staticmethods
+            ]
+            instance_body = super().format_func_def(
+                instancemethods,
+                decorators=["@typing.overload"] if len(instancemethods) > 1 else [],
+            )
+
+            overload_class_name = f"_add_{class_name}_{method_name}_overloads"
+            self.custom_overloads.append(
+                self.OVERLOAD_TEMPLATE.format(
+                    class_name=class_name,
+                    overload_class_name=overload_class_name,
+                    method_name=method_name,
+                    static_body="\n".join(" " * 8 + x for x in static_body),
+                    instance_body="\n".join(" " * 8 + x for x in instance_body),
+                )
+            )
+
+            methods = [
+                FunctionSig(
+                    name=method_name, args=[ArgSig("self")], ret_type="typing.Any"
+                )
+            ]
+            decorators = [f"@{overload_class_name}"]
+        else:
+            if staticmethods:
+                methods = staticmethods
+            else:
+                methods = instancemethods
+
+            methods = remove_overlapping_overloads(methods, sort=True)
+
+            # quick and dirty fix
+            if (
+                len(methods) == 1
+                and decorators == ["@staticmethod"]
+                and methods[0].args
+                and methods[0].args[0].name == "cls"
+            ):
+                decorators = ["@classmethod"]
+
+        lines += super().format_func_def(methods, is_coroutine, decorators, docstring)
+
+        return lines
 
 
 mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[attr-defined,misc]

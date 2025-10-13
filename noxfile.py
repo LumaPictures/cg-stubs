@@ -592,7 +592,7 @@ def generate(session: nox.Session, lib: str) -> None:
     # runs)
     # FIXME: lock down the version of mypy
     print("Adding type: ignore statements")
-    subprocess.check_call("uvx mypy ./stubs | uvx mypy-silent", shell=True)
+    subprocess.check_call("uv run --no-dev mypy stubs | uvx mypy-silent", shell=True)
 
 
 @nox.session(venv_backend="none")
