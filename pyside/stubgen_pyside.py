@@ -299,15 +299,6 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
             "*.QFont.setWeight": "(self, arg__1: typing.Union[int, PySide2.QtGui.QFont.Weight]) -> None",
             "*.QTextEdit.setFontWeight": "(self, w: typing.Union[int, PySide2.QtGui.QFont.Weight]) -> None",
             # ('QFont', 'weight': pyside('(self) -> PySide2.QtGui.QFont.Weight'),  # fixed in PySide6
-            # * Fix arguments that accept `QModelIndex` which were typed as `int` in many places
-            # known offenders: QAbstractItemView, QItemSelectionModel, QTreeView, QListView
-            "*.selectedIndexes": "(self) -> list[PySide2.QtCore.QModelIndex]",
-            "*.QItemSelectionModel.selectedColumns": "(self, row: int = ...) -> list[PySide2.QtCore.QModelIndex]",
-            "*.QItemSelectionModel.selectedRows": "(self, column: int = ...) -> list[PySide2.QtCore.QModelIndex]",
-            "*.QItemSelection.indexes": "(self) -> list[PySide2.QtCore.QModelIndex]",
-            "*.QItemSelectionRange.indexes": "(self) -> list[PySide2.QtCore.QModelIndex]",
-            "*.QAbstractItemModel.mimeData": "(self, indexes: list[PySide2.QtCore.QModelIndex]) -> PySide2.QtCore.QMimeData",
-            "*.QStandardItemModel.mimeData": "(self, indexes: list[PySide2.QtCore.QModelIndex]) -> PySide2.QtCore.QMimeData",
             # * Fix return type for `QApplication.instance()` and `QGuiApplication.instance()` :
             "*.QCoreApplication.instance": "(cls: type[typing_extensions.Self]) -> typing_extensions.Self",
             # * Fix return type for `QObject.findChild()` and `QObject.findChildren()` :
@@ -353,6 +344,45 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
             ("*", "role", "int"): "PySide2.QtCore.Qt.ItemDataRole",
             ("*.addAction", "*", "object"): "typing.Callable[[], typing.Any]",
             ("*.Slot.__init__", "result", "*"): "type",
+            # * Fix arguments that accept `QModelIndex` which were typed as `int` in many places
+            # known offenders: QAbstractItemView, QItemSelectionModel, QTreeView, QListView
+            (
+                "*.QAbstractItemModel.mimeData",
+                "indexes",
+                "*",
+            ): "list[PySide2.QtCore.QModelIndex]",
+            (
+                "*.QStandardItemModel.mimeData",
+                "indexes",
+                "*",
+            ): "list[PySide2.QtCore.QModelIndex]",
+            (
+                "*.QAbstractItemModel.changePersistentIndexList",
+                "from_",
+                "*",
+            ): "list[PySide2.QtCore.QModelIndex]",
+            (
+                "*.QAbstractItemModel.changePersistentIndexList",
+                "to",
+                "*",
+            ): "list[PySide2.QtCore.QModelIndex]",
+        },
+        result_type_overrides={
+            ("*.selectedIndexes", "*"): "list[PySide2.QtCore.QModelIndex]",
+            (
+                "*.QItemSelectionModel.selectedColumns",
+                "*",
+            ): "list[PySide2.QtCore.QModelIndex]",
+            (
+                "*.QItemSelectionModel.selectedRows",
+                "*",
+            ): "list[PySide2.QtCore.QModelIndex]",
+            ("*.QItemSelection.indexes", "*"): "list[PySide2.QtCore.QModelIndex]",
+            ("*.QItemSelectionRange.indexes", "*"): "list[PySide2.QtCore.QModelIndex]",
+            (
+                "*.QAbstractItemModel.persistentIndexList",
+                "*",
+            ): "list[PySide2.QtCore.QModelIndex]",
         },
         # Find and replace argument names
         # arg_name_replacements = {
