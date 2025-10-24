@@ -13,3 +13,8 @@ lint.select = ["I"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["stubgenlib", "hou_cleanup_config"]
+
+[dependency-groups]
+dev = [
+    "nox>=2025.10.16",
+]
