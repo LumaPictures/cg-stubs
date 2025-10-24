@@ -415,6 +415,13 @@ repos:
         f.write(text)
 
 
+def make_package(child: pathlib.Path) -> pathlib.Path:
+    pkgdir = child.parent / child.stem
+    pkgdir.mkdir(exist_ok=True)
+    child.rename(pkgdir / "__init__.pyi")
+    return pkgdir
+
+
 def make_packages(path: pathlib.Path = pathlib.Path(".")) -> None:
     """Place single file modules into packages.
 
@@ -422,10 +429,7 @@ def make_packages(path: pathlib.Path = pathlib.Path(".")) -> None:
     """
     for child in path.iterdir():
         if child.is_file() and child.suffix == ".pyi" and "-stubs" not in child.name:
-            pkgdir = child.parent / child.stem
-            if not pkgdir.exists():
-                pkgdir.mkdir()
-            child.rename(pkgdir / "__init__.pyi")
+            make_package(child)
         elif child.is_dir() and list(child.iterdir()):
             marker = child / "py.typed"
             marker.touch()
@@ -443,6 +447,9 @@ def add_stubs_suffix(path: pathlib.Path) -> None:
     # do these at the end to improve time to git refresh
     to_delete = []
     for child in path.iterdir():
+        if child.is_file() and child.suffix == ".pyi":
+            child = make_package(child)
+
         if child.is_dir() and not child.name.endswith("-stubs"):
             name = child.stem + "-stubs"
             newpath = child.with_name(name)
