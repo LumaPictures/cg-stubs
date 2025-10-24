@@ -1,6 +1,6 @@
 [project]
 name = "types-houdini"
-version = "20.5.487.0"
+version = "21.0.512.0"
 
 readme = "README.md"
 authors = [{name="Chad Dombrova"}, {name="Ben Andersen"}]
@@ -24,10 +24,18 @@ keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
 [dependency-groups]
 dev = [
     "stubgenlib",
+    "mypy",
 ]
 
 [tool.uv.sources]
 stubgenlib = { path = "../common" }
+# We need to pull mypy from source to avoid using compiled symbols, which prevents
+#   subclassing certain symbols, such as ASTStubGenerator.  If a compiled
+#   ASTStubGenerator, the monkeypatch in stubgen_houdini.py will not apply and there
+#   will be no warning provided.
+# NOTE: The version here must be maintained separately from the version stipulated in
+#   stubgenlib, since the tag here is not compared against the version requirements.
+mypy = { git = "https://github.com/python/mypy", tag="v1.16.1" }
 
 [build-system]
 requires = ["hatchling"]

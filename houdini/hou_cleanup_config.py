@@ -6,7 +6,9 @@ the C++ type analysis.
 
 _TYPE_ALIAS_COMPONENTS = {
     "ATTRIB": ["int", "float", "str"],
-    "PARM": ["bool", "int", "float", "str", "dict[str, str]", "'Ramp'"],
+    "PARM": ["bool", "int", "float", "str", "dict[str, str]", "'Ramp'", "'Geometry'"],
+    "PARM_ARG_ONLY": ["'Parm'"],
+    "PARM_RETURN_ONLY": ["'OpNode'"],
     "OPTION": [
         "bool",
         "int",
@@ -57,9 +59,9 @@ def get_type_aliases() -> dict[str, str]:
     attrib_return_types = _TYPE_ALIAS_COMPONENTS["ATTRIB"] + [
         f"Tuple[{typ}, ...]" for typ in _TYPE_ALIAS_COMPONENTS["ATTRIB"]
     ]
-    option_full_multi_types = [
-        f"Sequence[{typ}]" for typ in _TYPE_ALIAS_COMPONENTS["OPTION"]
-    ]
+
+    parm_arg_types = _TYPE_ALIAS_COMPONENTS["PARM"] + _TYPE_ALIAS_COMPONENTS["PARM_ARG_ONLY"]
+    parm_return_types = _TYPE_ALIAS_COMPONENTS["PARM"] + _TYPE_ALIAS_COMPONENTS["PARM_RETURN_ONLY"]
 
     result = {
         "AttribBasicType": " | ".join(_TYPE_ALIAS_COMPONENTS["ATTRIB"]),
@@ -71,12 +73,13 @@ def get_type_aliases() -> dict[str, str]:
         "AttribDictReturnType": " | ".join(
             f"dict[str, {typ}]" for typ in attrib_return_types
         ),
-        "ParmType": " | ".join(_TYPE_ALIAS_COMPONENTS["PARM"]),
+        "ParmArgType": " | ".join(parm_arg_types),
+        "ParmReturnType": " | ".join(parm_return_types),
         "ParmTupleArgType": " | ".join(
-            f"Sequence[{typ}]" for typ in _TYPE_ALIAS_COMPONENTS["PARM"]
+            f"Sequence[{typ}]" for typ in parm_arg_types
         ),
         "ParmTupleReturnType": " | ".join(
-            f"Tuple[{typ}, ...]" for typ in _TYPE_ALIAS_COMPONENTS["PARM"]
+            f"Tuple[{typ}, ...]" for typ in parm_return_types
         ),
         "OptionType": " | ".join(_TYPE_ALIAS_COMPONENTS["OPTION"]),
         "OptionSequenceType": " | ".join(
@@ -121,6 +124,298 @@ ADDITIONAL_ENUM_NAMES = {
 }
 
 
+# These will be added at the end of the stubs.
+MISSING_CLASSES = {
+    # hou.data comes from the houpythonportion.data module, but is accessible via hou
+    None: {
+        "_PointTupleGenerator": [
+            "def __getitem__(self, key: int) -> Point",
+            "def __len__(self) -> int",
+            "def __repr__(self) -> str",
+        ],
+        "_PrimTupleGenerator": [
+            "def __getitem__(self, key: int) -> Prim",
+            "def __len__(self) -> int",
+            "def __repr__(self) -> str",
+        ],
+        "_EdgeTupleGenerator": [
+            "def __getitem__(self, key: int) -> Edge",
+            "def __len__(self) -> int",
+            "def __repr__(self) -> str",
+        ],
+        "_VertexTupleGenerator": [
+            "def __getitem__(self, key: int) -> Vertex",
+            "def __len__(self) -> int",
+            "def __repr__(self) -> str",
+        ],
+        "data": [
+            "@staticmethod\ndef clusterItemsAsData(items: Sequence[NetworkMovableItem], target_node: OpNode, frame_nodes: Sequence[NetworkMovableItem]=..., selected_nodes: Sequence[NetworkMovableItem]=..., current_node: NetworkMovableItem =..., flags: bool=True, nodes_only: bool=False, target_children: bool=False, children: bool=True, target_editables: bool=False, editables: bool=True, target_parms: Union[bool, Sequence[ParmTuple], Sequence[str]]=True, parms: bool=True, default_parmvalues: bool=False, evaluate_parmvalues: bool=False, parms_as_brief: bool=True, parmtemplates: str=..., metadata: bool=False, verbose: bool=False) -> dict[str, Any]",
+            "@staticmethod\ndef createClusterItemsFromData(parent: OpNode, data: dict[str, Any], target_node: OpNode=..., clear_content=False, force_item_creation: bool=True, external_connections: bool=True, parms: bool=True, parmtemplates: bool=True, children: bool=True, editables: bool=True, offset_position: Vector2=..., skip_notes: bool=False) -> dict[str, NetworkMovableItem]",
+            "@staticmethod\ndef createItemsFromData(parent: OpNode, data: dict[str, Any], clear_content: bool=False, force_item_creation: bool=True, offset_position: Vector2=..., external_connections: bool=True, parms: bool=True, parmtemplates: bool=True, children: bool=True, editables: bool=True, skip_notes: bool=False) -> dict[str, NetworkMovableItem]",
+            "@staticmethod\ndef dataFromParms(parms: Sequence[ParmTuple], values: bool=True, evaluate_values: bool=False, locked: bool=True, brief: bool=True, multiparm_instances: bool=True, metadata: bool=False, verbose: bool=False) -> dict[str,Any]",
+            "@staticmethod\ndef itemsAsData(items: Sequence[NetworkMovableItem], nodes_only: bool=False, children: bool=True, editables:bool=True, inputs: bool=True, position: bool=True, anchor_position: Vector2=..., flags: bool=True, parms: bool=True, parms_as_brief: bool=True, default_parmvalues: bool=False, evaluate_parmvalues: bool=False, parmtemplates: str=..., metadata: bool=False, verbose: bool=False) -> dict[str, Any]",
+            "@staticmethod\ndef selectedItemsAsData(nodes_only: bool=False, children: bool=True, editables: bool=True, inputs: bool=True, position: bool=True, anchor_position: Vector2=..., flags: bool=True, parms: bool=True, parms_as_brief: bool=True, default_parmvalues: bool=False, evaluate_parmvalues: bool=False, parmtemplates: str=..., metadata: bool=False, verbose: bool=False) -> dict[str, Any]",
+        ]
+    },
+    "qt": {
+        "ColorField(QtWidgets.QWidget)": [
+            "def __init__(self, label: str ='', include_alpha: bool = False) -> None",
+            "def color(self) -> QtGui.QColor",
+            "def setColor(self, color: QtGui.QColor) -> None",
+        ],
+        "ColorPalette(QtWidgets.QFrame)": [
+            "paletteChanged: QtCore.Signal  # QtCore.Signal()",
+            "colorEdited: QtCore.Signal  # QtCore.Signal(int, QtGui.QColor, QtGui.QColor)",
+            "colorSelected: QtCore.Signal  # QtCore.Signal(int, QtGui.QColor)",
+            "colorAccepted: QtCore.Signal  # QtCore.Signal(int, QtGui.QColor)",
+            "colorCancelled: QtCore.Signal  # QtCore.Signal()",
+            "def __init__(self, colors: Sequence[QtGui.QColor] | None =None, size: int = 32, by_column: bool = False, show_at_pointer: bool = True, columns: int | None =None, rows: int | None =None, allow_editing:bool=True, selected_index: int=-1, bg_color: QtGui.QColor | QtGui.QBrush | None=None, empty_color: QtGui.QColor | QtGui.QBrush | None = None, parent: QtWidgets.QWidget | None =None) -> None",
+            "def color(self, index: int) -> None",
+            "def colorCount(self) -> int",
+            "def colorList(self) -> list[QtGui.QColor]",
+            "def isEditingAllowed(self) -> bool",
+            "def selectedColor(self) -> QtGui.QColor",
+            "def selectedIndex(self) -> int",
+            "def setColor(self, index: int, color: QtGui.QColor) -> None",
+            "def setColorList(self, colors: Sequence[QtGui.QColor]) -> None",
+            "def setEditingAllowed(self, allowed: bool) -> None",
+            "def setSelectedIndex(self, index: int) -> None",
+            "def setSwatchSize(self, size: int) -> None",
+            "def swatchSize(self) -> int",
+        ],
+        "ColorSwatchButton(QtWidgets.QPushButton)": [
+            "PositionOff: int",
+            "PositionTop: int",
+            "PositionBottom: int",
+            "PositionLeft: int",
+            "PositionRight: int",
+            "PositionAll: int",
+            "colorChanged: QtCore.Signal  # QtCore.Signal(QtGui.QColor)",
+            "def __init__(self, include_alpha: bool=False) -> None",
+            "def color(self) -> QtGui.QColor",
+            "def hasAlpha(self) -> bool",
+            "def secondaryColor(self) -> QtGui.QColor",
+            "def secondaryColorPosition(self) -> int",
+            "def setColor(self, color: QtGui.QColor) -> None",
+            "def setSecondaryColor(self, color: QtGui.QColor) -> None",
+            "def setSecondaryColorPosition(self, position: int) -> None",
+        ],
+        "ComboBox(QtWidgets.QComboBox)": [
+            "def __init__(self) -> None",
+        ],
+        "Dialog(QtWidgets.QDialog)": [
+            "def __init__(self) -> None",
+        ],
+        "FieldLabel(QtWidgets.QLabel)": [
+            "def __init__(self, label: str) -> None",
+        ],
+        "FileChooserButton(QtWidgets.QToolButton)": [
+            "fileSelected: QtCore.Signal  # QtCore.Signal(str)",
+            "def __init__(self) -> None",
+            "def setFileChooserDefaultValue(self, default_value: str) -> None",
+            "def setFileChooserFilter(self, file_filter: EnumValue) -> None",
+            "def setFileChooserIsImageChooser(self, is_image_chooser: bool) -> None",
+            "def setFileChooserMode(self, chooser_mode: EnumValue) -> None",
+            "def setFileChooserMultipleSelect(self, multiple_select: bool) -> None",
+            "def setFileChooserPattern(self, file_pattern: str) -> None",
+            "def setFileChooserStartDirectory(self, start_dir: str) -> None",
+            "def setFileChooserTitle(self, title: str) -> None",
+        ],
+        "FileLineEdit(QtWidgets.QLineEdit)": [
+            "def __init__(self, icon: QtGui.QIcon | str | None = None, parent: QtWidgets.QWidget | None = None) -> None",
+        ],
+        "GridLayout(QtWidgets.QGridLayout)": [
+            "def __init__(self) -> None",
+        ],
+        "HelpButton(QtWidgets.QToolButton)": [
+            "def __init__(self, help_path: str, tooltip: str = ...) -> None",
+        ],
+        "Icon(QtGui.QIcon)": [
+            "def __init__(self, icon_name: str, width: int | None = None, height: int | None = None) -> None",
+        ],
+        "InputField(QtWidgets.QWidget)": [
+            "IntegerType: int",
+            "FloatType: int",
+            "StringType: int",
+            "valueChanged: QtCore.Signal  # QtCore.Signal()",
+            "hotkeyInvoked: QtCore.Signal  # QtCore.Signal(str)",
+            "editingFinished: QtCore.Signal  # QtCore.Signal(list)",
+            "ladderChanged: QtCore.Signal  # QtCore.Signal()",
+            "def __init__(self, data_type: int, num_components: int, label: str | None=..., mouse_hotkeys: Any | None = None, size_policy: QtWidgets.QSizePolicy | None=None, notify_pending_changes: bool=True, parent: QtWidgets.QWidget | None=None) -> None",
+            "def menu(self) -> QtWidgets.QMenu",
+            "def onContextMenuEvent(self, event: QtGui.QContextMenuEvent, context_menu: QtWidgets.QMenu) -> None",
+            "def onMousePressEvent(self, event: QtGui.QMouseEvent) -> None",
+            "def onMouseWheelEvent(self, event: QtGui.QWheelEvent) -> None",
+            "def setAlignment(self, a: QtCore.Qt.Alignment | QtCore.Qt.AlignmentFlag) -> None",
+            "def setMenu(self, menu: QtWidgets.QMenu) -> None",
+            "def setState(self, state_name: str, state_value: bool, index: int = 0) -> None",
+            "def setValidator(self, validator: QtGui.QValidator) -> None",
+            "def setValue(self, value: int | float | str | None, index: int = 0) -> None",
+            "def setValues(self, values: Sequence[int] | Sequence[float] | Sequence[str]) -> None",
+            "def setWidth(self, width: float) -> None",
+            "def state(self, state_name: str, index: int = 0) -> bool",
+            "def value(self, index: int = 0) -> int | float | str",
+            "def values(self) -> list[int] | list[float] | list[str]",
+        ],
+        "ListEditor(QtWidgets.QFrame)": [
+            "listChanged: QtCore.Signal  # QtCore.Signal()",
+            "checkChanged: QtCore.Signal  # QtCore.Signal(int, str, bool)",
+            "itemEdited: QtCore.Signal  # QtCore.Signal(int, str)",
+            "def __init__(self, strings: Sequence[str]=..., top_message: str | None=None, bottom_message: str | None=None, allow_editing: bool=True, allow_add_remove: bool=True, allow_reorder: bool=True, allow_empty_string: bool =True, show_checkboxes: bool=False, keep_sorted: bool = False, initial_string: str = '', initial_check: bool = True, exclusive_check: bool = False, allow_empty_list: bool = True, parent: QtWidgets.QWidget | None = None) -> None",
+            "def addListItem(self, text: str, checked: bool | None=None, insert_at: int=-1) -> None",
+            "def bottomMessage(self) -> str",
+            "def checkedRow(self) -> int | None",
+            "def checkedRows(self) -> list[int]",
+            "def checkedString(self) -> str | None",
+            "def checkedStrings(self) -> list[str]",
+            "def clear(self) -> None",
+            "def initialCheck(self) -> bool",
+            "def initialString(self) -> str",
+            "def isAddRemoveAllowed(self) -> bool",
+            "def isEditingAllowed(self) -> bool",
+            "def isEmptyListAllowed(self) -> bool",
+            "def isEmptyStringAllowed(self) -> bool",
+            "def isReorderAllowed(self) -> bool",
+            "def itemCount(self) -> int",
+            "def keepSorted(self) -> bool",
+            "def removeRow(self, row_num: int) -> None",
+            "def rowIsChecked(self, row_num: int) -> bool",
+            "def rowString(self, row_num: int) -> str",
+            "def setAllowAddRemove(self, allow: bool) -> None",
+            "def setAllowEditing(self, allow: bool) -> None",
+            "def setAllowEmptyList(self, allow: bool) -> None",
+            "def setAllowEmptyString(self, allow: bool) -> None",
+            "def setAllowReorder(self, allow: bool) -> None",
+            "def setBottomMessage(self, text: str) -> None",
+            "def setInitialCheck(self, checked: bool) -> None",
+            "def setInitialString(self, text: str) -> None",
+            "def setKeepSorted(self, keep_sorted: bool) -> None",
+            "def setRowChecked(self, row_num: int, checked: bool) -> None",
+            "def setShowCheckboxes(self, show: bool) -> None",
+            "def setStrings(self, strings: Sequence[str]) -> None",
+            "def setStringsAndChecks(self, strings_and_checks: Sequence[tuple[str, bool]]) -> None",
+            "def setTopMessage(self, text: str) -> None",
+            "def showCheckboxes(self) -> bool",
+            "def strings(self) -> list[str]",
+            "def stringsAndChecks(self) -> list[tuple[str, bool]]",
+            "def topMessage(self) -> str",
+        ],
+        "ListEditorDialog(QtWidgets.QDialog)": [
+            "def __init__(self, parent: QtWidgets.QWidget | None = None, window_type: QtCore.Qt.WindowType = ..., strings: Sequence[str]=..., top_message: str | None=None, bottom_message: str | None=None, allow_editing: bool=True, allow_add_remove: bool=True, allow_reorder: bool=True, allow_empty_string: bool =True, show_checkboxes: bool=False, keep_sorted: bool = False, initial_string: str = '', initial_check: bool = True, exclusive_check: bool = False, allow_empty_list: bool = True) -> None",
+            "def editor(self) -> qt.ListEditor",
+        ],
+        "Menu(QtWidgets.QMenu)": [
+            "def __init__(self) -> None",
+        ],
+        "MenuBar(QtWidgets.QMenuBar)": [
+            "def __init__(self, parent: QtWidgets.QWidget | None=None) -> None",
+        ],
+        "MenuButton(QtWidgets.QPushButton)": [
+            "def __init__(self, menu: QtWidgets.QMenu) -> None",
+        ],
+        "MixerFilterProxyModel(QtCore.QSortFilterProxyModel)": [
+        ],
+        "NodeChooserButton(QtWidgets.QToolButton)": [
+            "nodeSelected: QtCore.Signal  # QtCore.Signal(object)",
+            "nodePathsSelected: QtCore.Signal  # QtCore.Signal(str)",
+            "chooserStarted: QtCore.Signal  # QtCore.Signal()",
+            "def __init__(self) -> None",
+            "def setNodeChooserFilter(self, node_filter: EnumValue) -> None",
+            "def setNodeChooserInitialNode(self, initial_node: OpNode) -> None",
+            "def setNodeChooserRelativeToNode(self, relative_to_node: OpNode) -> None",
+            "def setSelectMultiple(self, value: bool) -> None",
+        ],
+        "ParmChooserButton(QtWidgets.QToolButton)": [
+            "parmSelected: QtCore.Signal  # QtCore.Signal(object)",
+            "def __init__(self) -> None",
+            "def setCategoryFilter(self, category_filter: EnumValue) -> None",
+            "def setInitialSelection(self, initial_selection: OpNode) -> None",
+            "def setRelativeToNode(self, relative_to_node: OpNode) -> None",
+            "def setSelectMultiple(self, value: bool) -> None",
+        ],
+        "ParmDialog(QtWidgets.QWidget)": [
+            "def __init__(self, node: OpNode | None, showTitleBar: bool = False, compact: bool = False, labelsize: float = -1.0) -> None",
+            "def multiParmTab(self, parm: str) -> None",
+            "def node(self) -> OpNode",
+            "def scrollPosition(self) -> Vector2",
+            "def setMultiParmTab(self, parm: str, index) -> None",
+            "def setNode(self, node: OpNode | None) -> None",
+            "def setScrollPosition(self, pos: Vector2) -> None",
+            "def visibleParms(self) -> tuple[ParmTuple, ...]",
+        ],
+        "ParmTupleChooserButton(QtWidgets.QToolButton)": [
+            "parmTupleSelected: QtCore.Signal  # QtCore.Signal(object)",
+            "def __init__(self) -> None",
+            "def setCategoryFilter(self, category_filter: EnumValue) -> None",
+            "def setInitialSelection(self, initial_selection: OpNode) -> None",
+            "def setRelativeToNode(self, relative_to_node: OpNode) -> None",
+            "def setSelectMultiple(self, value: bool) -> None",
+        ],
+        "SearchLineEdit(QtWidgets.QLineEdit)": [
+            "searchBackward: QtCore.Signal  # QtCore.Signal()",
+            "def __init__(self, icon: QtGui.QIcon | str | None = None, parent: QtWidgets.QWidget | None = None) -> None",
+            "def allowSearchBackward(self) -> bool",
+            "def setAllowSearchBackward(self, on: bool) -> None",
+        ],
+        "Separator(QtWidgets.QFrame)": [
+            "def __init__(self) -> None",
+        ],
+        "ToolTip(QtWidgets.QWidget)": [
+            "def __init__(self) -> None",
+            "def setHelpUrl(self, help_url: str) -> None",
+            "def setHotkey(self, hotkey: str) -> None",
+            "def setTargetWidget(self, widget: QtWidgets.QWidget) -> None",
+            "def setText(self, text: str) -> None",
+            "def setTitle(self, title: str) -> None",
+        ],
+        "TrackChooserButton(QtWidgets.QToolButton)": [
+            "trackSelected: QtCore.Signal  # QtCore.Signal(object)",
+            "def __init__(self) -> None",
+            "def setInitialSelection(self, initial_track: Track) -> None",
+            "def setNodeChooserFilter(self, node_filter: EnumValue) -> None",
+            "def setSelectMultiple(self, value: bool) -> None",
+        ],
+        "WindowOverlay(QtWidgets.QWidget)": [
+            "def __init__(self, parent: qt.Window, win_floating_panel: QtWidgets.QWidget | None) -> None",
+            "def onContainerWindowEvent(self, event: QtCore.QEvent) -> None",
+            "def onInitWindow(self) -> None",
+            "def onParentWindowEvent(self, event: QtCore.QEvent) -> None",
+            "def windowContainer(self) -> QtWidgets.QWidget",
+        ],
+        "Window(QtWidgets.QWidget)": [
+            "def __init__(self) -> None",
+        ],
+        "ViewerOverlay(WindowOverlay)": [
+            "def __init__(self, scene_viewer: SceneViewer) -> None",
+            "def moveBy(self, delta: QtCore.QPoint) -> None",
+            "def moveTo(self, pos: QtCore.QPoint) -> None",
+            "def onBeginResize(self) -> None",
+            "def onColorSchemeChanged(self) -> None",
+            "def onEndResize(self) -> None",
+            "def onInitWindow(self) -> None",
+            "def onLayoutChanged(self) -> None",
+            "def onMoveContainerWindow(self, new_pos: QtCore.QPoint, old_pos: QtCore.QPoint) -> None",
+            "def onResizing(self) -> None",
+            "def onSizeChanged(self) -> None",
+            "def onViewerActivated(self) -> None",
+            "def onViewerDeactivated(self) -> None",
+            "def onWindowPlacement(self) -> None",
+            "def sceneViewer(self) -> SceneViewer",
+        ],
+        "XMLMenuParser(object)": [
+            "def __init__(self, context: str ='', kwargs: dict[str, Any] | None=None, kwargsfunc=Callable, xmlfilename: Path | str | None=None, xmlstring: str | None=None) -> None",
+            "def generateMenu(self, kwargs: dict[str, Any], menu:qt.Menu | None=None, actionitem_callback: Callable[[str], None] | None=None) -> None",
+            "def handleKeyPress(self, keystring: str, kwargs: dict[str, Any], actionitem_callback: Callable | None=None, hotkey_context: str | None=None) -> None",
+            "def hotkeyContext(self) -> str",
+            "def parseFile(self, xmlfile: Path | str) -> None",
+            "def parseFiles(self, xmlfilename: str) -> None",
+            "def parseString(self, xmlstring: str) -> None",
+            "def setHotkeyContext(self, hotkey_context) -> None",
+        ],
+    },
+}
+
+
 # Define functions that are missing entirely from hou.py
 # WARNING: Try not to redefine functions that are deprecated and have been removed from hou.py
 MISSING_DEFINITIONS = {
@@ -143,15 +438,37 @@ MISSING_DEFINITIONS = {
         "def createInputNode(self, input_index: int, node_type_name: str, node_name: str | None = None, run_init_scripts: bool = True, load_contents: bool = True, exact_type_name: bool = False) -> Self",
         "def creationTime(self) -> datetime.datetime",
         "def modificationTime(self) -> datetime.datetime",
+        "def outputsWithIndices(self, ignore_network_dots: bool = False, use_names: bool = False) -> list[tuple[NetworkMovableItem, int | str, int | str]]",
     ],
     "OpNode": [
+        "def appendParmTemplatesFromData(self, data: dict[str, Any], rename_conflicts: bool = True) -> dict[str, ParmTuple]",
+        "def appendParmTemplatesToFolderFromData(self, data: dict[str, Any], parm_name: str, rename_conflicts: bool = True) -> dict[str, ParmTuple]",
+        "def asData(self, nodes_only: bool = False, children: bool = False, editables: bool = False, inputs: bool = False, position: bool = False, flags: bool = False, parms: Union[bool, Sequence[ParmTuple], Sequence[str]]=True, default_parmvalues: bool = False, evaluate_parmvalues: bool = False, parms_as_brief: bool = True, parmtemplates: str=..., metadata: bool = False, verbose: bool = False) -> dict[str, Any]",
         "def children(self) -> Tuple[OpNode, ...]",
+        "def childrenAsData(self, nodes_only: bool = False, children: bool = True, editables: bool = True, inputs: bool = True, position: bool = True, flags: bool = True, parms: bool = True, default_parmvalues: bool = False, evaluate_parmvalues: bool = False, parms_as_brief: bool = True, parmtemplates: str=..., metadata: bool = False, verbose: bool = False) -> dict[str, Any]",
+        "def createDecorationItemsFromData(self, items: Sequence[NetworkMovableItem], frame_nodes: Sequence[NetworkMovableItem] | None=None, selected_nodes: Sequence[NetworkMovableItem] | None=None, current_node: NetworkMovableItem | None=None, flags: bool = True, nodes_only: bool = False, target_children: bool = False, children: bool = True, target_editables: bool = False, editables: bool = True, target_parms: Union[bool, Sequence[ParmTuple], Sequence[str]]=True, parms: bool = True, default_parmvalues: bool = False, evaluate_parmvalues: bool = False, parms_as_brief: bool = True, parmtemplates: str=..., metadata: bool = False, verbose: bool = False) -> dict[str, Any]",
         "def createNode(self, node_type_name: str, node_name: str | None = None, run_init_scripts: bool = True, load_contents: bool = True, exact_type_name: bool = False, force_valid_node_name: bool = False) -> OpNode",
+        "def editablesAsData(self, nodes_only: bool = False, children: bool = True, editables: bool = True, inputs: bool = True, position: bool = True, flags: bool = True, parms: bool = True, default_parmvalues: bool = False, evaluate_parmvalues: bool = False, parms_as_brief: bool = True, parmtemplates: str=..., metadata: bool = False, verbose: bool = False) -> dict[str, Any]",
         "def inputConnections(self) -> Tuple[OpNodeConnection, ...]",
+        "def inputsAsData(self, ignore_network_dots: bool = False, ignore_subnet_indirect_inputs: bool = False, use_names: bool = False) -> Sequence[dict[str, Any]]",
+        "def insertParmTemplatesAfterFromData(self, data: dict[str, Any], parm_name: str, rename_conflicts: bool = True) -> dict[str, ParmTuple]",
+        "def insertParmTemplatesBeforeFromData(self, data: dict[str, Any], parm_name: str, rename_conflicts: bool = True) -> dict[str, ParmTuple]",
         "def node(self, node_path: str) -> OpNode | None",
         "def outputConnections(self) -> Tuple[OpNodeConnection, ...]",
+        "def outputsAsData(self, ignore_network_dots: bool = False, ignore_subnet_indirect_inputs: bool = False, use_names: bool = False) -> Sequence[dict[str, Any]]",
+        "def parmTemplateChildrenAsData(self, name: str= '', parmtemplate_order: bool = False) -> dict[str, Any]",
+        "def parmTemplatesAsData(self, name: str= '', children: bool = True, parmtemplate_order: bool = False) -> dict[str, Any]",
+        "def parmsAsData(self, values: bool = True, parms: bool = True, default_values: bool = False, evaluate_values: bool = False, locked: bool = True, brief: bool = True, multiparm_instances: bool = True, metadata: bool = False, verbose: bool = False) -> dict[str, Any]",
+        "def prependParmTemplatesToFolderFromData(self, data: dict[str, Any], parm_name: str, rename_conflicts: bool = True) -> dict[str, ParmTuple]",
+        "def replaceParmTemplatesFromData(self, data: dict[str, Any]) -> dict[str, ParmTuple]",
+        "def setChildrenFromData(self, clear_content: bool = True, force_item_creation: bool = True, offset_position: Vector2=..., external_connections: bool = True, parms: bool = True, parmtemplates: bool = True, children: bool = True, editables: bool = True, skip_notes: bool = False) -> None",
+        "def setEditablesFromData(self, clear_content: bool = True, force_item_creation: bool = True, offset_position: Vector2=..., external_connections: bool = True, parms: bool = True, parmtemplates: bool = True, children: bool = True, editables: bool = True, skip_notes: bool = False) -> None",
+        "def setFromData(self, data: dict[str, Any], clear_content: bool = False, force_item_creation: bool = True, parms: bool = True, parmtemplates: bool = True, children: bool = True, editables: bool = True, skip_notes: bool = False) -> None",
+        "def setInputsFromData(self, data: dict[str, Any]) -> None",
+        "def setOutputsFromData(self, data: dict[str, Any]) -> None",
         "def setParmExpressions(self, parm_dict: Mapping[str, str | Sequence[str]], language: EnumValue | None = None, replace_expressions: bool = True) -> None",
-        "def setParms(self, parm_dict: Mapping[str, ParmType | ParmTupleArgType]) -> None",
+        "def setParms(self, parm_dict: Mapping[str, ParmArgType | ParmTupleArgType]) -> None",
+        "def setParmsFromData(self, data: dict[str, Any]) -> None",
         "def type(self) -> OpNodeType",
     ],
     "OpNodeType": [
@@ -161,11 +478,40 @@ MISSING_DEFINITIONS = {
         "def nodeTypes(self) -> dict[str, OpNodeType]",
     ],
     "Parm": [
-        "def set(self, value: int | float | str | Parm | Ramp, language: EnumValue | None = None, follow_parm_reference: bool = True) -> None",
+        "def appendMultiParmInstancesFromData(self, data: Sequence[dict[str, Any]]) -> None",
+        "def asData(self, value: bool=True, evaluate_value=False, locked: bool=True, brief: bool=True, multiparm_instances: bool=True, metadata: bool=False, verbose: bool=False, default_values: bool=...) -> dict[str, Any]",
+        "def clipData(self, start:float|None=None, end:float|None=None, binary:bool=True, use_blosc_compression: bool=True, sample_rate:float=0) -> bytes",
+        "def insertMultiParmInstancesFromData(self, data: Sequence[dict[str, Any]], index: int=0) -> None",
+        "def insertTemplatesFromData(self, data: dict[str, Any], operation: str=..., rename_conflicts:bool=True) -> None",
+        "def multiParmInstancesAsData(self, start_index: int=0, end_index: int=-1, value: bool = True, evaluate_value: bool = False, links: bool = True, locked: bool = True, brief: bool = True, metadata: bool = False, verbose: bool = False) -> Sequence[dict[str, Any]]",
+        "def rampPointsAsData(self, evaluate: bool = True, metadata: bool = False, verbose: bool = False) -> Sequence[dict[str, Any]]",
+        "def saveClip(self, file_name:str, start:float|None=None, end:float|None=None, sample_rate: float=0) -> None",
+        "def set(self, value: int | float | str | dict[str, str] | Parm | Ramp | Geometry, language: EnumValue | None = None, follow_parm_reference: bool = True) -> None",
+        "def setFromData(self, data: dict[str, Any]) -> None",
+        "def setMultiParmInstancesFromData(self, data: Sequence[dict[str, Any]]) -> None",
+        "def setRampPointsFromData(self, data: Sequence[dict[str, Any]]) -> None",
+        "def setValueFromData(self, data: int | str | float | dict[str, Any] | Sequence[int] | Sequence[float] | Sequence[str]) -> None",
+        "def templateAsData(self, children: bool = True) -> dict[str, Any]",
+        "def templateChildrenAsData(self, parmtemplate_order: bool = False) -> dict[str, Any]",
+        "def valueAsData(self, evaluate: bool = True, verbose: bool = True) -> int | str | float | dict[str, Any] | list[int] | list[float] | list[str]",
     ],
     "ParmTuple": [
         "def __iter__(self) -> Iterator[Parm]",
+        "def asData(self, value: bool=True, evaluate_value=False, locked: bool=True, brief: bool=True, multiparm_instances: bool=True, metadata: bool=False, verbose: bool=False, default_values: bool=...) -> dict[str, Any]",
+        "def clipData(self, start:float|None=None, end:float|None=None, binary:bool=True, use_blosc_compression: bool=True, sample_rate:float=0) -> bytes",
+        "def insertMultiParmInstancesFromData(self, data: Sequence[dict[str, Any]], index: int=0) -> None",
+        "def insertTemplatesFromData(self, data: dict[str, Any], operation: str = ..., rename_conflicts: bool = True) -> None",
+        "def multiParmInstancesAsData(self, start_index: int=0, end_index: int=-1, value: bool = True, evaluate_value: bool = False, links: bool = True, locked: bool = True, brief: bool = True, metadata: bool = False, verbose: bool = False) -> Sequence[dict[str, Any]]",
+        "def rampPointsAsData(self, evaluate: bool = True, metadata: bool = False, verbose: bool = False) -> Sequence[dict[str, Any]]",
+        "def saveClip(self, file_name:str, start:float|None=None, end:float|None=None, sample_rate: float=0) -> None",
         "def set(self, value: Sequence[int] | Sequence[float] | Sequence[str] | Sequence[Parm] | ParmTuple, language: EnumValue | None = None, follow_parm_reference: bool = True) -> None",
+        "def setFromData(self, data: dict[str, Any]) -> None",
+        "def setMultiParmInstancesFromData(self, data: Sequence[dict[str, Any]]) -> None",
+        "def setRampPointsFromData(self, data: Sequence[dict[str, Any]]) -> None",
+        "def setValueFromData(self, data: int | str | float | dict[str, Any] | Sequence[int] | Sequence[float] | Sequence[str]) -> None",
+        "def templateAsData(self, children: bool = True, parmtemplate_order: bool = False) -> dict[str, Any]",
+        "def templateChildrenAsData(self, parmtemplate_order: bool = False) -> dict[str, Any]",
+        "def valueAsData(self, evaluate: bool = True, verbose: bool = True) -> int | str | float | dict[str, Any] | list[int] | list[float] | list[str]",
     ],
     "Prim": [
         "def voxelRangeAsBool(self, range: BoundingBox) -> Tuple[bool, ...]",
@@ -197,13 +543,18 @@ MISSING_DEFINITIONS = {
     "hda": [
         "@staticmethod\ndef reloadHDAModule(hda_module: HDAModule) -> None",
     ],
+    "hipFile": {
+        "@staticmethod\ndef addEventCallback(callback: Callable[[EnumValue], None]) -> None",
+        "@staticmethod\ndef removeEventCallback(callback: Callable[[EnumValue], None]) -> None",
+        "@staticmethod\ndef eventCallbacks() -> Tuple[Callable[[EnumValue], None], ...]",
+    },
     "qt": [
         "@staticmethod\ndef mainWindow() -> QtWidgets.QMainWindow",
-        "@staticmethod\ndef Icon(icon_name: str, width: int | None = None, height: int | None = None) -> QtGui.QIcon",
     ],
     "ui": [
         "@staticmethod\ndef selectFile(start_directory: str | None = None, title: str | None = None, collapse_sequences: bool = False, file_type: EnumValue = fileType.Any, pattern: str | None = None, default_value: str | None = None, multiple_select: bool = False, image_chooser: bool = False, chooser_mode: EnumValue = fileChooserMode.ReadAndWrite, width: int = 0, height: int = 0) -> str",
         "@staticmethod\ndef selectNode(relative_to_node: Node | None = None, initial_node: Node | None = None, node_type_filter: EnumValue | None = None, title: str | None = None, width: int = 0, height: int = 0, multiple_select: bool = False, custom_node_filter_callback: Callable[[Node], bool] | None = None) -> str | Tuple[str, ...] | None",
+        "@staticmethod\ndef openTypePropertiesDialog(node_or_node_type: OpNode | OpNodeType, promote_spare_parms: bool=False, immediately_save: bool=False) -> None",
     ],
 }
 
@@ -818,16 +1169,16 @@ EXPLICIT_DEFINITIONS = {
         "__ge__": "(self, other: object) -> bool",
     },
     "__hou__": {
-        "addAnimationLayer": "(layermixer: ChopNode, layername: str = ) -> ChopNode",
+        "addAnimationLayer": "(layermixer: ChopNode, layername: str = '') -> ChopNode",
         "applicationVersion": "(include_patch: bool = False) -> Tuple[int, int, int]",
         "addContextOptionChangeCallback": "(callback: Callable[[str], None]) -> None",
         "removeContextOptionChangeCallback": "(callback: Callable[[str], None]) -> None",
         "contextOptionChangeCallbacks": "() -> Tuple[Callable[[str], None], ...]",
-        "ch": "(path: str) -> ParmType",
+        "ch": "(path: str) -> ParmArgType",
         "contextOption": "(opt: str) -> float | str",
         "createAnimationClip": "(path: str = ..., set_export: bool = False) -> ChopNode",
         "createAnimationLayers": "(path: str = ...) -> ChopNode",
-        "evalParm": "(path: str) -> ParmType",
+        "evalParm": "(path: str) -> ParmReturnType",
         "evalParmTuple": "(path: str) -> ParmTupleReturnType",
         "fileReferences": "(project_dir_variable: str = 'HIP', include_all_refs: bool = true) -> Sequence[Tuple[Parm, str]]",
         "hscriptExpression": "(expression: str) -> float | str | Tuple[float, ...] | Tuple[str, ...]",
@@ -854,42 +1205,42 @@ EXPLICIT_DEFINITIONS = {
         "addJoint": "(self, world_transform: Matrix4 = ..., parent: _ik_Joint | None = None, rotation_weights: Vector3 = ..., translation_weights: Vector3 = ..., mass: float = 1.0, local_com: Vector3 = ...) -> _ik_Joint",
     },
     "_ik_Target": {
-        "__init__": "(joint: _ik_Joint | None = None, goal_transform: Matrix4 = ..., joint_offset: Matrix4 = ..., target_type: EnumValue = _ik_targetType.Position, weight: float = 1.0, priority: int = 0, depth: int = -1) -> None",
+        "__init__": "(self, joint: _ik_Joint | None = None, goal_transform: Matrix4 = ..., joint_offset: Matrix4 = ..., target_type: EnumValue = _ik_targetType.Position, weight: float = 1.0, priority: int = 0, depth: int = -1) -> None",
     },
     "_logging_Sink": {
         "setFilterCallback": "(self, callback: Callable[[_logging_LogEntry], None]) -> None",
     },
     "AdvancedDrawable": {
-        "draw": "(self, handle: Incomplete, params: Mapping[str, Any] | None = None) -> None",
+        "draw": "(self, handle: Handle, params: Mapping[str, Any] | None = None) -> None",
         "setParams": "(self, params: Mapping[str, Any] | None = None) -> None",
     },
     "AgentClip": {
-        "__init__": "(name: str, stage: pxr.Usd.Stage, prim_path: str, rig: AgentRig) -> None",
+        "__init__": "(self, name: str, stage: pxr.Usd.Stage, prim_path: str, rig: AgentRig) -> None",
     },
     "AgentLayer": {
-        "__init__": "(name: str, rig: AgentRig, shapelib: AgentShapeLibrary, shape_bindings: Sequence[AgentShapeBinding], source_layer: AgentLayer | None = None) -> None",
+        "__init__": "(self, name: str, rig: AgentRig, shapelib: AgentShapeLibrary, shape_bindings: Sequence[AgentShapeBinding], source_layer: AgentLayer | None = None) -> None",
         "bindings": "(self, transform: int | None = None) -> Tuple[AgentShapeBinding, ...]",
     },
     "AgentMetadata": {
-        "__init__": "(data: Mapping[str, Any]) -> None",
+        "__init__": "(self, data: Mapping[str, Any]) -> None",
         "data": "(self) -> dict[str, Any]",
         "setData": "(self, data: Mapping[str, Any]) -> None",
         "setMetadata": "(self, item_id: str, metadata: Mapping[str, Any]) -> None",
     },
     "AgentRig": {
-        "__init__": "(name: str, transform_names: Sequence[str], hierarchy: Sequence[int]) -> None",
+        "__init__": "(self, name: str, transform_names: Sequence[str], hierarchy: Sequence[int]) -> None",
     },
     "AgentShapeBinding": {
-        "__init__": "(shape: AgentShape, deformer: AgentShapeDeformer, bounds_scale: float = 1.0) -> None",
+        "__init__": "(self, shape: AgentShape, deformer: AgentShapeDeformer, bounds_scale: float = 1.0) -> None",
     },
     "AgentShapeDeformer": {
-        "__init__": "(name: str | EnumValue) -> None",
+        "__init__": "(self, name: str | EnumValue) -> None",
     },
     "AgentShapeLibrary": {
-        "__init__": "(filename: str, keep_external_ref: bool = True) -> None",
+        "__init__": "(self, filename: str, keep_external_ref: bool = True) -> None",
     },
     "AgentTransformGroup": {
-        "__init__": "(name: str, transforms: Sequence[int], rig: AgentRig, weights: Sequence[float], channels: Sequence[int]) -> None",
+        "__init__": "(self, name: str, transforms: Sequence[int], rig: AgentRig, weights: Sequence[float], channels: Sequence[int]) -> None",
     },
     "AssetGalleryDataSource": {
         "addItem": "(self, label: str, file_path: str | None = None, thumbnail: bytes = b'', type_name: str = 'asset', blind_data: bytes = b'', creation_date: int = 0) -> str",
@@ -909,16 +1260,16 @@ EXPLICIT_DEFINITIONS = {
     },
     "BoundingBox": {
         "__init__": "(self, bbox_or_xmin: float | BoundingBox = 0.0, ymin: float = 0.0, zmin: float = 0.0, xmax: float = 0.0, ymax: float = 0.0, zmax: float = 0.0) -> None",
-        "enlargeToContain": "(self, point_or_bbox: Sequence[float] | BoundingBox) -> None",
+        "enlargeToContain": "(self, point_or_bbox: Sequence[float] | Vector3, BoundingBox) -> None",
     },
     "BoundingRect": {
         "__init__": "(self, brect_or_p1_or_xmin: BoundingRect | Vector2 | float, p2_or_ymin: Vector2 | float, xmax: float = 0.0, ymax: float = 0.0) -> None",
-        "enlargeToContain": "(self, point_or_rect: Sequence[float] | BoundingRect) -> None",
+        "enlargeToContain": "(self, point_or_rect: Sequence[float] | Vector2 | BoundingRect) -> None",
         "intersects": "(self, rect: BoundingRect) -> bool",
         "contains": "(self, rect: BoundingRect) -> bool",
     },
     "ButtonParmTemplate": {
-        "__init__": "(self, name: str, label: str, disable_when: str | None = None, is_hidden: bool = False, is_label_hidden: bool = False, join_with_next: bool = False, help=None, script_callback: str | None = None, script_callback_language: EnumValue = scriptLanguage.Hscript, tags: Mapping[str, str] = ...) -> None",
+        "__init__": "(self, name: str, label: str, disable_when: str | None = None, is_hidden: bool = False, is_label_hidden: bool = False, join_with_next: bool = False, help: str=..., script_callback: str | None = None, script_callback_language: EnumValue = scriptLanguage.Hscript, tags: Mapping[str, str] = ...) -> None",
     },
     "ChannelGraph": {
         "selectedKeyframes": "(self) -> dict[Parm, Tuple[BaseKeyframe, ...]]",
@@ -952,6 +1303,10 @@ EXPLICIT_DEFINITIONS = {
     "Color": {
         "__init__": "(self, rgb_tuple: Sequence[float] | float = ..., g: float = ..., b: float = ...) -> None",
     },
+    "CompositorViewer": {
+        "bindViewerHandle": "(self, handle_type: str, name: str, settings: str | None = None, cache_previous_parms: bool = ..., handle_parms: Sequence[str] | None = None) -> None",
+        "bindViewerHandleStatic": "(self, handle_type: str, name: str, bindings: Sequence[tuple[str, str]], settings: str | None = None) -> None",
+    },
     "Cop2Node": {
         "allPixels": "(self, plane: str = 'C', component: str | None = None, interleaved: bool = True, time: float = -1.0) -> Tuple[float, ...]",
         "allPixelsAsString": "(self, plane: str = 'C', component: str | None = None, interleaved: bool = True, time: float = -1.0) -> bytes",
@@ -960,7 +1315,7 @@ EXPLICIT_DEFINITIONS = {
         "setPixelsOfCookingPlaneFromString": "(self, values: bytes, component: str | None = None, interleaved: bool = True, depth: EnumValue | None = None, flip_vertically: bool = False) -> None",
     },
     "DataParmTemplate": {
-        "__init__": "(self, name: , label: , num_components: int, look: EnumValue = parmLook.Regular, naming_scheme: EnumValue = parmNamingScheme.XYZW, unknown_str: str | None = None, disable_when: str | None = None, is_hidden: bool = False, is_label_hidden: bool = False, join_with_next: bool = False, help: str | None = None, script_callback: str | None = None, script_callback_language: EnumValue = scriptLanguage.Hscript, tags: Mapping[str, str] = {}, unknown_dict: Mapping[EnumValue, str] = {}, default_expression: Sequence[str] = (), default_expression_language: Sequence[EnumValue] = ()) -> DataParmTemplate",
+        "__init__": "(self, name: str, label: str, num_components: int, look: EnumValue = ..., naming_scheme: EnumValue = ..., unknown_str: str | None = None, disable_when: str | None = None, is_hidden: bool = False, is_label_hidden: bool = False, join_with_next: bool = False, help: str | None = None, script_callback: str | None = None, script_callback_language: EnumValue = ..., tags: dict[str, str] = ..., unknown_dict: dict[EnumValue, str] = ..., default_expression: Sequence[str] = ..., default_expression_language: Sequence[EnumValue] = ...) -> DataParmTemplate",
     },
     "Desktop": {
         "createFloatingPane": "(self, pane_tab_type: EnumValue, position: Sequence[float] = ..., size: Sequence[float] = ..., python_panel_interface: PythonPanelInterface | None = ..., immediate: bool = False) -> PaneTab",
@@ -982,8 +1337,18 @@ EXPLICIT_DEFINITIONS = {
         "setField": "(self, field_name: str, value: OptionType) -> None",
         "field": "(self, field_name: str) -> OptionType",
     },
+    "Drawable": {
+        "draw": "(self, handle: Handle, params: dict[str, Any] | None = None) -> None",
+    },
+    "Drawable2D": {
+        "__init__": "(self, scene_viewer: SceneViewer | CompositorViewer, type: EnumValue, name: str, label: str | None = None, pickable: bool = False, params: dict[str, Any] | None = None) -> None",
+        "draw": "(self, handle: Handle, params: dict[str, Any] | None = None) -> None",
+        "params": "(self) -> dict[str, Any]",
+        "setParams": "(self, params: dict[str, Any]) -> None",
+    },
     "EdgeGroup": {
         "add": "(self, edge_or_list_or_edge_group: Edge | Sequence[Edge] | EdgeGroup) -> None",
+        "iterEdges": "(self) -> _EdgeTupleGenerator",
         "remove": "(self, edge_or_list_or_edge_group: Edge | Sequence[Edge] | EdgeGroup) -> None",
     },
     "Face": {
@@ -1075,6 +1440,8 @@ EXPLICIT_DEFINITIONS = {
         "intAttribValue": "(self, attrib: Attrib | str) -> int",
         "intListAttribValue": "(self, name_or_attrib: Attrib | str) -> Tuple[int, ...]",
         "intrinsicValue": "(self, intrinsic_name: str) -> AttribReturnType",
+        "iterPoints": "(self) -> _PointTupleGenerator",
+        "iterPrims": "(self) -> _PrimTupleGenerator",
         "packedFolderProperties": "(self, path: str) -> dict[str, bool]",
         "pointFloatAttribValuesAsString": "(self, name: str, float_type: EnumValue = numericData.Float32) -> bytes",
         "pointGroups": "(self, scope: EnumValue = groupScope.Public) -> Tuple[PointGroup, ...]",
@@ -1219,19 +1586,19 @@ EXPLICIT_DEFINITIONS = {
         "stage": "(self) -> pxr.Usd.Stage",
     },
     "Matrix2": {
-        "__init__": "(self, values: int | float | Sequence[int] | Sequence[float] | Sequence[Sequence[int] | Sequence[float]] = 0) -> Matrix2",
+        "__init__": "(self, values: int | float | Sequence[int] | Sequence[float] | Sequence[Sequence[int] | Sequence[float]] | 'Matrix2' = 0) -> None",
         "__mul__": "(self, matrix2_or_scalar: Matrix2 | float) -> Matrix2",
         "setTo": "(self, value: Sequence[float]) -> None",
     },
     "Matrix3": {
-        "__init__": "(self, values: int | float | Sequence[int] | Sequence[float] | Sequence[Sequence[int] | Sequence[float]] = 0) -> Matrix3",
+        "__init__": "(self, values: int | float | Sequence[int] | Sequence[float] | Sequence[Sequence[int] | Sequence[float]] | 'Matrix3' = 0) -> None",
         "__mul__": "(self, matrix3_or_scalar: Matrix3 | float) -> Matrix4",
         "setTo": "(self, value: Sequence[float]) -> None",
         "removeScalesAndShears": "(self, transform_order: Literal['srt', 'str', 'rst', 'rts', 'tsr', 'trs'] = 'srt') -> Tuple[Vector3, Vector3]",
         "extractRotates": "(self, rotate_order: Literal['xyz', 'xzy', 'yxz', 'yzx', 'zxy', 'zyx'] = 'xyz') -> Vector3",
     },
     "Matrix4": {
-        "__init__": "(self, values: int | float | Sequence[int] | Sequence[float] | Sequence[Sequence[int] | Sequence[float]] = 0) -> Matrix4",
+        "__init__": "(self, values: int | float | Sequence[int] | Sequence[float] | Sequence[Sequence[int] | Sequence[float]] | 'Matrix4' = 0) -> None",
         "__mul__": "(self, matrix4_or_scalar: Matrix4 | float) -> Matrix4",
         "explode": "(self, transform_order: Literal['srt', 'str', 'rst', 'rts', 'tsr', 'trs'] = 'srt', rotate_order: Literal['xyz', 'xzy', 'yxz', 'yzx', 'zxy', 'zyx'] = 'xyz', pivot: Vector3 = ..., pivot_rotate: Vector3 = ...) -> dict[str, Vector3]",
         "extractRotates": "(self, transform_order: Literal['srt', 'str', 'rst', 'rts', 'tsr', 'trs'] = 'srt', rotate_order: Literal['xyz', 'xzy', 'yxz', 'yzx', 'zxy', 'zyx'] = 'xyz', pivot: Vector3 = ..., pivot_rotate: Vector3 = ...) -> Vector3",
@@ -1309,7 +1676,7 @@ EXPLICIT_DEFINITIONS = {
         "addParmCallback": "(self, callback: Callable[[OpNode, ParmTuple], None], names: Sequence[str]) -> None",
         "cook": "(self, force: bool = False, frame_range: Sequence[float] = ...) -> None",
         "cookCodeGeneratorNode": "(self, check_parent: bool = False) -> Node",
-        "evalParm": "(self, parm_path: str) -> ParmType",
+        "evalParm": "(self, parm_path: str) -> ParmArgType",
         "evalParmTuple": "(self, parm_path: str) -> ParmTupleReturnType",
         "eventCallbacks": "(self) -> Tuple[Tuple[Tuple[EnumValue, ...], Callable], ...]",
         "fileReferences": "(self, recurse: bool = True, project_dir_variable: str = 'HIP', include_all_refs: bool = True) -> Sequence[Tuple[Parm, str]]",
@@ -1397,6 +1764,7 @@ EXPLICIT_DEFINITIONS = {
     },
     "PointGroup": {
         "add": "(self, point_or_list_or_point_group: Point | Sequence[Point] | PointGroup) -> None",
+        "iterPoints": "(self) -> _PointTupleGenerator",
         "option": "(self, option_name: str) -> OptionMultiReturnType",
         "options": "(self) -> dict[str, OptionMultiReturnType]",
         "remove": "(self, point_or_list_or_point_group: Point | Sequence[Point] | PointGroup) -> None",
@@ -1422,21 +1790,22 @@ EXPLICIT_DEFINITIONS = {
     },
     "PrimGroup": {
         "add": "(self, prim_or_list_or_prim_group: Prim | Sequence[Prim] | PrimGroup) -> None",
+        "iterPrims": "(self) -> _PrimTupleGenerator",
         "option": "(self, option_name: str) -> OptionMultiReturnType",
         "options": "(self) -> dict[str, OptionMultiReturnType]",
         "remove": "(self, prim_or_list_or_prim_group: Prim | Sequence[Prim] | PrimGroup) -> None",
         "setOption": "(self, name: str, value: OptionMultiArgType, type_hint: EnumValue = fieldType.NoSuchField) -> None",
     },
     "Quaternion": {
-        "__init__": "(self, x: Sequence[float] | float | Matrix3 | Matrix4, y: Sequence[float] | float, z: float = ..., w: float = ...) -> None",
+        "__init__": "(self, x: Sequence[float] | float | 'Quaternion' | Matrix3 | Matrix4, y: Sequence[float] | float, z: float = ..., w: float = ...) -> None",
         "__mul__": "(self, quaternion_or_scalar: Quaternion | float) -> Quaternion",
         "extractEulerRotates": "(self, rotate_order: Literal['xyz', 'xzy', 'yxz', 'yzx', 'zxy', 'zyx'] = 'xyz') -> Vector3",
         "setToEulerRotates": "(self, angles_in_deg: float, rotate_order: Literal['xyz', 'xzy', 'yxz', 'yzx', 'zxy', 'zyx'] = 'xyz') -> None",
         "setToRotationMatrix": "(self, matrix3_or_matrix4: Matrix3 | Matrix4) -> None",
     },
     "RadialScriptItem": {
-        "setActionCallback": "(self, callback: Callback) -> None",
-        "setCheckCallback": "(self, callback: Callback) -> None",
+        "setActionCallback": "(self, callback: Callable) -> None",
+        "setCheckCallback": "(self, callback: Callable) -> None",
     },
     "Ramp": {
         "__init__": "(self, basis: Sequence[EnumValue], keys: Sequence[float], values: Sequence[float] | Sequence[Tuple[float, float, float]]) -> None",
@@ -1452,7 +1821,7 @@ EXPLICIT_DEFINITIONS = {
     "RopNode": {
         "addRenderEventCallback": "(self, callback: Callable[[RopNode, EnumValue, float], None], run_before_script: bool = False) -> None",
         "removeRenderEventCallback": "(self, callback: Callable[[RopNode, EnumValue, float], None]) -> None",
-        "render": "(self, frame_range: Sequence[float] | None = None, res: Sequence[int] | None = None, output_file: str | None = None, output_format=None, to_flipbook: bool = False, quality: int = 2, ignore_inputs: bool = False, method=RopByRop, ignore_bypass_flags: bool = False, ignore_lock_flags: bool = False, verbose: bool = False, output_progress: bool = False) -> None",
+        "render": "(self, frame_range: Sequence[float] | None = None, res: Sequence[int] | None = None, output_file: str | None = None, output_format: str=..., to_flipbook: bool = False, quality: int = 2, ignore_inputs: bool = False, method=RopByRop, ignore_bypass_flags: bool = False, ignore_lock_flags: bool = False, verbose: bool = False, output_progress: bool = False) -> None",
     },
     "SceneGraphTree": {
         "collapsePrimitives": "(self, prims: Sequence[str | pxr.Sdf.Path]) -> None",
@@ -1499,6 +1868,9 @@ EXPLICIT_DEFINITIONS = {
     "Shelf": {
         "setTools": "(self, tools: Sequence[Tool]) -> None",
     },
+    "ShelfElement": {
+        "setFilePath": "(self, file_path: str | None) -> None",
+    },
     "ShopNode": {
         "shaderCode": "(self, shader_type: EnumValue | None = None) -> str",
         "shaderString": "(self, render_type: str | None = None) -> str",
@@ -1521,9 +1893,9 @@ EXPLICIT_DEFINITIONS = {
         "addSelector": "(self, name: str, selector_type: str, prompt: str = 'Select components', primitive_types: Sequence[EnumValue] = ..., group_parm_name: str | None = None, group_type_parm_name: str | None = None, input_index: int = 0, input_required: bool = True, allow_dragging: bool = False, empty_string_selects_all: bool = True) -> Selector",
         "selectors": "(self, selector_indices: Sequence[int] = ...) -> Tuple[Selector, ...]",
     },
-    "SopVerb": {
+    "OpVerb": {
         "parms": "(self) -> dict[str, OptionType]",
-        "setParms": "(self, p: Mapping[str, OptionMultiArgType]) -> None",
+        "setParms": "(self, p: Mapping[str, OptionMultiArgType | Sequence[Mapping[str, OptionMultiArgType]]]) -> None",
     },
     "StickyNote": {
         "setSize": "(self, size: Sequence[float] | Vector2) -> None",
@@ -1552,7 +1924,7 @@ EXPLICIT_DEFINITIONS = {
         "__init__": "(self, scene_viewer: SceneViewer, name: str, label: str | None = None, params: Mapping[str, Any] | None = None) -> None",
     },
     "ToggleParmTemplate": {
-        "__init__": "(self, name: str, label: str, default_value: bool = False, disable_when: str | None  =None, is_hidden: bool = False, is_label_hidden: bool = False, join_with_next: bool = False, help: str | None = None, script_callback: str | None = None, script_callback_language: EnumValue = scriptLanguage.Hscript, tags: Mapping[str, str] = ..., default_expression: str = '', default_expression_language: EnumValue = scriptLanguage.Hscript) -> None",
+        "__init__": "(self, name: str, label: str, default_value: bool = False, disable_when: str | None =None, is_hidden: bool = False, is_label_hidden: bool = False, join_with_next: bool = False, help: str | None = None, script_callback: str | None = None, script_callback_language: EnumValue = scriptLanguage.Hscript, tags: Mapping[str, str] = ..., default_expression: str = '', default_expression_language: EnumValue = scriptLanguage.Hscript) -> None",
     },
     "Tool": {
         "setData": "(self, script: str = '', language: EnumValue = scriptLanguage.Python, icon: str = '', help: str = '', help_url: str = '', network_categories: Sequence[NodeTypeCategory] = ..., viewer_categories: Sequence[NodeTypeCategory] = ..., cop_viewer_categories: Sequence[NodeTypeCategory] = ..., network_op_type: str = '', viewer_op_type: str = '', locations: Sequence[str] = ...) -> None",
@@ -1568,16 +1940,16 @@ EXPLICIT_DEFINITIONS = {
         "__exit__": "(self, type: type[BaseException], value: BaseException, traceback: TracebackType) -> None",
     },
     "Vector2": {
-        "__init__": "(self, x: Sequence[float] | float = ..., y: float = ...) -> None",
+        "__init__": "(self, x: Sequence[float] | 'Vector2' | float = ..., y: float = ...) -> None",
         "__mul__": "(self, scalar_or_matrix2: float | Matrix2) -> Vector2",
     },
     "Vector3": {
-        "__init__": "(self, x: Sequence[float] | float = ..., y: float = ..., z: float = ...) -> None",
+        "__init__": "(self, x: Sequence[float] | 'Vector3' | float = ..., y: float = ..., z: float = ...) -> None",
         "__mul__": "(self, scalar_or_matrix3_or_matrix4: float | Matrix3 | Matrix4) -> Vector3",
         "smoothRotation": "(self, reference: Vector3, rotate_order: Literal['xyz', 'xzy', 'yxz', 'yzx', 'zxy', 'zyx'] = 'xyz') -> Vector3",
     },
     "Vector4": {
-        "__init__": "(self, x: Sequence[float] | float = ..., y: float = ..., z: float = ..., w: float = ...) -> None",
+        "__init__": "(self, x: Sequence[float] | 'Vector4' | float = ..., y: float = ..., z: float = ..., w: float = ...) -> None",
         "__mul__": "(self, scalar_or_matrix4: float | Matrix4) -> Vector4",
     },
     "Vertex": {
@@ -1594,13 +1966,18 @@ EXPLICIT_DEFINITIONS = {
     },
     "VertexGroup": {
         "add": "(self, vertex_or_list_or_vertex_group: Vertex | Sequence[Vertex] | VertexGroup) -> None",
+        "iterVertices": "(self) -> _VertexTupleGenerator",
         "option": "(self, option_name: str) -> OptionMultiReturnType",
         "options": "(self) -> dict[str, OptionMultiReturnType]",
         "remove": "(self, vertex_or_list_or_vertex_group: Vertex | Sequence[Vertex] | VertexGroup) -> None",
         "setOption": "(self, name: str, value: OptionMultiArgType, type_hint: EnumValue = fieldType.NoSuchField) -> None",
     },
+    "ViewerDragger": {
+        "drag": "(self, event: ViewerEvent) -> dict[str, Any]",
+    },
     "ViewerHandleContext": {
-        "scaleFactor": "(self, ref_position: Sequence[float] = ...) -> float",
+        "draw": "(self, handle: Handle) -> None",
+        "scaleFactor": "(self, ref_position: Sequence[float] | Vector3 = ...) -> float",
     },
     "ViewerHandleTemplate": {
         "__init__": "(self, name: str, label: str, categories: Sequence[EnumValue]) -> None",
@@ -1632,9 +2009,9 @@ EXPLICIT_DEFINITIONS = {
         "bindHandle": "(self, handle_type: str, name: str, settings: str | None = None) -> None",
         "bindHandleStatic": "(self, handle_type: str, name: str, bindings: Sequence[str] , settings: str | None = None) -> None",
         "bindObjectSelector": "(self, prompt: str, quick_select: bool = True, auto_start: bool = True, toolbox: bool = True, use_existing_selection: bool = True, allow_multisel: bool = True, secure_selection: EnumValue = secureSelectionOption.Obey, allowed_types: Sequence[str] = ..., hotkey: str = '', name: str = '') -> None",
-        "bindParameter": "(self, param_type: EnumValue, name: str | None = None, label: str | None = None, menu_as_button_strip: bool = False, menu_items: Sequence[Tuple[str, str] | Tuple[str, str, str]] | None = None, num_components: int = 1, default_value=None, min_limit: int = 0, max_limit: int = 1, align: bool = False, toolbox: bool = True) -> None",
-        "bindSceneGraphSelector": "(self, prompt: str, allow_drag: bool = True, quick_select: bool = True, auto_start: bool = True, toolbox: bool = True, use_existing_selection: bool = True, secure_selection: EnumValue = secureSelectionOption.Obey, consume_selection: bool = False, allow_multisel: bool = True, prior_selection_paths=None, prim_mask=None, path_prefix_mask=None, prim_kind=None, hotkey: str = '', name: str = '') -> None",
-        "bindSelector": "(self, name, selector_type, prompt: str, primitive_types=None, group_parm_name=None, input_index=0, input_required: bool = True, allow_dragging: bool = True) -> None",
+        "bindParameter": "(self, param_type: EnumValue, name: str | None = None, label: str | None = None, menu_as_button_strip: bool = False, menu_items: Sequence[Tuple[str, str] | Tuple[str, str, str]] | None = None, num_components: int = 1, default_value: ParmArgType | None=None, min_limit: int = 0, max_limit: int = 1, align: bool = False, toolbox: bool = True) -> None",
+        "bindSceneGraphSelector": "(self, prompt: str, allow_drag: bool = True, quick_select: bool = True, auto_start: bool = True, toolbox: bool = True, use_existing_selection: bool = True, secure_selection: EnumValue = secureSelectionOption.Obey, consume_selection: bool = False, allow_multisel: bool = True, prior_selection_paths: Sequence[str] | None=..., prim_mask: str | None=..., path_prefix_mask: str | None=..., prim_kind: str | None=..., hotkey: str = '', name: str = '') -> None",
+        "bindSelector": "(self, name, selector_type, prompt: str, primitive_types: Sequence[EnumValue]=..., group_parm_name: str = ..., input_index=0, input_required: bool = True, allow_dragging: bool = True) -> None",
     },
     "ViewportVisualizer": {
         "setParm": "(self, parm_name: str, value: int | float | str) -> None",
@@ -1683,9 +2060,6 @@ EXPLICIT_DEFINITIONS = {
         "collisionNodesIfMerged": "(file_name: str, node_pattern: str = '*') -> Tuple[OpNode, ...]",
         "importFBX": "(file_name: str, suppress_save_prompt: bool = False, merge_into_scene: bool = True, import_cameras: bool = True, import_joints_and_skin: bool = True, import_geometry: bool = True, import_lights: bool = True, import_animation: bool = True, import_materials: bool = True, resample_animation: bool = False, resample_interval: float = 1.0, override_framerate: bool = False, framerate: int = -1, hide_joints_attached_to_skin: bool = True, convert_joints_to_zyx_rotation_order: bool = False, material_mode: EnumValue = fbxMaterialMode.FBXShaderNodes, compatibility_mode: EnumValue = fbxCompatibilityMode.Maya, single_precision_vertex_caches: bool = False, triangulate_nurbs: bool = False, triangulate_patches: bool = False, import_global_ambient_light: bool = False, import_blend_deformers_as_blend_sops: bool = False, segment_scale_already_baked_in: bool = True, convert_file_paths_to_relative: bool = True, unlock_geometry: bool = False, unlock_deformations: bool = False, import_nulls_as_subnets: bool = False, import_into_object_subnet: bool = True, convert_into_y_up_coordinate_system: bool = False, create_sibling_bones: bool = True, override_scene_frame_range: bool = False, convert_units: bool = False) -> Tuple[ObjNode, ...]",
         "merge": "(file_name: str, node_pattern: str = '*', overwrite_on_conflict: bool = False, ignore_load_warnings: bool = False) -> None",
-        "addEventCallback": "(callback: Callable[[EnumValue], None]) -> None",
-        "removeEventCallback": "(callback: Callable[[EnumValue], None]) -> None",
-        "eventCallbacks": "() -> Tuple[Callable[[EnumValue], None], ...]",
     },
     "hmath": {
         "buildRotate": "(rx: float | Vector3, ry: float = ..., rz: float = ..., order: str = 'xyz') -> Matrix4",
@@ -1737,7 +2111,7 @@ EXPLICIT_DEFINITIONS = {
     },
     "ui": {
         "addEventLoopCallback": "(callback: Callable[[], None]) -> None",
-        "addResourceEventCallback": "(callback: Callable[[enumValue, Any, str], None]) -> None",
+        "addResourceEventCallback": "(callback: Callable[[EnumValue, Any, str], None]) -> None",
         "addSelectionCallback": "(callback: Callable[[Sequence[NetworkMovableItem]], None]) -> None",
         "addTriggerUpdateCallback": "(callback: Callable) -> None",
         "displayConfirmation": "(text: str, severity: EnumValue = ..., help: str | None = None, title: str | None = None, details: str | None = None, details_label: str | None = None, details_expanded: bool = False, suppress: EnumValue = ...) -> bool",
@@ -1762,12 +2136,13 @@ EXPLICIT_DEFINITIONS = {
         "reloadViewerStates": "(state_names: Sequence[str] | None = None) -> None",
         "removeEventLoopCallback": "(callback: Callable[[], None]) -> None",
         "removePostedEventCallback": "(callback: Callable[[], None]) -> None",
-        "removeResourceEventCallback": "(callback: Callable[[enumValue, Any, str], None]) -> None",
+        "removeResourceEventCallback": "(callback: Callable[[EnumValue, Any, str], None]) -> None",
         "removeSelectionCallback": "(callback: Callable[[Sequence[NetworkMovableItem]], None]) -> None",
         "removeTriggerUpdateCallback": "(callback: Callable) -> None",
         "selectFromList": "(choices: Sequence[str], default_choices: Sequence[int] = ..., exclusive: bool = False, message: str | None = None, title: str | None = None, column_header: str = 'Choices', num_visible_rows: int = 10, clear_on_cancel: bool = False, width: int = 0, height: int = 0, sort: bool = False, condense_paths: bool = False) -> Tuple[int, ...]",
         "selectFromTree": "(choices: Sequence[str], picked: Sequence[int] = ..., exclusive: bool = False, message: str | None = None, title: str | None = None, clear_on_cancel: bool = False, width: int = 0, height: int = 0) -> Tuple[str, ...]",
         "selectMultipleNodes": "(relative_to_node: Node | None = None, initial_node: Node | None = None, node_type_filter: EnumValue | None = None, title: str | None = None, width: int = 0, height: int = 0, custom_node_filter_callback: Callable[[Node], bool] | None = None) -> Tuple[str, ...]",
+        "selectColor": "(initial_color: Color | None = NOne, options: dict[str, Any] | None = None) -> Optional[Color]",
         "selectParm": "(category: NodeTypeCategory = ..., bound_parms_only: bool = False, relative_to_node: OpNode | None = None, message: str | None = None, title: str | None = None, initial_parms: Sequence[Parm] = ..., multiple_select: bool = True, width: int = 0, height: int = 0) -> Tuple[str, ...]",
         "selectParmTuple": "(category: NodeTypeCategory = ..., bound_parms_only: bool = False, relative_to_node: OpNode | None = None, message: str | None = None, title: str | None = None, initial_parm_tuples: Sequence[ParmTuple] = ..., multiple_select: bool = True, width: int = 0, height: int = 0) -> Tuple[str, ...]",
         "selectionCallbacks": "() -> Tuple[Callable[[Sequence[NetworkMovableItem]], None], ...]",
@@ -1777,11 +2152,11 @@ EXPLICIT_DEFINITIONS = {
         "waitUntil": "(callback: Callable[[], bool]) -> None",
     },
     "viewportVisualizers": {
-        "addEventCallback": "(self, event_types: EnumValue, callback: Callable, category: EnumValue = viewportVisualizerCategory.Common, node: Node | None = None) -> None",
+        "addEventCallback": "(self, event_types: EnumValue, callback: Callable, category: EnumValue = ..., node: Node | None = None) -> None",
         "createVisualizer": "(type: EnumValue, category: EnumValue = viewportVisualizerCategory.Common, node: Node | None = None) -> ViewportVisualizer",
-        "eventCallbacks": "(category=hou.viewportVisualizerCategory.Common, node=None) -> Sequence[Tuple[Sequence[EnumValue], Callable]]",
-        "removeAllEventCallbacks": "(self, category: EnumValue = viewportVisualizerCategory.Common, node: Node | None = None) -> None",
-        "removeEventCallback": "(self, event_types: Sequence[EnumValue], callback: Callable, category: EnumValue = viewportVisualizerCategory.Common, node: Node | None = None) -> None",
-        "visualizers": "(category: EnumValue = viewportVisualizerCategory.Common, node: Node | None = None) -> Tuple[ViewportVisualizer, ...]",
+        "eventCallbacks": "(category: EnumValue=..., node: Node | None=None) -> Sequence[Tuple[Sequence[EnumValue], Callable]]",
+        "removeAllEventCallbacks": "(self, category: EnumValue = ..., node: Node | None = None) -> None",
+        "removeEventCallback": "(self, event_types: Sequence[EnumValue], callback: Callable, category: EnumValue = ..., node: Node | None = None) -> None",
+        "visualizers": "(category: EnumValue = ..., node: Node | None = None) -> Tuple[ViewportVisualizer, ...]",
     },
 }
