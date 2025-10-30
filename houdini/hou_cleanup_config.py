@@ -60,8 +60,12 @@ def get_type_aliases() -> dict[str, str]:
         f"Tuple[{typ}, ...]" for typ in _TYPE_ALIAS_COMPONENTS["ATTRIB"]
     ]
 
-    parm_arg_types = _TYPE_ALIAS_COMPONENTS["PARM"] + _TYPE_ALIAS_COMPONENTS["PARM_ARG_ONLY"]
-    parm_return_types = _TYPE_ALIAS_COMPONENTS["PARM"] + _TYPE_ALIAS_COMPONENTS["PARM_RETURN_ONLY"]
+    parm_arg_types = (
+        _TYPE_ALIAS_COMPONENTS["PARM"] + _TYPE_ALIAS_COMPONENTS["PARM_ARG_ONLY"]
+    )
+    parm_return_types = (
+        _TYPE_ALIAS_COMPONENTS["PARM"] + _TYPE_ALIAS_COMPONENTS["PARM_RETURN_ONLY"]
+    )
 
     result = {
         "AttribBasicType": " | ".join(_TYPE_ALIAS_COMPONENTS["ATTRIB"]),
@@ -75,9 +79,7 @@ def get_type_aliases() -> dict[str, str]:
         ),
         "ParmArgType": " | ".join(parm_arg_types),
         "ParmReturnType": " | ".join(parm_return_types),
-        "ParmTupleArgType": " | ".join(
-            f"Sequence[{typ}]" for typ in parm_arg_types
-        ),
+        "ParmTupleArgType": " | ".join(f"Sequence[{typ}]" for typ in parm_arg_types),
         "ParmTupleReturnType": " | ".join(
             f"Tuple[{typ}, ...]" for typ in parm_return_types
         ),
@@ -155,7 +157,7 @@ MISSING_CLASSES = {
             "@staticmethod\ndef dataFromParms(parms: Sequence[ParmTuple], values: bool=True, evaluate_values: bool=False, locked: bool=True, brief: bool=True, multiparm_instances: bool=True, metadata: bool=False, verbose: bool=False) -> dict[str,Any]",
             "@staticmethod\ndef itemsAsData(items: Sequence[NetworkMovableItem], nodes_only: bool=False, children: bool=True, editables:bool=True, inputs: bool=True, position: bool=True, anchor_position: Vector2=..., flags: bool=True, parms: bool=True, parms_as_brief: bool=True, default_parmvalues: bool=False, evaluate_parmvalues: bool=False, parmtemplates: str=..., metadata: bool=False, verbose: bool=False) -> dict[str, Any]",
             "@staticmethod\ndef selectedItemsAsData(nodes_only: bool=False, children: bool=True, editables: bool=True, inputs: bool=True, position: bool=True, anchor_position: Vector2=..., flags: bool=True, parms: bool=True, parms_as_brief: bool=True, default_parmvalues: bool=False, evaluate_parmvalues: bool=False, parmtemplates: str=..., metadata: bool=False, verbose: bool=False) -> dict[str, Any]",
-        ]
+        ],
     },
     "qt": {
         "ColorField(QtWidgets.QWidget)": [
@@ -313,8 +315,7 @@ MISSING_CLASSES = {
         "MenuButton(QtWidgets.QPushButton)": [
             "def __init__(self, menu: QtWidgets.QMenu) -> None",
         ],
-        "MixerFilterProxyModel(QtCore.QSortFilterProxyModel)": [
-        ],
+        "MixerFilterProxyModel(QtCore.QSortFilterProxyModel)": [],
         "NodeChooserButton(QtWidgets.QToolButton)": [
             "nodeSelected: QtCore.Signal  # QtCore.Signal(object)",
             "nodePathsSelected: QtCore.Signal  # QtCore.Signal(str)",

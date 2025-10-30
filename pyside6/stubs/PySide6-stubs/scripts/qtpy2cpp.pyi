@@ -1,0 +1,3 @@
+DESCRIPTION: str
+
+def create_arg_parser(desc): ...

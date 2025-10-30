@@ -1,0 +1,76 @@
+[project]
+name = "types-PySide6"
+version = "6.10.0.0"
+
+readme = "README.md"
+authors = [{name="Chad Dombrova"}]
+description = "The most accurate stubs for PySide6"
+license = "MIT"
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 2",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Typing :: Stubs Only",
+]
+repository = "https://github.com/LumaPictures/cg-stubs"
+homepage = "https://github.com/LumaPictures/cg-stubs"
+
+keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
+
+[dependency-groups]
+dev = [
+    "stubgenlib",
+    "mypy",
+    "pytest",
+    "pytest-xdist[psutil]",
+    # Keep in sync with version:
+    "PySide6==6.10.0",
+]
+
+[tool.pytest.ini_options]
+addopts = [
+    "-n 6",
+    "-v",
+]
+
+[tool.uv.sources]
+stubgenlib = { path = "../common" , editable=true }
+mypy = { git = "https://github.com/chadrik/mypy", branch = "stubgen/all-fixes-pyside6" }
+#mypy = { path = "/Users/chad/dev/mypy", editable=true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["stubs/PySide6-stubs", "stubs/shiboken6-stubs"]
+
+[tool.hatch.build]
+# uv+hatch does not write anything to the installed .pth file if the contents
+# of the package do no include .py files.  Adding this ensures the .pth file
+# is written correctly
+dev-mode-dirs = ["stubs"]
+
+[tool.mypy]
+check_untyped_defs = true
+files = [
+    "stubgen_pyside6.py",
+    "tests",
+]
+strict = true
+
+[[tool.mypy.overrides]]
+module = ["PySide6.*", "shiboken6.*"]
+disable_error_code = ["no-untyped-def", "type-arg"]
+
+[[tool.mypy.overrides]]
+module = ["conftest"]
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = ["pytest.*"]
+ignore_missing_imports = true

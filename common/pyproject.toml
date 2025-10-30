@@ -3,7 +3,7 @@ name = "stubgenlib"
 version = "0.3.0"
 
 dependencies = [
-    "mypy >= 1.15.0, < 1.17.0",
+    "mypy >= 1.15.0, < 1.20.0",
     "typeguard",
 ]
 

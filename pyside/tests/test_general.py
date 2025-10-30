@@ -2,7 +2,7 @@ from __future__ import absolute_import, print_function
 
 import datetime
 import sys
-from typing import Any, ClassVar, List, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, ClassVar, List
 
 import PySide2
 import pytest

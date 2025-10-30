@@ -176,6 +176,7 @@ class AdvancedSigMatcher(object):
         return None
 
 
+# FIXME: generate a report of rules that were not used atexit.
 class AdvancedSignatureGenerator(SignatureGenerator):
     """
     A signature generator that uses an AdvancedSigMatcher to override all or

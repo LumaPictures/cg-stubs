@@ -6,7 +6,7 @@ import mypy.moduleinspect
 class ModuleInspect:
     """
     Patch ModuleInspect so that it imports modules directly into the current process rather than
-    using a multiprocessing.
+    using multiprocessing.
     """
 
     def get_package_properties(

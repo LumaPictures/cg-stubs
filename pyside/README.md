@@ -38,20 +38,16 @@ This project uses mypy's official `stubgen` tool to directly generate stubs, wit
 
 * When instantiating subclasses of `QObject` it is possible to pass the values of properties and signals as `**kwargs` to `__init__`.  The stubs have been fix to include these args on all relevant `__init__` methods.
 * Qt/PySide has special "flag" enumerator classes that work as pairs: one represents a single flag value, while the other represents multiple combined.  The stubs have been fix to allow either type of flag -- single or multiple -- anywhere that one of the would have been accepted, which is the correct behavior (technically `typing.SupportsInt` is the most correct, but using this would undermine the type enforcement provided by the stubs).
-* Removed redundant overlapping overloads, so that satisfying mypy/liskov on subclassed methods is easier 
-* For methods that implement both classmethod and instancemethod overloads, the classmethod overloads have been removed.  Unfortunately, mypy disallows mixing these and does not correctly analyze them.
+* Removed redundant overlapping overloads, so that satisfying mypy/liskov on subclassed methods is easier
 * Corrected all arguments typed as `typing.Sequence` to be `typing.Iterable`.  Tests so far have indicated that this is true as a general rule. 
 * Added sub-types to `Iterable` annotations, e.g. `Iterable[str]`,  `Iterable[int]`, etc
 * Replaced `object` with `typing.Any` in return types. e.g.:
   * `QSettings.value() -> Any`
   * `QModelIndex.internalPointer() -> Any`
   * `QPersistentModelIndex.internalPointer() -> Any`
-* Many PySide methods can be called as both instance methods and as static methods, with each overload
-  having a different function signature. `mypy` disallows this kind of mixing of static and non-static
-  overloads, but these stubs support most of these esoteric methods using a special decorator called
-  `@_staticmethod_or_instancemethod`.
-  Any method in the stubs with this decorator can be called as a static method with the specified
-  arguments, or as an instance method with no arguments.
+* Added support for overloads that mix static and instance methods. `mypy` disallows this using traditional 
+  overloads, so this project achieves it by generating specialized decorator classes that hold each of the 
+  overloads.
 
 ### Specific fixes
 

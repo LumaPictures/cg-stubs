@@ -1,10 +1,12 @@
 from __future__ import absolute_import, annotations, print_function
 
+import enum
 import fnmatch
 import importlib
 import inspect
 import pydoc
 import re
+import types
 import typing
 from collections import defaultdict
 from functools import cached_property, lru_cache
@@ -16,7 +18,6 @@ from typing import (
     Optional,
     Tuple,
     cast,
-    TYPE_CHECKING
 )
 
 import mypy.stubgen
@@ -38,8 +39,6 @@ from stubgenlib.utils import (
     remove_overlapping_overloads,
 )
 
-from PySide2 import QtCore, QtWidgets
-
 cache = lru_cache(maxsize=None)
 
 
@@ -60,8 +59,14 @@ class PySideHelper:
     _flag_group_to_item: dict[str, str] = {}
     _flag_item_short_name_to_type: defaultdict[str, set[str]] = defaultdict(set)
 
+    def __init__(self) -> None:
+        self._pyside_package: str | None = None
+        self._shiboken_package: str | None = None
+        self.QtCore: types.ModuleType = None  # type: ignore[assignment]
+        self.QtWidgets: types.ModuleType = None  # type: ignore[assignment]
+
     def is_pyside_obj(self, typ: type) -> bool:
-        return typ.__module__.split(".")[0] == "PySide2"
+        return typ.__module__.split(".")[0] in self.pyside_package
 
     @cache
     def is_flag(self, typ: type) -> bool:
@@ -69,12 +74,16 @@ class PySideHelper:
 
         e.g. PySide2.QtCore.QDir.Filter
         """
-        return (
-            hasattr(typ, "__pos__")
-            and not hasattr(typ, "__invert__")
-            and self.is_pyside_obj(typ)
-            and typ.__bases__ == (object,)
-        )
+        if self.pyside_package == "PySide6":
+            # FIXME: flag groups such as PySide6.QtCore.QDir.Filters will return True here
+            return isinstance(typ, type) and issubclass(typ, enum.Enum)
+        else:
+            return (
+                hasattr(typ, "__pos__")
+                and not hasattr(typ, "__invert__")
+                and self.is_pyside_obj(typ)
+                and typ.__bases__ == (object,)
+            )
 
     @cache
     def is_flag_group(self, typ: type) -> bool:
@@ -85,12 +94,15 @@ class PySideHelper:
 
         e.g. PySide2.QtCore.QDir.Filters
         """
-        return (
-            hasattr(typ, "__invert__")
-            and not hasattr(typ, "values")
-            and self.is_pyside_obj(typ)
-            and typ.__bases__ == (object,)
-        )
+        if self.pyside_package == "PySide6":
+            return False
+        else:
+            return (
+                hasattr(typ, "__invert__")
+                and not hasattr(typ, "values")
+                and self.is_pyside_obj(typ)
+                and typ.__bases__ == (object,)
+            )
 
     @cache
     def is_flag_item(self, typ: type) -> bool:
@@ -98,12 +110,15 @@ class PySideHelper:
 
         e.g. PySide2.QtCore.QDir.Filter.AllDirs
         """
-        return (
-            hasattr(typ, "__invert__")
-            and hasattr(typ, "values")
-            and self.is_pyside_obj(typ)
-            and typ.__bases__ == (object,)
-        )
+        if self.pyside_package == "PySide6":
+            return isinstance(typ, enum.Enum)
+        else:
+            return (
+                hasattr(typ, "__invert__")
+                and hasattr(typ, "values")
+                and self.is_pyside_obj(typ)
+                and typ.__bases__ == (object,)
+            )
 
     def record_flag(self, flag: type) -> None:
         flag_full_name = get_type_fullname(flag)
@@ -113,11 +128,14 @@ class PySideHelper:
 
     @cache
     def get_group_from_flag_item(self, item_type: type) -> type:
-        group_type = type(item_type() | item_type())
-        self.__class__._flag_group_to_item[get_type_fullname(group_type)] = (
-            get_type_fullname(item_type)
-        )
-        return group_type
+        if self.pyside_package == "PySide6":
+            raise RuntimeError("Should not get here")
+        else:
+            group_type = type(item_type() | item_type())
+            self.__class__._flag_group_to_item[get_type_fullname(group_type)] = (
+                get_type_fullname(item_type)
+            )
+            return group_type
 
     def get_flag_union(self, type_name: str | None) -> Optional[str]:
         """
@@ -147,9 +165,9 @@ class PySideHelper:
         # next look in key modules
         # FIXME use known_modules list
         modules = [
-            f"PySide2.QtCore",
-            f"PySide2.QtGui",
-            f"PySide2.QtWidgets",
+            f"{self.pyside_package}.QtCore",
+            f"{self.pyside_package}.QtGui",
+            f"{self.pyside_package}.QtWidgets",
         ]
 
         for module in modules:
@@ -184,7 +202,7 @@ class PySideHelper:
         """
         Get a mapping of property/signal name to type.
         """
-        if not isinstance(typ, type) or not issubclass(typ, QtCore.QObject):
+        if not isinstance(typ, type) or not issubclass(typ, self.QtCore.QObject):
             return {}
 
         if typ.__bases__:
@@ -202,7 +220,7 @@ class PySideHelper:
         except AttributeError:
             return base_props
 
-        def getsig(prop: "QtCore.QMetaProperty") -> Tuple[str, str]:  # type: ignore[name-defined]
+        def getsig(prop: "QtCore.QMetaProperty") -> Tuple[str, str]:
             prop_name = decode(prop.name())
             c_type_name = cast(str, prop.typeName())
             maybe_type = {
@@ -236,8 +254,8 @@ class PySideHelper:
 
             return prop_name, type_name
 
-        def decode(x: "QtCore.QByteArray" | str | bytes) -> str:  # type: ignore[name-defined]
-            if isinstance(x, QtCore.QByteArray):
+        def decode(x: "QtCore.QByteArray" | str | bytes) -> str:
+            if isinstance(x, self.QtCore.QByteArray):
                 return bytes(x).decode()
             elif isinstance(x, bytes):
                 return x.decode()
@@ -252,7 +270,7 @@ class PySideHelper:
         signals = [
             decode(meth.name())
             for meth in methods
-            if meth.methodType() == QtCore.QMetaMethod.MethodType.Signal
+            if meth.methodType() == self.QtCore.QMetaMethod.MethodType.Signal
         ]
 
         result.update((name, "typing.Callable") for name in signals)
@@ -280,22 +298,43 @@ class PySideHelper:
                         for name in sorted(missing)
                     ]
 
+    def set_pyside_version(self, version: int) -> None:
+        import importlib
+
+        self._pyside_package = f"PySide{version}"
+        self._shiboken_package = f"shiboken{version}"
+
+        self.QtCore = importlib.import_module(f"{self._pyside_package}.QtCore")
+        self.QtWidgets = importlib.import_module(f"{self._pyside_package}.QtWidgets")
+
+    @cached_property
+    def pyside_package(self) -> str:
+        if self._pyside_package is None:
+            raise RuntimeError("Must call set_pyside_version before generating stubs")
+        return self._pyside_package
+
+    @cached_property
+    def shiboken_package(self) -> str:
+        if self._shiboken_package is None:
+            raise RuntimeError("Must call set_pyside_version before generating stubs")
+        return self._shiboken_package
+
     @cached_property
     def new_members(self) -> dict[str, list[tuple[str, object]]]:
         return {
             # can use any method as a stand-in.  signatures will come from _signature_overrides
             "QByteArray": [
-                ("__bytes__", QtCore.QByteArray.__len__),
+                ("__bytes__", self.QtCore.QByteArray.__len__),
             ],
             "QDialog": [
                 # this method does not exist at the class-level, and only exists once an instance
                 # is created.
-                ("exec", QtWidgets.QDialog.exec_),
+                ("exec", self.QtWidgets.QDialog.exec_),
             ],
         }
 
     def add_version_info(self) -> None:
-        init = Path("stubs").joinpath("PySide2", "__init__.pyi")
+        init = Path("stubs").joinpath(self.pyside_package, "__init__.pyi")
         init.write_text(
             init.read_text()
             + "__version__: str\n__version_info__: tuple[int, int, float, str, str]\n"
@@ -305,7 +344,9 @@ class PySideHelper:
 class PySideSignatureGenerator(AdvancedSignatureGenerator):
     @cached_property
     def sig_matcher(self) -> AdvancedSigMatcher:  # type: ignore[override]
-        return AdvancedSigMatcher(
+        PYSIDE = helper.pyside_package
+
+        matcher = AdvancedSigMatcher(
             # Full signature replacements.
             # The class name can be "*", in which case it will match any class
             signature_overrides={
@@ -320,64 +361,17 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                 ],
                 "*.Signal.__getitem__": "(self, index) -> SignalInstance",
                 "*.SignalInstance.__getitem__": "(self, index) -> SignalInstance",
-                # * Fix slot arg of `SignalInstance.connect()` to be `typing.Callable` instead of `object`
-                # * Fix type arg of `SignalInstance.connect()` to be `QtCore.Qt.ConnectionType` instead of `type | None`
-                "*.SignalInstance.connect": f"(self, slot: typing.Callable, type: PySide2.QtCore.Qt.ConnectionType = ...) -> bool",
-                "*.SignalInstance.disconnect": "(self, slot: typing.Union[typing.Callable,None] = ...) -> None",
-                "*.QObject.disconnect": [
-                    f"(cls, arg__1: PySide2.QtCore.QObject, arg__2: str = ..., arg__3: typing.Callable = ...) -> bool",
-                    f"(cls, arg__1: PySide2.QtCore.QMetaObject.Connection) -> bool",
-                    f"(cls, sender: PySide2.QtCore.QObject, signal: PySide2.QtCore.QMetaMethod, receiver: PySide2.QtCore.QObject = ..., member: PySide2.QtCore.QMetaMethod = ...) -> bool",
-                ],
-                "*.QWidget.setParent": f"(self, parent: typing.Union[PySide2.QtCore.QObject,None], f: PySide2.QtCore.Qt.WindowFlags = ...) -> None",
-                # * Correct numerous annotations from `bytes` to `str`
-                "*.QObject.setProperty": "(self, name: str, value: typing.Any) -> bool",
-                "*.QObject.property": "(self, name: str) -> typing.Any",
-                "*.QState.assignProperty": "(self, object: QObject, name: str, value: typing.Any) -> None",
-                # ("*", 'propertyName'):
-                #     '(self) -> str',
-                "*.QCoreApplication.translate": "(cls, context: str, key: str, disambiguation: typing.Union[str,NoneType] = ..., n: int = ...) -> str",
                 # * Fix `QTreeWidgetItemIterator.__iter__()` to iterate over `QTreeWidgetItemIterator`
-                # Add result type
                 "*.QTreeWidgetItemIterator.__iter__": "(self) -> typing.Iterator[QTreeWidgetItemIterator]",
                 "*.QTreeWidgetItemIterator.__next__": "(self) -> QTreeWidgetItemIterator",
-                # * Make result optional
-                f"*.QLayout.itemAt": f"(self, index: int) -> typing.Optional[PySide2.QtWidgets.QLayoutItem]",
-                "*.QLayout.takeAt": f"(self, index: int) -> typing.Optional[PySide2.QtWidgets.QLayoutItem]",
-                # * Fix QPolygon special methods
-                # first and third overloads should return QPolygon
-                "*.QPolygon.__lshift__": [
-                    f"(self, l: list[PySide2.QtCore.QPoint]) -> PySide2.QtGui.QPolygon",
-                    f"(self, stream: PySide2.QtCore.QDataStream) -> PySide2.QtCore.QDataStream",
-                    f"(self, t: PySide2.QtCore.QPoint) -> PySide2.QtGui.QPolygon",
-                ],
-                # should return QPolygon
-                "*.QPolygon.__iadd__": f"(self, t: PySide2.QtCore.QPoint) -> PySide2.QtGui.QPolygon",
                 # * Fix `QByteArray(b'foo')[0]` to return `bytes`
                 # missing index and return.
                 "*.QByteArray.__getitem__": "(self, index: int) -> bytes",
                 # * Fix `QByteArray.__iter__()` to iterate over `bytes`
                 # * Fix support for `bytes(QByteArray(b'foo'))`
                 "*.QByteArray.__bytes__": "(self) -> bytes",
-                # Fix other flags:
-                "*.QSortFilterProxyModel.filterRole": f"(self) -> PySide2.QtCore.Qt.ItemDataRole",
-                "*.QStandardItem.type": f"(self) -> PySide2.QtGui.QStandardItem.ItemType",
-                "*.QTableWidgetItem.setTextAlignment": f"(self, alignment: PySide2.QtCore.Qt.Alignment) -> None",
-                "*.QFrame.setFrameStyle": f"(self, arg__1: typing.Union[PySide2.QtWidgets.QFrame.Shape, PySide2.QtWidgets.QFrame.Shadow, typing.SupportsInt]) -> None",
-                # in PySide2 these take int, and in PySide6 it takes Weight, but both seem valid
-                "*.QFont.setWeight": f"(self, arg__1: typing.Union[int, PySide2.QtGui.QFont.Weight]) -> None",
-                "*.QTextEdit.setFontWeight": f"(self, w: typing.Union[int, PySide2.QtGui.QFont.Weight]) -> None",
-                # ('QFont', 'weight': pyside('(self) -> PySide2.QtGui.QFont.Weight'),  # fixed in PySide6
                 # * Fix return type for `QApplication.instance()` and `QGuiApplication.instance()` :
                 "*.QCoreApplication.instance": "(cls: type[typing_extensions.Self]) -> typing_extensions.Self",
-                # * Fix return type for `QObject.findChild()` and `QObject.findChildren()` :
-                "*.QObject.findChild": "(self, arg__1: type[T], arg__2: str = ...) -> T",
-                "*.QObject.findChildren": [
-                    "(self, arg__1: type[T], arg__2: QRegExp = ...) -> list[T]",
-                    "(self, arg__1: type[T], arg__2: QRegularExpression = ...) -> list[T]",
-                    "(self, arg__1: type[T], arg__2: str = ...) -> list[T]",
-                ],
-                "*.qVersion": "() -> str",
                 # FIXME: this can be handled by merging with the default sig
                 # signatures for these special methods include many inaccurate overloads
                 "*.__ne__": "(self, other: object) -> bool",
@@ -391,18 +385,18 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
             },
             # Types that have implicit alternatives.
             implicit_arg_types={
-                f"PySide2.QtGui.QKeySequence": ["str"],
-                f"PySide2.QtGui.QColor": [f"PySide2.QtCore.Qt.GlobalColor", "int"],
-                f"PySide2.QtCore.QByteArray": ["bytes"],
-                f"PySide2.QtGui.QBrush": [
-                    f"PySide2.QtGui.QColor",
-                    f"PySide2.QtCore.Qt.GlobalColor",
-                    f"PySide2.QtGui.QLinearGradient",
+                f"{PYSIDE}.QtGui.QKeySequence": ["str"],
+                f"{PYSIDE}.QtGui.QColor": [f"{PYSIDE}.QtCore.Qt.GlobalColor", "int"],
+                f"{PYSIDE}.QtCore.QByteArray": ["bytes"],
+                f"{PYSIDE}.QtGui.QBrush": [
+                    f"{PYSIDE}.QtGui.QColor",
+                    f"{PYSIDE}.QtCore.Qt.GlobalColor",
+                    f"{PYSIDE}.QtGui.QLinearGradient",
                 ],
-                f"PySide2.QtGui.QCursor": [f"PySide2.QtCore.Qt.CursorShape"],
-                f"PySide2.QtCore.QEasingCurve": [f"PySide2.QtCore.QEasingCurve.Type"],
-                f"PySide2.QtCore.QDate": ["datetime.date"],
-                f"PySide2.QtCore.QDateTime": ["datetime.datetime"],
+                f"{PYSIDE}.QtGui.QCursor": [f"{PYSIDE}.QtCore.Qt.CursorShape"],
+                f"{PYSIDE}.QtCore.QEasingCurve": [f"{PYSIDE}.QtCore.QEasingCurve.Type"],
+                f"{PYSIDE}.QtCore.QDate": ["datetime.date"],
+                f"{PYSIDE}.QtCore.QDateTime": ["datetime.datetime"],
             },
             # Override argument types
             arg_type_overrides={
@@ -410,7 +404,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                 ("*", "flags", "int"): "typing.SupportsInt",
                 ("*", "weight", "int"): "typing.SupportsInt",
                 ("*", "format", "typing.Union[bytes,NoneType]"): "typing.Optional[str]",
-                ("*", "role", "int"): f"PySide2.QtCore.Qt.ItemDataRole",
+                ("*", "role", "int"): f"{PYSIDE}.QtCore.Qt.ItemDataRole",
                 ("*.addAction", "*", "object"): "typing.Callable[[], typing.Any]",
                 ("*.Slot.__init__", "result", "*"): "type",
                 # * Fix arguments that accept `QModelIndex` which were typed as `int` in many places
@@ -419,22 +413,56 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                     "*.QAbstractItemModel.mimeData",
                     "indexes",
                     "*",
-                ): f"list[PySide2.QtCore.QModelIndex]",
+                ): f"list[{PYSIDE}.QtCore.QModelIndex]",
                 (
                     "*.QStandardItemModel.mimeData",
                     "indexes",
                     "*",
-                ): f"list[PySide2.QtCore.QModelIndex]",
+                ): f"list[{PYSIDE}.QtCore.QModelIndex]",
                 (
                     "*.QAbstractItemModel.changePersistentIndexList",
                     "from_",
                     "*",
-                ): f"list[PySide2.QtCore.QModelIndex]",
+                ): f"list[{PYSIDE}.QtCore.QModelIndex]",
                 (
                     "*.QAbstractItemModel.changePersistentIndexList",
                     "to",
                     "*",
-                ): f"list[PySide2.QtCore.QModelIndex]",
+                ): f"list[{PYSIDE}.QtCore.QModelIndex]",
+                # * Fix slot arg of `SignalInstance.connect()` to be `typing.Callable` instead of `object`
+                (
+                    "*.QtCore.SignalInstance.connect",
+                    "slot",
+                    "*",
+                ): "typing.Callable",
+                (
+                    "*.QtCore.SignalInstance.disconnect",
+                    "slot",
+                    "*",
+                ): "typing.Callable | None",
+                #
+                (
+                    "PySide6.QtCore.QObject.findChild*",
+                    "type",
+                    "*",
+                ): "type[T]",
+                # Fix QWidget.setParent to allow passing QObject
+                (
+                    "*.QtWidgets.QWidget.setParent",
+                    "parent",
+                    "*",
+                ): f"{PYSIDE}.QtCore.QObject | None",
+                # Allow int for font weight
+                (
+                    "*.QFont.setWeight",
+                    "weight",
+                    "*",
+                ): f"int | {PYSIDE}.QtGui.QFont.Weight",
+                (
+                    "*.QTextEdit.setFontWeight",
+                    "w",
+                    "*",
+                ): f"int | {PYSIDE}.QtGui.QFont.Weight",
             },
             result_type_overrides={
                 ("*.toTuple", "object"): "tuple",
@@ -442,25 +470,51 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                 # * Replace `object` with `typing.Any` in return types
                 ("*", "object"): "typing.Any",
                 # * Fix arguments that accept `QModelIndex` which were typed as `int` in many places
-                ("*.selectedIndexes", "*"): f"list[PySide2.QtCore.QModelIndex]",
+                ("*.selectedIndexes", "*"): f"list[{PYSIDE}.QtCore.QModelIndex]",
                 (
                     "*.QItemSelectionModel.selectedColumns",
                     "*",
-                ): f"list[PySide2.QtCore.QModelIndex]",
+                ): f"list[{PYSIDE}.QtCore.QModelIndex]",
                 (
                     "*.QItemSelectionModel.selectedRows",
                     "*",
-                ): f"list[PySide2.QtCore.QModelIndex]",
-                ("*.QItemSelection.indexes", "*"): f"list[PySide2.QtCore.QModelIndex]",
+                ): f"list[{PYSIDE}.QtCore.QModelIndex]",
+                ("*.QItemSelection.indexes", "*"): f"list[{PYSIDE}.QtCore.QModelIndex]",
                 (
                     "*.QItemSelectionRange.indexes",
                     "*",
-                ): f"list[PySide2.QtCore.QModelIndex]",
+                ): f"list[{PYSIDE}.QtCore.QModelIndex]",
                 (
                     "*.QAbstractItemModel.persistentIndexList",
                     "*",
-                ): f"list[PySide2.QtCore.QModelIndex]",
+                ): f"list[{PYSIDE}.QtCore.QModelIndex]",
                 ("*", "Self"): "typing_extensions.Self",
+                (
+                    "PySide6.QtCore.QObject.findChild",
+                    "*",
+                ): "T",  # PySide6-only
+                (
+                    "PySide6.QtCore.QObject.findChildren",
+                    "*",
+                ): "list[T]",  # (PySide6-only)
+                # * Make result optional
+                (
+                    "PySide2.QtWidgets.QLayout.itemAt",
+                    "*",
+                ): f"{PYSIDE}.QtWidgets.QLayoutItem | None",  # (PySide2-only)
+                (
+                    "*.QtWidgets.QLayout.takeAt",
+                    "*",
+                ): f"{PYSIDE}.QtWidgets.QLayoutItem | None",  # (PySide2 & PySide6)
+                # Fix flags
+                (
+                    "*.QSortFilterProxyModel.filterRole",
+                    "*",
+                ): f"{PYSIDE}.QtCore.Qt.ItemDataRole",
+                (
+                    "*.QStandardItem.type",
+                    "*",
+                ): f"{PYSIDE}.QtGui.QStandardItem.ItemType",
             },
             # Find and replace argument names
             # arg_name_replacements = {
@@ -484,10 +538,10 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                 ("*.QLabel.setPixmap", "arg__1", "*"): Optionality(
                     accepts_none=True, has_default=False
                 ),
-                ("*", "parent", f"PySide2.QtWidgets.QWidget"): Optionality(
+                ("*", "parent", f"{PYSIDE}.QtWidgets.QWidget"): Optionality(
                     accepts_none=True, has_default=False
                 ),
-                ("*", "parent", f"PySide2.QtCore.QObject"): Optionality(
+                ("*", "parent", f"{PYSIDE}.QtCore.QObject"): Optionality(
                     accepts_none=True, has_default=False
                 ),
                 ("*.QInputDialog.getText", "echo", "*"): Optionality(
@@ -498,13 +552,77 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
             new_overloads={
                 # * Add `QSpacerItem.__init__/changeSize` overloads that use alternate names: `hData`->`hPolicy`, `vData`->`vPolicy`
                 "*.QSpacerItem.__init__": [
-                    f"(self, w:int, h:int, hPolicy:PySide2.QtWidgets.QSizePolicy.Policy=..., vPolicy:PySide2.QtWidgets.QSizePolicy.Policy=...) -> None"
+                    f"(self, w:int, h:int, hPolicy:{PYSIDE}.QtWidgets.QSizePolicy.Policy=..., vPolicy:{PYSIDE}.QtWidgets.QSizePolicy.Policy=...) -> None"
                 ],
                 "*.QSpacerItem.changeSize": [
-                    f"(self, w:int, h:int, hPolicy:PySide2.QtWidgets.QSizePolicy.Policy=..., vPolicy:PySide2.QtWidgets.QSizePolicy.Policy=...) -> None"
+                    f"(self, w:int, h:int, hPolicy:{PYSIDE}.QtWidgets.QSizePolicy.Policy=..., vPolicy:{PYSIDE}.QtWidgets.QSizePolicy.Policy=...) -> None"
                 ],
             },
         )
+        if PYSIDE == "PySide2":
+            matcher.signature_overrides.update(
+                {
+                    # * Fix passing QOjbect to QWidget.setParent
+                    # (PySide6 fix is in arg_type_overrides)
+                    "PySide2.QtWidgets.QWidget.setParent": f"(self, parent: typing.Union[{PYSIDE}.QtCore.QObject,None], f: {PYSIDE}.QtCore.Qt.WindowFlags = ...) -> None",
+                    # * Fix slot arg of `SignalInstance.connect()` to be `typing.Callable` instead of `object`
+                    # * Fix type arg of `SignalInstance.connect()` to be `QtCore.Qt.ConnectionType` instead of `type | None`
+                    # (PySide6 fix is in arg_type_overrides)
+                    "PySide2.QtCore.SignalInstance.connect": f"(self, slot: typing.Callable, type: {PYSIDE}.QtCore.Qt.ConnectionType = ...) -> bool",
+                    "PySide2.QtCore.SignalInstance.disconnect": "(self, slot: typing.Union[typing.Callable,None] = ...) -> None",
+                    "PySide2.QtCore.QObject.disconnect": [
+                        f"(cls, arg__1: {PYSIDE}.QtCore.QObject, arg__2: str = ..., arg__3: typing.Callable = ...) -> bool",
+                        f"(cls, arg__1: {PYSIDE}.QtCore.QMetaObject.Connection) -> bool",
+                        f"(cls, sender: {PYSIDE}.QtCore.QObject, signal: {PYSIDE}.QtCore.QMetaMethod, receiver: {PYSIDE}.QtCore.QObject = ..., member: {PYSIDE}.QtCore.QMetaMethod = ...) -> bool",
+                    ],
+                    # * Fix QPolygon special methods
+                    # first and third overloads should return QPolygon
+                    "PySide2.QtGui.QPolygon.__lshift__": [
+                        f"(self, l: list[{PYSIDE}.QtCore.QPoint]) -> {PYSIDE}.QtGui.QPolygon",
+                        f"(self, stream: {PYSIDE}.QtCore.QDataStream) -> {PYSIDE}.QtCore.QDataStream",
+                        f"(self, t: {PYSIDE}.QtCore.QPoint) -> {PYSIDE}.QtGui.QPolygon",
+                    ],
+                    # should return QPolygon
+                    # (PySide2-only.  there is not an __iadd__ in PySide6)
+                    "PySide2.QtGui.QPolygon.__iadd__": f"(self, t: {PYSIDE}.QtCore.QPoint) -> {PYSIDE}.QtGui.QPolygon",
+                    # * Correct numerous annotations from `bytes` to `str`
+                    "PySide2.QtCore.QObject.setProperty": "(self, name: str, value: typing.Any) -> bool",
+                    "PySide2.QtCore.QObject.property": "(self, name: str) -> typing.Any",
+                    "PySide2.QtCore.QState.assignProperty": "(self, object: QObject, name: str, value: typing.Any) -> None",
+                    "PySide2.QtCore.QCoreApplication.translate": "(cls, context: str, key: str, disambiguation: typing.Union[str,NoneType] = ..., n: int = ...) -> str",
+                    # Fix other flags:
+                    "*.QTableWidgetItem.setTextAlignment": f"(self, alignment: {PYSIDE}.QtCore.Qt.Alignment) -> None",
+                    "*.QFrame.setFrameStyle": f"(self, arg__1: typing.Union[{PYSIDE}.QtWidgets.QFrame.Shape, {PYSIDE}.QtWidgets.QFrame.Shadow, typing.SupportsInt]) -> None",
+                    # in PySide2 these take int, and in PySide6 it takes Weight, but both seem valid
+                    # (PySide6 fix is in arg_type_overrides)
+                    "*.QFont.setWeight": f"(self, arg__1: typing.Union[int, {PYSIDE}.QtGui.QFont.Weight]) -> None",
+                    # ('QFont', 'weight': pyside('(self) -> {PYSIDE}.QtGui.QFont.Weight'),  # fixed in PySide6
+                    # * Fix return type for `QObject.findChild()` and `QObject.findChildren()` :
+                    "PySide2.QtCore.QObject.findChild": "(self, arg__1: type[T], arg__2: str) -> T",
+                    "PySide2.QtCore.QObject.findChildren": [
+                        "(self, arg__1: type[T], arg__2: QRegExp) -> list[T]",
+                        "(self, arg__1: type[T], arg__2: QRegularExpression) -> list[T]",
+                        "(self, arg__1: type[T], arg__2: str = ...) -> list[T]",
+                    ],
+                    "*.qVersion": "() -> str",
+                }
+            )
+        if helper.pyside_package == "PySide6":
+            matcher.arg_type_overrides.update(
+                {
+                    (
+                        "PySide6.QtCore.QSequentialAnimationGroup.__init__",
+                        "currentAnimation",
+                        "*",
+                    ): "PySide6.QtCore.QAbstractAnimation | None",
+                    (
+                        "PySide6.QtMultimedia.QMediaCaptureSession.__init__",
+                        "camera",
+                        "*",
+                    ): "PySide6.QtMultimedia.QCamera | None",
+                }
+            )
+        return matcher
 
     # Special methods for flag enums.
     @cached_property
@@ -528,6 +646,8 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                 "__rsub__": "(self, other: typing.SupportsInt) -> {}",
                 "__invert__": "(self) -> {}",
             }
+            if helper.pyside_package == "PySide2"
+            else {}
         )
 
     # FIXME: implement?
@@ -551,7 +671,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
         )
 
     def get_signature_str(self, ctx: FunctionContext) -> str | list[str] | None:
-        if self._is_flag_type(ctx):
+        if helper.pyside_package == "PySide2" and self._is_flag_type(ctx):
             assert ctx.class_info is not None
             typ = ctx.class_info.cls
             docstr_override = self.flag_overrides[ctx.name]
@@ -572,7 +692,9 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
             return
 
         arg_type = arg.type.replace(" ", "")
-        arg_type = re.sub(r"\btyping\.Sequence\b", "typing.Iterable", arg_type)
+        arg_type = re.sub(
+            r"\b(?:typing|collections[.]abc)\.Sequence\b", "typing.Iterable", arg_type
+        )
         arg.type = arg_type
 
         # if key in self.arg_name_replacements:
@@ -623,6 +745,15 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
             if sig not in new_sigs:
                 new_sigs.append(sig)
         return super().process_sigs(ctx, new_sigs)
+
+    def get_function_sig(
+        self, default_sig: FunctionSig, ctx: FunctionContext
+    ) -> list[FunctionSig] | None:
+        if ctx.docstring:
+            # some PySide sigs have type vars with ~ in their name. Remove it so that it can
+            # be successfully parsed.
+            ctx.docstring = ctx.docstring.replace("~", "")
+        return super().get_function_sig(default_sig, ctx)
 
 
 class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
@@ -680,7 +811,7 @@ class {overload_class_name}:
                 child = cast(type, child)
 
                 # populate caches
-                if helper.is_flag_item(child):
+                if helper.pyside_package == "PySide2" and helper.is_flag_item(child):
                     helper.get_group_from_flag_item(child)
                 elif helper.is_flag(child) or helper.is_flag_group(child):
                     helper.record_flag(child)
@@ -718,12 +849,54 @@ class {overload_class_name}:
         return super().is_method(class_info, name, obj)
 
     def strip_or_import(self, type_name: str) -> str:
-        type_name = type_name.replace("Shiboken.", f"shiboken2.")
+        type_name = type_name.replace("Shiboken.", f"{helper.shiboken_package}.")
         stripped_type = super().strip_or_import(type_name)
         return stripped_type
 
+    def _get_members_base(self, obj: object) -> list[tuple[str, Any]]:
+        if isinstance(obj, types.ModuleType) and getattr(obj, "__name__", None) not in [
+            "PySide6.QtNfc"
+        ]:
+            # It's unclear why (possibly related to collecting modules via subprocesses) but
+            # when we collect members there are many modules which have a nearly empty __dict__
+            # so we use `dir` which is reliable.
+            # we don't want to use dir on classes, because it collects inherited members.
+            obj_dict = dir(obj)
+        else:
+            obj_dict = list(getattr(obj, "__dict__"))  # noqa: B009
+
+        results = []
+        for name in sorted(obj_dict):
+            if self.is_skipped_attribute(name):
+                continue
+            # Try to get the value via getattr
+            try:
+                value = getattr(obj, name)
+            except AttributeError:
+                continue
+            else:
+                if (
+                    isinstance(obj, types.ModuleType)
+                    and hasattr(value, "__module__")
+                    and (
+                        value.__module__ != obj.__name__
+                        or "." in getattr(value, "__qualname__", "")
+                    )
+                ):
+                    # if the object that we're collecting members from is a module, and the
+                    # member is defined in another module, OR the class is a nested class that
+                    # somehow found its way into the module namespace then skip it.
+                    # The latter case happened with the move to PySide6 (see
+                    # QtCore.QDirListing.DirEntry)
+                    continue
+                results.append((name, value))
+        return results
+
     def get_members(self, obj: object) -> list[tuple[str, Any]]:
-        members = super().get_members(obj)
+        if helper.pyside_package == "PySide6":
+            members = self._get_members_base(obj)
+        else:
+            members = super().get_members(obj)
         members = [
             x for x in members if not self._is_skipped_pyside_attribute(x[0], x[1])
         ]
@@ -738,6 +911,13 @@ class {overload_class_name}:
 T = typing.TypeVar('T')
 P = typing.ParamSpec('P')\n"""
 
+        if helper.pyside_package == "PySide6":
+            # something changed that makes this required now.  could be new behavior of stubgen.
+            boilerplate = (
+                "from typing import Any, Dict, List, Optional, OrderedDict, Set, Tuple, Union\n"
+                + boilerplate
+            )
+
         for custom_overload in self.custom_overloads:
             boilerplate += custom_overload
 
@@ -745,7 +925,11 @@ P = typing.ParamSpec('P')\n"""
 
     def output(self) -> str:
         output = super().output()
-        if self.module_name == f"shiboken2.shiboken2":
+        if helper.pyside_package == "PySide6":
+            shiboken_module = f"{helper.shiboken_package}.Shiboken"
+        else:
+            shiboken_module = f"{helper.shiboken_package}.{helper.shiboken_package}"
+        if self.module_name == shiboken_module:
             output += "\nclass Object: ...\n"
         return output
 
@@ -856,8 +1040,10 @@ helper = PySideHelper()
 
 
 if __name__ == "__main__":
+    helper.set_pyside_version(2)
+
     # in order to create and inspect object properties we must create an app
-    app = QtWidgets.QApplication()
+    app = helper.QtWidgets.QApplication()
 
     # from stubgenlib.moduleinspect import patch
     #
@@ -866,8 +1052,8 @@ if __name__ == "__main__":
 
     mypy.stubgen.main(
         [
-            f"-p=shiboken2",
-            f"-p=PySide2",
+            f"-p={helper.shiboken_package}",
+            f"-p={helper.pyside_package}",
             "--include-private",
             "-o=stubs",
         ]

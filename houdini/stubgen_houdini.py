@@ -444,27 +444,52 @@ class ASTStubGenerator(mypy.stubgen.ASTStubGenerator):
             class_name = self._current_class.name
             missing_definitions = MISSING_DEFINITIONS.get(class_name)
             if missing_definitions:
-                self.add(textwrap.indent("\n# Missing methods added by stubgen\n", self._indent))
+                self.add(
+                    textwrap.indent(
+                        "\n# Missing methods added by stubgen\n", self._indent
+                    )
+                )
                 for missing_definition in missing_definitions:
-                    self.add(textwrap.indent(f"{missing_definition}: ...\n", self._indent))
+                    self.add(
+                        textwrap.indent(f"{missing_definition}: ...\n", self._indent)
+                    )
 
             enum_names = self.get_enums_from_docstring(self._current_class.docstring)
             enum_names.update(ADDITIONAL_ENUM_NAMES.get(class_name, {}))
             if enum_names:
                 # self.add(textwrap.indent("\n# Missing enums added by stubgen\n", self._indent))
                 for enum_name in sorted(enum_names):
-                    self.add(textwrap.indent(f"{enum_name}: EnumValue = ...\n", self._indent))
+                    self.add(
+                        textwrap.indent(f"{enum_name}: EnumValue = ...\n", self._indent)
+                    )
 
             missing_nested_classes = MISSING_CLASSES.get(class_name)
             if missing_nested_classes:
-                self.add(textwrap.indent("\n# Missing classes added by stubgen\n", self._indent))
-                for missing_class, missing_definitions in missing_nested_classes.items():
-                    self.add(textwrap.indent(f"\nclass {missing_class}:\n", self._indent))
+                self.add(
+                    textwrap.indent(
+                        "\n# Missing classes added by stubgen\n", self._indent
+                    )
+                )
+                for (
+                    missing_class,
+                    missing_definitions,
+                ) in missing_nested_classes.items():
+                    self.add(
+                        textwrap.indent(f"\nclass {missing_class}:\n", self._indent)
+                    )
                     method_indent = self._indent + " " * 4
-                    self.add(textwrap.indent(f"\"\"\"Class added by stubgen\"\"\"\n", method_indent))
+                    self.add(
+                        textwrap.indent(
+                            f'"""Class added by stubgen"""\n', method_indent
+                        )
+                    )
                     for missing_definition in missing_definitions:
                         tail = ": ..." if "->" in missing_definition else ""
-                        self.add(textwrap.indent(f"{missing_definition}{tail}\n", method_indent))
+                        self.add(
+                            textwrap.indent(
+                                f"{missing_definition}{tail}\n", method_indent
+                            )
+                        )
         super().dedent()
 
     def output(self) -> str:
@@ -472,20 +497,30 @@ class ASTStubGenerator(mypy.stubgen.ASTStubGenerator):
 
         root_missing_definitions = MISSING_DEFINITIONS.get(None)
         if root_missing_definitions:
-            self.add(textwrap.indent("\n# Missing functions added by stubgen\n", self._indent))
+            self.add(
+                textwrap.indent(
+                    "\n# Missing functions added by stubgen\n", self._indent
+                )
+            )
             for missing_definition in root_missing_definitions:
                 self.add(textwrap.indent(f"{missing_definition}: ...\n", self._indent))
 
         root_missing_classes = MISSING_CLASSES.get(None)
         if root_missing_classes:
-            self.add(textwrap.indent("\n# Missing classes added by stubgen\n", self._indent))
+            self.add(
+                textwrap.indent("\n# Missing classes added by stubgen\n", self._indent)
+            )
             for missing_class, missing_definitions in root_missing_classes.items():
                 self.add(textwrap.indent(f"\nclass {missing_class}:\n", self._indent))
                 method_indent = self._indent + " " * 4
-                self.add(textwrap.indent(f"\"\"\"Class added by stubgen\"\"\"\n", method_indent))
+                self.add(
+                    textwrap.indent(f'"""Class added by stubgen"""\n', method_indent)
+                )
                 for missing_definition in missing_definitions:
                     tail = ": ..." if "->" in missing_definition else ""
-                    self.add(textwrap.indent(f"{missing_definition}{tail}\n", method_indent))
+                    self.add(
+                        textwrap.indent(f"{missing_definition}{tail}\n", method_indent)
+                    )
 
         return super().output()
 
@@ -538,5 +573,5 @@ def main(outdir: str):
     # print(AnnotationFixer().transform('std.vector[str]'))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main(sys.argv[0])
