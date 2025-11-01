@@ -2,7 +2,7 @@ from __future__ import absolute_import, print_function
 
 import datetime
 import sys
-from typing import Any, ClassVar, List
+from typing import Any, ClassVar, List, TYPE_CHECKING
 
 import PySide2
 import pytest
@@ -53,7 +53,7 @@ def test_qmenu_failures() -> None:
     with pytest.raises(Exception):
         QtWidgets.QMenu.exec_(actions)  # type: ignore
 
-    if False:
+    if TYPE_CHECKING:
         # these cause python to crash
         with pytest.raises(Exception):
             QtWidgets.QMenu.exec_(pos)  # type: ignore
