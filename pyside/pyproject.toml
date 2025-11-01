@@ -1,6 +1,6 @@
 [project]
 name = "types-PySide2"
-version = "5.15.2.1.7"
+version = "5.15.2.1.8"
 
 readme = "README.md"
 authors = [{name="Chad Dombrova"}]
