@@ -583,8 +583,7 @@ def generate(session: nox.Session, lib: str) -> None:
             [interp, "-m", f"stubgen_{lib}", "./stubs"] + session.posargs, env=env
         )
     else:
-        # FIXME: implement a workflow around a standard interpreter for rez, pyside, etc
-        raise RuntimeError(f"Could not find {script} or .interpreter")
+        subprocess.check_output(["uv", "run", "--only-dev", f"./stubgen_{lib}.py"])
 
     add_stubs_suffix(pathlib.Path("stubs"))
     # this has to happen after the stubs are renamed, because before that, the previous state of the

@@ -51,3 +51,23 @@ packages = ["stubs/PySide2-stubs", "stubs/shiboken2-stubs"]
 # of the package do no include .py files.  Adding this ensures the .pth file
 # is written correctly
 dev-mode-dirs = ["stubs"]
+
+[tool.mypy]
+check_untyped_defs = true
+files = [
+    "stubgen_pyside.py",
+    "tests",
+]
+strict = true
+
+[[tool.mypy.overrides]]
+module = ["PySide2.*", "shiboken2.*"]
+disable_error_code = ["no-untyped-def", "type-arg"]
+
+[[tool.mypy.overrides]]
+module = ["conftest"]
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = ["pytest.*"]
+ignore_missing_imports = true
