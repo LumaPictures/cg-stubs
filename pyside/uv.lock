@@ -283,7 +283,7 @@ wheels = [
 
 [[package]]
 name = "types-pyside2"
-version = "5.15.2.1.7"
+version = "5.15.2.1.8"
 source = { editable = "." }
 
 [package.dev-dependencies]
