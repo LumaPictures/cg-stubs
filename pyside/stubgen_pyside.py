@@ -6,6 +6,7 @@ import inspect
 import pydoc
 import re
 import typing
+from collections import defaultdict
 from functools import cached_property, lru_cache
 from pathlib import Path
 from typing import (
@@ -15,6 +16,7 @@ from typing import (
     Optional,
     Tuple,
     cast,
+    TYPE_CHECKING
 )
 
 import mypy.stubgen
@@ -56,6 +58,7 @@ def get_type_fullname(typ: type) -> str:
 
 class PySideHelper:
     _flag_group_to_item: dict[str, str] = {}
+    _flag_item_short_name_to_type: defaultdict[str, set[str]] = defaultdict(set)
 
     def is_pyside_obj(self, typ: type) -> bool:
         return typ.__module__.split(".")[0] == "PySide2"
@@ -102,6 +105,12 @@ class PySideHelper:
             and typ.__bases__ == (object,)
         )
 
+    def record_flag(self, flag: type) -> None:
+        flag_full_name = get_type_fullname(flag)
+        self.__class__._flag_item_short_name_to_type[short_name(flag_full_name)].add(
+            get_type_fullname(flag)
+        )
+
     @cache
     def get_group_from_flag_item(self, item_type: type) -> type:
         group_type = type(item_type() | item_type())
@@ -120,6 +129,55 @@ class PySideHelper:
                 result = "typing.Union[{}, {}]".format(type_name, item_type_name)
                 return result
         return None
+
+    @cache
+    def guess_type_from_property(
+        self, parent_type_name: str, c_type_name: str, prop_name: str
+    ) -> str:
+        maybe_type_name = c_type_name.replace("::", ".").replace("*", "")
+
+        options = []
+        # search on the current class first
+        options.append(f"{parent_type_name}.{maybe_type_name}")
+        parts = parent_type_name.split(".")
+        parent_module = ".".join(parts[:2])
+        # next look in the parent module
+        options.append(f"{parent_module}.{maybe_type_name}")
+
+        # next look in key modules
+        # FIXME use known_modules list
+        modules = [
+            f"PySide2.QtCore",
+            f"PySide2.QtGui",
+            f"PySide2.QtWidgets",
+        ]
+
+        for module in modules:
+            if module == parent_module:
+                continue
+            options.append(f"{module}.{maybe_type_name}")
+
+        for search_name in options:
+            # check that it's real
+            if pydoc.locate(search_name) is not None:
+                return search_name
+
+        # finally, look in our collection of enums, but only if it's an unambiguous match
+        known_types = self._flag_item_short_name_to_type.get(maybe_type_name)
+        if known_types:
+            if len(known_types) == 1:
+                return list(known_types)[0]
+
+            for item in sorted(known_types):
+                if item.startswith(parent_module + "."):
+                    return item
+
+            print(f"{parent_type_name}.{prop_name}: more than one known match")
+
+        print(f"{parent_type_name}.{prop_name}: Could not determine type of property")
+        print("  {}".format(c_type_name))
+        print("  {}".format(maybe_type_name))
+        return "typing.Any"
 
     @cache
     def get_properties(self, typ: type) -> Mapping[str, str]:
@@ -144,52 +202,41 @@ class PySideHelper:
         except AttributeError:
             return base_props
 
-        def getsig(prop: "QtCore.QMetaProperty") -> Tuple[str, str]:
-            name = decode(prop.name())
-            fallback_type = prop.type()
-            # for some reason QtCore.Qt.GlobalColor is returned for many properties even though it's
-            # wrong
-            if fallback_type is QtCore.Qt.GlobalColor:
+        def getsig(prop: "QtCore.QMetaProperty") -> Tuple[str, str]:  # type: ignore[name-defined]
+            prop_name = decode(prop.name())
+            c_type_name = cast(str, prop.typeName())
+            maybe_type = {
+                "bool": "bool",
+                "int": "int",
+                "uint": "int",
+                "qlonglong": "int",
+                "QLibrary::LoadHints": "int",
+                "float": "float",
+                "double": "float",
+                "QString": "str",
+            }.get(c_type_name)
+            if maybe_type is not None:
+                return prop_name, maybe_type
+
+            # do a search based on what we know of the parent type and the C++ type name
+            type_name = self.guess_type_from_property(
+                typing._type_repr(typ), c_type_name, prop_name
+            )
+            if type_name == "typing.Any":
                 # see if the property has a method since the signature return value can be used to
                 # infer the property type.
-                func = getattr(obj, name, None)
+                # FIXME: it's unclear whether this approach should take higher priority than
+                #  guess_type_from_property.  It results in seemingly subtle differences for about
+                #  20 properties.  This seems super niche.
+                func = getattr(obj, prop_name, None)
                 if func is not None:
                     sig = getattr(func, "__signature__", None)
                     if isinstance(sig, inspect.Signature) and sig.return_annotation:
-                        return name, typing._type_repr(sig.return_annotation)
+                        return prop_name, typing._type_repr(sig.return_annotation)
 
-                if prop.isEnumType():
-                    c_type_name = cast(str, prop.typeName())
-                    maybe_type_name = c_type_name.replace("::", ".")
-                    if maybe_type_name.startswith("Qt."):
-                        maybe_type_name = (
-                            f"PySide2.QtCore." + maybe_type_name
-                        )
-                    # elif maybe_type_name.startswith('Qt'):
-                    #     maybe_type_name = f'PySide2.' + maybe_type_name
-                    else:
-                        maybe_type_name = typing._type_repr(typ) + "." + maybe_type_name
+            return prop_name, type_name
 
-                    # check that it's real
-                    if pydoc.locate(maybe_type_name) is None:
-                        # FIXME: this could be improved with a more exhaustive search. seems like there
-                        #  should be a better way.
-                        print(
-                            "{}.{}: Could not determine type of property".format(
-                                typing._type_repr(typ), name
-                            )
-                        )
-                        print("  {}".format(c_type_name))
-                        print("  {}".format(maybe_type_name))
-                        type_name = "typing.Any"
-                    else:
-                        type_name = maybe_type_name
-                else:
-                    type_name = "typing.Any"
-                return name, type_name
-            return name, typing._type_repr(fallback_type)
-
-        def decode(x: "QtCore.QByteArray" | str | bytes) -> str:
+        def decode(x: "QtCore.QByteArray" | str | bytes) -> str:  # type: ignore[name-defined]
             if isinstance(x, QtCore.QByteArray):
                 return bytes(x).decode()
             elif isinstance(x, bytes):
@@ -631,11 +678,12 @@ class {overload_class_name}:
                     child.__doc__ = ""
                 # add to the cache
                 child = cast(type, child)
-                helper.get_properties(child)
 
+                # populate caches
                 if helper.is_flag_item(child):
-                    # add to the cache
                     helper.get_group_from_flag_item(child)
+                elif helper.is_flag(child) or helper.is_flag_group(child):
+                    helper.record_flag(child)
 
                 self.walk_objects(child, seen)
 
