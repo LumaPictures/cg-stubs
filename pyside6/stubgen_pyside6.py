@@ -1,3 +1,4 @@
+import os
 import shutil
 import sys
 from pathlib import Path
@@ -47,3 +48,8 @@ if __name__ == "__main__":
         shiboken2_dir = pyside2_root.joinpath("stubs", "shiboken2-stubs")
         shiboken6_dir = pyside6_root.joinpath("stubs", "shiboken6")
         swap(shiboken6_dir, shiboken2_dir)
+
+    # As of PySide6 6.10.1, Qt teardown segfaults at interpreter exit (the
+    # QApplication destructor trips over undeleted QtWebEngine profiles).  All
+    # stubs have been written by this point, so skip interpreter finalization.
+    os._exit(0)

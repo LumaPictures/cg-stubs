@@ -3,23 +3,6 @@
 
 The most accurate type stubs for PySide! They have been tested using `mypy` on a code base with many thousands of lines of PySide code.
 
-## Comparison to other PySide stubs
-
-I tried a number of projects before deciding to create my own.  Here's my super-biased assessment:
-
-| Stub Project                                                         | Technique                                                                         | Rating   |
-|----------------------------------------------------------------------|-----------------------------------------------------------------------------------|----------|
-| Official stubs                                                       | Uses PySide's `generate_pyi` stub generator                                       | abysmal  |
-| [PySide2-Stubs-Gen](https://github.com/HareInWeed/PySide2-Stubs-Gen) | Uses a modified version of `generate_pyi`                                         | marginal |
-| [PySide2-stubs](https://pypi.org/project/PySide2-stubs/)             | Reprocesses official stubs using [libcst](https://libcst.readthedocs.io/en/latest/) | better   |
-| [types-PySide2](https://pypi.org/project/types-PySide2/)             | Uses mypy's [stubgen](https://mypy.readthedocs.io/en/stable/stubgen.html)         | best     |
-
-[PySide2-stubs](https://pypi.org/project/PySide2-stubs/) is pretty good, but it still produced hundreds of errors in our code base.
-I considered contributing new features to that project, but the approach of using an AST/CST parser to modify
-an upstream set of bad official stubs to make them good is convoluted and prone to errors from upstream changes.
-This project uses mypy's official `stubgen` tool to directly generate stubs, with a set of corrections applied.
-
-
 ## Features and fixes
 
 ### General fixes
@@ -32,7 +15,54 @@ This project uses mypy's official `stubgen` tool to directly generate stubs, wit
   * Fixed `Signal.emit()`
   * Fixed `Signal.connect()` return value to `bool` instead of `None`
   * Fixed `Object.disconnect()`
+* Made `Signal` and `SignalInstance` generic, so that signal arguments are type checked (see [Typed signals](#typed-signals))
 * Added all methods to flag classes: `__or__`, `__xor__`, ...
+
+### Typed signals
+
+`Signal` and `SignalInstance` are generic types, parametrized by one or more *signatures*, where
+each signature is a tuple of argument types: e.g. `Signal[tuple[int, str]]`, or
+`Signal[tuple[int, int], tuple[str, str]]` for a signal with multiple signatures.  This provides
+type safety in a few ways:
+
+* `SignalInstance.connect()` enforces that the callable is compatible with the arguments emitted by
+  the signal.  Qt allows connecting slots that accept fewer arguments than the signal emits, and
+  this is supported for up to the first three arguments.
+* Signals can be connected to other signals, and the receiving signal's arguments are checked the
+  same way as a slot's.
+* `SignalInstance.emit()` enforces the number and types of the arguments provided.
+* Signals with multiple signatures are checked against their default (first) signature.  Indexing,
+  e.g. `mysignal[str, str].connect(...)`, can be used to check against a specific signature: the
+  index is validated against the signal's first or last signature (with up to four arguments each).
+
+Signal attributes on native classes are populated with the requisite types in the stubs, and the
+types of custom signals are inferred from the arguments passed to the `Signal` constructor in
+common cases:
+
+```python
+class MyObject(QtCore.QObject):
+    signal1 = QtCore.Signal()                        # Signal[tuple[()]]
+    signal2 = QtCore.Signal(int)                     # Signal[tuple[int]]
+    signal3 = QtCore.Signal(int, str)                # Signal[tuple[int, str]]
+    signal4 = QtCore.Signal((int,), (str,))          # Signal[tuple[int], tuple[str]]
+    signal5 = QtCore.Signal((int, int), (str, str))  # Signal[tuple[int, int], tuple[str, str]]
+```
+
+Inference is supported for single-signature signals with up to four arguments, and for
+multi-signature signals with up to two signatures of up to two arguments each.  Other
+configurations must be annotated manually.  Note that the actual `Signal` and `SignalInstance`
+classes are not subscriptable at runtime, so manual annotations must be forward references
+(wrapped in quotes):
+
+```python
+    signal6: "QtCore.Signal[tuple[int, str, float, bool, bytes]]" = QtCore.Signal(
+        int, str, float, bool, bytes
+    )
+```
+
+In keeping with the convention that stubs should avoid false positives, signal usage that cannot
+be fully represented in the type system -- such as connecting or emitting through a non-default
+signature without indexing -- is allowed without error, even though it is not fully checked.
 
 ### Rule-based fixes
 
@@ -56,12 +86,6 @@ This project uses mypy's official `stubgen` tool to directly generate stubs, wit
   * `QBrush`: `QLinearGradient` and `QColor` (and by extension `Qt.GlobalColor`)
   * `QCursor`: `Qt.CursorShape`
   * `QEasingCurve`: `QEasingCurve.Type`
-* Corrected numerous annotations from `bytes/QByteArray` to `str`:
-  * `QObject.setProperty()`
-  * `QObject.property()`
-  * `QState.assignProperty()`
-  * `QCoreApplication.translate()`
-  * `format` args on all methods
 * Fixed `QTreeWidgetItemIterator.__iter__()` to return `Iterator[QTreeWidgetItemIterator]`
 * Added missing `QDialog.exec()` method
 * Fixed numerous methods which accept `None`:
@@ -118,4 +142,3 @@ tox
 
 * Build PySide6 stubs
 * Merge overloads where a `Union` would do instead of multiple overloads
-* Add type enforcement for signal types, to protect against incorrect callables provided to `connect()`
