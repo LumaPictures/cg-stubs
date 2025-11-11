@@ -355,12 +355,12 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                 "*.VolatileBool.set": "(self, a: object) -> None",
                 # * Add all signals and make all new-style signal patterns work.  e.g.
                 # `myobject.mysignal.connect(func) and `myobject.mysignal[type].connect(func)`
-                "*.Signal.__get__": [
-                    "(self, instance: None, owner: type[QObject]) -> Signal",
-                    "(self, instance: QObject, owner: type[QObject]) -> SignalInstance",
+                "PySide6.QtCore.Signal.__get__": [
+                    "(self, instance: None, owner: type[QObject]) -> Signal[*_SignalTypes]",
+                    "(self, instance: QObject, owner: type[QObject]) -> SignalInstance[*_SignalTypes]",
                 ],
-                "*.Signal.__getitem__": "(self, index) -> SignalInstance",
-                "*.SignalInstance.__getitem__": "(self, index) -> SignalInstance",
+                "PySide6.QtCore.Signal.__getitem__": "(self, index) -> SignalInstance[*_SignalTypes]",
+                "PySide6.QtCore.SignalInstance.__getitem__": "(self, index) -> SignalInstance[*_SignalTypes]",
                 # * Fix `QTreeWidgetItemIterator.__iter__()` to iterate over `QTreeWidgetItemIterator`
                 "*.QTreeWidgetItemIterator.__iter__": "(self) -> typing.Iterator[QTreeWidgetItemIterator]",
                 "*.QTreeWidgetItemIterator.__next__": "(self) -> QTreeWidgetItemIterator",
@@ -429,17 +429,22 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                     "to",
                     "*",
                 ): f"list[{PYSIDE}.QtCore.QModelIndex]",
-                # * Fix slot arg of `SignalInstance.connect()` to be `typing.Callable` instead of `object`
+                # * Fix slot arg of `SignalInstance.connect()` to support validating the types of the callable args
                 (
-                    "*.QtCore.SignalInstance.connect",
+                    "PySide6.QtCore.SignalInstance.connect",
                     "slot",
                     "*",
-                ): "typing.Callable",
+                ): "_SlotFunc[*_SignalTypes]",
                 (
-                    "*.QtCore.SignalInstance.disconnect",
+                    "PySide6.QtCore.SignalInstance.disconnect",
                     "slot",
                     "*",
-                ): "typing.Callable | None",
+                ): "_SlotFunc[*_SignalTypes] | None",
+                (
+                    "PySide6.QtCore.SignalInstance.emit",
+                    "*args",
+                    "Any",
+                ): "*_SignalTypes",
                 #
                 (
                     "PySide6.QtCore.QObject.findChild*",
@@ -565,6 +570,12 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                     # * Fix passing QOjbect to QWidget.setParent
                     # (PySide6 fix is in arg_type_overrides)
                     "PySide2.QtWidgets.QWidget.setParent": f"(self, parent: typing.Union[{PYSIDE}.QtCore.QObject,None], f: {PYSIDE}.QtCore.Qt.WindowFlags = ...) -> None",
+                    "PySide2.QtCore.Signal.__get__": [
+                        "(self, instance: None, owner: type[QObject]) -> Signal",
+                        "(self, instance: QObject, owner: type[QObject]) -> SignalInstance",
+                    ],
+                    "PySide2.QtCore.Signal.__getitem__": "(self, index) -> SignalInstance",
+                    "PySide2.QtCore.SignalInstance.__getitem__": "(self, index) -> SignalInstance",
                     # * Fix slot arg of `SignalInstance.connect()` to be `typing.Callable` instead of `object`
                     # * Fix type arg of `SignalInstance.connect()` to be `QtCore.Qt.ConnectionType` instead of `type | None`
                     # (PySide6 fix is in arg_type_overrides)
@@ -849,6 +860,9 @@ class {overload_class_name}:
         return super().is_method(class_info, name, obj)
 
     def strip_or_import(self, type_name: str) -> str:
+        if "*" in type_name:
+            # variadic type vars can't be parsed by parse_type_comment()
+            return type_name
         type_name = type_name.replace("Shiboken.", f"{helper.shiboken_package}.")
         stripped_type = super().strip_or_import(type_name)
         return stripped_type
@@ -910,6 +924,14 @@ class {overload_class_name}:
         boilerplate = """\
 T = typing.TypeVar('T')
 P = typing.ParamSpec('P')\n"""
+
+        if self.module_name == "PySide6.QtCore":
+            boilerplate += """
+_SignalTypes = typing.TypeVarTuple('_SignalTypes')
+
+class _SlotFunc(typing.Protocol[*_SignalTypes]):
+    def __call__(self, *args: *_SignalTypes) -> typing.Any:
+        pass\n\n"""
 
         if helper.pyside_package == "PySide6":
             # something changed that makes this required now.  could be new behavior of stubgen.
@@ -1031,6 +1053,14 @@ P = typing.ParamSpec('P')\n"""
         lines += super().format_func_def(methods, is_coroutine, decorators, docstring)
 
         return lines
+
+    def get_base_types(self, obj: type) -> list[str]:
+        if self.module_name == "PySide6.QtCore" and obj.__name__ in [
+            "Signal",
+            "SignalInstance",
+        ]:
+            return ["typing.Generic[*_SignalTypes]"]
+        return super().get_base_types(obj)
 
 
 mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[attr-defined]

@@ -3,6 +3,7 @@ import PySide6.QtGui
 import _typeshed
 import collections
 import enum
+import functools
 import shiboken6
 import typing
 import typing_extensions
@@ -39,6 +40,7 @@ class QPdfBookmarkModel(PySide6.QtCore.QAbstractItemModel):
         Page = 258
         Title = 256
         Zoom = 260
+        _missing_: typing.ClassVar[functools.partial] = ...  # type: ignore[misc]
     documentChanged: typing.ClassVar[PySide6.QtCore.Signal] = ...
     staticMetaObject: typing.ClassVar[PySide6.QtCore.QMetaObject] = ...
     @typing.overload

@@ -596,7 +596,7 @@ def generate(session: nox.Session, lib: str) -> None:
         ["uv", "run", "--no-dev", "mypy", "stubs"], text=True, capture_output=True
     )
     print(result.returncode)
-    print(result.stdout)
+    # print(result.stdout)
     subprocess.run(["uvx", "mypy-silent"], check=True, text=True, input=result.stdout)
 
 

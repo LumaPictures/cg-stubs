@@ -4,6 +4,7 @@ import collections
 import collections.abc
 import datetime
 import enum
+import functools
 import os
 import shiboken6
 import typing
@@ -12,6 +13,13 @@ import typing_extensions
 from typing import Any, Dict, List, Optional, OrderedDict, Set, Tuple, Union
 T = typing.TypeVar('T')
 P = typing.ParamSpec('P')
+
+_SignalTypes = typing.TypeVarTuple('_SignalTypes')
+
+class _SlotFunc(typing.Protocol[*_SignalTypes]):
+    def __call__(self, *args: *_SignalTypes) -> typing.Any:
+        pass
+
 class _add_QDate_isValid_overloads:
     """
     Overloads for QDate.isValid.
@@ -1718,6 +1726,7 @@ class QCborKnownTags(enum.IntEnum):
     UnixTime_t = 1
     Url = 32
     Uuid = 37
+    _missing_: typing.ClassVar[functools.partial] = ...  # type: ignore[misc]
 
 class QCborMap(shiboken6.Object):
     @typing.overload
@@ -1789,6 +1798,7 @@ class QCborSimpleType(enum.IntEnum):
     Null = 22
     True_ = 21
     Undefined = 23
+    _missing_: typing.ClassVar[functools.partial] = ...  # type: ignore[misc]
 
 class QCborStreamReader(shiboken6.Object):
     class StringResultCode(enum.Enum):
@@ -1944,7 +1954,8 @@ class QCborStringResultString(shiboken6.Object):
     def __init__(self, /) -> None: ...
     def __copy__(self, /) -> typing_extensions.Self: ...
 
-class QCborTag(enum.IntEnum): ...  # type: ignore[misc]
+class QCborTag(enum.IntEnum):  # type: ignore[misc]
+    _missing_: typing.ClassVar[functools.partial] = ...  # type: ignore[misc]
 
 class QCborValue(shiboken6.Object):
     class DiagnosticNotationOption(enum.Flag):
@@ -2500,6 +2511,7 @@ class QDataStream(QIODeviceBase):
         Qt_6_8 = 22
         Qt_6_9 = 22
         Qt_DefaultCompiledVersion = 23
+        _missing_: typing.ClassVar[functools.partial] = ...  # type: ignore[misc]
     @typing.overload
     def __init__(self, arg__1: QByteArray | bytes | bytearray | memoryview, flags: QIODeviceBase.OpenModeFlag, /) -> None: ...
     @typing.overload
@@ -3532,6 +3544,7 @@ class QEvent(shiboken6.Object):
         WindowUnblocked = 104
         ZOrderChange = 126
         ZeroTimerEvent = 154
+        _missing_: typing.ClassVar[functools.partial] = ...  # type: ignore[misc]
     @typing.overload
     def __init__(self, type: QEvent.Type, /) -> None: ...
     @typing.overload
@@ -4959,6 +4972,7 @@ class QLocale(shiboken6.Object):
 
     class FloatingPointPrecisionOption(enum.IntEnum):
         FloatingPointShortest = -128
+        _missing_: typing.ClassVar[functools.partial] = ...  # type: ignore[misc]
 
     class FormatType(enum.Enum):
         LongFormat = 0
@@ -6307,6 +6321,7 @@ class QMetaType(shiboken6.Object):
         User = 65536
         Void = 43
         VoidStar = 31
+        _missing_: typing.ClassVar[functools.partial] = ...  # type: ignore[misc]
 
     class TypeFlag(enum.Flag):
         IsConst = 8192
@@ -9095,7 +9110,7 @@ class QUuid(shiboken6.Object):
 class QVariantAnimation(QAbstractAnimation):
     staticMetaObject: typing.ClassVar[QMetaObject] = ...
     valueChanged: typing.ClassVar[Signal] = ...
-    def __init__(self, /, parent: QObject | None = ..., *, startValue: Optional[Any] = ..., endValue: Optional[Any] = ..., currentValue: Optional[Any] = ..., duration: int | None = ..., easingCurve: QEasingCurve | None = ..., currentLoop: int = ..., currentLoopChanged: typing.Callable = ..., currentTime: int = ..., destroyed: typing.Callable = ..., direction: QAbstractAnimation.Direction = ..., directionChanged: typing.Callable = ..., finished: typing.Callable = ..., loopCount: int = ..., objectName: str = ..., objectNameChanged: typing.Callable = ..., state: QAbstractAnimation.State = ..., stateChanged: typing.Callable = ..., valueChanged: typing.Callable = ...) -> None: ...
+    def __init__(self, /, parent: QObject | None = ..., *, startValue: typing.Any | None = ..., endValue: typing.Any | None = ..., currentValue: typing.Any | None = ..., duration: int | None = ..., easingCurve: QEasingCurve | None = ..., currentLoop: int = ..., currentLoopChanged: typing.Callable = ..., currentTime: int = ..., destroyed: typing.Callable = ..., direction: QAbstractAnimation.Direction = ..., directionChanged: typing.Callable = ..., finished: typing.Callable = ..., loopCount: int = ..., objectName: str = ..., objectNameChanged: typing.Callable = ..., state: QAbstractAnimation.State = ..., stateChanged: typing.Callable = ..., valueChanged: typing.Callable = ...) -> None: ...
     def currentValue(self, /) -> Any: ...
     def duration(self, /) -> int: ...
     def easingCurve(self, /) -> QEasingCurve: ...
@@ -9790,6 +9805,7 @@ class Qt(shiboken6.Object):
         SwipeGesture = 5
         TapAndHoldGesture = 2
         TapGesture = 1
+        _missing_: typing.ClassVar[functools.partial] = ...  # type: ignore[misc]
 
     class GlobalColor(enum.Enum):
         black = 2
@@ -9919,6 +9935,7 @@ class Qt(shiboken6.Object):
         UserRole = 256
         WhatsThisPropertyRole = 31
         WhatsThisRole = 5
+        _missing_: typing.ClassVar[functools.partial] = ...  # type: ignore[misc]
 
     class ItemFlag(enum.Flag):
         ItemIsAutoTristate = 64
@@ -10414,6 +10431,7 @@ class Qt(shiboken6.Object):
         Key_unknown = 33554431
         Key_ydiaeresis = 255
         Key_yen = 165
+        _missing_: typing.ClassVar[functools.partial] = ...  # type: ignore[misc]
 
     class KeyboardModifier(enum.Flag):
         AltModifier = 134217728
@@ -10425,9 +10443,7 @@ class Qt(shiboken6.Object):
         NoModifier = 0
         ShiftModifier = 33554432
         __add__: typing.ClassVar[typing.Callable] = ...
-        __or__: typing.ClassVar[typing.Callable] = ...
         __radd__: typing.ClassVar[typing.Callable] = ...
-        __ror__: typing.ClassVar[typing.Callable] = ...
 
     class LayoutDirection(enum.Enum):
         LayoutDirectionAuto = 2
@@ -10458,9 +10474,7 @@ class Qt(shiboken6.Object):
         MODIFIER_MASK = 4261412864
         SHIFT = 33554432
         __add__: typing.ClassVar[typing.Callable] = ...
-        __or__: typing.ClassVar[typing.Callable] = ...
         __radd__: typing.ClassVar[typing.Callable] = ...
-        __ror__: typing.ClassVar[typing.Callable] = ...
 
     class MouseButton(enum.Flag):
         AllButtons = 134217727
@@ -10632,6 +10646,7 @@ class Qt(shiboken6.Object):
         TextSingleLine = 256
         TextWordWrap = 4096
         TextWrapAnywhere = 8192
+        _iter_member_: typing.ClassVar[method] = ...  # type: ignore[misc]
 
     class TextFormat(enum.Enum):
         AutoText = 2
@@ -10944,24 +10959,25 @@ class QtMsgType(enum.IntEnum):
     QtInfoMsg = 4
     QtSystemMsg = 2
     QtWarningMsg = 1
+    _missing_: typing.ClassVar[functools.partial] = ...  # type: ignore[misc]
 
-class Signal:
+class Signal(typing.Generic[*_SignalTypes]):
     def __init__(self, /, *types: type, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...
     def __call__(self, *args, **kwargs): ...
     @typing.overload
-    def __get__(self, instance: None, owner: type[QObject]) -> Signal: ...
+    def __get__(self, instance: None, owner: type[QObject]) -> Signal[*_SignalTypes]: ...
     @typing.overload
-    def __get__(self, instance: QObject, owner: type[QObject]) -> SignalInstance: ...
-    def __getitem__(self, index) -> SignalInstance: ...
+    def __get__(self, instance: QObject, owner: type[QObject]) -> SignalInstance[*_SignalTypes]: ...
+    def __getitem__(self, index) -> SignalInstance[*_SignalTypes]: ...
 
-class SignalInstance:
+class SignalInstance(typing.Generic[*_SignalTypes]):
     @classmethod
     def __init__(cls, *args, **kwargs) -> None: ...
-    def connect(self, slot: typing.Callable, /, type: Qt.ConnectionType = ...) -> QMetaObject.Connection: ...
-    def disconnect(self, /, slot: typing.Callable | None = ...) -> bool: ...
-    def emit(self, /, *args: Any) -> None: ...
+    def connect(self, slot: _SlotFunc[*_SignalTypes], /, type: Qt.ConnectionType = ...) -> QMetaObject.Connection: ...
+    def disconnect(self, /, slot: _SlotFunc[*_SignalTypes] | None = ...) -> bool: ...
+    def emit(self, /, *args: *_SignalTypes) -> None: ...
     def __call__(self, *args, **kwargs): ...
-    def __getitem__(self, index) -> SignalInstance: ...
+    def __getitem__(self, index) -> SignalInstance[*_SignalTypes]: ...
 
 class Slot:
     def __init__(self, /, *types: type, name: str | None = ..., result: type = ...) -> None: ...
