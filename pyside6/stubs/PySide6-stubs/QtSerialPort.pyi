@@ -2,6 +2,7 @@ import PySide6.QtCore
 import _typeshed
 import collections
 import enum
+import functools
 import shiboken6
 import typing
 import typing_extensions
@@ -40,6 +41,7 @@ class QSerialPort(PySide6.QtCore.QIODevice):
         Baud4800 = 4800
         Baud57600 = 57600
         Baud9600 = 9600
+        _missing_: typing.ClassVar[functools.partial] = ...  # type: ignore[misc]
 
     class DataBits(enum.Enum):
         Data5 = 5

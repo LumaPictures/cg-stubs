@@ -450,11 +450,11 @@ def test_qsplitter() -> None:
 
 
 def test_qtimer() -> None:
-    timout_sig_unbound: QtCore.Signal = QtCore.QTimer.timeout
+    timout_sig_unbound: "QtCore.Signal[()]" = QtCore.QTimer.timeout
     assert isinstance(timout_sig_unbound, QtCore.Signal)
 
     timer = QtCore.QTimer()
-    timeout_sig_bount: QtCore.SignalInstance = timer.timeout
+    timeout_sig_bount: "QtCore.SignalInstance[()]" = timer.timeout
     assert isinstance(timeout_sig_bount, QtCore.SignalInstance)
 
     timer.timeout.connect(lambda: None)
@@ -505,8 +505,8 @@ def test_qwindow() -> None:
 
 def test_signal_slot() -> None:
     class SomeClassWithSignal(QtCore.QObject):
-        signal_no_arg: ClassVar[QtCore.Signal] = QtCore.Signal()
-        signal_str: ClassVar[QtCore.Signal] = QtCore.Signal(str)
+        signal_no_arg: ClassVar["QtCore.Signal[()]"] = QtCore.Signal()
+        signal_str: ClassVar["QtCore.Signal[str]"] = QtCore.Signal(str)
 
         def __init__(self) -> None:
             super().__init__()  # note: this is mandatory for mypy to pickup the class attribute access
@@ -606,6 +606,7 @@ def test_qline() -> None:
 
 def test_signal_connect() -> None:
     b = QtWidgets.QComboBox()
+    assert_type(b.editTextChanged, QtCore.SignalInstance)  # type: ignore[type-arg]
     b.editTextChanged.connect(print, QtCore.Qt.ConnectionType.QueuedConnection)
 
     with pytest.raises(Exception):

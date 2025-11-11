@@ -4,6 +4,7 @@ import PySide6.QtMultimedia
 import _typeshed
 import collections
 import enum
+import functools
 import typing
 import typing_extensions
 
@@ -14,6 +15,7 @@ class QAmbientSound(PySide6.QtCore.QObject):
     class Loops(enum.IntEnum):
         Infinite = -1
         Once = 1
+        _missing_: typing.ClassVar[functools.partial] = ...  # type: ignore[misc]
     autoPlayChanged: typing.ClassVar[PySide6.QtCore.Signal] = ...
     loopsChanged: typing.ClassVar[PySide6.QtCore.Signal] = ...
     sourceChanged: typing.ClassVar[PySide6.QtCore.Signal] = ...
@@ -170,6 +172,7 @@ class QSpatialSound(PySide6.QtCore.QObject):
     class Loops(enum.IntEnum):
         Infinite = -1
         Once = 1
+        _missing_: typing.ClassVar[functools.partial] = ...  # type: ignore[misc]
     autoPlayChanged: typing.ClassVar[PySide6.QtCore.Signal] = ...
     directivityChanged: typing.ClassVar[PySide6.QtCore.Signal] = ...
     directivityOrderChanged: typing.ClassVar[PySide6.QtCore.Signal] = ...

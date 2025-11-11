@@ -3,6 +3,7 @@ import PySide6.QtGui
 import _typeshed
 import collections
 import enum
+import functools
 import shiboken6
 import typing
 import typing_extensions
@@ -844,6 +845,7 @@ class QMediaPlayer(PySide6.QtCore.QObject):
     class Loops(enum.IntEnum):
         Infinite = -1
         Once = 1
+        _missing_: typing.ClassVar[functools.partial] = ...  # type: ignore[misc]
 
     class MediaStatus(enum.Enum):
         BufferedMedia = 5

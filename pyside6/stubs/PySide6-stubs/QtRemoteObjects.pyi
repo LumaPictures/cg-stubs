@@ -3,6 +3,7 @@ import PySide6.QtNetwork
 import _typeshed
 import collections
 import enum
+import functools
 import shiboken6
 import typing
 import typing_extensions
@@ -196,6 +197,7 @@ class QRemoteObjectReplica(PySide6.QtCore.QObject):
     class ConstructorType(enum.IntEnum):
         ConstructWithNode = 1
         DefaultConstructor = 0
+        _missing_: typing.ClassVar[functools.partial] = ...  # type: ignore[misc]
 
     class State(enum.Enum):
         Default = 1
