@@ -477,6 +477,7 @@ MISSING_DEFINITIONS = {
     ],
     "OpNodeTypeCategory": [
         "def nodeTypes(self) -> dict[str, OpNodeType]",
+        "def nodeType(self, type_name: str) -> Optional[OpNodeType]",
     ],
     "Parm": [
         "def appendMultiParmInstancesFromData(self, data: Sequence[dict[str, Any]]) -> None",
@@ -1656,7 +1657,7 @@ EXPLICIT_DEFINITIONS = {
         "deleteItems": "(self, items: Iterable[NetworkMovableItem], disable_safety_checks: bool = False) -> None",
         "input": "(self, input_index: int) -> Self | None",
         "inputFollowingOutputs": "(self, input_index: int) -> Self | None",
-        "inputs": "(self) -> Tuple[Self, ...]",
+        "inputs": "(self) -> Tuple[Self | None, ...]",
         "layoutChildren": "(self, items: Sequence[NetworkMovableItem] = ..., horizontal_spacing: float = 1.0, vertical_spacing: float = 1.0) -> None",
         "outputs": "(self) -> Tuple[Self, ...]",
         "recursiveGlob": "(self, pattern: str, filter: EnumValue = nodeTypeFilter.NoFilter, include_subnets: bool = True) -> Tuple[Node, ...]",
