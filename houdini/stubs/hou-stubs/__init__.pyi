@@ -10003,7 +10003,7 @@ class Node(NetworkMovableItem):
 
 
         """
-    def inputs(self) -> Tuple[Self,...]:
+    def inputs(self) -> Tuple[Self|None,...]:
         """
 
         inputs(self) -> tuple of hou.Node
@@ -16123,6 +16123,7 @@ class OpNodeTypeCategory(NodeTypeCategory):
 
     # Missing methods added by stubgen
     def nodeTypes(self) -> dict[str, OpNodeType]: ...  # type: ignore[override]
+    def nodeType(self, type_name: str) -> Optional[OpNodeType]: ...
 
 class ParmTemplate:
     '''

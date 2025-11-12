@@ -41,7 +41,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "mypy", specifier = ">=1.15.0,<1.17.0" },
+    { name = "mypy", specifier = ">=1.15.0,<1.20.0" },
     { name = "typeguard" },
 ]
 
@@ -62,7 +62,7 @@ wheels = [
 
 [[package]]
 name = "types-houdini"
-version = "21.0.512.0"
+version = "21.0.512.1"
 source = { editable = "." }
 
 [package.dev-dependencies]
