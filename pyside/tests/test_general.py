@@ -504,7 +504,7 @@ def test_signal_slot() -> None:
     connection = True
     connection = instance.signal_no_arg.connect(instance.my_slot_no_arg)
     instance.signal_no_arg.emit()
-    assert isinstance(connection, bool)
+    assert_type(connection, bool)
 
     connection = instance.signal_str.connect(instance.my_slot_str)
     instance.signal_str.emit("toto")
