@@ -418,6 +418,8 @@ MISSING_CLASSES = {
 
 
 # Define functions that are missing entirely from hou.py
+# This may come from the houpythonportion package, which patches these methods
+# in via a setattr decorator.
 # WARNING: Try not to redefine functions that are deprecated and have been removed from hou.py
 MISSING_DEFINITIONS = {
     # Missing module level imports are sorted into the `None` class.
@@ -425,6 +427,12 @@ MISSING_DEFINITIONS = {
         # NOTE: These are left as an example of deprecated functions that should not be added.
         # "def expandString(text: str) -> str",
         # "def expandStringAtFrame(text: str, frame_number: float) -> str",
+    ],
+    "Agent": [
+        "def clipCatalog(self) -> AgentClip",
+        "def layers(self) -> AgentLayer",
+        "def rig(self) -> AgentRig",
+        "def shapeLibrary(self) -> AgentShapeLibrary",
     ],
     "NetworkItem": [
         "def __lt__(self, other: object) -> bool",
@@ -1317,7 +1325,7 @@ EXPLICIT_DEFINITIONS = {
         "setPixelsOfCookingPlaneFromString": "(self, values: bytes, component: str | None = None, interleaved: bool = True, depth: EnumValue | None = None, flip_vertically: bool = False) -> None",
     },
     "DataParmTemplate": {
-        "__init__": "(self, name: str, label: str, num_components: int, look: EnumValue = ..., naming_scheme: EnumValue = ..., unknown_str: str | None = None, disable_when: str | None = None, is_hidden: bool = False, is_label_hidden: bool = False, join_with_next: bool = False, help: str | None = None, script_callback: str | None = None, script_callback_language: EnumValue = ..., tags: dict[str, str] = ..., unknown_dict: dict[EnumValue, str] = ..., default_expression: Sequence[str] = ..., default_expression_language: Sequence[EnumValue] = ...) -> DataParmTemplate",
+        "__init__": "(self, name: str, label: str, num_components: int, look: EnumValue = ..., naming_scheme: EnumValue = ..., unknown_str: str | None = None, disable_when: str | None = None, is_hidden: bool = False, is_label_hidden: bool = False, join_with_next: bool = False, help: str | None = None, script_callback: str | None = None, script_callback_language: EnumValue = ..., tags: dict[str, str] = ..., unknown_dict: dict[EnumValue, str] = ..., default_expression: Sequence[str] = ..., default_expression_language: Sequence[EnumValue] = ...) -> None",
     },
     "Desktop": {
         "createFloatingPane": "(self, pane_tab_type: EnumValue, position: Sequence[float] = ..., size: Sequence[float] = ..., python_panel_interface: PythonPanelInterface | None = ..., immediate: bool = False) -> PaneTab",

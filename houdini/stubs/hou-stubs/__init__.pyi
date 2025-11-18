@@ -18932,6 +18932,12 @@ class Agent(PackedPrim):
 
         """
 
+    # Missing methods added by stubgen
+    def clipCatalog(self) -> AgentClip: ...
+    def layers(self) -> AgentLayer: ...
+    def rig(self) -> AgentRig: ...
+    def shapeLibrary(self) -> AgentShapeLibrary: ...
+
 class AgentClip:
     """
 
@@ -28336,7 +28342,7 @@ class DataParmTemplate(ParmTemplate):
 
     """
     thisown: Incomplete
-    def __init__(self, name: str, label: str, num_components: int, look: EnumValue = ..., naming_scheme: EnumValue = ..., unknown_str: str|None = ..., disable_when: str|None = ..., is_hidden: bool = ..., is_label_hidden: bool = ..., join_with_next: bool = ..., help: str|None = ..., script_callback: str|None = ..., script_callback_language: EnumValue = ..., tags: dict[str, str] = ..., unknown_dict: dict[EnumValue, str] = ..., default_expression: Sequence[str] = ..., default_expression_language: Sequence[EnumValue] = ...) -> DataParmTemplate:  # type: ignore[misc]
+    def __init__(self, name: str, label: str, num_components: int, look: EnumValue = ..., naming_scheme: EnumValue = ..., unknown_str: str|None = ..., disable_when: str|None = ..., is_hidden: bool = ..., is_label_hidden: bool = ..., join_with_next: bool = ..., help: str|None = ..., script_callback: str|None = ..., script_callback_language: EnumValue = ..., tags: dict[str, str] = ..., unknown_dict: dict[EnumValue, str] = ..., default_expression: Sequence[str] = ..., default_expression_language: Sequence[EnumValue] = ...) -> None:
         """
 
         __init__(self, name, label, num_components, look=hou.parmLook.Regular,
@@ -48386,9 +48392,9 @@ class hipFile:
     @staticmethod
     def addEventCallback(callback: Callable[[EnumValue], None]) -> None: ...
     @staticmethod
-    def removeEventCallback(callback: Callable[[EnumValue], None]) -> None: ...
-    @staticmethod
     def eventCallbacks() -> Tuple[Callable[[EnumValue], None], ...]: ...
+    @staticmethod
+    def removeEventCallback(callback: Callable[[EnumValue], None]) -> None: ...
 
 class hmath:
     """

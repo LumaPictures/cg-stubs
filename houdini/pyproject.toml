@@ -1,6 +1,6 @@
 [project]
 name = "types-houdini"
-version = "21.0.512.1"
+version = "21.0.512.2"
 
 readme = "README.md"
 authors = [{name="Chad Dombrova"}, {name="Ben Andersen"}]
