@@ -515,7 +515,7 @@ def publish(session: nox.Session, lib: str) -> None:
     if os.path.exists("dist"):
         shutil.rmtree("dist")
     session.run("uv", "build", "--wheel", external=True)
-    session.run("uv", "publish", env=env, external=True)
+    session.run("uv", "publish", *session.posargs, env=env, external=True)
     output = session.run(
         "uvx",
         "--from=toml-cli",
