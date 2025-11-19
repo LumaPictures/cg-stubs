@@ -111,7 +111,7 @@ nox -s 'publish(maya)'
 > [!NOTE]
 > Publishing to PyPI requires an [API token](https://pypi.org/help/#apitoken).
 > 
-> the `nox -s 'publish(xyz)'` command will forward additional arguments through to the underlying `uv publish` command, so passing in `--token <TOKEN>` will work for authentication.
+> the `nox -s 'publish(xyz)'` command will forward additional arguments through to the underlying `uv publish` command, so passing in `--token <TOKEN>` will work for authentication.  Example: `nox -s 'publish(maya)' -- --token TOKEN`
 > 
 > Since `uv publish` also [currently does not support `~/.pypirc`](https://github.com/astral-sh/uv/issues/7676) , the token must be copied in during the publish command itself.
 > 
