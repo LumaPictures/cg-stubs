@@ -1,3 +1,8 @@
+# this exists to appease older versions of uv
+[project]
+name = "cg-stubs"
+version = "0.0.1"
+
 [tool.mypy]
 check_untyped_defs = true
 files = [
