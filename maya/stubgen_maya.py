@@ -196,6 +196,17 @@ class MayaCmdAdvSignatureGenerator(AdvancedSignatureGenerator):
                 "(attribute: str, isSource: Literal[True]) -> bool",
                 "(attribute: str, sourceFromDestination: Literal[True]) -> str",
             ],
+            "maya.cmds.namespaceInfo": [
+                # TODO: The correct signatures are actually ...
+                # "(currentNamespace: Literal[True], **kwargs) -> str",
+                # "(namespace: str, listNamespace: Literal[True], **kwargs) -> list[str] | None",
+                #
+                # but for some reason they're breaking stub generation. For now
+                # we'll use this imperfect-but-still-decent fallback
+                #
+                "(*args, currentNamespace: Literal[True], **kwargs) -> str",
+                "(*args, listNamespace: Literal[True], **kwargs) -> list[str] | None",
+            ],
             "maya.cmds.referenceQuery": [
                 # Using **kwargs here because I'm too lazy to map out all of the valid combinations
                 #  of secondary flags.
@@ -328,19 +339,27 @@ class _ApiDocstringGenerator(DocstringSignatureGenerator):
         #   e.g. ("*", "Buffer"): "numpy.ndarray"
         result_type_overrides={
             ("*", "Bool"): "bool",
+            ("*", "Boolean"): "bool",
             ("*", "Integer"): "int",
+            ("*", "String"): "str",
             (
                 "*",
                 "MString",
             ): "str",  # NOTE: This may be too aggressive but is probably okay.
             ("*", "double"): "float",
             ("*", "integer"): "int",
+            ("*", "listofstring"): "list[str]",
+            ("*", "listofstrings"): "list[str]",
             ("*", "long"): "float",
             ("*", "self"): "Self",
             ("*", "string"): "str",
+            ("*", "tupleoffloats"): "tuple[float, ...]",
+            ("*", "tupleofstrings"): "tuple[str, ...]",
+            ("*", "tupleofunicodestrings"): "tuple[str, ...]",
             ("*", "unicodestring"): "str",
             ("*", "unsigned int"): "int",
             ("*", "unsignedint"): "int",
+            ("*.__init__", "*"): "None",
         },
         # Override property types
         #   dict of (name_pattern, type) to result_type

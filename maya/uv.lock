@@ -85,10 +85,14 @@ version = "0.3.0"
 source = { directory = "../common" }
 dependencies = [
     { name = "mypy" },
+    { name = "typeguard" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "mypy", specifier = ">=1.15.0,<1.17.0" }]
+requires-dist = [
+    { name = "mypy", specifier = ">=1.15.0,<1.20.0" },
+    { name = "typeguard" },
+]
 
 [package.metadata.requires-dev]
 dev = [{ name = "pytest" }]
@@ -133,8 +137,20 @@ wheels = [
 ]
 
 [[package]]
+name = "typeguard"
+version = "4.4.4"
+source = { registry = "https://artifactory.scanlinevfxla.com/artifactory/api/pypi/pypi/simple" }
+dependencies = [
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://artifactory.scanlinevfxla.com/artifactory/api/pypi/pypi/packages/packages/c7/68/71c1a15b5f65f40e91b65da23b8224dad41349894535a97f63a52e462196/typeguard-4.4.4.tar.gz", hash = "sha256:3a7fd2dffb705d4d0efaed4306a704c89b9dee850b688f060a8b1615a79e5f74" }
+wheels = [
+    { url = "https://artifactory.scanlinevfxla.com/artifactory/api/pypi/pypi/packages/packages/1b/a9/e3aee762739c1d7528da1c3e06d518503f8b6c439c35549b53735ba52ead/typeguard-4.4.4-py3-none-any.whl", hash = "sha256:b5f562281b6bfa1f5492470464730ef001646128b180769880468bd84b68b09e" },
+]
+
+[[package]]
 name = "types-maya-strict"
-version = "2025.0.5"
+version = "2025.0.6"
 source = { editable = "." }
 
 [package.dev-dependencies]
