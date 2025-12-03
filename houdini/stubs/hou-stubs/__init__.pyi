@@ -48390,11 +48390,11 @@ class hipFile:
 
     # Missing methods added by stubgen
     @staticmethod
-    def eventCallbacks() -> Tuple[Callable[[EnumValue], None], ...]: ...
-    @staticmethod
     def addEventCallback(callback: Callable[[EnumValue], None]) -> None: ...
     @staticmethod
     def removeEventCallback(callback: Callable[[EnumValue], None]) -> None: ...
+    @staticmethod
+    def eventCallbacks() -> Tuple[Callable[[EnumValue], None], ...]: ...
 
 class hmath:
     """
