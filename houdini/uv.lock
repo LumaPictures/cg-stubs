@@ -62,7 +62,7 @@ wheels = [
 
 [[package]]
 name = "types-houdini"
-version = "21.0.512.2"
+version = "21.0.512.3"
 source = { editable = "." }
 
 [package.dev-dependencies]
