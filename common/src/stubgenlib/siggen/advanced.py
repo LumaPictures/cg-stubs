@@ -2,8 +2,9 @@ from __future__ import absolute_import, annotations, division, print_function
 
 import fnmatch
 import re
+from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Literal, NamedTuple, TypeVar, cast
+from typing import Generic, Literal, NamedTuple, TypeVar, cast
 
 from mypy.stubdoc import infer_sig_from_docstring
 from mypy.stubgenc import (
@@ -16,6 +17,7 @@ from mypy.stubgenc import (
     DocstringSignatureGenerator as CDocstringSignatureGenerator,
 )
 
+KeyT = TypeVar("KeyT")
 T = TypeVar("T")
 
 
@@ -109,15 +111,15 @@ class AdvancedSigMatcher(object):
         #     for key, value in self._arg_name_replacements.items()
         # }
 
-    def find_func_match(self, fullname: str, items: dict[str, T]) -> T | None:
-        """Look for a match in the given dictionary of function/method overrides"""
-        for pattern, value in items.items():
-            if fnmatch.fnmatchcase(fullname, pattern):
-                return value
-        return None
 
+class Matcher(Generic[KeyT]):
+    def __init__(self, label: str):
+        self.label = label
+        self._matches: defaultdict[KeyT, list[str]] = defaultdict(list)
+
+    @classmethod
     def _type_match(
-        self,
+        cls,
         type_match: str | re.Pattern[str] | None,
         new_value: T,
         orig_type: str | None,
@@ -140,6 +142,18 @@ class AdvancedSigMatcher(object):
         else:
             return None
 
+
+class FuncMatcher(Matcher[str]):
+    def find_func_match(self, fullname: str, items: dict[str, T]) -> T | None:
+        """Look for a match in the given dictionary of function/method overrides"""
+        for pattern, value in items.items():
+            if fnmatch.fnmatchcase(fullname, pattern):
+                self._matches[pattern].append(fullname)
+                return value
+        return None
+
+
+class ArgMatcher(Matcher[tuple[str, str, str | re.Pattern[str] | None]]):
     def find_arg_match(
         self,
         fullname: str,
@@ -158,9 +172,14 @@ class AdvancedSigMatcher(object):
             ):
                 new_value = self._type_match(arg_type_match, value, arg_type)
                 if new_value is not None:
+                    self._matches[
+                        (method_match, arg_name_match, arg_type_match)
+                    ].append(fullname)
                     return new_value
         return None
 
+
+class ResultMatcher(Matcher[tuple[str, str | re.Pattern[str] | None]]):
     def find_result_match(
         self,
         fullname: str,
@@ -172,6 +191,7 @@ class AdvancedSigMatcher(object):
             if fnmatch.fnmatchcase(fullname, method_match):
                 new_value = self._type_match(ret_type_match, value, ret_type)
                 if new_value is not None:
+                    self._matches[(method_match, ret_type_match)].append(fullname)
                     return new_value
         return None
 
@@ -200,9 +220,17 @@ class AdvancedSignatureGenerator(SignatureGenerator):
         self.merge_overrides_with_fallback = merge_overrides_with_fallback
         self.select_overload_to_merge = select_overload_to_merge
 
+        self._signature_overrides_matcher = FuncMatcher("signature_overrides")
+        self._arg_type_overrides_matcher = ArgMatcher("arg_type_overrides")
+        self._optional_result_matcher = ResultMatcher("optional_result")
+        self._optional_args_matcher = ArgMatcher("optional_args")
+        self._result_type_overrides_matcher = ResultMatcher("result_type_overrides")
+        self._new_overloads_matcher = FuncMatcher("new_overloads")
+        self._property_type_overrides_matcher = ResultMatcher("property_type_overrides")
+
     def get_signature_str(self, ctx: FunctionContext) -> str | list[str] | None:
         """Look for a docstring signature in signature_overrides"""
-        return self.sig_matcher.find_func_match(
+        return self._signature_overrides_matcher.find_func_match(
             ctx.fullname, self.sig_matcher.signature_overrides
         )
 
@@ -211,7 +239,7 @@ class AdvancedSignatureGenerator(SignatureGenerator):
         # if key in self.arg_name_replacements:
         #     arg.name = self.arg_name_replacements[key]
 
-        optionality = self.sig_matcher.find_arg_match(
+        optionality = self._optional_args_matcher.find_arg_match(
             ctx.fullname, arg.name, arg.type, self.sig_matcher.optional_args
         )
         if optionality is not None:
@@ -221,7 +249,7 @@ class AdvancedSignatureGenerator(SignatureGenerator):
                 arg.type = "typing.Union[{},NoneType]".format(arg.type)
 
         # FIXME: I think we want an else here, since arg.type is set, above
-        arg_type_override = self.sig_matcher.find_arg_match(
+        arg_type_override = self._arg_type_overrides_matcher.find_arg_match(
             ctx.fullname, arg.name, arg.type, self.sig_matcher.arg_type_overrides
         )
         if arg_type_override is not None:
@@ -238,14 +266,14 @@ class AdvancedSignatureGenerator(SignatureGenerator):
         """
         for arg in sig.args:
             self.process_arg(ctx, arg)
-        if self.sig_matcher.find_result_match(
+        if self._optional_result_matcher.find_result_match(
             ctx.fullname, sig.ret_type, self.sig_matcher._optional_result
         ):
             # make result optional
             sig = sig._replace(ret_type=f"typing.Optional[{sig.ret_type}]")
         else:
             # override result type
-            ret_override = self.sig_matcher.find_result_match(
+            ret_override = self._result_type_overrides_matcher.find_result_match(
                 ctx.fullname, sig.ret_type, self.sig_matcher.result_type_overrides
             )
             if ret_override:
@@ -266,7 +294,7 @@ class AdvancedSignatureGenerator(SignatureGenerator):
         for i, inferred in enumerate(results):
             results[i] = self.process_sig(ctx, inferred)
 
-        new_overloads = self.sig_matcher.find_func_match(
+        new_overloads = self._new_overloads_matcher.find_func_match(
             ctx.fullname, self.sig_matcher.new_overloads
         )
         if new_overloads:
@@ -338,7 +366,7 @@ class AdvancedSignatureGenerator(SignatureGenerator):
     ) -> str | None:
         """Return the type of the given property"""
         ret_type = self.fallback_sig_gen.get_property_type(default_type, ctx)
-        type_override = self.sig_matcher.find_result_match(
+        type_override = self._property_type_overrides_matcher.find_result_match(
             ctx.fullname, ret_type, self.sig_matcher.property_type_overrides
         )
         if type_override is not None:

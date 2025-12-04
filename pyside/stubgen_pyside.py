@@ -58,6 +58,7 @@ def get_type_fullname(typ: type) -> str:
 class PySideHelper:
     _flag_group_to_item: dict[str, str] = {}
     _flag_item_short_name_to_type: defaultdict[str, set[str]] = defaultdict(set)
+    _signals: dict[str, list[str]] = {}
 
     def __init__(self) -> None:
         self._pyside_package: str | None = None
@@ -126,6 +127,39 @@ class PySideHelper:
             get_type_fullname(flag)
         )
 
+    def record_signal(self, cls: type, signal_name: str, signal: "QtCore.Signal"):
+        full_class_name = get_type_fullname(cls)
+
+        signatures = signal.signatures
+        if signatures:
+            # Take the first signature (there might be multiple overloads)
+            signature = signatures[0]
+
+            # Parse the signature string to extract argument types
+            # Format is like "timeout()" or "columnsAboutToBeInserted(QModelIndex,int,int)"
+            if "(" in signature and ")" in signature:
+                args_part = signature.split("(")[1].split(")")[0]
+                if args_part.strip():
+                    # Split by comma and clean up whitespace
+                    arg_types = [
+                        self.c_type_to_python_type(
+                            full_class_name, arg_type.strip(), signal_name
+                        )
+                        for arg_type in args_part.split(",")
+                    ]
+                else:
+                    arg_types = []
+            else:
+                arg_types = []
+            self.__class__._signals[f"{full_class_name}.{signal_name}"] = arg_types
+
+    def get_signal(self, cls: type, signal_name: str) -> list[str] | None:
+        full_class_name = get_type_fullname(cls)
+        try:
+            return self.__class__._signals[f"{full_class_name}.{signal_name}"]
+        except KeyError:
+            return None
+
     @cache
     def get_group_from_flag_item(self, item_type: type) -> type:
         if self.pyside_package == "PySide6":
@@ -149,9 +183,22 @@ class PySideHelper:
         return None
 
     @cache
-    def guess_type_from_property(
+    def c_type_to_python_type(
         self, parent_type_name: str, c_type_name: str, prop_name: str
     ) -> str:
+        maybe_type = {
+            "bool": "bool",
+            "int": "int",
+            "uint": "int",
+            "qlonglong": "int",
+            "QLibrary::LoadHints": "int",
+            "float": "float",
+            "double": "float",
+            "QString": "str",
+        }.get(c_type_name)
+        if maybe_type is not None:
+            return maybe_type
+
         maybe_type_name = c_type_name.replace("::", ".").replace("*", "")
 
         options = []
@@ -223,28 +270,15 @@ class PySideHelper:
         def getsig(prop: "QtCore.QMetaProperty") -> Tuple[str, str]:
             prop_name = decode(prop.name())
             c_type_name = cast(str, prop.typeName())
-            maybe_type = {
-                "bool": "bool",
-                "int": "int",
-                "uint": "int",
-                "qlonglong": "int",
-                "QLibrary::LoadHints": "int",
-                "float": "float",
-                "double": "float",
-                "QString": "str",
-            }.get(c_type_name)
-            if maybe_type is not None:
-                return prop_name, maybe_type
-
             # do a search based on what we know of the parent type and the C++ type name
-            type_name = self.guess_type_from_property(
+            type_name = self.c_type_to_python_type(
                 typing._type_repr(typ), c_type_name, prop_name
             )
             if type_name == "typing.Any":
                 # see if the property has a method since the signature return value can be used to
                 # infer the property type.
                 # FIXME: it's unclear whether this approach should take higher priority than
-                #  guess_type_from_property.  It results in seemingly subtle differences for about
+                #  c_type_to_python_type.  It results in seemingly subtle differences for about
                 #  20 properties.  This seems super niche.
                 func = getattr(obj, prop_name, None)
                 if func is not None:
@@ -355,12 +389,12 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                 "*.VolatileBool.set": "(self, a: object) -> None",
                 # * Add all signals and make all new-style signal patterns work.  e.g.
                 # `myobject.mysignal.connect(func) and `myobject.mysignal[type].connect(func)`
-                "*.Signal.__get__": [
-                    "(self, instance: None, owner: type[QObject]) -> Signal",
-                    "(self, instance: QObject, owner: type[QObject]) -> SignalInstance",
+                "PySide6.QtCore.Signal.__get__": [
+                    "(self, instance: None, owner: type[QObject]) -> Signal[*_SignalTypes]",
+                    "(self, instance: QObject, owner: type[QObject]) -> SignalInstance[*_SignalTypes]",
                 ],
-                "*.Signal.__getitem__": "(self, index) -> SignalInstance",
-                "*.SignalInstance.__getitem__": "(self, index) -> SignalInstance",
+                "PySide6.QtCore.Signal.__getitem__": "(self, index) -> SignalInstance[*_SignalTypes]",
+                "PySide6.QtCore.SignalInstance.__getitem__": "(self, index) -> SignalInstance[*_SignalTypes]",
                 # * Fix `QTreeWidgetItemIterator.__iter__()` to iterate over `QTreeWidgetItemIterator`
                 "*.QTreeWidgetItemIterator.__iter__": "(self) -> typing.Iterator[QTreeWidgetItemIterator]",
                 "*.QTreeWidgetItemIterator.__next__": "(self) -> QTreeWidgetItemIterator",
@@ -429,17 +463,22 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                     "to",
                     "*",
                 ): f"list[{PYSIDE}.QtCore.QModelIndex]",
-                # * Fix slot arg of `SignalInstance.connect()` to be `typing.Callable` instead of `object`
+                # * Fix slot arg of `SignalInstance.connect()` to support validating the types of the callable args
                 (
-                    "*.QtCore.SignalInstance.connect",
+                    "PySide6.QtCore.SignalInstance.connect",
                     "slot",
                     "*",
-                ): "typing.Callable",
+                ): "_SlotFunc[*_SignalTypes]",
                 (
-                    "*.QtCore.SignalInstance.disconnect",
+                    "PySide6.QtCore.SignalInstance.disconnect",
                     "slot",
                     "*",
-                ): "typing.Callable | None",
+                ): "_SlotFunc[*_SignalTypes] | None",
+                (
+                    "PySide6.QtCore.SignalInstance.emit",
+                    "*args",
+                    "Any",
+                ): "*_SignalTypes",
                 #
                 (
                     "PySide6.QtCore.QObject.findChild*",
@@ -565,6 +604,12 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                     # * Fix passing QOjbect to QWidget.setParent
                     # (PySide6 fix is in arg_type_overrides)
                     "PySide2.QtWidgets.QWidget.setParent": f"(self, parent: typing.Union[{PYSIDE}.QtCore.QObject,None], f: {PYSIDE}.QtCore.Qt.WindowFlags = ...) -> None",
+                    "PySide2.QtCore.Signal.__get__": [
+                        "(self, instance: None, owner: type[QObject]) -> Signal",
+                        "(self, instance: QObject, owner: type[QObject]) -> SignalInstance",
+                    ],
+                    "PySide2.QtCore.Signal.__getitem__": "(self, index) -> SignalInstance",
+                    "PySide2.QtCore.SignalInstance.__getitem__": "(self, index) -> SignalInstance",
                     # * Fix slot arg of `SignalInstance.connect()` to be `typing.Callable` instead of `object`
                     # * Fix type arg of `SignalInstance.connect()` to be `QtCore.Qt.ConnectionType` instead of `type | None`
                     # (PySide6 fix is in arg_type_overrides)
@@ -798,7 +843,7 @@ class {overload_class_name}:
         self.custom_overloads: list[str] = []
 
     def walk_objects(self, obj: object, seen: set[type]) -> None:
-        for _, child in self.get_members(obj):
+        for child_name, child in self.get_members(obj):
             if inspect.isclass(child):
                 if child in seen:
                     continue
@@ -817,6 +862,9 @@ class {overload_class_name}:
                     helper.record_flag(child)
 
                 self.walk_objects(child, seen)
+
+            elif isinstance(child, helper.QtCore.Signal):
+                helper.record_signal(obj, child_name, child)
 
     def get_sig_generators(self) -> list[SignatureGenerator]:
         sig_generators = super().get_sig_generators()
@@ -849,6 +897,9 @@ class {overload_class_name}:
         return super().is_method(class_info, name, obj)
 
     def strip_or_import(self, type_name: str) -> str:
+        if "*" in type_name:
+            # variadic type vars can't be parsed by parse_type_comment()
+            return type_name
         type_name = type_name.replace("Shiboken.", f"{helper.shiboken_package}.")
         stripped_type = super().strip_or_import(type_name)
         return stripped_type
@@ -910,6 +961,14 @@ class {overload_class_name}:
         boilerplate = """\
 T = typing.TypeVar('T')
 P = typing.ParamSpec('P')\n"""
+
+        if self.module_name == "PySide6.QtCore":
+            boilerplate += """
+_SignalTypes = typing.TypeVarTuple('_SignalTypes')
+
+class _SlotFunc(typing.Protocol[*_SignalTypes]):
+    def __call__(self, *args: *_SignalTypes) -> typing.Any:
+        pass\n\n"""
 
         if helper.pyside_package == "PySide6":
             # something changed that makes this required now.  could be new behavior of stubgen.
@@ -1031,6 +1090,24 @@ P = typing.ParamSpec('P')\n"""
         lines += super().format_func_def(methods, is_coroutine, decorators, docstring)
 
         return lines
+
+    def get_base_types(self, obj: type) -> list[str]:
+        if self.module_name == "PySide6.QtCore" and obj.__name__ in [
+            "Signal",
+            "SignalInstance",
+        ]:
+            return ["typing.Generic[*_SignalTypes]"]
+        return super().get_base_types(obj)
+
+    def generate_class_attr(self, cls: type, attr: str, value: object) -> str | None:
+        signal_types = helper.get_signal(cls, attr)
+        if signal_types is not None:
+            prop_type_name = self.strip_or_import(self.get_type_annotation(value))
+            signal_types_str = ", ".join(signal_types) if signal_types else "()"
+            classvar = self.add_name("typing.ClassVar")
+            return f"{self._indent}{attr}: {classvar}[{prop_type_name}[{signal_types_str}]] = ..."
+        else:
+            return super().generate_class_attr(cls, attr, value)
 
 
 mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[attr-defined]
