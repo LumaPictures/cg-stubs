@@ -48392,9 +48392,9 @@ class hipFile:
     @staticmethod
     def addEventCallback(callback: Callable[[EnumValue], None]) -> None: ...
     @staticmethod
-    def eventCallbacks() -> Tuple[Callable[[EnumValue], None], ...]: ...
-    @staticmethod
     def removeEventCallback(callback: Callable[[EnumValue], None]) -> None: ...
+    @staticmethod
+    def eventCallbacks() -> Tuple[Callable[[EnumValue], None], ...]: ...
 
 class hmath:
     """
@@ -54323,7 +54323,7 @@ class LopNode(OpNode):
 
 
         """
-    def editableLayer(self) -> pxr.Sdf.Layer:
+    def editableLayer(self) -> pxr.Sdf.Layer | None:
         """
 
         editableLayer(self) -> pxr.Sdf.Layer
@@ -54376,7 +54376,7 @@ class LopNode(OpNode):
 
 
         """
-    def editableStage(self) -> pxr.Usd.Stage:
+    def editableStage(self) -> pxr.Usd.Stage | None:
         """
 
         editableStage(self) -> pxr.Usd.Stage
@@ -54386,7 +54386,7 @@ class LopNode(OpNode):
 
 
         """
-    def uneditableStage(self) -> pxr.Usd.Stage:
+    def uneditableStage(self) -> pxr.Usd.Stage | None:
         """
 
         uneditableStage(self) -> pxr.Usd.Stage

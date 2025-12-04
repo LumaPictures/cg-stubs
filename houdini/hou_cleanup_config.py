@@ -1114,12 +1114,15 @@ EXPLICIT_RETURN_TYPES = {
         "nodeTypeCategory": "OpNodeTypeCategory",
     },
     "LopNode": {
-        "editableLayer": "pxr.Sdf.Layer",
-        "editableStage": "pxr.Usd.Stage",
+        "activeLayer": "pxr.Sdf.Layer | None",
+        "editableLayer": "pxr.Sdf.Layer | None",
+        "editableStage": "pxr.Usd.Stage | None",
         "inputPrims": "Tuple[pxr.Sdf.Path, ...]",
         "lastModifiedPrims": "Tuple[pxr.Sdf.Path, ...]",
         "network": "OpNode",
-        "uneditableStage": "pxr.Usd.Stage",
+        "sourceLayer": "pxr.Sdf.Layer | None",
+        "stage": "pxr.Usd.Stage | None",
+        "uneditableStage": "pxr.Usd.Stage | None",
     },
     "LopSelectionRule": {
         "sourceNode": "LopNode | None",
