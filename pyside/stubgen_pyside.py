@@ -1,5 +1,6 @@
 from __future__ import absolute_import, annotations, print_function
 
+import atexit
 import enum
 import fnmatch
 import importlib
@@ -127,7 +128,9 @@ class PySideHelper:
             get_type_fullname(flag)
         )
 
-    def record_signal(self, cls: type, signal_name: str, signal: "QtCore.Signal"):
+    def record_signal(
+        self, cls: type, signal_name: str, signal: "QtCore.Signal"  # type: ignore[name-defined]
+    ) -> None:
         full_class_name = get_type_fullname(cls)
 
         signatures = signal.signatures
@@ -267,7 +270,7 @@ class PySideHelper:
         except AttributeError:
             return base_props
 
-        def getsig(prop: "QtCore.QMetaProperty") -> Tuple[str, str]:
+        def getsig(prop: "QtCore.QMetaProperty") -> Tuple[str, str]:  # type: ignore[name-defined]
             prop_name = decode(prop.name())
             c_type_name = cast(str, prop.typeName())
             # do a search based on what we know of the parent type and the C++ type name
@@ -288,7 +291,7 @@ class PySideHelper:
 
             return prop_name, type_name
 
-        def decode(x: "QtCore.QByteArray" | str | bytes) -> str:
+        def decode(x: "QtCore.QByteArray" | str | bytes) -> str:  # type: ignore[name-defined]
             if isinstance(x, self.QtCore.QByteArray):
                 return bytes(x).decode()
             elif isinstance(x, bytes):
@@ -715,7 +718,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
             and ctx.name in self.flag_overrides
         )
 
-    def get_signature_str(self, ctx: FunctionContext) -> str | list[str] | None:
+    def get_signature_str(self, ctx: FunctionContext) -> str | list[str] | list[FunctionSig] | None:
         if helper.pyside_package == "PySide2" and self._is_flag_type(ctx):
             assert ctx.class_info is not None
             typ = ctx.class_info.cls
@@ -827,6 +830,7 @@ class {overload_class_name}:
     def __get__(self, object: {class_name}, owner: typing.Any) -> InstanceOverloads.{method_name}: ...\n\n'''
 
     _seen: set[type] = set()
+    _pyside_sig_generator: PySideSignatureGenerator | None = None
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
@@ -844,7 +848,7 @@ class {overload_class_name}:
 
     def walk_objects(self, obj: object, seen: set[type]) -> None:
         for child_name, child in self.get_members(obj):
-            if inspect.isclass(child):
+            if isinstance(child, type):
                 if child in seen:
                     continue
                 seen.add(child)
@@ -852,8 +856,6 @@ class {overload_class_name}:
                 if docstring is not None and not isinstance(docstring, str):
                     print(f"Bad docstring: {child}")
                     child.__doc__ = ""
-                # add to the cache
-                child = cast(type, child)
 
                 # populate caches
                 if helper.pyside_package == "PySide2" and helper.is_flag_item(child):
@@ -864,11 +866,23 @@ class {overload_class_name}:
                 self.walk_objects(child, seen)
 
             elif isinstance(child, helper.QtCore.Signal):
+                assert isinstance(obj, type)
                 helper.record_signal(obj, child_name, child)
+
+    @classmethod
+    def get_pyside_sig_generator(cls) -> PySideSignatureGenerator:
+        # InspectionStubGenerator is instantiated for every module processed, but we want to
+        # reuse a single PySideSignatureGenerator so that it can generate usage reports, so
+        # we store it at the class level.
+        if cls._pyside_sig_generator is None:
+            # re-use the generator so that we can generate match reports for all classes
+            cls._pyside_sig_generator = PySideSignatureGenerator(strict=True)
+            atexit.register(cls._pyside_sig_generator.print_info)
+        return cls._pyside_sig_generator
 
     def get_sig_generators(self) -> list[SignatureGenerator]:
         sig_generators = super().get_sig_generators()
-        sig_generators.insert(0, PySideSignatureGenerator())
+        sig_generators.insert(0, self.get_pyside_sig_generator())
         return sig_generators
 
     def _is_skipped_pyside_attribute(self, attr: str, value: Any) -> bool:
