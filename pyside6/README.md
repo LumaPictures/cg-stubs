@@ -39,12 +39,6 @@ The most accurate type stubs for PySide! They have been tested using `mypy` on a
   * `QBrush`: `QLinearGradient` and `QColor` (and by extension `Qt.GlobalColor`)
   * `QCursor`: `Qt.CursorShape`
   * `QEasingCurve`: `QEasingCurve.Type`
-* Corrected numerous annotations from `bytes/QByteArray` to `str`:
-  * `QObject.setProperty()`
-  * `QObject.property()`
-  * `QState.assignProperty()`
-  * `QCoreApplication.translate()`
-  * `format` args on all methods
 * Fixed `QTreeWidgetItemIterator.__iter__()` to return `Iterator[QTreeWidgetItemIterator]`
 * Added missing `QDialog.exec()` method
 * Fixed numerous methods which accept `None`:
