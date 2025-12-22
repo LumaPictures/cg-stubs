@@ -39,6 +39,7 @@ from stubgenlib.utils import (
     insert_typevars,
     remove_overlapping_overloads,
 )
+from stubgenlib.siggen.advanced import Overridden
 
 cache = lru_cache(maxsize=None)
 
@@ -397,6 +398,105 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                     "(self, instance: QObject, owner: type[QObject]) -> SignalInstance[*_SignalTypes]",
                 ],
                 "PySide6.QtCore.Signal.__getitem__": "(self, index) -> SignalInstance[*_SignalTypes]",
+                # "PySide6.QtCore.Signal.__init__": [
+                #     # no args
+                #     "(self: Signal[()], /, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...",
+                #     # 1-4 args
+                #     "(self: Signal[_T1], arg1: type[_T1], /, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...",
+                #     "(self: Signal[_T1, _T2], arg1: type[_T1], arg2: type[_T2], /, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...",
+                #     "(self: Signal[_T1, _T2, _T3], arg1: type[_T1], arg2: type[_T2], arg3: type[_T3], /, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...",
+                #     "(self: Signal[_T1, _T2, _T3, _T4], arg1: type[_T1], arg2: type[_T2], arg3: type[_T3], arg4: type[_T4], /, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...",
+                #     # catchall for everything else, including tuple args
+                #     "(self, /, *types: type, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...",
+                # ],
+                "PySide6.QtCore.Signal.__init__": [
+                    # no args
+                    FunctionSig(
+                        "__init__",
+                        [
+                            ArgSig("self", "Signal[()]"),
+                            ArgSig("/"),
+                            ArgSig("name", "str | None", default=True),
+                            ArgSig("arguments", "Optional[List[str]]", default=True),
+                        ],
+                        ret_type="None",
+                    ),
+                    # 1-4 args
+                    FunctionSig(
+                        "__init__",
+                        [
+                            ArgSig("self", "Signal[_T1]"),
+                            ArgSig("arg1", "type[_T1]"),
+                            ArgSig("/"),
+                            ArgSig("name", "str | None", default=True),
+                            ArgSig("arguments", "Optional[List[str]]", default=True),
+                        ],
+                        ret_type="None",
+                    ),
+                    FunctionSig(
+                        "__init__",
+                        [
+                            ArgSig("self", "Signal[_T1, _T2]"),
+                            ArgSig("arg1", "type[_T1]"),
+                            ArgSig("arg2", "type[_T2]"),
+                            ArgSig("/"),
+                            ArgSig("name", "str | None", default=True),
+                            ArgSig("arguments", "Optional[List[str]]", default=True),
+                        ],
+                        ret_type="None",
+                    ),
+                    FunctionSig(
+                        "__init__",
+                        [
+                            ArgSig("self", "Signal[_T1, _T2, _T3]"),
+                            ArgSig("arg1", "type[_T1]"),
+                            ArgSig("arg2", "type[_T2]"),
+                            ArgSig("arg3", "type[_T3]"),
+                            ArgSig("/"),
+                            ArgSig("name", "str | None", default=True),
+                            ArgSig("arguments", "Optional[List[str]]", default=True),
+                        ],
+                        ret_type="None",
+                    ),
+                    FunctionSig(
+                        "__init__",
+                        [
+                            ArgSig("self", "Signal[_T1, _T2, _T3, _T4]"),
+                            ArgSig("arg1", "type[_T1]"),
+                            ArgSig("arg2", "type[_T2]"),
+                            ArgSig("arg3", "type[_T3]"),
+                            ArgSig("arg4", "type[_T4]"),
+                            ArgSig("/"),
+                            ArgSig("name", "str | None", default=True),
+                            ArgSig("arguments", "Optional[List[str]]", default=True),
+                        ],
+                        ret_type="None",
+                    ),
+                    # catchall for tuples
+                    FunctionSig(
+                        "__init__",
+                        [
+                            ArgSig("self"),
+                            ArgSig("/"),
+                            ArgSig("*types", "tuple"),
+                            ArgSig("name", "str | None", default=True),
+                            ArgSig("arguments", "Optional[List[str]]", default=True),
+                        ],
+                        ret_type="None",
+                    ),
+                    # catchall for types
+                    FunctionSig(
+                        "__init__",
+                        [
+                            ArgSig("self"),
+                            ArgSig("/"),
+                            ArgSig("*types", "type"),
+                            ArgSig("name", "str | None", default=True),
+                            ArgSig("arguments", "Optional[List[str]]", default=True),
+                        ],
+                        ret_type="None",
+                    ),
+                ],
                 "PySide6.QtCore.SignalInstance.__getitem__": "(self, index) -> SignalInstance[*_SignalTypes]",
                 # * Fix `QTreeWidgetItemIterator.__iter__()` to iterate over `QTreeWidgetItemIterator`
                 "*.QTreeWidgetItemIterator.__iter__": "(self) -> typing.Iterator[QTreeWidgetItemIterator]",
@@ -787,8 +887,9 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
         ):
             helper.add_property_args(ctx.class_info.cls, results)
 
+        # use the type of results, it may be of type Overridden
+        new_sigs = type(results)()
         # remove duplicates: FunctionSig is not hashable!
-        new_sigs = []
         for sig in results:
             if sig not in new_sigs:
                 new_sigs.append(sig)
@@ -978,6 +1079,10 @@ P = typing.ParamSpec('P')\n"""
 
         if self.module_name == "PySide6.QtCore":
             boilerplate += """
+_T1 = typing.TypeVar('_T1')
+_T2 = typing.TypeVar('_T2')
+_T3 = typing.TypeVar('_T3')
+_T4 = typing.TypeVar('_T4')
 _SignalTypes = typing.TypeVarTuple('_SignalTypes')
 
 class _SlotFunc(typing.Protocol[*_SignalTypes]):
@@ -1081,7 +1186,7 @@ class _SlotFunc(typing.Protocol[*_SignalTypes]):
             else:
                 methods = instancemethods
 
-            methods = remove_overlapping_overloads(methods, sort=True)
+            methods = remove_overlapping_overloads(methods, sort=not isinstance(sigs, Overridden))
 
             # quick and dirty fix
             if (
@@ -1114,7 +1219,9 @@ class _SlotFunc(typing.Protocol[*_SignalTypes]):
         return super().get_base_types(obj)
 
     def generate_class_attr(self, cls: type, attr: str, value: object) -> str | None:
-        signal_types = helper.get_signal(cls, attr)
+        signal_types = (
+            helper.get_signal(cls, attr) if helper.pyside_package == "PySide6" else None
+        )
         if signal_types is not None:
             prop_type_name = self.strip_or_import(self.get_type_annotation(value))
             signal_types_str = ", ".join(signal_types) if signal_types else "()"

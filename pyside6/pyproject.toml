@@ -39,8 +39,8 @@ addopts = [
 
 [tool.uv.sources]
 stubgenlib = { path = "../common" , editable=true }
-#mypy = { git = "https://github.com/chadrik/mypy", branch = "stubgen/all-fixes-pyside6" }
-mypy = { path = "/Users/chad/dev/mypy", editable=true }
+mypy = { git = "https://github.com/chadrik/mypy", branch = "stubgen/all-fixes-pyside6" }
+#mypy = { path = "/Users/chad/dev/mypy", editable=true }
 
 [build-system]
 requires = ["hatchling"]

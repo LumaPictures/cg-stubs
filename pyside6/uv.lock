@@ -94,28 +94,14 @@ wheels = [
 
 [[package]]
 name = "mypy"
-source = { editable = "../../mypy" }
+version = "1.19.0+dev.32accc5d053124f67de7d8daa397f9ca9e4cfa12"
+source = { git = "https://github.com/chadrik/mypy?branch=stubgen%2Fall-fixes-pyside6#32accc5d053124f67de7d8daa397f9ca9e4cfa12" }
 dependencies = [
     { name = "librt" },
     { name = "mypy-extensions" },
     { name = "pathspec" },
     { name = "typing-extensions" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "librt", specifier = ">=0.4.0" },
-    { name = "lxml", marker = "extra == 'reports'" },
-    { name = "mypy-extensions", specifier = ">=1.0.0" },
-    { name = "orjson", marker = "extra == 'faster-cache'" },
-    { name = "pathspec", specifier = ">=0.9.0" },
-    { name = "pip", marker = "extra == 'install-types'" },
-    { name = "psutil", marker = "extra == 'dmypy'", specifier = ">=4.0" },
-    { name = "setuptools", marker = "extra == 'mypyc'", specifier = ">=50" },
-    { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=1.1.0" },
-    { name = "typing-extensions", specifier = ">=4.6.0" },
-]
-provides-extras = ["dmypy", "mypyc", "python2", "reports", "install-types", "faster-cache"]
 
 [[package]]
 name = "mypy-extensions"
@@ -330,7 +316,7 @@ dev = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "mypy", editable = "../../mypy" },
+    { name = "mypy", git = "https://github.com/chadrik/mypy?branch=stubgen%2Fall-fixes-pyside6" },
     { name = "pyside6", specifier = "==6.10.0" },
     { name = "pytest" },
     { name = "pytest-xdist", extras = ["psutil"] },

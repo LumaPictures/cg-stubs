@@ -14,6 +14,10 @@ from typing import Any, Dict, List, Optional, OrderedDict, Set, Tuple, Union
 T = typing.TypeVar('T')
 P = typing.ParamSpec('P')
 
+_T1 = typing.TypeVar('_T1')
+_T2 = typing.TypeVar('_T2')
+_T3 = typing.TypeVar('_T3')
+_T4 = typing.TypeVar('_T4')
 _SignalTypes = typing.TypeVarTuple('_SignalTypes')
 
 class _SlotFunc(typing.Protocol[*_SignalTypes]):
@@ -10962,6 +10966,19 @@ class QtMsgType(enum.IntEnum):
     _missing_: typing.ClassVar[functools.partial] = ...  # type: ignore[misc]
 
 class Signal(typing.Generic[*_SignalTypes]):
+    @typing.overload
+    def __init__(self: Signal[()], /, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...
+    @typing.overload
+    def __init__(self: Signal[_T1], arg1: type[_T1], /, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...
+    @typing.overload
+    def __init__(self: Signal[_T1, _T2], arg1: type[_T1], arg2: type[_T2], /, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...
+    @typing.overload
+    def __init__(self: Signal[_T1, _T2, _T3], arg1: type[_T1], arg2: type[_T2], arg3: type[_T3], /, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...
+    @typing.overload
+    def __init__(self: Signal[_T1, _T2, _T3, _T4], arg1: type[_T1], arg2: type[_T2], arg3: type[_T3], arg4: type[_T4], /, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...
+    @typing.overload
+    def __init__(self, /, *types: tuple, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...
+    @typing.overload
     def __init__(self, /, *types: type, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...
     def __call__(self, *args, **kwargs): ...
     @typing.overload
