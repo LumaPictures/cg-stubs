@@ -26,6 +26,6 @@ def patch():
     import mypy.stubgen
     import mypy.stubutil
 
-    mypy.moduleinspect.ModuleInspect = ModuleInspect
-    mypy.stubutil.ModuleInspect = ModuleInspect
-    mypy.stubgen.ModuleInspect = ModuleInspect
+    mypy.moduleinspect.ModuleInspect = ModuleInspect  # type: ignore[misc, assignment]
+    mypy.stubutil.ModuleInspect = ModuleInspect  # type: ignore[misc, assignment]
+    mypy.stubgen.ModuleInspect = ModuleInspect  # type: ignore[misc, assignment]
