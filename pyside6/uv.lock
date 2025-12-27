@@ -131,6 +131,15 @@ wheels = [
 ]
 
 [[package]]
+name = "platformdirs"
+version = "4.5.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/cf/86/0248f086a84f01b37aaec0fa567b397df1a119f73c16f6c7a9aac73ea309/platformdirs-4.5.1.tar.gz", hash = "sha256:61d5cdcc6065745cdd94f0f878977f8de9437be93de97c1c12f853c9c0cdcbda", size = 21715, upload-time = "2025-12-05T13:52:58.638Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cb/28/3bfe2fa5a7b9c46fe7e13c97bda14c895fb10fa2ebf1d0abb90e0cea7ee1/platformdirs-4.5.1-py3-none-any.whl", hash = "sha256:d03afa3963c806a9bed9d5125c8f4cb2fdaf74a55ab60e5d59b3fde758104d31", size = 18731, upload-time = "2025-12-05T13:52:56.823Z" },
+]
+
+[[package]]
 name = "pluggy"
 version = "1.6.0"
 source = { registry = "https://pypi.org/simple" }
@@ -257,6 +266,35 @@ psutil = [
 ]
 
 [[package]]
+name = "pytoolconfig"
+version = "1.3.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "packaging" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/18/dc/abf70d2c2bcac20e8c71a7cdf6d44e4ddba4edf65acb179248d554d743db/pytoolconfig-1.3.1.tar.gz", hash = "sha256:51e6bd1a6f108238ae6aab6a65e5eed5e75d456be1c2bf29b04e5c1e7d7adbae", size = 16655, upload-time = "2024-01-11T16:25:11.914Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/92/44/da239917f5711ca7105f7d7f9e2765716dd883b241529beafc0f28504725/pytoolconfig-1.3.1-py3-none-any.whl", hash = "sha256:5d8cea8ae1996938ec3eaf44567bbc5ef1bc900742190c439a44a704d6e1b62b", size = 17022, upload-time = "2024-01-11T16:25:10.589Z" },
+]
+
+[package.optional-dependencies]
+global = [
+    { name = "platformdirs" },
+]
+
+[[package]]
+name = "rope"
+version = "1.14.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytoolconfig", extra = ["global"] },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/74/3a/85e60d154f26ecdc1d47a63ac58bd9f32a5a9f3f771f6672197f02a00ade/rope-1.14.0.tar.gz", hash = "sha256:8803e3b667315044f6270b0c69a10c0679f9f322ed8efe6245a93ceb7658da69", size = 296801, upload-time = "2025-07-12T17:46:07.786Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/75/35/130469d1901da2b3a5a377539b4ffcd8a5c983f1c9e3ba5ffdd8d71ae314/rope-1.14.0-py3-none-any.whl", hash = "sha256:00a7ea8c0c376fc0b053b2f2f8ef3bfb8b50fecf1ebf3eb80e4f8bd7f1941918", size = 207143, upload-time = "2025-07-12T17:46:05.928Z" },
+]
+
+[[package]]
 name = "shiboken6"
 version = "6.10.0"
 source = { registry = "https://pypi.org/simple" }
@@ -309,6 +347,7 @@ dev = [
     { name = "pyside6" },
     { name = "pytest" },
     { name = "pytest-xdist", extra = ["psutil"] },
+    { name = "rope" },
     { name = "stubgenlib" },
 ]
 
@@ -320,6 +359,7 @@ dev = [
     { name = "pyside6", specifier = "==6.10.0" },
     { name = "pytest" },
     { name = "pytest-xdist", extras = ["psutil"] },
+    { name = "rope" },
     { name = "stubgenlib", editable = "../common" },
 ]
 

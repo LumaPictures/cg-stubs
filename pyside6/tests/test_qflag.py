@@ -3,15 +3,13 @@
 import sys
 from typing import Union
 
-if sys.version_info[:2] >= (3, 8):
-    pass
-else:
-    pass
 import pytest
 
 ### Specific part
 # file generated from qflags_test_template.py for QFlags class "ChangeFlags" and flag class "ChangeFlag"
-from PySide6 import Qt3DCore
+from PySide6 import Qt3DCore, QtCore
+
+QtCore.Qt.ApplicationAttribute.AA_AttributeCount.ItemIsEditable
 
 OneFlagClass = Qt3DCore.Qt3DCore.ChangeFlag
 MultiFlagClass = Qt3DCore.Qt3DCore.ChangeFlags

@@ -158,7 +158,9 @@ def test_qdialogbuttonbox() -> None:
 def test_qguiapplication() -> None:
     app: QtGui.QGuiApplication
     app = QtGui.QGuiApplication.instance()
-    app.setOverrideCursor(QtCore.Qt.CursorShape.WaitCursor)
+    app.setOverrideCursor(
+        QtCore.Qt.ApplicationAttribute.AA_AttributeCount.CursorShape.WaitCursor
+    )
 
 
 def test_qicon() -> None:
@@ -172,7 +174,9 @@ def test_qicon() -> None:
 
 def test_qlabel() -> None:
     l = QtWidgets.QLabel()
-    l.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+    l.setAlignment(
+        QtCore.Qt.ApplicationAttribute.AA_AttributeCount.AlignmentFlag.AlignCenter
+    )
 
 
 def test_qmessagebox() -> None:
@@ -245,7 +249,7 @@ def test_qpainter() -> None:
     )
     painter.drawPolygon(
         [QtCore.QPoint(0, 0), QtCore.QPoint(1, 1), QtCore.QPoint(2, 2)],
-        QtCore.Qt.FillRule.OddEvenFill,
+        QtCore.Qt.ApplicationAttribute.AA_AttributeCount.FillRule.OddEvenFill,
     )
     # painter.drawPolygon([QtCore.QPoint(0, 0), QtCore.QPoint(1, 1), QtCore.QPoint(2, 2)],
     #                     None)
@@ -281,21 +285,27 @@ def test_qpainter() -> None:
     )
 
     painter.drawText(
-        QtCore.QRectF(0.0, 1.0, 2.0, 3.0), QtCore.Qt.AlignmentFlag.AlignLeft, "text"
+        QtCore.QRectF(0.0, 1.0, 2.0, 3.0),
+        QtCore.Qt.ApplicationAttribute.AA_AttributeCount.AlignmentFlag.AlignLeft,
+        "text",
     )
     painter.drawText(
-        QtCore.QRect(0, 1, 2, 3), QtCore.Qt.AlignmentFlag.AlignLeft, "text"
+        QtCore.QRect(0, 1, 2, 3),
+        QtCore.Qt.ApplicationAttribute.AA_AttributeCount.AlignmentFlag.AlignLeft,
+        "text",
     )
     painter.end()
 
 
 def test_qpixmap() -> None:
     emptyPixmap = QtGui.QPixmap(16, 16)
-    emptyPixmap.fill(QtCore.Qt.GlobalColor.transparent)
+    emptyPixmap.fill(
+        QtCore.Qt.ApplicationAttribute.AA_AttributeCount.GlobalColor.transparent
+    )
     # we currenly choose not to allow str literals because it is too ambiguous.
     # use constants to enforce proper types
     # emptyPixmap.fill("white")
-    emptyPixmap.fill(QtCore.Qt.GlobalColor.white)
+    emptyPixmap.fill(QtCore.Qt.ApplicationAttribute.AA_AttributeCount.GlobalColor.white)
     emptyPixmap.fill(0xFFFFFF)
 
 
@@ -352,7 +362,9 @@ def test_qpropertyanimation() -> None:
 
 def test_qquickitem() -> None:
     qi = QtQuick.QQuickItem()
-    qi.setCursor(QtCore.Qt.CursorShape.WaitCursor)
+    qi.setCursor(
+        QtCore.Qt.ApplicationAttribute.AA_AttributeCount.CursorShape.WaitCursor
+    )
 
 
 def test_qsize() -> None:
@@ -478,14 +490,26 @@ def test_qtreewidgetitem() -> None:
         b = t == t
         b = t != t
 
-    t.setForeground(3, QtGui.QColor(QtCore.Qt.GlobalColor.red))
-    t.setBackground(3, QtGui.QColor(QtCore.Qt.GlobalColor.red))
+    t.setForeground(
+        3,
+        QtGui.QColor(QtCore.Qt.ApplicationAttribute.AA_AttributeCount.GlobalColor.red),
+    )
+    t.setBackground(
+        3,
+        QtGui.QColor(QtCore.Qt.ApplicationAttribute.AA_AttributeCount.GlobalColor.red),
+    )
 
-    t.setData(0, QtCore.Qt.ItemDataRole(33), "bla")
-    t.setData(0, QtCore.Qt.ItemDataRole.ToolTipRole, "bla")
+    t.setData(
+        0, QtCore.Qt.ApplicationAttribute.AA_AttributeCount.ItemDataRole(33), "bla"
+    )
+    t.setData(
+        0,
+        QtCore.Qt.ApplicationAttribute.AA_AttributeCount.ItemDataRole.ToolTipRole,
+        "bla",
+    )
 
-    t.data(0, QtCore.Qt.ItemDataRole(33))
-    t.data(0, QtCore.Qt.ItemDataRole.ToolTipRole)
+    t.data(0, QtCore.Qt.ApplicationAttribute.AA_AttributeCount.ItemDataRole(33))
+    t.data(0, QtCore.Qt.ApplicationAttribute.AA_AttributeCount.ItemDataRole.ToolTipRole)
 
 
 def test_qversion() -> None:
@@ -496,12 +520,12 @@ def test_qversion() -> None:
 
 def test_qwidget() -> None:
     w = QtWidgets.QWidget()
-    w.setCursor(QtCore.Qt.CursorShape.WaitCursor)
+    w.setCursor(QtCore.Qt.ApplicationAttribute.AA_AttributeCount.CursorShape.WaitCursor)
 
 
 def test_qwindow() -> None:
     w = QtGui.QWindow()
-    w.setCursor(QtCore.Qt.CursorShape.WaitCursor)
+    w.setCursor(QtCore.Qt.ApplicationAttribute.AA_AttributeCount.CursorShape.WaitCursor)
 
 
 def test_signal_slot() -> None:
@@ -545,7 +569,7 @@ def test_qbrush_implicit_args() -> None:
 
     painter.setBrush(grad)
     painter.setBrush(QtGui.QColor(0, 0, 0, 0))
-    painter.setBrush(QtCore.Qt.GlobalColor.black)
+    painter.setBrush(QtCore.Qt.ApplicationAttribute.AA_AttributeCount.GlobalColor.black)
 
 
 @pytest.mark.skipif(pyside_version < (5, 14), reason="fails in PySide6 < 5.14.2.3")
@@ -615,9 +639,15 @@ def test_signal_connect() -> None:
     def slot_int(arg: int) -> None:
         print(arg)
 
-    b.editTextChanged.connect(slot_str, type=QtCore.Qt.ConnectionType.QueuedConnection)
+    b.editTextChanged.connect(
+        slot_str,
+        type=QtCore.Qt.ApplicationAttribute.AA_AttributeCount.ConnectionType.QueuedConnection,
+    )
     # BAD:
-    b.editTextChanged.connect(slot_int, type=QtCore.Qt.ConnectionType.QueuedConnection)  # type: ignore[arg-type]
+    b.editTextChanged.connect(
+        slot_int,
+        type=QtCore.Qt.ApplicationAttribute.AA_AttributeCount.ConnectionType.QueuedConnection,
+    )  # type: ignore[arg-type]
 
     with pytest.raises(Exception):
         b.editTextChanged.connect(print, None)  # type: ignore

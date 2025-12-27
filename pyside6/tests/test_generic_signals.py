@@ -1,8 +1,8 @@
 from __future__ import absolute_import, print_function
 
-from PySide6 import QtCore, QtWidgets
-
 from typing import Any
+
+from PySide6 import QtCore, QtWidgets
 
 
 class MainDialog(QtWidgets.QDialog):
@@ -19,7 +19,6 @@ class MainDialog(QtWidgets.QDialog):
     # For others, we can either choose one, or ignore the error (which effectively disables checking for this signal)
     signal5: "QtCore.Signal[int, int]" = QtCore.Signal((int, int), (str, str))
     signal6 = QtCore.Signal((int,), (int, int))  # type: ignore[var-annotated]
-
 
     def __init__(self) -> None:
         super().__init__()
