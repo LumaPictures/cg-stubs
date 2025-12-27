@@ -16,8 +16,9 @@ class MainDialog(QtWidgets.QDialog):
     # WARNING: QtCore.Signal is not subscriptable at runtime, so you must create a forward reference
     # (e.g. wrap it in quotes)
     signal4: "QtCore.Signal[int | str]" = QtCore.Signal((int,), (str,))
-    # For others, we can either choose one, or ignore the error (which effectively disables checking for this signal)
-    signal5: "QtCore.Signal[int, int]" = QtCore.Signal((int, int), (str, str))
+    # For more complicated multi-signals, we can ignore the error which effectively disables checking for this signal.
+    # To regain type safety, use indexing when accessing the signal (see examples below).
+    signal5 = QtCore.Signal((int, int), (str, str))  # type: ignore[var-annotated]
     signal6 = QtCore.Signal((int,), (int, int))  # type: ignore[var-annotated]
 
     def __init__(self) -> None:
@@ -102,17 +103,40 @@ class MainDialog(QtWidgets.QDialog):
         self.signal4.connect(self.slot3)  # type: ignore[arg-type]
         self.signal4.connect(self.slot4)
 
-        # signal5 only checks for arg count (which must be 2)
-        self.signal5.connect(self.slot1)  # type: ignore[arg-type]
+        # signal5 does not do any type checking because it represents multiple signatures
+        self.signal5.connect(self.slot1)
         # Argument 1 might have the wrong type
         # depending on the Signal signature.
-        self.signal5.connect(self.slot2a)  # type: ignore[arg-type]
+        self.signal5.connect(self.slot2a)
         # Argument 1 might have the wrong type
         # depending on the Signal signature.
-        self.signal5.connect(self.slot2b)  # type: ignore[arg-type]
-        self.signal5.connect(self.slot2c)  # type: ignore[arg-type]
+        self.signal5.connect(self.slot2b)
+        self.signal5.connect(self.slot2c)
         self.signal5.connect(self.slot3)
         self.signal5.connect(self.slot4)
+
+        # we can use indexing to check a particular signature
+        self.signal5[int, int].connect(self.slot1)  # type: ignore[arg-type]
+        # Argument 1 might have the wrong type
+        # depending on the Signal signature.
+        self.signal5[int, int].connect(self.slot2a)  # type: ignore[arg-type]
+        # Argument 1 might have the wrong type
+        # depending on the Signal signature.
+        self.signal5[int, int].connect(self.slot2b)  # type: ignore[arg-type]
+        self.signal5[int, int].connect(self.slot2c)  # type: ignore[arg-type]
+        self.signal5[int, int].connect(self.slot3)
+        self.signal5[int, int].connect(self.slot4)
+
+        self.signal5[str, str].connect(self.slot1)  # type: ignore[arg-type]
+        # Argument 1 might have the wrong type
+        # depending on the Signal signature.
+        self.signal5[str, str].connect(self.slot2a)  # type: ignore[arg-type]
+        # Argument 1 might have the wrong type
+        # depending on the Signal signature.
+        self.signal5[str, str].connect(self.slot2b)  # type: ignore[arg-type]
+        self.signal5[str, str].connect(self.slot2c)  # type: ignore[arg-type]
+        self.signal5[str, str].connect(self.slot3)
+        self.signal5[str, str].connect(self.slot4)
 
         # type checking is disabled for signal6
         self.signal6.connect(self.slot1)
@@ -150,7 +174,9 @@ class MainDialog(QtWidgets.QDialog):
     def _emitSignal5(self) -> None:
         self._text_edit.clear()
         self.signal5.emit(1, 2)
+        self.signal5.emit("bad")  # not checked, because Signal/SignalInstance can't represent multiple signatures
         self.signal5[int, int].emit(3, 4)
+        self.signal5[int, int].emit("one", "two")  # type: ignore[arg-type]
         self.signal5[str, str].emit("one", "two")
 
     @QtCore.Slot()
