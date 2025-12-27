@@ -461,7 +461,12 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                     "(self, instance: None, owner: type[QObject]) -> Signal[*_SignalTypes]",
                     "(self, instance: QObject, owner: type[QObject]) -> SignalInstance[*_SignalTypes]",
                 ],
-                "PySide6.QtCore.Signal.__getitem__": "(self, index) -> SignalInstance[*_SignalTypes]",
+                "PySide6.QtCore.Signal.__getitem__": [
+                    "(self, index: type[_T1]) -> SignalInstance[_T1]",
+                    "(self, index: tuple[type[_T1], type[_T2]]) -> SignalInstance[_T1, _T2]",
+                    "(self, index: tuple[type[_T1], type[_T2], type[_T3]]) -> SignalInstance[_T1, _T2, _T3]",
+                    "(self, index: tuple[type[_T1], type[_T2], type[_T3], type[_T4]]) -> SignalInstance[_T1, _T2, _T3, _T4]",
+                ],
                 # "PySide6.QtCore.Signal.__init__": [
                 #     # no args
                 #     "(self: Signal[()], /, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...",
@@ -561,7 +566,12 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                         ret_type="None",
                     ),
                 ],
-                "PySide6.QtCore.SignalInstance.__getitem__": "(self, index) -> SignalInstance[*_SignalTypes]",
+                "PySide6.QtCore.SignalInstance.__getitem__": [
+                    "(self, index: type[_T1]) -> SignalInstance[_T1]",
+                    "(self, index: tuple[type[_T1], type[_T2]]) -> SignalInstance[_T1, _T2]",
+                    "(self, index: tuple[type[_T1], type[_T2], type[_T3]]) -> SignalInstance[_T1, _T2, _T3]",
+                    "(self, index: tuple[type[_T1], type[_T2], type[_T3], type[_T4]]) -> SignalInstance[_T1, _T2, _T3, _T4]",
+                ],
                 # * Fix `QTreeWidgetItemIterator.__iter__()` to iterate over `QTreeWidgetItemIterator`
                 "*.QTreeWidgetItemIterator.__iter__": "(self) -> typing.Iterator[QTreeWidgetItemIterator]",
                 "*.QTreeWidgetItemIterator.__next__": "(self) -> QTreeWidgetItemIterator",
