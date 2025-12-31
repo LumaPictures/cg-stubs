@@ -1342,7 +1342,6 @@ helper = PySideHelper()
 
 
 if __name__ == "__main__":
-    dump_mappings = False
     helper.set_pyside_version(2)
 
     # in order to create and inspect object properties we must create an app
@@ -1380,39 +1379,5 @@ if __name__ == "__main__":
     )
 
     helper.add_version_info()
-
-    if dump_mappings:
-        import pprint
-
-        from PySide2.QtCore import Qt
-
-        print()
-        flags = defaultdict(set)
-        for name, member in inspect.getmembers(Qt):
-            if isinstance(member, type) and (
-                helper.is_flag(member) or helper.is_flag_item_type(member)
-            ):
-                flag_name = name
-                for child_name in dir(member):
-                    child = getattr(member, child_name)
-                    if helper.is_flag(type(child)) or helper.is_flag_item_type(
-                        type(child)
-                    ):
-                        flags[child_name].add(flag_name)
-
-        mapping = {}
-        for name, member in inspect.getmembers(Qt):
-            if helper.is_flag(type(member)) or helper.is_flag_item_type(type(member)):
-                matches = list(flags[name])
-                if len(matches) > 1:
-                    raise RuntimeError(f"{name} has more than one match: {matches}")
-                mapping[f"PySide2.QtCore.Qt.{name}"] = (
-                    f"PySide2.QtCore.Qt.{matches[0]}.{name}"
-                )
-
-        with open("../pyside6/enum-mappings.json", "w") as f:
-            json.dump(mapping, f)
-
-        pprint.pprint(mapping)
 
     # InspectionStubGenerator._pyside_sig_generator.print_info()
