@@ -465,6 +465,16 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                     "w",
                     "*",
                 ): f"int | {PYSIDE}.QtGui.QFont.Weight",
+                (
+                    "*",
+                    "*",
+                    f"{PYSIDE}.QtCore.QModelIndex",
+                ): f"{PYSIDE}.QtCore.QModelIndex | {PYSIDE}.QtCore.QPersistentModelIndex",
+                (
+                    "*",
+                    "*",
+                    re.compile(f"^typing\.Iterable\[{PYSIDE}\.QtCore\.QModelIndex]$"),
+                ): f"typing.Iterable[{PYSIDE}.QtCore.QModelIndex | {PYSIDE}.QtCore.QPersistentModelIndex]",
             },
             result_type_overrides={
                 ("*.toTuple", "object"): "tuple",

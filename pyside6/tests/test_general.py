@@ -610,3 +610,21 @@ def test_signal_connect() -> None:
 
     with pytest.raises(Exception):
         b.editTextChanged.connect(print, None)  # type: ignore
+
+
+def test_editablity() -> None:
+    combo = QtWidgets.QComboBox()
+
+    # Not editable (default) - lineEdit() returns None
+    assert combo.isEditable() is False
+    assert combo.lineEdit() is None
+
+    # Make it editable - lineEdit() returns QLineEdit
+    combo.setEditable(True)
+    assert combo.isEditable() is True
+    assert combo.lineEdit() is not None
+
+
+def test_qmodelindex() -> None:
+    pindex = QtCore.QPersistentModelIndex()
+    index = QtCore.QModelIndex(pindex)

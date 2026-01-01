@@ -48,6 +48,7 @@ This project uses mypy's official `stubgen` tool to directly generate stubs, wit
 * Added support for overloads that mix static and instance methods. `mypy` disallows this using traditional 
   overloads, so this project achieves it by generating specialized decorator classes that hold each of the 
   overloads.
+* Arguments that accept `QModelIndex` now also accept `QPersistentModelIndex`
 
 ### Specific fixes
 
