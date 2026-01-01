@@ -527,6 +527,10 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                     "*.QStandardItem.type",
                     "*",
                 ): f"{PYSIDE}.QtGui.QStandardItem.ItemType",
+                (
+                    "PySide6.QtGui.QAction.menu",
+                    "*",
+                ): f"PySide6.QtWidgets.QMenu | None",
             },
             # Find and replace argument names
             # arg_name_replacements = {

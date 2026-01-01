@@ -82,6 +82,7 @@ This project uses mypy's official `stubgen` tool to directly generate stubs, wit
 * Fixed `QTextEdit.setFontWeight()` to accept `QFont.Weight`
 * Fixed return type for `qVersion()`
 * Add `QSpacerItem.__init__/changeSize` overloads that use alternate names: `hData`->`hPolicy`, `vData`->`vPolicy`
+* Fixed `QAction.menu` to return optional `QMenu` instead of `QOjbect`
 
 ## Licensing
 
