@@ -134,7 +134,11 @@ class AdvancedSigMatcher(object):
                 raise ValueError(
                     f"{type_match} is a regex, but {repr(new_value)} is not a string"
                 )
-            return cast("T | None", type_match.sub(new_value, orig_type))
+            new_type = type_match.sub(new_value, orig_type)
+            if new_type != orig_type:
+                return cast("T | None", new_type)
+            else:
+                return None
         elif type_match:
             return new_value if fnmatch.fnmatchcase(orig_type, type_match) else None
         else:
