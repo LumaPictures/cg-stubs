@@ -404,7 +404,9 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                 ("*", "flags", "int"): "typing.SupportsInt",
                 ("*", "weight", "int"): "typing.SupportsInt",
                 ("*", "format", "typing.Union[bytes,NoneType]"): "typing.Optional[str]",
-                ("*", "role", "int"): f"{PYSIDE}.QtCore.Qt.ItemDataRole",
+                # For custom data the standrad pattern is to add to Qt.ItemDataRole.UserRole, which
+                # produces an int in PySide6 (IntEnum + int => int)
+                ("*", "role", "int"): f"{PYSIDE}.QtCore.Qt.ItemDataRole | int",
                 ("*.addAction", "*", "object"): "typing.Callable[[], typing.Any]",
                 ("*.Slot.__init__", "result", "*"): "type",
                 # * Fix arguments that accept `QModelIndex` which were typed as `int` in many places
