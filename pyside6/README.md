@@ -3,23 +3,6 @@
 
 The most accurate type stubs for PySide! They have been tested using `mypy` on a code base with many thousands of lines of PySide code.
 
-## Comparison to other PySide stubs
-
-I tried a number of projects before deciding to create my own.  Here's my super-biased assessment:
-
-| Stub Project                                                         | Technique                                                                         | Rating   |
-|----------------------------------------------------------------------|-----------------------------------------------------------------------------------|----------|
-| Official stubs                                                       | Uses PySide's `generate_pyi` stub generator                                       | abysmal  |
-| [PySide2-Stubs-Gen](https://github.com/HareInWeed/PySide2-Stubs-Gen) | Uses a modified version of `generate_pyi`                                         | marginal |
-| [PySide2-stubs](https://pypi.org/project/PySide2-stubs/)             | Reprocesses official stubs using [libcst](https://libcst.readthedocs.io/en/latest/) | better   |
-| [types-PySide2](https://pypi.org/project/types-PySide2/)             | Uses mypy's [stubgen](https://mypy.readthedocs.io/en/stable/stubgen.html)         | best     |
-
-[PySide2-stubs](https://pypi.org/project/PySide2-stubs/) is pretty good, but it still produced hundreds of errors in our code base.
-I considered contributing new features to that project, but the approach of using an AST/CST parser to modify
-an upstream set of bad official stubs to make them good is convoluted and prone to errors from upstream changes.
-This project uses mypy's official `stubgen` tool to directly generate stubs, with a set of corrections applied.
-
-
 ## Features and fixes
 
 ### General fixes
@@ -56,12 +39,6 @@ This project uses mypy's official `stubgen` tool to directly generate stubs, wit
   * `QBrush`: `QLinearGradient` and `QColor` (and by extension `Qt.GlobalColor`)
   * `QCursor`: `Qt.CursorShape`
   * `QEasingCurve`: `QEasingCurve.Type`
-* Corrected numerous annotations from `bytes/QByteArray` to `str`:
-  * `QObject.setProperty()`
-  * `QObject.property()`
-  * `QState.assignProperty()`
-  * `QCoreApplication.translate()`
-  * `format` args on all methods
 * Fixed `QTreeWidgetItemIterator.__iter__()` to return `Iterator[QTreeWidgetItemIterator]`
 * Added missing `QDialog.exec()` method
 * Fixed numerous methods which accept `None`:

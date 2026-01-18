@@ -1,9 +1,11 @@
 from __future__ import absolute_import, annotations, print_function
 
+import atexit
 import enum
 import fnmatch
 import importlib
 import inspect
+import json
 import pydoc
 import re
 import types
@@ -34,6 +36,7 @@ from stubgenlib.siggen import (
     AdvancedSignatureGenerator,
     Optionality,
 )
+from stubgenlib.siggen.advanced import Overridden
 from stubgenlib.utils import (
     insert_typevars,
     remove_overlapping_overloads,
@@ -57,7 +60,11 @@ def get_type_fullname(typ: type) -> str:
 
 class PySideHelper:
     _flag_group_to_item: dict[str, str] = {}
-    _flag_item_short_name_to_type: defaultdict[str, set[str]] = defaultdict(set)
+    _flag_short_name_to_full_name: defaultdict[str, set[str]] = defaultdict(set)
+    _flag_item_short_name_to_full_name: defaultdict[str, dict[str, object]] = (
+        defaultdict(dict)
+    )
+    _signals: dict[str, list[str]] = {}
 
     def __init__(self) -> None:
         self._pyside_package: str | None = None
@@ -68,11 +75,36 @@ class PySideHelper:
     def is_pyside_obj(self, typ: type) -> bool:
         return typ.__module__.split(".")[0] in self.pyside_package
 
+    @cached_property
+    def primary_pyside_modules(self) -> tuple[str, ...]:
+        return (
+            f"{self.pyside_package}.QtCore",
+            f"{self.pyside_package}.QtGui",
+            f"{self.pyside_package}.QtWidgets",
+        )
+
     @cache
     def is_flag(self, typ: type) -> bool:
+        """A flag enum
+
+        is_flag(PySide2.QtCore.QDir.Filter) is True
+        is_flag(PySide6.QtCore.QDir.Filter) is True
+        """
+        if self.pyside_package == "PySide6":
+            # FIXME: flag groups such as PySide6.QtCore.QDir.Filters will return True here
+            return isinstance(typ, type) and issubclass(typ, enum.Flag)
+        else:
+            # in PySide2, the type of a flag item is a flag
+            return self.is_flag_item_type(typ)
+
+    @cache
+    def is_enum(self, typ: type) -> bool:
         """An enum
 
-        e.g. PySide2.QtCore.QDir.Filter
+        unlike flags, enums cannot be combined.
+
+        is_enum(PySide2.QtCore.QLocale.Language) is True
+        is_enum(PySide6.QtCore.QLocale.Language) is True
         """
         if self.pyside_package == "PySide6":
             # FIXME: flag groups such as PySide6.QtCore.QDir.Filters will return True here
@@ -84,6 +116,19 @@ class PySideHelper:
                 and self.is_pyside_obj(typ)
                 and typ.__bases__ == (object,)
             )
+
+    def is_enum_item(self, obj: object) -> bool:
+        """An individual enum item
+
+        e.g.
+
+        is_enum_item(PySide2.QtCore.QLocale.Language.Abkhazian) is True
+        is_enum_item(PySide6.QtCore.QLocale.Language.Abkhazian) is True
+        """
+        if self.pyside_package == "PySide6":
+            return isinstance(obj, enum.Enum) and not isinstance(obj, enum.Flag)
+        else:
+            return self.is_enum(type(obj))
 
     @cache
     def is_flag_group(self, typ: type) -> bool:
@@ -105,13 +150,16 @@ class PySideHelper:
             )
 
     @cache
-    def is_flag_item(self, typ: type) -> bool:
-        """An individual enumerated item
+    def is_flag_item_type(self, typ: type) -> bool:
+        """The type of an individual flag item
 
-        e.g. PySide2.QtCore.QDir.Filter.AllDirs
+        e.g.
+
+        is_flag_item_type(type(PySide2.QtCore.QDir.Filter.AllDirs)) is True
+        is_flag_item_type(type(PySide6.QtCore.QDir.Filter.AllDirs)) is True
         """
         if self.pyside_package == "PySide6":
-            return isinstance(typ, enum.Enum)
+            return isinstance(typ, type) and issubclass(typ, enum.Enum)
         else:
             return (
                 hasattr(typ, "__invert__")
@@ -120,11 +168,72 @@ class PySideHelper:
                 and typ.__bases__ == (object,)
             )
 
-    def record_flag(self, flag: type) -> None:
+    def is_flag_item(self, obj: object) -> bool:
+        """An individual flag item
+
+        e.g.
+
+        is_flag_item(PySide2.QtCore.QDir.Filter.AllDirs) is True
+        is_flag_item(PySide6.QtCore.QDir.Filter.AllDirs) is True
+        """
+        if self.pyside_package == "PySide6":
+            return isinstance(obj, enum.Flag)
+        else:
+            return self.is_flag_item_type(type(obj))
+
+    def record_flag(self, flag: enum.EnumType) -> None:
         flag_full_name = get_type_fullname(flag)
-        self.__class__._flag_item_short_name_to_type[short_name(flag_full_name)].add(
-            get_type_fullname(flag)
+        self.__class__._flag_short_name_to_full_name[short_name(flag_full_name)].add(
+            flag_full_name
         )
+        if flag_full_name.startswith(self.primary_pyside_modules):
+            # we're gathering these to know the members of PySide6.QtCore.Qt so we only check the
+            # key modules
+            for flag_item_name in dir(flag):
+                if flag_item_name[0].isupper():
+                    flag_item = getattr(flag, flag_item_name)
+                    self.__class__._flag_item_short_name_to_full_name[flag_item_name][
+                        flag_full_name
+                    ] = flag_item
+
+    def record_signal(
+        self,
+        cls: type,
+        signal_name: str,
+        signal: "QtCore.Signal",  # type: ignore[name-defined]
+    ) -> None:
+        full_class_name = get_type_fullname(cls)
+
+        signatures = signal.signatures
+        if signatures:
+            # FIXME: should we skip signals with multiple overloads?  Is there a way to represent multiple?
+            # Take the first signature (there might be multiple overloads)
+            signature = signatures[0]
+
+            # Parse the signature string to extract argument types
+            # Format is like "timeout()" or "columnsAboutToBeInserted(QModelIndex,int,int)"
+            if "(" in signature and ")" in signature:
+                args_part = signature.split("(")[1].split(")")[0]
+                if args_part.strip():
+                    # Split by comma and clean up whitespace
+                    arg_types = [
+                        self.c_type_to_python_type(
+                            full_class_name, arg_type.strip(), signal_name
+                        )
+                        for arg_type in args_part.split(",")
+                    ]
+                else:
+                    arg_types = []
+            else:
+                arg_types = []
+            self.__class__._signals[f"{full_class_name}.{signal_name}"] = arg_types
+
+    def get_signal(self, cls: type, signal_name: str) -> list[str] | None:
+        full_class_name = get_type_fullname(cls)
+        try:
+            return self.__class__._signals[f"{full_class_name}.{signal_name}"]
+        except KeyError:
+            return None
 
     @cache
     def get_group_from_flag_item(self, item_type: type) -> type:
@@ -149,9 +258,22 @@ class PySideHelper:
         return None
 
     @cache
-    def guess_type_from_property(
+    def c_type_to_python_type(
         self, parent_type_name: str, c_type_name: str, prop_name: str
     ) -> str:
+        maybe_type = {
+            "bool": "bool",
+            "int": "int",
+            "uint": "int",
+            "qlonglong": "int",
+            "QLibrary::LoadHints": "int",
+            "float": "float",
+            "double": "float",
+            "QString": "str",
+        }.get(c_type_name)
+        if maybe_type is not None:
+            return maybe_type
+
         maybe_type_name = c_type_name.replace("::", ".").replace("*", "")
 
         options = []
@@ -163,14 +285,7 @@ class PySideHelper:
         options.append(f"{parent_module}.{maybe_type_name}")
 
         # next look in key modules
-        # FIXME use known_modules list
-        modules = [
-            f"{self.pyside_package}.QtCore",
-            f"{self.pyside_package}.QtGui",
-            f"{self.pyside_package}.QtWidgets",
-        ]
-
-        for module in modules:
+        for module in self.primary_pyside_modules:
             if module == parent_module:
                 continue
             options.append(f"{module}.{maybe_type_name}")
@@ -181,7 +296,7 @@ class PySideHelper:
                 return search_name
 
         # finally, look in our collection of enums, but only if it's an unambiguous match
-        known_types = self._flag_item_short_name_to_type.get(maybe_type_name)
+        known_types = self._flag_short_name_to_full_name.get(maybe_type_name)
         if known_types:
             if len(known_types) == 1:
                 return list(known_types)[0]
@@ -220,31 +335,18 @@ class PySideHelper:
         except AttributeError:
             return base_props
 
-        def getsig(prop: "QtCore.QMetaProperty") -> Tuple[str, str]:
+        def getsig(prop: "QtCore.QMetaProperty") -> Tuple[str, str]:  # type: ignore[name-defined]
             prop_name = decode(prop.name())
             c_type_name = cast(str, prop.typeName())
-            maybe_type = {
-                "bool": "bool",
-                "int": "int",
-                "uint": "int",
-                "qlonglong": "int",
-                "QLibrary::LoadHints": "int",
-                "float": "float",
-                "double": "float",
-                "QString": "str",
-            }.get(c_type_name)
-            if maybe_type is not None:
-                return prop_name, maybe_type
-
             # do a search based on what we know of the parent type and the C++ type name
-            type_name = self.guess_type_from_property(
+            type_name = self.c_type_to_python_type(
                 typing._type_repr(typ), c_type_name, prop_name
             )
             if type_name == "typing.Any":
                 # see if the property has a method since the signature return value can be used to
                 # infer the property type.
                 # FIXME: it's unclear whether this approach should take higher priority than
-                #  guess_type_from_property.  It results in seemingly subtle differences for about
+                #  c_type_to_python_type.  It results in seemingly subtle differences for about
                 #  20 properties.  This seems super niche.
                 func = getattr(obj, prop_name, None)
                 if func is not None:
@@ -254,7 +356,7 @@ class PySideHelper:
 
             return prop_name, type_name
 
-        def decode(x: "QtCore.QByteArray" | str | bytes) -> str:
+        def decode(x: "QtCore.QByteArray" | str | bytes) -> str:  # type: ignore[name-defined]
             if isinstance(x, self.QtCore.QByteArray):
                 return bytes(x).decode()
             elif isinstance(x, bytes):
@@ -355,12 +457,121 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                 "*.VolatileBool.set": "(self, a: object) -> None",
                 # * Add all signals and make all new-style signal patterns work.  e.g.
                 # `myobject.mysignal.connect(func) and `myobject.mysignal[type].connect(func)`
-                "*.Signal.__get__": [
-                    "(self, instance: None, owner: type[QObject]) -> Signal",
-                    "(self, instance: QObject, owner: type[QObject]) -> SignalInstance",
+                "PySide6.QtCore.Signal.__get__": [
+                    "(self, instance: None, owner: type[QObject]) -> Signal[*_SignalTypes]",
+                    "(self, instance: QObject, owner: type[QObject]) -> SignalInstance[*_SignalTypes]",
                 ],
-                "*.Signal.__getitem__": "(self, index) -> SignalInstance",
-                "*.SignalInstance.__getitem__": "(self, index) -> SignalInstance",
+                "PySide6.QtCore.Signal.__getitem__": [
+                    "(self, index: type[_T1]) -> SignalInstance[_T1]",
+                    "(self, index: tuple[type[_T1], type[_T2]]) -> SignalInstance[_T1, _T2]",
+                    "(self, index: tuple[type[_T1], type[_T2], type[_T3]]) -> SignalInstance[_T1, _T2, _T3]",
+                    "(self, index: tuple[type[_T1], type[_T2], type[_T3], type[_T4]]) -> SignalInstance[_T1, _T2, _T3, _T4]",
+                ],
+                # "PySide6.QtCore.Signal.__init__": [
+                #     # no args
+                #     "(self: Signal[()], /, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...",
+                #     # 1-4 args
+                #     "(self: Signal[_T1], arg1: type[_T1], /, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...",
+                #     "(self: Signal[_T1, _T2], arg1: type[_T1], arg2: type[_T2], /, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...",
+                #     "(self: Signal[_T1, _T2, _T3], arg1: type[_T1], arg2: type[_T2], arg3: type[_T3], /, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...",
+                #     "(self: Signal[_T1, _T2, _T3, _T4], arg1: type[_T1], arg2: type[_T2], arg3: type[_T3], arg4: type[_T4], /, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...",
+                #     # catchall for everything else, including tuple args
+                #     "(self, /, *types: type, name: str | None = ..., arguments: Optional[List[str]] = ...) -> None: ...",
+                # ],
+                "PySide6.QtCore.Signal.__init__": [
+                    # no args
+                    FunctionSig(
+                        "__init__",
+                        [
+                            ArgSig("self", "Signal[()]"),
+                            ArgSig("/"),
+                            ArgSig("name", "str | None", default=True),
+                            ArgSig("arguments", "Optional[List[str]]", default=True),
+                        ],
+                        ret_type="None",
+                    ),
+                    # 1-4 args
+                    FunctionSig(
+                        "__init__",
+                        [
+                            ArgSig("self", "Signal[_T1]"),
+                            ArgSig("arg1", "type[_T1]"),
+                            ArgSig("/"),
+                            ArgSig("name", "str | None", default=True),
+                            ArgSig("arguments", "Optional[List[str]]", default=True),
+                        ],
+                        ret_type="None",
+                    ),
+                    FunctionSig(
+                        "__init__",
+                        [
+                            ArgSig("self", "Signal[_T1, _T2]"),
+                            ArgSig("arg1", "type[_T1]"),
+                            ArgSig("arg2", "type[_T2]"),
+                            ArgSig("/"),
+                            ArgSig("name", "str | None", default=True),
+                            ArgSig("arguments", "Optional[List[str]]", default=True),
+                        ],
+                        ret_type="None",
+                    ),
+                    FunctionSig(
+                        "__init__",
+                        [
+                            ArgSig("self", "Signal[_T1, _T2, _T3]"),
+                            ArgSig("arg1", "type[_T1]"),
+                            ArgSig("arg2", "type[_T2]"),
+                            ArgSig("arg3", "type[_T3]"),
+                            ArgSig("/"),
+                            ArgSig("name", "str | None", default=True),
+                            ArgSig("arguments", "Optional[List[str]]", default=True),
+                        ],
+                        ret_type="None",
+                    ),
+                    FunctionSig(
+                        "__init__",
+                        [
+                            ArgSig("self", "Signal[_T1, _T2, _T3, _T4]"),
+                            ArgSig("arg1", "type[_T1]"),
+                            ArgSig("arg2", "type[_T2]"),
+                            ArgSig("arg3", "type[_T3]"),
+                            ArgSig("arg4", "type[_T4]"),
+                            ArgSig("/"),
+                            ArgSig("name", "str | None", default=True),
+                            ArgSig("arguments", "Optional[List[str]]", default=True),
+                        ],
+                        ret_type="None",
+                    ),
+                    # catchall for tuples
+                    FunctionSig(
+                        "__init__",
+                        [
+                            ArgSig("self"),
+                            ArgSig("/"),
+                            ArgSig("*types", "tuple"),
+                            ArgSig("name", "str | None", default=True),
+                            ArgSig("arguments", "Optional[List[str]]", default=True),
+                        ],
+                        ret_type="None",
+                    ),
+                    # catchall for types
+                    FunctionSig(
+                        "__init__",
+                        [
+                            ArgSig("self"),
+                            ArgSig("/"),
+                            ArgSig("*types", "type"),
+                            ArgSig("name", "str | None", default=True),
+                            ArgSig("arguments", "Optional[List[str]]", default=True),
+                        ],
+                        ret_type="None",
+                    ),
+                ],
+                "PySide6.QtCore.SignalInstance.__getitem__": [
+                    "(self, index: type[_T1]) -> SignalInstance[_T1]",
+                    "(self, index: tuple[type[_T1], type[_T2]]) -> SignalInstance[_T1, _T2]",
+                    "(self, index: tuple[type[_T1], type[_T2], type[_T3]]) -> SignalInstance[_T1, _T2, _T3]",
+                    "(self, index: tuple[type[_T1], type[_T2], type[_T3], type[_T4]]) -> SignalInstance[_T1, _T2, _T3, _T4]",
+                ],
                 # * Fix `QTreeWidgetItemIterator.__iter__()` to iterate over `QTreeWidgetItemIterator`
                 "*.QTreeWidgetItemIterator.__iter__": "(self) -> typing.Iterator[QTreeWidgetItemIterator]",
                 "*.QTreeWidgetItemIterator.__next__": "(self) -> QTreeWidgetItemIterator",
@@ -431,17 +642,22 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                     "to",
                     "*",
                 ): f"list[{PYSIDE}.QtCore.QModelIndex]",
-                # * Fix slot arg of `SignalInstance.connect()` to be `typing.Callable` instead of `object`
+                # * Fix slot arg of `SignalInstance.connect()` to support validating the types of the callable args
                 (
-                    "*.QtCore.SignalInstance.connect",
+                    "PySide6.QtCore.SignalInstance.connect",
                     "slot",
                     "*",
-                ): "typing.Callable",
+                ): "_SlotFunc[*_SignalTypes]",
                 (
-                    "*.QtCore.SignalInstance.disconnect",
+                    "PySide6.QtCore.SignalInstance.disconnect",
                     "slot",
                     "*",
-                ): "typing.Callable | None",
+                ): "_SlotFunc[*_SignalTypes] | None",
+                (
+                    "PySide6.QtCore.SignalInstance.emit",
+                    "*args",
+                    "Any",
+                ): "*_SignalTypes",
                 #
                 (
                     "PySide6.QtCore.QObject.findChild*",
@@ -581,6 +797,12 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                     # * Fix passing QOjbect to QWidget.setParent
                     # (PySide6 fix is in arg_type_overrides)
                     "PySide2.QtWidgets.QWidget.setParent": f"(self, parent: typing.Union[{PYSIDE}.QtCore.QObject,None], f: {PYSIDE}.QtCore.Qt.WindowFlags = ...) -> None",
+                    "PySide2.QtCore.Signal.__get__": [
+                        "(self, instance: None, owner: type[QObject]) -> Signal",
+                        "(self, instance: QObject, owner: type[QObject]) -> SignalInstance",
+                    ],
+                    "PySide2.QtCore.Signal.__getitem__": "(self, index) -> SignalInstance",
+                    "PySide2.QtCore.SignalInstance.__getitem__": "(self, index) -> SignalInstance",
                     # * Fix slot arg of `SignalInstance.connect()` to be `typing.Callable` instead of `object`
                     # * Fix type arg of `SignalInstance.connect()` to be `QtCore.Qt.ConnectionType` instead of `type | None`
                     # (PySide6 fix is in arg_type_overrides)
@@ -680,18 +902,24 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
             typ is not None
             and (
                 helper.is_flag(typ)
+                or helper.is_enum(typ)
                 or helper.is_flag_group(typ)
-                or helper.is_flag_item(typ)
+                or helper.is_flag_item_type(typ)
             )
             and ctx.name in self.flag_overrides
         )
 
-    def get_signature_str(self, ctx: FunctionContext) -> str | list[str] | None:
+    def get_signature_str(
+        self, ctx: FunctionContext
+    ) -> str | list[str] | list[FunctionSig] | None:
+        """
+        Provide signature overrides for PySide2 flag item special methods
+        """
         if helper.pyside_package == "PySide2" and self._is_flag_type(ctx):
             assert ctx.class_info is not None
             typ = ctx.class_info.cls
             docstr_override = self.flag_overrides[ctx.name]
-            if helper.is_flag_item(typ):
+            if helper.is_flag_item_type(typ):
                 return_type = helper.get_group_from_flag_item(typ)
             elif typ is not None:
                 return_type = typ
@@ -755,8 +983,9 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
         ):
             helper.add_property_args(ctx.class_info.cls, results)
 
+        # use the type of results, it may be of type Overridden
+        new_sigs = type(results)()
         # remove duplicates: FunctionSig is not hashable!
-        new_sigs = []
         for sig in results:
             if sig not in new_sigs:
                 new_sigs.append(sig)
@@ -798,6 +1027,7 @@ class {overload_class_name}:
     def __get__(self, object: {class_name}, owner: typing.Any) -> InstanceOverloads.{method_name}: ...\n\n'''
 
     _seen: set[type] = set()
+    _pyside_sig_generator: PySideSignatureGenerator | None = None
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
@@ -814,8 +1044,8 @@ class {overload_class_name}:
         self.custom_overloads: list[str] = []
 
     def walk_objects(self, obj: object, seen: set[type]) -> None:
-        for _, child in self.get_members(obj):
-            if inspect.isclass(child):
+        for child_name, child in self.get_members(obj):
+            if isinstance(child, type):
                 if child in seen:
                     continue
                 seen.add(child)
@@ -823,20 +1053,39 @@ class {overload_class_name}:
                 if docstring is not None and not isinstance(docstring, str):
                     print(f"Bad docstring: {child}")
                     child.__doc__ = ""
-                # add to the cache
-                child = cast(type, child)
 
                 # populate caches
-                if helper.pyside_package == "PySide2" and helper.is_flag_item(child):
+                if helper.pyside_package == "PySide2" and helper.is_flag(child):
                     helper.get_group_from_flag_item(child)
-                elif helper.is_flag(child) or helper.is_flag_group(child):
+                elif (
+                    helper.is_enum(child)
+                    or helper.is_flag(child)
+                    or helper.is_flag_group(child)
+                ):
                     helper.record_flag(child)
 
                 self.walk_objects(child, seen)
 
+            elif helper.pyside_package == "PySide6" and isinstance(
+                child, helper.QtCore.Signal
+            ):
+                assert isinstance(obj, type)
+                helper.record_signal(obj, child_name, child)
+
+    @classmethod
+    def get_pyside_sig_generator(cls) -> PySideSignatureGenerator:
+        # InspectionStubGenerator is instantiated for every module processed, but we want to
+        # reuse a single PySideSignatureGenerator so that it can generate usage reports, so
+        # we store it at the class level.
+        if cls._pyside_sig_generator is None:
+            # re-use the generator so that we can generate match reports for all classes
+            cls._pyside_sig_generator = PySideSignatureGenerator(strict=False)
+            # atexit.register(cls._pyside_sig_generator.print_info)
+        return cls._pyside_sig_generator
+
     def get_sig_generators(self) -> list[SignatureGenerator]:
         sig_generators = super().get_sig_generators()
-        sig_generators.insert(0, PySideSignatureGenerator())
+        sig_generators.insert(0, self.get_pyside_sig_generator())
         return sig_generators
 
     def _is_skipped_pyside_attribute(self, attr: str, value: Any) -> bool:
@@ -865,6 +1114,9 @@ class {overload_class_name}:
         return super().is_method(class_info, name, obj)
 
     def strip_or_import(self, type_name: str) -> str:
+        if "*" in type_name:
+            # variadic type vars can't be parsed by parse_type_comment()
+            return type_name
         type_name = type_name.replace("Shiboken.", f"{helper.shiboken_package}.")
         stripped_type = super().strip_or_import(type_name)
         return stripped_type
@@ -926,6 +1178,18 @@ class {overload_class_name}:
         boilerplate = """\
 T = typing.TypeVar('T')
 P = typing.ParamSpec('P')\n"""
+
+        if self.module_name == "PySide6.QtCore":
+            boilerplate += """
+_T1 = typing.TypeVar('_T1')
+_T2 = typing.TypeVar('_T2')
+_T3 = typing.TypeVar('_T3')
+_T4 = typing.TypeVar('_T4')
+_SignalTypes = typing.TypeVarTuple('_SignalTypes')
+
+class _SlotFunc(typing.Protocol[*_SignalTypes]):
+    def __call__(self, *args: *_SignalTypes) -> typing.Any:
+        pass\n\n"""
 
         if helper.pyside_package == "PySide6":
             # something changed that makes this required now.  could be new behavior of stubgen.
@@ -1024,7 +1288,9 @@ P = typing.ParamSpec('P')\n"""
             else:
                 methods = instancemethods
 
-            methods = remove_overlapping_overloads(methods, sort=True)
+            methods = remove_overlapping_overloads(
+                methods, sort=not isinstance(sigs, Overridden)
+            )
 
             # quick and dirty fix
             if (
@@ -1048,6 +1314,26 @@ P = typing.ParamSpec('P')\n"""
 
         return lines
 
+    def get_base_types(self, obj: type) -> list[str]:
+        if self.module_name == "PySide6.QtCore" and obj.__name__ in [
+            "Signal",
+            "SignalInstance",
+        ]:
+            return ["typing.Generic[*_SignalTypes]"]
+        return super().get_base_types(obj)
+
+    def generate_class_attr(self, cls: type, attr: str, value: object) -> str | None:
+        signal_types = (
+            helper.get_signal(cls, attr) if helper.pyside_package == "PySide6" else None
+        )
+        if signal_types is not None:
+            prop_type_name = self.strip_or_import(self.get_type_annotation(value))
+            signal_types_str = ", ".join(signal_types) if signal_types else "()"
+            classvar = self.add_name("typing.ClassVar")
+            return f"{self._indent}{attr}: {classvar}[{prop_type_name}[{signal_types_str}]] = ..."
+        else:
+            return super().generate_class_attr(cls, attr, value)
+
 
 mypy.stubgen.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[attr-defined]
 mypy.stubgenc.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[misc]
@@ -1056,6 +1342,7 @@ helper = PySideHelper()
 
 
 if __name__ == "__main__":
+    dump_mappings = False
     helper.set_pyside_version(2)
 
     # in order to create and inspect object properties we must create an app
@@ -1065,6 +1352,23 @@ if __name__ == "__main__":
     #
     # # I don't think this works because mypy is compiled
     # patch()
+
+    # in PySide2 there are 5 types of enums (these terms are not official)
+    # - flag:       holder of flag items.                                  PySide2.QtCore.QDir.Filter
+    # - flag item:  a specific flag.  can be combined with other flags.    PySide2.QtCore.QDir.Filter.AllDirs
+    # - enum:       holder of enum itmes                                   PySide2.QtCore.QLocale.Language
+    # - enum item:  a specific enum.  cannot be combined with other enums  PySide2.QtCore.QLocale.Language.Abkhazian
+    # - flag group: the result of combining flag items                     PySide2.QtCore.QDir.Filters
+
+    # Issues / concerns / observations
+    # - what we call a flag is more accurately an enum.
+    # - we appear to conflate flag items and flags, because we identify flag items by their type,
+    #   and the type of a flag item is a flag.
+    # - we implemented PySide6 support without changing the generated output from Pyside2, which
+    #   means that these discrepancies are a problem of terminology, and especially how this differs
+    #   between PySide2 and PySide6
+    # - is_flag_item_type is only ever called in PySide2 context or alongside a checks for all enum varieties types (_is_flag_type)
+    # - is_flag_item_type operates on the type instead of the instance because that's what's available on the ctx.
 
     mypy.stubgen.main(
         [
@@ -1076,3 +1380,39 @@ if __name__ == "__main__":
     )
 
     helper.add_version_info()
+
+    if dump_mappings:
+        import pprint
+
+        from PySide2.QtCore import Qt
+
+        print()
+        flags = defaultdict(set)
+        for name, member in inspect.getmembers(Qt):
+            if isinstance(member, type) and (
+                helper.is_flag(member) or helper.is_flag_item_type(member)
+            ):
+                flag_name = name
+                for child_name in dir(member):
+                    child = getattr(member, child_name)
+                    if helper.is_flag(type(child)) or helper.is_flag_item_type(
+                        type(child)
+                    ):
+                        flags[child_name].add(flag_name)
+
+        mapping = {}
+        for name, member in inspect.getmembers(Qt):
+            if helper.is_flag(type(member)) or helper.is_flag_item_type(type(member)):
+                matches = list(flags[name])
+                if len(matches) > 1:
+                    raise RuntimeError(f"{name} has more than one match: {matches}")
+                mapping[f"PySide2.QtCore.Qt.{name}"] = (
+                    f"PySide2.QtCore.Qt.{matches[0]}.{name}"
+                )
+
+        with open("../pyside6/enum-mappings.json", "w") as f:
+            json.dump(mapping, f)
+
+        pprint.pprint(mapping)
+
+    # InspectionStubGenerator._pyside_sig_generator.print_info()

@@ -595,8 +595,10 @@ def generate(session: nox.Session, lib: str) -> None:
     result = subprocess.run(
         ["uv", "run", "--no-dev", "mypy", "stubs"], text=True, capture_output=True
     )
-    print(result.returncode)
-    print(result.stdout)
+    if result.returncode > 1:
+        print("Error occured while adding ignore statements")
+        print(result.stdout)
+    # print(result.stdout)
     subprocess.run(["uvx", "mypy-silent"], check=True, text=True, input=result.stdout)
 
 

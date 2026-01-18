@@ -1,2 +1,2 @@
 # for some reason python 3.12 gets a build of PySide6 that is missing docstrings?!
-3.10
+3.11

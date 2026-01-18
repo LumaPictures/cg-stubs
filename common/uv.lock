@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.12"
 
 [[package]]
@@ -113,7 +113,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "mypy", specifier = ">=1.15.0,<1.17.0" },
+    { name = "mypy", specifier = ">=1.15.0,<1.20.0" },
     { name = "typeguard" },
 ]
 
