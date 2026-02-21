@@ -1,0 +1,9 @@
+import _substance_painter.async_utils
+import dataclasses
+
+@dataclasses.dataclass(frozen=True)
+class StopSource:
+    stop_source: _substance_painter.async_utils.StopSource
+    def __bool__(self) -> bool: ...
+    def request_stop(self) -> bool: ...
+    def stop_requested(self) -> bool: ...

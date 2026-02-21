@@ -26,6 +26,12 @@ dev = [
     "stubgenlib",
 ]
 
+[tool.uv]
+# mypy must be installed from source (no mypyc) so that
+# stubgenlib.moduleinspect.patch() can monkey-patch ModuleInspect
+# to work in-process inside embedded Python environments.
+no-binary-package = ["mypy"]
+
 [tool.uv.sources]
 stubgenlib = { path = "../common" }
 

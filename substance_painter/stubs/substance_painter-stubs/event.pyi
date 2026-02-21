@@ -1,88 +1,127 @@
+import dataclasses
+import datetime
 import enum
 from typing import Union
+from substance_painter.async_utils import StopSource as StopSource
 from substance_painter.baking import BakingStatus as BakingStatus
 from substance_painter.export import ExportStatus as ExportStatus
 from substance_painter.textureset import ChannelType as ChannelType
-from typing import Any, Callable, Dict, List, Tuple, Type
+from typing import Any, Callable
 
+@dataclasses.dataclass(frozen=True)
 class Event: ...
 
+@dataclasses.dataclass(frozen=True)
 class _TestEvent(Event):
     message: str
-    def __init__(self, message) -> None: ...
 
+@dataclasses.dataclass(frozen=True)
 class _DunamisEvent(Event):
     workflow: str
     subcategory: str
     type: str
     subtype: str
-    values: List[Tuple[str, str]]
-    measures: List[Tuple[str, Union[int, float]]]
-    children: List[Type[Event]]
-    def __init__(self, workflow, subcategory, type, subtype, values, measures, children) -> None: ...
+    values: list[tuple[str, str]]
+    measures: list[tuple[str, Union[int, float]]]
+    children: list[type[Event]]  # type: ignore[valid-type]
 
+@dataclasses.dataclass(frozen=True)
 class ProjectOpened(Event): ...
+@dataclasses.dataclass(frozen=True)
 class ProjectCreated(Event): ...
+@dataclasses.dataclass(frozen=True)
 class ProjectAboutToClose(Event): ...
+@dataclasses.dataclass(frozen=True)
+class ProjectClosed(Event): ...
 
+@dataclasses.dataclass(frozen=True)
 class ProjectAboutToSave(Event):
     file_path: str
-    def __init__(self, file_path) -> None: ...
 
+@dataclasses.dataclass(frozen=True)
 class ProjectSaved(Event): ...
 
+@dataclasses.dataclass(frozen=True)
 class ExportTexturesAboutToStart(Event):
-    textures: Dict[Tuple[str, str], List[str]]
-    def __init__(self, textures) -> None: ...
+    textures: dict[tuple[str, str], list[str]]
 
+@dataclasses.dataclass(frozen=True)
 class ExportTexturesEnded(Event):
     status: ExportStatus
     message: str
-    textures: Dict[Tuple[str, str], List[str]]
-    def __init__(self, status, message, textures) -> None: ...
+    textures: dict[tuple[str, str], list[str]]
 
+@dataclasses.dataclass(frozen=True)
 class ShelfCrawlingStarted(Event):
     shelf_name: str
-    def __init__(self, shelf_name) -> None: ...
 
+@dataclasses.dataclass(frozen=True)
 class ShelfCrawlingEnded(Event):
     shelf_name: str
-    def __init__(self, shelf_name) -> None: ...
 
+@dataclasses.dataclass(frozen=True)
 class _ProjectEditionEntered(Event): ...
+@dataclasses.dataclass(frozen=True)
 class _ProjectEditionLeft(Event): ...
+@dataclasses.dataclass(frozen=True)
 class ProjectEditionEntered(Event): ...
+@dataclasses.dataclass(frozen=True)
 class ProjectEditionLeft(Event): ...
 
+@dataclasses.dataclass(frozen=True)
 class BusyStatusChanged(Event):
     busy: bool
-    def __init__(self, busy) -> None: ...
 
+@dataclasses.dataclass(frozen=True)
+class BakingProcessAboutToStart(Event):
+    stop_source: StopSource
+
+@dataclasses.dataclass(frozen=True)
+class BakingProcessProgress(Event):
+    progress: float
+
+@dataclasses.dataclass(frozen=True)
 class BakingProcessEnded(Event):
     status: BakingStatus
-    def __init__(self, status) -> None: ...
 
-from _substance_painter.event import TextureStateEventAction
+@dataclasses.dataclass(frozen=True)
+class _LayerStacksModelDataChanged(Event): ...
+@dataclasses.dataclass(frozen=True)
+class LayerStacksModelDataChanged(Event): ...
 
+@dataclasses.dataclass(frozen=True)
+class EngineComputationsStatusChanged(Event):
+    engine_computations_enabled: bool
+
+from _substance_painter.event import TextureStateEventAction as TextureStateEventAction
+
+@dataclasses.dataclass(frozen=True)
 class TextureStateEvent(Event):
+    @staticmethod
+    def cache_key_invalidation_throttling_period() -> datetime.timedelta: ...
+    @staticmethod
+    def set_cache_key_invalidation_throttling_period(period: datetime.timedelta) -> None: ...
     action: TextureStateEventAction
     stack_id: int
-    tile_indices: Tuple[int, int]
+    tile_indices: tuple[int, int]
     channel_type: ChannelType
     cache_key: int
-    def __init__(self, action, stack_id, tile_indices, channel_type, cache_key) -> None: ...
 
-class _ProjectEdtionStateEventsGenerator:
+@dataclasses.dataclass(frozen=True)
+class CameraPropertiesChanged(Event):
+    camera_id: int
+
+class _ProjectEditionStateEventsGenerator:
     class _State(enum.Enum):
-        EDITION_STOPPED: int
-        PRE_EDITION_STARTED: int
-        EDITION_STARTED: int
+        EDITION_STOPPED = 1
+        PRE_EDITION_STARTED = 2
+        EDITION_STARTED = 3
     def __init__(self, dispatcher) -> None: ...
 
 class Dispatcher:
     def __init__(self) -> None: ...
-    def connect(self, event_cls: Type[Event], callback: Callable[[Event], Any]) -> None: ...
-    def connect_strong(self, event_cls: Type[Event], callback: Callable[[Event], Any]) -> None: ...
-    def disconnect(self, event_cls: Type[Event], callback: Callable[[Event], Any]) -> None: ...
+    def connect(self, event_cls: type[Event], callback: Callable[[Event], Any]) -> None: ...
+    def connect_strong(self, event_cls: type[Event], callback: Callable[[Event], Any]) -> None: ...
+    def disconnect(self, event_cls: type[Event], callback: Callable[[Event], Any]) -> None: ...
 
 DISPATCHER: Dispatcher

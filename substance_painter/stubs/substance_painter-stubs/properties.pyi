@@ -1,20 +1,11 @@
 import _substance_painter.data_tweak
+import dataclasses
 import typing
-from _typeshed import Incomplete
+from .colormanagement import Color as Color
 
-PropertyValue = typing.Union[
-    bool,
-    int,
-    typing.Tuple[int, int],
-    typing.Tuple[int, int, int],
-    typing.Tuple[int, int, int, int],
-    float,
-    typing.Tuple[float, float],
-    typing.Tuple[float, float, float],
-    typing.Tuple[float, float, float,float],
-    str
-]
+PropertyValue = bool | int | tuple[int, int] | tuple[int, int, int] | tuple[int, int, int, int] | float | tuple[float, float] | tuple[float, float, float] | Color | tuple[Color, float] | tuple[float, float, float, float] | str
 
+@dataclasses.dataclass(frozen=True)
 class Property:
     handle: _substance_painter.data_tweak.PythonTweak
     def value(self) -> PropertyValue: ...
@@ -22,7 +13,6 @@ class Property:
     def short_name(self) -> str: ...
     def label(self) -> str: ...
     def widget_type(self) -> str: ...
-    def enum_values(self) -> typing.Dict[str, int]: ...
+    def enum_values(self) -> dict[str, int]: ...
     def enum_value(self, enum_label: str) -> int: ...
-    def properties(self) -> typing.Dict[str, typing.Any]: ...
-    def __init__(self, handle) -> None: ...
+    def properties(self) -> dict[str, typing.Any]: ...
