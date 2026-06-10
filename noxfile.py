@@ -23,6 +23,7 @@ import nox
 import nox.command
 
 APPS = [
+    "3dequalizer",
     "houdini",
     "katana",
     "mari",

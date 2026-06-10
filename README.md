@@ -6,6 +6,7 @@ These stubs are intended to be used with a type checker like [`mypy`](https://my
 
 Supported libraries and applications:
 
+- [3DEqualizer](https://pypi.org/project/types-3dequalizer/)
 - [USD](https://pypi.org/project/types-usd/)
 - [houdini](https://pypi.org/project/types-houdini/)
 - [katana](https://pypi.org/project/types-katana/)

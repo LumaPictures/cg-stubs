@@ -1,0 +1,62 @@
+[project]
+name = "types-3dequalizer"
+version = "4.8.1.0"
+
+readme = "README.md"
+authors = [{name="Hamed Yar"}]
+description = "Unofficial python stubs for Science.D.Visions 3DEqualizer4 (tde4, vl_sdv)"
+license = "MIT"
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Typing :: Stubs Only",
+]
+repository = "https://github.com/LumaPictures/cg-stubs"
+homepage = "https://github.com/LumaPictures/cg-stubs"
+
+keywords = ["3d", "graphics", "games", "VFX", "CG", "animation", "matchmove", "tracking"]
+
+[tool.mypy]
+follow_imports = "skip"
+check_untyped_defs = true
+files = [
+    "stubgen_3dequalizer.py",
+    "tests",
+    "tests_live",
+]
+warn_unused_ignores = true
+show_error_codes = true
+enable_error_code = [
+    "ignore-without-code"
+]
+
+[dependency-groups]
+dev = [
+    "stubgenlib",
+    "pytest",
+]
+
+[tool.pytest.ini_options]
+# make stubgen_3dequalizer.py importable from tests/
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.uv.sources]
+stubgenlib = { path = "../common" }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["stubs/tde4-stubs", "stubs/vl_sdv-stubs"]
+
+[tool.hatch.build]
+# uv+hatch does not write anything to the installed .pth file if the contents
+# of the package do not include .py files.  Adding this ensures the .pth file
+# is written correctly
+dev-mode-dirs = ["stubs"]
