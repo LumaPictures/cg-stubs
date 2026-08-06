@@ -1,25 +1,27 @@
 from __future__ import absolute_import, print_function
 
-from typing import Any
-
 from PySide6 import QtCore, QtWidgets
 
 
 class MainDialog(QtWidgets.QDialog):
-    # The types of signals 1-3 are inferred based on type arguments
+    # The types of these signals are inferred from the constructor arguments, so
+    # no explicit annotations are required.  Signal and SignalInstance are
+    # parametrized by one or more signatures, where each signature is a tuple of
+    # argument types.
     signal1 = QtCore.Signal()
     signal2 = QtCore.Signal(int)
     signal3 = QtCore.Signal(int, str)
-    # Signals support multiple signatures when passed as tuples, but this can't be described
-    # using type annotations.
-    # For simple cases where both signatures have a single arg, we can simply use a union for the type.
-    # WARNING: QtCore.Signal is not subscriptable at runtime, so you must create a forward reference
-    # (e.g. wrap it in quotes)
-    signal4: "QtCore.Signal[int | str]" = QtCore.Signal((int,), (str,))
-    # For more complicated multi-signals, we can ignore the error which effectively disables checking for this signal.
-    # To regain type safety, use indexing when accessing the signal (see examples below).
-    signal5 = QtCore.Signal((int, int), (str, str))  # type: ignore[var-annotated]
-    signal6 = QtCore.Signal((int,), (int, int))  # type: ignore[var-annotated]
+    # Signals support multiple signatures when passed as tuples.  Inference is
+    # supported for up to two signatures with up to two arguments each; other
+    # configurations must be annotated manually, e.g.
+    #   signal7: "QtCore.Signal[tuple[int, int, int], tuple[str]]" = QtCore.Signal(
+    #       (int, int, int), (str,)
+    #   )
+    # WARNING: QtCore.Signal is not subscriptable at runtime, so manual
+    # annotations must be forward references (wrapped in quotes).
+    signal4 = QtCore.Signal((int,), (str,))
+    signal5 = QtCore.Signal((int, int), (str, str))
+    signal6 = QtCore.Signal((int,), (int, int))
 
     def __init__(self) -> None:
         super().__init__()
@@ -68,6 +70,10 @@ class MainDialog(QtWidgets.QDialog):
         self.setLayout(main_layout)
 
     def _connect_signals(self) -> None:
+        # Qt allows connecting slots that accept fewer arguments than the signal
+        # emits, and the stubs support that pattern for up to the first three
+        # arguments.  Signals with multiple signatures are checked against their
+        # default (first) signature.
         self.signal1.connect(self.slot1)
         # All remaining slots require an argument
         self.signal1.connect(self.slot2a)  # type: ignore[arg-type]
@@ -76,76 +82,70 @@ class MainDialog(QtWidgets.QDialog):
         self.signal1.connect(self.slot3)  # type: ignore[arg-type]
         self.signal1.connect(self.slot4)  # type: ignore[arg-type]
 
-        self.signal2.connect(self.slot1)  # type: ignore[arg-type]
+        self.signal2.connect(self.slot1)
         self.signal2.connect(self.slot2a)
-        # Argument has the wrong type,
-        # but Qt happens to be able to coerce an int to str.
-        self.signal2.connect(self.slot2b)  # type: ignore[arg-type]
+        # Argument has the wrong type.
+        # Qt happens to be able to coerce an int to str, but we want users to be explicit.
+        self.signal2.connect(self.slot2b)  # type: ignore[call-overload]
         self.signal2.connect(self.slot2c)
         # Is missing a required argument
-        self.signal2.connect(self.slot3)  # type: ignore[arg-type]
+        self.signal2.connect(self.slot3)  # type: ignore[call-overload]
         self.signal2.connect(self.slot4)
 
-        self.signal3.connect(self.slot1)  # type: ignore[arg-type]
-        self.signal3.connect(self.slot2a)  # type: ignore[arg-type]
-        self.signal3.connect(self.slot2b)  # type: ignore[arg-type]
-        self.signal3.connect(self.slot2c)  # type: ignore[arg-type]
+        self.signal3.connect(self.slot1)
+        self.signal3.connect(self.slot2a)
+        # Argument 1 has the wrong type.
+        # Qt happens to be able to coerce an int to str, but we want users to be explicit.
+        self.signal3.connect(self.slot2b)  # type: ignore[call-overload]
+        self.signal3.connect(self.slot2c)
         self.signal3.connect(self.slot3)
         self.signal3.connect(self.slot4)
 
-        self.signal4.connect(self.slot1)  # type: ignore[arg-type]
-        self.signal4.connect(self.slot2a)  # type: ignore[arg-type]
-        # Argument 1 has the wrong type,
-        # but Qt happens to be able to coerce an int to str.
-        self.signal4.connect(self.slot2b)  # type: ignore[arg-type]
+        self.signal4.connect(self.slot1)
+        self.signal4.connect(self.slot2a)
+        # Argument 1 has the wrong type.
+        # Qt happens to be able to coerce an int to str, but we want users to be explicit.
+        self.signal4.connect(self.slot2b)  # type: ignore[call-overload]
         self.signal4.connect(self.slot2c)
         # Is missing a required argument
-        self.signal4.connect(self.slot3)  # type: ignore[arg-type]
+        self.signal4.connect(self.slot3)  # type: ignore[call-overload]
         self.signal4.connect(self.slot4)
 
-        # signal5 does not do any type checking because it represents multiple signatures
         self.signal5.connect(self.slot1)
-        # Argument 1 might have the wrong type
-        # depending on the Signal signature.
+        # Argument 1 has the correct type in the default Signal signature.
         self.signal5.connect(self.slot2a)
-        # Argument 1 might have the wrong type
-        # depending on the Signal signature.
-        self.signal5.connect(self.slot2b)
+        # Argument 1 has the wrong type in the default Signal signature.
+        self.signal5.connect(self.slot2b)  # type: ignore[call-overload]
         self.signal5.connect(self.slot2c)
         self.signal5.connect(self.slot3)
         self.signal5.connect(self.slot4)
 
-        # we can use indexing to check a particular signature
-        self.signal5[int, int].connect(self.slot1)  # type: ignore[arg-type]
-        # Argument 1 might have the wrong type
-        # depending on the Signal signature.
-        self.signal5[int, int].connect(self.slot2a)  # type: ignore[arg-type]
-        # Argument 1 might have the wrong type
-        # depending on the Signal signature.
-        self.signal5[int, int].connect(self.slot2b)  # type: ignore[arg-type]
-        self.signal5[int, int].connect(self.slot2c)  # type: ignore[arg-type]
+        # We can use indexing to check against a specific signature instead of
+        # the default one.
+        self.signal5[int, int].connect(self.slot1)
+        self.signal5[int, int].connect(self.slot2a)
+        # Argument 1 has the wrong type.
+        self.signal5[int, int].connect(self.slot2b)  # type: ignore[call-overload]
+        self.signal5[int, int].connect(self.slot2c)
         self.signal5[int, int].connect(self.slot3)
         self.signal5[int, int].connect(self.slot4)
 
-        self.signal5[str, str].connect(self.slot1)  # type: ignore[arg-type]
-        # Argument 1 might have the wrong type
-        # depending on the Signal signature.
-        self.signal5[str, str].connect(self.slot2a)  # type: ignore[arg-type]
-        # Argument 1 might have the wrong type
-        # depending on the Signal signature.
-        self.signal5[str, str].connect(self.slot2b)  # type: ignore[arg-type]
-        self.signal5[str, str].connect(self.slot2c)  # type: ignore[arg-type]
+        self.signal5[str, str].connect(self.slot1)
+        # Argument 1 has the wrong type.
+        self.signal5[str, str].connect(self.slot2a)  # type: ignore[call-overload]
+        self.signal5[str, str].connect(self.slot2b)
+        self.signal5[str, str].connect(self.slot2c)
         self.signal5[str, str].connect(self.slot3)
         self.signal5[str, str].connect(self.slot4)
 
-        # type checking is disabled for signal6
         self.signal6.connect(self.slot1)
         self.signal6.connect(self.slot2a)
-        # Argument 1 has the wrong type,
-        # but Qt happens to be able to coerce an int to str.
-        self.signal6.connect(self.slot2b)
+        # Argument 1 has the wrong type.
+        # Qt happens to be able to coerce an int to str, but we want users to be explicit.
+        self.signal6.connect(self.slot2b)  # type: ignore[call-overload]
         self.signal6.connect(self.slot2c)
-        self.signal6.connect(self.slot3)
+        # The default Signal signature is missing an argument.
+        self.signal6.connect(self.slot3)  # type: ignore[call-overload]
         self.signal6.connect(self.slot4)
 
     @QtCore.Slot()
@@ -173,8 +173,12 @@ class MainDialog(QtWidgets.QDialog):
     @QtCore.Slot()
     def _emitSignal5(self) -> None:
         self._text_edit.clear()
+        # emit is checked against the default (first) signature
         self.signal5.emit(1, 2)
-        self.signal5.emit("bad")  # not checked, because Signal/SignalInstance can't represent multiple signatures
+        # This matches neither of signal5's signatures.  It is flagged because
+        # emit is checked against the default signature; a bad emit that
+        # matches a non-default signature in argument count would not be.
+        self.signal5.emit("bad")  # type: ignore[arg-type, call-arg]
         self.signal5[int, int].emit(3, 4)
         self.signal5[int, int].emit("one", "two")  # type: ignore[arg-type]
         self.signal5[str, str].emit("one", "two")
@@ -185,6 +189,26 @@ class MainDialog(QtWidgets.QDialog):
         self.signal6.emit(1)
         self.signal6[int].emit(2)
         self.signal6[int, int].emit(3, 4)
+
+    def _invalid(self) -> None:
+        # Incorrect usage of __getitem__ is flagged when the index can be
+        # validated against the signal's first or last signature.
+        # signal1 has no arguments
+        self.signal1[int]  # type: ignore[index]
+        self.signal1[str]  # type: ignore[index]
+        # Unable to get mypy to flag this as an issue: indexes with multiple
+        # types that match no signature fall through to an unchecked catchall.
+        self.signal1[int, str]
+        # signal2 has an `int` type
+        self.signal2[str]  # type: ignore[index]
+        # signal3 has 2 arguments
+        self.signal3[int]  # type: ignore[call-overload]
+        # signal4 accepts int or str
+        self.signal4[float].emit(4.0)  # type: ignore[arg-type, index]
+        self.signal5[int]  # type: ignore[call-overload]
+        self.signal5[str]  # type: ignore[call-overload]
+        # Unable to get mypy to flag this as an issue (see signal1 above).
+        self.signal5[int, str]
 
     @QtCore.Slot()
     def slot1(self) -> None:

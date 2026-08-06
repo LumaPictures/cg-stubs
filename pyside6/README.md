@@ -15,7 +15,52 @@ The most accurate type stubs for PySide! They have been tested using `mypy` on a
   * Fixed `Signal.emit()`
   * Fixed `Signal.connect()` return value to `bool` instead of `None`
   * Fixed `Object.disconnect()`
+* Made `Signal` and `SignalInstance` generic, so that signal arguments are type checked (see [Typed signals](#typed-signals))
 * Added all methods to flag classes: `__or__`, `__xor__`, ...
+
+### Typed signals
+
+`Signal` and `SignalInstance` are generic types, parametrized by one or more *signatures*, where
+each signature is a tuple of argument types: e.g. `Signal[tuple[int, str]]`, or
+`Signal[tuple[int, int], tuple[str, str]]` for a signal with multiple signatures.  This provides
+type safety in a few ways:
+
+* `SignalInstance.connect()` enforces that the callable is compatible with the arguments emitted by
+  the signal.  Qt allows connecting slots that accept fewer arguments than the signal emits, and
+  this is supported for up to the first three arguments.
+* `SignalInstance.emit()` enforces the number and types of the arguments provided.
+* Signals with multiple signatures are checked against their default (first) signature.  Indexing,
+  e.g. `mysignal[str, str].connect(...)`, can be used to check against a specific signature: the
+  index is validated against the signal's first or last signature (with up to four arguments each).
+
+Signal attributes on native classes are populated with the requisite types in the stubs, and the
+types of custom signals are inferred from the arguments passed to the `Signal` constructor in
+common cases:
+
+```python
+class MyObject(QtCore.QObject):
+    signal1 = QtCore.Signal()                        # Signal[tuple[()]]
+    signal2 = QtCore.Signal(int)                     # Signal[tuple[int]]
+    signal3 = QtCore.Signal(int, str)                # Signal[tuple[int, str]]
+    signal4 = QtCore.Signal((int,), (str,))          # Signal[tuple[int], tuple[str]]
+    signal5 = QtCore.Signal((int, int), (str, str))  # Signal[tuple[int, int], tuple[str, str]]
+```
+
+Inference is supported for single-signature signals with up to four arguments, and for
+multi-signature signals with up to two signatures of up to two arguments each.  Other
+configurations must be annotated manually.  Note that the actual `Signal` and `SignalInstance`
+classes are not subscriptable at runtime, so manual annotations must be forward references
+(wrapped in quotes):
+
+```python
+    signal6: "QtCore.Signal[tuple[int, str, float, bool, bytes]]" = QtCore.Signal(
+        int, str, float, bool, bytes
+    )
+```
+
+In keeping with the convention that stubs should avoid false positives, signal usage that cannot
+be fully represented in the type system -- such as connecting or emitting through a non-default
+signature without indexing -- is allowed without error, even though it is not fully checked.
 
 ### Rule-based fixes
 
@@ -95,4 +140,3 @@ tox
 
 * Build PySide6 stubs
 * Merge overloads where a `Union` would do instead of multiple overloads
-* Add type enforcement for signal types, to protect against incorrect callables provided to `connect()`

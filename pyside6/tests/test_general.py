@@ -530,8 +530,8 @@ def test_qwindow() -> None:
 
 def test_signal_slot() -> None:
     class SomeClassWithSignal(QtCore.QObject):
-        signal_no_arg: ClassVar["QtCore.Signal[()]"] = QtCore.Signal()
-        signal_str: ClassVar["QtCore.Signal[str]"] = QtCore.Signal(str)
+        signal_no_arg: ClassVar["QtCore.Signal[tuple[()]]"] = QtCore.Signal()
+        signal_str: ClassVar["QtCore.Signal[tuple[str]]"] = QtCore.Signal(str)
 
         def __init__(self) -> None:
             super().__init__()  # note: this is mandatory for mypy to pickup the class attribute access
@@ -631,7 +631,7 @@ def test_qline() -> None:
 
 def test_signal_connect() -> None:
     b = QtWidgets.QComboBox()
-    typing.assert_type(b.editTextChanged, "QtCore.SignalInstance[str]")
+    typing.assert_type(b.editTextChanged, "QtCore.SignalInstance[tuple[str]]")
 
     def slot_str(arg: str) -> None:
         print(arg)
@@ -641,13 +641,13 @@ def test_signal_connect() -> None:
 
     b.editTextChanged.connect(
         slot_str,
-        type=QtCore.Qt.ApplicationAttribute.AA_AttributeCount.ConnectionType.QueuedConnection,
+        type=QtCore.Qt.ConnectionType.QueuedConnection,
     )
     # BAD:
     b.editTextChanged.connect(
         slot_int,
-        type=QtCore.Qt.ApplicationAttribute.AA_AttributeCount.ConnectionType.QueuedConnection,
-    )  # type: ignore[arg-type]
+        type=QtCore.Qt.ConnectionType.QueuedConnection,
+    )  # type: ignore[call-overload]
 
     with pytest.raises(Exception):
         b.editTextChanged.connect(print, None)  # type: ignore
