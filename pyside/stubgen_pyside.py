@@ -704,7 +704,10 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                                 "self",
                                 "SignalInstance[tuple[_T1, *_SignalArgT], *_SignalSignatures]",
                             ),
-                            ArgSig("slot", "_SlotFunc[()] | _SlotFunc[_T1]"),
+                            ArgSig(
+                                "slot",
+                                "_SlotFunc[()] | _SlotFunc[_T1] | _SignalEmitter[()] | _SignalEmitter[_T1]",
+                            ),
                             ArgSig("/"),
                             ArgSig("type", "PySide6.QtCore.Qt.ConnectionType", default=True),
                         ],
@@ -717,7 +720,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                                 "self",
                                 "SignalInstance[tuple[_T1, _T2, *_SignalArgT], *_SignalSignatures]",
                             ),
-                            ArgSig("slot", "_SlotFunc[_T1, _T2]"),
+                            ArgSig("slot", "_SlotFunc[_T1, _T2] | _SignalEmitter[_T1, _T2]"),
                             ArgSig("/"),
                             ArgSig("type", "PySide6.QtCore.Qt.ConnectionType", default=True),
                         ],
@@ -730,7 +733,10 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                                 "self",
                                 "SignalInstance[tuple[_T1, _T2, _T3, *_SignalArgT], *_SignalSignatures]",
                             ),
-                            ArgSig("slot", "_SlotFunc[_T1, _T2, _T3]"),
+                            ArgSig(
+                                "slot",
+                                "_SlotFunc[_T1, _T2, _T3] | _SignalEmitter[_T1, _T2, _T3]",
+                            ),
                             ArgSig("/"),
                             ArgSig("type", "PySide6.QtCore.Qt.ConnectionType", default=True),
                         ],
@@ -743,15 +749,26 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                                 "self",
                                 "SignalInstance[tuple[*_SignalArgT], *_SignalSignatures]",
                             ),
-                            ArgSig("slot", "_SlotFunc[*_SignalArgT]"),
+                            ArgSig(
+                                "slot",
+                                "_SlotFunc[*_SignalArgT] | _SignalEmitter[*_SignalArgT]",
+                            ),
                             ArgSig("/"),
                             ArgSig("type", "PySide6.QtCore.Qt.ConnectionType", default=True),
                         ],
                         ret_type="PySide6.QtCore.QMetaObject.Connection",
                     ),
                 ],
-                "PySide6.QtCore.SignalInstance.disconnect": "(self: SignalInstance[tuple[*_SignalArgT], *_SignalSignatures], /, slot: _SlotFunc[*_SignalArgT] | None = ...) -> bool",
+                "PySide6.QtCore.SignalInstance.disconnect": "(self: SignalInstance[tuple[*_SignalArgT], *_SignalSignatures], /, slot: _SlotFunc[*_SignalArgT] | _SignalEmitter[*_SignalArgT] | None = ...) -> bool",
                 "PySide6.QtCore.SignalInstance.emit": "(self: SignalInstance[tuple[*_SignalArgT], *_SignalSignatures], /, *args: *_SignalArgT) -> None",
+                # SignalInstance is not actually callable at runtime, but Qt
+                # accepts signals anywhere it accepts a slot (e.g. as the
+                # functor of QTimer.singleShot), and those arguments are typed
+                # as callables.  Mirror the emit signature so that signals
+                # passed as slots/callables are checked against the arguments
+                # of their default signature; leaving __call__ untyped would
+                # make any signal match any callable.
+                "PySide6.QtCore.SignalInstance.__call__": "(self: SignalInstance[tuple[*_SignalArgT], *_SignalSignatures], /, *args: *_SignalArgT) -> None",
                 # * Fix `QTreeWidgetItemIterator.__iter__()` to iterate over `QTreeWidgetItemIterator`
                 "*.QTreeWidgetItemIterator.__iter__": "(self) -> typing.Iterator[QTreeWidgetItemIterator]",
                 "*.QTreeWidgetItemIterator.__next__": "(self) -> QTreeWidgetItemIterator",
@@ -1359,6 +1376,13 @@ _SignalArgT = typing.TypeVarTuple('_SignalArgT')
 
 class _SlotFunc(typing.Protocol[*_SignalArgT]):
     def __call__(self, *args: *_SignalArgT) -> typing.Any:
+        pass
+
+# Matches a SignalInstance whose signature is compatible with the arguments of
+# the connected signal.  Signals can be connected to other signals: emitting
+# the first signal emits the connected signal with the same arguments.
+class _SignalEmitter(typing.Protocol[*_SignalArgT]):
+    def emit(self, /, *args: *_SignalArgT) -> None:
         pass\n\n"""
 
         if helper.pyside_package == "PySide6":

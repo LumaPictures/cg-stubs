@@ -28,6 +28,8 @@ type safety in a few ways:
 * `SignalInstance.connect()` enforces that the callable is compatible with the arguments emitted by
   the signal.  Qt allows connecting slots that accept fewer arguments than the signal emits, and
   this is supported for up to the first three arguments.
+* Signals can be connected to other signals, and the receiving signal's arguments are checked the
+  same way as a slot's.
 * `SignalInstance.emit()` enforces the number and types of the arguments provided.
 * Signals with multiple signatures are checked against their default (first) signature.  Indexing,
   e.g. `mysignal[str, str].connect(...)`, can be used to check against a specific signature: the

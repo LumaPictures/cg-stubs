@@ -148,6 +148,16 @@ class MainDialog(QtWidgets.QDialog):
         self.signal6.connect(self.slot3)  # type: ignore[call-overload]
         self.signal6.connect(self.slot4)
 
+        # Signals can be connected to other signals: emitting the first signal
+        # emits the connected signal with the same arguments, so the connected
+        # signal's arguments are checked like a slot's.
+        self.signal2.connect(self.signal1)  # receiving signal takes fewer args
+        self.signal3.connect(self.signal2)  # prefix of the emitted args
+        self.signal5[str, str].connect(self.signal4[str])
+        # The receiving signal requires more arguments than are emitted.
+        self.signal1.connect(self.signal2)  # type: ignore[arg-type]
+        self.signal2.connect(self.signal3)  # type: ignore[arg-type]
+
     @QtCore.Slot()
     def _emitSignal1(self) -> None:
         self._text_edit.clear()
