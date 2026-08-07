@@ -475,8 +475,8 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                 # * Add all signals and make all new-style signal patterns work.  e.g.
                 # `myobject.mysignal.connect(func) and `myobject.mysignal[type].connect(func)`
                 "PySide6.QtCore.Signal.__get__": [
-                    "(self, instance: None, owner: type[QObject]) -> Signal[*_SignalSignatures]",
-                    "(self, instance: QObject, owner: type[QObject]) -> SignalInstance[*_SignalSignatures]",
+                    "(self, instance: None, owner: type[QObject]) -> Signal[typing_extensions.Unpack[_SignalSignatures]]",
+                    "(self, instance: QObject, owner: type[QObject]) -> SignalInstance[typing_extensions.Unpack[_SignalSignatures]]",
                 ],
                 # Restrict the possible signatures of the Signal based on the given index.
                 # An index that matches one of the signal's signatures (validation is
@@ -488,14 +488,14 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                 # greedy, so `Signal[*_Ss1, T1]` and `Signal[*_Ss1, T1, *_Ss2]` are
                 # treated as equivalent).
                 "PySide6.QtCore.Signal.__getitem__": [
-                    "(self: Signal[tuple[_T1], *_SignalSignatures1], index: type[_T1]) -> SignalInstance[tuple[_T1]]",
-                    "(self: Signal[tuple[_T1, _T2], *_SignalSignatures1], index: tuple[type[_T1], type[_T2]]) -> SignalInstance[tuple[_T1, _T2]]",
-                    "(self: Signal[tuple[_T1, _T2, _T3], *_SignalSignatures1], index: tuple[type[_T1], type[_T2], type[_T3]]) -> SignalInstance[tuple[_T1, _T2, _T3]]",
-                    "(self: Signal[tuple[_T1, _T2, _T3, _T4], *_SignalSignatures1], index: tuple[type[_T1], type[_T2], type[_T3], type[_T4]]) -> SignalInstance[tuple[_T1, _T2, _T3, _T4]]",
-                    "(self: Signal[*_SignalSignatures1, tuple[_T1]], index: type[_T1]) -> SignalInstance[tuple[_T1]]",
-                    "(self: Signal[*_SignalSignatures1, tuple[_T1, _T2]], index: tuple[type[_T1], type[_T2]]) -> SignalInstance[tuple[_T1, _T2]]",
-                    "(self: Signal[*_SignalSignatures1, tuple[_T1, _T2, _T3]], index: tuple[type[_T1], type[_T2], type[_T3]]) -> SignalInstance[tuple[_T1, _T2, _T3]]",
-                    "(self: Signal[*_SignalSignatures1, tuple[_T1, _T2, _T3, _T4]], index: tuple[type[_T1], type[_T2], type[_T3], type[_T4]]) -> SignalInstance[tuple[_T1, _T2, _T3, _T4]]",
+                    "(self: Signal[tuple[_T1], typing_extensions.Unpack[_SignalSignatures1]], index: type[_T1]) -> SignalInstance[tuple[_T1]]",
+                    "(self: Signal[tuple[_T1, _T2], typing_extensions.Unpack[_SignalSignatures1]], index: tuple[type[_T1], type[_T2]]) -> SignalInstance[tuple[_T1, _T2]]",
+                    "(self: Signal[tuple[_T1, _T2, _T3], typing_extensions.Unpack[_SignalSignatures1]], index: tuple[type[_T1], type[_T2], type[_T3]]) -> SignalInstance[tuple[_T1, _T2, _T3]]",
+                    "(self: Signal[tuple[_T1, _T2, _T3, _T4], typing_extensions.Unpack[_SignalSignatures1]], index: tuple[type[_T1], type[_T2], type[_T3], type[_T4]]) -> SignalInstance[tuple[_T1, _T2, _T3, _T4]]",
+                    "(self: Signal[typing_extensions.Unpack[_SignalSignatures1], tuple[_T1]], index: type[_T1]) -> SignalInstance[tuple[_T1]]",
+                    "(self: Signal[typing_extensions.Unpack[_SignalSignatures1], tuple[_T1, _T2]], index: tuple[type[_T1], type[_T2]]) -> SignalInstance[tuple[_T1, _T2]]",
+                    "(self: Signal[typing_extensions.Unpack[_SignalSignatures1], tuple[_T1, _T2, _T3]], index: tuple[type[_T1], type[_T2], type[_T3]]) -> SignalInstance[tuple[_T1, _T2, _T3]]",
+                    "(self: Signal[typing_extensions.Unpack[_SignalSignatures1], tuple[_T1, _T2, _T3, _T4]], index: tuple[type[_T1], type[_T2], type[_T3], type[_T4]]) -> SignalInstance[tuple[_T1, _T2, _T3, _T4]]",
                     "(self, index: tuple[type, ...]) -> SignalInstance",
                 ],
                 # Unpack common type configurations onto the Signal's type variables
@@ -674,14 +674,14 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                 ],
                 # See the notes on Signal.__getitem__, above.
                 "PySide6.QtCore.SignalInstance.__getitem__": [
-                    "(self: SignalInstance[tuple[_T1], *_SignalSignatures1], index: type[_T1]) -> SignalInstance[tuple[_T1]]",
-                    "(self: SignalInstance[tuple[_T1, _T2], *_SignalSignatures1], index: tuple[type[_T1], type[_T2]]) -> SignalInstance[tuple[_T1, _T2]]",
-                    "(self: SignalInstance[tuple[_T1, _T2, _T3], *_SignalSignatures1], index: tuple[type[_T1], type[_T2], type[_T3]]) -> SignalInstance[tuple[_T1, _T2, _T3]]",
-                    "(self: SignalInstance[tuple[_T1, _T2, _T3, _T4], *_SignalSignatures1], index: tuple[type[_T1], type[_T2], type[_T3], type[_T4]]) -> SignalInstance[tuple[_T1, _T2, _T3, _T4]]",
-                    "(self: SignalInstance[*_SignalSignatures1, tuple[_T1]], index: type[_T1]) -> SignalInstance[tuple[_T1]]",
-                    "(self: SignalInstance[*_SignalSignatures1, tuple[_T1, _T2]], index: tuple[type[_T1], type[_T2]]) -> SignalInstance[tuple[_T1, _T2]]",
-                    "(self: SignalInstance[*_SignalSignatures1, tuple[_T1, _T2, _T3]], index: tuple[type[_T1], type[_T2], type[_T3]]) -> SignalInstance[tuple[_T1, _T2, _T3]]",
-                    "(self: SignalInstance[*_SignalSignatures1, tuple[_T1, _T2, _T3, _T4]], index: tuple[type[_T1], type[_T2], type[_T3], type[_T4]]) -> SignalInstance[tuple[_T1, _T2, _T3, _T4]]",
+                    "(self: SignalInstance[tuple[_T1], typing_extensions.Unpack[_SignalSignatures1]], index: type[_T1]) -> SignalInstance[tuple[_T1]]",
+                    "(self: SignalInstance[tuple[_T1, _T2], typing_extensions.Unpack[_SignalSignatures1]], index: tuple[type[_T1], type[_T2]]) -> SignalInstance[tuple[_T1, _T2]]",
+                    "(self: SignalInstance[tuple[_T1, _T2, _T3], typing_extensions.Unpack[_SignalSignatures1]], index: tuple[type[_T1], type[_T2], type[_T3]]) -> SignalInstance[tuple[_T1, _T2, _T3]]",
+                    "(self: SignalInstance[tuple[_T1, _T2, _T3, _T4], typing_extensions.Unpack[_SignalSignatures1]], index: tuple[type[_T1], type[_T2], type[_T3], type[_T4]]) -> SignalInstance[tuple[_T1, _T2, _T3, _T4]]",
+                    "(self: SignalInstance[typing_extensions.Unpack[_SignalSignatures1], tuple[_T1]], index: type[_T1]) -> SignalInstance[tuple[_T1]]",
+                    "(self: SignalInstance[typing_extensions.Unpack[_SignalSignatures1], tuple[_T1, _T2]], index: tuple[type[_T1], type[_T2]]) -> SignalInstance[tuple[_T1, _T2]]",
+                    "(self: SignalInstance[typing_extensions.Unpack[_SignalSignatures1], tuple[_T1, _T2, _T3]], index: tuple[type[_T1], type[_T2], type[_T3]]) -> SignalInstance[tuple[_T1, _T2, _T3]]",
+                    "(self: SignalInstance[typing_extensions.Unpack[_SignalSignatures1], tuple[_T1, _T2, _T3, _T4]], index: tuple[type[_T1], type[_T2], type[_T3], type[_T4]]) -> SignalInstance[tuple[_T1, _T2, _T3, _T4]]",
                     "(self, index: tuple[type, ...]) -> SignalInstance",
                 ],
                 # * Fix slot arg of `SignalInstance.connect()` to support validating
@@ -702,7 +702,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                         [
                             ArgSig(
                                 "self",
-                                "SignalInstance[tuple[_T1, *_SignalArgT], *_SignalSignatures]",
+                                "SignalInstance[tuple[_T1, typing_extensions.Unpack[_SignalArgT]], typing_extensions.Unpack[_SignalSignatures]]",
                             ),
                             ArgSig(
                                 "slot",
@@ -718,7 +718,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                         [
                             ArgSig(
                                 "self",
-                                "SignalInstance[tuple[_T1, _T2, *_SignalArgT], *_SignalSignatures]",
+                                "SignalInstance[tuple[_T1, _T2, typing_extensions.Unpack[_SignalArgT]], typing_extensions.Unpack[_SignalSignatures]]",
                             ),
                             ArgSig("slot", "_SlotFunc[_T1, _T2] | _SignalEmitter[_T1, _T2]"),
                             ArgSig("/"),
@@ -731,7 +731,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                         [
                             ArgSig(
                                 "self",
-                                "SignalInstance[tuple[_T1, _T2, _T3, *_SignalArgT], *_SignalSignatures]",
+                                "SignalInstance[tuple[_T1, _T2, _T3, typing_extensions.Unpack[_SignalArgT]], typing_extensions.Unpack[_SignalSignatures]]",
                             ),
                             ArgSig(
                                 "slot",
@@ -747,11 +747,11 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                         [
                             ArgSig(
                                 "self",
-                                "SignalInstance[tuple[*_SignalArgT], *_SignalSignatures]",
+                                "SignalInstance[tuple[typing_extensions.Unpack[_SignalArgT]], typing_extensions.Unpack[_SignalSignatures]]",
                             ),
                             ArgSig(
                                 "slot",
-                                "_SlotFunc[*_SignalArgT] | _SignalEmitter[*_SignalArgT]",
+                                "_SlotFunc[typing_extensions.Unpack[_SignalArgT]] | _SignalEmitter[typing_extensions.Unpack[_SignalArgT]]",
                             ),
                             ArgSig("/"),
                             ArgSig("type", "PySide6.QtCore.Qt.ConnectionType", default=True),
@@ -759,8 +759,8 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                         ret_type="PySide6.QtCore.QMetaObject.Connection",
                     ),
                 ],
-                "PySide6.QtCore.SignalInstance.disconnect": "(self: SignalInstance[tuple[*_SignalArgT], *_SignalSignatures], /, slot: _SlotFunc[*_SignalArgT] | _SignalEmitter[*_SignalArgT] | None = ...) -> bool",
-                "PySide6.QtCore.SignalInstance.emit": "(self: SignalInstance[tuple[*_SignalArgT], *_SignalSignatures], /, *args: *_SignalArgT) -> None",
+                "PySide6.QtCore.SignalInstance.disconnect": "(self: SignalInstance[tuple[typing_extensions.Unpack[_SignalArgT]], typing_extensions.Unpack[_SignalSignatures]], /, slot: _SlotFunc[typing_extensions.Unpack[_SignalArgT]] | _SignalEmitter[typing_extensions.Unpack[_SignalArgT]] | None = ...) -> bool",
+                "PySide6.QtCore.SignalInstance.emit": "(self: SignalInstance[tuple[typing_extensions.Unpack[_SignalArgT]], typing_extensions.Unpack[_SignalSignatures]], /, *args: typing_extensions.Unpack[_SignalArgT]) -> None",
                 # SignalInstance is not actually callable at runtime, but Qt
                 # accepts signals anywhere it accepts a slot (e.g. as the
                 # functor of QTimer.singleShot), and those arguments are typed
@@ -768,7 +768,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                 # passed as slots/callables are checked against the arguments
                 # of their default signature; leaving __call__ untyped would
                 # make any signal match any callable.
-                "PySide6.QtCore.SignalInstance.__call__": "(self: SignalInstance[tuple[*_SignalArgT], *_SignalSignatures], /, *args: *_SignalArgT) -> None",
+                "PySide6.QtCore.SignalInstance.__call__": "(self: SignalInstance[tuple[typing_extensions.Unpack[_SignalArgT]], typing_extensions.Unpack[_SignalSignatures]], /, *args: typing_extensions.Unpack[_SignalArgT]) -> None",
                 # * Fix `QTreeWidgetItemIterator.__iter__()` to iterate over `QTreeWidgetItemIterator`
                 "*.QTreeWidgetItemIterator.__iter__": "(self) -> typing.Iterator[QTreeWidgetItemIterator]",
                 "*.QTreeWidgetItemIterator.__next__": "(self) -> QTreeWidgetItemIterator",
@@ -1369,20 +1369,20 @@ _T4 = typing.TypeVar('_T4')
 # Signal and SignalInstance are parametrized by a tuple of signatures, where each
 # signature is itself a tuple of argument types, e.g.
 # `Signal[tuple[int, str]]` or `Signal[tuple[int, int], tuple[str, str]]`
-_SignalSignatures = typing.TypeVarTuple('_SignalSignatures')
-_SignalSignatures1 = typing.TypeVarTuple('_SignalSignatures1')
+_SignalSignatures = typing_extensions.TypeVarTuple('_SignalSignatures')
+_SignalSignatures1 = typing_extensions.TypeVarTuple('_SignalSignatures1')
 # The argument types of a single signal signature
-_SignalArgT = typing.TypeVarTuple('_SignalArgT')
+_SignalArgT = typing_extensions.TypeVarTuple('_SignalArgT')
 
-class _SlotFunc(typing.Protocol[*_SignalArgT]):
-    def __call__(self, *args: *_SignalArgT) -> typing.Any:
+class _SlotFunc(typing.Protocol[typing_extensions.Unpack[_SignalArgT]]):
+    def __call__(self, *args: typing_extensions.Unpack[_SignalArgT]) -> typing.Any:
         pass
 
 # Matches a SignalInstance whose signature is compatible with the arguments of
 # the connected signal.  Signals can be connected to other signals: emitting
 # the first signal emits the connected signal with the same arguments.
-class _SignalEmitter(typing.Protocol[*_SignalArgT]):
-    def emit(self, /, *args: *_SignalArgT) -> None:
+class _SignalEmitter(typing.Protocol[typing_extensions.Unpack[_SignalArgT]]):
+    def emit(self, /, *args: typing_extensions.Unpack[_SignalArgT]) -> None:
         pass\n\n"""
 
         if helper.pyside_package == "PySide6":
@@ -1513,7 +1513,7 @@ class _SignalEmitter(typing.Protocol[*_SignalArgT]):
             "Signal",
             "SignalInstance",
         ]:
-            return ["typing.Generic[*_SignalSignatures]"]
+            return ["typing.Generic[typing_extensions.Unpack[_SignalSignatures]]"]
         return super().get_base_types(obj)
 
     def generate_class_attr(self, cls: type, attr: str, value: object) -> str | None:
