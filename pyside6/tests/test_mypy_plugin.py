@@ -1,9 +1,10 @@
-"""Tests for the pyside6_stubs_mypy_plugin mypy plugin.
+"""Tests for the types_pyside6_mypy_plugin mypy plugin.
 
 The plugin makes `object` (and `typing.Any`) arguments in ``Signal(...)``
-declarations mean ``typing.Any``.  The type-level assertions live in
-signal_object_plugin_cases.py, which is excluded from the project's plain mypy
-run and checked here with the plugin enabled (tests/mypy-plugin.ini).
+declarations mean ``typing.Any``, and checks ``emit``/``__call__`` against
+every declared signature.  The type-level assertions live in
+mypy_plugin_cases.py and mypy_plugin_no_object_cases.py, which are excluded
+from the project's plain mypy run and checked here with the plugin enabled.
 """
 
 from __future__ import absolute_import, print_function
@@ -18,10 +19,14 @@ import pytest
 from PySide6 import QtCore
 
 HERE = pathlib.Path(__file__).parent
-CASES = HERE / "signal_object_plugin_cases.py"
+CASES = HERE / "mypy_plugin_cases.py"
+NO_OBJECT_CASES = HERE / "mypy_plugin_no_object_cases.py"
+PLUGIN = HERE.parent / "types_pyside6_mypy_plugin" / "__init__.py"
 
 
-def run_mypy(config: pathlib.Path, cache_dir: pathlib.Path) -> "subprocess.CompletedProcess[str]":
+def run_mypy(
+    config: pathlib.Path, cache_dir: pathlib.Path, cases: pathlib.Path = CASES
+) -> "subprocess.CompletedProcess[str]":
     return subprocess.run(
         [
             sys.executable,
@@ -31,7 +36,7 @@ def run_mypy(config: pathlib.Path, cache_dir: pathlib.Path) -> "subprocess.Compl
             str(config),
             "--cache-dir",
             str(cache_dir),
-            str(CASES),
+            str(cases),
         ],
         capture_output=True,
         text=True,
@@ -61,6 +66,39 @@ def test_cases_fail_without_plugin(tmp_path: pathlib.Path) -> None:
     # the idiomatic Signal(object).connect(typed_slot) is a false positive
     # without the plugin
     assert "call-overload" in result.stdout, result.stdout + result.stderr
+
+
+def test_object_as_any_opt_out_ini(tmp_path: pathlib.Path) -> None:
+    """`object_as_any = False` in the ini-style [types-pyside6-mypy] section
+    disables the object/Any rewrite but not the multi-signature emit checking.
+    """
+    result = run_mypy(
+        HERE / "mypy-plugin-no-object.ini", tmp_path / "cache", NO_OBJECT_CASES
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_object_as_any_opt_out_pyproject(tmp_path: pathlib.Path) -> None:
+    """The same option is read from a [tool.types-pyside6-mypy] table when
+    mypy is configured through a pyproject.toml.
+    """
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text(
+        f"""
+[tool.mypy]
+strict = true
+plugins = ["{PLUGIN}"]
+
+[[tool.mypy.overrides]]
+module = ["PySide6.*", "shiboken6.*"]
+disable_error_code = ["no-untyped-def", "type-arg"]
+
+[tool.types-pyside6-mypy]
+object_as_any = false
+"""
+    )
+    result = run_mypy(pyproject, tmp_path / "cache", NO_OBJECT_CASES)
+    assert result.returncode == 0, result.stdout + result.stderr
 
 
 class _ObjectSignals(QtCore.QObject):

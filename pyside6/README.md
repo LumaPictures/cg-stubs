@@ -64,13 +64,35 @@ In keeping with the convention that stubs should avoid false positives, signal u
 be fully represented in the type system -- such as connecting or emitting through a non-default
 signature without indexing -- is allowed without error, even though it is not fully checked.
 
-#### `Signal(object)` and the mypy plugin
+#### The mypy plugin
+
+The stubs ship with an optional mypy plugin that improves signal type checking in ways that
+cannot be expressed in the stubs themselves.
+
+To set it up, install the stubs and add the plugin (distributed inside the
+`types-PySide6` package) to your [mypy
+configuration](https://mypy.readthedocs.io/en/stable/extending_mypy.html#configuring-mypy-to-use-plugins):
+
+```toml
+# pyproject.toml
+[tool.mypy]
+plugins = ["types_pyside6_mypy_plugin"]
+```
+
+or in ini style:
+
+```ini
+# mypy.ini / setup.cfg
+[mypy]
+plugins = types_pyside6_mypy_plugin
+```
+
+##### `Signal(object)` means `typing.Any`
 
 `Signal(object)` is the idiomatic way to declare a signal that emits an arbitrary value (Qt
 registers it as `PyObject`).  In type checking terms, its intended meaning is `typing.Any` rather than
 `object`: the former accepts any type while the latter rejects any type other than `object`. 
-This distinction cannot be expressed in the stubs themselves.
-Instead, the stubs ship with an optional mypy plugin which rewrites `object`
+This distinction cannot be expressed in the stubs themselves, so the plugin rewrites `object`
 arguments in `Signal(...)` declarations to `typing.Any`:
 
 * `Signal(object)` infers as `Signal[tuple[Any]]`: any single-argument slot can be connected to it, and any
@@ -85,30 +107,51 @@ arguments in `Signal(...)` declarations to `typing.Any`:
   works.
 * Signals declared without `object` are not affected in any way.
 
-To set it up, install the stubs and add the plugin (distributed inside the
-`types-PySide6` package) to your [mypy
-configuration](https://mypy.readthedocs.io/en/stable/extending_mypy.html#configuring-mypy-to-use-plugins):
-
-```toml
-# pyproject.toml
-[tool.mypy]
-plugins = ["pyside6_stubs_mypy_plugin"]
-```
-
-or in ini style:
-
-```ini
-# mypy.ini / setup.cfg
-[mypy]
-plugins = pyside6_stubs_mypy_plugin
-```
-
 If you cannot use the plugin (e.g. with other type checkers), annotate such signals
 explicitly instead:
 
 ```python
     my_signal: "QtCore.Signal[tuple[Any]]" = QtCore.Signal(object)
 ```
+
+##### `emit()` is checked against every signature
+
+The stubs alone can only check `emit()` calls (and `__call__`: signals passed as callables
+dispatch like `emit`) against a signal's default (first) signature, so emitting through a
+non-default signature of a multi-signature signal is not properly checked.  The plugin
+checks the call against each of the declared signatures: an emit matching any signature is
+accepted, and an emit matching none of them is an error.
+
+```python
+class MyObject(QtCore.QObject):
+    signal = QtCore.Signal((int,), (str,))
+
+    def emit_all(self) -> None:
+        self.signal.emit(1)
+        self.signal.emit("one")  # ok: matches the second signature
+        self.signal.emit(1.5)    # error: matches no declared signature
+```
+
+##### Plugin options
+
+Options are read from the same config file that mypy was invoked with, from a
+`[tool.types-pyside6-mypy]` table in `pyproject.toml`, or a `[types-pyside6-mypy]` section
+in ini-style files:
+
+```toml
+# pyproject.toml
+[tool.types-pyside6-mypy]
+object_as_any = false
+```
+
+```ini
+# mypy.ini / setup.cfg
+[types-pyside6-mypy]
+object_as_any = False
+```
+
+* `object_as_any` (default `true`): set to `false` to opt out of rewriting
+  `object`/`typing.Any` arguments of `Signal(...)` declarations to `typing.Any`.
 
 ### Rule-based fixes
 

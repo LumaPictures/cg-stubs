@@ -1,4 +1,4 @@
-"""Type-checking assertions for the pyside6_stubs_mypy_plugin mypy plugin.
+"""Type-checking assertions for the types_pyside6_mypy_plugin mypy plugin.
 
 Like test_generic_signals.py, this file exists to be type-checked, not
 executed: a bare statement asserts that mypy reports no error, and a
@@ -7,10 +7,11 @@ executed: a bare statement asserts that mypy reports no error, and a
 
 Unlike test_generic_signals.py, this file is NOT checked by the project's
 plain mypy configuration (see the exclude in pyproject.toml): it is checked by
-tests/test_signal_object_plugin.py using tests/mypy-plugin.ini, which enables
-the plugin.  The plugin rewrites `object` (and `typing.Any`) arguments in
-``Signal(...)`` declarations to mean ``typing.Any``, so the "no error"
-assertions below hold only when the plugin is active.
+tests/test_mypy_plugin.py using tests/mypy-plugin.ini, which enables the
+plugin.  The plugin rewrites `object` (and `typing.Any`) arguments in
+``Signal(...)`` declarations to mean ``typing.Any``, and checks
+``emit``/``__call__`` against every declared signature instead of only the
+default one, so the assertions below hold only when the plugin is active.
 """
 
 from __future__ import absolute_import, print_function
@@ -86,3 +87,37 @@ class ObjectSignals(QtCore.QObject):
 
     def slot_str_data(self, arg1: str, arg2: CustomData) -> None:
         pass
+
+
+class MultiSignatureSignals(QtCore.QObject):
+    # The plugin checks emit (and __call__) against every declared signature;
+    # the stubs alone can only check against the default (first) signature.
+    signal_int_str = QtCore.Signal((int,), (str,))
+    signal_pairs = QtCore.Signal((int, int), (str,))
+
+    def _emit_signals(self) -> None:
+        self.signal_int_str.emit(1)
+        # matches the second signature: without the plugin this is a false
+        # positive, because emit can only be checked against the first
+        self.signal_int_str.emit("one")
+        # matches neither signature
+        self.signal_int_str.emit(1.5)  # type: ignore[call-overload]
+        self.signal_int_str.emit(1, 2)  # type: ignore[call-overload]
+        self.signal_int_str.emit()  # type: ignore[call-overload]
+
+        # signatures of different arity are matched by argument count
+        self.signal_pairs.emit(1, 2)
+        self.signal_pairs.emit("one")
+        self.signal_pairs.emit(1)  # type: ignore[call-overload]
+        self.signal_pairs.emit("one", "two")  # type: ignore[call-overload]
+
+        # indexing still selects a single signature to check against
+        self.signal_int_str[str].emit("one")
+        self.signal_int_str[str].emit(1)  # type: ignore[arg-type]
+
+    def _call_signals(self) -> None:
+        # signals passed as callables dispatch like emit, so __call__ is
+        # checked against every declared signature as well
+        self.signal_int_str(1)
+        self.signal_int_str("one")
+        self.signal_int_str(1.5)  # type: ignore[call-overload]
