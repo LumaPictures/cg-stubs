@@ -64,6 +64,52 @@ In keeping with the convention that stubs should avoid false positives, signal u
 be fully represented in the type system -- such as connecting or emitting through a non-default
 signature without indexing -- is allowed without error, even though it is not fully checked.
 
+#### `Signal(object)` and the mypy plugin
+
+`Signal(object)` is the idiomatic way to declare a signal that emits an arbitrary value (Qt
+registers it as `PyObject`).  In type checking terms, its intended meaning is `typing.Any` rather than
+`object`: the former accepts any type while the latter rejects any type other than `object`. 
+This distinction cannot be expressed in the stubs themselves.
+Instead, the stubs ship with an optional mypy plugin which rewrites `object`
+arguments in `Signal(...)` declarations to `typing.Any`:
+
+* `Signal(object)` infers as `Signal[tuple[Any]]`: any single-argument slot can be connected to it, and any
+  value can be emitted through it.
+* The rewrite is per-argument, so mixed signals stay strict where they can be:
+  `Signal(int, object)` infers as `Signal[tuple[int, Any]]`, and connecting a slot whose
+  first argument is not compatible with `int` is still an error.
+* `object` arguments are rewritten in every signature of a multi-signature signal, e.g.
+  `Signal((object,), (int,))` infers as `Signal[tuple[Any], tuple[int]]`.
+* Arguments declared as `typing.Any` (a real class at runtime since Python 3.11, which
+  PySide6 likewise registers as `PyObject`) are treated the same way, so `Signal(Any)` also
+  works.
+* Signals declared without `object` are not affected in any way.
+
+To set it up, install the stubs and add the plugin (distributed inside the
+`types-PySide6` package) to your [mypy
+configuration](https://mypy.readthedocs.io/en/stable/extending_mypy.html#configuring-mypy-to-use-plugins):
+
+```toml
+# pyproject.toml
+[tool.mypy]
+plugins = ["pyside6_stubs_mypy_plugin"]
+```
+
+or in ini style:
+
+```ini
+# mypy.ini / setup.cfg
+[mypy]
+plugins = pyside6_stubs_mypy_plugin
+```
+
+If you cannot use the plugin (e.g. with other type checkers), annotate such signals
+explicitly instead:
+
+```python
+    my_signal: "QtCore.Signal[tuple[Any]]" = QtCore.Signal(object)
+```
+
 ### Rule-based fixes
 
 * When instantiating subclasses of `QObject` it is possible to pass the values of properties and signals as `**kwargs` to `__init__`.  The stubs have been fix to include these args on all relevant `__init__` methods.
