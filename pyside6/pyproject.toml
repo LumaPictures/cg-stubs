@@ -47,7 +47,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["stubs/PySide6-stubs", "stubs/shiboken6-stubs"]
+packages = ["stubs/PySide6-stubs", "stubs/shiboken6-stubs", "types_pyside6_mypy_plugin"]
 
 [tool.hatch.build]
 # uv+hatch does not write anything to the installed .pth file if the contents
@@ -59,9 +59,14 @@ dev-mode-dirs = ["stubs"]
 check_untyped_defs = true
 files = [
     "stubgen_pyside6.py",
+    "types_pyside6_mypy_plugin",
     "tests",
 ]
 strict = true
+# The mypy_plugin_*cases.py files are checked by tests/test_mypy_plugin.py
+# with the plugin enabled (tests/mypy-plugin*.ini); their assertions only hold
+# with the plugin, so they are excluded from the plain mypy run.
+exclude = ["tests/mypy_plugin_.*\\.py$"]
 
 [[tool.mypy.overrides]]
 module = ["PySide6.*", "shiboken6.*"]

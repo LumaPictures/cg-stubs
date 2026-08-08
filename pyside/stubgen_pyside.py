@@ -759,7 +759,76 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                         ret_type="PySide6.QtCore.QMetaObject.Connection",
                     ),
                 ],
-                "PySide6.QtCore.SignalInstance.disconnect": "(self: SignalInstance[tuple[typing_extensions.Unpack[_SignalArgT]], typing_extensions.Unpack[_SignalSignatures]], /, slot: _SlotFunc[typing_extensions.Unpack[_SignalArgT]] | _SignalEmitter[typing_extensions.Unpack[_SignalArgT]] | None = ...) -> bool",
+                # * `SignalInstance.disconnect()` accepts the same slots that
+                # `connect()` accepts (including slots taking fewer arguments
+                # than the signal emits, see above), plus None (or no
+                # argument) to disconnect everything.
+                "PySide6.QtCore.SignalInstance.disconnect": [
+                    FunctionSig(
+                        "disconnect",
+                        [
+                            ArgSig(
+                                "self",
+                                "SignalInstance[tuple[_T1, typing_extensions.Unpack[_SignalArgT]], typing_extensions.Unpack[_SignalSignatures]]",
+                            ),
+                            ArgSig("/"),
+                            ArgSig(
+                                "slot",
+                                "_SlotFunc[()] | _SlotFunc[_T1] | _SignalEmitter[()] | _SignalEmitter[_T1] | None",
+                                default=True,
+                            ),
+                        ],
+                        ret_type="bool",
+                    ),
+                    FunctionSig(
+                        "disconnect",
+                        [
+                            ArgSig(
+                                "self",
+                                "SignalInstance[tuple[_T1, _T2, typing_extensions.Unpack[_SignalArgT]], typing_extensions.Unpack[_SignalSignatures]]",
+                            ),
+                            ArgSig("/"),
+                            ArgSig(
+                                "slot",
+                                "_SlotFunc[_T1, _T2] | _SignalEmitter[_T1, _T2] | None",
+                                default=True,
+                            ),
+                        ],
+                        ret_type="bool",
+                    ),
+                    FunctionSig(
+                        "disconnect",
+                        [
+                            ArgSig(
+                                "self",
+                                "SignalInstance[tuple[_T1, _T2, _T3, typing_extensions.Unpack[_SignalArgT]], typing_extensions.Unpack[_SignalSignatures]]",
+                            ),
+                            ArgSig("/"),
+                            ArgSig(
+                                "slot",
+                                "_SlotFunc[_T1, _T2, _T3] | _SignalEmitter[_T1, _T2, _T3] | None",
+                                default=True,
+                            ),
+                        ],
+                        ret_type="bool",
+                    ),
+                    FunctionSig(
+                        "disconnect",
+                        [
+                            ArgSig(
+                                "self",
+                                "SignalInstance[tuple[typing_extensions.Unpack[_SignalArgT]], typing_extensions.Unpack[_SignalSignatures]]",
+                            ),
+                            ArgSig("/"),
+                            ArgSig(
+                                "slot",
+                                "_SlotFunc[typing_extensions.Unpack[_SignalArgT]] | _SignalEmitter[typing_extensions.Unpack[_SignalArgT]] | None",
+                                default=True,
+                            ),
+                        ],
+                        ret_type="bool",
+                    ),
+                ],
                 "PySide6.QtCore.SignalInstance.emit": "(self: SignalInstance[tuple[typing_extensions.Unpack[_SignalArgT]], typing_extensions.Unpack[_SignalSignatures]], /, *args: typing_extensions.Unpack[_SignalArgT]) -> None",
                 # SignalInstance is not actually callable at runtime, but Qt
                 # accepts signals anywhere it accepts a slot (e.g. as the

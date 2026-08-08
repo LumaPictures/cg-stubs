@@ -14,8 +14,24 @@ from stubgenlib.test_helpers import assert_type
 pyside_version = PySide6.__version_info__
 
 
+def _dismiss_menu_soon(menu: "QtWidgets.QMenu | None" = None) -> None:
+    """Dismiss the menu opened by the next exec() call.
+
+    QMenu.exec() blocks until the menu is dismissed, and on a headless
+    platform (or an unattended desktop) nothing ever dismisses it.  The
+    static exec() overloads open an internal menu, which is found via
+    activePopupWidget().
+    """
+
+    def close() -> None:
+        widget = menu if menu is not None else QtWidgets.QApplication.activePopupWidget()
+        if widget is not None:
+            widget.close()
+
+    QtCore.QTimer.singleShot(0, close)
+
+
 def test_qmenu1() -> None:
-    # FIXME: these tests are very slow, but I can't figure out how to make them faster
     self = QtWidgets.QWidget()
     pos = QtCore.QPoint(0, 0)
 
@@ -24,6 +40,7 @@ def test_qmenu1() -> None:
     menu1 = QtWidgets.QMenu(self)
     menu1.addAction(action1)
     # Note: this is being used as a instance method
+    _dismiss_menu_soon(menu1)
     menu1.exec_(pos, action=action1)
 
 
@@ -35,6 +52,7 @@ def test_qmenu() -> None:
     with pytest.raises(TypeError):
         # this is an overload variant from PySide2 that no longer exists in PySide6
         QtWidgets.QMenu.exec_([action], pos, action, self)  # type: ignore[call-overload]
+    _dismiss_menu_soon()
     QtWidgets.QMenu.exec([action], pos, action, self)
 
 
@@ -43,6 +61,9 @@ def test_qmenu2() -> None:
     pos = QtCore.QPoint(0, 0)
     action2 = QtGui.QAction("Action 1")
     menu2 = QtWidgets.QMenu(self)
+    # the actions-list overload opens an internal menu even when called
+    # through an instance
+    _dismiss_menu_soon()
     menu2.exec_([action2], pos, action2, self)
 
 
@@ -52,6 +73,7 @@ def test_qmenu3() -> None:
     menu3 = QtWidgets.QMenu(self)
     # Add actions to the menu
     menu3.addAction(action3)
+    _dismiss_menu_soon(menu3)
     menu3.exec_()
 
 
