@@ -26,6 +26,10 @@ This provides type safety in a few ways:
   e.g. `mysignal[str, str].connect(...)`, can be used to check against a specific signature: the
   index is validated against the signal's first or last signature (with up to four arguments
   each); the mypy plugin extends this to every declared signature.
+* A native signal with a defaulted C++ parameter, e.g. `void clicked(bool checked = false)`, is
+  *also* declared with multiple signatures, because that is how Qt registers it
+  (`Signal[tuple[()], tuple[bool]]`).  There the trailing arguments genuinely are optional; the
+  mypy plugin recognizes this case (see below).
 
 The types of custom signals are inferred from the arguments passed to the `Signal` constructor in
 common cases:
@@ -78,9 +82,10 @@ plugins = types_pyside6_mypy_plugin
 
 At runtime, subscripting a signal selects one of its declared signatures -- raising
 `IndexError` when none matches -- and `connect()`/`emit()` on the result use exactly that
-signature.  (An *unsubscripted* `connect()`/`emit()` uses only the default signature;
-PySide does not dispatch across signatures by argument types, so the stubs' default-
-signature checking is already what happens at runtime.)
+signature.  (An *unsubscripted* `connect()`/`emit()` uses only the default signature: PySide
+does not dispatch across genuinely distinct signatures by argument type, so the stubs'
+default-signature checking is already what happens at runtime.  Signatures that differ only
+in the number of arguments are a different matter -- see the next section.)
 
 The stubs alone can only validate an index against the signal's first or last signature:
 an index selecting a middle signature of a three-plus-signature signal is falsely flagged,
@@ -104,40 +109,72 @@ class MyObject(QtCore.QObject):
         self.signal[bool, bool]            # ... and this one (bool is not int at runtime)
 ```
 
-##### `Signal(object)` means `typing.Any`
+##### Signatures with C++ default arguments are checked correctly
+
+Qt registers a separate signature for each parameter of a C++ signal with a default, so Qt's `void clicked(bool
+checked = false)` becomes PySide' `Signal[tuple[()], tuple[bool]]` -- the same as if the
+Python signal were declared with two distinct signatures.  The two do not behave the same
+way, though: for a default argument there is no dispatch at all, C++ simply fills the default
+in.  Wherever one signature of a *native* signal is a prefix of another, the plugin ensures that
+runtime behavior is reflected in the static check:
+
+* `connect()` accepts a slot taking as many arguments as the longest signature, because PySide
+  connects a slot to the registered signature that has as many arguments as the slot.  So
+  `button.clicked.connect(self.on_click)` type checks for an `on_click(self, checked: bool)`,
+  and `checked` really is delivered.  This is the case that made
+  `clicked`/`triggered`/`destroyed` slots hard to type.
+* `emit()` may leave the defaulted arguments out:
+  `model.dataChanged.emit(topLeft, bottomRight)` type checks, and slots taking the third
+  argument still receive it, filled in by C++.
+* What `emit()` may *not* do is pass more arguments than the default signature declares:
+  `button.clicked.emit(True)` raises `TypeError` at runtime, because `clicked()` is the default
+  signature.  `button.clicked[bool].emit(True)` is how the other one is emitted, and both are
+  reported accordingly.
+
+Signals declared in python are deliberately left strict: a signal with a similar prefix-like
+relationship between the signatures -- e.g. `Signal((int, str), (int,))` -- does not 
+make anything optional -- `emit(1)` still raises `TypeError`
+at runtime, because nothing fills in the missing argument.  
+
+Note: The plugin recognizes a native signal by where it is declared, which it can only see when the signal is used directly
+(`obj.sig.emit(...)`, `self.sig.connect(...)`); a signal read into a variable first
+(`sig = button.clicked`) is checked strictly as if it were not a native C++ signal.
+
+##### `Signal(object)` can be configured to mean `typing.Any`
 
 `Signal(object)` is the idiomatic way to declare a signal that emits an arbitrary value (Qt
-registers it as `PyObject`).  The proper way to handle this is to add a type annotation:
+registers it as `PyObject`).  
+
+```python
+class MyObject(QtCore.QObject):
+    signal1 = QtCore.Signal(object)  # signal takes MyCustomClass
+```
+
+Since an argument typed as `object` accepts only values of type `object` or `Any` this
+common pattern will lead to numerous errors in a typical codebase. 
+
+The proper way to handle this is to add a type annotation:
 
 ```python
 class MyObject(QtCore.QObject):
     signal1: "Signal[tuple[MyCustomClass]]" = QtCore.Signal(object)
 ```
 
-However, 
-In type-checking terms, its intended meaning is `typing.Any` rather than
-`object`: the former accepts any type while the latter rejects any type other than `object`. 
-This distinction cannot be expressed in the stubs themselves, so the plugin rewrites `object`
+However, adding annotations throughout a codebase may be a heavy lift that you'd like to
+defer till later, so the plugin defaults to loosening this check by internally overriding `object`
 arguments in `Signal(...)` declarations to `typing.Any`:
 
 * `Signal(object)` infers as `Signal[tuple[Any]]`: any single-argument slot can be connected to it, and any
   value can be emitted through it.
-* The rewrite is per-argument, so mixed signals stay strict where they can be:
+* The override is per-argument, so mixed signals stay strict where they can be:
   `Signal(int, object)` infers as `Signal[tuple[int, Any]]`, and connecting a slot whose
   first argument is not compatible with `int` is still an error.
-* `object` arguments are rewritten in every signature of a multi-signature signal, e.g.
+* `object` arguments are overridden in every signature of a multi-signature signal, e.g.
   `Signal((object,), (int,))` infers as `Signal[tuple[Any], tuple[int]]`.
 * Arguments declared as `typing.Any` (a real class at runtime since Python 3.11, which
   PySide6 likewise registers as `PyObject`) are treated the same way, so `Signal(Any)` also
   works.
 * Signals declared without `object` are not affected in any way.
-
-If you cannot use the plugin (e.g. with other type checkers), annotate such signals
-explicitly instead:
-
-```python
-    my_signal: "QtCore.Signal[tuple[Any]]" = QtCore.Signal(object)
-```
 
 ##### Plugin options
 

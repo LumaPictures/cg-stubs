@@ -11,7 +11,9 @@
   types are inferred from `Signal.__init__` overloads; `connect`/`emit`/`disconnect` check
   against the first (default) signature, which matches runtime behavior: unsubscripted
   `connect`/`emit` use only the default signature (PySide does not dispatch across
-  signatures by argument types); `__getitem__` validates an index against the first
+  *genuinely distinct* signatures by argument type -- but `connect` does pick the signature
+  with as many arguments as the slot, which is what makes C++ default arguments work; see
+  the plugin's third feature below); `__getitem__` validates an index against the first
   or last signature.  `connect` also accepts another signal as the slot (`_SlotFunc |
   _SignalEmitter` union), and `SignalInstance.__call__` is deliberately typed like `emit` --
   signals are not callable at runtime, but Qt accepts them anywhere a slot/callable is
@@ -31,24 +33,38 @@
   subscript (`sig[...]`) against *every* declared signature -- the stubs can only check
   the first or last -- narrowing the result to `SignalInstance[<selected signature>]` so
   chained `connect`/`emit` are checked against the signature the index selects, and
-  reporting an index that matches no signature (`IndexError` at runtime, code `[index]`).
+  reporting an index that matches no signature (`IndexError` at runtime, code `[index]`),
+  and (c) treats the trailing arguments of a **native** signal whose signatures form a
+  prefix chain as optional -- that is how Qt registers a C++ default argument
+  (`clicked: Signal[tuple[()], tuple[bool]]` for `void clicked(bool checked = false)`), so
+  `emit` may omit them (`dataChanged.emit(tl, br)`) and `connect` accepts a slot with as
+  many arguments as the *longest* signature (`clicked.connect(slot_taking_checked)`).
+  Nativeness is required and is decided by the `PySide6.` prefix of the declaring `Var`'s
+  fullname, resolved from the receiver expression (`obj.sig.emit(...)`) via
+  `TypeChecker.lookup_type` + an MRO lookup: a *Python* signal declared
+  `Signal((int, str), (int,))` looks identical in the stubs but raises TypeError on
+  `emit(1)` at runtime, so it must stay strict.  A signal read into a variable first cannot
+  be traced back to its declaration and is likewise checked strictly.
   The plugin deliberately mirrors runtime semantics; it does NOT relax unsubscripted
-  `connect`/`emit` to accept all signatures, because runtime only uses the default one.
-  Its type-level assertions live in `pyside6/tests/mypy_plugin_cases.py` -- GENERATED
-  from `test_generic_signals.py` by `pyside6/tests/gen_mypy_plugin_cases.py`, never
-  hand-edited -- and `mypy_plugin_no_object_cases.py`.  Both are excluded from the plain
+  `connect`/`emit` to accept genuinely distinct signatures, because runtime only uses the
+  default one.
+  Its type-level assertions live in the GENERATED
+  `pyside6/tests/mypy_plugin_test_generic_signals.py` and
+  `mypy_plugin_test_native_signals.py` -- produced from `test_generic_signals.py` and
+  `test_native_signals.py` by `pyside6/tests/gen_mypy_plugin_cases.py` (target name =
+  `mypy_plugin_` + source name), never hand-edited -- plus the hand-written
+  `mypy_plugin_no_object_cases.py`.  All are excluded from the plain
   mypy run (the assertions only hold with the plugin) and instead checked by
   `pyside6/tests/test_mypy_plugin.py`, a pytest test that runs mypy with
   `tests/mypy-plugin.ini` (plugin on, must pass), without the plugin (must fail -- proves
   the plugin is doing the work), and with the opt-out in both ini and pyproject.toml form.
-  To change the shared signal test cases, edit `test_generic_signals.py` (with the plain
+  To change the shared signal test cases, edit the source `test_*.py` (with the plain
   stubs-only ignores), describe how the plugin changes each line with end-of-line markers
   -- `# type: ignore[...]  # REMOVE` (plugin fixes this false positive),
   `# ADD: ignore[code]` (only the plugin reports this error), `# type: ignore[...]
   # REPLACE: ignore[code]` (the plugin reports a different error code) -- then run
-  `uv run python tests/gen_mypy_plugin_cases.py` from `pyside6/` to regenerate
-  `mypy_plugin_cases.py`; `test_mypy_plugin.py::test_cases_are_generated` fails while it
-  is stale.
+  `uv run python tests/gen_mypy_plugin_cases.py` from `pyside6/` to regenerate the twins;
+  `test_mypy_plugin.py::test_cases_are_generated` fails while one is stale.
 
 ### Gotchas when editing signature overrides
 
@@ -72,13 +88,15 @@
 `pyside6/pyproject.toml` runs mypy in `strict` mode over `tests/`, so the test files double
 as type-checking assertions: a `# type: ignore[code]` comment asserts that mypy reports
 exactly that error on that line (strict mode enables `warn_unused_ignores`, so a stale
-ignore also fails).  `tests/test_generic_signals.py` is the canonical example -- it is both
-type-checked (plain, stubs only) and executed by pytest: every connect/emit/subscript
-example runs at runtime, with `pytest.raises` around the ones that raise.  Its twin
-`tests/mypy_plugin_cases.py` is generated from it (see the mypy plugin section above) with
-the `# type: ignore` comments the *plugin-enabled* mypy run expects; the
-`# REMOVE`/`# ADD`/`# REPLACE` markers in `test_generic_signals.py` are the specification
-of what the plugin changes (see the module docstring of either file).
+ignore also fails).  `tests/test_generic_signals.py` and `tests/test_native_signals.py` are
+the canonical examples -- they are both type-checked (plain, stubs only) and executed by
+pytest: every connect/emit/subscript example runs at runtime, with `pytest.raises` around
+the ones that raise.  Their `tests/mypy_plugin_test_*.py` twins are generated from them (see
+the mypy plugin section above) with the `# type: ignore` comments the *plugin-enabled* mypy
+run expects; the `# REMOVE`/`# ADD`/`# REPLACE` markers in the sources are the specification
+of what the plugin changes (see the module docstring of either file).  Signal semantics that
+differ between native (C++) and Python-declared signals belong in `test_native_signals.py`,
+which pins both sides.
 
 When validating changes, compare mypy/pytest results against the previous commit rather than
 expecting zero errors: there are known pre-existing failures (e.g. PySide 6.10 removed the

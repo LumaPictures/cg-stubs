@@ -5,7 +5,7 @@ is identical and whose ``# type: ignore[...]`` comments differ:
 
 - ``tests/test_generic_signals.py`` carries the ignores the *plain* mypy run
   (stubs only) expects; it is executed by pytest.
-- ``tests/mypy_plugin_cases.py`` is generated from it by
+- ``tests/mypy_plugin_test_generic_signals.py`` is generated from it by
   ``tests/gen_mypy_plugin_cases.py`` and carries the ignores expected with
   the types_pyside6_mypy_plugin plugin enabled; it is excluded from the
   plain mypy run and checked by ``tests/test_mypy_plugin.py`` with the

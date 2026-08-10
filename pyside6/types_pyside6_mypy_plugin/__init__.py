@@ -1,6 +1,7 @@
 """Optional mypy plugin that improves type checking of PySide6 signals.
 
-The plugin provides two features that cannot be expressed in the stubs alone:
+The plugin provides three features that cannot be expressed in the stubs
+alone:
 
 1. ``Signal(object)`` means ``typing.Any``.
 
@@ -45,10 +46,49 @@ The plugin provides two features that cannot be expressed in the stubs alone:
    reported (it raises ``IndexError`` at runtime).  Non-literal indexes (e.g.
    a variable of type ``tuple[type, ...]``) are left unchecked.
 
-Unsubscripted ``connect``/``emit`` on a multi-signature signal use only the
-default (first) signature at runtime -- PySide does not dispatch across
-signatures by argument types -- and the stubs already check them against the
-first signature, so the plugin leaves them alone.
+3. A native signal with a defaulted trailing C++ parameter is treated as
+   having optional trailing arguments.
+
+   Qt registers one signature per defaulted parameter of a C++ signal, so
+   ``void clicked(bool checked = false)`` and ``void dataChanged(a, b,
+   roles = {})`` reach the stubs as multi-signature signals, exactly like a
+   Python signal declared with genuinely distinct signatures::
+
+       clicked:     Signal[tuple[()], tuple[bool]]
+       dataChanged: Signal[tuple[QModelIndex, QModelIndex, Any],
+                           tuple[QModelIndex, QModelIndex]]
+       s:           Signal[tuple[int, int], tuple[str, str]]  # Signal((int, int), (str, str))
+
+   The two cases behave differently at runtime, and the difference is
+   visible in the stubs only as one signature being a *prefix* of another:
+   no dispatch happens for a C++ default argument, C++ simply fills the
+   default in.  Concretely, on a native signal whose signatures form a
+   prefix chain:
+
+   - ``emit`` may omit the trailing arguments that a shorter registered
+     signature drops (``dataChanged.emit(a, b)`` is valid; the stubs bind
+     ``emit`` to the default signature only, so they report "too few
+     arguments");
+   - ``connect`` accepts a slot with as many arguments as the *longest*
+     signature, because PySide picks the registered signature whose
+     argument count matches the slot's (``clicked.connect(slot_taking_a_bool)``
+     is valid, and the slot does receive the ``checked`` value).
+
+   Neither relaxation is applied to a Python-declared signal, where a
+   prefix relation between signatures carries no such meaning: ``Signal(
+   (int, str), (int,)).emit(1)`` raises TypeError at runtime, because
+   unsubscripted ``emit`` uses the default signature and nothing fills in
+   the missing argument.  The plugin therefore relaxes only signals
+   declared in the ``PySide6`` package itself, which are all C++ signals.
+   The signal must be accessed directly on its owner (``obj.sig.emit(...)``,
+   ``self.sig.connect(...)``) for the plugin to see where it was declared;
+   a signal first stored in a local variable is checked strictly.
+
+Unsubscripted ``connect``/``emit`` on a signal with genuinely distinct
+signatures use only the default (first) signature at runtime -- PySide does
+not dispatch across such signatures by argument type -- and the stubs
+already check them against the first signature, so the plugin leaves them
+alone.
 
 Usage (mypy configuration)::
 
@@ -69,13 +109,15 @@ from __future__ import annotations
 
 import configparser
 import dataclasses
+import functools
 import os
 from typing import Any, Callable, Optional
 
 from mypy import errorcodes
-from mypy.nodes import ARG_POS
+from mypy.nodes import ARG_OPT, ARG_POS, CallExpr, Context, Expression, MemberExpr, Var
 from mypy.options import Options
 from mypy.plugin import (
+    CheckerPluginInterface,
     FunctionContext,
     MethodContext,
     MethodSigContext,
@@ -93,6 +135,7 @@ from mypy.types import (
     Type,
     TypeOfAny,
     TypeType,
+    UnionType,
     get_proper_type,
 )
 
@@ -106,9 +149,16 @@ except ImportError:  # python < 3.11
 
 SIGNAL = "PySide6.QtCore.Signal"
 SIGNAL_INSTANCE = "PySide6.QtCore.SignalInstance"
+# The protocols the stubs use to describe an acceptable slot: a callable with
+# the signature's arguments, or another signal that emits them.
+_SLOT_PROTOCOLS = ("PySide6.QtCore._SlotFunc", "PySide6.QtCore._SignalEmitter")
 
 # Type arguments to Signal(...) that idiomatically mean "anything".
 _ANY_CLASSES = frozenset({"builtins.object", "typing.Any"})
+
+# Signals declared inside this package are C++ signals, where a signature
+# that is a prefix of another means a defaulted trailing parameter.
+_NATIVE_PACKAGE = "PySide6."
 
 TOML_TABLE = "types-pyside6-mypy"  # [tool.types-pyside6-mypy]
 INI_SECTION = "types-pyside6-mypy"  # [types-pyside6-mypy]
@@ -241,7 +291,11 @@ def _index_arg_types(index: Type) -> Optional[list[ProperType]]:
             and proper_element.is_type_obj()
         ):
             # a direct reference to a class, e.g. the `str` in `sig[str]`
-            item = proper_element.items[0] if isinstance(proper_element, Overloaded) else proper_element
+            item = (
+                proper_element.items[0]
+                if isinstance(proper_element, Overloaded)
+                else proper_element
+            )
             result.append(get_proper_type(item.ret_type))
         else:
             return None
@@ -321,6 +375,215 @@ def _getitem_hook(ctx: MethodContext) -> Type:
     return AnyType(TypeOfAny.from_error)
 
 
+def _same_arg(left: Type, right: Type) -> bool:
+    """Whether two signature arguments are the same declared type.
+
+    Deliberately conservative: anything this cannot compare structurally is
+    reported as different, which only ever means a signal is *not* treated
+    as having optional trailing arguments.
+    """
+    proper_left = get_proper_type(left)
+    proper_right = get_proper_type(right)
+    if isinstance(proper_left, AnyType) or isinstance(proper_right, AnyType):
+        # `Any` is the stubs' translation of a C++ type PySide passes through
+        # as PyObject; it is the same argument only as another such argument
+        # (it must not compare equal to every type, as subtyping would).
+        return isinstance(proper_left, AnyType) and isinstance(proper_right, AnyType)
+    if isinstance(proper_left, Instance) and isinstance(proper_right, Instance):
+        return (
+            proper_left.type.fullname == proper_right.type.fullname
+            and len(proper_left.args) == len(proper_right.args)
+            and all(
+                _same_arg(x, y) for x, y in zip(proper_left.args, proper_right.args)
+            )
+        )
+    return False
+
+
+def _prefix_chain(sigs: list[TupleType]) -> Optional[list[TupleType]]:
+    """The signatures sorted by length, if each is a prefix of the next.
+
+    A prefix relation between the registered signatures of a *native* signal
+    means a defaulted trailing C++ parameter: Qt registers one signature per
+    default argument, so the shortest signature holds the arguments C++
+    requires and the longest holds every argument it accepts.  Signatures
+    that are not prefix-related are genuinely distinct overloads, which
+    runtime does not dispatch between.
+    """
+    ordered = sorted(sigs, key=lambda sig: len(sig.items))
+    for shorter, longer in zip(ordered, ordered[1:]):
+        if not all(_same_arg(x, y) for x, y in zip(shorter.items, longer.items)):
+            return None
+    return ordered
+
+
+def _declaring_var(api: CheckerPluginInterface, expr: Expression) -> Optional[Var]:
+    """The variable that ``expr`` reads, if it reads an attribute of a class.
+
+    Resolved through the type of the object the attribute is read from, so
+    that the *declaring* class is found even when the attribute is inherited
+    (``self.dataChanged`` in a QAbstractItemModel subclass).
+    """
+    if not isinstance(expr, MemberExpr):
+        return None
+    # The receiver of the call has already been type checked at this point,
+    # so its type is in the checker's type map; looking it up avoids
+    # re-checking (and re-reporting) the expression.
+    lookup = getattr(api, "lookup_type", None)
+    if lookup is None:  # pragma: no cover - not a real TypeChecker
+        return None
+    try:
+        base = lookup(expr.expr)
+    except KeyError:  # pragma: no cover - defensive
+        return None
+    proper_base = get_proper_type(base)
+    if not isinstance(proper_base, Instance):
+        return None
+    # TypeInfo.get() searches the MRO, and returns the node of the class that
+    # declares the name -- an override in a subclass shadows it, as it does
+    # at runtime.
+    sym = proper_base.type.get(expr.name)
+    node = sym.node if sym is not None else None
+    return node if isinstance(node, Var) else None
+
+
+def _receiver_expr(context: Context, method: str) -> Optional[Expression]:
+    """The expression the hooked method is called on, e.g. ``self.clicked``."""
+    if isinstance(context, CallExpr) and isinstance(context.callee, MemberExpr):
+        # `sig.emit(...)` -> `sig`; an implicit `sig(...)` -> `sig`
+        callee = context.callee
+        return callee.expr if callee.name == method else callee
+    return None
+
+
+def _is_native_signal(ctx: MethodSigContext, method: str) -> bool:
+    """Whether the signal called here is declared in the PySide6 package.
+
+    Only C++ signals gain a signature per defaulted parameter, so only they
+    may be relaxed.  A signal that is not read directly from the object that
+    declares it (e.g. one stored in a local variable first) cannot be traced
+    back to its declaration, and is treated as non-native, i.e. checked
+    strictly.
+    """
+    expr = _receiver_expr(ctx.context, method)
+    if expr is None:
+        return False
+    var = _declaring_var(ctx.api, expr)
+    return var is not None and (var.fullname or "").startswith(_NATIVE_PACKAGE)
+
+
+def _default_arg_signatures(
+    ctx: MethodSigContext, method: str
+) -> Optional[tuple[list[TupleType], TupleType]]:
+    """The signatures of the signal called here, shortest first, and its default.
+
+    Returns None unless the receiver is a native signal whose signatures form
+    a prefix chain, i.e. a C++ signal with defaulted trailing parameters.
+    """
+    sigs = _declared_signatures(ctx.type)
+    if sigs is None or len(sigs) < 2:
+        return None
+    ordered = _prefix_chain(sigs)
+    if ordered is None:
+        return None
+    if not _is_native_signal(ctx, method):
+        return None
+    return ordered, sigs[0]
+
+
+def _emit_signature_hook(ctx: MethodSigContext) -> FunctionLike:
+    """Make the trailing C++ default arguments of ``emit`` optional.
+
+    ``emit`` uses the signal's default (first) signature at runtime, and any
+    trailing argument that a shorter registered signature drops is filled in
+    by C++, so it may be omitted.  The stubs bind ``emit`` to the default
+    signature with every argument required.
+    """
+    result = _default_arg_signatures(ctx, "emit")
+    if result is None:
+        return ctx.default_signature
+    ordered, _ = result
+    # The number of arguments C++ requires: those of the shortest signature.
+    required = len(ordered[0].items)
+    # The bound signature's arguments are the default signature's, expanded
+    # from `*args: *tuple[...]` into one positional argument each.
+    sig = ctx.default_signature
+    if not all(kind == ARG_POS for kind in sig.arg_kinds):  # pragma: no cover
+        return ctx.default_signature
+    if required >= len(sig.arg_types):
+        # The default signature is the shortest one: emit() cannot pass more
+        # arguments than the signature it dispatches to declares (e.g.
+        # `clicked.emit(True)` raises TypeError; only `clicked[bool].emit(True)`
+        # emits the argument).
+        return ctx.default_signature
+    return sig.copy_modified(
+        arg_kinds=[ARG_POS] * required + [ARG_OPT] * (len(sig.arg_types) - required),
+        imprecise_arg_kinds=False,
+    )
+
+
+def _connect_signature_hook(ctx: MethodSigContext, method: str) -> FunctionLike:
+    """Let ``connect``/``disconnect`` accept the longest C++ signature.
+
+    PySide connects a slot to the registered signature whose argument count
+    matches the slot's, so a slot may take as many arguments as the longest
+    signature -- ``clicked.connect(slot)`` passes ``checked`` to a slot that
+    takes it -- while the stubs only allow up to the default signature's
+    argument count.  The extra arities are added to the slot union of every
+    overload item, leaving the rest of the signature (and the arities the
+    stubs already accept) untouched.
+    """
+    result = _default_arg_signatures(ctx, method)
+    if result is None:
+        return ctx.default_signature
+    ordered, default = result
+    longest = ordered[-1]
+    # The default signature's arguments are what the stubs check the slot
+    # against.
+    default_args = default.items
+    if len(longest.items) <= len(default_args):
+        # The default signature is the longest: the stubs already accept every
+        # slot arity the signal can be connected to.
+        return ctx.default_signature
+    sig = ctx.default_signature
+    if not sig.arg_types:  # pragma: no cover - defensive
+        return ctx.default_signature
+    slot_arg = get_proper_type(sig.arg_types[0])
+    items = list(slot_arg.items) if isinstance(slot_arg, UnionType) else [slot_arg]
+    # Group the accepted arities by protocol, so that the new union reads like
+    # the one the stubs declare, e.g.
+    # `_SlotFunc[()] | _SlotFunc[bool] | _SignalEmitter[()] | _SignalEmitter[bool]`.
+    arities: dict[str, set[int]] = {}
+    infos: dict[str, Instance] = {}
+    others: list[Type] = []
+    for item in items:
+        proper_item = get_proper_type(item)
+        if (
+            isinstance(proper_item, Instance)
+            and proper_item.type.fullname in _SLOT_PROTOCOLS
+        ):
+            infos[proper_item.type.fullname] = proper_item
+            arities.setdefault(proper_item.type.fullname, set()).add(
+                len(proper_item.args)
+            )
+        else:
+            # e.g. the `| None` of disconnect(); left as it is, at the end.
+            others.append(item)
+    if not infos:  # pragma: no cover - defensive
+        return ctx.default_signature
+    extra = set(range(len(default_args) + 1, len(longest.items) + 1))
+    new_items: list[Type] = []
+    for fullname in _SLOT_PROTOCOLS:
+        instance = infos.get(fullname)
+        if instance is None:
+            continue
+        for arity in sorted(arities[fullname] | extra):
+            new_items.append(Instance(instance.type, list(longest.items[:arity])))
+    return sig.copy_modified(
+        arg_types=[UnionType.make_union(new_items + others)] + list(sig.arg_types[1:])
+    )
+
+
 class TypesPySide6Plugin(Plugin):
     def __init__(self, options: Options) -> None:
         super().__init__(options)
@@ -343,6 +606,11 @@ class TypesPySide6Plugin(Plugin):
     ) -> Optional[Callable[[MethodSigContext], FunctionLike]]:
         if fullname == f"{SIGNAL_INSTANCE}.__getitem__":
             return _getitem_signature_hook
+        if fullname == f"{SIGNAL_INSTANCE}.emit":
+            return _emit_signature_hook
+        for method in ("connect", "disconnect"):
+            if fullname == f"{SIGNAL_INSTANCE}.{method}":
+                return functools.partial(_connect_signature_hook, method=method)
         return None
 
     def get_method_hook(
