@@ -7,7 +7,7 @@ The most accurate type stubs for PySide! They have been tested using `mypy` on a
 
 - **Type-safe signals**: supports both custom and native signals.  A `mypy` plugin works around edge cases not currently supported by the Python type system ([mapping/transforming `TypeVarTuple`](https://github.com/python/typing/issues/1216)).
 - **Attention to detail**: supports Qt subtleties such as passing property values to `__init__` and implicitly convertible types.
-- **Battle-tested**: used in complex production code and backed by unit tests that confirm runtime and static equivalence.
+- **Battle-tested**: used in complex production code and backed by a test framework that confirm runtime and static equivalence.
 
 ### Typed signals
 
