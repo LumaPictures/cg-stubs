@@ -3,16 +3,21 @@
 
 The most accurate type stubs for PySide! They have been tested using `mypy` on a code base with many thousands of lines of PySide code.
 
-## Features and fixes
+## Features
+
+- **Type-safe signals**: supports both custom and native signals.  A `mypy` plugin works around edge cases not currently supported by the Python type system ([mapping/transforming `TypeVarTuple`](https://github.com/python/typing/issues/1216)).
+- **Attention to detail**: supports Qt subtleties such as passing property values to `__init__` and implicitly convertible types.
+- **Battle-tested**: used in complex production code and backed by unit tests that confirm runtime and static equivalence.
 
 ### Typed signals
 
-`types-PySide6` provides type safe signals and slots and the signal attributes on native classes are populated with the requisite types in the stubs.
+`types-PySide6` provides type safe signals and the attributes on native classes are populated
 
 In our stubs, `Signal` and `SignalInstance` are generic types, parametrized by one or more *signatures*, where
 each signature is a tuple of argument types: e.g.
+* `Signal(int, str)` is automatically detected as type `Signal[tuple[int, str]]`
 * `Signal[tuple[int, str]]` expects a slot function like `def myslot(arg1: int, arg2: str)`
-* `Signal[tuple[int, int], tuple[str, str]]` has multiple signatures, and can work with a slot function like `def myslot(arg1: int, arg2: str)` or `def myslot(arg1: str, arg2: str)`
+* Signals with multipel signatures are also supported, e.g.  `Signal((int, int), (str, str))` produces the type `Signal[tuple[int, int], tuple[str, str]]`, and can work with a slot function like `def myslot(arg1: int, arg2: str)` or `def myslot(arg1: str, arg2: str)`
 
 This provides type safety in a few ways:
 
@@ -114,8 +119,8 @@ class MyObject(QtCore.QObject):
 Qt registers a separate signature for each parameter of a C++ signal with a default, so Qt's `void clicked(bool
 checked = false)` becomes PySide' `Signal[tuple[()], tuple[bool]]` -- the same as if the
 Python signal were declared with two distinct signatures.  The two do not behave the same
-way, though: for a default argument there is no dispatch at all, C++ simply fills the default
-in.  Wherever one signature of a *native* signal is a prefix of another, the plugin ensures that
+way, though: for a default argument C++ simply fills in the default.  
+Wherever one signature of a *native* signal is a prefix of another, the plugin ensures that
 runtime behavior is reflected in the static check:
 
 * `connect()` accepts a slot taking as many arguments as the longest signature, because PySide
@@ -128,22 +133,21 @@ runtime behavior is reflected in the static check:
   argument still receive it, filled in by C++.
 * What `emit()` may *not* do is pass more arguments than the default signature declares:
   `button.clicked.emit(True)` raises `TypeError` at runtime, because `clicked()` is the default
-  signature.  `button.clicked[bool].emit(True)` is how the other one is emitted, and both are
-  reported accordingly.
+  signature.  Use `button.clicked[bool].emit(True)` to emit the other signature.
 
 Signals declared in python are deliberately left strict: a signal with a similar prefix-like
 relationship between the signatures -- e.g. `Signal((int, str), (int,))` -- does not 
-make anything optional -- `emit(1)` still raises `TypeError`
-at runtime, because nothing fills in the missing argument.  
+make anything optional -- `emit(1)` raises `TypeError` at runtime, and thus the mypy plugin
+enforces this statically.
 
 Note: The plugin recognizes a native signal by where it is declared, which it can only see when the signal is used directly
 (`obj.sig.emit(...)`, `self.sig.connect(...)`); a signal read into a variable first
 (`sig = button.clicked`) is checked strictly as if it were not a native C++ signal.
 
-##### `Signal(object)` can be configured to mean `typing.Any`
+##### Use of `object` in signal instantiation can be configured to mean `typing.Any`
 
 `Signal(object)` is the idiomatic way to declare a signal that emits an arbitrary value (Qt
-registers it as `PyObject`).  
+registers it as `PyObject`).
 
 ```python
 class MyObject(QtCore.QObject):
@@ -164,17 +168,14 @@ However, adding annotations throughout a codebase may be a heavy lift that you'd
 defer till later, so the plugin defaults to loosening this check by internally overriding `object`
 arguments in `Signal(...)` declarations to `typing.Any`:
 
-* `Signal(object)` infers as `Signal[tuple[Any]]`: any single-argument slot can be connected to it, and any
+* `Signal(object)` becomes `Signal[tuple[Any]]`: any single-argument slot can be connected to it, and any
   value can be emitted through it.
 * The override is per-argument, so mixed signals stay strict where they can be:
   `Signal(int, object)` infers as `Signal[tuple[int, Any]]`, and connecting a slot whose
   first argument is not compatible with `int` is still an error.
-* `object` arguments are overridden in every signature of a multi-signature signal, e.g.
-  `Signal((object,), (int,))` infers as `Signal[tuple[Any], tuple[int]]`.
 * Arguments declared as `typing.Any` (a real class at runtime since Python 3.11, which
   PySide6 likewise registers as `PyObject`) are treated the same way, so `Signal(Any)` also
   works.
-* Signals declared without `object` are not affected in any way.
 
 ##### Plugin options
 
@@ -243,7 +244,7 @@ The `types-PySide6` stub generator inspects the annotations extracted from the `
 * Add `QSpacerItem.__init__/changeSize` overloads that use alternate names: `hData`->`hPolicy`, `vData`->`vPolicy`
 * Fixed `QAction.menu` to return optional `QMenu` instead of `QOjbect`
 
-## Licensing
+## License
 
 As a derived work from PySide6, the stubs are delivered under the LGPL v2.1 . See file LICENSE for more details.
 
