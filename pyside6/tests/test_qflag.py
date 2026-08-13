@@ -1,245 +1,194 @@
 # mypy: no-warn-unreachable
+"""Pin the runtime and typing behaviour of PySide6's QFlags-based enums.
 
-import sys
-from typing import Union
+Originally generated from PyQt5-stubs' ``qflags_test_template.py`` for the
+Qt5-era pair of a flag class and a distinct QFlags class
+(``Qt3DCore.ChangeFlag``/``Qt3DCore.ChangeFlags``).  Qt removed that API
+entirely, and PySide6 no longer has separate QFlags wrapper types at all:
+combining two flag members yields the *same* class rather than a distinct
+"multi flag" type.
+
+What is left is a split into two families, which behave differently enough to
+be worth pinning separately:
+
+- ``enum.Flag`` (e.g. ``QDir.Filter``): no interoperability with ``int`` at
+  all -- neither ``int(value)`` nor mixing with ``int`` in bitwise operators.
+- ``enum.IntFlag`` (e.g. ``Qt.AlignmentFlag``): a real ``int`` subclass, so
+  ``int()`` and arithmetic work, and bitwise operators accept ``int`` on
+  either side.
+
+Which family a given Qt enum lands in is decided by Qt, so the stubs must get
+it right per-class; that is what these tests check.
+"""
+
+from typing import TypeAlias, Union
 
 import pytest
 
+from PySide6 import QtCore
+
 ### Specific part
-# file generated from qflags_test_template.py for QFlags class "ChangeFlags" and flag class "ChangeFlag"
-from PySide6 import Qt3DCore, QtCore
+# a QFlags enum *without* int interoperability
+FlagClass: TypeAlias = QtCore.QDir.Filter
+flagRefValue1 = QtCore.QDir.Filter.AllDirs
+flagRefValue2 = QtCore.QDir.Filter.Files
 
-QtCore.Qt.ApplicationAttribute.AA_AttributeCount.ItemIsEditable
-
-OneFlagClass = Qt3DCore.Qt3DCore.ChangeFlag
-MultiFlagClass = Qt3DCore.Qt3DCore.ChangeFlags
-
-oneFlagRefValue1 = Qt3DCore.Qt3DCore.ChangeFlag.NodeCreated
-oneFlagRefValue2 = Qt3DCore.Qt3DCore.ChangeFlag.NodeDeleted
+# a QFlags enum *with* int interoperability
+IntFlagClass: TypeAlias = QtCore.Qt.AlignmentFlag
+intFlagRefValue1 = QtCore.Qt.AlignmentFlag.AlignLeft
+intFlagRefValue2 = QtCore.Qt.AlignmentFlag.AlignTop
 ### End of specific part
 
 
 def assert_type_of_value_int(value: int) -> None:
-    """Raise an exception if the value is not of type expected_type"""
+    """Raise an exception if the value is not a plain int"""
     assert isinstance(value, int)
     assert type(value) == type(123)
 
 
-def assert_type_of_value_oneFlag(value: OneFlagClass) -> None:
-    """Raise an exception if the value is not of type expected_type"""
-    assert type(value) == OneFlagClass
+def assert_type_of_value_flag(value: FlagClass) -> None:
+    """Raise an exception if the value is not of type FlagClass"""
+    assert type(value) == FlagClass
 
 
-def assert_type_of_value_multiFlag(value: MultiFlagClass) -> None:
-    """Raise an exception if the value is not of type expected_type"""
-    assert type(value) == MultiFlagClass
+def assert_type_of_value_intFlag(value: IntFlagClass) -> None:
+    """Raise an exception if the value is not of type IntFlagClass"""
+    assert type(value) == IntFlagClass
 
 
-def test_on_one_flag_class() -> None:
-    oneFlagValue1 = oneFlagRefValue1
-    oneFlagValue2 = oneFlagRefValue2
-    oneFlagValueTest: OneFlagClass = oneFlagValue1
-    intValue = 0
-    oneOrMultiFlagValueTest: Union[OneFlagClass, MultiFlagClass] = oneFlagValue1
-    oneFlagOrIntValue: Union[int, OneFlagClass] = oneFlagValue1
-
-    # upcast from OneFlagClass to int is forbidden
-    intValue = oneFlagValue1  # type: ignore[assignment]
-
-    # conversion works
-    intValue = int(oneFlagValue1)
+def test_flag_construction() -> None:
+    flagValue1 = flagRefValue1
+    flagValueTest: FlagClass = flagValue1
 
     # this is not supported type-safely for a good reason
-    oneFlagValueTest = 1  # type: ignore
+    flagValueTest = 1  # type: ignore[assignment]
 
-    # correct way to do it
-    oneFlagValueTest = OneFlagClass()
-    oneFlagValueTest = OneFlagClass(1)
-    oneFlagValueTest = OneFlagClass(oneFlagValue1)
+    # correct ways to do it
+    flagValueTest = FlagClass(0)
+    flagValueTest = FlagClass(1)
+    flagValueTest = FlagClass(flagValue1)
+    assert_type_of_value_flag(flagValueTest)
 
-    # The rules of OneFlagClass conversion defined in PyQt5 are:
-    # 1. | ~= with OneFlagClass return a MultiFlagClass (which is not compatible to int)
-    #   Note that this breaks Liskov principle
-    # 2. everything else returns int: & ^ &= ^=
-    # 3. operations with int return int.
 
-    assert_type_of_value_multiFlag(oneFlagValue1 | oneFlagValue2)
-    assert_type_of_value_multiFlag(oneFlagValue1 & oneFlagValue2)
-    assert_type_of_value_multiFlag(oneFlagValue1 ^ oneFlagValue2)
-    assert_type_of_value_multiFlag(~oneFlagValue1)
+def test_flag_operators() -> None:
+    flagValue1 = flagRefValue1
+    flagValue2 = flagRefValue2
+
+    # combining two members yields the same class -- PySide6 has no separate
+    # QFlags type to widen to
+    assert_type_of_value_flag(flagValue1 | flagValue2)
+    assert_type_of_value_flag(flagValue1 & flagValue2)
+    assert_type_of_value_flag(flagValue1 ^ flagValue2)
+    assert_type_of_value_flag(~flagValue1)
+
+    flagValueTest = flagValue1
+    flagValueTest |= flagValue2
+    assert_type_of_value_flag(flagValueTest)
+
+    flagValueTest = flagValue1
+    flagValueTest &= flagValue2
+    assert_type_of_value_flag(flagValueTest)
+
+    flagValueTest = flagValue1
+    flagValueTest ^= flagValue2
+    assert_type_of_value_flag(flagValueTest)
+
+
+def test_flag_has_no_int_interop() -> None:
+    """enum.Flag is not an int: no conversion, no mixing, no arithmetic."""
+    flagValue1 = flagRefValue1
+
+    pytest.raises(TypeError, lambda: int(flagValue1))  # type: ignore[call-overload]
 
     # right operand int
-    assert_type_of_value_multiFlag(oneFlagValue1 | 1)
-    assert_type_of_value_multiFlag(oneFlagValue1 & 1)
-    assert_type_of_value_multiFlag(oneFlagValue1 ^ 1)
+    pytest.raises(TypeError, lambda: flagValue1 | 1)  # type: ignore[operator]
+    pytest.raises(TypeError, lambda: flagValue1 & 1)  # type: ignore[operator]
+    pytest.raises(TypeError, lambda: flagValue1 ^ 1)  # type: ignore[operator]
 
     # left operand int
-    assert_type_of_value_multiFlag(1 | oneFlagValue1)
-    assert_type_of_value_multiFlag(1 & oneFlagValue1)
-    assert_type_of_value_multiFlag(1 ^ oneFlagValue1)
-
-    oneOrMultiFlagValueTest = oneFlagValue1  # reset type and value
-    assert_type_of_value_oneFlag(oneOrMultiFlagValueTest)
-    oneOrMultiFlagValueTest |= oneFlagValue2
-    assert_type_of_value_multiFlag(oneOrMultiFlagValueTest)
-
-    oneOrMultiFlagValueTest = oneFlagValue1  # reset type and value
-    assert_type_of_value_oneFlag(oneOrMultiFlagValueTest)
-    oneOrMultiFlagValueTest |= 1
-    assert_type_of_value_multiFlag(oneOrMultiFlagValueTest)
-
-    oneOrMultiFlagValueTest = oneFlagValue1  # reset type and value
-    assert_type_of_value_oneFlag(oneOrMultiFlagValueTest)
-    oneOrMultiFlagValueTest &= 1
-    assert_type_of_value_multiFlag(oneOrMultiFlagValueTest)
-
-    oneOrMultiFlagValueTest = oneFlagValue1  # reset type and value
-    assert_type_of_value_oneFlag(oneOrMultiFlagValueTest)
-    oneOrMultiFlagValueTest &= oneFlagValue2
-    assert_type_of_value_multiFlag(oneOrMultiFlagValueTest)
-
-    oneOrMultiFlagValueTest = oneFlagValue1  # reset type and value
-    assert_type_of_value_oneFlag(oneOrMultiFlagValueTest)
-    oneOrMultiFlagValueTest ^= 1
-    assert_type_of_value_multiFlag(oneOrMultiFlagValueTest)
-
-    oneOrMultiFlagValueTest = oneFlagValue1  # reset type and value
-    assert_type_of_value_oneFlag(oneOrMultiFlagValueTest)
-    oneOrMultiFlagValueTest ^= oneFlagValue2
-    assert_type_of_value_multiFlag(oneOrMultiFlagValueTest)
+    pytest.raises(TypeError, lambda: 1 | flagValue1)  # type: ignore[operator]
+    pytest.raises(TypeError, lambda: 1 & flagValue1)  # type: ignore[operator]
+    pytest.raises(TypeError, lambda: 1 ^ flagValue1)  # type: ignore[operator]
 
     # +/- operations are forbidden
-    pytest.raises(TypeError, lambda: oneFlagValue1 + 1)  # type: ignore[operator]
-    pytest.raises(TypeError, lambda: oneFlagValue1 - 1)  # type: ignore[operator]
-    pytest.raises(TypeError, lambda: 1 + oneFlagValue1)  # type: ignore[operator]
-    pytest.raises(TypeError, lambda: 1 - oneFlagValue1)  # type: ignore[operator]
-
-
-def test_on_multi_flag_class() -> None:
-    oneFlagValue1 = oneFlagRefValue1
-    multiFlagValue1 = MultiFlagClass()
-    multiFlagValue2 = MultiFlagClass()
-    multiFlagValueTest = multiFlagValue1  # type: MultiFlagClass
-    intValue = 0
-
-    assert_type_of_value_multiFlag(MultiFlagClass(intValue))
-    assert_type_of_value_multiFlag(MultiFlagClass(oneFlagValue1))
-    assert_type_of_value_multiFlag(MultiFlagClass(multiFlagValue1))
-
-    assert_type_of_value_oneFlag(oneFlagValue1)
-    assert_type_of_value_multiFlag(multiFlagValue1)
-    assert_type_of_value_multiFlag(multiFlagValue2)
-    assert_type_of_value_multiFlag(multiFlagValueTest)
-    assert_type_of_value_int(intValue)
-
-    # MultiFlagClass may be created by combining MultiFlagClass together
-    assert_type_of_value_multiFlag(~multiFlagValue1)
-    assert_type_of_value_multiFlag(multiFlagValue1 | multiFlagValue2)
-    assert_type_of_value_multiFlag(multiFlagValue1 & multiFlagValue2)
-    assert_type_of_value_multiFlag(multiFlagValue1 ^ multiFlagValue2)
-
-    # MultiFlagClass may be created by combining MultiFlagClass and OneFlagClass, left or right
-    assert_type_of_value_multiFlag(multiFlagValue1 | oneFlagValue1)
-    assert_type_of_value_multiFlag(multiFlagValue1 & oneFlagValue1)
-    assert_type_of_value_multiFlag(multiFlagValue1 ^ oneFlagValue1)
-
-    assert_type_of_value_multiFlag(oneFlagValue1 | multiFlagValue1)
-    assert_type_of_value_multiFlag(oneFlagValue1 & multiFlagValue1)
-    assert_type_of_value_multiFlag(oneFlagValue1 ^ multiFlagValue1)
-
-    # MultClassFlag may be created by combining MultiFlagClass and int, right only
-    assert_type_of_value_multiFlag(multiFlagValue1 | 1)
-    assert_type_of_value_multiFlag(multiFlagValue1 & 1)
-    assert_type_of_value_multiFlag(multiFlagValue1 ^ 1)
-
-    assert_type_of_value_multiFlag(1 | multiFlagValue1)
-    assert_type_of_value_multiFlag(1 & multiFlagValue1)
-    assert_type_of_value_multiFlag(1 ^ multiFlagValue1)
-
-    # this is rejected by mypy and is slightly annoying: you can not pass a OneFlagClass variable to a method expecting a MultiFlagClass
-    # explicit typing must be used on those methods to accept both OneFlagClass and MultiFlagClass
-    multiFlagValueTest = oneFlagValue1  # type: ignore
-
-    # correct way to do it
-    multiFlagValueTest = MultiFlagClass(oneFlagValue1)
-    assert_type_of_value_multiFlag(multiFlagValueTest)
-
-    # this is rejected for the same reason as for OneFlagClass.
-    intValue = multiFlagValueTest  # type: ignore
-
-    # correct way to do it
-    intValue = int(multiFlagValueTest)
-    assert_type_of_value_int(intValue)
-
-    # rejected by mypy rightfully
-    multiFlagValueTest = 1  # type: ignore
-
-    # correct way to do it
-    multiFlagValueTest = MultiFlagClass(1)
-
-    # assignments operations with OneFlagClass
-    assert_type_of_value_multiFlag(multiFlagValueTest)
-    multiFlagValueTest |= oneFlagValue1
-    assert_type_of_value_multiFlag(multiFlagValueTest)
-
-    assert_type_of_value_multiFlag(multiFlagValueTest)
-    multiFlagValueTest &= oneFlagValue1
-    assert_type_of_value_multiFlag(multiFlagValueTest)
-
-    assert_type_of_value_multiFlag(multiFlagValueTest)
-    multiFlagValueTest ^= oneFlagValue1
-    assert_type_of_value_multiFlag(multiFlagValueTest)
-
-    # assignments operations with int
-    assert_type_of_value_multiFlag(multiFlagValueTest)
-    multiFlagValueTest |= 1
-    assert_type_of_value_multiFlag(multiFlagValueTest)
-
-    assert_type_of_value_multiFlag(multiFlagValueTest)
-    multiFlagValueTest &= 1
-    assert_type_of_value_multiFlag(multiFlagValueTest)
-
-    assert_type_of_value_multiFlag(multiFlagValueTest)
-    multiFlagValueTest ^= 1
-    assert_type_of_value_multiFlag(multiFlagValueTest)
-
-    #########################################################1
-    #
-    #        Exploring errors
-    #
-    #########################################################1
-
-    # This checks the following:
-    # + and - operations are not supported on MultiFlagClass
-    # combining int with MultiFlagClass does not work
-    pytest.raises(TypeError, lambda: multiFlagValue1 + multiFlagValue2)  # type: ignore[operator]
-    pytest.raises(TypeError, lambda: multiFlagValue1 - multiFlagValue2)  # type: ignore[operator]
-    pytest.raises(TypeError, lambda: multiFlagValue1 + oneFlagValue1)  # type: ignore[operator]
-    pytest.raises(TypeError, lambda: multiFlagValue1 - oneFlagValue1)  # type: ignore[operator]
-    pytest.raises(TypeError, lambda: multiFlagValue1 + 1)  # type: ignore[operator]
-    pytest.raises(TypeError, lambda: multiFlagValue1 - 1)  # type: ignore[operator]
-    pytest.raises(TypeError, lambda: oneFlagValue1 + multiFlagValue1)  # type: ignore[operator]
-    pytest.raises(TypeError, lambda: oneFlagValue1 - multiFlagValue1)  # type: ignore[operator]
-    pytest.raises(TypeError, lambda: 1 + multiFlagValue1)  # type: ignore[operator]
-    pytest.raises(TypeError, lambda: 1 - multiFlagValue1)  # type: ignore[operator]
+    pytest.raises(TypeError, lambda: flagValue1 + 1)  # type: ignore[operator]
+    pytest.raises(TypeError, lambda: flagValue1 - 1)  # type: ignore[operator]
+    pytest.raises(TypeError, lambda: 1 + flagValue1)  # type: ignore[operator]
+    pytest.raises(TypeError, lambda: 1 - flagValue1)  # type: ignore[operator]
 
     def f1() -> None:
-        multiFlagValueTest = MultiFlagClass()
-        multiFlagValueTest += oneFlagValue1  # type: ignore[operator]
+        value = FlagClass(0)
+        value += flagValue1  # type: ignore[operator]
 
     def f2() -> None:
-        multiFlagValueTest = MultiFlagClass()
-        multiFlagValueTest += 1  # type: ignore[operator, assignment]
-
-    def f3() -> None:
-        multiFlagValueTest = MultiFlagClass()
-        multiFlagValueTest -= oneFlagValue1  # type: ignore[operator]
-
-    def f4() -> None:
-        multiFlagValueTest = MultiFlagClass()
-        multiFlagValueTest -= 1  # type: ignore[operator, assignment]
+        value = FlagClass(0)
+        value -= flagValue1  # type: ignore[operator]
 
     pytest.raises(TypeError, f1)
     pytest.raises(TypeError, f2)
-    pytest.raises(TypeError, f3)
-    pytest.raises(TypeError, f4)
+
+
+def test_intFlag_construction() -> None:
+    intFlagValue1 = intFlagRefValue1
+    intFlagValueTest: IntFlagClass = intFlagValue1
+    flagOrIntValue: Union[int, IntFlagClass] = intFlagValue1
+
+    # even though IntFlagClass is an int subclass, a plain int is not a member
+    intFlagValueTest = 1  # type: ignore[assignment]
+
+    # correct ways to do it
+    intFlagValueTest = IntFlagClass(0)
+    intFlagValueTest = IntFlagClass(1)
+    intFlagValueTest = IntFlagClass(intFlagValue1)
+    assert_type_of_value_intFlag(intFlagValueTest)
+
+    # upcast to int is allowed: IntFlagClass *is* an int
+    flagOrIntValue = 1
+    intValue: int = intFlagValue1
+    assert intValue == 1
+
+
+def test_intFlag_operators() -> None:
+    intFlagValue1 = intFlagRefValue1
+    intFlagValue2 = intFlagRefValue2
+
+    assert_type_of_value_intFlag(intFlagValue1 | intFlagValue2)
+    assert_type_of_value_intFlag(intFlagValue1 & intFlagValue2)
+    assert_type_of_value_intFlag(intFlagValue1 ^ intFlagValue2)
+    assert_type_of_value_intFlag(~intFlagValue1)
+
+    # mixing with int is allowed in both directions and stays an IntFlagClass
+    assert_type_of_value_intFlag(intFlagValue1 | 1)
+    assert_type_of_value_intFlag(intFlagValue1 & 1)
+    assert_type_of_value_intFlag(intFlagValue1 ^ 1)
+
+    assert_type_of_value_intFlag(1 | intFlagValue1)
+    assert_type_of_value_intFlag(1 & intFlagValue1)
+    assert_type_of_value_intFlag(1 ^ intFlagValue1)
+
+    intFlagValueTest = intFlagValue1
+    intFlagValueTest |= intFlagValue2
+    assert_type_of_value_intFlag(intFlagValueTest)
+
+    intFlagValueTest = intFlagValue1
+    intFlagValueTest |= 1
+    assert_type_of_value_intFlag(intFlagValueTest)
+
+    intFlagValueTest = intFlagValue1
+    intFlagValueTest &= 1
+    assert_type_of_value_intFlag(intFlagValueTest)
+
+    intFlagValueTest = intFlagValue1
+    intFlagValueTest ^= 1
+    assert_type_of_value_intFlag(intFlagValueTest)
+
+
+def test_intFlag_arithmetic_degrades_to_int() -> None:
+    """+/- are inherited from int, and drop back to a plain int."""
+    intFlagValue1 = intFlagRefValue1
+
+    assert_type_of_value_int(int(intFlagValue1))
+    assert_type_of_value_int(intFlagValue1 + 1)
+    assert_type_of_value_int(intFlagValue1 - 1)
+    assert_type_of_value_int(1 + intFlagValue1)
+    assert_type_of_value_int(1 - intFlagValue1)

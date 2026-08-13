@@ -2,9 +2,12 @@ from typing import Any
 
 from PySide6.QtWidgets import QMenu, QTreeWidget
 
-# FIXME: this test does not execute at runtime
-# the default version of pyside2 stubs would not detect missing attributes
-# this test verifies that this is fixed
+# PySide2 exposed only exec_(), because `exec` was a keyword in Python 2.
+# PySide6 has a real exec() method: this checks that the stubs agree it exists,
+# including when reached through an annotated member.
+# Note: this module is not collected by pytest (its name has no test_ prefix),
+# so it is a static assertion only -- the runtime check is
+# test_general.py::test_qmenu_exec.
 
 
 class Toto(QTreeWidget):
@@ -15,9 +18,5 @@ class Toto(QTreeWidget):
         self.m = QMenu()
 
     def toto(self) -> None:
-        try:
-            # exec() is actually not available
-            self.m.exec()  # type: ignore[attr-defined]
-            assert False, "Should not reach here"
-        except AttributeError:
-            pass
+        # never called: exec() blocks until the menu is dismissed
+        self.m.exec()

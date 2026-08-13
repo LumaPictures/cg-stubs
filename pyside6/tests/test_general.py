@@ -24,7 +24,9 @@ def _dismiss_menu_soon(menu: "QtWidgets.QMenu | None" = None) -> None:
     """
 
     def close() -> None:
-        widget = menu if menu is not None else QtWidgets.QApplication.activePopupWidget()
+        widget = (
+            menu if menu is not None else QtWidgets.QApplication.activePopupWidget()
+        )
         if widget is not None:
             widget.close()
 
@@ -75,6 +77,27 @@ def test_qmenu3() -> None:
     menu3.addAction(action3)
     _dismiss_menu_soon(menu3)
     menu3.exec_()
+
+
+def test_qmenu_exec() -> None:
+    # PySide2 exposed only exec_(), because `exec` was a keyword in Python 2.
+    # PySide6 has a real exec() method; check it exists and works, and that the
+    # stubs agree (the other tests here only ever reach it through exec_()).
+    self = QtWidgets.QWidget()
+    pos = QtCore.QPoint(0, 0)
+    action = QtGui.QAction("Action 1")
+    menu = QtWidgets.QMenu(self)
+    menu.addAction(action)
+
+    assert callable(menu.exec)
+
+    # instance overload, no arguments
+    _dismiss_menu_soon(menu)
+    assert menu.exec() is None
+
+    # instance overload taking a position
+    _dismiss_menu_soon(menu)
+    assert menu.exec(pos) is None
 
 
 def test_qmenu_failures() -> None:
@@ -166,23 +189,24 @@ def test_qdialog() -> None:
 
 
 def test_qdialogbuttonbox() -> None:
-    a: QtWidgets.QDialogButtonBox.StandardButtons
+    # Note: PySide6 merged the QFlags class into the flag class: `StandardButtons`
+    # only survives as a runtime-only "forgiveness mode" alias of `StandardButton`,
+    # which the stubs deliberately do not declare (see also `Qt.ItemIsEditable`).
+    a: QtWidgets.QDialogButtonBox.StandardButton
     a = (
         QtWidgets.QDialogButtonBox.StandardButton.Ok
         | QtWidgets.QDialogButtonBox.StandardButton.Ok
     )
-    assert isinstance(a, QtWidgets.QDialogButtonBox.StandardButtons)
+    assert isinstance(a, QtWidgets.QDialogButtonBox.StandardButton)
     d = a | QtWidgets.QDialogButtonBox.StandardButton.Ok
-    assert isinstance(d, QtWidgets.QDialogButtonBox.StandardButtons)
+    assert isinstance(d, QtWidgets.QDialogButtonBox.StandardButton)
     e = a | a
 
 
 def test_qguiapplication() -> None:
     app: QtGui.QGuiApplication
     app = QtGui.QGuiApplication.instance()
-    app.setOverrideCursor(
-        QtCore.Qt.ApplicationAttribute.AA_AttributeCount.CursorShape.WaitCursor
-    )
+    app.setOverrideCursor(QtCore.Qt.CursorShape.WaitCursor)
 
 
 def test_qicon() -> None:
@@ -196,13 +220,16 @@ def test_qicon() -> None:
 
 def test_qlabel() -> None:
     l = QtWidgets.QLabel()
-    l.setAlignment(
-        QtCore.Qt.ApplicationAttribute.AA_AttributeCount.AlignmentFlag.AlignCenter
-    )
+    l.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
 
 def test_qmessagebox() -> None:
-    multiple_buttons = QtWidgets.QMessageBox.StandardButtons()
+    # Note: PySide6 merged the QFlags class into the flag class, so combining
+    # `StandardButton` members yields a `StandardButton`.  The legacy name
+    # `StandardButtons` survives only as a runtime shim that shiboken resolves by
+    # inspecting the calling frame -- it works as `QMessageBox.StandardButtons(...)`
+    # but not once bound to a name -- so the stubs deliberately do not declare it.
+    multiple_buttons = QtWidgets.QMessageBox.StandardButton(0)
     multiple_buttons = (
         QtWidgets.QMessageBox.StandardButton.Ok
         | QtWidgets.QMessageBox.StandardButton.Ok
@@ -211,11 +238,11 @@ def test_qmessagebox() -> None:
     multiple_buttons = multiple_buttons | 0
     multiple_buttons = multiple_buttons | QtWidgets.QMessageBox.StandardButton.Ok
     multiple_buttons = multiple_buttons | multiple_buttons
-    multiple_buttons = QtWidgets.QMessageBox.StandardButtons(44)
-    multiple_buttons = QtWidgets.QMessageBox.StandardButtons(
+    multiple_buttons = QtWidgets.QMessageBox.StandardButton(44)
+    multiple_buttons = QtWidgets.QMessageBox.StandardButton(
         QtWidgets.QMessageBox.StandardButton.Ok
     )
-    multiple_buttons = QtWidgets.QMessageBox.StandardButtons(
+    multiple_buttons = QtWidgets.QMessageBox.StandardButton(
         QtWidgets.QMessageBox.StandardButton.Ok
         | QtWidgets.QMessageBox.StandardButton.Ok
     )
@@ -271,7 +298,7 @@ def test_qpainter() -> None:
     )
     painter.drawPolygon(
         [QtCore.QPoint(0, 0), QtCore.QPoint(1, 1), QtCore.QPoint(2, 2)],
-        QtCore.Qt.ApplicationAttribute.AA_AttributeCount.FillRule.OddEvenFill,
+        QtCore.Qt.FillRule.OddEvenFill,
     )
     # painter.drawPolygon([QtCore.QPoint(0, 0), QtCore.QPoint(1, 1), QtCore.QPoint(2, 2)],
     #                     None)
@@ -308,12 +335,12 @@ def test_qpainter() -> None:
 
     painter.drawText(
         QtCore.QRectF(0.0, 1.0, 2.0, 3.0),
-        QtCore.Qt.ApplicationAttribute.AA_AttributeCount.AlignmentFlag.AlignLeft,
+        QtCore.Qt.AlignmentFlag.AlignLeft,
         "text",
     )
     painter.drawText(
         QtCore.QRect(0, 1, 2, 3),
-        QtCore.Qt.ApplicationAttribute.AA_AttributeCount.AlignmentFlag.AlignLeft,
+        QtCore.Qt.AlignmentFlag.AlignLeft,
         "text",
     )
     painter.end()
@@ -321,13 +348,11 @@ def test_qpainter() -> None:
 
 def test_qpixmap() -> None:
     emptyPixmap = QtGui.QPixmap(16, 16)
-    emptyPixmap.fill(
-        QtCore.Qt.ApplicationAttribute.AA_AttributeCount.GlobalColor.transparent
-    )
+    emptyPixmap.fill(QtCore.Qt.GlobalColor.transparent)
     # we currenly choose not to allow str literals because it is too ambiguous.
     # use constants to enforce proper types
     # emptyPixmap.fill("white")
-    emptyPixmap.fill(QtCore.Qt.ApplicationAttribute.AA_AttributeCount.GlobalColor.white)
+    emptyPixmap.fill(QtCore.Qt.GlobalColor.white)
     emptyPixmap.fill(0xFFFFFF)
 
 
@@ -384,9 +409,7 @@ def test_qpropertyanimation() -> None:
 
 def test_qquickitem() -> None:
     qi = QtQuick.QQuickItem()
-    qi.setCursor(
-        QtCore.Qt.ApplicationAttribute.AA_AttributeCount.CursorShape.WaitCursor
-    )
+    qi.setCursor(QtCore.Qt.CursorShape.WaitCursor)
 
 
 def test_qsize() -> None:
@@ -461,14 +484,16 @@ def test_qsize() -> None:
 
 
 def test_qspaceritem() -> None:
-    # in C++ the size args are named hPolicy and vPolicy, but in PySide they
-    # renamed to hData and vData, but both are valid.
-    s = QtWidgets.QSpacerItem(
-        10,
-        20,
-        hPolicy=QtWidgets.QSizePolicy.Policy.Expanding,
-        vPolicy=QtWidgets.QSizePolicy.Policy.Expanding,
-    )
+    # in C++ the size args are named hPolicy and vPolicy, but PySide renamed them
+    # to hData and vData.  Up to PySide6 6.9 both sets of names were accepted;
+    # 6.10 dropped the C++ names.
+    with pytest.raises(AttributeError):
+        QtWidgets.QSpacerItem(  # type: ignore[call-arg]
+            10,
+            20,
+            hPolicy=QtWidgets.QSizePolicy.Policy.Expanding,
+            vPolicy=QtWidgets.QSizePolicy.Policy.Expanding,
+        )
     s = QtWidgets.QSpacerItem(
         10,
         20,
@@ -514,24 +539,22 @@ def test_qtreewidgetitem() -> None:
 
     t.setForeground(
         3,
-        QtGui.QColor(QtCore.Qt.ApplicationAttribute.AA_AttributeCount.GlobalColor.red),
+        QtGui.QColor(QtCore.Qt.GlobalColor.red),
     )
     t.setBackground(
         3,
-        QtGui.QColor(QtCore.Qt.ApplicationAttribute.AA_AttributeCount.GlobalColor.red),
+        QtGui.QColor(QtCore.Qt.GlobalColor.red),
     )
 
-    t.setData(
-        0, QtCore.Qt.ApplicationAttribute.AA_AttributeCount.ItemDataRole(33), "bla"
-    )
+    t.setData(0, QtCore.Qt.ItemDataRole(33), "bla")
     t.setData(
         0,
-        QtCore.Qt.ApplicationAttribute.AA_AttributeCount.ItemDataRole.ToolTipRole,
+        QtCore.Qt.ItemDataRole.ToolTipRole,
         "bla",
     )
 
-    t.data(0, QtCore.Qt.ApplicationAttribute.AA_AttributeCount.ItemDataRole(33))
-    t.data(0, QtCore.Qt.ApplicationAttribute.AA_AttributeCount.ItemDataRole.ToolTipRole)
+    t.data(0, QtCore.Qt.ItemDataRole(33))
+    t.data(0, QtCore.Qt.ItemDataRole.ToolTipRole)
 
 
 def test_qversion() -> None:
@@ -542,12 +565,12 @@ def test_qversion() -> None:
 
 def test_qwidget() -> None:
     w = QtWidgets.QWidget()
-    w.setCursor(QtCore.Qt.ApplicationAttribute.AA_AttributeCount.CursorShape.WaitCursor)
+    w.setCursor(QtCore.Qt.CursorShape.WaitCursor)
 
 
 def test_qwindow() -> None:
     w = QtGui.QWindow()
-    w.setCursor(QtCore.Qt.ApplicationAttribute.AA_AttributeCount.CursorShape.WaitCursor)
+    w.setCursor(QtCore.Qt.CursorShape.WaitCursor)
 
 
 def test_signal_slot() -> None:
@@ -591,7 +614,7 @@ def test_qbrush_implicit_args() -> None:
 
     painter.setBrush(grad)
     painter.setBrush(QtGui.QColor(0, 0, 0, 0))
-    painter.setBrush(QtCore.Qt.ApplicationAttribute.AA_AttributeCount.GlobalColor.black)
+    painter.setBrush(QtCore.Qt.GlobalColor.black)
 
 
 @pytest.mark.skipif(pyside_version < (5, 14), reason="fails in PySide6 < 5.14.2.3")
@@ -671,8 +694,9 @@ def test_signal_connect() -> None:
         type=QtCore.Qt.ConnectionType.QueuedConnection,
     )  # type: ignore[call-overload]
 
-    with pytest.raises(Exception):
-        b.editTextChanged.connect(print, None)  # type: ignore
+    # passing None as the connection type is accepted and behaves like the
+    # default (auto) connection
+    b.editTextChanged.connect(print, None)
 
 
 def test_editablity() -> None:

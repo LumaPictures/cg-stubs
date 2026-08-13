@@ -5,11 +5,12 @@ from pathlib import Path
 
 import mypy.stubgen
 
-pyside6_root = Path(sys.modules[__name__].__file__).parent
+pyside6_root = Path(__file__).parent
 pyside2_root = pyside6_root.parent.joinpath("pyside")
 sys.path.append(str(pyside2_root))
 
-from stubgen_pyside import helper
+# re-exported for tests/test_helper.py
+from stubgen_pyside import helper as helper
 
 if __name__ == "__main__":
     diff_with_pyside2 = False

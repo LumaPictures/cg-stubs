@@ -692,6 +692,11 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                 # Qt allows connecting a slot that accepts fewer arguments than the
                 # signal emits; we support that pattern for up to the first three
                 # arguments.
+                # The `type` arg is `Qt.ConnectionType | None`: PySide's own signature
+                # declares it as `type | None`, and passing None is accepted at runtime
+                # and behaves like the default (auto) connection.  Note this is specific
+                # to `SignalInstance.connect()`: `QObject.connect()` and
+                # `QMetaObject.invokeMethod()` raise TypeError when given None.
                 # NOTE: these must all be FunctionSig objects because mypy's docstring
                 # signature parser silently drops annotations that contain `()` (e.g.
                 # `_SlotFunc[()]`), and mixing strings and FunctionSig objects in one
@@ -709,7 +714,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                                 "_SlotFunc[()] | _SlotFunc[_T1] | _SignalEmitter[()] | _SignalEmitter[_T1]",
                             ),
                             ArgSig("/"),
-                            ArgSig("type", "PySide6.QtCore.Qt.ConnectionType", default=True),
+                            ArgSig("type", "PySide6.QtCore.Qt.ConnectionType | None", default=True),
                         ],
                         ret_type="PySide6.QtCore.QMetaObject.Connection",
                     ),
@@ -722,7 +727,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                             ),
                             ArgSig("slot", "_SlotFunc[_T1, _T2] | _SignalEmitter[_T1, _T2]"),
                             ArgSig("/"),
-                            ArgSig("type", "PySide6.QtCore.Qt.ConnectionType", default=True),
+                            ArgSig("type", "PySide6.QtCore.Qt.ConnectionType | None", default=True),
                         ],
                         ret_type="PySide6.QtCore.QMetaObject.Connection",
                     ),
@@ -738,7 +743,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                                 "_SlotFunc[_T1, _T2, _T3] | _SignalEmitter[_T1, _T2, _T3]",
                             ),
                             ArgSig("/"),
-                            ArgSig("type", "PySide6.QtCore.Qt.ConnectionType", default=True),
+                            ArgSig("type", "PySide6.QtCore.Qt.ConnectionType | None", default=True),
                         ],
                         ret_type="PySide6.QtCore.QMetaObject.Connection",
                     ),
@@ -754,7 +759,7 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                                 "_SlotFunc[typing_extensions.Unpack[_SignalArgT]] | _SignalEmitter[typing_extensions.Unpack[_SignalArgT]]",
                             ),
                             ArgSig("/"),
-                            ArgSig("type", "PySide6.QtCore.Qt.ConnectionType", default=True),
+                            ArgSig("type", "PySide6.QtCore.Qt.ConnectionType | None", default=True),
                         ],
                         ret_type="PySide6.QtCore.QMetaObject.Connection",
                     ),
@@ -1030,17 +1035,22 @@ class PySideSignatureGenerator(AdvancedSignatureGenerator):
                 ),
             },
             # Add new overloads to existing functions.
-            new_overloads={
-                # * Add `QSpacerItem.__init__/changeSize` overloads that use alternate names: `hData`->`hPolicy`, `vData`->`vPolicy`
-                "*.QSpacerItem.__init__": [
-                    f"(self, w:int, h:int, hPolicy:{PYSIDE}.QtWidgets.QSizePolicy.Policy=..., vPolicy:{PYSIDE}.QtWidgets.QSizePolicy.Policy=...) -> None"
-                ],
-                "*.QSpacerItem.changeSize": [
-                    f"(self, w:int, h:int, hPolicy:{PYSIDE}.QtWidgets.QSizePolicy.Policy=..., vPolicy:{PYSIDE}.QtWidgets.QSizePolicy.Policy=...) -> None"
-                ],
-            },
+            new_overloads={},
         )
         if PYSIDE == "PySide2":
+            matcher.new_overloads.update(
+                {
+                    # * Add `QSpacerItem.__init__/changeSize` overloads that use alternate names: `hData`->`hPolicy`, `vData`->`vPolicy`
+                    # PySide6 6.10 dropped the alternate names: passing `hPolicy` raises
+                    # `AttributeError: unsupported keyword 'hPolicy'`
+                    "*.QSpacerItem.__init__": [
+                        f"(self, w:int, h:int, hPolicy:{PYSIDE}.QtWidgets.QSizePolicy.Policy=..., vPolicy:{PYSIDE}.QtWidgets.QSizePolicy.Policy=...) -> None"
+                    ],
+                    "*.QSpacerItem.changeSize": [
+                        f"(self, w:int, h:int, hPolicy:{PYSIDE}.QtWidgets.QSizePolicy.Policy=..., vPolicy:{PYSIDE}.QtWidgets.QSizePolicy.Policy=...) -> None"
+                    ],
+                }
+            )
             matcher.signature_overrides.update(
                 {
                     # * Fix passing QOjbect to QWidget.setParent

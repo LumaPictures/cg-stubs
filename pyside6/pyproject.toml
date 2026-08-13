@@ -57,6 +57,9 @@ dev-mode-dirs = ["stubs"]
 
 [tool.mypy]
 check_untyped_defs = true
+# stubgen_pyside6.py imports the shared generator from ../pyside, which it adds
+# to sys.path at runtime.
+mypy_path = ["../pyside"]
 files = [
     "stubgen_pyside6.py",
     "types_pyside6_mypy_plugin",
@@ -74,6 +77,12 @@ disable_error_code = ["no-untyped-def", "type-arg"]
 
 [[tool.mypy.overrides]]
 module = ["conftest"]
+ignore_errors = true
+
+# The shared generator belongs to the pyside project and is checked by its own
+# mypy session; follow it for type info, but don't report its errors here.
+[[tool.mypy.overrides]]
+module = ["stubgen_pyside"]
 ignore_errors = true
 
 [[tool.mypy.overrides]]
