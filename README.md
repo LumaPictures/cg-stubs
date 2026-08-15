@@ -15,6 +15,7 @@ Supported libraries and applications:
 - [nuke](https://pypi.org/project/types-nuke/)
 - [opencolorio](https://pypi.org/project/types-opencolorio/)
 - [PySide2](https://pypi.org/project/types-PySide2/)
+- [PySide6](https://pypi.org/project/types-PySide6/)
 - [substance_painter](https://pypi.org/project/types-substance_painter/)
 
 Note that [pymel](https://pypi.org/project/pymel/) now has very excellent stubs included (more info [here](https://dev.to/chadrik/pymels-new-type-stubs-2die)).
@@ -24,7 +25,7 @@ Note that [pymel](https://pypi.org/project/pymel/) now has very excellent stubs 
 These are distributed as "stubs-only" python packages, so you can just `pip install` whichever packages you need:
 
 ```
-pip install types-usd types-houdini types-katana types-mari types-nuke types-opencolorio types-PySide2 types-substance_painter
+pip install types-usd types-houdini types-katana types-mari types-nuke types-opencolorio types-PySide6 types-substance_painter
 ```
 
 ## Generating the stubs
