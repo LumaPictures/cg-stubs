@@ -1,6 +1,6 @@
 [project]
 name = "types-substance_painter"
-version = "2024.10.1.2.0"
+version = "2026.11.0.3.0"
 
 readme = "README.md"
 authors = [{name="Chad Dombrova"}]

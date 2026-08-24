@@ -5,6 +5,7 @@ from typing import Union
 from substance_painter.async_utils import StopSource as StopSource
 from substance_painter.baking import BakingStatus as BakingStatus
 from substance_painter.export import ExportStatus as ExportStatus
+from substance_painter.resource import ReloadResourcesFilter as ReloadResourcesFilter, ResourceID as ResourceID
 from substance_painter.textureset import ChannelType as ChannelType
 from typing import Any, Callable
 
@@ -23,8 +24,10 @@ class _DunamisEvent(Event):
     subtype: str
     values: list[tuple[str, str]]
     measures: list[tuple[str, Union[int, float]]]
-    children: list[type[Event]]  # type: ignore[valid-type]
+    children: list[type[Event]]
 
+@dataclasses.dataclass(frozen=True)
+class _UpdateProjectResourcesEnded(Event): ...
 @dataclasses.dataclass(frozen=True)
 class ProjectOpened(Event): ...
 @dataclasses.dataclass(frozen=True)
@@ -110,6 +113,26 @@ class TextureStateEvent(Event):
 @dataclasses.dataclass(frozen=True)
 class CameraPropertiesChanged(Event):
     camera_id: int
+
+@dataclasses.dataclass(frozen=True)
+class ReloadResourcesStarted(Event):
+    filter: ReloadResourcesFilter
+
+@dataclasses.dataclass(frozen=True)
+class ReloadedResourceResult:
+    old_resource_id: ResourceID
+    new_resource_id: ResourceID
+
+@dataclasses.dataclass(frozen=True)
+class ReloadedResourceError:
+    resource_id: ResourceID
+    error_msg: str
+
+@dataclasses.dataclass(frozen=True)
+class ReloadResourcesEnded(Event):
+    filter: ReloadResourcesFilter
+    reloaded_resources: list[ReloadedResourceResult]
+    resource_errors: list[ReloadedResourceError]
 
 class _ProjectEditionStateEventsGenerator:
     class _State(enum.Enum):
