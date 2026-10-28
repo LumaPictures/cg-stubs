@@ -412,7 +412,7 @@ MISSING_CLASSES = {
             "def parseFiles(self, xmlfilename: str) -> None",
             "def parseString(self, xmlstring: str) -> None",
             "def setHotkeyContext(self, hotkey_context) -> None",
-        ],
+        ]
     },
 }
 
@@ -433,6 +433,10 @@ MISSING_DEFINITIONS = {
         "def layers(self) -> AgentLayer",
         "def rig(self) -> AgentRig",
         "def shapeLibrary(self) -> AgentShapeLibrary",
+    ],
+    "NetworkEditor": [
+        "def homeToSelection(self) -> None",
+        "def frameSelection(self) -> None",
     ],
     "NetworkItem": [
         "def __lt__(self, other: object) -> bool",
@@ -560,6 +564,11 @@ MISSING_DEFINITIONS = {
     },
     "qt": [
         "@staticmethod\ndef mainWindow() -> QtWidgets.QMainWindow",
+        "@staticmethod\ndef fromQColor(qcolor: QtGui.QColor) -> tuple[hou.Color, float]",
+        "@staticmethod\ndef getBrush(color_name: str) -> QtGui.QBrush",
+        "@staticmethod\ndef getColor(color_name: str) -> QtGui.QColor",
+        "@staticmethod\ndef getCursor(cursor_name: str) -> QtGui.QCursor",
+        "@staticmethod\ndef toQColor(hom_color: hou.Color, alpha: float = 1.0) -> QtGui.QColor"
     ],
     "ui": [
         "@staticmethod\ndef selectFile(start_directory: str | None = None, title: str | None = None, collapse_sequences: bool = False, file_type: EnumValue = fileType.Any, pattern: str | None = None, default_value: str | None = None, multiple_select: bool = False, image_chooser: bool = False, chooser_mode: EnumValue = fileChooserMode.ReadAndWrite, width: int = 0, height: int = 0) -> str",
@@ -1547,7 +1556,7 @@ EXPLICIT_DEFINITIONS = {
         "setContents": "(self, contents: str, compressionType: EnumValue = compressionType.NoCompression) -> None",
     },
     "InterruptableOperation": {
-        "__exit__": "(self, type: type[BaseException], value: BaseException, traceback: TracebackType) -> None",
+        "__exit__": "(self, type: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None) -> None",
     },
     "IntParmTemplate": {
         "__init__": "(self, name: str, label: str, num_components: int, default_value: Sequence[int] = ..., min: int = 0, max: int = 10, min_is_strict=False, max_is_strict: bool = False, look: EnumValue = parmLook.Regular, naming_scheme: EnumValue = parmNamingScheme.XYZW, menu_items: Sequence[str] = ..., menu_labels: Sequence[str] = ..., icon_names: Sequence[str] = ..., item_generator_script: str | None = None, item_generator_script_language: EnumValue | None = None, menu_type: EnumValue = menuType.Normal, disable_when: str | None = None, is_hidden: bool = False, is_label_hidden: bool = False, join_with_next: bool = False, help: str | None = None, script_callback: str | None = None, script_callback_language: EnumValue = scriptLanguage.Hscript, tags: Mapping[str, str] = ..., default_expression: Sequence[str] = ..., default_expression_language: Sequence[str] = ...) -> None",
@@ -1556,7 +1565,7 @@ EXPLICIT_DEFINITIONS = {
         "saveFrame": "(self, file_path: str, snapshot: int = 0, xres: int = -1, yres: int = -1, color: str = 'C', alpha: str = 'C', scope: str = '*', lut: str = '', gamma: float = 1.0, convert: bool = True) -> bool",
     },
     "Keyframe": {
-        "__init__": "(self, value: float | None = None, time: float | None = None) -> None",
+        "__init__": "(self, value: float | Keyframe | None = None, time: float | None = None) -> None",
     },
     "LabelParmTemplate": {
         "__init__": "(self, name: str, label: str, column_labels: Sequence[str] = ..., is_hidden: bool = False, is_label_hidden: bool = False, join_with_next: bool = False, help: str | None = None, tags: Mapping[str, str] = ...) -> None",
@@ -1581,7 +1590,7 @@ EXPLICIT_DEFINITIONS = {
         "stagePrimStats": "(self, primpath: str | None = None, output_index: int = 0, apply_viewport_overrides: bool = False, ignore_errors: bool = False, do_geometry_counts: bool = False, do_separate_purposes: bool = False, use_last_cook_context_options: bool = True, apply_post_layers: bool = True, frame: float | None = None, context_options: Mapping[str, str | float] | None = None) -> dict[str, int]",
     },
     "LopPostLayer": {
-        "__exit__": "(self, type: type[BaseException], value: BaseException, traceback: TracebackType) -> None",
+        "__exit__": "(self, type: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None) -> None",
         "layer": "(self) -> pxr.Sdf.Layer",
         "stage": "(self) -> pxr.Usd.Stage",
     },
@@ -1592,7 +1601,7 @@ EXPLICIT_DEFINITIONS = {
         "newPaths": "(self, lopnode: LopNode | None = None, stage: pxr.Usd.Stage | None = None, use_last_cook_context_options: bool = True) -> Tuple[pxr.Sdf.Path, ...]",
     },
     "LopViewportOverrides": {
-        "__exit__": "(self, type: type[BaseException], value: BaseException, traceback: TracebackType) -> None",
+        "__exit__": "(self, type: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None) -> None",
         "layer": "(self) -> pxr.Sdf.Layer",
         "soloGeometry": "(self) -> pxr.Sdf.Path",
         "soloLights": "(self) -> pxr.Sdf.Path",
@@ -1693,8 +1702,10 @@ EXPLICIT_DEFINITIONS = {
         "evalParmTuple": "(self, parm_path: str) -> ParmTupleReturnType",
         "eventCallbacks": "(self) -> Tuple[Tuple[Tuple[EnumValue, ...], Callable], ...]",
         "fileReferences": "(self, recurse: bool = True, project_dir_variable: str = 'HIP', include_all_refs: bool = True) -> Sequence[Tuple[Parm, str]]",
+        "inputConnectors": "(self) -> Tuple[Tuple[OpNodeConnection, ...], ...]",
         "lastCookContextOptions": "(self, only_used_options: bool = False) -> dict[str, str | float]",
         "needsToCook": "(self, time: float = ...) -> bool",
+        "outputConnectors": "(self) -> Tuple[Tuple[OpNodeConnection, ...], ...]",
         "removeEventCallback": "(self, event_types: Sequence[EnumValue], callback: Callable) -> None",
         "setDeleteScript": "(self, script_text: str, language: EnumValue = ...) -> None",
         "setInput": "(self, input_index: int, item_to_become_input: NetworkMovableItem | None, output_index: int = 0) -> None",
@@ -1755,7 +1766,7 @@ EXPLICIT_DEFINITIONS = {
         "setPending": "(self, values: Sequence[float | str]) -> None",
     },
     "PerfMonEvent": {
-        "__exit__": "(self, type: type[BaseException], value: BaseException, traceback: TracebackType) -> None",
+        "__exit__": "(self, type: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None) -> None",
     },
     "PerfMonProfile": {
         "stats": "(self) -> dict[str, Any]",
@@ -1829,7 +1840,7 @@ EXPLICIT_DEFINITIONS = {
         "__init__": "(self, name: str, label: str, ramp_parm_type: EnumValue, default_value: int = 2, default_basis: EnumValue | None = None, show_controls: bool = True, color_type: EnumValue | None = None, disable_when: str | None = None, is_hidden: bool = False, help: str | None = None, script_callback: str | None = None, script_callback_language: EnumValue = scriptLanguage.Hscript, tags: Mapping[str, str] = ..., default_expression_language: EnumValue = scriptLanguage.Hscript) -> None",
     },
     "RedrawBlock": {
-        "__exit__": "(self, type: type[BaseException], value: BaseException, traceback: TracebackType) -> None",
+        "__exit__": "(self, type: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None) -> None",
     },
     "RopNode": {
         "addRenderEventCallback": "(self, callback: Callable[[RopNode, EnumValue, float], None], run_before_script: bool = False) -> None",
@@ -1868,7 +1879,7 @@ EXPLICIT_DEFINITIONS = {
         "triggerStateSelector": "(self, action: EnumValue, name: str | None = None) -> None",
     },
     "ScriptEvalContext": {
-        "__exit__": "(self, type: type[BaseException], value: BaseException, traceback: TracebackType) -> None",
+        "__exit__": "(self, type: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None) -> None",
         "__init__": "(self, node_or_parm: OpNode | Parm) -> None",
     },
     "Selection": {
@@ -1914,7 +1925,7 @@ EXPLICIT_DEFINITIONS = {
         "setSize": "(self, size: Sequence[float] | Vector2) -> None",
     },
     "StringKeyframe": {
-        "__init__": "(self, expression: str | None = None, time: float | None = None, language: EnumValue | None = exprLanguage.Python) -> None",
+        "__init__": "(self, expression: str | Keyframe | StringKeyframe | None = None, time: float | None = None, language: EnumValue | None = exprLanguage.Python) -> None",
     },
     "StringParmTemplate": {
         "__init__": "(self, name: str, label: str, num_components: int, default_value: Sequence[str] = ..., naming_scheme: EnumValue = parmNamingScheme.Base1, string_type: EnumValue = stringParmType.Regular, file_type: EnumValue = fileType.Any, menu_items: Sequence[str] = ..., menu_labels: Sequence[str] = ..., icon_names: Sequence[str] = ..., item_generator_script: str | None = None, item_generator_script_language: EnumValue | None = None, menu_type: EnumValue = menuType.Normal, disable_when: str | None = None, is_hidden: bool = False, is_label_hidden: bool = False, join_with_next: bool = False, help: str | None = None, script_callback: str | None = None, script_callback_language: EnumValue = scriptLanguage.Hscript, tags: Mapping[str, str] = ..., default_expression: Sequence[str] = ..., default_expression_language: Sequence[EnumValue] = ...) -> None",
@@ -1947,10 +1958,10 @@ EXPLICIT_DEFINITIONS = {
         "generateStaticWorkItems": "(self, block: bool = False, nodes: Sequence[TopNode] = ...) -> None",
     },
     "UndosDisabler": {
-        "__exit__": "(self, type: type[BaseException], value: BaseException, traceback: TracebackType) -> None",
+        "__exit__": "(self, type: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None) -> None",
     },
     "UndosGroup": {
-        "__exit__": "(self, type: type[BaseException], value: BaseException, traceback: TracebackType) -> None",
+        "__exit__": "(self, type: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None) -> None",
     },
     "Vector2": {
         "__init__": "(self, x: Sequence[float] | 'Vector2' | float = ..., y: float = ...) -> None",

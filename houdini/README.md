@@ -10,3 +10,13 @@ pip install types-houdini
 
 The version of the package corresponds to the version of Houdini that it is generated from,
 plus a version suffix for the revision of the stubs
+
+## Generating Stubs
+
+Before running nox from the root directory, source the Houdini environment, e.g
+
+```
+cd /opt/hfs22.0.368
+source houdini_setup
+cd PATH_TO_CGSTUBS
+```

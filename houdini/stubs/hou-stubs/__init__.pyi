@@ -1,4 +1,4 @@
-# Houdini stubs generated from Houdini 21.0.512
+# Houdini stubs generated from Houdini 22.0.368
 
 from houcppportion import *  # type: ignore[import-not-found]
 from _typeshed import Incomplete
@@ -31,6 +31,45 @@ OptionMultiReturnType: TypeAlias = bool | int | float | str | Vector2 | Vector3 
 class _SwigNonDynamicMeta(type):
     """Meta class to enforce nondynamic attributes (no new attributes) for a class"""
     __setattr__: Incomplete
+
+class _StringMapMat4:
+    thisown: Incomplete
+    def iterator(self) -> Optional[Self]: ...
+    def __iter__(self): ...
+    def __nonzero__(self) -> bool: ...
+    def __bool__(self) -> bool: ...
+    def __len__(self) -> dict[str, Matrix4].size_type: ...  # type: ignore[valid-type]
+    def __iter__(self): ...  # type: ignore[no-redef]
+    def iterkeys(self): ...
+    def itervalues(self): ...
+    def iteritems(self): ...
+    def __getitem__(self, key: dict[str, Matrix4].key_type) -> dict[str, Matrix4].mapped_type: ...  # type: ignore[valid-type]
+    def __delitem__(self, key: dict[str, Matrix4].key_type) -> None: ...  # type: ignore[valid-type]
+    def has_key(self, key: dict[str, Matrix4].key_type) -> bool: ...  # type: ignore[valid-type]
+    def keys(self) -> Optional[Any]: ...
+    def values(self) -> Optional[Any]: ...
+    def items(self) -> Optional[Any]: ...
+    def __contains__(self, key: dict[str, Matrix4].key_type) -> bool: ...  # type: ignore[valid-type]
+    def key_iterator(self) -> Optional[Self]: ...
+    def value_iterator(self) -> Optional[Self]: ...
+    def __setitem__(self, *args) -> None: ...
+    def asdict(self) -> Optional[Any]: ...
+    def __init__(self, *args) -> None: ...
+    def empty(self) -> bool: ...
+    def size(self) -> dict[str, Matrix4].size_type: ...  # type: ignore[valid-type]
+    def swap(self, v: _StringMapMat4) -> None: ...
+    def begin(self) -> dict[str, Matrix4].iterator: ...  # type: ignore[valid-type]
+    def end(self) -> dict[str, Matrix4].iterator: ...  # type: ignore[valid-type]
+    def rbegin(self) -> dict[str, Matrix4].reverse_iterator: ...  # type: ignore[valid-type]
+    def rend(self) -> dict[str, Matrix4].reverse_iterator: ...  # type: ignore[valid-type]
+    def clear(self) -> None: ...
+    def get_allocator(self) -> dict[str, Matrix4].allocator_type: ...  # type: ignore[valid-type]
+    def count(self, x: dict[str, Matrix4].key_type) -> dict[str, Matrix4].size_type: ...  # type: ignore[valid-type]
+    def erase(self, *args) -> None: ...
+    def find(self, x: dict[str, Matrix4].key_type) -> dict[str, Matrix4].iterator: ...  # type: ignore[valid-type]
+    def lower_bound(self, x: dict[str, Matrix4].key_type) -> dict[str, Matrix4].iterator: ...  # type: ignore[valid-type]
+    def upper_bound(self, x: dict[str, Matrix4].key_type) -> dict[str, Matrix4].iterator: ...  # type: ignore[valid-type]
+    __swig_destroy__: Incomplete
 
 class _NodeConnectionTupleOfTuplesGenerator:
     thisown: Incomplete
@@ -226,6 +265,7 @@ class primType:
         AlembicRef
         BezierCurve
         BezierSurface
+        CameraPrim
         Circle
         ChannelPrim
         Custom
@@ -248,6 +288,10 @@ class primType:
         PastedSurface
             Obsolete type to support NURBS that lie in the domain of other
             NURBS.
+
+        Plane
+            A plane which is usually treated as an infinite plane for
+            simulation.
 
         Polygon
         PolySoup
@@ -277,6 +321,7 @@ class primType:
     AlembicRef: EnumValue = ...
     BezierCurve: EnumValue = ...
     BezierSurface: EnumValue = ...
+    CameraPrim: EnumValue = ...
     ChannelPrim: EnumValue = ...
     Circle: EnumValue = ...
     Custom: EnumValue = ...
@@ -290,6 +335,7 @@ class primType:
     PackedPrim: EnumValue = ...
     ParticleSystem: EnumValue = ...
     PastedSurface: EnumValue = ...
+    Plane: EnumValue = ...
     PolySoup: EnumValue = ...
     Polygon: EnumValue = ...
     Sphere: EnumValue = ...
@@ -1052,6 +1098,7 @@ class paneTabType:
         DataTree
         DetailsView
         EngineSessionSync
+        GenericGraphEditor
         HandleList
         HelpBrowser
         IPRViewer
@@ -1070,6 +1117,7 @@ class paneTabType:
         TakeList
         Textport
         TreeView
+        UsdShadeEditor
 
 
     """
@@ -1087,6 +1135,7 @@ class paneTabType:
     DataTree: EnumValue = ...
     DetailsView: EnumValue = ...
     EngineSessionSync: EnumValue = ...
+    GenericGraphEditor: EnumValue = ...
     HandleList: EnumValue = ...
     HelpBrowser: EnumValue = ...
     IPRViewer: EnumValue = ...
@@ -1105,6 +1154,7 @@ class paneTabType:
     TakeList: EnumValue = ...
     Textport: EnumValue = ...
     TreeView: EnumValue = ...
+    UsdShadeEditor: EnumValue = ...
 
 class stateViewerType:
     """
@@ -1169,10 +1219,6 @@ class networkItemType:
 
     hou.networkItemType
 
-    <Summary>
-
-    <Description>
-
     VALUES
 
 
@@ -1195,14 +1241,34 @@ class networkItemType:
     StickyNote: EnumValue = ...
     SubnetIndirectInput: EnumValue = ...
 
+class nodeConnectionDrawStyle:
+    """
+
+    hou.nodeConnectionDrawStyle
+
+    Node connection wire shape in the network editor
+
+    Determines the shape of the connection wires between the nodes in the
+    network editor.
+
+    VALUES
+
+
+        Straight
+        Rounded
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, *args, **kwargs) -> None: ...
+    __swig_destroy__: Incomplete
+    Rounded: EnumValue = ...
+    Straight: EnumValue = ...
+
 class colorItemType:
     """
 
     hou.colorItemType
-
-    <Summary>
-
-    <Description>
 
     VALUES
 
@@ -4005,6 +4071,10 @@ class hipFileEventType:
             This event is triggered immediately after the current .hip file
             is saved.
 
+        BeforeQuit
+            This event is triggered when the user quits Houdini, before the
+            save-changes prompt for the current .hip file is shown.
+
 
     """
     thisown: Incomplete
@@ -4017,6 +4087,7 @@ class hipFileEventType:
     BeforeClear: EnumValue = ...
     BeforeLoad: EnumValue = ...
     BeforeMerge: EnumValue = ...
+    BeforeQuit: EnumValue = ...
     BeforeSave: EnumValue = ...
 
 class appearanceChangeType:
@@ -4326,6 +4397,34 @@ class imageLayerProjection:
             direction.
 
         hou.imageLayerProjection.Perspective
+            The projection is a perspective transform focusing to the camera
+            position.
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, *args, **kwargs) -> None: ...
+    __swig_destroy__: Incomplete
+    Orthographic: EnumValue = ...
+    Perspective: EnumValue = ...
+
+class cameraProjection:
+    """
+
+    hou.cameraProjection
+
+    Enumeration of Camera Prims Projections>
+
+    These define the type of projection a camera primitive can use
+
+    VALUES
+
+
+        hou.cameraProjection.Orthographic
+            The projection is an orthographic collapse along the local Z
+            direction.
+
+        hou.cameraProjection.Perspective
             The projection is a perspective transform focusing to the camera
             position.
 
@@ -4924,6 +5023,7 @@ class lopViewportOverridesLayer:
         SoloGeometry
         Purpose
         Expansion
+        ViewportState
         Custom
 
 
@@ -4938,11 +5038,49 @@ class lopViewportOverridesLayer:
     Selectable: EnumValue = ...
     SoloGeometry: EnumValue = ...
     SoloLights: EnumValue = ...
+    ViewportState: EnumValue = ...
 
 class channelEditorMode:
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
+
+class channelGraphSelectionMode:
+    """
+
+    hou.channelGraphSelectionMode
+
+    Enumeration of selection modes for the channel editor graph view.
+
+    See hou.ChannelGraph.selectionMode.
+
+    VALUES
+
+
+        Normal
+            Standard key selection. No handle is shown.
+
+        Box
+            Displays a box handle around selected keys, allowing them to be
+            scaled and translated.
+
+        BoxWithPivot
+            Like Box, but also shows a pivot handle. Scaling is performed
+            around the pivot position.
+
+        Retime
+            Displays the retime tool, which allows keys to be retimed using
+            markers.
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, *args, **kwargs) -> None: ...
+    __swig_destroy__: Incomplete
+    Box: EnumValue = ...
+    BoxWithPivot: EnumValue = ...
+    Normal: EnumValue = ...
+    Retime: EnumValue = ...
 
 class vopParmGenType:
     """
@@ -5936,6 +6074,118 @@ class drawableGeometryType:
             and allows you to draw vectors at each point. Note that a point
             attribute N is required for the Vector drawable type.
 
+        Sprite
+            Sprite drawable type. This drawable works with point geometries
+            and allows you to draw images aligned with the view in either
+            worldspace or screenspace.
+
+            The behaviour is controlled with point attributes:
+
+
+            P
+                A float vector 3 controlling the position of the sprite.
+
+                When screenspace is 0, P provides the worldspace position of
+                the sprite.
+
+                When screenspace is 1, the first two components of P provide
+                the screenspace position of the sprite in pixel coordinates,
+                where the bottom-left corner of the sprite is relative to
+                the bottom-left corner of the viewport. The z component
+                specifies the order in which sprites are drawn. Sprites with
+                higher z values are drawn on top of sprites with lower z
+                values.
+
+            Cd
+                A float vector 3 controlling the tint multiplied with the
+                image.
+
+            Alpha
+                A float value controlling the transparency of the image.
+
+            pscale
+                A float value specifying the uniform scale of the sprite.
+
+                When screenspace is 0, the scale should be in worldspace.
+
+                When screenspace is 1, the scale should be in pixels.
+
+            spriteshop
+                A string indicating the image to draw. The image mapping is
+                created in the params dictionary.
+
+            spritehidden
+                An integer that controls whether the sprite is hidden.
+
+                When spritehidden is 0, the sprite is displayed.
+
+                When spritehidden is 1, the sprite is not displayed.
+
+            spritescreenspace
+                An integer controlling whether the sprite is drawn in
+                screenspace or worldspace. This changes the behaviour of the
+                P, spriteoffset, and pscale attributes.
+
+                When spritescreenclamp is 0, the sprite is rendered in
+                worldspace.
+
+                When spritescreenclamp is 1, the sprite is rendered in
+                screenspace.
+
+            spritescreenclamp
+                An integer that controls whether the sprite is clamped
+                within the screen boundaries. That is, even if the point is
+                positioned outside the boundaries of the scene viewer, the
+                sprite will still display at the edge of the viewport
+                closest to the point.
+
+                When spritescreenclamp is 0, the sprite is not clamped.
+
+                When spritescreenclamp is 1, the sprite is clamped.
+
+            spritepreserveaspect
+                An integer that controls whether the sprite is drawn using
+                its original aspect ratio.
+
+                When spritepreserveaspect is 0, aspect ratio is not
+                preserved.
+
+                When spritepreserveaspect is 1, aspect ratio is preserved.
+
+            spritescale
+                A float vector 2 that specifies the non-uniform scale of the
+                sprite.
+
+            spritesizemin
+                A float that specifies the sprite's minimum size in pixels.
+                Negative values or 0 indicate that there is no bound.
+
+            spritesizemax
+                A float that specifies the sprite's maximum size in pixels.
+                Negative values or 0 indicate that there is no bound.
+
+            spriteoffset
+                A float vector 3 specifying the view-aligned position of
+                sprite relative to P. In both spaces, the z component has an
+                equivalent function to the z component of P when specified
+                in screenspace.
+
+                When screenspace is 0, spriteoffset should be provided in
+                worldspace scale coordinates.
+
+                When screenspace is 1, spriteoffset should be provided in
+                screenspace pixel coordinates.
+
+            spriterot
+                A float value controlling view-aligned rotation of the
+                sprite.
+
+            spriteuv
+                A float 4-tuple defining a subregion of the texture to
+                display. The x and y components define the UV offsets into
+                the texture. The z and w components define the UV scaling of
+                the subregion.
+
 
     """
     thisown: Incomplete
@@ -5944,6 +6194,7 @@ class drawableGeometryType:
     Face: EnumValue = ...
     Line: EnumValue = ...
     Point: EnumValue = ...
+    Sprite: EnumValue = ...
     Vector: EnumValue = ...
 
 class drawableTextOrigin:
@@ -6018,10 +6269,10 @@ class drawableGeometryFaceStyle:
             Regular face
 
         Checker
-            Draws faces in a checker patterm.
+            Draws faces in a checker pattern.
 
         Circle
-            Draws faces in a circle patterm.
+            Draws faces in a circle pattern.
 
         Columns
             Draws faces in columns.
@@ -6244,8 +6495,7 @@ class drawableRampClamp:
     hou.drawableRampClamp
 
     Enumeration used with hou.GeometryDrawable to specify how to wrap the
-    texture generated when using a ramp color (similar to OpenGL texture
-    settings).
+    texture generated when using a ramp color.
 
     VALUES
 
@@ -6484,6 +6734,12 @@ class sceneViewerEvent:
         PrefChanged
             Sent when a preference has been changed.
 
+        RendererChanged
+            Sent when the LOP Viewer render delegate is changed.
+
+        ViewportCreated
+            Generated when a tear off copy of the viewer is made.
+
 
     """
     thisown: Incomplete
@@ -6494,6 +6750,7 @@ class sceneViewerEvent:
     EndResize: EnumValue = ...
     LayoutChanged: EnumValue = ...
     PrefChanged: EnumValue = ...
+    RendererChanged: EnumValue = ...
     Resizing: EnumValue = ...
     SelectedViewportChanged: EnumValue = ...
     SizeChanged: EnumValue = ...
@@ -6504,6 +6761,7 @@ class sceneViewerEvent:
     ViewerActivated: EnumValue = ...
     ViewerDeactivated: EnumValue = ...
     ViewerTerminated: EnumValue = ...
+    ViewportCreated: EnumValue = ...
 
 class hudInfoState:
     """
@@ -6607,6 +6865,9 @@ class drawable2DType:
         hou.drawable2DType.Text
             Drawable type for displaying text.
 
+        hou.drawable2DType.Layer
+            Drawable type for displaying hou.ImageLayers.
+
 
     """
     thisown: Incomplete
@@ -6615,6 +6876,7 @@ class drawable2DType:
     Arc: EnumValue = ...
     Circle: EnumValue = ...
     Icon: EnumValue = ...
+    Layer: EnumValue = ...
     Line: EnumValue = ...
     Marker: EnumValue = ...
     Rect: EnumValue = ...
@@ -7075,6 +7337,28 @@ class clipMode:
     ConstantRange: EnumValue = ...
     CurrentFrame: EnumValue = ...
     Range: EnumValue = ...
+
+class openCLDeviceType:
+    """
+
+    hou.openCLDeviceType
+
+    Enumeration of OpenCL device types, used in methods such as
+    hou.opencl.devices.
+
+    VALUES
+
+
+        CPU
+        GPU
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, *args, **kwargs) -> None: ...
+    __swig_destroy__: Incomplete
+    CPU: EnumValue = ...
+    GPU: EnumValue = ...
 
 class SystemExit(Exception):
     """
@@ -9465,7 +9749,21 @@ class StickyNote(NetworkMovableItem):
 
         """
 
-class ApexStickyNote(StickyNote):
+class UniStickyNote(StickyNote):
+    """
+
+    hou.UniStickyNote
+
+    Represents a sticky note in an UNI network.
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, *args, **kwargs) -> None: ...
+    __swig_destroy__: Incomplete
+    def __hash__(self) -> int: ...
+
+class ApexStickyNote(UniStickyNote):
     """
 
     hou.ApexStickyNote
@@ -9477,7 +9775,6 @@ class ApexStickyNote(StickyNote):
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
-    def __hash__(self) -> int: ...
 
 class OpStickyNote(StickyNote):
     """
@@ -9768,7 +10065,7 @@ class Node(NetworkMovableItem):
         """
 
         recursiveGlob(self, pattern, filter=hou.nodeTypeFilter.NoFilter,
-        include_subnets=True) -> tuple of hou.Node
+        include_subnets=True, ignore_case=False) -> tuple of hou.Node
 
             Like hou.Node.glob, return a tuple of children nodes whose name
             matches the pattern. However, any matching child will have all its
@@ -9796,6 +10093,10 @@ class Node(NetworkMovableItem):
             include_subnets
                 Specifies whether the children of a matching node will also be
                 returned, regardless of the pattern.
+
+            ignore_case
+                By default the pattern match is case-sensitive. Set ignore_case
+                to True for case-insensitive matching of node names.
 
             The pattern and filter behavior is very similar to that used by node
             bundles in Houdini. See hou.NodeBundle for more information.
@@ -10167,9 +10468,6 @@ class Node(NetworkMovableItem):
 
 
         """
-    def editableInputStrings(self, input_index: int) -> dict[str, str]: ...
-    def editableInputString(self, input_index: int, key: str) -> str: ...
-    def setEditableInputString(self, input_index: int, key: str, value: str) -> None: ...
     def outputNames(self) -> Tuple[str, ...]:
         """
 
@@ -10248,6 +10546,27 @@ class Node(NetworkMovableItem):
 
 
         '''
+    def connectionDrawStyle(self) -> EnumValue:
+        """
+
+        connectionDrawStyle(self) -> [Hom:hou.nodeConnectionDrawStyle]
+
+            Return the hou.nodeConnectionDrawStyle enum object that describes
+            the way the graph editor should draw the connection wires between
+            nodes inside the subnet.
+
+
+        """
+    def setConnectionDrawStyle(self, style: EnumValue) -> None:
+        """
+
+        setConnectionDrawStyle(self, style)
+
+            Set the style in which the graph editor should draw the connection
+            wires between nodes inside the subnet.
+
+
+        """
     def children(self) -> Tuple[Node, ...]:
         """
 
@@ -10722,27 +11041,6 @@ class Node(NetworkMovableItem):
 
 
         """
-    def copyNetworkBox(self, network_box_to_copy: NetworkBox, new_name: Optional[str] = None, channel_reference_original: bool = False) -> NetworkBox:
-        """
-
-        copyNetworkBox(self, network_box_to_copy, new_name=None,
-        channel_reference_original=False) -> hou.NetworkBox
-
-            Copies a network box and returns the copy.
-
-            If new_name is given, the network box will be copied to a new
-            network box named new_name (a different name will be generated if
-            there is already a network box with that name).
-
-            If channel_reference_original is True, all operators created by the
-            copy will have their animatable parameters set to reference the
-            original operators.
-
-            Raises hou.OperationFailed if this node is not a network or if the
-            node child type does not match the network box's node type.
-
-
-        """
     def findNetworkBox(self, name: str) -> Optional[NetworkBox]:
         """
 
@@ -10997,23 +11295,6 @@ class Node(NetworkMovableItem):
 
         """
     def iterStickyNotes(self) -> Iterator[StickyNote]: ...
-    def copyStickyNote(self, sticky_note_to_copy: StickyNote, new_name: Optional[str] = None) -> StickyNote:
-        """
-
-        copyStickyNote(self, network_box_to_copy, new_name=None) ->
-        hou.StickyNote
-
-            Copies a sticky note and returns the copy.
-
-            If new_name is given, the sticky note will be copied to a new sticky
-            note named new_name (a different name will be generated if there is
-            already a sticky note with that name).
-
-            Raises hou.OperationFailed if this node is not a network or if the
-            node child type does not match the sticky note's node type.
-
-
-        """
     def findStickyNote(self, name: str) -> Optional[StickyNote]:
         """
 
@@ -11042,10 +11323,10 @@ class Node(NetworkMovableItem):
     def modificationTime(self) -> datetime.datetime: ...
     def outputsWithIndices(self, ignore_network_dots: bool = False, use_names: bool = False) -> list[tuple[NetworkMovableItem, int | str, int | str]]: ...
 
-class ApexNode(Node):
+class UniNode(Node):
     """
 
-    hou.ApexNode
+    hou.UniNode
 
     Represents an APEX node.
 
@@ -11118,16 +11399,6 @@ class ApexNode(Node):
 
 
         """
-    def convertSubgraphToSubnet(self) -> None:
-        """
-
-        convertSubgraphToSubnet(self)
-
-            Converts a node representing a subgraph asset into a subnet,
-            maintaining all connections and parameters.
-
-
-        """
     def inputDataTypes(self) -> Tuple[str, ...]:
         """
 
@@ -11164,6 +11435,38 @@ class ApexNode(Node):
 
 
         """
+    def isEditableSubnet(self) -> bool:
+        """
+
+        isEditableSubnet(self) -> bool
+
+            Returns true if this node represents a subnet, and the contents of
+            this subnet can be modified (for example nodes inside the subnet can
+            be created and deleted).
+
+
+        """
+
+class ApexNode(UniNode):
+    """
+
+    hou.ApexNode
+
+    Represents an APEX node.
+
+    This class represents an APEX node that lives in an APEX graph owned by
+    the Houdini session. Each node has a unique session ID that can be used
+    to obtain it from hou.apexNodeBySessionId().
+
+    RELATED
+
+      * hou.apexNodeBySessionId
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, *args, **kwargs) -> None: ...
+    __swig_destroy__: Incomplete
     def isSubgraphAsset(self) -> bool:
         """
 
@@ -11172,6 +11475,136 @@ class ApexNode(Node):
             Returns true if this node represents a subgraph asset. This is
             similar in concept to a locked HDA subnet. These nodes have children
             that can be queried but are not editable.
+
+
+        """
+    def convertSubgraphToSubnet(self) -> None:
+        """
+
+        convertSubgraphToSubnet(self)
+
+            Converts a node representing a subgraph asset into a subnet,
+            maintaining all connections and parameters.
+
+
+        """
+    def properties(self) -> dict[str, Any]:
+        """
+
+        properties(self) -> dictionary
+
+            Returns the node's properties.
+
+
+        """
+    def debugger(self) -> Optional[ApexUniGraphDebugger]:
+        """
+
+        debugger(self) -> hou.ApexUniGraphDebugger
+
+            Returns the apex debugger for the graph containing this node.
+
+
+        """
+    def inputDebugData(self, input_index: int) -> Any:
+        """
+
+        inputDebugData(self, input_index)
+
+            Returns the value of the input port captured by the debugger. If the
+            debugger is not enabled, returns None. The debugger can be enabled
+            through the APEX Network View's Debug menu.
+
+
+        """
+    def outputDebugData(self, output_index: int) -> Any:
+        """
+
+        outputDebugData(self, output_index)
+
+            Returns the value of the output port captured by the debugger. If
+            the debugger is not enabled, returns None. The debugger can be
+            enabled through the APEX Network View's Debug menu.
+
+
+        """
+
+class ApexUniGraphDebugger:
+    """
+
+    hou.ApexUniGraphDebugger
+
+    A debugger for executing an apex graph and capturing its values.
+
+    The debugger executes an apex graph and captures the intermediate port
+    values of all nodes which were executed.
+
+    Instances of the debugger are retrieved by calling
+    hou.ApexNode.debugger. The debugger is enabled when the apex graph is
+    displayed in an Apex Network View and the Apex Network View has enabled
+    the debugger (through its Debug menu). The debugger is automatically
+    disabled whenever the network view is no longer displaying the apex
+    graph.
+
+    RELATED
+
+      * hou.ApexNode
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, *args, **kwargs) -> None: ...
+    __swig_destroy__: Incomplete
+    def __eq__(self, other: object) -> bool: ...
+    def __ne__(self, other: object) -> bool: ...
+    def isEnabled(self) -> bool:
+        """
+
+        isEnabled(self) -> bool
+
+            Returns true if the debugger is enabled.
+
+
+        """
+    def setWatchPattern(self, pattern: str) -> None:
+        """
+
+        setWatchPattern(self, pattern)
+
+            Sets the debugger's watch pattern, which is an apex path pattern
+            determining which nodes' data are captured by the debugger.
+
+            The debugger only captures the port values of nodes which are
+            included by the apex path pattern. When pattern is an empty string,
+            all nodes are watched by the debugger.
+
+            The watch pattern can be used to improve the memory usage of the
+            debugger. If the user is only interested in the values of a subset
+            of nodes, the debugger will avoid capturing the values of nodes
+            which do not match the watch pattern.
+
+
+        """
+    def watchPattern(self) -> str: ...
+    def watchPaths(self) -> Tuple[str, ...]: ...
+    def data(self, portpath: str) -> Any:
+        """
+
+        data(self, portpath)
+
+            Returns the value of the port captured by the debugger. If the
+            debugger is not enabled, None is returned.
+
+            The portpath must be the port's full path, along with its port kind.
+            For example, a valid input port path take the form of
+            /subnet/node:port[in] and a valid output port path takes the form of
+            /subnet/node:port[out].
+
+            The string Not Evaluated is returned if the port's value was not
+            captured by the debugger. This may occur when the node does not have
+            a downstream connection to a port on a graph's output node (and
+            therefore is not evaluated when executing the graph), or when the
+            node is not being watched by the debugger.
 
 
         """
@@ -11247,6 +11680,7 @@ class OpNode(Node):
 
 
         """
+    def defaultState(self) -> str: ...
     def isBuiltExplicitly(self) -> bool: ...
     def setBuiltExplicitly(self, built_explicitly: bool) -> None: ...
     def expressionLanguage(self) -> EnumValue:
@@ -11386,6 +11820,16 @@ class OpNode(Node):
 
 
         """
+    def revertParmInterface(self) -> None:
+        """
+
+        revertParmInterface(self)
+
+            Reverts the parm interface by moving all spare parms to after the
+            base parms.
+
+
+        """
     def syncNodeVersionIfNeeded(self, from_version: str) -> None:
         """
 
@@ -11495,6 +11939,50 @@ class OpNode(Node):
             Raises hou.OperationFailed if this node is not a network. Raises
             hou.PermissionError if this node is or is inside a locked digital
             asset.
+
+
+        """
+    def copyNetworkBox(self, network_box_to_copy: NetworkBox, new_name: Optional[str] = None, channel_reference_original: bool = False) -> Optional[NetworkBox]:
+        """
+
+        copyNetworkBox(self, network_box_to_copy, new_name=None,
+        channel_reference_original=False) -> hou.NetworkBox
+
+            Copies a network box and returns the copy.
+
+            If new_name is given, the network box will be copied to a new
+            network box named new_name (a different name will be generated if
+            there is already a network box with that name).
+
+            If channel_reference_original is True, all operators created by the
+            copy will have their animatable parameters set to reference the
+            original operators.
+
+            Raises hou.OperationFailed if this node is not a network or if the
+            node child type does not match the network box's node type.
+
+            The more generic copyItems method should be used instead of this
+            method.
+
+
+        """
+    def copyStickyNote(self, sticky_note_to_copy: StickyNote, new_name: Optional[str] = None) -> Optional[StickyNote]:
+        """
+
+        copyStickyNote(self, sticky_note_to_copy, new_name=None) ->
+        hou.StickyNote
+
+            Copies a sticky note and returns the copy.
+
+            If new_name is given, the sticky note will be copied to a new sticky
+            note named new_name (a different name will be generated if there is
+            already a sticky note with that name).
+
+            Raises hou.OperationFailed if this node is not a network or if the
+            node child type does not match the sticky note's node type.
+
+            The more generic copyItems method should be used instead of this
+            method.
 
 
         """
@@ -11744,6 +12232,9 @@ class OpNode(Node):
 
 
         """
+    def editableInputStrings(self, input_index: int) -> dict[str, str]: ...
+    def editableInputString(self, input_index: int, key: str) -> str: ...
+    def setEditableInputString(self, input_index: int, key: str, value: str) -> None: ...
     def outputForViewFlag(self) -> int:
         """
 
@@ -11769,6 +12260,19 @@ class OpNode(Node):
         setOutputForViewFlag(self, output)
 
             Sets which output should be used for display purposes on this node.
+
+
+        """
+    def toggleChildExportFlag(self) -> bool:
+        """
+
+        toggleChildExportFlag(self) -> bool
+
+            Toggles the presence of an export flag on children of this node. If
+            turning on, the previous node with an export flag has its flag
+            restored.
+
+            Returns the new state of the export flag.
 
 
         """
@@ -12719,6 +13223,20 @@ class OpNode(Node):
             most recent cook of this node. Setting only_used_options to True
             restricts the returned context option values to those that were
             actually used while cooking the node (or its inputs).
+
+
+        """
+    def graphEditorPaneTabType(self, allow_cook: bool = False) -> EnumValue:
+        """
+
+        graphEditorPaneTabType(allow_cook=False) -> hou.paneTabType or None
+
+            For nodes that own editable graph data, this method returned the
+            type of pane tab that can be used to edit that graph data. In some
+            cases, the node may return a different value from this method if it
+            is allowed to look at the cooked data of the node. Set the
+            allow_cook parameter to True to provide a more complete answer to
+            this question (at the cost of possibly cooking the node).
 
 
         """
@@ -14151,7 +14669,7 @@ class Prim:
     def intrinsicValue(self, intrinsic_name: str) -> AttribReturnType:
         """
 
-        intrinsicValue(self, intrinsic_name) -> int, float, str, or tuple
+        intrinsicValue(self, intrinsic_name) -> int, float, str, tuple or dict
 
             Gets the value of an intrinsic, often computed, value of the
             primitive, such as bounds, measuredarea, vertexcount, and so on.
@@ -15463,14 +15981,14 @@ class NodeType:
 
         """
 
-class ApexNodeType(NodeType):
+class UniNodeType(NodeType):
     """
 
-    hou.ApexNodeType
+    hou.UniNodeType
 
-    Information common to all instances of a type of APEX node.
+    Information about a UNI node type.
 
-    This class specializes the generic hou.NodeType class for APEX node
+    This class specializes the generic hou.NodeType class for UNI node
     types.
 
 
@@ -15507,6 +16025,22 @@ class ApexNodeType(NodeType):
 
 
         """
+
+class ApexNodeType(UniNodeType):
+    """
+
+    hou.ApexNodeType
+
+    Information common to all instances of a type of APEX node.
+
+    This class specializes the generic hou.UniNodeType class for APEX node
+    types.
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, *args, **kwargs) -> None: ...
+    __swig_destroy__: Incomplete
 
 class OpNodeType(NodeType):
     """
@@ -15787,8 +16321,7 @@ class OpNodeType(NodeType):
         defaultState(self) -> str
 
             Return a string with the name of the default viewer state for
-            controlling nodes of this type. Returns an empty string if the node
-            type doesn't have an associated viewer state registered.
+            controlling this node.
 
 
         """
@@ -15978,18 +16511,16 @@ class NodeTypeCategory:
     def defaultWireStyle(self) -> str: ...
     def setDefaultWireStyle(self, wirestyle: str) -> None: ...
 
-class ApexNodeTypeCategory(NodeTypeCategory):
+class UniNodeTypeCategory(NodeTypeCategory):
     """
 
-    hou.ApexNodeTypeCategory
+    hou.UniNodeTypeCategory
 
-    Represents the node type category for APEX node types.
+    Represents the node type category for UNI node types.
 
-    This class specializes the generic hou.NodeTypeCategory class for APEX
-    node types. There is only one APEX node type category, which is
-    accessible by calling hou.apexNodeTypeCategory. Note that this node type
-    category does not appear in the list returned by hou.nodeTypeCategories,
-    as that method only returns OP node type categories.
+    This class specializes the generic hou.NodeTypeCategory class for UNI
+    node types. There are many UNI node type category, which are accessible
+    by calling hou.nodeTypeCategories with the False flag as an argument.
 
 
     """
@@ -15997,6 +16528,23 @@ class ApexNodeTypeCategory(NodeTypeCategory):
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     def __hash__(self) -> int: ...
+
+class ApexNodeTypeCategory(UniNodeTypeCategory):
+    """
+
+    hou.ApexNodeTypeCategory
+
+    Represents the node type category for APEX node types.
+
+    This class specializes the generic hou.UniNodeTypeCategory class for
+    APEX node types. There is only one APEX node type category, which is
+    accessible by calling hou.apexNodeTypeCategory.
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, *args, **kwargs) -> None: ...
+    __swig_destroy__: Incomplete
 
 class OpNodeTypeCategory(NodeTypeCategory):
     """
@@ -18523,6 +19071,25 @@ class ShelfElement:
 
 
         """
+    def shortLabel(self) -> str:
+        """
+
+        shortLabel(self) -> str
+
+            Returns the object's short label.
+
+
+        """
+    def setShortLabel(self, short_label: str) -> None:
+        """
+
+        setShortLabel(self, short_label)
+
+            Sets the object's short label. This is a shorter version of the
+            label used in compact UI representations such as toolbar buttons.
+
+
+        """
     def fileLocation(self) -> str:
         """
 
@@ -20427,6 +20994,22 @@ class AgentShapeLibrary:
 
 
         """
+    def removeShape(self, name: str) -> None:
+        """
+
+        removeShape(self, name)
+
+            Removes a shape from the shape library.
+
+            Raises hou.GeometryPermissionError if the shape library is not
+            modifiable.
+
+
+            name
+                The name of the shape to remove.
+
+
+        """
 
 class AgentTransformGroup:
     """
@@ -21050,7 +21633,7 @@ class AnimBar:
     manipulating animation curves.
 
     You cannot instantiate this object directly. Call hou.playbar.animBar or
-    hou.ChannelEditorPane.animBar instead.
+    hou.ChannelEditor.animBar instead.
 
 
     """
@@ -21205,13 +21788,14 @@ class AssetGalleryDataSource:
     with an asset or snapshot gallery UI.
 
     Houdini's various asset catalog panels (the snapshot gallery attached to
-    the LOP Scene Viewer, the Working Set in the Layout LOP's brush panel,
-    and the Asset Catalog pane) are all populated by pulling data from this
-    class. This object is created by providing a source identifier, and an
-    optional additional string argument. The source identifier is used to
-    find or create a shared underlying data source implementation object
-    (which may be a C++ or python object). These implementation objects are
-    responsible for responding to the methods called on this object.
+    the LOP Scene Viewer, the Prototype Gallery in the Paint Instances LOP's
+    brush panel, and the Asset Catalog pane) are all populated by pulling
+    data from this class. This object is created by providing a source
+    identifier, and an optional additional string argument. The source
+    identifier is used to find or create a shared underlying data source
+    implementation object (which may be a C++ or python object). These
+    implementation objects are responsible for responding to the methods
+    called on this object.
 
     Houdini ships with three data source implementations. One uses an SQL
     database with read and write capabilities. This data source
@@ -21236,10 +21820,9 @@ class AssetGalleryDataSource:
     module for an example.
 
     The methods on this class almost always simply forward the call to the
-    underlying data source implementation object. So the decription of each
-    method here also serves to document the action an that should be
-    undertaken in each correspondingly named method on an implementation
-    class.
+    underlying data source implementation object. So the description of each
+    method here also serves to document the action that should be undertaken
+    in each correspondingly named method on an implementation class.
 
 
     """
@@ -21384,7 +21967,7 @@ class AssetGalleryDataSource:
 
         typeName(self, item_id) -> str
 
-            Return the type of asset identied by the id. This will either be
+            Return the type of asset identified by the id. This will either be
             snapshot (for a snapshot in a snapshot gallery) or asset (for an
             asset in an asset catalog).
 
@@ -21521,7 +22104,7 @@ class AssetGalleryDataSource:
 
             Return the unique identifier for this item's parent item. If this
             item has no parent then an empty string is returned. This also
-            indicates that the item is at thr 'root' of the tree.
+            indicates that the item is at the 'root' of the tree.
 
 
         """
@@ -23137,13 +23720,18 @@ class ButtonParmTemplate(ParmTemplate):
 
     Describes a parameter tuple containing a button.
 
+    Note that integer parameters may also be menu parameters.
+
 
     """
     thisown: Incomplete
     def __init__(self, name: str, label: str, disable_when: str|None = ..., is_hidden: bool = ..., is_label_hidden: bool = ..., join_with_next: bool = ..., help: str = ..., script_callback: str|None = ..., script_callback_language: EnumValue = ..., tags: Mapping[str, str] = ...) -> None:
         """
 
-        __init__(self, name, label, disable_when=None, is_hidden=False,
+        __init__(self, name, label, menu_items=(), menu_labels=(),
+        icon_names=(), item_generator_script=None,
+        item_generator_script_language=None, menu_type=hou.menuType.Normal,
+        menu_use_token=False, disable_when=None, is_hidden=False,
         is_label_hidden=False, join_with_next=False, help=None,
         script_callback=None,
         script_callback_language=hou.scriptLanguage.Hscript, tags={})
@@ -23158,6 +23746,32 @@ class ButtonParmTemplate(ParmTemplate):
 
             label
                 See hou.ParmTemplate.label for more information.
+
+            menu_items
+                See the menuItems method for more information.
+
+            menu_labels
+                See the menuLabels method for more information.
+
+                If this parameter is not given, it defaults to the value of the
+                menu_items parameter.
+
+            icon_names
+                See the iconNames method for more information.
+
+                If this parameter is an empty tuple, the menu will not contain
+                icons.
+
+            item_generator_script
+                See the itemGeneratorScript method for more information,
+
+            item_generator_script_language
+                See the itemGeneratorScriptLanguage method for more information.
+                If this parameter is None it defaults to
+                hou.scriptLanguage.Python.
+
+            menu_type
+                See the menuType method for more information.
 
             disable_when
                 See hou.ParmTemplate.disableWhen for more information.
@@ -23187,11 +23801,741 @@ class ButtonParmTemplate(ParmTemplate):
 
         """
     __swig_destroy__: Incomplete
+    def menuItems(self) -> Tuple[str, ...]:
+        """
 
-class ChannelEditorPane(PaneTab):
+        menuItems(self) -> tuple of str
+
+            Return the tuple of internal menu names. If this integer does not
+            use a menu, returns an empty tuple.
+
+            These internal menu names are not displayed in the UI, but they can
+            be passed to hou.Parm.set.
+
+
+        """
+    def setMenuItems(self, menu_items: Sequence[str]) -> None:
+        """
+
+        setMenuItems(self, menu_items)
+
+            Set the internal menu names to the given sequence of strings.
+
+            See the menuItems method for more information.
+
+            If the new number of menu items is less than the old number, the
+            menu labels will be shortened and the default value will be modified
+            if it is out of range.
+
+
+        """
+    def menuLabels(self) -> Tuple[str, ...]:
+        """
+
+        menuLabels(self) -> tuple of str
+
+            Return the tuple of menu labels displayed in the UI. These labels
+            are used when this parm template uses a menu.
+
+
+        """
+    def setMenuLabels(self, menu_labels: Sequence[str]) -> None:
+        """
+
+        setMenuLabels(self, menu_labels)
+
+            Set the menu labels displayed in the UI to the given sequence of
+            strings.
+
+            If the number of menu labels is less than the number of menu items,
+            Houdini uses the internal menu item names for the missing labels. If
+            the number of labels is more than the number of menu items, Houdini
+            discards the extra labels.
+
+            If you want to change both the menu items and menu labels, be sure
+            to change the menu items first.
+
+
+        """
+    def iconNames(self) -> Tuple[str, ...]:
+        """
+
+        iconNames(self) -> tuple of str
+
+            Return the tuple of icons corresponding to the menu items. If there
+            are no icons, returns a tuple of empty strings.
+
+            These icons are used when this parm template uses a menu.
+
+
+        """
+    def setIconNames(self, icon_names: Sequence[str]) -> None:
+        """
+
+        setIconNames(self, icon_names)
+
+            Set the icon names to the given sequence of strings.
+
+
+        """
+    def itemGeneratorScript(self) -> str:
+        """
+
+        itemGeneratorScriptLanguage(self) -> hou.scriptLanguage enum value
+
+            Return the script used to generate menu items, or an empty string if
+            there is no such script.
+
+
+        """
+    def setItemGeneratorScript(self, item_generator_script: str) -> None:
+        """
+
+        setItemGeneratorScript(self, item_generator_script)
+
+            Set the script used to generate menu items.
+
+            See the itemGeneratorScript method for more information.
+
+
+        """
+    def itemGeneratorScriptLanguage(self) -> EnumValue: ...
+    def setItemGeneratorScriptLanguage(self, language: EnumValue) -> None:
+        """
+
+        setItemGeneratorScriptLanguage(self, language)
+
+            Set the script language used to generate menu items to a
+            hou.scriptLanguage enum value.
+
+            See the itemGeneratorScriptLanguage method for more information.
+
+
+        """
+    def menuType(self) -> EnumValue:
+        """
+
+        menuType(self) -> hou.menuType enum value
+
+            Return the type of menu. See hou.menuType for more information.
+
+
+        """
+    def setMenuType(self, menu_type: EnumValue) -> None:
+        """
+
+        setMenuType(self, menu_type)
+
+            Set the type of menu to a hou.menuType enum value.
+
+            See the menuType method for more information.
+
+
+        """
+    def menuUseToken(self) -> bool:
+        """
+
+        menuUseToken(self) -> bool
+
+            Return whether the parameter is set to the token value instead of
+            the index.
+
+            See also the setMenuUseToken method.
+
+
+        """
+    def setMenuUseToken(self, menuusetoken: bool) -> None:
+        """
+
+        setMenuUseToken(self, on)
+
+            Set whether the parameter is set to the token value instead of the
+            index.
+
+
+        """
+
+class Camera:
+    """
+
+    hou.Camera
+
+    A Camera stores camera data and a transform.
+
+    Cameras store a position, a transform and camera related data like
+    aperture, focal length,...
+
+
+    NOTE
+        Aperture represents the horizontal aperture. Shutter is zero
+        centered.
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, *args) -> None:
+        """
+
+        hou.Camera
+
+        A Camera stores camera data and a transform.
+
+        Cameras store a position, a transform and camera related data like
+        aperture, focal length,...
+
+
+        NOTE
+            Aperture represents the horizontal aperture. Shutter is zero
+            centered.
+
+
+        """
+    __swig_destroy__: Incomplete
+    def transform(self) -> Matrix3:
+        """
+
+        transform(self) -> hou.Matrix3
+
+            Returns the camera's transform.
+
+
+        """
+    def position(self) -> Vector3:
+        """
+
+        position(self) -> hou.Vector3
+
+            Returns the camera's position.
+
+
+        """
+    def parms(self) -> dict[str, Any]:
+        """
+
+        parms(self) -> dict
+
+            Returns a dictionary of the camera parameters.
+
+
+        """
+    def metadata(self) -> dict[str, Any]:
+        """
+
+        metadata(self) -> dict
+
+            Returns the camera's metadata
+
+
+        """
+    def aperture(self) -> float:
+        """
+
+        aperture(self) -> float
+
+            Returns the camera's horizontal aperture.
+
+
+        """
+    def pixelAspect(self) -> float:
+        """
+
+        pixelAspect(self) -> float
+
+            Returns the camera's pixel aspect.
+
+
+        """
+    def focal(self) -> float:
+        """
+
+        focal(self) -> float
+
+            Returns the camera's focal length.
+
+
+        """
+    def focusDistance(self) -> float:
+        """
+
+        focusDistance(self) -> float
+
+            Returns the camera's focus distance.
+
+
+        """
+    def imagingDistance(self) -> float:
+        """
+
+        imagingDistance(self) -> float
+
+            Returns the camera's imaging distance.
+
+
+        """
+    def fstop(self) -> float:
+        """
+
+        fstop(self) -> float
+
+            Returns the camera's fstop.
+
+
+        """
+    def orthoZoom(self) -> float:
+        """
+
+        orthoZoom(self) -> float
+
+            Returns the camera's ortho zoom.
+
+
+        """
+    def guideScale(self) -> float:
+        """
+
+        guideScale(self) -> float
+
+            Returns the camera's guide scale.
+
+
+        """
+    def projection(self) -> EnumValue:
+        """
+
+        projection(self) -> hou.EnumValue
+
+            Returns the camera's projection as a hou.cameraProjection.
+
+
+        """
+    def projectionToken(self) -> str:
+        """
+
+        projectionToken(self) -> str
+
+            Returns the camera's projection as a string.
+
+
+        """
+    def isOrthographic(self) -> bool:
+        """
+
+        isOrthographic(self) -> bool
+
+            Returns true if the camera's projection is orthographic.
+
+
+        """
+    def resolution(self) -> Tuple[int, ...]:
+        """
+
+        resolution(self) -> tuple of int64
+
+            Returns the camera's resolution as a tuple of 2 ints, eg. (1280,
+            720).
+
+
+        """
+    def resolutionX(self) -> int:
+        """
+
+        resolutionX(self) -> int64
+
+            Returns the camera's resolution in x.
+
+
+        """
+    def resolutionY(self) -> int:
+        """
+
+        resolutionY(self) -> int64
+
+            Returns the camera's resolution in y.
+
+
+        """
+    def cropMin(self) -> Tuple[float, ...]:
+        """
+
+        cropMin(self) -> tuple of float
+
+            Returns the crop minimum as a tuple of 2 floats, minx and miny.
+
+
+        """
+    def cropMax(self) -> Tuple[float, ...]:
+        """
+
+        cropMax(self) -> tuple of float
+
+            Returns the crop maximum as a tuple of 2 floats, maxx and maxy.
+
+
+        """
+    def windowMin(self) -> Tuple[float, ...]:
+        """
+
+        windowMin(self) -> tuple of float
+
+            Returns the window minimum as a tuple of 2 floats, minx and miny.
+
+
+        """
+    def windowMax(self) -> Tuple[float, ...]:
+        """
+
+        windowMax(self) -> tuple of float
+
+            Returns the window maximum as a tuple of 2 floats, maxx and maxy.
+
+
+        """
+    def clippingPlanes(self) -> Tuple[float, ...]:
+        """
+
+        clippingPlanes(self) -> tuple of float
+
+            Returns the clipping planes as a tuple of 2 floats, near and fear.
+
+
+        """
+    def nearClippingPlane(self) -> float:
+        """
+
+        nearClippingPlane(self) -> float
+
+            Returns the camera's near clipping plane.
+
+
+        """
+    def farClippingPlane(self) -> float:
+        """
+
+        farClippingPlane(self) -> float
+
+            Returns the camera's far clipping plane.
+
+
+        """
+    def shutter(self) -> Tuple[float, ...]:
+        """
+
+        shutter(self) -> tuple of float
+
+            Returns the camera shutter time as a tuple of 2 floats, open and
+            close.
+
+
+        """
+    def shutterOpen(self) -> float:
+        """
+
+        shutterOpen(self) -> float
+
+            Returns the camera's shutter open.
+
+
+        """
+    def shutterClose(self) -> float:
+        """
+
+        shutterClose(self) -> float
+
+            Returns the camera's shutter close.
+
+
+        """
+    def setTransform(self, transform: Matrix3) -> None:
+        """
+
+        setTransform(self, transform: hou.Matrix3)
+
+            Sets the camera's transform.
+
+
+        """
+    def setPosition(self, position: Vector3) -> None:
+        """
+
+        setPosition(self, position: hou.Vector3)
+
+            Sets the camera's position.
+
+
+        """
+    def setParms(self, parms: dict[str, Any]) -> None:
+        '''
+
+        setParms(self, parms: dict)
+
+            Sets the camera\'s parameters from a dictionary. The dictionary
+            should be formatted as such :
+
+          > \\"aperture\\":41.4214,
+          > 
+          > \\"clipfar\\":10000,
+          > 
+          > \\"clipnear\\":0.01,
+          > 
+          > \\"cropmax\\":[1,1],
+          > 
+          > \\"cropmin\\":[0,0],
+          > 
+          > \\"focal\\":50,
+          > 
+          > \\"focusdistance\\":5,
+          > 
+          > \\"fstop\\":5.6,
+          > 
+          > \\"guidescale\\":1,
+          > 
+          > \\"imagingdistance\\":1,
+          > 
+          > \\"metadata\\":{
+          > 
+          >     \\"myCoolMetadata\\" : 67
+          > 
+          > },
+          > 
+          > \\"orthozoom\\":1,
+          > 
+          > \\"pixelaspect\\":1,
+          > 
+          > \\"projection\\":\\"perspective\\",
+          > 
+          > \\"resolutionx\\":1280,
+          > 
+          > \\"resolutiony\\":720,
+          > 
+          > \\"shutterclose\\":0.25,
+          > 
+          > \\"shutteropen\\":-0.25,
+          > 
+          > \\"windowmax\\":[1,1],
+          > 
+          > \\"windowmin\\":[0,0]
+
+        '''
+    def setAperture(self, aperture: float) -> None:
+        """
+
+        setAperture(self, aperture: float)
+
+            Sets the camera's aperture.
+
+
+        """
+    def setPixelAspect(self, aspect: float) -> None:
+        """
+
+        setPixelAspect(self, aspect: float)
+
+            Sets the camera's pixel aspect.
+
+
+        """
+    def setFocal(self, focal: float) -> None:
+        """
+
+        setFocal(self, focal: float)
+
+            Sets the camera's focal length.
+
+
+        """
+    def setFocusDistance(self, focusdist: float) -> None:
+        """
+
+        setFocusDistance(self, focusdist: float)
+
+            Sets the camera's focus distance.
+
+
+        """
+    def setImagingDistance(self, imagingdist: float) -> None:
+        """
+
+        setImagingDistance(self, imagingdist: float)
+
+            Sets the camera's imaging distance.
+
+
+        """
+    def setFstop(self, fstop: float) -> None:
+        """
+
+        setFstop(self, fstop: float)
+
+            Sets the camera's fstop.
+
+
+        """
+    def setOrthoZoom(self, zoom: float) -> None:
+        """
+
+        setOrthoZoom(self, zoom: float)
+
+            Sets the camera's ortho zoom.
+
+
+        """
+    def setGuideScale(self, scale: float) -> None:
+        """
+
+        setGuideScale(self, scale: float)
+
+            Sets the camera's guide scale.
+
+
+        """
+    def setProjection(self, projection: EnumValue) -> None:
+        """
+
+        setProjection(self, projection: hou.cameraProjection)
+
+            Sets the camera's projection.
+
+
+        """
+    def setResolution(self, res: Sequence[int]) -> None:
+        """
+
+        setResolution(self, res: tuple[int, int])
+
+            Sets the camera's resolution.
+
+
+        """
+    def setResolutionX(self, resx: int) -> None:
+        """
+
+        setResolutionX(self, resx: int)
+
+            Sets the camera's resolution in x
+
+
+        """
+    def setResolutionY(self, resy: int) -> None:
+        """
+
+        setResolutionY(self, resy: int)
+
+            Sets the camera's resolution in y
+
+
+        """
+    def setCropMin(self, min: Sequence[float]) -> None:
+        """
+
+        setCropMin(self, min: tuple[float, float])
+
+            Sets the camera's crop minimum.
+
+
+        """
+    def setCropMax(self, max: Sequence[float]) -> None:
+        """
+
+        setCropMax(self, max: tuple[float, float])
+
+            Sets the camera's crop maximum.
+
+
+        """
+    def setWindowMin(self, min: Sequence[float]) -> None:
+        """
+
+        setWindowMin(self, min: tuple[float, float])
+
+            Sets the camera's window minimum.
+
+
+        """
+    def setWindowMax(self, max: Sequence[float]) -> None:
+        """
+
+        setWindowMax(self, max: tuple[float, float])
+
+            Sets the camera's window maximum.
+
+
+        """
+    def setClippingPlanes(self, planes: Sequence[float]) -> None:
+        """
+
+        setClippingPlanes(self, planes: tuple[float, float])
+
+            Sets the camera's near and far clipping planes.
+
+
+        """
+    def setNearClippingPlane(self, near: float) -> None:
+        """
+
+        setNearClippingPlane(self, near: float)
+
+            Sets the camera's near clipping plane.
+
+
+        """
+    def setFarClippingPlane(self, far: float) -> None:
+        """
+
+        setFarClippingPlane(self, far: float)
+
+            Sets the camera's far clipping plane.
+
+
+        """
+    def setShutter(self, shutter: Sequence[float]) -> None:
+        """
+
+        setShutter(self, shutter: tuple[float, float])
+
+            Sets the camera's shutter time. Expects a tuple of 2 floats: (open,
+            close). These should be zero centered, eg. (-0.25, 0.25).
+
+
+        """
+    def setShutterOpen(self, sopen: float) -> None:
+        """
+
+        setShutterOpen(self, sopen: float)
+
+            Sets the camera's shutter open.
+
+
+        """
+    def setShutterClose(self, sclose: float) -> None:
+        """
+
+        setShutterClose(self, sclose: float)
+
+            Sets the camera's shutter close.
+
+
+        """
+    def setMetadata(self, metadata: dict[str, Any]) -> None:
+        """
+
+        setMetadata(self, metadata: dict)
+
+            Sets the camera's metadata.
+
+
+        """
+
+class ChannelEditor(PaneTab):
     """
 
     hou.ChannelEditorPane
+
+    Deprecated: Use ChannelEditor.
+
+
+    WARNING
+        This is deprecated. Use hou.ChannelEditor instead.
+
 
     """
     thisown: Incomplete
@@ -23435,6 +24779,10 @@ class ChannelGraph:
 
     hou.ChannelGraph
 
+    The graph view of the Animation Editor. Obtain an instance via
+    hou.ChannelEditor.graph.
+
+
     """
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
@@ -23464,7 +24812,7 @@ class ChannelGraph:
 
         selection(self) -> tuple of hou.ChannelGraphSelection
 
-            Return a copy of the current channel graph selection.
+            Returns a copy of the current channel graph selection.
 
 
         """
@@ -23473,8 +24821,176 @@ class ChannelGraph:
 
         setSelection(self, chan_graph_selections)
 
-            Set the current channel graph selection to the given sequence of
+            Sets the current channel graph selection to the given sequence of
             hou.ChannelGraphSelection objects.
+
+
+        """
+    def selectionMode(self) -> EnumValue:
+        """
+
+        selectionMode(self) -> hou.channelGraphSelectionMode enum value
+
+            Returns the current graph selection mode.
+
+            See hou.channelGraphSelectionMode for the available modes.
+
+
+        """
+    def setSelectionMode(self, mode: EnumValue) -> None:
+        """
+
+        setSelectionMode(self, mode)
+
+            Sets the graph selection mode.
+
+
+            mode
+                A hou.channelGraphSelectionMode value.
+
+          > graph = hou.ui.paneTabOfType(hou.paneTabType.ChannelEditor).graph()
+          > graph.setSelectionMode(hou.channelGraphSelectionMode.Retime)
+
+        """
+    def retimeMarkers(self) -> Tuple[float, ...]:
+        """
+
+        retimeMarkers(self) -> tuple of float
+
+            Returns the time position (in seconds) of each retime marker, in
+            sorted order.
+
+
+        """
+    def retimeMarkerSelection(self) -> OptionalIntInterval:  # type: ignore[name-defined]
+        """
+
+        retimeMarkerSelection(self) -> tuple of int or None
+
+            Returns the selected marker index range as a (min, max) tuple
+            (inclusive), or None if no markers are selected.
+
+
+        """
+    def setRetimeMarkerSelection(self, range: OptionalIntInterval) -> None:  # type: ignore[name-defined]
+        """
+
+        setRetimeMarkerSelection(self, range)
+
+            Sets the retime marker selection to the given index range. Pass None
+            to deselect all markers.
+
+
+            range
+                The index range of markers to select, given as a list or tuple
+                of 2 integers [min, max] (inclusive), or None.
+
+
+        """
+    def insertRetimeMarker(self, time: float) -> None:
+        """
+
+        insertRetimeMarker(self, time)
+
+            Inserts a retime marker at time (in seconds). The graph must be in
+            hou.channelGraphSelectionMode.Retime mode for markers to be visible.
+
+          > graph = hou.ui.paneTabOfType(hou.paneTabType.ChannelEditor).graph()
+          > graph.setSelectionMode(hou.channelGraphSelectionMode.Retime)
+          > graph.insertRetimeMarker(hou.frameToTime(42))
+
+        """
+    def deleteRetimeMarker(self, index: int) -> None:
+        """
+
+        deleteRetimeMarker(self, index)
+
+            Removes the retime marker at index.
+
+
+        """
+    def deleteRetimeMarkers(self, range: IntInterval) -> None:  # type: ignore[name-defined]
+        """
+
+        deleteRetimeMarkers(self, range)
+
+            Removes all markers whose indices fall within range (inclusive).
+
+
+            range
+                The index range of markers to delete, given as a list or tuple
+                of 2 integers [min, max] (inclusive).
+
+
+                WARNING
+                    The range parameter does not accept None. Check the result
+                    of retimeMarkerSelection before passing it directly to this
+                    function. deleteSelectedRetimeMarkers is provided for
+                    convenience.
+
+
+        """
+    def deleteSelectedRetimeMarkers(self) -> None:
+        """
+
+        deleteSelectedRetimeMarkers(self)
+
+            Removes the currently selected retime markers. Does nothing if no
+            markers are selected.
+
+
+        """
+    def clearRetimeMarkers(self) -> None:
+        """
+
+        clearRetimeMarkers(self)
+
+            Removes all retime markers.
+
+
+        """
+    def moveRetimeMarkers(self, range: IntInterval, delta: float, with_keys: bool) -> None:  # type: ignore[name-defined]
+        """
+
+        moveRetimeMarkers(self, range, delta, with_keys)
+
+            Moves the markers in range by delta seconds. Each marker is clamped
+            to prevent it from crossing its neighbors.
+
+
+            range
+                The index range of markers to move, given as a list or tuple of
+                2 integers [min, max] (inclusive).
+
+
+                WARNING
+                    The range parameter does not accept None. Check the result
+                    of retimeMarkerSelection before passing it directly to this
+                    function. moveSelectedRetimeMarkers is provided for
+                    convenience.
+
+            delta
+                The amount to move the markers, in seconds.
+
+            with_keys
+                If True, keyframes are retimed to fit the new marker positions.
+
+                If False, keyframes are unaffected.
+
+          > graph = hou.ui.paneTabOfType(hou.paneTabType.ChannelEditor).graph()
+          > graph.setSelectionMode(hou.channelGraphSelectionMode.Retime)
+          > # Move markers 2 through 5 forward by half a second, retiming keys
+          > graph.moveRetimeMarkers((2, 5), 0.5, True)
+
+        """
+    def moveSelectedRetimeMarkers(self, delta: float, with_keys: bool) -> None:
+        """
+
+        moveSelectedRetimeMarkers(self, delta, with_keys)
+
+            Moves the currently selected retime markers by delta seconds. Does
+            nothing if no markers are selected. See moveRetimeMarkers for
+            parameter details.
 
 
         """
@@ -23486,6 +25002,9 @@ class ChannelList:
 
     A copy of a list of channels from Channel List or Animation Editor.
 
+    This differs from hou.ChannelListPaneTab, which manages the pane tab.
+    This class holds the actual list of channels.
+
 
     """
     thisown: Incomplete
@@ -23495,6 +25014,9 @@ class ChannelList:
         hou.ChannelList
 
         A copy of a list of channels from Channel List or Animation Editor.
+
+        This differs from hou.ChannelListPaneTab, which manages the pane tab.
+        This class holds the actual list of channels.
 
 
         """
@@ -24101,7 +25623,8 @@ class ChannelList:
 
         keepSelection(self) -> bool
 
-            Returns the channel list Keep Selection flag.
+            Returns the global Keep Channel List Selection preference. This
+            method is deprecated.
 
 
         """
@@ -24159,7 +25682,7 @@ class ChannelList:
 
         setKeepSelection(self,on)
 
-            Set the channel list Keep Selection flag.
+            This method is deprecated.
 
 
         """
@@ -24211,6 +25734,577 @@ class ChannelList:
             var_name
                 The variable name used in the generated code for the channel
                 list. It defaults to chanlist.
+
+
+        """
+
+class ChannelListPaneTab(PaneTab):
+    """
+
+    hou.ChannelListPaneTab
+
+    This differs from hou.ChannelList, which holds the actual list of
+    channels. This class manages the pane tab.
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, *args, **kwargs) -> None: ...
+    __swig_destroy__: Incomplete
+
+class CameraPrim(Prim):
+    """
+
+    hou.CameraPrim
+
+    A CameraPrim is a geometry primitive (Prim object) that stores camera
+    data.
+
+    Camera primitives are a primitive type that represent a camera. They
+    store a position, a transform and camera related data like aperture,
+    focal length,...
+
+
+    NOTE
+        Aperture represents the horizontal aperture. Shutter is zero
+        centered.
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, *args, **kwargs) -> None: ...
+    __swig_destroy__: Incomplete
+    def transform(self) -> Matrix3:
+        """
+
+        transform(self) -> hou.Matrix3
+
+            Returns the camera's transform.
+
+
+        """
+    def position(self) -> Vector3:
+        """
+
+        position(self) -> hou.Vector3
+
+            Returns the camera's position.
+
+
+        """
+    def aperture(self) -> float:
+        """
+
+        aperture(self) -> float
+
+            Returns the camera's horizontal aperture.
+
+
+        """
+    def pixelAspect(self) -> float:
+        """
+
+        pixelAspect(self) -> float
+
+            Returns the camera's pixel aspect.
+
+
+        """
+    def focal(self) -> float:
+        """
+
+        focal(self) -> float
+
+            Returns the camera's focal length.
+
+
+        """
+    def focusDistance(self) -> float:
+        """
+
+        focusDistance(self) -> float
+
+            Returns the camera's focus distance.
+
+
+        """
+    def imagingDistance(self) -> float:
+        """
+
+        imagingDistance(self) -> float
+
+            Returns the camera's imaging distance.
+
+
+        """
+    def fstop(self) -> float:
+        """
+
+        fstop(self) -> float
+
+            Returns the camera's fstop.
+
+
+        """
+    def orthoZoom(self) -> float:
+        """
+
+        orthoZoom(self) -> float
+
+            Returns the camera's ortho zoom.
+
+
+        """
+    def guideScale(self) -> float:
+        """
+
+        guideScale(self) -> float
+
+            Returns the camera's guide scale.
+
+
+        """
+    def projection(self) -> EnumValue:
+        """
+
+        projection(self) -> hou.EnumValue
+
+            Returns the camera's projection as a hou.cameraProjection.
+
+
+        """
+    def projectionToken(self) -> str:
+        """
+
+        projectionToken(self) -> str
+
+            Returns the camera's projection as a string.
+
+
+        """
+    def isOrthographic(self) -> bool:
+        """
+
+        isOrthographic(self) -> bool
+
+            Returns true if the camera's projection is orthographic.
+
+
+        """
+    def resolution(self) -> Tuple[int, ...]:
+        """
+
+        resolution(self) -> tuple of int64
+
+            Returns the camera's resolution as a tuple of 2 ints, eg. (1280,
+            720).
+
+
+        """
+    def resolutionX(self) -> int:
+        """
+
+        resolutionX(self) -> int64
+
+            Returns the camera's resolution in x.
+
+
+        """
+    def resolutionY(self) -> int:
+        """
+
+        resolutionY(self) -> int64
+
+            Returns the camera's resolution in y.
+
+
+        """
+    def cropMin(self) -> Tuple[float, ...]:
+        """
+
+        cropMin(self) -> tuple of float
+
+            Returns the crop minimum as a tuple of 2 floats, minx and miny.
+
+
+        """
+    def cropMax(self) -> Tuple[float, ...]:
+        """
+
+        cropMax(self) -> tuple of float
+
+            Returns the crop maximum as a tuple of 2 floats, maxx and maxy.
+
+
+        """
+    def windowMin(self) -> Tuple[float, ...]:
+        """
+
+        windowMin(self) -> tuple of float
+
+            Returns the window minimum as a tuple of 2 floats, minx and miny.
+
+
+        """
+    def windowMax(self) -> Tuple[float, ...]:
+        """
+
+        windowMax(self) -> tuple of float
+
+            Returns the window maximum as a tuple of 2 floats, maxx and maxy.
+
+
+        """
+    def clippingPlanes(self) -> Tuple[float, ...]:
+        """
+
+        clippingPlanes(self) -> tuple of float
+
+            Returns the clipping planes as a tuple of 2 floats, near and fear.
+
+
+        """
+    def nearClippingPlane(self) -> float:
+        """
+
+        nearClippingPlane(self) -> float
+
+            Returns the camera's near clipping plane.
+
+
+        """
+    def farClippingPlane(self) -> float:
+        """
+
+        farClippingPlane(self) -> float
+
+            Returns the camera's far clipping plane.
+
+
+        """
+    def shutter(self) -> Tuple[float, ...]:
+        """
+
+        shutter(self) -> tuple of float
+
+            Returns the camera shutter time as a tuple of 2 floats, open and
+            close.
+
+
+        """
+    def shutterOpen(self) -> float:
+        """
+
+        shutterOpen(self) -> float
+
+            Returns the camera's shutter open.
+
+
+        """
+    def shutterClose(self) -> float:
+        """
+
+        shutterClose(self) -> float
+
+            Returns the camera's shutter close.
+
+
+        """
+    def metadata(self) -> dict[str, Any]:
+        """
+
+        metadata(self) -> dict
+
+            Returns the camera's metadata
+
+
+        """
+    def camera(self) -> Optional[Camera]:
+        """
+
+        camera(self) -> hou.Camera
+
+            Returns a hou.Camera with the corresponding transform and
+            parameters.
+
+
+        """
+    def setTransform(self, transform: Matrix3) -> None:
+        """
+
+        setTransform(self, transform: hou.Matrix3)
+
+            Sets the camera's transform.
+
+
+        """
+    def setPosition(self, position: Vector3) -> None:
+        """
+
+        setPosition(self, position: hou.Vector3)
+
+            Sets the camera's position.
+
+
+        """
+    def setParms(self, parms: dict[str, Any]) -> None:
+        '''
+
+        setParms(self, parms: dict)
+
+            Sets the camera\'s parameters from a dictionary. The dictionary
+            should be formatted as such :
+
+          > \\"aperture\\":41.4214,
+          > 
+          > \\"clipfar\\":10000,
+          > 
+          > \\"clipnear\\":0.01,
+          > 
+          > \\"cropmax\\":[1,1],
+          > 
+          > \\"cropmin\\":[0,0],
+          > 
+          > \\"focal\\":50,
+          > 
+          > \\"focusdistance\\":5,
+          > 
+          > \\"fstop\\":5.6,
+          > 
+          > \\"guidescale\\":1,
+          > 
+          > \\"imagingdistance\\":1,
+          > 
+          > \\"metadata\\":{
+          > 
+          >     \\"myCoolMetadata\\" : 67
+          > 
+          > },
+          > 
+          > \\"orthozoom\\":1,
+          > 
+          > \\"pixelaspect\\":1,
+          > 
+          > \\"projection\\":\\"perspective\\",
+          > 
+          > \\"resolutionx\\":1280,
+          > 
+          > \\"resolutiony\\":720,
+          > 
+          > \\"shutterclose\\":0.25,
+          > 
+          > \\"shutteropen\\":-0.25,
+          > 
+          > \\"windowmax\\":[1,1],
+          > 
+          > \\"windowmin\\":[0,0]
+
+        '''
+    def setAperture(self, aperture: float) -> None:
+        """
+
+        setAperture(self, aperture: float)
+
+            Sets the camera's aperture.
+
+
+        """
+    def setPixelAspect(self, aspect: float) -> None:
+        """
+
+        setPixelAspect(self, aspect: float)
+
+            Sets the camera's pixel aspect.
+
+
+        """
+    def setFocal(self, focal: float) -> None:
+        """
+
+        setFocal(self, focal: float)
+
+            Sets the camera's focal length.
+
+
+        """
+    def setFocusDistance(self, focusdist: float) -> None:
+        """
+
+        setFocusDistance(self, focusdist: float)
+
+            Sets the camera's focus distance.
+
+
+        """
+    def setImagingDistance(self, imagingdist: float) -> None:
+        """
+
+        setImagingDistance(self, imagingdist: float)
+
+            Sets the camera's imaging distance.
+
+
+        """
+    def setFstop(self, fstop: float) -> None:
+        """
+
+        setFstop(self, fstop: float)
+
+            Sets the camera's fstop.
+
+
+        """
+    def setOrthoZoom(self, zoom: float) -> None:
+        """
+
+        setOrthoZoom(self, zoom: float)
+
+            Sets the camera's ortho zoom.
+
+
+        """
+    def setGuideScale(self, scale: float) -> None:
+        """
+
+        setGuideScale(self, scale: float)
+
+            Sets the camera's guide scale.
+
+
+        """
+    def setProjection(self, projection: EnumValue) -> None:
+        """
+
+        setProjection(self, projection: hou.cameraProjection)
+
+            Sets the camera's projection.
+
+
+        """
+    def setResolution(self, res: Sequence[int]) -> None:
+        """
+
+        setResolution(self, res: tuple[int, int])
+
+            Sets the camera's resolution.
+
+
+        """
+    def setResolutionX(self, resx: int) -> None:
+        """
+
+        setResolutionX(self, resx: int)
+
+            Sets the camera's resolution in x
+
+
+        """
+    def setResolutionY(self, resy: int) -> None:
+        """
+
+        setResolutionY(self, resy: int)
+
+            Sets the camera's resolution in y
+
+
+        """
+    def setCropMin(self, min: Sequence[float]) -> None:
+        """
+
+        setCropMin(self, min: tuple[float, float])
+
+            Sets the camera's crop minimum.
+
+
+        """
+    def setCropMax(self, max: Sequence[float]) -> None:
+        """
+
+        setCropMax(self, max: tuple[float, float])
+
+            Sets the camera's crop maximum.
+
+
+        """
+    def setWindowMin(self, min: Sequence[float]) -> None:
+        """
+
+        setWindowMin(self, min: tuple[float, float])
+
+            Sets the camera's window minimum.
+
+
+        """
+    def setWindowMax(self, max: Sequence[float]) -> None:
+        """
+
+        setWindowMax(self, max: tuple[float, float])
+
+            Sets the camera's window maximum.
+
+
+        """
+    def setClippingPlanes(self, planes: Sequence[float]) -> None:
+        """
+
+        setClippingPlanes(self, planes: tuple[float, float])
+
+            Sets the camera's near and far clipping planes.
+
+
+        """
+    def setNearClippingPlane(self, near: float) -> None:
+        """
+
+        setNearClippingPlane(self, near: float)
+
+            Sets the camera's near clipping plane.
+
+
+        """
+    def setFarClippingPlane(self, far: float) -> None:
+        """
+
+        setFarClippingPlane(self, far: float)
+
+            Sets the camera's far clipping plane.
+
+
+        """
+    def setShutter(self, shutter: Sequence[float]) -> None:
+        """
+
+        setShutter(self, shutter: tuple[float, float])
+
+            Sets the camera's shutter time. Expects a tuple of 2 floats: (open,
+            close). These should be zero centered, eg. (-0.25, 0.25).
+
+
+        """
+    def setShutterOpen(self, sopen: float) -> None:
+        """
+
+        setShutterOpen(self, sopen: float)
+
+            Sets the camera's shutter open.
+
+
+        """
+    def setShutterClose(self, sclose: float) -> None:
+        """
+
+        setShutterClose(self, sclose: float)
+
+            Sets the camera's shutter close.
+
+
+        """
+    def setMetadata(self, metadata: dict[str, Any]) -> None:
+        """
+
+        setMetadata(self, metadata: dict)
+
+            Sets the camera's metadata.
 
 
         """
@@ -24682,6 +26776,73 @@ class ChannelPrim(Prim):
 
 
         """
+    def isAllMuted(self) -> bool:
+        """
+
+        isAllMuted(self) -> bool
+
+            Returns True if the entire channel is muted.
+
+
+        """
+    def isAllUnmuted(self) -> bool:
+        """
+
+        isAllUnmuted(self) -> bool
+
+            Returns True if the channel has no muted ranges.
+
+
+        """
+    def isMuted(self, frame: float) -> bool:
+        """
+
+        isMuted(self, frame: float) -> bool
+
+            Returns True if the channel is muted at the given frame.
+
+
+        """
+    def muteAll(self) -> None:
+        """
+
+        muteAll(self)
+
+            Mutes the entire channel, causing it to evaluate to a constant value
+            equal to its value at the channel's start frame.
+
+
+        """
+    def unmuteAll(self) -> None:
+        """
+
+        unmuteAll(self)
+
+            Unmutes the entire channel, removing all muted ranges.
+
+
+        """
+    def mute(self, frame_start: float, frame_end: float) -> None:
+        """
+
+        mute(self, frame_start: float, frame_end: float)
+
+            Mutes a range of the channel. When evaluating a muted range, the
+            channel returns a constant value determined by evaluating the
+            channel at the start of the range.
+
+
+        """
+    def unmute(self, frame_start: float, frame_end: float) -> None:
+        """
+
+        unmute(self, frame_start: float, frame_end: float)
+
+            Unmutes a range of the channel, removing any muted ranges that
+            overlap with the given range.
+
+
+        """
 
 class ChopNode(OpNode):
     """
@@ -25125,7 +27286,7 @@ class clone:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     @staticmethod
-    def runAsClone(start_port: int = 0, end_port: int = -1, debug: bool = False, block: bool = False, print_port: bool = False, connection_timeout_seconds: int = -1) -> None:
+    def runAsClone(start_port: int = 0, end_port: int = -1, debug: bool = False, block: bool = False, print_port: bool = False, connection_timeout_seconds: int = -1, initialize_opengl: bool = True) -> None:
         """
 
         hou.clone.runAsClone
@@ -25134,7 +27295,8 @@ class clone:
 
         USAGE
           runAsClone(start_port=0, end_port=-1, debug=False, block=False,
-          print_port=False, connection_timeout_seconds=-1)
+          print_port=False, connection_timeout_seconds=-1,
+          initialize_opengl=True)
 
         This method opens a network port to receive connections from a host
         process. Once connected, the host process sends its hip file contents
@@ -25195,6 +27357,14 @@ class clone:
             This setting can help prevent zombie processes on a render farm, but
             be sure to allocate enough time for the host process to establish
             communication with the clone.
+
+        initialize_opengl
+            Determines if the clone process will try to initialize OpenGL before
+            creating the render delegate. This must be set to True to allow the
+            use of render delegates that rely on OpenGL, such as Storm. But on
+            some headless farm machines, OpenGL libraries may not be available
+            and this parameter can be set to False so that these machines don't
+            chut down the clone process when it can't initialize OpenGL.
 
 
         """
@@ -26911,6 +29081,284 @@ class ContextViewer(PathBasedPaneTab):
 
         """
 
+class CopCable:
+    """
+
+    hou.CopCable
+
+    A CopCable is a list of named COP objects, called wires (ImageLayers,
+    NanoVDBs, Geometries, DetachedAttribs). A wire name may appear multiple
+    times in a cable.
+
+    You can cook a cable output using hou.CopNode.cable, or you can evaluate
+    a cable data parameter using hou.Parm.evalAsCopCable. A CopCable
+    returned by either of these functions is not tied to the node or
+    parameter it was cooked from. All CopCable objects are writable; there's
+    no notion of a frozen CopCable. However, all the objects in a CopCable
+    are frozen, so the only way to modify them in a CopCable is by replacing
+    them.
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, cable: Optional[CopCable] = None) -> None:
+        """
+
+        hou.CopCable
+
+        A CopCable is a list of named COP objects, called wires (ImageLayers,
+        NanoVDBs, Geometries, DetachedAttribs). A wire name may appear multiple
+        times in a cable.
+
+        You can cook a cable output using hou.CopNode.cable, or you can evaluate
+        a cable data parameter using hou.Parm.evalAsCopCable. A CopCable
+        returned by either of these functions is not tied to the node or
+        parameter it was cooked from. All CopCable objects are writable; there's
+        no notion of a frozen CopCable. However, all the objects in a CopCable
+        are frozen, so the only way to modify them in a CopCable is by replacing
+        them.
+
+
+        """
+    __swig_destroy__: Incomplete
+    def wireCount(self) -> int:
+        """
+
+        wireCount(self) -> int
+
+            Returns the count of objects (wires).
+
+
+        """
+    def appearanceToIndex(self, name: str, appearance: int = 0) -> int:
+        """
+
+        appearanceToIndex(self, name, appearance=0) -> int
+
+            Returns the flat index in this cable at which the wire name name
+            appears for the appearance-th time.
+
+
+        """
+    def indexToAppearance(self, idx: int) -> int:
+        """
+
+        indexToAppearance(self, idx) -> int
+
+            Returns the count of times the wire name at index idx appears as a
+            wire name before index idx. In other words, converts a flat index to
+            an appearance index.
+
+
+        """
+    def wireName(self, idx: int) -> str:
+        """
+
+        wireName(self, idx) -> str
+
+            Returns the name of the wire at index idx.
+
+
+        """
+    def wireDataTypeByIndex(self, idx: int) -> str:
+        """
+
+        wireDataTypeByIndex(self, idx) -> str
+
+            Returns a string representation of the COP object at flat index idx.
+
+
+        """
+    def wireDataType(self, name: str, idx: int) -> str:
+        """
+
+        wireDataType(self, name, idx) -> str
+
+            Returns a string representation of the COP object at the idx-th
+            appearance of the wire name name.
+
+
+        """
+    def wireNames(self) -> Tuple[str, ...]:
+        """
+
+        wireNames(self) -> tuple[str]
+
+            Returns a tuple of all the wire names contained in the cable.
+            Duplicates can occur as a cable can have wires with the same name.
+
+
+        """
+    def layerByIndex(self, idx: int) -> Optional[ImageLayer]:
+        """
+
+        layerByIndex(self, idx) -> hou.ImageLayer
+
+            Gets the object at flat index idx. If it's a layer, returns it.
+            Otherwise, returns None.
+
+
+        """
+    def layer(self, name: str, appearance: int = 0) -> Optional[ImageLayer]:
+        """
+
+        layer(self, name, appearance=0) -> hou.ImageLayer
+
+            Gets the object at the appearance-th appearance of the wire name
+            name. If it's a layer, returns it. Otherwise, returns None.
+
+
+        """
+    def geometryByIndex(self, idx: int) -> Optional[Geometry]:
+        """
+
+        geometryByIndex(self, idx) -> hou.Geometry
+
+            Gets the object at flat index idx. If it's a geometry, returns it.
+            Otherwise, returns None.
+
+
+        """
+    def geometry(self, name: str, appearance: int = 0) -> Optional[Geometry]:
+        """
+
+        geometry(self, name, appearance=0) -> hou.Geometry
+
+            Gets the object at the appearance-th appearance of the wire name
+            name. If it's a geometry, returns it. Otherwise, returns None.
+
+
+        """
+    def vdbByIndex(self, idx: int) -> Optional[NanoVDB]:
+        """
+
+        vdbByIndex(self, idx) -> hou.NanoVDB
+
+            Gets the object at flat index idx. If it's a NanoVDB, returns it.
+            Otherwise, returns None.
+
+
+        """
+    def vdb(self, name: str, appearance: int = 0) -> Optional[NanoVDB]:
+        """
+
+        vdb(self, name, appearance=0) -> hou.NanoVDB
+
+            Gets the object at the appearance-th appearance of the wire name
+            name. If it's a NanoVDB, returns it. Otherwise, returns None.
+
+
+        """
+    def attribByIndex(self, idx: int) -> Optional[DetachedAttrib]:
+        """
+
+        attribByIndex(self, idx) -> hou.DetachedAttrib
+
+            Gets the object at flat index idx. If it's a detached attribute,
+            returns it. Otherwise, returns None.
+
+
+        """
+    def attrib(self, name: str, appearance: int = 0) -> Optional[DetachedAttrib]:
+        """
+
+        attrib(self, name, appearance=0) -> hou.DetachedAttrib
+
+            Gets the object at the appearance-th appearance of the wire name
+            name. If it's a detached attribute, returns it. Otherwise, returns
+            None.
+
+
+        """
+    def addLayer(self, name: str, arg3: ImageLayer) -> None:
+        """
+
+        addLayer(self, name, layer)
+
+            Adds ImageLayer layer to the end of the CopCable, with wire name
+            name.
+
+
+        """
+    def addGeometry(self, name: str, arg3: Geometry) -> None:
+        """
+
+        addGeometry(self, name, geometry)
+
+            Adds Geometry geometry to the end of the CopCable, with wire name
+            name.
+
+
+        """
+    def addVDB(self, name: str, arg3: NanoVDB) -> None:
+        """
+
+        addVDB(self, name, vdb)
+
+            Adds NanoVDB vdb to the end of the CopCable, with wire name name.
+
+
+        """
+    def addAttrib(self, name: str, arg3: DetachedAttrib) -> None:
+        """
+
+        addAttrib(self, name, HOM_DetachedAttrib)
+
+            Adds DetachedAttrib vdb to the end of the CopCable, with wire name
+            name.
+
+
+        """
+    def removeByIndex(self, idx: int) -> None:
+        """
+
+        removeByIndex(self, idx)
+
+            Removes the wire at flat index idx from the list. The wires after
+            the removed one are shifted over to take its place.
+
+
+        """
+    def remove(self, name: str, appearance: int = 0) -> None:
+        """
+
+        remove(self, name, appearance=0)
+
+            Removes the wire at the appearance-th appearance of wire name name
+            from the list. The wires after the removed one are shifted over to
+            take its place.
+
+
+        """
+    def setWireName(self, idx: int, name: str) -> None:
+        """
+
+        setWireName(self, idx, name)
+
+            Sets the name of the wire at flat index idx to name.
+
+
+        """
+    def setDataByIndex(self, *args) -> None:
+        """
+
+        setDataByIndex(self, idx, attrib)
+
+            Sets the idx-th wire to hold DetachedAttrib attrib.
+
+
+        """
+    def setData(self, *args) -> None:
+        """
+
+        setData(self, name, appearance, HOM_DetachedAttrib)
+
+            Sets the appearance-th appearance of wire name name to store
+            DetachedAttrib attrib.
+
+
+        """
+
 class CopCableStructure:
     """
 
@@ -26977,6 +29425,33 @@ class CopNode(OpNode):
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
+    def cable(self, output_index: int = 0) -> Optional[CopCable]:
+        """
+
+        cable(self, output_index=0) -> hou.CopCable
+
+            Return the COP cable computed by this COP node. If the COP has not
+            already cooked, this method will cook the COP.
+
+            You can optionally specify the output_index argument to request the
+            cable attached to another output on the node.
+
+
+        """
+    def cableAtFrame(self, frame: float, output_index: int = 0) -> Optional[CopCable]:
+        """
+
+        cableAtFrame(self, frame, output_index=0) -> hou.CopCable
+
+            Return the COP cable computed by this COP node cooked at the
+            specified frame. If the COP has not already cooked, this method will
+            cook the COP.
+
+            You can optionally specify the output_index argument to request the
+            cable attached to another output on the node.
+
+
+        """
     def geometry(self, output_index: int = 0) -> Optional[Geometry]:
         """
 
@@ -27067,6 +29542,33 @@ class CopNode(OpNode):
 
             You can optionally specify the output_index argument to request the
             vdb attached to another output on the node.
+
+
+        """
+    def attrib(self, output_index: int = 0) -> Optional[DetachedAttrib]:
+        """
+
+        attrib(self, output_index=0) -> hou.DetachedAttrib
+
+            Return the detached attribute computed by this COP node. If the COP
+            has not already cooked, this method will cook the COP.
+
+            You can optionally specify the output_index argument to request the
+            detached attribute attached to another output on the node.
+
+
+        """
+    def attribAtFrame(self, frame: float, output_index: int = 0) -> Optional[DetachedAttrib]:
+        """
+
+        attribAtFrame(self, frame, output_index=0) -> hou.DetachedAttrib
+
+            Return the detached attribute computed by this COP node cooked at
+            the specified frame. If the COP has not already cooked, this method
+            will cook the COP.
+
+            You can optionally specify the output_index argument to request the
+            detached attribute attached to another output on the node.
 
 
         """
@@ -27289,6 +29791,18 @@ class CopNode(OpNode):
 
             If this is a subnet COP, return the COP inside the subnet with its
             display flag on. Otherwise, return None.
+
+
+        """
+    def pairedNode(self) -> Optional[CopNode]:
+        """
+
+        pairedNode(self) -> hou.CopNode
+
+            Returns the node paired to this COP. For a block begin node, this
+            produces the associated end node (and vice versa). Returns None if
+            this node is not part of a block or is a block node without a
+            registered pair.
 
 
         """
@@ -28976,6 +31490,278 @@ class Desktop:
 
         """
 
+class DetachedAttrib:
+    """
+
+    hou.DetachedAttrib
+
+    A DetachedAttrib object contains the attribute values of an attribute,
+    separated from the original geometry.
+
+    If you ask a COP for its attribute data via the hou.CopNode.attrib,
+    you'll cook the COP and get a read-only hou.DetachedAttrib. Unlike with
+    SOPs and Geometry objects, the result is no longer tied to the COP Node
+    so it stays the same if the COP node recooks or is deleted.
+
+    Call hou.DetachedAttrib.freeze to edit a DetachedAttrib. This returns
+    another DetachedAttrib object that's an independent writeable copy.
+    Writing to the frozen attribute doesn't affect the earlier read-only
+    versions.
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, layer: Optional[DetachedAttrib] = None) -> None:
+        """
+
+        hou.DetachedAttrib
+
+        A DetachedAttrib object contains the attribute values of an attribute,
+        separated from the original geometry.
+
+        If you ask a COP for its attribute data via the hou.CopNode.attrib,
+        you'll cook the COP and get a read-only hou.DetachedAttrib. Unlike with
+        SOPs and Geometry objects, the result is no longer tied to the COP Node
+        so it stays the same if the COP node recooks or is deleted.
+
+        Call hou.DetachedAttrib.freeze to edit a DetachedAttrib. This returns
+        another DetachedAttrib object that's an independent writeable copy.
+        Writing to the frozen attribute doesn't affect the earlier read-only
+        versions.
+
+
+        """
+    __swig_destroy__: Incomplete
+    def __enter__(self) -> Optional[DetachedAttrib]: ...
+    def __exit__(self, type: Any, value: Any, traceback: Any) -> None: ...
+    def close(self) -> None:
+        """
+
+        close(self)
+
+            Resets this object to be an empty object. This stops it holding a
+            reference to the underlying DetachedAttrib data. This will also
+            happen when the object goes out of scope and is garbage collected,
+            but the close() provides exact control over the timing.
+
+            DetachedAttrib also supports contexts so the with statement can be
+            used to auto-close the attribute at the with-block end.
+
+
+        """
+    def dataType(self) -> EnumValue:
+        """
+
+        dataType(self) -> hou.EnumValue
+
+            Return the attribute's data type (int, float or string).
+
+            The size of the attribute also determines the format of the
+            attribute values. For example, if the data type is int and the size
+            is 3, the attribute value will be a tuple of 3 ints. If the size was
+            1, the attribute value would simply be an int.
+
+            Note that a string attribute's size must be 1.
+
+
+        """
+    def type(self) -> EnumValue:
+        """
+
+        type(self) -> hou.EnumValue
+
+            Return the type of attribute (point, primitive, vertex, or global).
+
+            This is a hint as detached attributes are not actually bound to
+            geometry.
+
+
+        """
+    def isArrayType(self) -> bool:
+        """
+
+        isArrayType(self) -> bool
+
+            Return True if the attribute is a type that contains array data
+            (i.e. Float Array, Integer Array, String Array) and False otherwise.
+
+
+        """
+    def numericDataType(self) -> EnumValue:
+        """
+
+        numericDataType(self) -> hou.EnumValue
+
+            Return the numeric (int, float) attribute's precision.
+
+
+        """
+    def qualifier(self) -> str:
+        """
+
+        qualifier(self) -> str
+
+            Return the attribute's type qualifier. The qualifier is a
+            description of the data contained in the attribute. An empty string
+            is returned if the attribute has no numeric representation or if the
+            attribute is the pseudo Pw point attribute.
+
+
+        """
+    def tupleSize(self) -> int:
+        """
+
+        tupleSize(self) -> int
+
+            Return the number of data components in the attribute value. See
+            hou.Attrib.dataType for more information.
+
+
+        """
+    def channelCount(self) -> int:
+        """
+
+        channelCount(self) -> int
+
+            Return the number of data components in the attribute value. See
+            hou.Attrib.dataType for more information.
+
+
+        """
+    def length(self) -> int:
+        """
+
+        length(self) -> int64
+
+            The number of elements in the detached attribute. This would be the
+            number of points, vertices, or primitives that it was detached from.
+
+
+        """
+    def onCPU(self) -> bool:
+        """
+
+        onCPU(self) -> bool
+
+            A DetachedAttrib may be stored on the CPU or GPU. This is true if it
+            is stored on the CPU.
+
+
+        """
+    def onGPU(self) -> bool:
+        """
+
+        onGPU(self) -> bool
+
+            A DetachedAttrib may be stored on the CPU or GPU. This is true if it
+            is stored on the GPU.
+
+
+        """
+    def freeze(self) -> Optional[DetachedAttrib]:
+        """
+
+        freeze(self) -> hou.DetachedAttrib
+
+            Create a writable copy of this and return it.
+
+
+            NOTE
+                The actual buffer duplication won't be done until a write is
+                performed.
+
+
+        """
+    def isFrozen(self) -> bool:
+        """
+
+        isFrozen(self) -> bool
+
+            Returns if this is frozen, and hence writable.
+
+
+        """
+    def properties(self) -> dict[str, Any]:
+        """
+
+        updateProperties(self, std::map<std::string, p)
+
+            Updates the properties with the provided dictionary, replacing any
+            matching keys.
+
+
+        """
+    def setProperties(self, p: dict[str, Any]) -> None:
+        """
+
+        setProperties(self, std::map<std::string, p)
+
+            Replaces the properties with the provided dictionary.
+
+
+        """
+    def updateProperties(self, p: dict[str, Any]) -> None: ...
+    def rawDetachedAttrib(self) -> bytes:
+        """
+
+        rawDetachedAttrib(self) -> hou.BinaryString
+
+            For numeric tuple attributes, return the data as a binary string.
+
+
+        """
+    def computeMin(self, channel: int = 0) -> Any:
+        """
+
+        computeMin(self, channel=0) -> int or float
+
+            Returns the attribute's minimum value across all elements of the
+            selected channel.
+
+
+        """
+    def computeMax(self, channel: int = 0) -> Any:
+        """
+
+        computeMax(self, channel=0) -> int or float
+
+            Returns the attribute's maximum value across all elements of the
+            selected channel.
+
+
+        """
+    def computeMinLength(self) -> Any:
+        """
+
+        computeMinLength(self) -> float
+
+            Returns the attribute's minimum Euclidean length value across all
+            the elements.
+
+
+        """
+    def computeMaxLength(self) -> Any:
+        """
+
+        computeMaxLength(self) -> float
+
+            Returns the attribute's maximum Euclidean length value across all
+            the elements.
+
+
+        """
+    def computeAverage(self, channel: int = 0) -> float:
+        """
+
+        computeAverage(self, channel=0) -> float
+
+            Returns the attribute's average value across all elements of the
+            selected channel.
+
+
+        """
+    def setFromRawDetachedAttrib(self, values: Any) -> None: ...
+
 class Dialog:
     """
 
@@ -29501,6 +32287,21 @@ class DopObject(DopData):
           >     return result
 
         '''
+    def guideGeometry(self, data_name: str, time: float) -> Tuple[Geometry, Matrix4]:
+        """
+
+        guideGeometry(self, data_name, time) -> tuple of hou.Goemetry and
+        hou.Matrix4
+
+            Return guide geometry associated with a DopData specified by the
+            data_name parameter. This method is on the DopObject instead of the
+            DopData because a DopData shared between multiple objects may create
+            different guide geometry for each associated DopObject. The returned
+            hou.Geometry is the actual guide geometry, and the hou.Matrix4 is a
+            transform that moves the geometry into world space.
+
+
+        """
 
 class DopRecord:
     """
@@ -30201,11 +33002,15 @@ class Drawable2D(Drawable):
 
 
         NOTE
-            hou.Drawable2D shape entities are constrained to the XY plane
-            (z=0) in Front and Perspective views. Primarily intended for COP
-            Python states and handles, they can also be utilized in other
-            contexts like SOPs and LOPs. A current limitation prevents the
-            concurrent use of hou.Drawable2D and hou.GeometryDrawable.
+            By default, hou.Drawable2D shape entities are constrained to the
+            XY plane (z=0) in the Front and Perspective views. However, the
+            plane transform can be modified, which automatically places and
+            aligns the drawables to the new plane position.
+
+            Primarily intended for COP Python states and handles, they can
+            also be utilized in other contexts like SOPs and LOPs. A current
+            limitation prevents the concurrent use of hou.Drawable2D and
+            hou.GeometryDrawable.
 
 
     """
@@ -30214,17 +33019,22 @@ class Drawable2D(Drawable):
         """
 
         __init__(self, scene_viewer, type, name, label=None, pickable=False,
-        params=None)
+        fixed_size=False, params=None)
 
             Creates a new drawable object of a specified type. The newly created
             drawable is initially hidden.
 
 
             WARNING
-                hou.Drawable2D objects must be created within the onEnter event
-                of a Python state or Python handle. Creating them outside of
-                this context may lead to unexpected behavior or the drawable not
-                functioning correctly.
+                hou.Drawable2D objects must be created from the onEnter event of
+                a Python state or the onActivate event of a Python handle.
+
+                For node-less Python states, the onGenerate event must be used
+                instead of onEnter.
+
+                Creating Drawable2D objects outside of these contexts may lead
+                to unexpected behavior or cause the drawable to function
+                incorrectly.
 
 
             scene_viewer
@@ -30246,6 +33056,16 @@ class Drawable2D(Drawable):
                 A boolean value indicating whether the drawable can be picked
                 and located. Set to False to disable interaction. Defaults to
                 True.
+
+            fixed_size
+                Flag used to render the drawable at a fixed size. When enabled,
+                the drawable maintains a constant size regardless of zoom level.
+                Defaults to False.
+
+
+                NOTE
+                    This flag is enabled by default when the drawable is created
+                    for use by a Python Handle.
 
             params
                 An optional dictionary containing parameters to configure the
@@ -30507,6 +33327,20 @@ class Drawable2D(Drawable):
 
             string
 
+            Layer
+            Description
+            Type
+            use_preferences
+            Apply viewer color correction preferences to the drawable layer.
+
+            bool. Defaults to True.
+
+            is_overlay
+            When true, the layer retains the size and aspect ratio of the node
+            layer.
+
+            bool. Defaults to True.
+
 
         """
     def params(self) -> dict[str, Any]:
@@ -30578,6 +33412,40 @@ class Drawable2D(Drawable):
 
 
         """
+    def setFixedSize(self, value: bool) -> None:
+        """
+
+        setFixedSize(self, value)
+
+            Set whether this drawable is rendered at a fixed size.
+
+
+            value
+                Set to True to render the drawable at a fixed size.
+
+
+        """
+    def isFixedSize(self) -> bool:
+        """
+
+        isFixedSize(self) -> bool
+
+            Return True if the drawable is rendered at a fixed size.
+
+
+        """
+    def fixedSizeScale(self) -> float:
+        """
+
+        fixedSizeScale() -> double
+
+            Returns the scale factor used for fixed-size rendering. When fixed-
+            size rendering is enabled on the drawable, the scale factor is
+            computed based on the current viewport zoom level. Otherwise, the
+            scale factor is 1.0.
+
+
+        """
     def mapToModel(self, x: float, y: float, z: float = 0) -> Vector3:
         """
 
@@ -30606,6 +33474,127 @@ class Drawable2D(Drawable):
             z
                 The mouse's Z-coordinate in screen space (typically 0 for 2D
                 drawables).
+
+
+        """
+    def postScale(self) -> Vector3:
+        """
+
+        postScale(self) -> hou.Vector3
+
+            Return the post-scale vector used during rendering to position the
+            drawable.
+
+            This scale is extracted from the COP layer transform and baked into
+            the drawable's translation matrix at render time. As a result,
+            drawables do not need to be manually positioned using postScale(),
+            since their translation is already adjusted accordingly.
+
+            However, postScale() can be useful when computing or adjusting the
+            positioning of drawable guides.
+
+
+        """
+    def postTransform(self) -> Matrix4:
+        """
+
+        postTransform(self) -> hou.Matrix4
+
+            Returns the post-transform matrix currently assigned to the
+            drawable. The post-transform is pre-computed in COPs and allows the
+            drawable to be aligned with a COP layer's world transform.
+
+            The post-transform is applied after the drawable's own transform
+            stack, so the effective transform becomes:
+
+          > final_xform = drawable_transform * post_transform
+
+            A post-transform effectively makes the drawable's transform behave
+            as a local matrix relative to the post-transform. When the post-
+            transform is not the identity, the drawable's transform is evaluated
+            in the space defined by the post-transform, even though it may have
+            originally been authored in world space.
+
+            This is not a traditional parent-child hierarchy in which the
+            drawable is authored directly in the parent's local space. Instead,
+            the post-transform is applied afterward to reposition and reorient
+            the already-defined drawable.
+
+
+            NOTE
+                By default, Houdini assigns the current layer world transform
+                (index = 0) as the post-transform when a state is entered or a
+                handle is activated. No additional code is required for this
+                default behavior.
+
+                The scaling component of the post-transform is removed so that
+                it does not affect the drawable's own scaling.
+
+
+            xform
+                A hou.Matrix4 transformation matrix specifying translation and
+                rotation. This can be the layer world transform or any other
+                transform you wish to apply.
+
+
+        """
+    def drawTransform(self) -> Matrix4:
+        """
+
+        drawTransform(self) -> hou.Matrix4
+
+            Returns the transform matrix used for rendering the drawable. This
+            transform is the combination of transform() and postTransform().
+
+
+        """
+    def layerTransform(self) -> Matrix4:
+        """
+
+        layerTransform(self) -> hou.Matrix4
+
+            Return the COP layer transform matrix used as the reference
+            transform for the drawable.
+
+
+        """
+    def postMulTransform(self, xform: Matrix4) -> None:
+        """
+
+        postMulTransform(self, xform)
+
+            Post-multiply the drawable's transform with xform
+
+
+        """
+    def preMulTransform(self, xform: Matrix4) -> None:
+        """
+
+        preMulTransform(self, xform)
+
+            Pre-multiply the drawable's transform with xform
+
+
+        """
+    def imageLayer(self) -> Optional[ImageLayer]:
+        """
+
+        imageLayer(self) -> hou.ImageLayer
+
+            Returns the image layer displayed by this drawable.
+
+
+        """
+    def setImageLayer(self, hom_layer: ImageLayer) -> None:
+        """
+
+        setImageLayer(self, image_layer)
+
+            Sets an image layer on this drawable for display.
+
+
+            image_layer
+                Mandatory image layer to display.
 
 
         """
@@ -30773,6 +33762,36 @@ class AdvancedDrawable(Drawable):
                 An optional dictionary of parameters for setting the drawable
                 parameters. These are the same parameters
                 hou.AdvancedDrawable.setParams is using.
+
+
+        """
+    def setVisibleInViewport(self, viewport: GeometryViewport) -> None:
+        """
+
+        setVisibleInViewport(self, viewport)
+
+            Restricts the drawable to be only visible in viewport. The drawable
+            can be made visible in more than one viewport by calling this once
+            per viewport.
+
+
+        """
+    def setVisibleInAllViewports(self) -> None:
+        """
+
+        setVisibleInAllViewports(self)
+
+            Remove all per-viewport visibility restrictions, so that the
+            drawable is shown in all viewports.
+
+
+        """
+    def isVisibleInViewport(self, viewport: GeometryViewport) -> bool:
+        """
+
+        isVisibleInViewport(self, viewport) -> bool
+
+            Query to see if this drawable is visible in viewport.
 
 
         """
@@ -31194,6 +34213,30 @@ class SimpleDrawable(Drawable):
 
 
         """
+    def setSnappable(self, value: bool) -> None:
+        """
+
+        setSnappable(self, value)
+
+            Controls whether or not snapping to this drawable is allowed. The
+            default is to allow snapping.
+
+
+            value
+                True to allow snapping or False to disallow.
+
+
+        """
+    def isSnappable(self) -> bool:
+        """
+
+        isSnappable(self): -> bool
+
+            Returns True if snapping to this drawable is allowed, False
+            otherwise.
+
+
+        """
     def geometry(self) -> Geometry:
         """
 
@@ -31255,7 +34298,7 @@ class Edge:
     hou.Edge
 
     Each Edge object resides inside a Geometry object and stores an edge.
-    Edges are reprsented as pairs of points.
+    Edges are represented as pairs of points.
 
 
     """
@@ -34109,6 +37152,17 @@ class Geometry:
 
 
         """
+    def vertex(self, index: int) -> Optional[Vertex]:
+        """
+
+        vertex(self, index) -> [Hom:hou.Vertex]
+
+            Return the vertex at the specified linear vertex index.
+
+            Return none if no such vertex at the specified index exists.
+
+
+        """
     def primTypeNames(self) -> Tuple[str, ...]:
         """
 
@@ -34209,6 +37263,24 @@ class Geometry:
             Return a tuple of the primitives of the specified type in the
             geometry. The primitives returned will be subclasses of hou.Prim
             (e.g.polygons, volumes, etc.).
+
+
+        """
+    def primByName(self, name: str) -> Optional[Prim]:
+        """
+
+        primByName(self, name) -> hou.Prim
+
+            Returns a primitive by looking up its name attribute. The name can
+            be a pattern, like piece_*. In case of multiple matches, the first
+            match is returned.
+
+            This is a convenience method for accessing a particular primitive
+            without the overhead of obtaining all primitives via
+            hou.Geometry.prims.
+
+            Returns None if the name does not match any existing name or if the
+            name attribute does not exist.
 
 
         """
@@ -35145,6 +38217,204 @@ class Geometry:
 
 
         """
+    def pointStringListAttribValues(self, name: str) -> Tuple[Tuple[str, ...], ...]:
+        """
+
+        pointStringListAttribValues(self, name) -> tuple of tuple of str
+
+            Return a tuple of tuples of strings containing one attribute's
+            values for all the points.
+
+            This method only works on string array attributes.
+
+            Calling this method is faster than looping over all the points and
+            calling hou.Point.stringListAttribValue.
+
+            If the attribute name is invalid or the attribute is not a string
+            array attribute then this method raises hou.OperationFailed.
+
+            Note that you cannot pass a hou.Attrib object to this method like
+            you can with many methods dealing with attributes. However, you can
+            use hou.Attrib.name to easily get the name from an Attrib object.
+
+
+        """
+    def primStringListAttribValues(self, name: str) -> Tuple[Tuple[str, ...], ...]:
+        """
+
+        primStringListAttribValues(self, name) -> tuple of tuple of str
+
+            Return a tuple of tuples of strings containing one attribute's
+            values for all the primitives.
+
+            This method only works on string array attributes.
+
+            Calling this method is faster than looping over all the primitives
+            and calling hou.Prim.stringListAttribValue.
+
+            If the attribute name is invalid or the attribute is not a string
+            array attribute then this method raises hou.OperationFailed.
+
+            Note that you cannot pass a hou.Attrib object to this method like
+            you can with many methods dealing with attributes. However, you can
+            use hou.Attrib.name to easily get the name from an Attrib object.
+
+
+        """
+    def vertexStringListAttribValues(self, name: str) -> Tuple[Tuple[str, ...], ...]:
+        """
+
+        vertexStringListAttribValues(self, name) -> tuple of tuple of str
+
+            Return a tuple of tuples of strings containing one attribute's
+            values for all the vertices.
+
+            This method only works on string array attributes.
+
+            Calling this method is faster than looping over all the vertices and
+            calling hou.Vertex.stringListAttribValue.
+
+            If the attribute name is invalid or the attribute is not a string
+            array attribute then this method raises hou.OperationFailed.
+
+            Note that you cannot pass a hou.Attrib object to this method like
+            you can with many methods dealing with attributes. However, you can
+            use hou.Attrib.name to easily get the name from an Attrib object.
+
+
+        """
+    def pointIntListAttribValues(self, name: str) -> Tuple[Tuple[int, ...], ...]:
+        """
+
+        pointIntListAttribValues(self, name) -> tuple of tuple of int
+
+            Return a tuple of tuples of integers containing one attribute's
+            values for all the points.
+
+            This method only works on integer array attributes.
+
+            Calling this method is faster than looping over all the points and
+            calling hou.Point.intListAttribValue.
+
+            If the attribute name is invalid or the attribute is not an integer
+            array attribute then this method raises hou.OperationFailed.
+
+            Note that you cannot pass a hou.Attrib object to this method like
+            you can with many methods dealing with attributes. However, you can
+            use hou.Attrib.name to easily get the name from an Attrib object.
+
+
+        """
+    def primIntListAttribValues(self, name: str) -> Tuple[Tuple[int, ...], ...]:
+        """
+
+        primIntListAttribValues(self, name) -> tuple of tuple of int
+
+            Return a tuple of tuples of integers containing one attribute's
+            values for all the primitives.
+
+            This method only works on integer array attributes.
+
+            Calling this method is faster than looping over all the primitives
+            and calling hou.Point.intListAttribValue.
+
+            If the attribute name is invalid or the attribute is not an integer
+            array attribute then this method raises hou.OperationFailed.
+
+            Note that you cannot pass a hou.Attrib object to this method like
+            you can with many methods dealing with attributes. However, you can
+            use hou.Attrib.name to easily get the name from an Attrib object.
+
+
+        """
+    def vertexIntListAttribValues(self, name: str) -> Tuple[Tuple[int, ...], ...]:
+        """
+
+        vertexIntListAttribValues(self, name) -> tuple of tuple of int
+
+            Return a tuple of tuples of integers containing one attribute's
+            values for all the vertices.
+
+            This method only works on integer array attributes.
+
+            Calling this method is faster than looping over all the vertices and
+            calling hou.Vertex.intListAttribValue.
+
+            If the attribute name is invalid or the attribute is not an integer
+            array attribute then this method raises hou.OperationFailed.
+
+            Note that you cannot pass a hou.Attrib object to this method like
+            you can with many methods dealing with attributes. However, you can
+            use hou.Attrib.name to easily get the name from an Attrib object.
+
+
+        """
+    def pointFloatListAttribValues(self, name: str) -> Tuple[Tuple[float, ...], ...]:
+        """
+
+        pointFloatListAttribValues(self, name) -> tuple of tuple of float
+
+            Return a tuple of tuples of floats containing one attribute's values
+            for all the points.
+
+            This method only works on float array attributes.
+
+            Calling this method is faster than looping over all the points and
+            calling hou.Point.floatListAttribValue.
+
+            If the attribute name is invalid or the attribute is not a float
+            array attribute then this method raises hou.OperationFailed.
+
+            Note that you cannot pass a hou.Attrib object to this method like
+            you can with many methods dealing with attributes. However, you can
+            use hou.Attrib.name to easily get the name from an Attrib object.
+
+
+        """
+    def primFloatListAttribValues(self, name: str) -> Tuple[Tuple[float, ...], ...]:
+        """
+
+        primFloatListAttribValues(self, name) -> tuple of tuple of float
+
+            Return a tuple of tuples of floats containing one attribute's values
+            for all the primitives.
+
+            This method only works on float array attributes.
+
+            Calling this method is faster than looping over all the primitves
+            and calling hou.Prim.floatListAttribValue.
+
+            If the attribute name is invalid or the attribute is not a float
+            array attribute then this method raises hou.OperationFailed.
+
+            Note that you cannot pass a hou.Attrib object to this method like
+            you can with many methods dealing with attributes. However, you can
+            use hou.Attrib.name to easily get the name from an Attrib object.
+
+
+        """
+    def vertexFloatListAttribValues(self, name: str) -> Tuple[Tuple[float, ...], ...]:
+        """
+
+        vertexFloatListAttribValues(self, name) -> tuple of tuple of float
+
+            Return a tuple of tuples of floats containing one attribute's values
+            for all the vertices.
+
+            This method only works on float array attributes.
+
+            Calling this method is faster than looping over all the vertices and
+            calling hou.Vertex.floatListAttribValue.
+
+            If the attribute name is invalid or the attribute is not a float
+            array attribute then this method raises hou.OperationFailed.
+
+            Note that you cannot pass a hou.Attrib object to this method like
+            you can with many methods dealing with attributes. However, you can
+            use hou.Attrib.name to easily get the name from an Attrib object.
+
+
+        """
     def setPointFloatAttribValuesFromString(self, name: str, values: bytes, float_type: EnumValue = ...) -> None: ...
     def setPrimFloatAttribValuesFromString(self, name: str, values: bytes, float_type: EnumValue = ...) -> None: ...
     def setVertexFloatAttribValuesFromString(self, name: str, values: bytes, float_type: EnumValue = ...) -> None: ...
@@ -35880,6 +39150,17 @@ class Geometry:
 
             Creates and adds a new channel primitive to the geometry and returns
             it. The new channel primitive is initialized to an empty channel.
+
+
+        """
+    def createCameraPrim(self) -> Optional[CameraPrim]:
+        """
+
+        createCameraPrim(self) -> hou.CameraPrim
+
+            Creates and adds a new camera primitive to the geometry and returns
+            it. The new camera primitive is initialized with a default transform
+            and parameters.
 
 
         """
@@ -37044,7 +40325,7 @@ class Geometry:
     def orientedBoundingBox(self) -> OrientedBoundingBox:
         """
 
-        orientedBoundingBox(self) -> hou.orientedBoundingBox
+        orientedBoundingBox(self) -> hou.OrientedBoundingBox
 
             Return an oriented 3D bounding box that is sized and positioned to
             be large enough to hold this geometry.
@@ -37746,12 +41027,11 @@ class GeometryDrawable(AdvancedDrawable):
                 ramp.
 
                 The way it works is that the ramp ends up being a 1-dimensional
-                OpenGL texture (512 pixels long). The drawable takes each
-                component (R, G, B) of each fragment color and maps it linearly
-                (using the ramp_range min and max values) into an index in
-                (0...511) and reads off the corresponding color component from
-                the texture and substitutes the Cd value with that value for
-                that component.
+                texture (512 pixels long). The drawable takes each component (R,
+                G, B) of each fragment color and maps it linearly (using the
+                ramp_range min and max values) into an index in (0...511) and
+                reads off the corresponding color component from the texture and
+                substitutes the Cd value with that value for that component.
 
                 If the value ends up out of min-max range, then depending on the
                 ramp_clamp setting it either gets clamped to one of the two ends
@@ -37880,6 +41160,45 @@ class GeometryDrawable(AdvancedDrawable):
                 to achieve different levels of fading if the vector is occluded
                 and the base of the vector is occluded, in which case the
                 product of the two fade factors is used. Defaults to 0.25.
+
+                Sprite parameter
+                Type
+                Description
+                images
+                dictionary of str to Any
+
+                A mapping of names to image sources. The spriteshop point
+                attribute should refer to a key in this mapping.
+
+                The source can be one of the following:
+
+              * Image file path: A string value indicating a path to a valid
+                image file. The path follows normal expansion rules.
+
+              * Image layer: A hou.ImageLayer.
+
+              * Constant image: A indicating a color to uniformly fill the
+                image.
+
+              * Pixel value array: A dictionary with entries data (bytes), width
+                (int), and height (int). data should be a valid sequence of
+                interleaved RGBA 32-bit float pixel values. The image must have
+                resolution (width, height). An exception is raised if the length
+                of data does not match the resolution.
+
+                default
+                str
+
+                Name of the image that will be displayed when the image
+                attribute is uninitialized on a point. Must be a valid key in
+                the images dictionary.
+
+                max_resolution
+                sequence of float
+
+                The maximum resolution which all images can be internally scaled
+                to. Must have length 2. The default maximum resolution is 512 by
+                512.
 
 
         """
@@ -38725,7 +42044,7 @@ class GeometryViewport:
     def changeType(self, type: EnumValue) -> None:
         """
 
-        changeType(self, [Hom:hou.geometryViewportType])
+        changeType(self,hou.geometryViewportType)
 
             Set the viewport type (hou.geometryViewportType). This method first
             attempts to restore a stashed view for the new viewport type, but
@@ -38761,6 +42080,15 @@ class GeometryViewport:
             Set the name of the viewport. Setting the name does not affect its
             type, so naming a perspective view front will be confusing. This is
             best used in conjunction with changeType().
+
+
+        """
+    def isVisible(self) -> bool:
+        """
+
+        isVisible(self) -> bool
+
+            Returns True if this viewport is visible to the user (ie, open).
 
 
         """
@@ -38990,20 +42318,24 @@ class GeometryViewport:
 
 
         """
+    def isViewingThroughExtraCamera(self) -> bool:
+        """
+
+        isViewingThroughExtraCamera() -> bool
+
+            Returns True if the viewport is looking though a camera provided by
+            a state or drawable.
+
+
+        """
     def setCamera(self, camera_node: ObjNode) -> None:
         """
 
-        setCamera(self, camera_node)
+        setCamera(self, camera_node, camera_name)
 
-            Copies the viewport transform from the transformation parameters of
-            a camera or light onto the current view. This is the same as
-            choosing a camera/light from the Look through submenu in the
-            viewport's Camera menu.
-
-
-            camera_node
-                A hou.ObjNode object representing the node to save the view
-                from.
+            Look through the specified SOP or COP camera. Both the node
+            (camera_node) and the camera name (camera_name) must be specified to
+            look through the camera primitive contained by the node.
 
 
         """
@@ -39018,6 +42350,23 @@ class GeometryViewport:
 
             camera_node
                 A hou.ObjNode object representing the node to save the view to.
+
+
+        """
+    def setCameraParms(self, cam_name: str, camera: Camera) -> None:
+        """
+
+        setCameraParms(cam_name, is_perspective, focal_length, aperture,
+        focus_distance, fstop, near_clip, far_clip, ortho_zoom, crop_min,
+        crop_max, transform)
+
+            Provide camera parameters to the viewport when it is looking through
+            an extra camera provided by a state or drawable. It expects a
+            hou.Matrix4 for the transform, hou.Vector2 for crop_min and crop_max
+            (values between 0 and 1), bool for is_perspective, the name of the
+            camera as a string in cam_name, and doubles for all other
+            parameters. This function should be called from a function called
+            setViewFromCamera() in the state.
 
 
         """
@@ -39118,6 +42467,15 @@ class GeometryViewport:
 
             Set whether the export of view changes to a locked camera happens
             continuously (True) or only on mouse release (False).
+
+
+        """
+    def tearOffCopy(self) -> None:
+        """
+
+        tearOffCopy(self)
+
+            Creates a floating copy of the viewport.
 
 
         """
@@ -41019,14 +44377,13 @@ class GeometryViewportSettings:
 
 
         """
-    def saveViewToCamera(self, camera_node: ObjNode) -> None:
+    def saveViewToCamera(self, *args) -> None:
         """
 
-        saveViewToCamera(self, camera_node)
+        saveViewToCamera(self, camera_node, camera_name)
 
-            Saves the viewport's current view into the given camera node. It
-            does this by setting the camera's transform parameters to match the
-            viewport's view transform matrix.
+            Saves the viewport's current view into the given camera node, which
+            may be a camera object, camera SOP, camera COP, or LOP network.
 
 
         """
@@ -42435,6 +45792,26 @@ class GeometryViewportSettings:
 
 
         """
+    def setInstancedLightLimit(self, limit: int) -> None:
+        """
+
+        setInstancedLightLimit(self, limit)
+
+            Set the maximum number of instanced lights to contribute to lighting
+            in HQ Lighting. This limit is separate from non-instanced light
+            limit.
+
+
+        """
+    def getInstancedLightLimit(self) -> int:
+        """
+
+        getInstancedLightLimit(self) -> int
+
+            Return the maximum number of instanced lights to use in HQ Lighting.
+
+
+        """
     def setHeadlightIntensity(self, intensity: float) -> None:
         """
 
@@ -42948,6 +46325,27 @@ class GeometryViewportSettings:
         transparencyQuality(self) -> hou.viewportTransparency
 
             Query the transparency quality.
+
+
+        """
+    def setTransparencyCutoff(self, cutoff: float) -> None:
+        """
+
+        setTransparencyCutoff(self, double)
+
+            When the Transparency Quality is set to Cutout, this determines the
+            cutoff value. Pixels with alpha values less than the cutoff are
+            discarded. This value can be override by the geometry attribute
+            gl_alphacutoff on a per object or prim basis.
+
+
+        """
+    def transparencyCutoff(self) -> float:
+        """
+
+        transparencyCutoff(self) -> double
+
+            The alpha cutoff value for Cutout style transparency.
 
 
         """
@@ -44327,8 +47725,8 @@ class GeometryViewportSettings:
         setTextureResLimit2D(self, enable)
 
             Limit the resolution of all 2D textures, so that the width and
-            height cannot exceed the limit. Even if disabled, OpenGL has its own
-            texture limits which will be applied (usually 8k or 16k).
+            height cannot exceed the limit. Even if disabled, the GPU driver has
+            its own texture limits which will be applied (usually 16k or 32k).
 
 
         """
@@ -44347,7 +47745,7 @@ class GeometryViewportSettings:
         setTextureMaxRes2D(self, res)
 
             Set the maximum resolution of a 2D texture. res is an integer
-            2-tuple of (width, height). OpenGL has its own limit, and setting
+            2-tuple of (width, height). The GPU has its own limit, and setting
             this limit higher than that will have no effect. The image will be
             scaled to fit the limit if it exceeds it.
 
@@ -44437,6 +47835,27 @@ class GeometryViewportSettings:
 
 
         """
+    def setImageLayerFiltering(self, enable: bool) -> None:
+        """
+
+        setImageLayerFiltering(self, enable)
+
+            When enabled, image layers in the viewport smoothly interpolate
+            pixel values. Turning filtering off will avoid mixing of pixel data,
+            which is useful in assessing what colors are actually stored in an
+            image.
+
+
+        """
+    def imageLayerFiltering(self) -> bool:
+        """
+
+        imageLayerFiltering(self) -> bool
+
+            Query if filtering is enabled for image layers in the viewport.
+
+
+        """
     def setTextureResLimit3D(self, enable: bool) -> None:
         """
 
@@ -44444,7 +47863,7 @@ class GeometryViewportSettings:
 
             Limit the resolution of all 3D textures (volumes), so that the
             width, height, and depth cannot exceed the limit. Even if disabled,
-            OpenGL has its own texture limits which will be applied (usually 2k
+            the GPU has its own texture limits which will be applied (usually 2k
             or 8k).
 
 
@@ -44482,9 +47901,9 @@ class GeometryViewportSettings:
         setTextureMaxRes3D(self, res)
 
             Set the maximum resolution of a 3D texture (volume). res is an
-            integer 3-tuple of (width, height, depth). OpenGL has its own limit,
-            and setting this limit higher than that will have no effect. The
-            image will be scaled to fit the limit if it exceeds it.
+            integer 3-tuple of (width, height, depth). The GPU has its own
+            limit, and setting this limit higher than that will have no effect.
+            The image will be scaled to fit the limit if it exceeds it.
 
 
         """
@@ -44899,6 +48318,25 @@ class GeometryViewportSettings:
 
 
         """
+    def setGsplatsAlphaCulling(self, threshold: float) -> None:
+        """
+
+        setGsplatsAlphaCulling(self, double)
+
+            Cull Gaussian splats whose alpha is below this threshold. Set to 0
+            to disable extra alpha culling.
+
+
+        """
+    def gsplatsAlphaCulling(self) -> float:
+        """
+
+        gsplatsAlphaCulling(self) -> double
+
+            The alpha threshold used to cull Gaussian splats.
+
+
+        """
     def setAgentLODReduction(self, enable: bool) -> None:
         """
 
@@ -45092,6 +48530,15 @@ class GeometryViewportSettings:
         agentBlendShapes(self) -> bool
 
             Query if blend shape display is enabled for crowd agents.
+
+
+        """
+    def copy(self, settings: GeometryViewportSettings) -> None:
+        """
+
+        copy(self, GeometryViewportSettings)
+
+            Copy the settings from another viewport settings object.
 
 
         """
@@ -45470,6 +48917,38 @@ class Handle:
 
 
         """
+    def enable(self) -> None:
+        """
+
+        enable(self)
+
+            Enables the underlying handle to receive interactive events, such as
+            mouse, keyboard, and draw events. Disabling the handle blocks all of
+            these events. Handles are enabled by default.
+
+
+        """
+    def disable(self) -> None:
+        """
+
+        disable(self)
+
+            Blocks interactive events from being sent to the underlying handle.
+            See hou.Handle.enable for information on enabling interactive
+            events. This is mostly used in Python Handle implementations when
+            events need to be blocked while the handle remains active.
+
+
+        """
+    def isEnabled(self) -> bool:
+        """
+
+        isEnabled(self): -> bool
+
+            Returns True if the handle is enabled and False otherwise.
+
+
+        """
     def visible(self) -> bool:
         """
 
@@ -45756,8 +49235,8 @@ class Handle:
 
         isDetached(self)
 
-            Returns True if the handle is in detached mode; otherwise, returns
-            False.
+            Returns True if the handle is currently in detached mode; otherwise,
+            returns False.
 
 
         """
@@ -48032,18 +51511,17 @@ class hipFile:
 
         name() -> str
 
-            Return the path of the current hip file relative to the current
-            directory. Remember that a file may not exist at this path if the
-            current scene hasn't been saved yet.
+            Return the name of the current hip file.
 
-            This function returns a relative path from the current directory.
-            For example, if the current directory is /home/alyah/ and the
-            current scene file is /home/alyah/Houdini/Projects/city.hip, this
-            would return Houdini/Projects/city.hip. If the current scene file,
-            this is the same as calling hou.hipFile.basename().
+            This function may or may not return an absolute path. If the hip
+            file has been loaded with a relative path, then this will return a
+            path relative to os.getcwd(). Otherwise, if the hip file has been
+            loaded with an absolute path, then this will also return the
+            absolute path. Calling hou.hipFile.setName will set the name
+            returned by this function.
 
             If you want an absolute path to the current scene file, use
-            Hom:hou.hipFile#path instead.
+            hou.hipFile.path instead.
 
 
         """
@@ -48390,11 +51868,11 @@ class hipFile:
 
     # Missing methods added by stubgen
     @staticmethod
+    def eventCallbacks() -> Tuple[Callable[[EnumValue], None], ...]: ...
+    @staticmethod
     def addEventCallback(callback: Callable[[EnumValue], None]) -> None: ...
     @staticmethod
     def removeEventCallback(callback: Callable[[EnumValue], None]) -> None: ...
-    @staticmethod
-    def eventCallbacks() -> Tuple[Callable[[EnumValue], None], ...]: ...
 
 class hmath:
     """
@@ -48456,13 +51934,29 @@ class hmath:
 
             You can supply three float values for x, y, and z, or a sequence of
             three floats, or a hou.Vector3. To apply a uniform scale, use the
-            same value for x, y, and z.
+            same value for x, y, and z, or use hou.hmath.buildUniformScale.
 
           > stretch = hou.hmath.buildScale(2, 1, 1)
           > uniform = hou.hmath.buildScale(hou.Vector3(2, 2, 2))
 
             See hou.Geometry.createNURBSSurface for an example.
 
+
+        """
+    @staticmethod
+    def buildUniformScale(s: float) -> Matrix4:
+        """
+
+        buildUniformScale(s) -> hou.Matrix4
+
+            Returns a transformation matrix containing only a uniform scale. You
+            can build more complex transformations by multiplying this with
+            another transform matrix.
+
+            To apply a non-uniform scale, use hou.hmath.buildScale.
+
+          > scale_factor = 10.0
+          > stretch = hou.hmath.buildUniformScale(1.1 * scale_factor)
 
         """
     @staticmethod
@@ -50488,7 +53982,7 @@ class ImageLayer:
     def setStorageType(self, storagetype: EnumValue) -> None:
         """
 
-        setStorageType(self, storagetype)
+        setStorageType(self, storagetype: hou.imageLayerStorageType)
 
             Changes the storage type of the layer. Existing data will be lost.
 
@@ -50499,7 +53993,7 @@ class ImageLayer:
     def setBorder(self, storagetype: EnumValue) -> None:
         """
 
-        setBorder(self, storagetype)
+        setBorder(self, border: hou.imageLayerBorder)
 
             Changes the border of the layer.
 
@@ -50510,7 +54004,7 @@ class ImageLayer:
     def setTypeInfo(self, storagetype: EnumValue) -> None:
         """
 
-        setTypeInfo(self, storagetype)
+        setTypeInfo(self, typeinfo: hou.imageLayerTypeInfo)
 
             Changes the semantic type of the layer.
 
@@ -50530,7 +54024,7 @@ class ImageLayer:
     def setChannelCount(self, chan: int) -> None:
         """
 
-        setChannelCount(self, chan)
+        setChannelCount(self, chan: int)
 
             Changes the number of channels in the layer. Existing data will be
             lost. Must be within 1 and 4.
@@ -50591,14 +54085,48 @@ class ImageLayer:
 
 
         """
+    def isMetadataOnly(self) -> bool:
+        """
+
+        isMetadataOnly(self) -> bool
+
+            Returns true if the layer is a metadata layer and therefore holds no
+            pixel values.
+
+
+        """
+    def setIsMetadataOnly(self, v: bool) -> None:
+        """
+
+        setIsMetadataOnly(self)
+
+            Marks this layer as being metadata only. This is necessary to set
+            when a metadata layer is output from a Python Snippet COP for
+            example.
+
+            Requires a writable layer.
+
+
+        """
     def makeConstant(self, val: Sequence[float]) -> None:
         """
 
-        makeConstant(self, val)
+        makeConstant(self, val: [float, ...])
 
             Collapse the layer into a single constant value of the value
             provided. Value should be a tuple which will be extended to the
             required number of channels.
+
+            Requires a writable layer.
+
+
+        """
+    def expandConstant(self) -> None:
+        """
+
+        expandConstant(self)
+
+            Expands constant layers into dense layers.
 
             Requires a writable layer.
 
@@ -50648,7 +54176,7 @@ class ImageLayer:
     def setDataWindow(self, x: int, y: int, w: int, h: int) -> None:
         """
 
-        setDataWindow(self, x, y, w, h)
+        setDataWindow(self, x: float, y: float, w: float, h: float)
 
             Set the buffer to cover the provided pixels. The actual size of the
             buffer will vary according to pixel scale. If pixel scale is 1, w
@@ -50661,7 +54189,7 @@ class ImageLayer:
     def setDisplayWindow(self, x: float, y: float, w: float, h: float) -> None:
         """
 
-        setDisplayWindow(self, x, y, w, h)
+        setDisplayWindow(self, x: float, y: float, w: float, h: float)
 
             Set the area in pixels that're framed by the Image space conversion.
 
@@ -50672,7 +54200,7 @@ class ImageLayer:
     def setPixelAspectRatio(self, aspect: float) -> None:
         """
 
-        setPixelAspectRatio(self, aspect)
+        setPixelAspectRatio(self, aspect: float)
 
             Set the ratio between pixel space and image space.
 
@@ -50683,11 +54211,21 @@ class ImageLayer:
     def setPixelScale(self, scale: Sequence[float]) -> None:
         """
 
-        setPixelScale(self, scale)
+        setPixelScale(self, scale: float)
 
             Set the scaling between buffer space and pixel space.
 
             This requires a writable layer.
+
+
+        """
+    def voxelSize(self) -> Vector3:
+        """
+
+        voxelSize(self) -> hou.Vector3
+
+            Returns the layer's world space voxel size. The resulting x and y
+            components correspond to a pixel's width and height in world space.
 
 
         """
@@ -50758,6 +54296,15 @@ class ImageLayer:
 
 
         """
+    def imagingDistance(self) -> float:
+        """
+
+        imagingDistance(self) -> float
+
+            The location of the imaging plane of the camera.
+
+
+        """
     def shutter(self) -> Tuple[float, ...]:
         """
 
@@ -50768,10 +54315,20 @@ class ImageLayer:
 
 
         """
+    def guideScale(self) -> float:
+        """
+
+        guideScale(self) -> float
+
+            When the layer is metadata, the size of the camera that is
+            displayed.
+
+
+        """
     def setProjection(self, projection: EnumValue) -> None:
         """
 
-        setProjection(self, projection)
+        setProjection(self, projection: hou.imageLayerProjection)
 
             Change the projection type of the camera.
 
@@ -50780,7 +54337,7 @@ class ImageLayer:
     def setAperture(self, aperture: float) -> None:
         """
 
-        setAperture(self, aperture)
+        setAperture(self, aperture: float)
 
             Set the camera's aperture.
 
@@ -50789,7 +54346,7 @@ class ImageLayer:
     def setFocalLength(self, focal: float) -> None:
         """
 
-        setFocalLength(self, focal)
+        setFocalLength(self, focal: float)
 
             Set the camera's focal length.
 
@@ -50798,7 +54355,7 @@ class ImageLayer:
     def setCameraPosition(self, pos: Sequence[float]) -> None:
         """
 
-        setCameraPosition(self, pos)
+        setCameraPosition(self, pos: [float, float, float])
 
             Adjust the position of the focus point of the camera, as measured in
             the image space of the layer.
@@ -50808,7 +54365,7 @@ class ImageLayer:
     def setFStop(self, fstop: float) -> None:
         """
 
-        setFStop(self, fstop)
+        setFStop(self, fstop: float)
 
             Set the camera's FStop.
 
@@ -50817,7 +54374,7 @@ class ImageLayer:
     def setClippingRange(self, range: Sequence[float]) -> None:
         """
 
-        setClippingRange(self, range)
+        setClippingRange(self, range: [float, float])
 
             Set the camera's near/far clipping range.
 
@@ -50826,18 +54383,56 @@ class ImageLayer:
     def setFocusDistance(self, focus: float) -> None:
         """
 
-        setFocusDistance(self, focus)
+        setFocusDistance(self, focus: float)
 
             Set the camera's focus distance.
+
+
+        """
+    def setImagingDistance(self, imagingdist: float) -> None:
+        """
+
+        setImagingDistance(self, imagingdist: float)
+
+            Set the camera's imaging distance.
 
 
         """
     def setShutter(self, shutter: Sequence[float]) -> None:
         """
 
-        setShutter(self, shutter)
+        setShutter(self, shutter: [float, float])
 
             Set the camera's shutter.
+
+
+        """
+    def setGuideScale(self, scale: float) -> None:
+        """
+
+        setGuideScale(self, scale: float)
+
+            Set the camera's guide scale. This is the size of the camera being
+            displayed when the layer is metadata.
+
+
+        """
+    def setImageToWorldTransform(self, arg2: Matrix4) -> None:
+        """
+
+        setImageToWorldTransform(self, matrix4)
+
+            Set the transform from image space to world space.
+
+
+        """
+    def transform(self, arg2: Matrix4) -> None:
+        """
+
+        transform(self, matrix4)
+
+            Modify the image to world transform by applying an additional
+            transform afterward.
 
 
         """
@@ -50927,7 +54522,7 @@ class ImageLayer:
     def imageToPixel(self, p: Sequence[float]) -> Tuple[float, ...]:
         """
 
-        imageToPixel(self, p) -> tuple of float
+        imageToPixel(self, p: [float, float]) -> tuple of float
 
             Convert a 2-tuple from image space to pixel space.
 
@@ -50936,7 +54531,7 @@ class ImageLayer:
     def imageToBuffer(self, p: Sequence[float]) -> Tuple[float, ...]:
         """
 
-        imageToBuffer(self, p) -> tuple of float
+        imageToBuffer(self, p: [float, float]) -> tuple of float
 
             Convert a 2-tuple from image space to buffer space.
 
@@ -50945,16 +54540,52 @@ class ImageLayer:
     def imageToTexture(self, p: Sequence[float]) -> Tuple[float, ...]:
         """
 
-        imageToTexture(self, p) -> tuple of float
+        imageToTexture(self, p: [float, float]) -> tuple of float
 
             Convert a 2-tuple from image space to texture space.
+
+
+        """
+    def imageToWorld(self, p: Sequence[float]) -> Tuple[float, ...]:
+        """
+
+        imageToWorld(self, p: [float, float]) -> tuple of float
+
+            Convert a 2-tuple from image space to world space.
+
+
+        """
+    def image3ToWorld(self, p: Sequence[float]) -> Tuple[float, ...]:
+        """
+
+        image3ToWorld(self, p: [float, float, float]) -> tuple of float
+
+            Convert a 3-tuple from image space to world space.
+
+
+        """
+    def imageToLocal(self, p: Sequence[float]) -> Tuple[float, ...]:
+        """
+
+        imageToLocal(self, p: [float, float]) -> tuple of float
+
+            Convert a 2-tuple from image space to local space.
+
+
+        """
+    def image3ToLocal(self, p: Sequence[float]) -> Tuple[float, ...]:
+        """
+
+        image3ToLocal(self, p: [float, float, float]) -> tuple of float
+
+            Convert a 3-tuple from image space to local space.
 
 
         """
     def pixelToImage(self, p: Sequence[float]) -> Tuple[float, ...]:
         """
 
-        pixelToImage(self, p) -> tuple of float
+        pixelToImage(self, p: [float, float]) -> tuple of float
 
             Convert a 2-tuple from pixel space to image space.
 
@@ -50963,7 +54594,7 @@ class ImageLayer:
     def pixelToBuffer(self, p: Sequence[float]) -> Tuple[float, ...]:
         """
 
-        pixelToBuffer(self, p) -> tuple of float
+        pixelToBuffer(self, p: [float, float]) -> tuple of float
 
             Convert a 2-tuple from pixel space to buffer space.
 
@@ -50972,7 +54603,7 @@ class ImageLayer:
     def pixelToTexture(self, p: Sequence[float]) -> Tuple[float, ...]:
         """
 
-        pixelToTexture(self, p) -> tuple of float
+        pixelToTexture(self, p: [float, float]) -> tuple of float
 
             Convert a 2-tuple from pixel space to texture space.
 
@@ -50981,7 +54612,7 @@ class ImageLayer:
     def bufferToPixel(self, p: Sequence[float]) -> Tuple[float, ...]:
         """
 
-        bufferToPixel(self, p) -> tuple of float
+        bufferToPixel(self, p: [float, float]) -> tuple of float
 
             Convert a 2-tuple from buffer space to pixel space.
 
@@ -50990,7 +54621,7 @@ class ImageLayer:
     def bufferToImage(self, p: Sequence[float]) -> Tuple[float, ...]:
         """
 
-        bufferToImage(self, p) -> tuple of float
+        bufferToImage(self, p: [float, float]) -> tuple of float
 
             Convert a 2-tuple from buffer space to image space.
 
@@ -50999,7 +54630,7 @@ class ImageLayer:
     def bufferToTexture(self, p: Sequence[float]) -> Tuple[float, ...]:
         """
 
-        bufferToTexture(self, p) -> tuple of float
+        bufferToTexture(self, p: [float, float]) -> tuple of float
 
             Convert a 2-tuple from buffer space to texture space.
 
@@ -51008,7 +54639,7 @@ class ImageLayer:
     def textureToPixel(self, p: Sequence[float]) -> Tuple[float, ...]:
         """
 
-        textureToPixel(self, p) -> tuple of float
+        textureToPixel(self, p: [float, float]) -> tuple of float
 
             Convert a 2-tuple from texture space to pixel space.
 
@@ -51017,7 +54648,7 @@ class ImageLayer:
     def textureToImage(self, p: Sequence[float]) -> Tuple[float, ...]:
         """
 
-        textureToImage(self, p) -> tuple of float
+        textureToImage(self, p:[float, float]) -> tuple of float
 
             Convert a 2-tuple from texture space to image space.
 
@@ -51026,7 +54657,7 @@ class ImageLayer:
     def textureToBuffer(self, p: Sequence[float]) -> Tuple[float, ...]:
         """
 
-        textureToBuffer(self, p) -> tuple of float
+        textureToBuffer(self, p: [float, float]) -> tuple of float
 
             Convert a 2-tuple from texture space to buffer space.
 
@@ -51035,9 +54666,69 @@ class ImageLayer:
     def worldToBuffer(self, p: Sequence[float]) -> Tuple[float, ...]:
         """
 
-        worldToBuffer(self, p) -> tuple of float
+        worldToBuffer(self, p: [float, float, float]) -> tuple of float
 
             Convert a 3-tuple from world space to buffer space.
+
+
+        """
+    def worldToImage(self, p: Sequence[float]) -> Tuple[float, ...]:
+        """
+
+        worldToImage(self, p: [float, float, float]) -> tuple of float
+
+            Convert a 3-tuple from world space to image space, returning a
+            2-tuple.
+
+
+        """
+    def worldToImage3(self, p: Sequence[float]) -> Tuple[float, ...]:
+        """
+
+        worldToImage3(self, p: [float, float, float]) -> tuple of float
+
+            Convert a 3-tuple from world space to image space, returning a
+            3-tuple.
+
+
+        """
+    def worldToLocal(self, p: Sequence[float]) -> Tuple[float, ...]:
+        """
+
+        worldToLocal(self, p: [float, float, float]) -> tuple of float
+
+            Convert a 3-tuple from world space to local space, returning a
+            3-tuple.
+
+
+        """
+    def localToImage(self, p: Sequence[float]) -> Tuple[float, ...]:
+        """
+
+        localToImage(self, p: [float, float, float]) -> tuple of float
+
+            Convert a 3-tuple from local space to image space, returning a
+            2-tuple.
+
+
+        """
+    def localToImage3(self, p: Sequence[float]) -> Tuple[float, ...]:
+        """
+
+        localToImage3(self, p: [float, float, float]) -> tuple of float
+
+            Convert a 3-tuple from local space to image space, returning a
+            3-tuple.
+
+
+        """
+    def localToWorld(self, p: Sequence[float]) -> Tuple[float, ...]:
+        """
+
+        localToWorld(self, p: [float, float, float]) -> tuple of float
+
+            Convert a 3-tuple from local space to world space, returning a
+            3-tuple.
 
 
         """
@@ -51079,6 +54770,38 @@ class ImageLayer:
 
 
         """
+    def setBufferIndex(self, x: int, y: int, rgba: Any) -> None:
+        """
+
+        setBufferIndex(self, int x, int y, val: [float, ...] | float | int)
+
+            Set a layer to value at the buffer coordinate (x, y). value must be
+            match the layer type, eg. float for a mono layer, list of two floats
+            for a uv layer, ...
+
+
+        """
+    def setBufferIndexI(self, x: int, y: int, id: int) -> None:
+        """
+
+        setBufferIndexI(self, int x, int y, int value)
+
+            Set an integer layer to value at the buffer coordinate (x, y). value
+            must be an int.
+
+
+        """
+    def setBufferIndexV4(self, x: int, y: int, rgba: Sequence[float]) -> None:
+        """
+
+        setBufferIndexV4(self, int x, int y, value: [float, float, float,
+        float])
+
+            Set an RGBA layer to value at the buffer coordinate (x, y). value
+            must be a list of floats and of size 4, eg.
+
+
+        """
     def freeze(self) -> Optional[ImageLayer]:
         """
 
@@ -51102,38 +54825,70 @@ class ImageLayer:
 
 
         """
+    def properties(self) -> dict[str, Any]:
+        """
+
+        properties(self) -> dict
+
+            Returns the layer properties present on this layer.
+
+
+        """
+    def setProperties(self, p: dict[str, Any]) -> None:
+        """
+
+        setProperties(self, p: dict)
+
+            Replaces the layer properties with the provided dictionary.
+
+
+        """
+    def updateProperties(self, p: dict[str, Any]) -> None:
+        """
+
+        updateProperties(self, p: dict)
+
+            Updates the layer properties with the provided dictionary, replacing
+            any matching keys.
+
+
+        """
     def attributes(self) -> dict[str, Any]:
         """
 
         attributes(self) -> dict
 
-            Returns the layer attributes present on this layer.
+            This method is deprecated in favor of hou.ImageLayer.properties.
+            Returns the layer properties present on this layer.
 
 
         """
     def setAttributes(self, p: dict[str, Any]) -> None:
         """
 
-        setAttributes(self, p)
+        setAttributes(self, p: dict)
 
-            Replaces the layer attributes with the provided dictionary.
+            This method is deprecated in favor of hou.ImageLayer.setProperties.
+            Replaces the layer properties with the provided dictionary.
 
 
         """
     def updateAttributes(self, p: dict[str, Any]) -> None:
         """
 
-        updateAttributes(self, p)
+        updateAttributes(self, p: dict)
 
-            Updates the layer attributes with the provided dictionary, replacing
-            any matching keys.
+            This method is deprecated in favor of
+            hou.ImageLayer.updateProperties. Updates the layer properties with
+            the provided dictionary, replacing any matching keys.
 
 
         """
     def allBufferElements(self, *args) -> bytes:
         """
 
-        allBufferElements(self, storagetype, channels) -> hou.BinaryString
+        allBufferElements(self, storagetype: hou.imageLayerStorageType,
+        channels: int) -> hou.BinaryString
 
             Return all the buffer elements as a binary string. This can then be
             effeciently re-interpreted and handled by numpy or tensor packages.
@@ -51147,12 +54902,62 @@ class ImageLayer:
     def setAllBufferElements(self, *args) -> None:
         """
 
-        setAllBufferElements(self, values, length)
+        setAllBufferElements(self, values: hou.BinaryString, length: int)
 
             Take a binary string in values and replace all of the buffer
             elements of this layer with them. The binary string must have a
             number of elements matching the bufferResolution and be of the same
             storagetype and channels as this layer.
+
+
+        """
+    def computeMin(self, channel: int = 0) -> Any:
+        """
+
+        computeMin(self, channel=0) -> int or float
+
+            Returns the layer's minimum value across all pixels of the selected
+            channel.
+
+
+        """
+    def computeMax(self, channel: int = 0) -> Any:
+        """
+
+        computeMax(self, channel=0) -> int or float
+
+            Returns the layer's maximum value across all pixels of the selected
+            channel.
+
+
+        """
+    def computeMinLength(self) -> Any:
+        """
+
+        computeMinLength(self) -> float
+
+            Returns the layer's minimum Euclidean length value across all the
+            pixels.
+
+
+        """
+    def computeMaxLength(self) -> Any:
+        """
+
+        computeMaxLength(self) -> float
+
+            Returns the layer's maximum Euclidean length value across all the
+            pixels.
+
+
+        """
+    def computeAverage(self, channel: int = 0) -> float:
+        """
+
+        computeAverage(self, channel=0) -> float
+
+            Returns the layer's average value across all pixels of the selected
+            channel.
 
 
         """
@@ -51655,7 +55460,7 @@ class InterruptableOperation:
 
         """
     def __enter__(self) -> InterruptableOperation: ...
-    def __exit__(self, type: type[BaseException], value: BaseException, traceback: TracebackType) -> None: ...
+    def __exit__(self, type: type[BaseException]|None, value: BaseException|None, traceback: TracebackType|None) -> None: ...
 
 class IntParmTemplate(ParmTemplate):
     """
@@ -52742,7 +56547,7 @@ class Keyframe(BaseKeyframe):
 
     """
     thisown: Incomplete
-    def __init__(self, value: float|None = ..., time: float|None = ...) -> None:
+    def __init__(self, value: float|Keyframe|None = ..., time: float|None = ...) -> None:
         """
 
         __init__(self, values)
@@ -53818,11 +57623,11 @@ class LopNetwork(OpNode):
 
 
         """
-    def viewportOverrides(self, lop: LopNode, output_index: int = 0) -> LopViewportOverrides:
+    def viewportOverrides(self, *args, **kwargs) -> LopViewportOverrides:
         """
 
-        viewportOverrides(self, lop, output_index = 0) ->
-        hou.LopViewportOverrides
+        viewportOverrides(self, lop, output_index = 0, active_layer =
+        hou.lopViewportOverridesLayer.Custom) -> hou.LopViewportOverrides
 
             Return a hou.LopViewportOverrides object that allows editing of the
             current session-only modifications which should be applied to any
@@ -53836,6 +57641,10 @@ class LopNetwork(OpNode):
             presented through the hou.LopViewportOverrides.stage method. The
             layer_index parameter controls which specific session sublayer is to
             be modified.
+
+            The active_layer parameter controls which layer will be modified
+            when editing the layer returned by hou.LopViewportOverrides.layer or
+            the stage returned by hou.LopViewportOverrides.stage.
 
 
         """
@@ -53893,6 +57702,11 @@ class LopNetwork(OpNode):
                 not author opinions on this layer. Use the
                 hou.LopViewportOverrides.layer method to access and edit this
                 layer.
+
+            ViewportState
+                Reserved for use by viewport states that want to modify the
+                stage without having to make changes to the LOP node (which may
+                trigger an unwanted recook of downstream LOP nodes).
 
             Purpose
                 Used to isolate and display specific geometry based on its
@@ -54052,6 +57866,20 @@ class LopNetwork(OpNode):
 
 
         """
+    def selectionPaths(self) -> Any:
+        """
+
+        selectionPaths(self) -> tuple of str
+
+            Return a list of pxr.Sdf.Path objects representing all the scene
+            graph locations currently selected in the LOP Network parent of this
+            LOP node. This is the same selection that will be showing in the
+            Scene Graph Tree pane and the LOP viewport.
+
+            See hou.LopNetwork.selection
+
+
+        """
     def selection(self) -> Tuple[str, ...]:
         """
 
@@ -54075,6 +57903,26 @@ class LopNetwork(OpNode):
 
         """
     def selectionWithInstanceIds(self) -> Tuple[str, ...]: ...
+    def setSelectionPaths(self, selection: Any, currentprim: Optional[str] = None) -> None:
+        """
+
+        setSelectionPaths(self, selection, currentprim = None)
+
+            Like hou.LopNetwork.setSelection but accepts a list of pxr.Sdf.Path
+            ogjects holding the scene graph locations which should become the
+            selection in the LOP Network parent of this LOP node. This selection
+            will be reflected in the Scene Graph Tree pane and the LOP viewport.
+
+            The optional currentprim object can be supplied to have the Scene
+            Graph Details pane show the information for a primitive at a
+            specific path. The currentprim is usually in the selection list, but
+            it doesn't need to be. Passing None for currentprim will set the
+            current primitive to be the first primitive in the selection list.
+
+            See hou.LopNetwork.setSelection
+
+
+        """
     def setSelection(self, selection: Sequence[str], currentprim: Optional[str] = None) -> None:
         """
 
@@ -55787,6 +59635,32 @@ class lop:
 
         """
     @staticmethod
+    def binaryUsdFileExtension() -> str:
+        """
+
+        binaryUsdFileExtension() -> str
+
+            Return the file extension used by Houdini when writing out binary
+            USD files. This is normally .usd, but when running with an
+            Apprentice license this value will be .usdnc. This method allows
+            python code to know what file extension will be used when writing a
+            binary USD file from a USD ROP (which will write a file with the
+            .usdnc extension even if the ROP's Output File extension is .usd.
+
+
+        """
+    @staticmethod
+    def hasBinaryUsdFileExtension(filepath: str) -> bool:
+        """
+
+        hasBinaryUsdFileExtension(filepath) -> bool
+
+            Return true if the provided file path has a file extension that
+            indicates a binary USD file type (.usd, .usdc, or .usdnc).
+
+
+        """
+    @staticmethod
     def usdOutputMinimumSeverity() -> EnumValue:
         """
 
@@ -56236,7 +60110,7 @@ class LopPostLayer:
     def __enter__(self) -> LopPostLayer: ...
     def layer(self) -> pxr.Sdf.Layer: ...
     def stage(self) -> pxr.Usd.Stage: ...
-    def __exit__(self, type: type[BaseException], value: BaseException, traceback: TracebackType) -> None: ...
+    def __exit__(self, type: type[BaseException]|None, value: BaseException|None, traceback: TracebackType|None) -> None: ...
 
 class LopSelectionRule:
     """
@@ -56440,6 +60314,19 @@ class LopSelectionRule:
 
 
         """
+    def pointInstancerIds(self, lopnode: Optional[LopNode] = None, stage: Optional[Any] = None, use_last_cook_context_options: bool = True, lop_output_index: int = -1) -> dict[str, Tuple[int, ...]]:
+        """
+
+        pointInstancerIds(self, lopnode=None, return_ancestors=False,
+        fallback_to_new_paths=False, stage=None, use_last_cook_context_options =
+        True, lop_output_index = -1) -> dict of str to tuple of int
+
+            If this LOP selection rule is configured to find point instancer
+            ids, this method returns a dict of point instancer prim paths to the
+            set of instance ids that match the pattern.
+
+
+        """
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
@@ -56523,6 +60410,48 @@ class LopSelectionRule:
 
           > >>> rule = hou.LopSelectionRule()
           > >>> rule.SetTraversalDemands(hou.lopTraversalDemands.Active | hou.lopTraversalDemands.Defined)
+
+        """
+    def findPointInstancerIds(self) -> int:
+        """
+
+        findPointInstancerIds(self) -> bool
+
+            Return True if this LOP selection rule has been set to return point
+            instancer instance ids.
+
+
+        """
+    def setFindPointInstancerIds(self, find_instancer_ids: bool) -> None:
+        """
+
+        setFindPointInstancerIds(self, find_instancer_ids)
+
+            Configures this LOP selection rule to return not just primitive
+            paths, but in the case of point instancers, return specific instance
+            id values. In this mode, the prim pattern can accept tokens such as
+            /instancer1[10-100], which will match instance ids in the range 10
+            to 100 on /instancer. The instance id specification inside the
+            square brackets is a comma or space separated list of tokens:
+
+          * M-N: ids greater than or equal to M and less than or equal to N.
+
+          * ^M-N: exclude ids greater than or equal to M and less than or equal
+            to N.
+
+          * A,B,C: accept ids A, B, and C.
+
+          * { vexpression }: execute the supplied vexpression on each id, and
+            accept it if the VEX evalautes to a non-zero value.
+
+            In addition to specifying ids in a pattern, some auto collections
+            (such as %bounds) will also work on individual instances, evaluating
+            each instance against the supplied bounds.
+
+            Use the pointInstancerIds methods to retrieve information about
+            matched instances. By default a LOP selection rule sets this value
+            to False.
+
 
         """
     def icon(self) -> str:
@@ -56925,6 +60854,65 @@ class LopViewportOverrides:
 
 
         """
+    def setXforms(self, selected_paths: Sequence[str], global_xform: bool, handle_xform: Matrix4, pivot_xform: Matrix4, set_pivot_on_primary_prim: bool, delta: Geometry) -> Optional[Geometry]:
+        """
+
+        setXforms(self, selected_paths, global_xform, handle_xform, pivot,
+        pivot_rotate, set_pivot_on_primary_prim, delta) -> hou.Geometry
+
+            This method is used by the viewport state of the Edit LOP to apply
+            transforms to prims or point instances in the viewport overrides
+            layer. Its use is tied very closely to that Edit LOP state, but may
+            be useful in other scenarios.
+
+
+            selected_paths
+                A list or str of the currently selected prims that should be
+                transformed. These may be primitive paths or point instancer
+                prim paths followed by an instance index provided in square
+                brackets.
+
+            global_xform
+                A bool indicating if the transform should be applied in global
+                space or in the local space of each prim.
+
+            handle_xform
+                A hou.Matrix4 that should be used to transform the selected
+                prims.
+
+            pivot
+                A hou.Vector3 indicating the pivot position of the transform
+                handle. This value is used when global_xform is False to
+                determine the local pivot around which each prim is transformed.
+                It is also the value used to author to the primary prim when
+                set_pivot_on_primary_prim is True.
+
+            pivot_rotate
+                A hou.Vector3 indicating the pivot rotation of the transform
+                handle. This value is used when global_xform is False to
+                determine the local pivot around which each prim is transformed.
+                It is also the value used to author to the primary prim when
+                set_pivot_on_primary_prim is True.
+
+            set_pivot_on_primary_prim
+                A bool indicating if the pivot and pivot rotate values provided
+                should be set on the first prim in the selected_paths list.
+                Pivots cannot be preserved on point instances.
+
+            delta
+                A hou.Geometry with points holding attributes that describe base
+                transforms that should be applied to prims in the viewport
+                overrides layer. The other parameters to this method describe an
+                additional set of transforms that are applied on top of the
+                transforms described in this geometry parameter.
+
+            Returns a modified version of the passed in delta geometry that also
+            includes the additional transforms described by the other method
+            parameters. This allows the delta geometry to be built up over a
+            series of interactive transform operations.
+
+
+        """
     def setSelectable(self, prims: LopSelectionRule, active: bool, solo: bool = False) -> None:
         """
 
@@ -57140,13 +61128,15 @@ class LopViewportOverrides:
 
         layer(self) -> pxr.Sdf.Layer
 
-            Return the pxr.Sdf.Layer object that contains current custom session
-            edits to the scene graph. These edits are accessible using the
-            hou.lopViewportOverridesLayer.Custom layer id. This layer does not
-            include opinions set using built in Houdini panels. This layer only
-            hold opinions authored through the layer returned by this method.
-            This object can be modified using the pxr.Sdf.Layer API to make
-            further session modifications to the scene graph.
+            Return the pxr.Sdf.Layer object that contains current custom or
+            viewport state session edits to the scene graph. These edits are
+            accessible using the hou.lopViewportOverridesLayer.Custom or
+            hou.lopViewportOverridesLayer.ViewportState depending on the
+            active_layer value passed to hou.LopNetwork.viewportOverrides. This
+            layer does not include opinions set using built in Houdini panels.
+            This layer only hold opinions authored through the layer returned by
+            this method. This object can be modified using the pxr.Sdf.Layer API
+            to make further session modifications to the scene graph.
 
 
         """
@@ -57158,7 +61148,10 @@ class LopViewportOverrides:
             Return the pxr.Usd.Stage object that contains all the current
             session edits to the scene graph. This object can be modified using
             the pxr.Usd.Stage API to make further session modifications to the
-            scene graph.
+            scene graph. These edits are authored to the
+            hou.lopViewportOverridesLayer.Custom or
+            hou.lopViewportOverridesLayer.ViewportState depending on the
+            active_layer value passed to hou.LopNetwork.viewportOverrides.
 
 
         """
@@ -57182,7 +61175,7 @@ class LopViewportOverrides:
 
 
         """
-    def __exit__(self, type: type[BaseException], value: BaseException, traceback: TracebackType) -> None: ...
+    def __exit__(self, type: type[BaseException]|None, value: BaseException|None, traceback: TracebackType|None) -> None: ...
     __swig_destroy__: Incomplete
 
 class Matrix2:
@@ -58540,6 +62533,15 @@ class MenuParmTemplate(ParmTemplate):
 
 
         """
+    def isButton(self) -> bool:
+        """
+
+        isButton(self) -> bool
+
+            Return whether the parameter is a button parm with a menu.
+
+
+        """
 
 class NanoVDB:
     """
@@ -58556,7 +62558,7 @@ class NanoVDB:
     same if the COP node recooks or is deleted.
 
     Call hou.NanoVDB.freeze to edit an NanoVDB. This returns another NanoVDB
-    object that's an independent writeable copy. Writing to the frozen layer
+    object that's an independent writeable copy. Writing to the frozen vdb
     doesn't affect the earlier read-only versions.
 
 
@@ -58577,7 +62579,7 @@ class NanoVDB:
         same if the COP node recooks or is deleted.
 
         Call hou.NanoVDB.freeze to edit an NanoVDB. This returns another NanoVDB
-        object that's an independent writeable copy. Writing to the frozen layer
+        object that's an independent writeable copy. Writing to the frozen vdb
         doesn't affect the earlier read-only versions.
 
 
@@ -58627,7 +62629,16 @@ class NanoVDB:
 
             Changes the semantic type of the vdb.
 
-            Requires a writable layer.
+            Requires a writable vdb.
+
+
+        """
+    def channelCount(self) -> int:
+        """
+
+        channelCount(self) -> int
+
+            Returns the number of channels in the vdb.
 
 
         """
@@ -58690,6 +62701,17 @@ class NanoVDB:
 
 
         """
+    def resolution(self) -> Tuple[int, ...]:
+        """
+
+        resolution(self) -> hou.Vector3
+
+            Return the x, y, and z dimensions of the active leaves. Since VDB
+            volumes are sparse, this represents the virtual resolution of all
+            the voxels which have data (or are active).
+
+
+        """
     def freeze(self) -> Optional[NanoVDB]:
         """
 
@@ -58713,30 +62735,61 @@ class NanoVDB:
 
 
         """
+    def properties(self) -> dict[str, Any]:
+        """
+
+        properties(self) -> std::map<std::string,hboost::any>
+
+            Returns the vdb properties present on this vdb.
+
+
+        """
+    def setProperties(self, p: dict[str, Any]) -> None:
+        """
+
+        setProperties(self, std::map<std::string, p)
+
+            Replaces the vdb properties with the provided dictionary.
+
+
+        """
+    def updateProperties(self, p: dict[str, Any]) -> None:
+        """
+
+        updateProperties(self, std::map<std::string, p)
+
+            Updates the vdb properties with the provided dictionary, replacing
+            any matching keys.
+
+
+        """
     def attributes(self) -> dict[str, Any]:
         """
 
-        attributes(self) -> std::map<std::string,hboost::any>
+        attributes(self) -> dict
 
-            Returns the vdb attributes present on this layer.
+            This method is deprecated in favor of hou.NanoVDB.properties.
+            Returns the vdb properties present on this vdb.
 
 
         """
     def setAttributes(self, p: dict[str, Any]) -> None:
         """
 
-        setAttributes(self, std::map<std::string, p)
+        setAttributes(self, p: dict)
 
-            Replaces the vdb attributes with the provided dictionary.
+            This method is deprecated in favor of hou.NanoVDB.setProperties.
+            Replaces the vdb properties with the provided dictionary.
 
 
         """
     def updateAttributes(self, p: dict[str, Any]) -> None:
         """
 
-        updateAttributes(self, std::map<std::string, p)
+        updateAttributes(self, p: dict)
 
-            Updates the layer attributes with the provided dictionary, replacing
+            This method is deprecated in favor of hou.NanoVDB.updateProperties.
+            Updates the vdb properties with the provided dictionary, replacing
             any matching keys.
 
 
@@ -58753,6 +62806,56 @@ class NanoVDB:
             Note NanoVDB is not meant as a long term storage format, so it is
             recommended any long term storage is done with VDBs rather than
             relying on this format being the same.
+
+
+        """
+    def computeMin(self, channel: int = 0) -> Any:
+        """
+
+        computeMin(self, channel=0) -> int or float
+
+            Returns the vdb's minimum value across all voxels of the selected
+            channel.
+
+
+        """
+    def computeMax(self, channel: int = 0) -> Any:
+        """
+
+        computeMax(self, channel=0) -> int or float
+
+            Returns the vdb's maximum value across all voxels of the selected
+            channel.
+
+
+        """
+    def computeMinLength(self) -> Any:
+        """
+
+        computeMinLength(self) -> float
+
+            Returns the vdb's minimum Euclidean length value across all the
+            voxels.
+
+
+        """
+    def computeMaxLength(self) -> Any:
+        """
+
+        computeMaxLength(self) -> float
+
+            Returns the vdb's maximum Euclidean length value across all the
+            voxels.
+
+
+        """
+    def computeAverage(self, channel: int = 0) -> float:
+        """
+
+        computeAverage(self, channel=0) -> float
+
+            Returns the vdb's average value across all voxels of the selected
+            channel.
 
 
         """
@@ -59021,6 +63124,15 @@ class NetworkEditor(PathBasedPaneTab):
                 all. This prevents a bounds change, that was intended as a pure
                 zoom, from inadvertently panning the view if the zoom doesn't
                 actually change.
+
+
+        """
+    def translate(self, delta: Vector2) -> None:
+        """
+
+        translate(self, delta)
+
+            Shift the view by delta, a hou.Vector2 in network space coordinates.
 
 
         """
@@ -60265,6 +64377,68 @@ class NetworkEditor(PathBasedPaneTab):
 
 
         """
+    def setRevertToNetworkViewOnEmpty(self, revert: bool) -> None:
+        """
+
+        setRevertToNetworkViewOnEmpty(self, revert)
+
+            If this network editor is a hou.paneTabType.ApexEditor or
+            hou.paneTabType.UsdShadeEditor type pane, set this flag to True to
+            indicate that the pane should switch be a
+            hou.paneTabType.NetworkEditor if the current node is unable to
+            provide a graph of the right type.
+
+            This value is automatically reset to False whenever the pane tab
+            type changes awy from being ApexEditor or UsdShadeEditor. This flag
+            is intended to be set to True only when switching to this pane tab
+            type in order ot make this graph editor a temporary and seamless
+            switch from a NetworkEditor into an editor for a graph owned by the
+            current node.
+
+
+        """
+    def revertToNetworkViewOnEmpty(self) -> bool:
+        """
+
+        revertToNetworkViewOnEmpty(self) -> bool`
+
+            Return True if setRevertToNetworkViewOnEmpty(True) has been called
+            on this hou.paneTabType.ApexEditor or hou.paneTabType.UsdShadeEditor
+            pane. Otherwise return False.
+
+
+        """
+    def isShowingParmDialog(self) -> bool:
+        """
+
+        isShowingParmDialog(self) -> bool
+
+            Return True if the Network Editor's embedded parameter dialog is
+            currently visible.
+
+
+        """
+    def setShowParmDialog(self, show: bool) -> None:
+        """
+
+        setShowParmDialog(self, show)
+
+            Show or hide the Network Editor's embedded parameter dialog.
+
+
+        """
+    def parmPythonPanelInterface(self) -> Optional[PythonPanelInterface]:
+        """
+
+        parmPythonPanelInterface(self) -> hou.PythonPanelInterface
+
+            Returns the Python Panel interface corresponding to the embedded
+            parameter dialog's current node, or None if there is no
+            corresponding interface or the embedded parameter dialog is not
+            visible.
+
+
+        """
     def pushEventContext(self, module: str, data: Any) -> bool:
         """
 
@@ -60281,6 +64455,24 @@ class NetworkEditor(PathBasedPaneTab):
 
         """
     def eventContextData(self) -> Any: ...
+    def parmPythonPanelInterfaceRootWidget(self) -> Any:
+        """
+
+        parmPythonPanelInterfaceRootWidget(self) -> Qt.QtWidgets.QWidget
+        subclass
+
+            Returns a reference to the user-defined root widget created by the
+            active Python Panel interface in the embedded parameter dialog.
+            Returns None if there is no active interface, if the active
+            interface raised an exception when creating the root widget or if
+            the active interface has not yet finished creating the root widget.
+
+
+        """
+
+    # Missing methods added by stubgen
+    def homeToSelection(self) -> None: ...
+    def frameSelection(self) -> None: ...
 
 class NetworkAnimValue:
     """
@@ -61337,19 +65529,19 @@ class NodeConnection(NetworkItem):
         """
     def outputDataType(self) -> str: ...
 
-class ApexNodeConnection(NodeConnection):
+class UniNodeConnection(NodeConnection):
     """
 
-    hou.ApexNodeConnection
+    hou.UniNodeConnection
 
-    Represents a connection (wire) between two APEX Nodes.
+    Represents a connection (wire) between two UNI Nodes.
 
-    This class represents an APEX wire connection between two ports of the
-    APEX nodes.
+    This class represents an UNI wire connection between two ports of the
+    UNI nodes.
 
     RELATED
 
-      * hou.apexNodeConnectionBySessionId
+      * hou.uniNodeConnectionBySessionId
 
 
     """
@@ -61368,6 +65560,26 @@ class ApexNodeConnection(NodeConnection):
 
 
         """
+
+class ApexNodeConnection(UniNodeConnection):
+    """
+
+    hou.ApexNodeConnection
+
+    Represents a connection (wire) between two APEX Nodes.
+
+    This class represents an APEX wire connection between two ports of the
+    APEX nodes.
+
+    RELATED
+
+      * hou.apexNodeConnectionBySessionId
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, *args, **kwargs) -> None: ...
+    __swig_destroy__: Incomplete
 
 class OpNodeConnection(NodeConnection):
     """
@@ -61499,6 +65711,98 @@ class NodeInfoTree:
             represents the rows of the grid. The contained tuples each represent
             one row. All contained tuples will be the same length, which will be
             the length of the tuple returned by the headings() method.
+
+
+        """
+
+class opencl:
+    """
+
+    hou.opencl
+
+    Module providing access to the OpenCL devices Houdini can use for
+    GPU/CPU compute.
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, *args, **kwargs) -> None: ...
+    __swig_destroy__: Incomplete
+    @staticmethod
+    def devices(device_type: EnumValue) -> Tuple[OpenCLDevice, ...]:
+        """
+
+        devices(device_type) -> tuple of hou.OpenCLDevices
+
+            Returns a tuple of hou.OpenCLDevice objects for every available
+            OpenCL device of the given type.
+
+
+            device_type
+                A hou.openCLDeviceType enum value. Pass hou.openCLDeviceType.GPU
+                to enumerate GPU devices or hou.openCLDeviceType.CPU to
+                enumerate CPU devices.
+
+
+        """
+
+class OpenCLDevice:
+    """
+
+    hou.OpenCLDevice
+
+    Describes a single OpenCL device that Houdini can use for compute.
+
+    Use hou.opencl.devices to obtain a tuple of available OpenCL devices.
+    You cannot construct this class directly.
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, *args, **kwargs) -> None: ...
+    __swig_destroy__: Incomplete
+    def label(self) -> str:
+        """
+
+        label(self) -> str
+
+            Returns the device's display label.
+
+
+        """
+    def vendor(self) -> str:
+        """
+
+        vendor(self) -> str
+
+            Returns the device vendor reported by the OpenCL driver.
+
+
+        """
+    def platformVendor(self) -> str:
+        """
+
+        platformVendor(self) -> str
+
+            Returns the OpenCL platform vendor for this device.
+
+
+        """
+    def driverVersion(self) -> str:
+        """
+
+        driverVersion(self) -> str
+
+            Returns the OpenCL software driver version string for this device.
+
+
+        """
+    def number(self) -> int:
+        """
+
+        number(self) -> int
+
+            Returns the device's index within its device-type group.
 
 
         """
@@ -61880,14 +66184,17 @@ class Parm:
 
 
         """
-    def referenceExpression(self, to_base_parm: Parm, language: Optional[EnumValue] = None, follow_parm_reference: bool = True) -> str:
+    def referenceExpression(self, to_base_parm: Parm, language: Optional[EnumValue] = None, follow_parm_reference: bool = True, clear_channel: bool = True) -> str:
         """
 
         referenceExpression(self, parm, language=None,
-        follow_parm_reference=True) -> str
+        follow_parm_reference=True, clear_channel=True) -> str
 
             Returns an expression string that contains a channel reference from
             this parameter to the specified parm.
+
+            clear_channel When <clear_channel> is True, the channel for this
+            parameter will be cleared.
 
 
         """
@@ -61988,6 +66295,79 @@ class Parm:
             This tests all of the multiparm parameters associated with the ramp
             by comparing to the special ramp default spare paramater data. Ramps
             with no default spare data will never be at default.
+
+
+        """
+    def rangeMin(self) -> float:
+        """
+
+        rangeMin(self) -> float
+
+            Returns the minimum slider range of this parameter in the parameter
+            editor.
+
+
+        """
+    def rangeMax(self) -> float:
+        """
+
+        rangeMax(self) -> float
+
+            Returns the maximum slider range of this parameter in the parameter
+            editor.
+
+
+        """
+    def setRange(self, min: float, max: float) -> None:
+        """
+
+        setRange(self, min, max)
+
+            Set the slider range of this parameter in the parameter editor.
+
+
+        """
+    def setRangeToDefault(self) -> None:
+        """
+
+        setRangeToDefault(self)
+
+            Set the slider range of this parameter in the parameter editor to
+            its default. If a default range has been set via
+            hou.Parm.setDefaultRange, that range is used; otherwise the
+            parameter template's range is used.
+
+
+        """
+    def isRangeAtDefault(self) -> bool:
+        """
+
+        isRangeAtDefault(self)
+
+            Returns whether the slider range of this parameter in the parameter
+            editor is at its default.
+
+
+        """
+    def setDefaultRange(self, min: float, max: float) -> None:
+        """
+
+        setDefaultRange(self, min, max)
+
+            Set a default slider range for this parameter, stored in the node's
+            user data. When hou.Parm.setRangeToDefault is called, this range is
+            used instead of the parameter template's range.
+
+
+        """
+    def clearDefaultRange(self) -> None:
+        """
+
+        clearDefaultRange(self)
+
+            Remove the default slider range for this parameter. After clearing,
+            hou.Parm.setRangeToDefault will revert to the parameter template's
+            range.
 
 
         """
@@ -62118,6 +66498,7 @@ class Parm:
         isShowingExpression(self) -> bool
 
             Return whether this parameter is shown as an expression or as the
+            current value.
 
             See also the showExpression() method.
 
@@ -62333,6 +66714,56 @@ class Parm:
             as a VDB.
 
             Raises TypeError if the parameter is not a VDB.
+
+
+        """
+    def evalAsDetachedAttrib(self) -> Optional[DetachedAttrib]:
+        """
+
+        evalAsDetachedAttrib(self) -> hou.DetachedAttrib
+
+            Evaluates this parameter at the current frame and returns the result
+            as a hou.DetachedAttrib object.
+
+            Raises TypeError if a value cannot be converted to a
+            hou.DetachedAttrib.
+
+
+        """
+    def evalAsDetachedAttribAtFrame(self, frame: float) -> Optional[DetachedAttrib]:
+        """
+
+        evalAsDetachedAttribAtFrame(self, frame) -> hou.DetachedAttrib
+
+            Evaluates this parameter at a certain frame and returns the result
+            as a hou.DetachedAttrib object.
+
+            Raises TypeError if a value cannot be converted to a
+            hou.DetachedAttrib.
+
+
+        """
+    def evalAsCopCable(self) -> Optional[CopCable]:
+        """
+
+        evalAsCopCable(self) -> hou.CopCable
+
+            Evaluates this parameter at the current frame and returns the result
+            as a hou.CopCable object.
+
+            Raises TypeError if a value cannot be converted to a hou.CopCable.
+
+
+        """
+    def evalAsCopCableAtFrame(self, frame: float) -> Optional[CopCable]:
+        """
+
+        evalAsCopCableAtFrame(self, frame) -> hou.CopCable
+
+            Evaluates this parameter at a certain frame and returns the result
+            as a hou.CopCable object.
+
+            Raises TypeError if a value cannot be converted to a hou.CopCable.
 
 
         """
@@ -62826,10 +67257,11 @@ class Parm:
 
         insertMultiParmInstance(self, index)
 
-            Insert a new multi parm instance before the given index. To append a
-            new multi parm instance, set the index to be the current number of
-            instances. The current number can be queried by calling evalAsInt on
-            the this parameter.
+            If this parameter corresponds to the number of instances for a
+            multiparm, insert a new multi parm instance before the given index.
+            To append a new multi parm instance, set the index to be the current
+            number of instances. The current number can be queried by calling
+            evalAsInt on the this parameter.
 
 
         """
@@ -62838,7 +67270,8 @@ class Parm:
 
         removeMultiParmInstance(self, index)
 
-            Removes the multi parm instance at the given index.
+            If this parameter corresponds to the number of instances for a
+            multiparm, remove the multi parm instance at the given index.
 
 
         """
@@ -62847,11 +67280,13 @@ class Parm:
 
         moveMultiParmInstances(self, moves)
 
-            Perform a sequence of move operations on Multi Parm Instances. The
-            'moves' argument must be an array of integers containing an even
-            number of entries. Entries at the odd-numbered array positions
-            represent a 'from' multi parm index. Entries at the even-numbered
-            array positions represent the associated 'to' multi parm index.
+            If this parameter corresponds to the number of instances for a
+            multiparm, perform a sequence of move operations on Multi Parm
+            Instances. The 'moves' argument must be an array of integers
+            containing an even number of entries. Entries at the odd-numbered
+            array positions represent a 'from' multi parm index. Entries at the
+            even-numbered array positions represent the associated 'to' multi
+            parm index.
 
           * To move the instance at index 2 up, 'moves' should be [2,3].
 
@@ -62879,8 +67314,9 @@ class Parm:
 
         moveUpMultiParmInstance(self, index)
 
-            Perform a move up operation on a Multi Parm Instance at the given
-            index.
+            If this parameter corresponds to the number of instances for a
+            multiparm, perform a move up operation on a Multi Parm Instance at
+            the given index.
 
             This function will raise a hou.PermissionError exception if writing
             to the specified parameter is impossible.
@@ -62895,8 +67331,9 @@ class Parm:
 
         moveDownMultiParmInstance(self, index)
 
-            Perform a move down operation on a Multi Parm Instance at the given
-            index.
+            If this parameter corresponds to the number of instances for a
+            multiparm, perform a move down operation on a Multi Parm Instance at
+            the given index.
 
             This function will raise a hou.PermissionError exception if writing
             to the specified parameter is impossible.
@@ -63586,6 +68023,31 @@ class ParameterEditor(PathBasedPaneTab):
 
 
         """
+    def pythonPanelInterface(self) -> Optional[PythonPanelInterface]:
+        """
+
+        pythonPanelInterface(self) -> hou.PythonPanelInterface
+
+            Returns the Python Panel interface corresponding to the Parameter
+            Editor's current node, or None if there is no corresponding
+            interface.
+
+
+        """
+    def pythonPanelInterfaceRootWidget(self) -> Any:
+        """
+
+        pythonPanelInterfaceRootWidget(self) -> Qt.QtWidgets.QWidget subclass
+
+            Returns a reference to the user-defined root widget created by the
+            active Python Panel interface corresponding to the Parameter
+            Editor's current node. Returns None if there is no active interface,
+            if the active interface raised an exception when creating the root
+            widget or if the active interface has not yet finished creating the
+            root widget.
+
+
+        """
 
 class ParmTuple:
     '''
@@ -63771,6 +68233,79 @@ class ParmTuple:
 
 
         """
+    def rangeMin(self) -> float:
+        """
+
+        rangeMin(self) -> float
+
+            Returns the minimum slider range of this parameter in the parameter
+            editor.
+
+
+        """
+    def rangeMax(self) -> float:
+        """
+
+        rangeMax(self) -> float
+
+            Returns the maximum slider range of this parameter in the parameter
+            editor.
+
+
+        """
+    def setRange(self, min: float, max: float) -> None:
+        """
+
+        setRange(self, min, max)
+
+            Set the slider range of this parameter in the parameter editor.
+
+
+        """
+    def setRangeToDefault(self) -> None:
+        """
+
+        setRangeToDefault(self)
+
+            Set the slider range of this parameter in the parameter editor to
+            its default. If a default range has been set via
+            hou.ParmTuple.setDefaultRange, that range is used; otherwise the
+            parameter template's range is used.
+
+
+        """
+    def isRangeAtDefault(self) -> bool:
+        """
+
+        isRangeAtDefault(self)
+
+            Returns whether the slider range of this parameter in the parameter
+            editor is at its default.
+
+
+        """
+    def setDefaultRange(self, min: float, max: float) -> None:
+        """
+
+        setDefaultRange(self, min, max)
+
+            Set a default slider range for this parameter, stored in the node's
+            user data. When hou.ParmTuple.setRangeToDefault is called, this
+            range is used instead of the parameter template's range.
+
+
+        """
+    def clearDefaultRange(self) -> None:
+        """
+
+        clearDefaultRange(self)
+
+            Remove the default slider range for this parameter. After clearing,
+            hou.ParmTuple.setRangeToDefault will revert to the parameter
+            template's range.
+
+
+        """
     def evalAsFloats(self) -> Tuple[float, ...]:
         """
 
@@ -63936,6 +68471,32 @@ class ParmTuple:
             result as a tuple containing a hou.NanoVDB object.
 
             Raises TypeError if a value cannot be converted to a hou.NanoVDB.
+
+
+        """
+    def evalAsDetachedAttribs(self) -> Tuple[DetachedAttrib, ...]:
+        """
+
+        evalAsDetachedAttribs(self) -> tuple of hou.DetachedAttrib
+
+            Evaluates this parameter tuple at the current frame and returns the
+            result as a tuple containing a hou.DetachedAttrib object.
+
+            Raises TypeError if a value cannot be converted to a
+            hou.DetachedAttrib.
+
+
+        """
+    def evalAsDetachedAttribsAtFrame(self, frame: float) -> Tuple[DetachedAttrib, ...]:
+        """
+
+        evalAsDetachedAttribsAtFrame(self, frame) -> tuple of hou.DetachedAttrib
+
+            Evaluates this parameter tuple at a certain frame and returns the
+            result as a tuple containing a hou.DetachedAttrib object.
+
+            Raises TypeError if a value cannot be converted to a
+            hou.DetachedAttrib.
 
 
         """
@@ -64143,6 +68704,97 @@ class ParmTuple:
             instances of this multiparm.
 
             Returns an empty tuple if this parameter is not for a multiparm.
+
+
+        """
+    def insertMultiParmInstance(self, inst_index: int) -> None:
+        """
+
+        insertMultiParmInstance(self, index)
+
+            If this parameter corresponds to the number of instances for a
+            multiparm, insert a new multi parm instance before the given index.
+            To append a new multi parm instance, set the index to be the current
+            number of instances. The current number can be queried by calling
+            evalAsInt on the this parameter.
+
+
+        """
+    def removeMultiParmInstance(self, inst_index: int) -> None:
+        """
+
+        removeMultiParmInstance(self, index)
+
+            If this parameter corresponds to the number of instances for a
+            multiparm, remove the multi parm instance at the given index.
+
+
+        """
+    def moveMultiParmInstances(self, moves: Sequence[int]) -> None:
+        """
+
+        moveMultiParmInstances(self, moves)
+
+            If this parameter corresponds to the number of instances for a
+            multiparm, perform a sequence of move operations on Multi Parm
+            Instances. The 'moves' argument must be an array of integers
+            containing an even number of entries. Entries at the odd-numbered
+            array positions represent a 'from' multi parm index. Entries at the
+            even-numbered array positions represent the associated 'to' multi
+            parm index.
+
+          * To move the instance at index 2 up, 'moves' should be [2,3].
+
+          * To move the instance at index 2 down, 'moves' should be [2,1].
+
+          * To move the instance at index 0 to position 2, 'moves' should be
+            [0,2].
+
+            You can move multiple parm instances in one operation:
+
+          * To move the first 2 instances at index 0 and 1 up to index 1,
+            'moves' should be [0,1, 1,2].
+
+            This function will raise a hou.PermissionError exception if writing
+            to the specified parameter is impossible.
+
+            This function will raise a hou.Error exception with descriptive text
+            if the 'moves' argument doesn't have an even number of entries or if
+            an index is invalid.
+
+
+        """
+    def moveUpMultiParmInstance(self, inst_index: int) -> None:
+        """
+
+        moveUpMultiParmInstance(self, index)
+
+            If this parameter corresponds to the number of instances for a
+            multiparm, perform a move up operation on a Multi Parm Instance at
+            the given index.
+
+            This function will raise a hou.PermissionError exception if writing
+            to the specified parameter is impossible.
+
+            This function will raise a hou.Error exception if the index is
+            invalid or is the last index or the only index.
+
+
+        """
+    def moveDownMultiParmInstance(self, inst_index: int) -> None:
+        """
+
+        moveDownMultiParmInstance(self, index)
+
+            If this parameter corresponds to the number of instances for a
+            multiparm, perform a move down operation on a Multi Parm Instance at
+            the given index.
+
+            This function will raise a hou.PermissionError exception if writing
+            to the specified parameter is impossible.
+
+            This function will raise a hou.Error exception if the index is
+            invalid or is the first index or the only index.
 
 
         """
@@ -64370,6 +69022,18 @@ class ParmTuple:
           >     parm_template.hide(not visible)
           >     parm_template_group.replace(parm_tuple.name(), parm_template)
           >     definition.setParmTemplateGroup(parm_template_group)
+
+        """
+    def isVisible(self) -> bool:
+        """
+
+        isVisible(self) -> bool
+
+            Returns whether this parameter is visible in the parameter dialog
+            for this node. It checks both the parameter's template, and the
+            hidden state of the parameter base on the parameter's hide_when
+            expression.
+
 
         """
     def isConstrained(self) -> bool: ...
@@ -64780,7 +69444,7 @@ class PerfMonEvent:
 
         """
     def __enter__(self) -> PerfMonEvent: ...
-    def __exit__(self, type: type[BaseException], value: BaseException, traceback: TracebackType) -> None: ...
+    def __exit__(self, type: type[BaseException]|None, value: BaseException|None, traceback: TracebackType|None) -> None: ...
 
 class PerfMonProfile:
     """
@@ -65915,9 +70579,45 @@ class playbar:
 
         """
     @staticmethod
-    def isSimCacheShown() -> bool: ...
+    def isSimCacheShown() -> bool:
+        """
+
+        isSimCacheShown(self) -> bool
+
+            Return whether or not the Simulaton Cache is currently displayed.
+
+
+        """
     @staticmethod
-    def showSimCache(on: bool) -> None: ...
+    def isAnimCacheShown() -> bool:
+        """
+
+        isAnimCacheShown(self) -> bool
+
+            Return whether or not the Animation Cache is currently displayed.
+
+
+        """
+    @staticmethod
+    def showSimCache(on: bool) -> None:
+        """
+
+        showSimCache(self, show: bool)
+
+            Shows or hides the Simulation Cache.
+
+
+        """
+    @staticmethod
+    def showAnimCache(on: bool) -> None:
+        """
+
+        showAnimCache(self, show: bool)
+
+            Shows or hides the Animation Cache.
+
+
+        """
     @staticmethod
     def isRangeSliderShown() -> bool:
         """
@@ -66911,6 +71611,19 @@ class PointGroup:
 
 
         """
+    def containsNumber(self, index: int) -> bool:
+        """
+
+        containsNumber(self, index) -> bool
+
+            Return whether or not the point with the given index is in this
+            group.
+
+            Raises hou.OperationFailed if the index is not valid for this
+            geometry.
+
+
+        """
     def isOrdered(self) -> bool:
         """
 
@@ -67183,6 +71896,19 @@ class PrimGroup:
 
             Raises hou.OperationFailed if the primitive belongs to a different
             geometry object than this group.
+
+
+        """
+    def containsNumber(self, index: int) -> bool:
+        """
+
+        containsNumber(self, index) -> bool
+
+            Return whether or not the primitive with the given index is in this
+            group.
+
+            Raises hou.OperationFailed if the index is not valid for this
+            geometry.
 
 
         """
@@ -68374,6 +73100,16 @@ class qt:
     # Missing methods added by stubgen
     @staticmethod
     def mainWindow() -> QtWidgets.QMainWindow: ...
+    @staticmethod
+    def fromQColor(qcolor: QtGui.QColor) -> tuple[hou.Color, float]: ...  # type: ignore[name-defined]
+    @staticmethod
+    def getBrush(color_name: str) -> QtGui.QBrush: ...
+    @staticmethod
+    def getColor(color_name: str) -> QtGui.QColor: ...
+    @staticmethod
+    def getCursor(cursor_name: str) -> QtGui.QCursor: ...
+    @staticmethod
+    def toQColor(hom_color: hou.Color, alpha: float = 1.0) -> QtGui.QColor: ...  # type: ignore[name-defined]
 
     # Missing classes added by stubgen
 
@@ -69195,6 +73931,8 @@ class Ramp:
 
         """
     __swig_destroy__: Incomplete
+    def __eq__(self, other: object) -> bool: ...
+    def __ne__(self, other: object) -> bool: ...
     def isColor(self) -> bool:
         """
 
@@ -69571,7 +74309,7 @@ class RedrawBlock:
         """
     __swig_destroy__: Incomplete
     def __enter__(self) -> RedrawBlock: ...
-    def __exit__(self, type: type[BaseException], value: BaseException, traceback: TracebackType) -> None: ...
+    def __exit__(self, type: type[BaseException]|None, value: BaseException|None, traceback: TracebackType|None) -> None: ...
 
 class ReferencePlane:
     """
@@ -69954,11 +74692,107 @@ class RopNode(OpNode):
         """
 
 class SceneGraphTree(PathBasedPaneTab):
-    """
+    '''
 
     hou.SceneGraphTree
 
-    """
+    Pane tab type dedicated to displaying the current LOP scene graph as a
+    tree.
+
+    This pane is used to inspect the scene graph hierarchy as a tree. It
+    also provides control over some aspects of the scene\'s display in the
+    viewport. To learn more about using this pane and its capabilities, see
+    the Scene Graph Tree overview.
+
+    In addition to existing as a standalone pane, the
+    hou.GeometrySpreadsheet pane will show a scene graph tree alongside a
+    Scene Graph Details pane. This subpane can be accessed with
+    hou.GeometrySpreadsheet.sceneGraphTree.
+
+    This pane can be extended with a python API for adding custom columns.
+    The code for these custom columns is only evaluated if the custom column
+    is displayed, and only for those prims that are actually visible in the
+    pane. Once evaluated, the value for each prim is cached unless the tree
+    is pointed at a difference LOP node, the LOP network is modified, or the
+    current time is changed. Then the plugin will be re-evaluated for all
+    prims visible in the tree.
+
+    This code, placed in
+    $HOME/houdini/husdplugins/scenegraphtreecolumns/appliedschemas.py
+    creates a custom column for showing the API schemas applied to each
+    prim:
+
+    > from husd.scenegraphtreecolumn import SceneGraphTreeColumn
+    > 
+    > class AppliedSchemasColumn( SceneGraphTreeColumn ):
+    >     def __init__(self):
+    >         super(AppliedSchemasColumn, self).__init__()
+    > 
+    >     def textIconFontAndColor(self, stage, primpath):
+    >         if stage is not None:
+    >             prim = stage.GetPrimAtPath(primpath)
+    >             if prim:
+    >                 schemas = prim.GetAppliedSchemas()
+    >                 return [\',\'.join(schemas), \'\', \'TreeFontItalic\']
+    >         return [\'\']
+    > 
+    >     def menuLabel(self):
+    >         return \'Applied Schemas\'
+    > 
+    >     def headerTextAndIcon(self):
+    >         return [\'Applied Schemas\']
+    > 
+    >     def columnIndex(self):
+    >         return 1
+    > 
+    > 
+    > def registerColumns(manager):
+    >     manager.registerColumn(\'appliedschemas\', AppliedSchemasColumn)
+
+    This code, placed in
+    $HOME/houdini/husdplugins/scenegraphtreecolumns/geovariant.py creates a
+    custom column for showing the currently selected geo variant for each
+    prim (if that prim has a geo variant set):
+
+    > from husd.scenegraphtreecolumn import SceneGraphTreeColumn
+    > 
+    > class GeoVariantColumn( SceneGraphTreeColumn ):
+    >     def __init__(self):
+    >         super(GeoVariantColumn, self).__init__()
+    > 
+    >     def textIconFontAndColor(self, stage, primpath):
+    >         if stage is not None:
+    >             prim = stage.GetPrimAtPath(primpath)
+    >             if prim:
+    >                 vsets = prim.GetVariantSets()
+    >                 if vsets and vsets.HasVariantSet(\\"geo\\"):
+    >                     vs = vsets.GetVariantSet(\\"geo\\")
+    >                     if vs:
+    >                         vsel = vs.GetVariantSelection()
+    >                         if vsel:
+    >                             return [vsel, \\"\\", \\"TreeFont\\"]
+    >                         else:
+    >                             return [\\"default\\", \\"\\", \\"TreeFontItalic\\"]
+    >         return [\'\']
+    > 
+    >     def menuLabel(self):
+    >         return \'Geo Variant\'
+    > 
+    >     def headerTextAndIcon(self):
+    >         return [\'Geo Variant\']
+    > 
+    >     def columnIndex(self):
+    >         return 1
+    > 
+    > 
+    > def registerColumns(manager):
+    >     manager.registerColumn(\'geovariant\', GeoVariantColumn)
+
+    These methods and the rest of the plugin API are described in the python
+    module $HFS/houdini/python3.11libs/husd/scenegraphtreecolumn.py.
+
+
+    '''
     thisown: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
@@ -70898,6 +75732,26 @@ class SceneViewer(PathBasedPaneTab):
 
 
         """
+    def isSnappingToDrawables(self) -> bool:
+        """
+
+        isSnappingToDrawables(self) -> bool
+
+            Returns whether snapping to drawables is enabled for the current
+            snapping mode.
+
+
+        """
+    def setSnapToDrawables(self, on: bool) -> None:
+        """
+
+        setSnapToDrawables(self, on)
+
+            Sets whether or not snapping to drawables is enabled for the current
+            snapping mode.
+
+
+        """
     def isDepthSnapping(self) -> bool:
         """
 
@@ -71684,6 +76538,16 @@ class SceneViewer(PathBasedPaneTab):
 
 
         """
+    def toggleStateDialogWindow(self) -> bool:
+        """
+
+        toggleStateDialogWindow(self) -> bool
+
+            Toggle the dialog window of the current viewer state. Returns True
+            if the dialog window is now open, or False if it is now closed.
+
+
+        """
     def showOperationBar(self, on: bool) -> None:
         """
 
@@ -71812,10 +76676,10 @@ class SceneViewer(PathBasedPaneTab):
 
 
         """
-    def setGeometryVisibility(self, sop: SopNode, on: bool) -> None:
+    def setGeometryVisibility(self, op: OpNode, on: bool) -> None:
         """
 
-        setGeometryVisibility(self, sop_node, on)
+        setGeometryVisibility(self, op_node, on)
 
             Control a viewport visibility override for a given geometry node.
             This can be used by a Python State to temporary hide the viewport
@@ -71823,18 +76687,19 @@ class SceneViewer(PathBasedPaneTab):
             drawables. The viewport geometry visibility doesn't persist and is
             reverted to True when switching the display flag or reselecting
             nodes. Raises hou.InvalidInput if the geometry isn't in the current
-            viewport.
+            viewport, or if op_node is neither a hou.SopNode nor hou.CopNode.
 
 
         """
-    def geometryVisibility(self, sop: SopNode) -> bool:
+    def geometryVisibility(self, op: OpNode) -> bool:
         """
 
-        geometryVisibility(self, sop_node)
+        geometryVisibility(self, op_node)
 
             Return False if setGeometryVisibility was called to hide the
             geometry or True otherwise. Raises hou.InvalidInput if the geometry
-            isn't in the current viewport.
+            isn't in the current viewport, or if op_node is neither a
+            hou.SopNode nor hou.CopNode.
 
 
         """
@@ -72496,6 +77361,20 @@ class SceneViewer(PathBasedPaneTab):
 
 
         """
+    def showHydraProcedurals(self, enable: bool, renderer: Optional[str] = None) -> None:
+        """
+
+        showHydraProcedurals(self, show_hydra_procedurals, renderer = None)
+
+            Enable or disable the display of Hydra procedurals in the viewport
+            in LOPs.
+
+            This value is stored separately for each renderer. If renderer is
+            None, the value for the currently selected renderer is set.
+            Otherwise renderer is a string indicating the name of the renderer.
+
+
+        """
     def showingProxyPurpose(self, renderer: Optional[str] = None) -> bool:
         """
 
@@ -72583,11 +77462,70 @@ class SceneViewer(PathBasedPaneTab):
 
         showingMaterials(self, renderer = None) -> bool
 
-            Return True if the display of materials in LOP viewport is enabled.
+            Return True if the display of materials in the LOP viewport is
+            enabled.
 
             This value is stored separately for each renderer. If renderer is
             None, the value for the currently selected renderer is set.
             Otherwise renderer is a string indicating the name of the renderer.
+
+
+        """
+    def showingHydraProcedurals(self, renderer: Optional[str] = None) -> bool:
+        """
+
+        showingHydraProcedurals(self, renderer = None) -> bool
+
+            Return True if the display of Hydra procedurals in the LOP viewport
+            is enabled.
+
+            This value is stored separately for each renderer. If renderer is
+            None, the value for the currently selected renderer is set.
+            Otherwise renderer is a string indicating the name of the renderer.
+
+
+        """
+    def setExtraCameras(self, cam_names: Sequence[str]) -> None:
+        """
+
+        setExtraCameras(cameras: list[str])
+
+            Provide a list of camera names that the state is creating. The state
+            should pass the transform and parameters of the camera to a viewport
+            when updateCameraDrawable(kwargs) is called (with viewport, viewer,
+            and camera as string parameters, and time as a double). The
+            parameters should be set by calling
+            hou.GeometryViewer.setCameraParms. Python states should remove the
+            cameras when the state exits.
+
+
+        """
+    def extraCameras(self) -> Tuple[str, ...]:
+        """
+
+        extraCameras() -> list[str]
+
+            Returns a list of all the extra cameras that were registered with
+            setExtraCameras.
+
+
+        """
+    @staticmethod
+    def pinCamera(cam_name: str, pin: bool) -> None:
+        """
+
+        pinCamera(camera, pin_flag)
+
+            Pin (pin_flag is True) or unpin (False) a camera to the Scene
+            Viewer. Pinned cameras appear in the camera list regardless of the
+            network the Scene View is looking at. Object cameras only require
+            the op path of the camera object for the camera name; SOP, COP, and
+            LOP cameras require the op path of the op containing the camera
+            prim, plus the name of the camera prim, separated by a colon (eg,
+            /path/to/op/node:camera_name).
+
+            This function is static and can be called without a SceneViewer
+            object.
 
 
         """
@@ -72710,8 +77648,8 @@ class SceneViewer(PathBasedPaneTab):
     def bindViewerHandle(self, handle_type: str, name: str, settings: str|None = ..., cache_previous_parms: bool = ..., handle_parms: Sequence[str]|None = ...) -> None:
         """
 
-        bindViewerHandle(self, handle_type, name, settings=None,
-        cache_previous_parms=False, handle_parms=None)
+        bindViewerHandle(self, handle_type: str, handle_instance_name: str,
+        settings=None, cache_previous_parms=False, handle_parms=None)
 
             Binds a dynamic viewer handle to the current viewer state similarly
             to hou.ViewerStateTemplate.bindHandle. Unlike bindHandle though,
@@ -72761,7 +77699,8 @@ class SceneViewer(PathBasedPaneTab):
     def bindViewerHandleStatic(self, handle_type: str, name: str, bindings: Sequence[str], settings: str|None = ...) -> None:
         '''
 
-        bindViewerHandleStatic(self, handle_type, name, bindings, settings=None)
+        bindViewerHandleStatic(self, handle_type: str, handle_instance_name:
+        str, bindings: List[tuple[str, str]], settings=None)
 
             Binds a static viewer handle to the current viewer state similarly
             to hou.ViewerStateTemplate.bindHandleStatic. Unlike bindHandleStatic
@@ -72914,7 +77853,7 @@ class ScriptEvalContext:
 
         """
     def __enter__(self) -> ScriptEvalContext: ...
-    def __exit__(self, type: type[BaseException], value: BaseException, traceback: TracebackType) -> None: ...
+    def __exit__(self, type: type[BaseException]|None, value: BaseException|None, traceback: TracebackType|None) -> None: ...
 
 class Selection:
     """
@@ -74931,7 +79870,7 @@ class StringKeyframe(BaseKeyframe):
 
     """
     thisown: Incomplete
-    def __init__(self, expression: str|None = ..., time: float|None = ..., language: EnumValue|None = ...) -> None:
+    def __init__(self, expression: str|Keyframe|StringKeyframe|None = ..., time: float|None = ..., language: EnumValue|None = ...) -> None:
         """
 
         hou.StringKeyframe
@@ -76568,6 +81507,24 @@ class text:
 
         """
     @staticmethod
+    def parseNumericPattern(*args) -> Tuple[int, ...]:
+        """
+
+        parseNumericPattern(pattern: str, max: int = 2^32) -> tuple[int]
+
+            Given a numeric pattern akin to the ones used by groups like
+            0-67:2,3 ^8, returns a tuple of the indices represented by that
+            pattern. The max default argument sets the upper bound of the
+            elements' range. Setting max to 5 means no integer bigger or equal
+            to 5 will be added to the returned tuple.
+
+          > >>> hou.text.parseNumericPattern('0-7 ^0-5')
+          > (6, 7)
+          > >>> hou.text.parseNumericPattern('6-9', 8)
+          > (6, 7)
+
+        """
+    @staticmethod
     def variableName(str: str, safe_chars: Optional[str] = None) -> str:
         '''
 
@@ -76587,6 +81544,72 @@ class text:
           > \'foo:_bar\'
 
         '''
+    @staticmethod
+    def isValidVariableName(str: str, safe_chars: Optional[str] = None) -> bool:
+        '''
+
+        isValidVariableName(str, safe_chars=\\"\\") -> bool
+
+            Returns True is the string is valid to use as a variable or node
+            name. The optional safe_chars argument specifies a string with any
+            extra characters that should not be converted to underscores.
+
+          > >>> hou.text.isValidVariableName(\'foobar\')
+          > True
+          > >>> hou.text.isValidVariableName(\'foo:bar\')
+          > False
+          > >>> hou.text.isValidVariableName(\'123\')
+          > False
+          > >>> hou.text.isValidVariableName(\'foo:bar\', safe_chars=\\":\\")
+          > True
+
+        '''
+    @staticmethod
+    def packedFolderName(str: str) -> str:
+        """
+
+        packedFolderName(str) -> str
+
+            Returns a string that is valid to use as a packed folder name.
+
+            A valid packed folder name contains alphanumeric, forward slashes,
+            dots and columns characters.
+
+            The plus and minus sign characters aren`t valid because it conflicts
+            with pattern matching expressions.
+
+            The name doesnt need to start with a slash to be valid. The name can
+            also start with a number or slash and still be valid unlike
+            variableName`.
+
+          > >>> hou.text.packedFolderName('foo.bar')
+          > 'foo.bar'
+          > >>> hou.text.packedFolderName('123.shp')
+          > '123.shp'
+          > >>> hou.text.packedFolderName('foo:?bar')
+          > 'foo:_bar'
+          > >>> hou.text.packedFolderName('/animation/electra - 001.clip')
+          > '/animation/electra - 001.clip'
+
+        """
+    @staticmethod
+    def isValidPackedFolderName(str: str) -> bool:
+        """
+
+        isValidPackedFolderName(str) -> bool
+
+            Returns True is the string is valid to use as a packed folder name.
+
+          > >>> hou.text.isValidPackedFolderName('foo.bar')
+          > True
+          > >>> hou.text.isValidPackedFolderName('123.shp')
+          > True
+          > >>> hou.text.isValidPackedFolderName('foo:?bar')
+          > False
+          > >>> hou.text.isValidPackedFolderName('/animation/electra - 001.clip')
+          > False
+
+        """
     @staticmethod
     def compareVersionString(str1: str, str2: str) -> int:
         """
@@ -78098,6 +83121,17 @@ class ui:
             Return all the desktops.
 
             See hou.Desktop.setAsCurrent for an example.
+
+
+        """
+    @staticmethod
+    def desktopNames() -> Tuple[str, ...]:
+        """
+
+        desktopNames() -> tuple of str
+
+            Return the names of all the desktops. This does not force the load
+            of any unloaded desktops, unlike hou.ui.desktops.
 
 
         """
@@ -80502,152 +85536,20 @@ class ui:
     def openPreferences(page: str, label: str) -> None:
         """
 
-        openPreferences(page)
+        openPreferences(page, label)
 
-            Open the preferences dialog and show the given page.
+            Opens the preferences window.
 
+            The possibly values for <page> are: ui, network, view (or viewport),
+            tab_menu (or shelves), desktop, anim, solaris, geometry (or
+            objsops), handles, motion_path, apex_handles, apex_controls,
+            overlays (or hud), hud_handles, ocio, scripting, syntax_colors,
+            help, general (or misc), warnings, or chops.
 
-            page
-                A string that specifies the preference page to open. When there
-                are tabs under the page, page:tab notation is used.
 
-                The following values are supported:
-
-                ui
-
-                General User Interface
-
-                network
-
-                Network Editor
-
-                viewport
-
-                3D Viewports
-
-                shelves
-
-                Shelf Tools and Tab Menu
-
-                takes
-
-                Takes
-
-                anim
-
-                Animation
-
-                lighting
-
-                Lighting
-
-                rendering
-
-                Rendering
-
-                handles
-
-                Handles
-
-                hud
-
-                HUD Info
-
-                hud_handles
-
-                HUD Handles
-
-                states
-
-                Interactive Tools
-
-                objsops
-
-                Objects and Geometry
-
-                objsops:preferences
-
-                Objects and Geometry > Preferences
-
-                objsops:sop_cache
-
-                Objects and Geometry > SOP Cache
-
-                objsops:obj_cache
-
-                Objects and Geometry > OBJ Cache
-
-                chops
-
-                Motion and Audio
-
-                composites
-
-                Compositing
-
-                composites:cache
-
-                Compositing > Cache
-
-                composites:cooking
-
-                Compositing > Cooking
-
-                composites:interactive
-
-                Compositing > Interactive
-
-                composites:selectors
-
-                Compositing > Selectors
-
-                composites:names
-
-                Compositing > Names
-
-                composites:colors
-
-                Compositing > Colors
-
-                composites:cineon
-
-                Compositing > Cineon
-
-                scripting
-
-                Scripting
-
-                resmgr
-
-                Desktops and Toolbars
-
-                persistence
-
-                Save and Load Options
-
-                hipoptions
-
-                Hip File Options
-
-                warnings
-
-                Warning Dialogs
-
-                notifications
-
-                Notifications
-
-                perfmon
-
-                Performance Options
-
-                exttools
-
-                External Tools
-
-                misc
-
-                Miscellaneous
+            NOTE
+                Since the preferences changed in Houdini 22.0, the old values
+                accepted for the page argument may not work.
 
 
         """
@@ -80673,6 +85575,36 @@ class ui:
             pane tabs ,menus , the shelf dock or toolbars will be hidden. It
             also affect the split bars of split panes, in which case, the split
             is rendered using a single pixel line.
+
+
+        """
+    @staticmethod
+    def setFullscreen(fullscreen: bool) -> None:
+        """
+
+        setFullscreen(self,fullscreen)
+
+            Set the fullscreen flag on the top Houdini window.
+
+
+        """
+    @staticmethod
+    def isFullscreen() -> bool:
+        """
+
+        isFullscreen(self) -> bool
+
+            Returns the fullscreen flag of the top Houdini window.
+
+
+        """
+    @staticmethod
+    def toggleFullscreen() -> None:
+        """
+
+        toggleFullscreen(self)
+
+            Toggles the fullscreen flag on the top Houdini window.
 
 
         """
@@ -80989,8 +85921,8 @@ class ui:
 
             Return the hou.AssetGalleryDataSource object that is currently being
             used to populate the asset catalog browsers spcified by
-            gallery_name. The built in shared galleries are 'layout' for Layout
-            LOP and 'material' for Material LOP .
+            gallery_name. The built in shared galleries are 'layout' for Paint
+            Instances LOP and 'material' for Material LOP .
 
 
         """
@@ -81002,8 +85934,8 @@ class ui:
 
             Set the hou.AssetGalleryDataSource object that should be used to
             populate the asset catalog browsers spcified by gallery_name. The
-            built in shared galleries are 'layout' for Layout LOP and 'material'
-            for Material LOP .
+            built in shared galleries are 'layout' for Paint Instances LOP and
+            'material' for Material LOP .
 
 
         """
@@ -82417,7 +87349,7 @@ class UndosDisabler:
     def __init__(self, *args, **kwargs) -> None: ...
     __swig_destroy__: Incomplete
     def __enter__(self) -> UndosDisabler: ...
-    def __exit__(self, type: type[BaseException], value: BaseException, traceback: TracebackType) -> None: ...
+    def __exit__(self, type: type[BaseException]|None, value: BaseException|None, traceback: TracebackType|None) -> None: ...
 
 class UndosGroup:
     """
@@ -82445,7 +87377,7 @@ class UndosGroup:
 
         """
     def __enter__(self) -> UndosGroup: ...
-    def __exit__(self, type: type[BaseException], value: BaseException, traceback: TracebackType) -> None: ...
+    def __exit__(self, type: type[BaseException]|None, value: BaseException|None, traceback: TracebackType|None) -> None: ...
 
 class VDB(Prim):
     """
@@ -84072,6 +89004,19 @@ class VertexGroup:
 
 
         """
+    def containsNumber(self, index: int) -> bool:
+        """
+
+        containsNumber(self, linear_number) -> bool
+
+            Return whether or not the vertex with the given linear number is in
+            this group.
+
+            Raises hou.OperationFailed if the linear vertex number is not valid
+            for this geometry.
+
+
+        """
     def isOrdered(self) -> bool:
         """
 
@@ -84638,6 +89583,171 @@ class ViewerDragger:
 
         """
 
+class ViewerDragger2D:
+    """
+
+    hou.ViewerDragger2D
+
+    A class that supports interactive dragging operations for Python viewer
+    handles and Python viewer states in a 2D space.
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, *args, **kwargs) -> None: ...
+    __swig_destroy__: Incomplete
+    def update(self, event: UIEvent) -> bool:
+        """
+
+        update(self, ui_event)
+
+            Updates the dragger using the current frame's ui_event.
+
+
+            ui_event
+                A hou.ViewerEvent object containing UI event information. This
+                is typically the object passed by Houdini to a Python handle or
+                Python state's onMouseEvent callback.
+
+
+        """
+    def valid(self) -> bool:
+        """
+
+        valid(self)
+
+            Returns True if the dragger is ready to use or False otherwise. The
+            dragger startDrag() method must be called first to make a dragger
+            usable.
+
+
+        """
+    def startDrag(self, *args, **kwargs) -> None:
+        """
+
+        startDrag(self, start_pos, radius=0.0, orient=None, plane_dir=None)
+
+            Initializes the dragger before any drag operations take place.
+
+
+            start_pos
+                A hou.Vector3 object describing the start position of the drag
+                operation on the dragger plane, in world-space coordinates.
+
+            radius
+                The radius of the rotation ring used by dragRotate().
+
+            orient
+                A hou.Matrix3 object representing the orientation in which the
+                dragger operates. Defaults to the identity matrix.
+
+            plane_dir
+                A hou.Vector3 object defining the normal of the plane in which
+                the dragger operates. Defaults to hou.Vector3(0,0,1).
+
+
+        """
+    def endDrag(self) -> None:
+        """
+
+        endDrag(self)
+
+            Ends the current drag operation by releasing any cached data and
+            other temporary state used by the dragger.
+
+
+        """
+    def dragXY(self) -> ViewerDragger2D.DragValueMap:  # type: ignore[name-defined]
+        """
+
+        dragXY(self)
+
+            Moves the mouse within the dragger plane defined by startDrag().
+            When [LMB] is pressed and the mouse is moving, the dragger
+            constrains the mouse position to the plane.
+
+
+        """
+    def dragAlongX(self) -> ViewerDragger2D.DragValueMap:  # type: ignore[name-defined]
+        """
+
+        dragAlongX(self)
+
+            Moves the mouse along the X axis defined by the start position and
+            orientation specified in startDrag(). When the axis is picked with
+            [LMB] and the mouse is moving, the dragger constrains the mouse
+            movement to the direction of the axis.
+
+
+        """
+    def dragAlongY(self) -> ViewerDragger2D.DragValueMap:  # type: ignore[name-defined]
+        """
+
+        dragAlongY(self)
+
+            Moves the mouse along the Y axis defined by the start position and
+            orientation specified in startDrag(). When the axis is picked with
+            [LMB] and the mouse is moving, the dragger constrains the mouse
+            movement to the direction of the axis.
+
+
+        """
+    def dragRotate(self) -> ViewerDragger2D.DragValueMap:  # type: ignore[name-defined]
+        """
+
+        dragRotate(self)
+
+            Moves the mouse in a rotational manner, similar to dragging a
+            rotation ring, around the center point defined by startDrag(). When
+            the ring is picked with [LMB] and the mouse is moving, the dragger
+            constrains the mouse movement to a circular path.
+
+
+        """
+    def position(self) -> Vector3:
+        """
+
+        position(self) -> hou.Vector3
+
+            Returns the absolute mouse position for the current drag operation
+            in world-space coordinates. The returned value is relevant for the
+            following operations: hou.ViewerDragger2D.dragXY,
+            hou.ViewerDragger2D.dragAlongX, and hou.ViewerDragger2D.dragAlongY.
+
+
+        """
+    def startPosition(self) -> Vector3:
+        """
+
+        startPosition(self) -> hou.Vector3
+
+            Returns the start position used to configure the current drag
+            operation. For the hou.ViewerDragger2D.dragRotate operation, the
+            returned value represents the center of rotation.
+
+
+        """
+    def startDirection(self) -> Vector3:
+        """
+
+        startDirection(self) -> hou.Vector3
+
+            Returns the start direction used for configuring the current drag
+            operation.
+
+
+        """
+    def startRotatePosition(self) -> Vector3:
+        """
+
+        startRotatePosition(self) -> hou.Vector3
+
+            Returns the start position on the rotation ring for the
+            hou.ViewerDragger2D.dragRotate operation.
+
+
+        """
+
 class ViewerEvent(UIEvent):
     """
 
@@ -84662,7 +89772,7 @@ class ViewerEvent(UIEvent):
 
     """
     thisown: Incomplete
-    def __init__(self, sceneViewer: SceneViewer, val: int, val2: int) -> None:
+    def __init__(self, scene_viewer: SceneViewer, val: int, val2: int) -> None:
         """
 
         hou.ViewerEvent
@@ -84885,6 +89995,8 @@ class ViewerStateContext(GadgetContext):
 
         A hou.ViewerStateContext holds the contextual information related to
         the running viewer state such as the gadget drawable bindings.
+        Viewer state implementations can access their context instance
+        through the state_context data member.
 
     RELATED
 
@@ -84904,6 +90016,8 @@ class ViewerStateContext(GadgetContext):
 
             A hou.ViewerStateContext holds the contextual information related to
             the running viewer state such as the gadget drawable bindings.
+            Viewer state implementations can access their context instance
+            through the state_context data member.
 
         RELATED
 
@@ -84912,6 +90026,45 @@ class ViewerStateContext(GadgetContext):
 
         """
     __swig_destroy__: Incomplete
+    def postScale(self) -> Vector3:
+        """
+
+        postScale(self) -> hou.Vector3
+
+            Return the post-scale vector used during rendering to position
+            hou.Drawable2D objects. See hou.Drawable2D for details.
+
+
+        """
+    def postTransform(self) -> Matrix4:
+        """
+
+        postTransform(self) -> hou.Matrix4
+
+            Returns the post-transform matrix assigned to hou.Drawable2D
+            objects. See hou.Drawable2D for details.
+
+
+        """
+    def fixedSizeScale(self) -> float:
+        """
+
+        fixedSizeScale() -> double
+
+            Returns the scale factor used to render fixed-size hou.Drawable2D
+            objects when zooming in or out. Use hou.Drawable2D.setFixedSize to
+            enable fixed-size rendering for a drawable.
+
+            See hou.Drawable2D.fixedSizeScale
+
+
+            NOTE
+                Python states can use this value to account for fixed-size
+                scaling when interacting with drawables (e.g., when manipulating
+                guides that rely on fixed-size visuals).
+
+
+        """
 
 class ViewerHandleDragger(ViewerDragger):
     '''
@@ -85008,6 +90161,125 @@ class ViewerHandleDragger(ViewerDragger):
 
         """
     __swig_destroy__: Incomplete
+
+class ViewerHandleDragger2D(ViewerDragger2D):
+    """
+
+    hou.ViewerHandleDragger2D
+
+    Represents a dragger that can be used with Python viewer handles in a 2D
+    space.
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, hpanetab: PaneTab, handle: Handle) -> None:
+        """
+
+        __init__(self, scene_viewer, handle)
+
+            Creates an instance of a 2D handle dragger, such as one used by a
+            COP Python handle.
+
+
+            scene_viewer
+                A reference to the Scene Viewer in which the dragger will be
+                used.
+
+            handle
+                The handle owner associated with this dragger.
+
+
+        """
+    __swig_destroy__: Incomplete
+
+class ViewerStateDragger2D(ViewerDragger2D):
+    """
+
+    hou.ViewerStateDragger2D
+
+    Represents a dragger that can be used with Python viewer states in a 2D
+    space.
+
+    RELATED
+
+        hou.ViewerHandleDragger2D
+
+
+    """
+    thisown: Incomplete
+    def __init__(self, *args, **kwargs) -> None:
+        """
+
+        __init__(self, scene_viewer, xform=hou.Matrix4(1.0),
+        inv_xform=hou.Matrix4(1.0))
+
+            Creates a Python state dragger for use in the Scene Viewer. The
+            dragger can optionally convert its coordinate space relative to
+            another coordinate space. See hou.ViewerDragger2D for more
+            information about viewer draggers.
+
+
+            scene_viewer
+                A reference to the Scene Viewer in which the dragger will be
+                used.
+
+            xform
+                A transform used to convert the dragger's coordinate space.
+                Defaults to the identity matrix.
+
+            inv_xform
+                An inverse transform used to convert coordinates back to the
+                dragger's original coordinate space. Defaults to the identity
+                matrix.
+
+
+        """
+    __swig_destroy__: Incomplete
+    def setTransform(self, xform: Matrix4) -> None:
+        """
+
+        setTransform(self, xform)
+
+            Sets the transform matrix for this dragger.
+
+
+            xform
+                A hou.Matrix4 transformation matrix.
+
+
+        """
+    def setInverseTransform(self, inv_xform: Matrix4) -> None:
+        """
+
+        setInverseTransform(self, inv_xform)
+
+            Sets the inverse transform matrix for this dragger.
+
+
+            inv_xform
+                A hou.Matrix4 transformation matrix.
+
+
+        """
+    def transform(self) -> Matrix4:
+        """
+
+        transform(self) -> hou.Matrix4
+
+            Returns the dragger's transform matrix.
+
+
+        """
+    def inverseTransform(self) -> Matrix4:
+        """
+
+        inverseTransform(self) -> hou.Matrix4
+
+            Returns the dragger's inverse transform matrix.
+
+
+        """
 
 class ViewerHandleContext(GadgetContext):
     """
@@ -85172,7 +90444,7 @@ class ViewerHandleContext(GadgetContext):
           >     if reason == hou.uiEventReason.Start:
           >         if drawable_name == MY_MARKER_DRAWABLE:
           >             self._dragger.startDrag(p1=self.handle_parms[TX], p2=self.handle_parms[TY], 
-          >                 transform_mode=d2d.Drawable2D.TransformMode.PARAMS)
+          >                 transform_mode=d2d.DraggerTransformMode.PARAMS)
           > 
           >     elif reason in [hou.uiEventReason.Active, hou.uiEventReason.Changed]:
           >         if drawable_name == MY_MARKER_DRAWABLE:
@@ -85198,6 +90470,19 @@ class ViewerHandleContext(GadgetContext):
           >     ...
 
         '''
+    def boundParameter(self, parm_name: str) -> str:
+        """
+
+        boundParameter(self, parm_name) -> string
+
+            Returns the name of the node parameter bound to a handle parameter.
+
+
+            parm_name
+                The name of the handle parameter linked to the node parameter.
+
+
+        """
     def objectWorldTransform(self) -> Matrix4:
         """
 
@@ -85213,6 +90498,28 @@ class ViewerHandleContext(GadgetContext):
         objectLocalTransform() -> [Hom:hou.Matrix4]
 
             Returns the local space transform of the handle's parent object.
+
+
+        """
+    def layerTransform(self) -> Matrix4:
+        """
+
+        layerTransform() -> [Hom:hou.Matrix4]
+
+            Returns the image-to-world space transform of the handle's bound
+            node, it's an alternative to hou.ImageLayer.imageToWorldTransform.
+            This method is supported for COP nodes; for other node types,
+            layerTransform() returns the identity matrix.
+
+
+        """
+    def updateLayer(self, hom_layer: ImageLayer) -> None:
+        """
+
+        updateLayer(image_layer)
+
+            Update the handle's image layer used to compute the post transform
+            and post scale for hou.Drawable2D objects.
 
 
         """
@@ -85453,7 +90760,7 @@ class ViewerHandleTemplate:
         """
 
         bindParameter(self, param_type, name, label=None, default_value=None,
-        num_components=1, min_limit=0, max_limit=1, visible=True)
+        help=None, num_components=1, min_limit=0, max_limit=1, visible=True)
 
             Defines a viewer handle visual parameter. A viewer handle
             implementation can expose these parameters to Houdini so users can
@@ -85476,6 +90783,10 @@ class ViewerHandleTemplate:
                 uses to initialize the parameter. The value type should ideally
                 match param_type but Houdini will do its best to convert the
                 type appropriately. Defaults to None.
+
+            help
+                The parameter help that Houdini displays when you hover over the
+                parameter label in the UI.
 
             label
                 The parameter label. If sets to None (default), the label is set
@@ -85548,7 +90859,7 @@ class ViewerHandleTemplate:
     def bindSetting(self, param_type: EnumValue, name: str, label: str|None = ..., menu_as_button_strip: bool = ..., menu_items: Sequence[Tuple[str, str]|Tuple[str, str, str]]|None = ..., num_components: int = ..., default_value: int|float|str|None = ..., min_limit: int = ..., max_limit: int = ..., align: bool = ...) -> None:
         """
 
-        bindSetting(self, param_type, name, label=None,
+        bindSetting(self, param_type, name, help=None, label=None,
         menu_as_button_strip=False, menu_items=None, num_components=1,
         default_value=None, min_limit=0, max_limit=1, align=False)
 
@@ -85588,6 +90899,10 @@ class ViewerHandleTemplate:
                 hou.parmTemplateType.Toggle
 
                 Toggle state as a bool or int.
+
+            help
+                The setting help that Houdini displays when you hover over the
+                setting label in the UI.
 
             name
                 The parameter string identifier. The name cannot be empty and
@@ -85863,7 +91178,7 @@ class ViewerStateDragger(ViewerDragger):
     def transform(self) -> Matrix4:
         """
 
-        transform(self): -> hou.Matrix4
+        transform(self) -> hou.Matrix4
 
             Returns the transform matrix of the dragger.
 
@@ -85872,7 +91187,7 @@ class ViewerStateDragger(ViewerDragger):
     def inverseTransform(self) -> Matrix4:
         """
 
-        inverseTransform(self): -> hou.Matrix4
+        inverseTransform(self) -> hou.Matrix4
 
             Returns the inverse transform matrix of the dragger.
 
@@ -86328,7 +91643,7 @@ class ViewerStateTemplate:
     def bindParameter(self, param_type: EnumValue, name: str|None = ..., label: str|None = ..., menu_as_button_strip: bool = ..., menu_items: Sequence[Tuple[str, str]|Tuple[str, str, str]]|None = ..., num_components: int = ..., default_value: ParmArgType|None = ..., min_limit: int = ..., max_limit: int = ..., align: bool = ..., toolbox: bool = ...) -> None:
         """
 
-        bindParameter(self, param_type, name=None, label=None,
+        bindParameter(self, param_type, name=None, help=None, label=None,
         menu_as_button_strip=False, menu_items=[], num_components=1,
         default_value=None, min_limit=0, max_limit=1, align=False, toolbox=True,
         hide_label=False, button_icon=None)
@@ -86371,6 +91686,10 @@ class ViewerStateTemplate:
                 hou.parmTemplateType.Toggle
 
                 Toggle state as a bool or int.
+
+            help
+                The parameter help that Houdini displays when you hover over the
+                parameter label in the UI.
 
             hide_label
                 A boolean value. If True, the label associated with this
@@ -88703,11 +94022,137 @@ class Volume(Prim):
     def resolution(self) -> Tuple[int, ...]:
         """
 
-        resolution(self) -> hou.Vector3
+        resolution(self) -> tuple of int
 
             Return the x, y, and z dimensions of the volume. For example, a
             resolution of (10, 20, 30) means the volume is 10 voxels in x by 20
             voxels in y by 30 voxels in z.
+
+
+        """
+    def hasWindow(self) -> bool:
+        """
+
+        hasWindow(self) -> bool
+
+            Returns whether this volume has explicit data and display window
+            metadata. If this is False, Houdini uses the default identity
+            windowing behavior.
+
+
+        """
+    def clearWindow(self) -> None:
+        """
+
+        clearWindow(self)
+
+            Clears any explicit data and display window metadata and restores
+            the default identity windowing behavior.
+
+            Raises hou.GeometryPermissionError if this geometry is not
+            modifiable.
+
+
+        """
+    def dataWindowOffset(self) -> Vector3:
+        """
+
+        dataWindowOffset(self) -> hou.Vector3
+
+            Returns the offset of the volume's data window in canonical voxel
+            space.
+
+
+        """
+    def dataWindowSize(self) -> Vector3:
+        """
+
+        dataWindowSize(self) -> hou.Vector3
+
+            Returns the size of the volume's data window in canonical voxel
+            space.
+
+
+        """
+    def displayWindowOffset(self) -> Vector3:
+        """
+
+        displayWindowOffset(self) -> hou.Vector3
+
+            Returns the offset of the volume's display window in canonical voxel
+            space.
+
+
+        """
+    def displayWindowSize(self) -> Vector3:
+        """
+
+        displayWindowSize(self) -> hou.Vector3
+
+            Returns the size of the volume's display window in canonical voxel
+            space.
+
+
+        """
+    def windowVoxelScale(self) -> Vector3:
+        """
+
+        windowVoxelScale(self) -> hou.Vector3
+
+            Returns the scale from the volume's voxel grid into canonical voxel
+            space.
+
+
+        """
+    def setDataWindowOffset(self, offset: Sequence[float]) -> None:
+        """
+
+        setDataWindowOffset(self, offset)
+
+            Sets the offset of the volume's data window in canonical voxel
+            space.
+
+            Raises hou.GeometryPermissionError if this geometry is not
+            modifiable.
+
+
+        """
+    def setDisplayWindowOffset(self, offset: Sequence[float]) -> None:
+        """
+
+        setDisplayWindowOffset(self, offset)
+
+            Sets the offset of the volume's display window in canonical voxel
+            space.
+
+            Raises hou.GeometryPermissionError if this geometry is not
+            modifiable.
+
+
+        """
+    def setDisplayWindowSize(self, size: Sequence[float]) -> None:
+        """
+
+        setDisplayWindowSize(self, size)
+
+            Sets the size of the volume's display window in canonical voxel
+            space.
+
+            Raises hou.GeometryPermissionError if this geometry is not
+            modifiable.
+
+
+        """
+    def setWindowVoxelScale(self, scale: Sequence[float]) -> None:
+        """
+
+        setWindowVoxelScale(self, scale)
+
+            Sets the scale from the volume's voxel grid into canonical voxel
+            space.
+
+            Raises hou.GeometryPermissionError if this geometry is not
+            modifiable.
 
 
         """
@@ -88778,30 +94223,63 @@ class Volume(Prim):
 
 
         """
-    def volumeMax(self) -> float:
+    def computeMax(self, channel: int = 0) -> Any:
         """
 
-        volumeMax(self) -> float
+        computeMax(self, channel=0) -> int or float
 
-            Return the maximum value of all voxels.
-
-
-        """
-    def volumeMin(self) -> float:
-        """
-
-        volumeMin(self) -> float
-
-            Return the minimum value of all voxels.
+            Returns the volume's maximum value across all voxels of the selected
+            'channel'.
 
 
         """
-    def volumeAverage(self) -> float:
+    def computeMin(self, channel: int = 0) -> Any:
         """
 
-        volumeAverage(self) -> float
+        computeMin(self, channel=0) -> int or float
 
-            Return the average value of all voxels.
+            Returns the volume's minimum value across all voxels of the selected
+            'channel'.
+
+
+        """
+    def computeAverage(self, channel: int = 0) -> float:
+        """
+
+        computeAverage(self, channel=0) -> float
+
+            Returns the volume's average value across all voxels of the selected
+            'channel'.
+
+
+        """
+    def volumeMax(self, channel: int = 0) -> Any:
+        """
+
+        volumeMax(self, channel=0) -> int or float
+
+            Returns the volume's maximum value across all voxels of the selected
+            'channel'. This method is the same as hou.Volume.computeMax.
+
+
+        """
+    def volumeMin(self, channel: int = 0) -> Any:
+        """
+
+        volumeMin(self, channel=0) -> int or float
+
+            Returns the volume's minimum value across all voxels of the selected
+            'channel'. This method is the same as hou.Volume.computeMin.
+
+
+        """
+    def volumeAverage(self, channel: int = 0) -> float:
+        """
+
+        volumeAverage(self, channel=0) -> float
+
+            Returns the volume's average value across all voxels of the selected
+            'channel'. This method is the same as hou.Volume.computeAverage.
 
 
         """
@@ -90611,6 +96089,116 @@ def nodeConnectionBySessionId(session_id: int, input_index: int) -> Optional[Nod
       * hou.nodeBySessionId
 
       * hou.Node.sessionId
+
+
+    """
+def uniNodeBySessionId(session_id: int) -> Optional[UniNode]:
+    """
+
+    hou.uniNodeBySessionId
+
+    Given an UNI node's session ID, return an UniNode object. Returns None
+    if the ID does not correspond to a valid UNI node (e.g. if the node was
+    deleted).
+
+    USAGE
+      uniNodeBySessionId(session_id) -> hou.UniNode or None
+
+    Returns an UNI node given its ID in the current Houdini session. See
+    hou.UniNode.sessionId for more information.
+
+    > 
+    > >>> uni_node = hou.uniNodeBySessionId(1)
+    > >>> uni_node.sessionId()
+    > 1
+
+    RELATED
+
+      * hou.UniNode
+
+
+    """
+def uniContainerConnectNodeBySessionId(session_id: int, is_container_inputs: bool) -> Optional[UniNode]:
+    """
+
+    hou.uniContainerConnectNodeBySessionId
+
+    Given an UNI node's session ID, return an UniContainerConnectNode
+    object. This presents the inputs or outputs of a subnet node as if it
+    were a hou.UniNode inside the subnet.
+
+    USAGE
+      uniNodeConnectionBySessionId(subnet_id, in_container_inputs) ->
+      hou.UniContainerConnectNode or None
+
+    Returns an UNI node-like object that can be wired to nodes inside the
+    subnet. But instead of representing a real node inside the subnet,
+    connections to this object actually connect the contained nodes to the
+    input or output connectors on the container subnet node. This is how
+    connections can be made from outside a subnet to nodes inside the subnet
+    without require the indirection through hou.SubnetIndirectInput objects
+    inside the subnet like hou.OpNode subnets.
+
+    > 
+    > >>> uni_container_connect = hou.uniContainerConnectNodeBySessionId(hou.uniNodeBySessionId(1), True)
+    > >>> uni_container_connect.outputConnectors()
+
+    RELATED
+
+      * hou.UniNode
+
+
+    """
+def uniNodeConnectionBySessionId(session_id: int) -> Optional[UniNodeConnection]:
+    """
+
+    hou.uniNodeConnectionBySessionId
+
+    Given an UNI wire's session ID, return an UniNodeConnection object.
+    Returns None if the ID does not correspond to a valid UNI wire
+    connection (e.g. if the wire was deleted).
+
+    USAGE
+      uniNodeConnectionBySessionId(session_id) -> hou.UniNodeConnection or
+      None
+
+    Returns an UNI node wire connection given its ID in the current Houdini
+    session. See hou.UniNodeConnection.sessionId for more information.
+
+    > 
+    > >>> uni_wire = hou.uniNodeConnectionBySessionId(1)
+    > >>> uni_wire.sessionId()
+    > 1
+
+    RELATED
+
+      * hou.UniNodeConnection
+
+
+    """
+def uniStickyNoteBySessionId(session_id: int) -> Optional[UniStickyNote]:
+    """
+
+    hou.uniStickyNoteBySessionId
+
+    Given an UNI sticky note's session ID, return an UniStickyNote object.
+    Returns None if the ID does not correspond to a valid UNI sticky note
+    (e.g. if the note was deleted).
+
+    USAGE
+      uniStickyNoteBySessionId(session_id) -> hou.UniStickyNote or None
+
+    Returns an UNI sticky note given its ID in the current Houdini session.
+    See hou.UniStickyNote.sessionId for more information.
+
+    > 
+    > >>> uni_note = hou.uniStickyNoteBySessionId(1)
+    > >>> uni_note.sessionId()
+    > 1
+
+    RELATED
+
+      * hou.UniStickyNote
 
 
     """
@@ -92719,19 +98307,6 @@ def dataNodeTypeCategory() -> OpNodeTypeCategory:
 
 
     """
-def nodeTypeCategories() -> dict[str, NodeTypeCategory]:
-    """
-
-    hou.nodeTypeCategories
-
-    Return a dictionary where the keys are the category names (e.g. Object,
-    Sop) and the values are hou.NodeTypeCategory objects.
-
-    USAGE
-      nodeTypeCategories() -> dict of str to hou.NodeTypeCategory
-
-
-    """
 def apexNodeTypeCategory() -> ApexNodeTypeCategory:
     """
 
@@ -92741,6 +98316,42 @@ def apexNodeTypeCategory() -> ApexNodeTypeCategory:
 
     USAGE
       apexNodeTypeCategory() -> NodeTypeCategory
+
+
+    """
+def nodeTypeCategories(include_uni_categories: bool = False, include_op_categories: bool = True) -> dict[str, NodeTypeCategory]:
+    """
+
+    hou.nodeTypeCategories
+
+    Return a dictionary where the keys are the category names (e.g. Object,
+    Sop) and the values are hou.NodeTypeCategory objects.
+
+    USAGE
+      nodeTypeCategories(include_uni_categories=False,
+      include_op_categories=True) -> dict of str to hou.NodeTypeCategory
+
+    RELATED
+
+      * hou.nodeTypeCategory
+
+
+    """
+def nodeTypeCategory(category_name: str) -> NodeTypeCategory:
+    """
+
+    hou.nodeTypeCategory
+
+    Return a node type category for the given name.
+
+    USAGE
+      nodeTypeCategory(category_name) -> hou.NodeTypeCategory
+
+    May thorw an exeption if there is no category by that name.
+
+    RELATED
+
+      * hou.nodeTypeCategory
 
 
     """
@@ -92940,6 +98551,10 @@ def time() -> float:
 
       * hou.fps
 
+      * hou.timeTolerance
+
+      * hou.frameTolerance
+
 
     """
 def setTime(time: float) -> None:
@@ -93019,6 +98634,10 @@ def frame(full_precision: bool = False) -> float:
       * hou.time
 
       * hou.fps
+
+      * hou.timeTolerance
+
+      * hou.frameTolerance
 
 
     """
@@ -93173,6 +98792,52 @@ def frameToTime(frame: float) -> float:
       * hou.time
 
       * hou.frame
+
+
+    """
+def timeTolerance() -> float:
+    """
+
+    hou.timeTolerance
+
+    Returns the floating point tolerance to use when comparing time values.
+
+    USAGE
+      timeTolerance() -> float
+
+    RELATED
+
+      * hou.fps
+
+      * hou.time
+
+      * hou.frame
+
+      * hou.frameTolerance
+
+
+    """
+def frameTolerance() -> float:
+    """
+
+    hou.frameTolerance
+
+    Returns the floating point tolerance to use when comparing frame values.
+
+    USAGE
+      frameTolerance() -> float
+
+    The frame tolerance changes with the global scene framerate.
+
+    RELATED
+
+      * hou.fps
+
+      * hou.time
+
+      * hou.frame
+
+      * hou.timeTolerance
 
 
     """
