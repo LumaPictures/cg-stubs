@@ -252,7 +252,7 @@ class MayaCmdAdvSignatureGenerator(AdvancedSignatureGenerator):
             ("maya.cmds.loadPlugin", "*"): "None",
             ("maya.cmds.ls", "*"): "list[str]",
             ("maya.cmds.objExists", "*"): "bool",
-            ("maya.cmds.rename", "*"): "None",
+            ("maya.cmds.rename", "*"): "str",
             ("maya.cmds.setAttr", "*"): "None",
             ("maya.cmds.setKeyframe", "*"): "None",
             ("maya.cmds.undo", "*"): "None",
