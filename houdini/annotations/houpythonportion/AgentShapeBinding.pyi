@@ -1,0 +1,3 @@
+import hou
+
+def isAttachedToTransform(self: hou.AgentShapeBinding) -> bool: ...

@@ -1,0 +1,18 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+import hou
+from collections.abc import Callable as Callable, Sequence
+from hutil.Qt import QtWidgets
+
+class UiDropDownMenu(QtWidgets.QWidget):
+    label: QtWidgets.QLabel
+    combobox: hou.qt.ComboBox
+    def __init__(self, label: str = '') -> None: ...
+    def repopulate(self, new_list: Sequence[str]) -> None:
+        """repopulate the list of the menu to the given list"""
+    def addOnSelectionChangedCallbacks(self, fxn: Callable[[str], object]) -> None:
+        """Add a callback that accepts a string as its argument"""
+    def clear(self) -> None: ...
+    def getItem(self, idx: int) -> str: ...
+    def setText(self, text: str) -> None: ...
+    def setCurrentIndex(self, idx: int) -> None: ...

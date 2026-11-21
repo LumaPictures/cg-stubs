@@ -1,0 +1,26 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+from types import TracebackType
+from typing import Self
+
+from typing import TypeAlias
+from numpy.typing import NDArray
+from typing import TypeAlias
+import numpy as np
+import os
+_StrPath: TypeAlias = str | os.PathLike[str]
+_TensorArray: TypeAlias = NDArray[np.float32 | np.float16 | np.int8 | np.uint8]
+VERSION: tuple[int, int]
+
+class Writer:
+    def __init__(self, filename: _StrPath) -> None: ...
+    def __enter__(self) -> Self: ...
+    def __exit__(self, type: type[BaseException] | None, value: BaseException | None, tb: TracebackType | None) -> None: ...
+    def write(self, name: str, tensor: _TensorArray, layout: str) -> None: ...
+    def close(self) -> None: ...
+
+class Reader:
+    filename: _StrPath
+    def __init__(self, filename: _StrPath) -> None: ...
+    def __len__(self) -> int: ...
+    def __getitem__(self, name: str) -> tuple[_TensorArray, str]: ...

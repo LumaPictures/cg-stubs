@@ -1,0 +1,3 @@
+from houtypes import ShelfToolKwargs
+
+def skySource(kwargs: ShelfToolKwargs) -> None: ...

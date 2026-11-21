@@ -1,0 +1,16 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+import hou
+from . import utils as utils
+from .. import rtypes as rtypes
+from houtypes import JSONLike
+from hutil.pprint import pprint as pprint
+from typing import Any, Sequence
+
+typed_dict_chooser_for_properties: dict[rtypes.RecipeCategory, type[rtypes.ParmPresetOptionsData] | type[rtypes.NodePresetOptionsData] | type[rtypes.DecorationOptionsData] | type[rtypes.ToolOptionsData]]
+
+def recipeDataForParmPreset(parm: hou.ParmTuple, **opts: Any) -> rtypes.ParmPresetData: ...
+def recipeDataForNodePreset(node: hou.OpNode, **opts: Any) -> rtypes.NodePresetData: ...
+def recipeDataForDecoration(central_node: hou.OpNode, decorator_items: Sequence[hou.NetworkMovableItem], **opts: Any) -> rtypes.DecorationData: ...
+def recipeDataForTool(anchor_node: hou.OpNode, label: str = '', **opts: Any) -> rtypes.ToolData: ...
+def recipeDataForData(data: JSONLike, **opts: Any) -> rtypes.DataRecipeData: ...

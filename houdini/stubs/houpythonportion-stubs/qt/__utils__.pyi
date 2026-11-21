@@ -1,0 +1,30 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+import PySide6.QtCore
+import PySide6.QtGui
+import PySide6.QtWidgets
+import typing
+from typing import Any, Literal, SupportsInt
+
+@typing.overload
+def wrapQtGuiObject(ptr: SupportsInt, cls_name: Literal['QWidget']) -> PySide6.QtWidgets.QWidget: ...
+@typing.overload
+def wrapQtGuiObject(ptr: SupportsInt, cls_name: Literal['QDialog']) -> PySide6.QtWidgets.QDialog: ...
+@typing.overload
+def wrapQtGuiObject(ptr: SupportsInt, cls_name: Literal['QMenu']) -> PySide6.QtWidgets.QMenu: ...
+@typing.overload
+def wrapQtGuiObject(ptr: SupportsInt, cls_name: Literal['QColor']) -> PySide6.QtGui.QColor: ...
+@typing.overload
+def wrapQtGuiObject(ptr: SupportsInt, cls_name: Literal['QCursor']) -> PySide6.QtGui.QCursor: ...
+@typing.overload
+def wrapQtGuiObject(ptr: SupportsInt, cls_name: Literal['QBrush']) -> PySide6.QtGui.QBrush: ...
+@typing.overload
+def wrapQtGuiObject(ptr: SupportsInt, cls_name: Literal['QPixmap']) -> PySide6.QtGui.QPixmap: ...
+@typing.overload
+def wrapQtGuiObject(ptr: SupportsInt, cls_name: Literal['QIcon']) -> PySide6.QtGui.QIcon: ...
+@typing.overload
+def wrapQtGuiObject(ptr: SupportsInt, cls_name: str) -> Any: ...
+def getCppPointer(widget: PySide6.QtCore.QObject) -> int:
+    """Helper method for extracting the underlying Qt C++ pointer from the
+    wrapping Python binding class.  The function raises an exception if the
+    passed in widget is neither a PyQt nor PySide object."""

@@ -1,0 +1,9 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+from autorigs.modules.jaw.jawGuideModel import JawGuideModel as JawGuideModel
+
+class JawGuideController:
+    model: JawGuideModel
+    def __init__(self, model: JawGuideModel) -> None: ...
+    def onStretchToggled(self, value: bool) -> None: ...
+    def onTranslateToggled(self, value: bool | int) -> None: ...

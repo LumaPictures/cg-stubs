@@ -1,0 +1,29 @@
+from collections.abc import Sequence
+
+import hou
+from PySide6 import QtWidgets
+
+from autorigs.ui.uiParamLabelButton import UiParamLabelButton
+
+class UiParamString(QtWidgets.QWidget):
+    Q_LABEL_TYPE: int
+    LABEL_BUTTON_TYPE: int
+
+    linkednode: hou.OpNode | None
+    label: str | None
+    labeltype: int
+    defaulttext: str
+    currenttext: str
+    labelwidget: QtWidgets.QLabel | UiParamLabelButton
+    stringwidget: QtWidgets.QLineEdit
+    parmname: str | None
+
+    def __init__(self, label: str | None, default_text: str = ..., label_type: int = ...) -> None: ...
+    def setupUI(self) -> None: ...
+    def linkParm(self, node: hou.OpNode, parmname: str) -> None: ...
+    def onTextChanged(self) -> None: ...
+    def getText(self) -> str: ...
+    def getValues(self) -> str: ...
+    def eval(self) -> str: ...
+    def setValues(self, values: str | Sequence[str]) -> None: ...
+    def unlinkParms(self) -> None: ...

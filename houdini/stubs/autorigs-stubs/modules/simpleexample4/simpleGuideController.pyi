@@ -1,0 +1,9 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+from autorigs.modules.simpleexample4.simpleGuideModel import SimpleModel as SimpleModel
+
+class SimpleController:
+    model: SimpleModel
+    def __init__(self, model: SimpleModel) -> None: ...
+    def onNumBonesChanged(self, numbones: str) -> None: ...
+    def onStretchChanged(self, stretch: bool) -> None: ...

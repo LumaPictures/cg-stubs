@@ -1,0 +1,73 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+import PySide6.QtCore
+import PySide6.QtWidgets
+import hou
+import husdui.models
+from . import widgets as widgets
+from collections.abc import Mapping, Sequence
+from dbg import DbgPrinter
+from husdui.common import debugPerfPaneEvent as debugPerfPaneEvent, debug_print as debug_print, error_print as error_print
+from hutil.PySide import QtWidgets
+
+from typing import TypeAlias
+from pxr import Usd
+from typing import TypeAlias
+_UsdType: TypeAlias = type[Usd.SchemaBase]
+dbg: DbgPrinter
+
+class LinkerWidget(QtWidgets.QWidget):
+    _node: hou.LopNode | None
+    _targets_model: husdui.models.ItemModel
+    _link_rule_model: husdui.models.RuleModel
+    NodeEventTypes: tuple[hou.EnumValue[hou.nodeEventType], ...]
+    NetworkEventTypes: tuple[hou.EnumValue[hou.nodeEventType], ...]
+    NothingDirty: int
+    ValuesDirty: int
+    StructureDirty: int
+    NeedsReset: int
+    def __init__(self, pane: hou.PythonPanel | None, lhs_types: Sequence[_UsdType], rhs_types: Sequence[_UsdType], forward_rule_types: Sequence[_UsdType], rule_target_type_defs: Mapping[str | _UsdType, Sequence[_UsdType]], help_path: str, linktypes: int | Mapping[PySide6.QtCore.Qt.KeyboardModifier, int], linker_name: str, lhs_collection_prim_path: str = ..., rhs_collection_prim_path: str = ..., lhs_collection_search_paths: Sequence[str] | None = None, rhs_collection_search_paths: Sequence[str] | None = None, allow_reverse: bool = True, enable_create_collections: bool = True, parent: PySide6.QtWidgets.QWidget | None = None, lhs_traversal_demands: int = ...) -> None:
+        """
+            :param pane: The panetab object
+            :param lhs_types: A list of USD types to show in the source
+              view on the left hand side of the panel.
+            :param rhs_types: A list of USD types to show in the target
+              view on the right hand side of the panel
+            :param forward_rule_types: A list of USD types that will create
+              forward rules when used as a rule base.
+            :param rule_target_type_defs: A dict that maps a USD type for a
+              rule owner to a list of types that rule can target
+            :param linktype: LinkType representing the type of link
+              that should be used
+            :param linker_name: The type of the lopnode
+            :param enable_create_collections: Enables adding/creating collections
+            :param parent: The widget's parent
+        """
+    def __del__(self) -> None: ...
+    def setLinkRuleModel(self, link_rule_model: husdui.models.RuleModel | None) -> None: ...
+    def linkRuleModel(self) -> husdui.models.RuleModel: ...
+    def setTargetsModel(self, targets_model: husdui.models.ItemModel | None) -> None: ...
+    def targetsModel(self) -> husdui.models.ItemModel: ...
+    def setRightLabel(self, label: str) -> None: ...
+    def rightLabel(self) -> str: ...
+    def setLeftLabel(self, label: str) -> None: ...
+    def leftLabel(self) -> str: ...
+    def addLeftSourceWidget(self, title: str, widget: PySide6.QtWidgets.QWidget) -> None: ...
+    def addMiddleItemWidget(self, title: str, widget: PySide6.QtWidgets.QWidget) -> None: ...
+    def addRightSourceWidget(self, title: str, widget: PySide6.QtWidgets.QWidget) -> None: ...
+    def orientation(self) -> PySide6.QtCore.Qt.Orientation: ...
+    def setOrientation(self, orientation: PySide6.QtCore.Qt.Orientation) -> None: ...
+    def sourceNode(self) -> hou.LopNode | None: ...
+    def sourceNetwork(self) -> hou.Node | None: ...
+    def setSourceNetwork(self, network: hou.Node | None) -> None: ...
+    def suggestSourceNode(self, new_network: hou.Node, new_node: hou.Node | None) -> None:
+        """
+        This is called when the pane's current node changes. It checks if the
+        node is suitable to be displayed in the UI, and if so, calls
+        setSourceNode() with it.
+        """
+    def setSourceNode(self, node: hou.Node | None) -> None: ...
+    def reset(self) -> None: ...
+    def clear(self) -> None: ...
+    def activate(self, pane_tab: hou.PaneTab | None) -> None: ...
+    def deactivate(self) -> None: ...

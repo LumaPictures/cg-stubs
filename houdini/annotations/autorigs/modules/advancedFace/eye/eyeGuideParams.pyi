@@ -1,0 +1,29 @@
+from autorigs.modules.advancedFace.eye.buildEyeGuide import EyeGuide, EyeGuideSide
+from autorigs.modules.advancedFace.eye.eyeGuideModel import EyeGuideModel
+from autorigs.modules.advancedFace.lip import lipGuideParams
+from autorigs.modules.base.autoRigsBaseWidget import BaseParamWidget
+from autorigs.utils.guideParamsHelper import _ParamsJson
+from PySide6 import QtWidgets
+
+class ModuleParamsWidget(BaseParamWidget[_ParamsJson, EyeGuide]):
+    SIDE_LABELS: list[str]
+    model: EyeGuideModel
+    main_params: "ModuleParamsWidgetSide"
+    secondary_params: "ModuleParamsWidgetSide"
+    component_tab: QtWidgets.QTabWidget
+
+    def __init__(self, eyeguide: EyeGuide, model: EyeGuideModel) -> None: ...
+    def updateSide(self, value: int) -> None: ...
+    def updateMirror(self, value: bool) -> None: ...
+    def toJSON(self) -> _ParamsJson: ...
+    def fromJSON(self, json: _ParamsJson) -> None: ...
+    def unlinkAllNodes(self) -> None: ...
+
+class ModuleParamsWidgetSide(lipGuideParams.ModuleParamsWidget[EyeGuideSide, EyeGuideModel]):
+    UPPER_LABEL: str
+    LOWER_LABEL: str
+    side: int
+
+    def __init__(self, eyeguide: EyeGuideSide, model: EyeGuideModel, side: int) -> None: ...
+    def addGuideParams(self, layout: QtWidgets.QBoxLayout) -> None: ...
+    def addModelCallbacks(self) -> None: ...

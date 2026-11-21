@@ -1,0 +1,6 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+def loadPlugins() -> None: ...
+
+class LayoutState:
+    def __init__(self) -> None: ...

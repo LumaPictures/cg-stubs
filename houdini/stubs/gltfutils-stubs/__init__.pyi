@@ -1,0 +1,6 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+import hou
+
+def bakeMaterialOverridesToNode(mat_net: hou.OpNode | None, mat_name: str, mat_type_name: str, material_override_attrib: hou.Attrib | None) -> None: ...
+def sopGltfBakeMaterial(gltf_node: hou.SopNode | None) -> None: ...

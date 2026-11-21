@@ -1,0 +1,9 @@
+import enum
+from collections.abc import Iterable, Sequence
+from typing import TypeVar
+
+_E = TypeVar("_E", bound=enum.Enum)
+
+def named_menu(enum_names: Iterable[enum.Enum]) -> list[str]: ...
+def enum_name_from_token(enum_names: Iterable[_E], query_token: str) -> _E | None: ...
+def indexed_menu(enum_names: Iterable[enum.Enum], override_labels: Sequence[str] = ...) -> list[str]: ...

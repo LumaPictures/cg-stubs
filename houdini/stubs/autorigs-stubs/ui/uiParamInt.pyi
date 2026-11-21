@@ -1,0 +1,18 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+from .uiParamNum import MySlider as MySlider, UiParamNum as UiParamNum
+from collections.abc import Sequence
+
+class UiParamInt(UiParamNum):
+    slidermin: float
+    slidermax: float
+    defaults: Sequence[float]
+    min: float
+    max: float
+    SLIDER_RANGE_DEFAULT_MIN: int
+    SLIDER_RANGE_DEFAULT_MAX: int
+    def __init__(self, label: str | None, num_components: int, defaults: Sequence[float] = ..., soft_range: tuple[float, float] = (0, 10), parmnames: Sequence[str] | None = None) -> None: ...
+    def setRange(self, min: float, max: float, bypass_strict: bool = False) -> None: ...
+    def getRange(self) -> tuple[float, float]: ...
+    def eval(self) -> list[int]: ...
+    def setValues(self, values: Sequence[float]) -> None: ...

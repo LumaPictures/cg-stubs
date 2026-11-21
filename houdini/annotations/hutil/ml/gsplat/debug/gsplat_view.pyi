@@ -1,0 +1,3 @@
+import argparse
+
+def main(local_rank: int, world_rank: int, world_size: int, args: argparse.Namespace) -> None: ...

@@ -1,0 +1,3 @@
+import logging
+
+def createLogger(debug: bool, verbose: bool, name: str, log_file_name: str) -> logging.Logger: ...

@@ -1,0 +1,10 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+from autorigs.modules.advancedFace.template.buildTemplateGuide import TemplateGuide as TemplateGuide
+from autorigs.modules.base.autoRigsBaseWidget import BaseParamWidget as BaseParamWidget
+from autorigs.ui.uiParamFactory import UiParamFactory as UiParamFactory
+from autorigs.ui.uiParamFloat import UiParamFloat as UiParamFloat
+from autorigs.utils.guideParamsHelper import _ParamsJson
+
+class ModuleParamsWidget(BaseParamWidget[_ParamsJson, TemplateGuide]):
+    def __init__(self, templateguide: TemplateGuide) -> None: ...

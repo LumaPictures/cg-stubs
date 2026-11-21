@@ -1,0 +1,16 @@
+import hou
+from PySide6 import QtGui, QtWidgets
+
+theRetargetWindow: "RetargetWindow | None"
+MARGIN: int
+OP_PREPEND: str
+OP_FIND_REPLACE: str
+
+class RetargetWindow(QtWidgets.QDialog):
+    delete_button: QtWidgets.QPushButton
+    def __init__(self, parent: QtWidgets.QWidget | None = ..., node: hou.LopNode | None = ...) -> None: ...
+    def keyPressEvent(self, event: QtGui.QKeyEvent) -> None: ...
+    def setNode(self, node: hou.LopNode) -> None: ...
+    def display(self) -> None: ...
+
+def show(node: hou.LopNode) -> RetargetWindow: ...

@@ -1,0 +1,11 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+from pdgjob import pdgjson as pdgjson
+
+from typing import TypeAlias
+from typing import TypeAlias
+import pdg
+_WorkItem: TypeAlias = pdg.WorkItem | pdgjson.WorkItem | pdgjson.NativeWorkItem
+def performStreamCopy(srclocal: str, destlocal: str) -> None: ...
+def performCopy(work_item: _WorkItem, f: str) -> None: ...
+def cook(work_item: _WorkItem) -> bool: ...

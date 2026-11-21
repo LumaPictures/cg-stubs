@@ -1,0 +1,3 @@
+import hou
+
+def count(self: hou.PrimGroup) -> int: ...

@@ -1,0 +1,26 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+import PySide6.QtWidgets
+import hou
+from hutil.PySide import QtWidgets
+
+PANEL_MIN_WIDTH: int
+PANEL_MIN_HEIGHT: int
+
+def clearLayout(layout: PySide6.QtWidgets.QLayout) -> None: ...
+def human_size(num: float, suffix: str = 'B') -> str:
+    """ Helper to convert bytes into more readable units """
+
+class PDGDataLayerPanel(QtWidgets.QWidget):
+    """ The PDG Data Layer panel """
+    show_sizes: bool
+    def __init__(self, show_sizes: bool = False, parent: PySide6.QtWidgets.QWidget | None = None) -> None: ...
+    def onActivateInterface(self) -> None: ...
+    def onDeactivateInterface(self) -> None: ...
+    def onNodePathChanged(self, node: hou.OpNode | None) -> None: ...
+    def onDestroyInterface(self) -> None: ...
+
+class TestDialog(QtWidgets.QDialog):
+    def __init__(self, parent: PySide6.QtWidgets.QWidget | None = None) -> None: ...
+
+def test_data_layer_panel() -> None: ...

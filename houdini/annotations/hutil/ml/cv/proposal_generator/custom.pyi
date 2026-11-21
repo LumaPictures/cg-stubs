@@ -1,0 +1,6 @@
+
+from omegaconf import DictConfig
+from hutil.ml.cv.config import _CVTrainParms
+
+def buildCustomProposalGenerator(parms: _CVTrainParms) -> DictConfig: ...
+def createProposalGenerator(parms: _CVTrainParms) -> DictConfig: ...

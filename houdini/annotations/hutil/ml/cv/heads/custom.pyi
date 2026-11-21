@@ -1,0 +1,6 @@
+
+from omegaconf import DictConfig
+from hutil.ml.cv.config import _CVTrainParms
+
+def buildCustomROIHeads(dataloader: DictConfig, parms: _CVTrainParms) -> DictConfig: ...
+def createROIHeads(dataloader: DictConfig, parms: _CVTrainParms) -> DictConfig: ...

@@ -1,0 +1,176 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+import PySide6.QtCore
+import PySide6.QtGui
+import PySide6.QtWidgets
+import hou
+import resourceui as rui
+import viewerhandle.hudapi as hud
+import viewerhandle.hudwidgets as hudw
+from collections.abc import Generator
+from dataclasses import dataclass
+from typing import Any, Callable as Callable, TypedDict, Unpack
+from viewerhandle.hudapi import _HUDHandle, _HUDParmAnimatedKwargs, _HUDParmChangeKwargs, _HUDParmTemplateChangeKwargs, _HUDSettings
+from viewerhandle.hudwidgets import _KeyFrameEventKwargs
+from viewerhandle.hudwindow import HUDWindow as HUDWindow
+
+class _ContextMenuHandlerOptions(TypedDict):
+    slider: rui.Slider
+    parm_index: int
+
+@dataclass
+class ParmInfo:
+    """
+    Settings associated with a single numeric parameter.
+    """
+    enabled: bool = ...
+    index: int = ...
+    label: str | None = ...
+    parm: hou.Parm | None = ...
+    min_val: int | float = ...
+    max_val: int | float = ...
+    default_val: int | float = ...
+    min_locked: bool | int = ...
+    max_locked: bool | int = ...
+    parm_locked: bool = ...
+    keyframe_handler: hudw.KeyFrameHandler | None = ...
+    slider: rui.Slider | None = ...
+    slider_value_callback: Callable[[int | float], None] | None = ...
+    slider_pressed_callback: Callable[[], None] | None = ...
+    slider_released_callback: Callable[[], None] | None = ...
+    keyframe_callback: Callable[[int, _KeyFrameEventKwargs], None] | None = ...
+
+HANDLE_PARMS: list[str]
+
+class ContextMenuHandler:
+    """ Slider contextual menu handler for parm locking and animation
+        keying.
+    """
+    lock_parm_action: PySide6.QtGui.QAction | None
+    set_keyframe_action: PySide6.QtGui.QAction | None
+    remove_keyframe_action: PySide6.QtGui.QAction | None
+    def __init__(self, **kwargs: Unpack[_ContextMenuHandlerOptions]) -> None: ...
+    def onMousePressEvent(self, event: PySide6.QtGui.QMouseEvent) -> None: ...
+    def onContextMenu(self, event: PySide6.QtCore.QPoint) -> None: ...
+    def onLockParmAction(self, value: bool) -> None: ...
+    def onSetKeyFrameAction(self) -> None: ...
+    def onRemoveKeyFrameAction(self) -> None: ...
+
+class HUDSlider(hud.HUDWidgetBase):
+    """ The HUD slider implementation. A HUD slider can manage
+        up to 4 float or integer parms. Parms are controlled by
+        a uber slider (Slider) which provides the Qt slider and
+        an input field to edit the parm value. There is one uber
+        slider per parm entity.
+    """
+    BG_STYLE_SHEET: str
+    SLIDER_FIXED_HEIGHT: int
+    HIDE_SLIDER_WIDTH_THRESHOLD: int
+    def __init__(self, handle: _HUDHandle, target_parm: hou.Parm | None, hud_widget_key: str, window_key: str, **kwargs: Any) -> None: ...
+    def computeDistance(self, x: float, y: float) -> list[float]:
+        """ Compute the distance between the slider(s) and x,y, returns
+            the closest distance along with the slider index.
+        """
+    def setPreviousMousePos(self, x: float, y: float) -> None:
+        """
+        Set the previous mouse position. x and y should be global coords.
+        """
+    def indirectParms(self) -> list[hou.Parm | None]: ...
+    def onMouseIndirectUpdate(self, level: int, mouse_pos: tuple[float, float], index: int, allowed_parms: list[hou.Parm | None]) -> bool:
+        """ Set the hud slider value from a mouse position. Typically called
+            from the HUD handle indirect mouse callback.
+            mouse_pos:  The mouse position in viewport coordinates.
+                        X position is expected for slider horizontal
+                        orientation or Y for vertical slider orientation.
+        """
+    def onMouseIndirectStart(self, level: int, mouse_pos: tuple[float, float], allowed_parms: list[hou.Parm | None]) -> None: ...
+    def onParmChangeEvent(self, kwargs: _HUDParmChangeKwargs) -> None:
+        """
+        Update the widgets when the handle parm and setting
+        values have changed.
+        """
+    def resizeEvent(self, event: PySide6.QtGui.QResizeEvent) -> None: ...
+    def onTerminate(self) -> None: ...
+    def isLocked(self) -> bool | None:
+        """ Return True if all parms are locked.
+        """
+    def onLockHandle(self, value: bool) -> None: ...
+    def onUpdateHandleLock(self, parms_update: list[int] | None = None) -> None: ...
+    def supportKeyFrames(self) -> bool: ...
+    def setKeyFrame(self) -> None: ...
+    def removeKeyFrame(self) -> None: ...
+    def hasKeyFrame(self, frame: float | None) -> bool | None: ...
+    def hasPendingChange(self) -> bool | None: ...
+    def onParmAnimatedEvent(self, kwargs: _HUDParmAnimatedKwargs) -> None:
+        """ Update the HUD when the parm anim event has triggered.
+            NOTE: Skip dynamic HUD handles.
+        """
+    def onParmTemplateChangeEvent(self, kwargs: _HUDParmTemplateChangeKwargs) -> None:
+        """ Update the HUD when the parm template has changed.
+            NOTE: The range is modified regardless the slider
+                  use_parm_range setting.
+            NOTE: Skip dynamic HUD handles.
+        """
+    def onUpdateVisualSize(self) -> None: ...
+    def onUpdateShadowEffectState(self, value: bool) -> None: ...
+    def hasShadowEffect(self) -> bool | None: ...
+    def onUpdateLabelVisibleState(self, value: bool) -> None: ...
+    def onUpdateLabelColor(self, color: PySide6.QtGui.QColor) -> None: ...
+    def onUpdateSlidersVisible(self, value: bool) -> None: ...
+    def onLoadSettings(self, settings: _HUDSettings) -> None: ...
+    def settingValues(self) -> _HUDSettings:
+        """
+        Return the dictionary of settings we want the HUD
+        framework to store in the cache and eventually in the
+        scene.
+        """
+    def settingEditor(self) -> type[hudw.RangeSettingDialog]: ...
+    def createSettingEditor(self, setting_editor: type[hudw.RangeSettingDialog], parent: HUDWindow) -> hudw.RangeSettingDialog: ...
+    def enumerateSliders(self) -> Generator[tuple[int, rui.Slider], None, None]:
+        """
+        Enumerates valid sliders. Indices correspond to the parm component indices.
+        """
+    def componentSlider(self, parm_tuple_index: int) -> rui.Slider | None:
+        """
+        Retrieves a slider given a parm component index.
+        """
+    def hasQtWidget(self, qt_widget: PySide6.QtWidgets.QWidget) -> bool: ...
+    def handleSliderValueChange(self, handle_parm: str, value: int | float) -> None:
+        """ Update the node with the new slider value
+        """
+    def updateSliderValue(self, handle_parm: str, parm_value: int | float) -> None:
+        """ Update the slider value
+        """
+    def handleSliderPressedEvent(self, handle_parm: str) -> None:
+        """ Begin an undo block for the handle.
+        """
+    def handleSliderReleasedEvent(self, handle_parm: str) -> None:
+        """ Ends an undo block for the handle.
+        """
+    def handleKeyFrameEvent(self, handle_parm: str, event: int, kwargs: _KeyFrameEventKwargs) -> None: ...
+    def handleRangeMinimumChange(self, value: str) -> None: ...
+    def handleRangeMaximumChange(self, value: str) -> None: ...
+    def handleDefaultValueChange(self, value: str) -> None: ...
+    def handleMinimumLockedChange(self, value: str) -> None: ...
+    def handleMaximumLockedChange(self, value: str) -> None: ...
+    def handleLabelValueChange(self, value: str) -> None:
+        """ Set the label of each slider. A comma separated value is
+            expected as value.
+        """
+    def handleRangeInfoChange(self, parm_value: int) -> None:
+        """ Override the HUD range with the parm template range if
+            parm_value is True or the HUD range if False.
+        """
+    def rangeInfo(self, use_parm_range: int) -> dict[str, hudw.RangeInfo]:
+        """ Return the RangeInfo for each parm.
+
+            Returns the parm template range if use_parm_range is True and
+            the HUD is bound to a node parm.
+
+            Returns the HUD range if use_parm_range is False.
+
+            Returns the HUD range for dynamic HUDs.
+        """
+    def useParmRange(self) -> int: ...
+    def setKeyFrameFromIndex(self, parm_index: int) -> None: ...
+    def removeKeyFrameFromIndex(self, parm_index: int) -> None: ...

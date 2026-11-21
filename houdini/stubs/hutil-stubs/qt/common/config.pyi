@@ -1,0 +1,36 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+import pathlib
+from . import core as core
+from collections.abc import Iterator, Mapping, Sequence
+from houtypes import JSONLike, JSONValue
+from hutil.PySide import QtCore as QtCore
+from hutil.qt.pluto import themes as themes
+from typing import ClassVar, Iterable, Self
+
+from typing import TypeVar
+from typing import TypeVar
+_T = TypeVar('_T')
+CURRENT_VERSION: int
+PREFS_DIR: pathlib.Path
+APP_THEME_KEY: str
+
+def dedup(items: Iterable[_T]) -> Iterator[_T]: ...
+
+class BaseConfig(core.Info):
+    themeName: str
+    toolTipDelay: int
+    defaultZoom: float
+    animatedChanged: ClassVar[QtCore.Signal]
+    def __init__(self, **kwargs: object) -> None: ...
+    def animated(self) -> bool: ...
+    @classmethod
+    def interpret(cls, data: dict[str, JSONValue]) -> dict[str, JSONValue]: ...
+    @classmethod
+    def load(cls) -> Self: ...
+    def reload(self) -> None: ...
+    def set(self, name: str, value: int | float | str | bool | Sequence[JSONLike] | Mapping[str, JSONLike]) -> None: ...
+    def save(self, only_name: str = '') -> None: ...
+    def defaultThemeName(self) -> str: ...
+    def hasOwnTheme(self) -> bool: ...
+    def ownThemeName(self) -> str: ...

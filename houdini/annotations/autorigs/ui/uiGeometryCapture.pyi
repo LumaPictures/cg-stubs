@@ -1,0 +1,26 @@
+from PySide6 import QtWidgets
+
+from autorigs.asset.autoRigsAsset import AutoRigsAsset
+from autorigs.asset.autoRigsSettings import AutoRigsSettings
+from autorigs.ui.uiParamName import UiParamName
+from autorigs.ui.uiToggleButtonsWidget import ToggleButtonsWidget
+
+class UiGeometryCaptureFactory:
+    def __init__(self) -> None: ...
+    @classmethod
+    def createCaptureWidget(cls) -> "UiGeometryCaptureDefault": ...
+
+class UiGeometryCaptureDefault(QtWidgets.QGroupBox):
+    GEOMETRY_CAPTURE_LABELS: list[str]
+    GEOMETRY_CAPTURE_DEFAULT: int
+    geoname: UiParamName
+    capturenetwork: QtWidgets.QCheckBox
+    displaydeform: QtWidgets.QCheckBox
+    toggle: ToggleButtonsWidget
+
+    def __init__(self) -> None: ...
+    def getCreateNetwork(self) -> bool: ...
+    def getCaptureType(self) -> int: ...
+    def getDisplayDeform(self) -> bool: ...
+    def saveSettings(self, settingsdst: AutoRigsSettings) -> None: ...
+    def updateSettings(self, autorigs_asset: AutoRigsAsset) -> None: ...

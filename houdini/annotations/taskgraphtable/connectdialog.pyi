@@ -1,0 +1,16 @@
+from collections.abc import Callable
+
+from PySide6 import QtWidgets
+
+class ConnectDialog(QtWidgets.QDialog):
+    callback: Callable[[str, str], object]
+    address: str
+    layout: QtWidgets.QVBoxLayout
+    interface_types: dict[str, str]
+    selected_type_label: str | None
+    def __init__(
+        self, callback: Callable[[str, str], object], parent: QtWidgets.QWidget | None = ...
+    ) -> None: ...
+    def interfaceTypeChanged(self, interface_type: str) -> None: ...
+    def connect(self) -> None: ...
+    def addressChanged(self, address: str) -> None: ...

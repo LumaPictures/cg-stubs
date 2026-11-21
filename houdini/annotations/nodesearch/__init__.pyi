@@ -1,0 +1,3 @@
+import hou
+
+def node_types(category: hou.NodeTypeCategory | None) -> list[str]: ...

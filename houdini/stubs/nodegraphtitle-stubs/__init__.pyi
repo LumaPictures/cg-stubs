@@ -1,0 +1,6 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+import hou
+
+def networkEditorTitleLeft(editor: hou.NetworkEditor) -> str: ...
+def networkEditorTitleRight(editor: hou.NetworkEditor) -> str: ...

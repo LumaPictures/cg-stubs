@@ -1,0 +1,10 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+from collections.abc import Iterable, Mapping
+from hutil.Qt import QtCore, QtGui
+from typing import Any
+
+class PathTreeModel(QtGui.QStandardItemModel):
+    def __init__(self, parent: QtCore.QObject | None = None, header: str = 'Path') -> None: ...
+    def headerData(self, section: int, orientation: QtCore.Qt.Orientation, role: int = ...) -> Any: ...
+    def setPaths(self, paths: Iterable[str], icons: Mapping[str, QtGui.QIcon] | None = None) -> None: ...

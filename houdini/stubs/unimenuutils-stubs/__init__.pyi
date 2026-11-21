@@ -1,0 +1,6 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+import hou
+
+def apexGlobalTimeToolIsVisible(parmsnode: hou.ApexNode, toolname: str) -> bool: ...
+def apexExecuteGlobalTimeTool(pane: hou.NetworkEditor, parmsnode: hou.Node, toolname: str) -> None: ...

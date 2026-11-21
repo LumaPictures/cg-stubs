@@ -1,0 +1,13 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+import modelview
+from . import model as model
+from collections.abc import Iterable
+from hutil.Qt import QtCore, QtWidgets
+from scenegraphdetails.model import DetailsItem as DetailsItem
+
+class CompositionView(modelview.TreeView):
+    def __init__(self, parent: QtWidgets.QWidget | None = None) -> None: ...
+    def populateFromItem(self, item: DetailsItem | None) -> None: ...
+    def handleDoubleClick(self, index: QtCore.QModelIndex) -> None: ...
+    def copyValues(self, indexes: Iterable[QtCore.QModelIndex]) -> None: ...

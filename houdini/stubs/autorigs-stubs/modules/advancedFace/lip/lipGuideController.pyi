@@ -1,0 +1,9 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+from autorigs.modules.advancedFace.lip.lipGuideModel import LipGuideModel as LipGuideModel
+
+class LipGuideController:
+    model: LipGuideModel
+    def __init__(self, model: LipGuideModel) -> None: ...
+    def onCtrlsChanged(self, value: int) -> None: ...
+    def onStickyToggled(self, value: bool) -> None: ...

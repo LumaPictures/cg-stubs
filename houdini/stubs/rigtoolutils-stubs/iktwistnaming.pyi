@@ -1,0 +1,14 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+autoBoneChainPostFix: dict[str, str]
+
+def createName(prefix: str, type: str) -> str: ...
+def getPostFix(type: str) -> str: ...
+
+autoBoneChainParm: dict[str, tuple[str, str]]
+
+def createParm(type: str) -> tuple[str, str]: ...
+
+autoBoneChainInterface: dict[str, str]
+
+def getInterfaceName(type: str) -> str: ...

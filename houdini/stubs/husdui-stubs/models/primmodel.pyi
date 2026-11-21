@@ -1,0 +1,14 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+from .primitems import UsdPrimItem as UsdPrimItem
+from PySide6 import QtCore as QtCore
+from hutil.Qt import QtGui
+from pxr import Usd as Usd
+
+class UsdPrimTreeModel(QtGui.QStandardItemModel):
+    stage: Usd.Stage
+    showcollections: bool
+    def __init__(self, stage: Usd.Stage, showcollections: bool) -> None: ...
+    def hasChildren(self, parent: QtCore.QModelIndex | QtCore.QPersistentModelIndex) -> bool: ...
+    def canFetchMore(self, parent: QtCore.QModelIndex | QtCore.QPersistentModelIndex) -> bool | int: ...
+    def fetchMore(self, parent: QtCore.QModelIndex | QtCore.QPersistentModelIndex) -> None: ...

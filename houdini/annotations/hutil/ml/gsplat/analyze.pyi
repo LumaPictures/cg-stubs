@@ -1,0 +1,9 @@
+from collections.abc import Sequence
+
+class ExrDatasetAnalyzer:
+    image_paths: Sequence[str]
+    cache_file: str | None
+    myStatistics: dict[str, float] | None
+    def __init__(self, image_paths: Sequence[str], cache_file: str | None = ...) -> None: ...
+    def computeStatistics(self) -> None: ...
+    def getStatistics(self) -> dict[str, float]: ...

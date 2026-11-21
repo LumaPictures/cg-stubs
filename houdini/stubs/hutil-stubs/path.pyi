@@ -1,0 +1,23 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+import typing
+from pathlib import Path
+from typing import Literal
+
+@typing.overload
+def resolvePath(file_path: str, canonical: bool = ..., expand: bool = ..., as_string: Literal[False] = ...) -> Path: ...
+@typing.overload
+def resolvePath(file_path: str, canonical: bool = ..., expand: bool = ..., *, as_string: Literal[True]) -> str: ...
+@typing.overload
+def resolvePath(file_path: str, canonical: bool, expand: bool, as_string: Literal[True]) -> str: ...
+@typing.overload
+def resolvePath(file_path: str, canonical: bool = ..., expand: bool = ..., as_string: bool = ...) -> Path | str: ...
+def toForwardPath(file_path: str, raise_excep: bool = True) -> str:
+    """ Convert a path separators to forward slashes
+    """
+@typing.overload
+def expandPath(file_path: str, as_string: Literal[True] = ...) -> str: ...
+@typing.overload
+def expandPath(file_path: str, as_string: Literal[False]) -> Path: ...
+@typing.overload
+def expandPath(file_path: str, as_string: bool = ...) -> str | Path: ...

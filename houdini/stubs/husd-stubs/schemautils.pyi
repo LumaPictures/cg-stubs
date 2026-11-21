@@ -1,0 +1,6 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+from pxr import Vt as Vt
+
+def createSchemaStage(outpath: str) -> None: ...
+def createPropertyStage(outpath: str) -> None: ...

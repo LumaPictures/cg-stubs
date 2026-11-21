@@ -1,6 +1,6 @@
 [project]
 name = "types-houdini"
-version = "21.0.512.3"
+version = "22.0.466.1"
 
 readme = "README.md"
 authors = [{name="Chad Dombrova"}, {name="Ben Andersen"}]
@@ -25,6 +25,10 @@ keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
 dev = [
     "stubgenlib",
     "mypy",
+    # Apply the annotation overlays to Houdini's sources, and check them.
+    "libcst",
+    "basedpyright",
+    "typeguard>=4.4.4",
 ]
 
 [tool.uv.sources]
@@ -42,7 +46,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["stubs/hou-stubs"]
+# Ship every stub package: hou-stubs, plus one per module from stubgen_houdini_libs.py.
+only-include = ["stubs"]
+sources = ["stubs"]
 
 [tool.hatch.build]
 # uv+hatch does not write anything to the installed .pth file if the contents

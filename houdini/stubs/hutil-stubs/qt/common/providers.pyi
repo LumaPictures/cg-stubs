@@ -1,0 +1,13 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+from hutil.PySide import QtCore as QtCore, QtGui as QtGui, QtQuick as QtQuick
+from hutil.PySide.QtCore import Qt as Qt
+from hutil.qt.pluto import colors as colors, iconfilter as iconfilter
+
+class HoudiniIconProvider(QtQuick.QQuickImageProvider):
+    def __init__(self) -> None: ...
+    def requestPixmap(self, name: str, size: QtCore.QSize, req_size: QtCore.QSize) -> QtGui.QPixmap: ...
+
+class UiIconProvider(QtQuick.QQuickImageProvider):
+    def __init__(self, theme: colors.Theme) -> None: ...
+    def requestPixmap(self, name: str, size: QtCore.QSize, req_size: QtCore.QSize) -> QtGui.QPixmap: ...

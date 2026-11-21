@@ -1,0 +1,39 @@
+# Houdini stubs generated from Houdini 22.0.466
+
+import collections
+import hou
+from autorigs.modules.master import masterModule as masterModule
+from autorigs.modules.master.masterModule import MasterModule as MasterModule
+from autorigs.modules.quadHead.buildQuadHeadGuide import QuadHeadGuide as QuadHeadGuide
+from autorigs.modules.spine import spineModule as spineModule
+from autorigs.modules.spine.spineModule import SpineModule as SpineModule
+from autorigs.ui import uiParentComboMenu as uiParentComboMenu
+from autorigs.ui.uiParentComboMenu import UiParentComboMenu as UiParentComboMenu
+from collections.abc import Iterable, Sequence
+from hutil.Qt import QtWidgets
+from typing import ClassVar, TypedDict
+
+class _QuadHeadOptionsJson(TypedDict):
+    parent: Sequence[str]
+
+class ModuleOptionsWidget(QtWidgets.QWidget):
+    headguide: QuadHeadGuide
+    mainlayout: QtWidgets.QVBoxLayout
+    widgets: list[QtWidgets.QWidget]
+    mastermodule: MasterModule
+    parentwidget: UiParentComboMenu
+    JSON_parent: None
+    HOOK_BUTTON_WIDTH: ClassVar[int]
+    HOOK_BUTTON_HEIGHT: ClassVar[int]
+    def __init__(self, headguide: QuadHeadGuide, spinemodules: Iterable[SpineModule], mastermodule: MasterModule) -> None: ...
+    def getBuiltParentInfo(self) -> tuple[MasterModule | SpineModule, hou.ObjNode]: ...
+    def getExistingParents(self, spinemodules: Iterable[SpineModule]) -> list[tuple[MasterModule | SpineModule, list[hou.OpNode | None]]]: ...
+    def updateParentModules(self, spinemodules: Iterable[SpineModule]) -> None: ...
+    def updateParent(self, parentmodule: MasterModule | SpineModule, node: hou.ObjNode) -> None: ...
+    def getMasterParentGuides(self, mastermodule: MasterModule) -> list[hou.ObjNode | None]: ...
+    def getSpineParentGuides(self, spinemodule: SpineModule) -> list[hou.OpNode | None]: ...
+    def unlinkAllNodes(self) -> None: ...
+    def getDefaultParentPath(self) -> str: ...
+    def getAllWidgets(self) -> list[QtWidgets.QWidget]: ...
+    def toJSON(self) -> collections.OrderedDict[str, tuple[str, str, str]]: ...
+    def fromJSON(self, json: _QuadHeadOptionsJson) -> bool: ...
