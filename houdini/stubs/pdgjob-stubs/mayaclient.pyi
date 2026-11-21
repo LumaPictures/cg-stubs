@@ -1,0 +1,3 @@
+from pdgjob import genericservice as genericservice, pythonscript as pythonscript
+
+def main() -> None: ...

@@ -1,0 +1,6 @@
+from PySide6 import QtCore, QtGui, QtWidgets
+
+class EditTreeView:
+    deletePressed: QtCore.Signal
+    def __init__(self, parent: QtWidgets.QWidget | None = ...) -> None: ...
+    def keyPressEvent(self, event: QtGui.QKeyEvent) -> None: ...

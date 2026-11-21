@@ -1,0 +1,3 @@
+from hutil.qt.common import config, qmlviews
+
+class PanelState(qmlviews.SharedState[config.BaseConfig]): ...

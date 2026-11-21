@@ -1,0 +1,159 @@
+import PySide6.QtCore
+import PySide6.QtGui
+import hou
+import pathlib
+import re
+import types
+from .nodeinfo import NodeInfo as NodeInfo
+from collections.abc import Iterator as Iterator, Mapping as Mapping
+from hutil.PySide import QtCore as QtCore
+from hutil.PySide.QtCore import Qt as Qt
+from hutil.qt.common import core as core, qmlviews as qmlviews
+from hutil.qt.pluto import colors as colors
+from typing import Any, Callable, ClassVar, TypedDict
+
+from typing import TypeVar
+from typing import TypeVar
+_F = TypeVar('_F', bound=Callable[..., object])
+class _ScriptIndex(TypedDict, total=False):
+    node_scripts: dict[str, str | list[str]]
+    general_scripts: str | list[str]
+
+opdef_expr: re.Pattern[str]
+code_cache: dict[str, tuple[types.CodeType, float]]
+node_scripts: dict[str, list[pathlib.Path]]
+general_scripts: list[pathlib.Path]
+SECTION_NAME: str
+
+def templateURL(template_name: str) -> PySide6.QtCore.QUrl: ...
+
+COLUMN_URL: PySide6.QtCore.QUrl
+FLOW_URL: PySide6.QtCore.QUrl
+GRID_URL: PySide6.QtCore.QUrl
+TILE_URL: PySide6.QtCore.QUrl
+EXPANGING_TILE_URL: PySide6.QtCore.QUrl
+SIMPLE_TILE_URL: PySide6.QtCore.QUrl
+SIMPLE_TEXT_TILE_URL: PySide6.QtCore.QUrl
+KV_URL: PySide6.QtCore.QUrl
+TEXT_URL: PySide6.QtCore.QUrl
+DONUT_URL: PySide6.QtCore.QUrl
+PROGRESS_URL: PySide6.QtCore.QUrl
+IMAGE_URL: PySide6.QtCore.QUrl
+ANIM_IMAGE_URL: PySide6.QtCore.QUrl
+LINK_URL: PySide6.QtCore.QUrl
+BUTTON_URL: PySide6.QtCore.QUrl
+
+def findScripts() -> None: ...
+def addScriptsFromData(index_path: pathlib.Path, data: _ScriptIndex) -> None: ...
+def getCodeForPath(path: pathlib.Path) -> types.CodeType: ...
+def getCodeForSection(path_str: str, section: hou.HDASection) -> types.CodeType: ...
+
+modifer_names: dict[str, PySide6.QtCore.Qt.KeyboardModifier]
+
+class Responder(QtCore.QObject):
+    clicked_fn: Callable[..., object] | None
+    toggled_fn: Callable[..., object] | None
+    def __init__(self, clicked_fn: Callable[..., object] | None, toggled_fn: Callable[..., object] | None = None) -> None: ...
+    def clicked(self, modifiers: int) -> None: ...
+
+class CustomTag(core.Info):
+    text: str
+    backgroundColor: PySide6.QtGui.QColor
+    textColor: PySide6.QtGui.QColor
+    symbolName: str
+    symbolSize: float
+    symbolVariant: str
+    def update(self, **kwargs: Any) -> None: ...
+
+class CustomBadge(core.Info):
+    iconName: str
+    symbolName: str
+    symbolColor: PySide6.QtGui.QColor
+    toolTip: str
+
+class ScriptArgs(TypedDict):
+    node: hou.Node
+    node_name: str
+    type_name: str
+    namespace: str
+    basename: str
+    version: str
+    theme: colors.Theme
+
+class CustomItem(core.Info):
+    id: str | None
+    url: PySide6.QtCore.QUrl
+    properties: dict[str, Any]
+    fromInfoTree: bool
+    propertiesUpdated: ClassVar[PySide6.QtCore.Signal]
+    def __init__(self, **kwargs: Any) -> None: ...
+    def props(self) -> dict[str, Any]: ...
+    def dump(self, tab: int = 0) -> None: ...
+    def update(self, **kwargs: Any) -> None: ...
+
+def hoisted(f: _F) -> _F: ...
+
+class CustomContainer(CustomItem):
+    label: str
+    model: list[CustomItem]
+    def __init__(self, url: PySide6.QtCore.QUrl = ..., **kwargs: Any) -> None: ...
+    def dump(self, tab: int = 0) -> None: ...
+    def setBasePath(self, base_path: pathlib.Path) -> None: ...
+    @hoisted
+    def addCustomItem(self, url: str | pathlib.Path | PySide6.QtCore.QUrl, *, id: str | None = None, **kwargs: Any) -> CustomItem: ...
+    @hoisted
+    def addColumn(self, *, id: str | None = None, **kwargs: Any) -> CustomContainer: ...
+    @hoisted
+    def addGrid(self, *, id: str | None = None, **kwargs: Any) -> CustomContainer: ...
+    @hoisted
+    def addFlow(self, *, id: str | None = None, **kwargs: Any) -> CustomContainer: ...
+    @hoisted
+    def addTile(self, label: str, *, id: str | None = None, **kwargs: Any) -> CustomContainer: ...
+    @hoisted
+    def addSimpleTile(self, label: str, *, id: str | None = None, **kwargs: Any) -> CustomContainer: ...
+    @hoisted
+    def addExpandingTile(self, label: str, *, id: str | None = None, expanded: bool = False, **kwargs: Any) -> CustomContainer: ...
+    @hoisted
+    def addLabeledColumn(self, label: str, *, id: str | None = None, **kwargs: Any) -> CustomContainer: ...
+    @hoisted
+    def addText(self, text: str, *, id: str | None = None, **kwargs: Any) -> CustomItem: ...
+    @hoisted
+    def addLink(self, text: str, link: str | None = None, *, id: str | None = None, **kwargs: Any) -> CustomItem: ...
+    @hoisted
+    def addDonut(self, value: float, *, id: str | None = None, **kwargs: Any) -> CustomItem: ...
+    @hoisted
+    def addProgress(self, value: float, *, id: str | None = None, **kwargs: Any) -> CustomItem: ...
+    @hoisted
+    def addImage(self, source: str, *, id: str | None = None, animated: bool = False, **kwargs: Any) -> CustomItem: ...
+    @hoisted
+    def addNodeLink(self, node: hou.Node | None, **kwargs: Any) -> CustomItem | None: ...
+    @hoisted
+    def addButton(self, text: str, callback: Callable[..., object], **kwargs: Any) -> CustomItem: ...
+    @hoisted
+    def addKeyValueTile(self, label: str, text: str) -> CustomItem: ...
+    @hoisted
+    def addLabeledText(self, label: str, text: str, *, id: str | None = None, **kwargs: Any) -> CustomItem: ...
+    @hoisted
+    def addSimpleTextTile(self, label: str, text: str, *, id: str | None = None, **kwargs: Any) -> CustomItem: ...
+    @hoisted
+    def addLabeledLink(self, label: str, text: str, link: str | None = None, *, id: str | None = None, **kwargs: Any) -> CustomItem: ...
+    @hoisted
+    def addLabeledButton(self, label: str, text: str, callback: Callable[..., object], *, id: str | None = None, **kwargs: Any) -> CustomItem: ...
+    @hoisted
+    def addLabeledDonut(self, label: str, value: float, *, id: str | None = None, **kwargs: Any) -> CustomItem: ...
+    @hoisted
+    def addLabeledProgress(self, label: str, value: float, *, id: str | None = None, **kwargs: Any) -> CustomItem: ...
+    @hoisted
+    def addLabeledImage(self, label: str, source: str, *, id: str | None = None, **kwargs: Any) -> CustomItem: ...
+    @hoisted
+    def addLabeledNodeLink(self, label: str, node: hou.Node | None, *, id: str | None = None, **kwargs: Any) -> CustomItem | None: ...
+    @hoisted
+    def removeInfoTreeItems(self, recursive: bool = True) -> None: ...
+    def findByID(self, id: str) -> CustomItem | None: ...
+    def findByLabel(self, label: str) -> CustomItem | None: ...
+    def removeWhere(self, fn: Callable[[CustomItem], object], recursive: bool = True) -> None: ...
+    def removeByID(self, id: str, recursive: bool = True) -> None: ...
+    def removeByLabel(self, label: str, recursive: bool = True) -> None: ...
+
+def resolveOpDefPath(base_type: hou.NodeType, opdef_path: str) -> hou.HDASection | None: ...
+def applyCustomInfo(info: NodeInfo, node: hou.OpNode, theme: colors.Theme, output_index: int) -> None: ...

@@ -1,0 +1,101 @@
+from collections.abc import Sequence
+
+import hou
+from autorigs.asset.autoRigsAsset import AutoRigsAsset
+from autorigs.modules.base.rootModule import Module
+from autorigs.modules.extremity.autoRigsExtremityInterfaceBuilder import AutoRigsExtremityInterfaceBuilder
+from autorigs.modules.extremity.extremityGuideModel import ModuleOptionModel
+from autorigs.modules.quadFoot.autoRigsQuadFootBuilder import _QuadFootControls
+
+class AutoRigsQuadFootInterfaceBuilder(AutoRigsExtremityInterfaceBuilder):
+    INTERFACE_NAME_LABEL: dict[str, tuple[str, str]]
+    DISPLAY_DIGIT_MENU: list[str]
+    L_PREFIX: str
+    R_PREFIX: str
+    @classmethod
+    def hasSeparateBigDigitAllSpikeControls(cls) -> bool: ...
+    @classmethod
+    def buildRigInterface(
+        cls,
+        assetnode: hou.ObjNode,
+        optionsmodel: ModuleOptionModel,
+        rigcontrols: _QuadFootControls,
+        side: int,
+        index: int,
+        autorig_asset: AutoRigsAsset,
+        parentmodule: Module,
+        modulename: str,
+        ismain: bool = ...,
+    ) -> hou.ParmTemplateGroup: ...
+    @classmethod
+    def buildDigitInterfaceParms(
+        cls,
+        rigcontrols: _QuadFootControls,
+        assetnode: hou.ObjNode,
+        optionsmodel: ModuleOptionModel,
+        foldertemplate: hou.FolderParmTemplate,
+        prefix: str,
+    ) -> None: ...
+    @classmethod
+    def buildFullInterfaceParms(
+        cls,
+        rigcontrols: _QuadFootControls,
+        assetnode: hou.ObjNode,
+        optionsmodel: ModuleOptionModel,
+        foldertemplate: hou.FolderParmTemplate,
+        prefix: str,
+        digitattached: bool = ...,
+    ) -> None: ...
+    @classmethod
+    def createCurlSplayFanInterface(
+        cls,
+        folder: hou.FolderParmTemplate,
+        controls: _QuadFootControls,
+        assetnode: hou.ObjNode,
+        optionsmodel: ModuleOptionModel,
+        prefix: str,
+    ) -> hou.FolderParmTemplate: ...
+    @classmethod
+    def buildRigControlsInterfaceParams(
+        cls,
+        rigcontrols: _QuadFootControls,
+        prefix: str,
+        interface_control_keys: Sequence[tuple[str, str, str]],
+        foldertemplate: hou.FolderParmTemplate,
+        digitattached: bool = ...,
+    ) -> hou.FolderParmTemplate: ...
+    @classmethod
+    def linkDigitInterfaceParms(
+        cls,
+        assetnode: hou.ObjNode,
+        controls: _QuadFootControls,
+        options: ModuleOptionModel,
+        prefix: str,
+        isleft: bool,
+    ) -> None: ...
+    @classmethod
+    def linkFullInterfaceParms(
+        cls,
+        assetnode: hou.ObjNode,
+        controls: _QuadFootControls,
+        options: ModuleOptionModel,
+        prefix: str,
+        digitsattached: bool = ...,
+    ) -> None: ...
+    @classmethod
+    def buildRigOptionsInterfaceParms(
+        cls, assetnode: hou.ObjNode, options: ModuleOptionModel, prefix: str
+    ) -> hou.FolderParmTemplate: ...
+    @classmethod
+    def findChopNodeByType(cls, constraintparent: hou.OpNode, nodeType: str) -> hou.ChopNode | None: ...
+    @classmethod
+    def getQuadMatchIKtoFKStr(
+        cls,
+        assetnode: hou.ObjNode,
+        controls: _QuadFootControls,
+        prefix: str,
+        rootoffset: float,
+        lowerlimbend: hou.ObjNode | None,
+    ) -> str: ...
+    @classmethod
+    def getQuadMatchFKtoIKStr(cls, assetnode: hou.ObjNode, controls: _QuadFootControls, prefix: str) -> str: ...

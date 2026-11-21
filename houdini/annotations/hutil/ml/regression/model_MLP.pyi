@@ -1,0 +1,19 @@
+import torch
+import torch.nn as nn
+from hutil.ml.regression.connectivity_MLP import ModelMLPConfig
+from hutil.ml.regression.data_layout import ComponentLayout
+
+class ModelMLP(nn.Module):
+    net: nn.Sequential
+    def __init__(self, mlp_config: ModelMLPConfig, input_layout: ComponentLayout, target_layout: ComponentLayout) -> None: ...
+    def forward(self, input: torch.Tensor) -> torch.Tensor: ...
+
+class ModelMLPFactory:
+    mlp_config: ModelMLPConfig
+    input_layout: ComponentLayout
+    target_layout: ComponentLayout
+    def __init__(self, mlp_config: ModelMLPConfig, input_layout: ComponentLayout, target_layout: ComponentLayout) -> None: ...
+    def __call__(self) -> ModelMLP: ...
+    def description(self) -> str: ...
+
+def modelMLPFactory(mlp_config: ModelMLPConfig, input_layout: ComponentLayout, target_layout: ComponentLayout) -> ModelMLPFactory: ...

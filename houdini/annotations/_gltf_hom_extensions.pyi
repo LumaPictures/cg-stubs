@@ -1,0 +1,6 @@
+from typing import Never, Unpack
+
+def gltfClearCache(*args: Unpack[tuple[str]], **kwargs: Never) -> None: ...
+
+# A menu list: each scene's index followed by its name.
+def gltfGetSceneList(*args: Unpack[tuple[str]], **kwargs: Never) -> list[str]: ...

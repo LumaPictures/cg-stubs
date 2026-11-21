@@ -1,0 +1,6 @@
+from PySide6 import QtCore, QtWidgets
+
+import hou
+
+def qtScreenGeometry(self: hou.Pane) -> QtCore.QRect: ...
+def qtParentWindow(self: hou.Pane) -> QtWidgets.QWidget | None: ...

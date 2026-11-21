@@ -1,0 +1,9 @@
+from typing import Literal, overload
+
+import hou
+
+@overload
+def getRenderGallery(lopnet: hou.Node | None = ..., can_switch_tabs: bool = ..., can_create_new: Literal[True] = ...) -> hou.RenderGallery: ...
+@overload
+def getRenderGallery(lopnet: hou.Node | None = ..., can_switch_tabs: bool = ..., can_create_new: bool = ...) -> hou.RenderGallery | None: ...
+def openCloneInGallery(clone: hou.clone.Connection) -> bool: ...

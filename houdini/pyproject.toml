@@ -1,6 +1,7 @@
 [project]
 name = "types-houdini"
-version = "21.0.512.3"
+version = "22.0.508.1"
+requires-python = ">=3"
 
 readme = "README.md"
 authors = [{name="Chad Dombrova"}, {name="Ben Andersen"}]
@@ -9,8 +10,8 @@ license = "MIT"
 
 classifiers = [
     "Development Status :: 4 - Beta",
-    "Programming Language :: Python :: 2",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Intended Audience :: Developers",
@@ -25,6 +26,10 @@ keywords = ["3d", "graphics", "games", "VFX", "CG", "animation"]
 dev = [
     "stubgenlib",
     "mypy",
+    # Apply the annotation overlays to Houdini's sources, and check them.
+    "libcst",
+    "basedpyright",
+    "typeguard>=4.4.4",
 ]
 
 [tool.uv.sources]
@@ -42,7 +47,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["stubs/hou-stubs"]
+# Ship every stub package: hou-stubs, plus one per module from stubgen_houdini_libs.py.
+only-include = ["stubs"]
+sources = ["stubs"]
 
 [tool.hatch.build]
 # uv+hatch does not write anything to the installed .pth file if the contents
@@ -56,4 +63,13 @@ follow_imports = "skip"
 check_untyped_defs = true
 files = [
     "stubgen_houdini.py",
+    "stubgen_houdini_libs.py",
+    "hou_cleanup_config.py",
+    "annotation_overlays.py",
+    "check_annotations.py",
+    "check_compiled_overlay.py",
+    "check_hou_signatures.py",
+    "check_runtime_types.py",
+    "check_stub_generics.py",
+    "annotate/build_batches.py",
 ]

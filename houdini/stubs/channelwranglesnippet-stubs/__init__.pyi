@@ -1,0 +1,3 @@
+import types
+
+def generate(hou: types.ModuleType) -> str: ...

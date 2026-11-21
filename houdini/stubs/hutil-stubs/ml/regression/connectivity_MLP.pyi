@@ -1,0 +1,13 @@
+from collections.abc import Sequence
+
+class ModelMLPConfig:
+    """
+    Specifies the connectivity of a neural network that consists of multiple fully connected layers.
+    
+    The specification consists of the width of each hidden layer.
+    """
+    hidden_widths: Sequence[int]
+    def __init__(self, /, *, hidden_widths: Sequence[int]) -> None: ...
+    def num_inputs(self) -> int: ...
+    def num_outputs(self) -> int: ...
+    def description(self) -> str: ...

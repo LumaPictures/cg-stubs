@@ -1,0 +1,6 @@
+from pdgjob.genericrpc import _ServerExtra
+
+class NukeHandlerAPI:
+    def shutdown(self) -> str: ...
+
+def start_nuke_server(address: str, port: int, extra: _ServerExtra = ...) -> int: ...

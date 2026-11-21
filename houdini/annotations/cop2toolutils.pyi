@@ -1,0 +1,13 @@
+import hou
+from houtypes import ShelfToolKwargs
+
+def genericTool(scriptargs: ShelfToolKwargs, nodetypename: str, nodename: str | None = ..., exact_node_type: bool = ...) -> hou.OpNode | None: ...
+def customStateTool(
+    scriptargs: ShelfToolKwargs,
+    statename: str,
+    nodename: str | None = ...,
+    clicktoplace: bool | None = ...,
+    translate_parm_name: str | None = ...,
+) -> None: ...
+def chooseAndOpenImageFile(scriptargs: ShelfToolKwargs, start_with_default_file: bool) -> None: ...
+def openImageFile(scriptargs: ShelfToolKwargs, file_name: str) -> None: ...

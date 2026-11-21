@@ -1,0 +1,13 @@
+from collections.abc import Iterable, Sequence
+from typing import TypeAlias
+
+import hwebserver
+from _haio import CppErrorCode
+
+# Verified in hython: _houshfs.download() resolves to (HTTPStatus, str, _haio.CppErrorCode, str).
+_DownloadResult: TypeAlias = tuple[hwebserver.HTTPStatus, str, CppErrorCode, str]
+
+async def downloadGUI(shfs_subpath: str | Sequence[str]) -> list[_DownloadResult] | None: ...
+def downloadGUIAndWait(shfs_subpath: str | Sequence[str]) -> list[_DownloadResult] | None: ...
+async def downloadCLI(shfs_subpath: str | Iterable[str]) -> list[_DownloadResult]: ...
+def downloadAndWait(shfs_subpath: str | Iterable[str]) -> list[_DownloadResult]: ...

@@ -1,0 +1,8 @@
+FEATURES: set[str]
+FILTERS: set[str]
+DEVICES: set[str]
+TRANSFER_FUNCTIONS: set[str]
+PRECISIONS: set[str]
+LOSS_FUNCTIONS: set[str]
+METRICS: set[str]
+EXPORT_TARGETS: set[str]

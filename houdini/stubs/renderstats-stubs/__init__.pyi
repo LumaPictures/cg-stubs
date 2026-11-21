@@ -1,0 +1,3 @@
+import pathlib
+
+def known_dirs(subdir: str = '') -> list[pathlib.Path]: ...

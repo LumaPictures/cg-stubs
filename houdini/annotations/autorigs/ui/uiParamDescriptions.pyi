@@ -1,0 +1,1 @@
+DESCRIPTIONS: dict[str, str]

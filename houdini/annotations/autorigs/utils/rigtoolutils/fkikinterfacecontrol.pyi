@@ -1,0 +1,3 @@
+import hou
+
+def createIKFKInterface(netparent: hou.OpNode, parent: hou.ObjNode | None, prefix: str, endaffectorpath: str = ..., twistaffectorpath: str = ..., startbonepath: str = ..., endbonepath: str = ..., kinsolverpath: str = ...) -> hou.ObjNode: ...

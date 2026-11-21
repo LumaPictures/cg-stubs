@@ -1,0 +1,16 @@
+import hou
+from . import panels as panels
+from .panels import _HudTemplate, _HudUpdates
+
+class HUDInfo(hou.qt.ViewerOverlay):
+    def __init__(self, scene_viewer: hou.SceneViewer, panel_layout: hou.EnumValue[hou.hudPanel] | int, template: _HudTemplate | None = None) -> None: ...
+    def setToolInfo(self, panel: panels.ToolInfoPanel) -> None: ...
+    def toolInfo(self) -> panels.ToolInfoPanel: ...
+    def setTemplate(self, template: _HudTemplate) -> None:
+        """ Set the HUD template.
+        """
+    def updateRows(self, values: _HudUpdates) -> None:
+        """ Update the HUD content.
+        """
+    def show(self) -> None: ...
+    def setVisible(self, visible: bool) -> None: ...

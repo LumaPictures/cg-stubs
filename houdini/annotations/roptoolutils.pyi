@@ -1,0 +1,3 @@
+import hou
+
+def createRenderNode(rop_type: str = ..., exact_type_name: bool = ...) -> hou.RopNode: ...

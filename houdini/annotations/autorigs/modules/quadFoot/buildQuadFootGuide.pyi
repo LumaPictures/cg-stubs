@@ -1,0 +1,74 @@
+from collections.abc import Mapping, Sequence
+from typing import Any, Literal, overload
+
+import hou
+from autorigs.modules.extremity import buildExtremityGuide
+from autorigs.modules.extremity.buildExtremityGuide import _ObjNodeKey, _SopNodeKey
+from autorigs.modules.extremity.extremityGuideModel import ModuleOptionModel
+from autorigs.modules.limb.limbModule import LimbModule
+from autorigs.modules.master.masterModule import MasterModule
+from autorigs.modules.extremity.extremityGuideParams import _ExtremityParamsJson
+from autorigs.modules.extremity.extremityModule import _ExtremityModuleJson
+
+class QuadFootGuide(buildExtremityGuide.ExtremityGuide):
+    JSON_LABELS: dict[str, str | list[str]]
+    JSON_PARAM_LABELS: dict[str, str | list[str]]
+    show_extremity_root: bool
+    show_extremity_start: bool
+    root_parent_lookat: bool
+    quadFootType: int
+    current_extremitytype: int
+    current_display: int
+    current_mirror: bool | int
+    def __init__(self, assetnode: hou.ObjNode, model: ModuleOptionModel, parent: hou.ObjNode | None = ...) -> None: ...
+    def parentExtremities(
+        self,
+        parent: hou.ObjNode | None,
+        root: hou.ObjNode,
+        rot: hou.ObjNode,
+        ankle: hou.ObjNode,
+        footroll: hou.ObjNode,
+        toeroll: hou.ObjNode,
+    ) -> None: ...
+    def resetParentDisplay(self) -> None: ...
+    def updateToMasterParent(self, node: hou.ObjNode, module: MasterModule) -> None: ...
+    def updateToLimbParent(self, node: hou.ObjNode, mirrornode: hou.ObjNode, module: LimbModule) -> None: ...
+    def updateToLimbParentSide(self, parent: hou.ObjNode, ismain: bool, rootkey: str, module: LimbModule) -> None: ...
+    def updateToSpineParent(self, node: hou.ObjNode) -> None: ...
+    def setBigDigitParent(self, bigdigitguides: Sequence[hou.ObjNode], ismain: bool) -> None: ...
+    def updateType(self, extremitytype: int) -> None: ...
+    def updateDisplay(self, displayid: int) -> None: ...
+    def updateMirror(self, toggle: bool | int) -> None: ...
+    @overload
+    def getGuideObject(self, guidename: _ObjNodeKey) -> hou.ObjNode: ...
+    @overload
+    def getGuideObject(self, guidename: _SopNodeKey) -> hou.SopNode: ...
+    @overload
+    def getGuideObject(
+        self, guidename: Literal['mainbigdigitguides', 'mirrorbigdigitguides']
+    ) -> list[hou.ObjNode]: ...
+    @overload
+    def getGuideObject(
+        self, guidename: Literal['maindigitsguides', 'mirrordigitsguides']
+    ) -> list[list[hou.ObjNode]]: ...
+    @overload
+    def getGuideObject(self, guidename: str) -> Any: ...
+
+class FootFactory(buildExtremityGuide.ExtremityFactory):
+    @classmethod
+    def createFromJsonNew(
+        cls,
+        json: _ExtremityModuleJson,
+        guidejson: _ExtremityParamsJson,
+        assetnode: hou.ObjNode,
+        model: ModuleOptionModel,
+        parent: hou.ObjNode | None = ...,
+    ) -> QuadFootGuide: ...
+    @classmethod
+    def createFromJsonExisting(
+        cls,
+        json: _ExtremityModuleJson,
+        assetnode: hou.ObjNode,
+        model: ModuleOptionModel,
+        parent: hou.ObjNode | None = ...,
+    ) -> QuadFootGuide: ...

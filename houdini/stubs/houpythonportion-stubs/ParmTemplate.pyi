@@ -1,0 +1,61 @@
+import hou
+
+hptit: type[parmTemplateInterfaceType]
+
+class parmTemplateInterfaceType:
+    Angle: str
+    Button: str
+    ButtonStrip: str
+    Color: str
+    ColorAndAlpha: str
+    Data: str
+    DirectionVector: str
+    File: str
+    FileDirectory: str
+    FileGeometry: str
+    FileImage: str
+    Float: str
+    FloatMono: str
+    FloatVector2: str
+    FloatVector3: str
+    FloatVector4: str
+    FolderCollapsible: str
+    FolderSimple: str
+    FolderTabs: str
+    FolderRadio: str
+    FolderMultiparmList: str
+    FolderMultiparmScroll: str
+    FolderMultiparmTabs: str
+    FolderImportBlock: str
+    GeometryData: str
+    HueCircle: str
+    IconStrip: str
+    Integer: str
+    IntegerVector2: str
+    IntegerVector3: str
+    IntegerVector4: str
+    KeyValueDictionary: str
+    Label: str
+    LabelHeading: str
+    LabelMessage: str
+    LogarithmicFloat: str
+    LogarithmicInteger: str
+    MinMaxFloat: str
+    MinMaxInteger: str
+    OperatorList: str
+    OperatorPath: str
+    OperatorMenu: str
+    OrderedMenu: str
+    RGBAMask: str
+    RampColor: str
+    RampFloat: str
+    Separator: str
+    Spacer: str
+    String: str
+    Toggle: str
+    UV: str
+    UVW: str
+hptit = parmTemplateInterfaceType
+
+hpns: type[hou.parmNamingScheme]
+hpl: type[hou.parmLook]

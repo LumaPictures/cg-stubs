@@ -1,0 +1,4 @@
+import hou
+from houtypes import ShelfToolKwargs
+
+def genericTool(scriptargs: ShelfToolKwargs, nodetypename: str, nodename: str | None = ..., exact_node_type: bool = ...) -> hou.OpNode: ...

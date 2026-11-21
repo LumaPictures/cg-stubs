@@ -1,0 +1,9 @@
+from pdgjob import pdgjson as pdgjson
+
+from typing import TypeAlias
+from typing import TypeAlias
+import pdg
+_WorkItem: TypeAlias = pdg.WorkItem | pdgjson.WorkItem | pdgjson.NativeWorkItem
+def renameFile(work_item: _WorkItem, input_file: str, output_file: str, tag: str) -> None: ...
+def cook(work_item: _WorkItem) -> bool: ...
+def cookArgs(work_item: _WorkItem) -> None: ...
