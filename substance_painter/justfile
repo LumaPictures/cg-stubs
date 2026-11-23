@@ -1,0 +1,31 @@
+set shell := ["sh", "-c"]
+set windows-shell := ["powershell.exe", "-NoLogo", "-Command"]
+
+PAINTER_DIRECTORY := "C:/Program Files/Adobe/Adobe Substance 3D Painter"
+PAINTER_EXE := "Adobe Substance 3D Painter.exe"
+PYTHON_MODULE := "resources/python/modules/substance_painter"
+
+init:
+  uv sync --group dev
+
+source:
+  .venv/Scripts/activate.bat
+
+painter:
+  "{{PAINTER_DIRECTORY}}\{{PAINTER_EXE}}" --enable-remote-scripting
+
+generate: source
+  if (Test-Path stubs) {Remove-Item stubs -Recurse}
+  mkdir stubs
+  python gen/generate_stubs.py
+  stubgen --o stubs "{{PAINTER_DIRECTORY}}/{{PYTHON_MODULE}}"
+  mv stubs/substance_painter stubs/substance_painter-stubs
+  mv stubs/_substance_painter stubs/_substance_painter-stubs
+  python gen/patch_stubs.py
+
+bump-version: source
+  python gen/update_version.py
+
+build: bump-version
+  uv build
+  git restore pyproject.toml
