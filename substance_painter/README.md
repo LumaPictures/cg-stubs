@@ -19,7 +19,7 @@ plus a version suffix for the revision of the stubs.
 
 The `_substance_painter` modules are accessible within Substance Painter. You'll need to run stubgen from inside the console. Mypy by default launches a subprocess when doing stubgen, which isn't what we want. So we patch that behavior with `common\src\stubgenlib\moduleinspect.py`. For that to work, you'll need to ensure that your Mypy install is pure-python.
 
-```
+```sh
 # Ensure our mypy is the same version as substance, so we'll be able to import it.
 cd cg-stubs/substance_painter && uv sync --python 3.11
 # launch painter in the root directory
@@ -28,10 +28,10 @@ painter
 
 Within painter:
 
-```
+```py
 import sys; sys.path.append("substance_painter/.venv/Lib/site-packages")
 import stubgenlib.moduleinspect; stubgenlib.moduleinspect.patch()
-import mypy.stubgen; mypy.stubgen.main(['-p', '_substance_painter', '-o', 'substance_painter/stubs'])
+import mypy.stubgen; mypy.stubgen.main(['-p', '_substance_painter', '-o', 'substance_painter/stubs', '--include-docstrings'])
 ```
 
 * `sys.path.insert(0, ".venv/Lib/site-packages")` to put our mypy install on path.
@@ -41,8 +41,9 @@ import mypy.stubgen; mypy.stubgen.main(['-p', '_substance_painter', '-o', 'subst
 ### Extract stubs from the Substance Painter folder
 
 In the root of the repository, run:
-```
-uv run --directory substance_painter stubgen --no-import $SUBSTANCE_PAINTER_ROOT/resources/python/modules/substance_painter/ --search-path ./stubs -o ./stubs
+
+```sh
+uv run --directory substance_painter stubgen --no-import "$SUBSTANCE_PAINTER_ROOT/resources/python/modules/substance_painter/" --include-docstrings --search-path ./stubs -o ./stubs
 ```
 
 * set `$SUBSTANCE_PAINTER_ROOT` to the substance painter install directory.
@@ -51,7 +52,7 @@ uv run --directory substance_painter stubgen --no-import $SUBSTANCE_PAINTER_ROOT
 
 ### Run nox target
 
-```
+```sh
 nox -s 'generate(substance_painter)'
 ```
 
