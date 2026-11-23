@@ -2,7 +2,7 @@ from typing import ClassVar
 
 class Color:
     color_space: GenericColorSpace_ | LegacyColorSpace_ | str | None
-    value: float3  # type: ignore[name-defined]
+    value: float
     def __init__(self) -> None: ...
 
 class GenericColorSpace_:
@@ -43,4 +43,4 @@ class LegacyColorSpace_:
     @property
     def value(self) -> int: ...
 
-def transform_cs(arg0: float3, arg1: GenericColorSpace_ | LegacyColorSpace_ | str, arg2: GenericColorSpace_ | LegacyColorSpace_ | str) -> float3: ...  # type: ignore[name-defined]
+def transform_cs(arg0: float, arg1: GenericColorSpace_ | LegacyColorSpace_ | str, arg2: GenericColorSpace_ | LegacyColorSpace_ | str) -> float: ...

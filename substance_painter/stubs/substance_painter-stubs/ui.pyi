@@ -1,5 +1,5 @@
-import PySide6.QtGui  # type: ignore[import-not-found]
-import PySide6.QtWidgets  # type: ignore[import-not-found]
+import PySide6.QtGui
+import PySide6.QtWidgets
 from _typeshed import Incomplete
 
 from _substance_painter.ui import UIMode as UIMode

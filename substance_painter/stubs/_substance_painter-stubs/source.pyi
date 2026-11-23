@@ -1,6 +1,7 @@
 import _substance_painter.colormanagement
 import _substance_painter.data_tweak
 import _substance_painter.levels
+from _typeshed import Incomplete
 from typing import ClassVar, overload
 
 class AlphaMatte:
@@ -72,6 +73,12 @@ class ResolutionMode:
     @property
     def value(self) -> int: ...
 
+class ResolutionOverride:
+    log2offset: int
+    mode: Incomplete
+    value: int
+    def __init__(self) -> None: ...
+
 class SourceFontParams:
     auto_size: bool
     background_color: _substance_painter.colormanagement.Color
@@ -80,9 +87,8 @@ class SourceFontParams:
     color: _substance_painter.colormanagement.Color
     horizontal_alignment: HorizontalAlignment
     line_spacing: float
-    offset: float2  # type: ignore[name-defined]
-    resolution_mode: ResolutionMode
-    resolution_value: int2  # type: ignore[name-defined]
+    offset: float
+    resolution: ResolutionOverride
     size: float
     text: str
     vertical_alignment: VerticalAlignment
@@ -127,10 +133,9 @@ class SourceType:
 class SourceVectorialParams:
     artboard_id: str
     crop_area_mode: CropAreaMode
-    crop_area_value: float4  # type: ignore[name-defined]
+    crop_area_value: float
     fit_to_square: bool
-    resolution_mode: ResolutionMode
-    resolution_value: int2  # type: ignore[name-defined]
+    resolution: ResolutionOverride
     scope: str
     def __init__(self) -> None: ...
 
@@ -177,6 +182,7 @@ def get_source_bitmap_url(arg0: int) -> str: ...
 def get_source_font_parameters(arg0: int) -> SourceFontParams: ...
 def get_source_font_url(arg0: int) -> str: ...
 def get_source_procedural_parameters(arg0: int) -> list[_substance_painter.data_tweak.PythonTweak]: ...
+def get_source_procedural_resolution_override(arg0: int) -> ResolutionOverride: ...
 def get_source_procedural_url(arg0: int) -> str: ...
 def get_source_type(arg0: int) -> SourceType: ...
 def get_source_uniform_color(arg0: int) -> _substance_painter.colormanagement.Color: ...
@@ -221,6 +227,7 @@ def set_source(arg0: int, arg1: str, arg2: _substance_painter.colormanagement.Co
 @overload
 def set_source(arg0: int, arg1: str, arg2: int) -> int | None: ...
 def set_source_font_parameters(arg0: int, arg1: SourceFontParams) -> None: ...
-def set_source_procedural_parameters(arg0: int, arg1: list[tuple[_substance_painter.data_tweak.PythonTweak, bool | int32 | tuple[int32, int32] | tuple[int32, int32, int32] | tuple[int32, int32, int32, int32] | float | tuple[float, float] | tuple[float, float, float] | _substance_painter.colormanagement.Color | tuple[float, float, float, float] | tuple[_substance_painter.colormanagement.Color, float] | str]]) -> None: ...  # type: ignore[name-defined]
+def set_source_procedural_parameters(arg0: int, arg1: list[tuple[_substance_painter.data_tweak.PythonTweak, bool | int | tuple[int, int] | tuple[int, int, int] | tuple[int, int, int, int] | float | tuple[float, float] | tuple[float, float, float] | _substance_painter.colormanagement.Color | tuple[float, float, float, float] | tuple[_substance_painter.colormanagement.Color, float] | str]]) -> None: ...
+def set_source_procedural_resolution_override(arg0: int, arg1: ResolutionOverride) -> None: ...
 def set_source_uniform_color(arg0: int, arg1: _substance_painter.colormanagement.Color) -> None: ...
 def set_source_vectorial_parameters(arg0: int, arg1: SourceVectorialParams) -> None: ...
