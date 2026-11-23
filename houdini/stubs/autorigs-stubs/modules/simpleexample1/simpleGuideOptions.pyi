@@ -1,0 +1,13 @@
+import collections
+from hutil.Qt import QtWidgets
+from typing import TypedDict
+
+class _SimpleOptionsJson(TypedDict):
+    stretch: bool
+
+class ModuleOptionsWidget(QtWidgets.QWidget):
+    stretch_toggle: QtWidgets.QCheckBox
+    def __init__(self) -> None: ...
+    def fromJSON(self, json: _SimpleOptionsJson) -> None: ...
+    def toJSON(self) -> collections.OrderedDict[str, bool]: ...
+    def unlinkAllNodes(self) -> None: ...

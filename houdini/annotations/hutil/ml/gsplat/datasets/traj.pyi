@@ -1,0 +1,36 @@
+from typing import Any, TypeAlias, TypeVar
+
+import numpy as np
+import numpy.typing as npt
+
+_FloatT = TypeVar("_FloatT", bound=np.floating[Any])
+# Precisions that the functions mixing poses with float64 values promote to float64 (a longdouble
+# would stay longdouble).
+_Float64OrLess: TypeAlias = np.float16 | np.float32 | np.float64
+
+def normalize(x: npt.NDArray[_FloatT]) -> npt.NDArray[_FloatT]: ...
+def viewmatrix(
+    lookdir: npt.NDArray[_FloatT], up: npt.NDArray[_FloatT], position: npt.NDArray[_FloatT]
+) -> npt.NDArray[_FloatT]: ...
+def focus_point_fn(poses: npt.NDArray[_Float64OrLess]) -> npt.NDArray[np.float64]: ...
+def average_pose(poses: npt.NDArray[_FloatT]) -> npt.NDArray[_FloatT]: ...
+def generate_spiral_path(
+    poses: npt.NDArray[_Float64OrLess],
+    bounds: npt.NDArray[_Float64OrLess],
+    n_frames: int = ...,
+    n_rots: float = ...,
+    zrate: float = ...,
+    spiral_scale_f: float = ...,
+    spiral_scale_r: float = ...,
+    focus_distance: float = ...,
+) -> npt.NDArray[np.float64]: ...
+def generate_ellipse_path_z(
+    poses: npt.NDArray[_Float64OrLess], n_frames: int = ..., variation: float = ..., phase: float = ..., height: float = ...
+) -> npt.NDArray[np.float64]: ...
+def generate_ellipse_path_y(
+    poses: npt.NDArray[_Float64OrLess], n_frames: int = ..., variation: float = ..., phase: float = ..., height: float = ...
+) -> npt.NDArray[np.float64]: ...
+# scipy's spline fitting works in float64, whatever the poses' precision.
+def generate_interpolated_path(
+    poses: npt.NDArray[np.floating[Any]], n_interp: int, spline_degree: int = ..., smoothness: float = ..., rot_weight: float = ...
+) -> npt.NDArray[np.float64]: ...

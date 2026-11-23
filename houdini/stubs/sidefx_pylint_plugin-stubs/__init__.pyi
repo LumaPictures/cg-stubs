@@ -1,0 +1,3 @@
+from pylint.lint import PyLinter as PyLinter
+
+def register(linter: PyLinter) -> None: ...

@@ -1,0 +1,3 @@
+import hou
+
+def createFKControls(prefix: str, startbone: hou.ObjNode, endbone: hou.ObjNode) -> list[hou.ObjNode]: ...

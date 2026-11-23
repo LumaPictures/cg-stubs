@@ -1,0 +1,10 @@
+from typing import TypeAlias
+
+import pdg
+from pdgjob import pdgjson
+
+_WorkItem: TypeAlias = pdg.WorkItem | pdgjson.WorkItem | pdgjson.NativeWorkItem
+
+def performStreamCopy(srclocal: str, destlocal: str) -> None: ...
+def performCopy(work_item: _WorkItem, f: str) -> None: ...
+def cook(work_item: _WorkItem) -> bool: ...

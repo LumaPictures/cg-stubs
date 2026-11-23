@@ -1,0 +1,106 @@
+from collections.abc import Callable
+from types import TracebackType
+from typing import Literal, Self, TypeAlias, TypeVar, Unpack
+
+import hou
+from statehud.parmutils import HUDParm
+from curvestate.curve3.state import CurveState
+
+_T = TypeVar("_T")
+_ExcInfo: TypeAlias = tuple[type[BaseException] | None, BaseException | None, TracebackType | None]
+
+
+class UndoStateUpdater:
+    def __init__(self, main_state: CurveState) -> None: ...
+    def undo(self) -> None: ...
+    def redo(self) -> None: ...
+
+
+class RedoStateUpdater(UndoStateUpdater):
+    def undo(self) -> None: ...
+    def redo(self) -> None: ...
+
+
+class RefreshUndoCallback:
+    def __init__(self, refresh_fn: Callable[[], object], run_on_undo: bool, run_on_redo: bool) -> None: ...
+    def undo(self) -> None: ...
+    def redo(self) -> None: ...
+
+
+class LiveGeometryUndo:
+    def __init__(self, node_path: str, parm_name: str, undo_geo: hou.Geometry, redo_geo: hou.Geometry) -> None: ...
+    def undo(self) -> None: ...
+    def redo(self) -> None: ...
+
+
+class SelectionStateUndo:
+    def __init__(self, main_state: CurveState, pre_group: str | None, post_group: str | None) -> None: ...
+    def undo(self) -> None: ...
+    def redo(self) -> None: ...
+
+
+class NothingBlock:
+    def __init__(self, *args: object, **kwargs: object) -> None: ...
+    def __enter__(self) -> Self: ...
+    def __exit__(self, *args: Unpack[_ExcInfo]) -> Literal[False]: ...
+
+
+class HUDParmValueUndo:
+    def __init__(self, node_path: str, parm_name: str, undo_value: hou.ParmArgType, redo_value: hou.ParmArgType) -> None: ...
+    def undo(self) -> None: ...
+    def redo(self) -> None: ...
+
+
+class HUDParmUndoCache:
+    def __init__(self) -> None: ...
+    def store_start_value(self, key: tuple[str, str], value: hou.ParmArgType) -> None: ...
+    def pop_start_value(self, key: tuple[str, str]) -> hou.ParmArgType | None: ...
+
+
+class HUDParmUndoBlock:
+    def __init__(
+        self,
+        parm: HUDParm | None,
+        *,
+        cache: HUDParmUndoCache | None = ...,
+        node_parm: hou.Parm | None = ...,
+        final_value: hou.ParmArgType | None = ...,
+    ) -> None: ...
+    def __enter__(self) -> hou.UndosDisabler: ...
+    def __exit__(self, *args: Unpack[_ExcInfo]) -> bool: ...
+
+
+class UndoBlockWrapper:
+    def __init__(
+        self,
+        source_block: hou.UndosGroup,
+        *,
+        main_state: CurveState | None = ...,
+        refresh_fn: Callable[[], object] | None = ...,
+    ) -> None: ...
+    def __enter__(self) -> Self: ...
+    def __exit__(self, *args: Unpack[_ExcInfo]) -> None: ...
+
+
+def get_undo_block(
+    make_undo_block: bool,
+    *args: Unpack[tuple[str, Unpack[tuple[hou.NetworkEditor | None, ...]]]],
+    main_state: CurveState | None = ...,
+    refresh_fn: Callable[[], object] | None = ...,
+    **kwargs: hou.NetworkEditor | None,
+) -> NothingBlock | UndoBlockWrapper: ...
+def execute_with_undo(
+    label: str,
+    run_fn: Callable[[], _T],
+    *,
+    main_state: CurveState | None = ...,
+    refresh_fn: Callable[[], object] | None = ...,
+    make_undo_block: bool = ...,
+    track_selection: bool = ...,
+    selection_pre_group: str | None = ...,
+    selection_post_group: str | None = ...,
+    force_selection_undo: bool = ...,
+) -> _T: ...
+def execute_selection_change_with_undo(
+    label: str, apply_fn: Callable[[], _T], *, main_state: CurveState | None
+) -> _T | bool: ...

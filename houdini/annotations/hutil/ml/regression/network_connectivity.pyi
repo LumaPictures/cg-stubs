@@ -1,0 +1,9 @@
+from collections.abc import Sequence
+from hutil.ml.regression.network_dependency import NetworkDependency
+
+class NetworkConnectivity:
+    network: Sequence[tuple[int, Sequence[NetworkDependency]]]
+    output_dependencies: Sequence[NetworkDependency]
+    def __init__(self, network: Sequence[tuple[int, Sequence[NetworkDependency]]], output_dependencies: Sequence[NetworkDependency]) -> None: ...
+    def __repr__(self) -> str: ...
+    def __eq__(self, other: object) -> bool: ...

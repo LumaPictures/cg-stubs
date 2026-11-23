@@ -1,0 +1,9 @@
+import hou
+import PySide6.QtWidgets
+
+class PermanentDefaultDialog:
+    apply_btn: PySide6.QtWidgets.QPushButton
+    cancel_btn: PySide6.QtWidgets.QPushButton
+    def __init__(self, parent: PySide6.QtWidgets.QWidget | None, node: hou.OpNode) -> None: ...
+    def onApply(self) -> None: ...
+    def onCancel(self) -> None: ...

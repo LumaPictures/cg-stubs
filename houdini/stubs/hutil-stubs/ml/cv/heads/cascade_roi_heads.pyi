@@ -1,0 +1,6 @@
+from detectron2.modeling.roi_heads import KRCNNConvDeconvUpsampleHead as KRCNNConvDeconvUpsampleHead
+from hutil.ml.cv.config import _CVTrainParms
+from hutil.ml.cv.menu_config import DetectionComposition as DetectionComposition
+from omegaconf import DictConfig as DictConfig
+
+def createROIHeads(dataloader: DictConfig, parms: _CVTrainParms) -> DictConfig: ...

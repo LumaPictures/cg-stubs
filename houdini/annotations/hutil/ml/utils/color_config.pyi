@@ -1,0 +1,9 @@
+import torch
+
+class ColorConfig:
+    src_space: str
+    dst_space: str
+    config_file: str
+    def __init__(self, src_space: str = ..., dst_space: str = ..., config_file: str = ...) -> None: ...
+    def convertInput(self, tensor: torch.Tensor) -> torch.Tensor: ...
+    def convertOutput(self, tensor: torch.Tensor) -> torch.Tensor: ...

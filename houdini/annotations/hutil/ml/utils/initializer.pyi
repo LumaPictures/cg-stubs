@@ -1,0 +1,6 @@
+import torch
+
+class Initializer:
+    @classmethod
+    def menu(cls) -> list[str]: ...
+    def initialize(self, tensor: torch.Tensor, mean: float, gain: float) -> None: ...

@@ -1,0 +1,22 @@
+import hou
+from PySide6 import QtWidgets
+
+class UiParamNodePicker(QtWidgets.QWidget):
+    defaulttext: str
+    currenttext: str
+    nodepath: QtWidgets.QLineEdit
+    nodechooserbutton: hou.qt.NodeChooserButton
+
+    def __init__(
+        self,
+        label: str,
+        default_text: str = ...,
+        buttonwidth: int = ...,
+        buttonheight: int = ...,
+        relative_to_node: hou.OpNode | None = ...,
+        initial_node: hou.OpNode | None = ...,
+        node_filter: hou.EnumValue[hou.nodeTypeFilter] | None = ...,
+    ) -> None: ...
+    def onNodeSelected(self, node: hou.Node | None) -> None: ...
+    def getText(self) -> str: ...
+    def setText(self, text: str) -> None: ...

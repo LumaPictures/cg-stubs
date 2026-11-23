@@ -1,0 +1,3 @@
+import hou
+
+def isExternalReference(self: hou.AgentLayer) -> bool: ...

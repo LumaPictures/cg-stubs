@@ -1,0 +1,113 @@
+from collections.abc import Iterable, Sequence
+from typing import Any, Literal, TypeAlias, overload
+
+import numpy
+import numpy.typing as npt
+from _typeshed import StrPath, SupportsWrite
+from PIL import Image
+from scipy.spatial import cKDTree
+
+_Array: TypeAlias = npt.NDArray[numpy.number[Any]]
+_Image: TypeAlias = Image.Image | _Array
+
+def get_cKDTree() -> type[cKDTree] | None: ...
+def checkImages(images: Iterable[_Image]) -> list[_Image]: ...
+def intToBin(i: int) -> bytes: ...
+
+class GifWriter:
+    def getheaderAnim(self, im: Image.Image) -> bytes: ...
+    def getImageDescriptor(self, im: Image.Image, xy: tuple[int, int] | None = ...) -> bytes: ...
+    def getAppExt(self, loops: float = ...) -> bytes: ...
+    def getGraphicsControlExt(self, duration: float = ..., dispose: int = ...) -> bytes: ...
+    def handleSubRectangles(
+        self, images: list[_Image], subRectangles: bool | Sequence[tuple[int, int]]
+    ) -> tuple[list[_Image], list[tuple[int, int]]]: ...
+    def getSubRectangles(self, ims: list[_Array]) -> tuple[list[_Array], list[tuple[int, int]]]: ...
+    def convertImagesToPIL(self, images: Iterable[_Image], dither: bool, nq: int = ...) -> list[Image.Image]: ...
+    def writeGifToFile(
+        self,
+        fp: SupportsWrite[bytes],
+        images: Sequence[Image.Image],
+        durations: Sequence[float],
+        loops: int,
+        xys: Sequence[tuple[int, int]],
+        disposes: Sequence[int],
+    ) -> int: ...
+
+def writeGif(
+    filename: StrPath,
+    images: Sequence[_Image],
+    duration: float | Sequence[float] = ...,
+    repeat: bool | int = ...,
+    dither: bool = ...,
+    nq: int = ...,
+    subRectangles: bool | Sequence[tuple[int, int]] = ...,
+    dispose: int | Sequence[int] | None = ...,
+) -> None: ...
+@overload
+def readGif(filename: StrPath, asNumpy: Literal[True] = ...) -> list[npt.NDArray[numpy.uint8]]: ...
+@overload
+def readGif(filename: StrPath, asNumpy: Literal[False]) -> list[Image.Image]: ...
+@overload
+def readGif(filename: StrPath, asNumpy: bool = ...) -> list[npt.NDArray[numpy.uint8]] | list[Image.Image]: ...
+def readGif(filename: StrPath, asNumpy: bool = ...) -> list[npt.NDArray[numpy.uint8]] | list[Image.Image]: ...
+
+class NeuQuant:
+    NCYCLES: int
+    NETSIZE: int
+    SPECIALS: int
+    BGCOLOR: int
+    CUTNETSIZE: int
+    MAXNETPOS: int
+    INITRAD: int
+    RADIUSBIASSHIFT: int
+    RADIUSBIAS: int
+    INITBIASRADIUS: int
+    RADIUSDEC: int
+    ALPHABIASSHIFT: int
+    INITALPHA: int
+    GAMMA: float
+    BETA: float
+    BETAGAMMA: float
+    network: npt.NDArray[numpy.float64]
+    colormap: npt.NDArray[numpy.int32]
+    netindex: npt.NDArray[numpy.int32]
+    bias: npt.NDArray[numpy.float64]
+    freq: npt.NDArray[numpy.float64]
+    pimage: Image.Image | None
+    PRIME1: int
+    PRIME2: int
+    PRIME3: int
+    PRIME4: int
+    MAXPRIME: int
+    pixels: npt.NDArray[numpy.uint32] | None
+    samplefac: int
+    a_s: dict[tuple[float, int], npt.NDArray[numpy.float64]]
+    def setconstants(self, samplefac: int, colors: int) -> None: ...
+    def __init__(self, image: Image.Image, samplefac: int = ..., colors: int = ...) -> None: ...
+    def writeColourMap(self, rgb: bool, outstream: SupportsWrite[numpy.int32]) -> int: ...
+    def setUpArrays(self) -> None: ...
+    def altersingle(
+        self, alpha: float, i: int | numpy.intp, b: int | numpy.uint32, g: int | numpy.uint32, r: int | numpy.uint32
+    ) -> None: ...
+    def geta(self, alpha: float, rad: int) -> npt.NDArray[numpy.float64]: ...
+    def alterneigh(
+        self,
+        alpha: float,
+        rad: int,
+        i: int | numpy.intp,
+        b: int | numpy.uint32,
+        g: int | numpy.uint32,
+        r: int | numpy.uint32,
+    ) -> None: ...
+    def contest(self, b: int | numpy.uint32, g: int | numpy.uint32, r: int | numpy.uint32) -> numpy.intp: ...
+    def specialFind(self, b: int | numpy.uint32, g: int | numpy.uint32, r: int | numpy.uint32) -> int: ...
+    def learn(self) -> None: ...
+    def fix(self) -> None: ...
+    def inxbuild(self) -> None: ...
+    def paletteImage(self) -> Image.Image: ...
+    def quantize(self, image: Image.Image) -> Image.Image: ...
+    def quantize_with_scipy(self, image: Image.Image) -> Image.Image: ...
+    def quantize_without_scipy(self, image: Image.Image) -> Image.Image: ...
+    def convert(self, *color: int | numpy.uint8) -> npt.NDArray[numpy.int32]: ...
+    def inxsearch(self, r: int | numpy.uint8, g: int | numpy.uint8, b: int | numpy.uint8) -> numpy.intp: ...

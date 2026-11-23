@@ -1,0 +1,3 @@
+from hutil.Qt.QtCore import *
+
+class RebuildException(Exception): ...

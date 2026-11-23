@@ -1,0 +1,6 @@
+
+from omegaconf import DictConfig
+from hutil.ml.cv.config import _CVTrainParms
+
+def processDatasets(parms: _CVTrainParms) -> tuple[dict[str, tuple[str, ...]], int, int]: ...
+def setDataloader(parms: _CVTrainParms) -> DictConfig: ...

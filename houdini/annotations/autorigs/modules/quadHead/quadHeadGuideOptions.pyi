@@ -1,0 +1,39 @@
+import collections
+from collections.abc import Iterable, Sequence
+from typing import ClassVar, Literal, TypedDict
+
+import hou
+from PySide6 import QtWidgets
+from autorigs.modules.master.masterModule import MasterModule
+from autorigs.modules.quadHead.buildQuadHeadGuide import QuadHeadGuide
+from autorigs.modules.spine.spineModule import SpineModule
+from autorigs.ui.uiParentComboMenu import UiParentComboMenu
+
+class _QuadHeadOptionsJson(TypedDict):
+    parent: Sequence[str]
+
+class ModuleOptionsWidget(QtWidgets.QWidget):
+    HOOK_BUTTON_WIDTH: ClassVar[int]
+    HOOK_BUTTON_HEIGHT: ClassVar[int]
+    headguide: QuadHeadGuide
+    mainlayout: QtWidgets.QVBoxLayout
+    widgets: list[QtWidgets.QWidget]
+    mastermodule: MasterModule
+    parentwidget: UiParentComboMenu
+    JSON_parent: None
+    def __init__(
+        self, headguide: QuadHeadGuide, spinemodules: Iterable[SpineModule], mastermodule: MasterModule
+    ) -> None: ...
+    def getBuiltParentInfo(self) -> tuple[MasterModule | SpineModule, hou.ObjNode]: ...
+    def getExistingParents(
+        self, spinemodules: Iterable[SpineModule]
+    ) -> list[tuple[MasterModule | SpineModule, list[hou.OpNode | None]]]: ...
+    def updateParentModules(self, spinemodules: Iterable[SpineModule]) -> None: ...
+    def updateParent(self, parentmodule: MasterModule | SpineModule, node: hou.ObjNode) -> None: ...
+    def getMasterParentGuides(self, mastermodule: MasterModule) -> list[hou.ObjNode | None]: ...
+    def getSpineParentGuides(self, spinemodule: SpineModule) -> list[hou.OpNode | None]: ...
+    def unlinkAllNodes(self) -> None: ...
+    def getDefaultParentPath(self) -> str: ...
+    def getAllWidgets(self) -> list[QtWidgets.QWidget]: ...
+    def toJSON(self) -> collections.OrderedDict[str, tuple[str, str, str]]: ...
+    def fromJSON(self, json: _QuadHeadOptionsJson) -> bool: ...

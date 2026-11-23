@@ -1,0 +1,6 @@
+from pdgjob.genericrpc import _ServerExtra
+
+class MayaHandlerAPI:
+    def shutdown(self) -> str: ...
+
+def start_maya_server(address: str, port: int, extra: _ServerExtra = ...) -> int: ...

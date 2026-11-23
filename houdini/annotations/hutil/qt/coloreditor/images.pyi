@@ -1,0 +1,29 @@
+import pathlib
+from collections.abc import Iterator
+from typing import ClassVar
+
+import numpy
+from numpy.typing import NDArray
+from PySide6 import QtCore, QtGui
+
+PREFS_DIR: pathlib.Path
+IMAGE_PICKER_FILE: str
+DEFAULT_IMAGE_PICKER_FILE: str
+
+class ImageData:
+    path: str
+    width: int
+    height: int
+    auto_space: str
+    def __init__(self, path: str = ..., width: int = ..., height: int = ..., data_list: list[NDArray[numpy.float32]] | None = ..., space: str = ...) -> None: ...
+    def rawImage(self, plane: int | None = ...) -> QtGui.QImage | None: ...
+    def mappedImage(self, display: str, view: str, brightness: float = ..., contrast: float = ..., offset: float = ..., plane: int = ...) -> QtGui.QImage | None: ...
+
+class ImageModel(QtCore.QAbstractListModel):
+    countChanged: ClassVar[QtCore.Signal]
+    def __init__(self) -> None: ...
+    def __iter__(self) -> Iterator[ImageData]: ...
+    def rowCount(self, parent: QtCore.QModelIndex | QtCore.QPersistentModelIndex | None = ...) -> int: ...
+    def rawImage(self, image_index: int, plane_index: int | None = ...) -> QtGui.QImage | None: ...
+    def save(self) -> None: ...
+    def data(self, index: QtCore.QModelIndex | QtCore.QPersistentModelIndex, role: int = ...) -> str | None: ...

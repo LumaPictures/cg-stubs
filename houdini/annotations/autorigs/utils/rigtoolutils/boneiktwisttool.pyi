@@ -1,0 +1,3 @@
+from houtypes import ShelfToolKwargs
+
+def invokeTool(kwargs: ShelfToolKwargs) -> None: ...
