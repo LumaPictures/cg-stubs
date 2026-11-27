@@ -1,7 +1,12 @@
 import logging
 import subprocess
-from collections.abc import Mapping
 from pdgjob.pdgcmd import getHostname as getHostname, reportServerStarted as reportServerStarted
+from typing import NotRequired, TypedDict
+
+class _ServerInfo(TypedDict):
+    host: str
+    port: int
+    proto_type: NotRequired[str]
 
 logger: logging.Logger
 
@@ -19,7 +24,7 @@ def findFreePort(hostname: str, port: int) -> int:
     a random free port.  Otherwise we are searching for one
     from the given range
     """
-def shutdownServer(info: Mapping[str, object], timeout: float = 30) -> bool:
+def shutdownServer(info: _ServerInfo, timeout: float = 30) -> bool:
     """
     Shutdown the remote server.
     """

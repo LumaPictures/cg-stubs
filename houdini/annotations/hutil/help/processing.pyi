@@ -5,6 +5,7 @@ import jinja2
 
 from hutil.help import zones
 from hutil.help.blocks import BlockType, Text
+from hutil.help.search.indexing import Document
 
 _H = TypeVar("_H", bound=Hashable)
 
@@ -13,6 +14,7 @@ POST_PROC_KEY: str
 
 class Processor:
     name: str
+    def process_indexed(self, zone: zones.Zone, block: BlockType, doc: Document) -> None: ...
 
 class MultiModifier(Modifier):
     def __repr__(self) -> str: ...
@@ -74,3 +76,4 @@ class Pipeline(Processor):
     @classmethod
     def with_procs(cls, procs: Sequence[Processor]) -> Self: ...
     def add(self, proc: Processor) -> None: ...
+    def process_indexed(self, zone: zones.Zone, block: BlockType, doc: Document) -> None: ...

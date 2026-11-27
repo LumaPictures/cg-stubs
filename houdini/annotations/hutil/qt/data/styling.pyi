@@ -7,7 +7,7 @@ from collections.abc import Iterable, Sequence
 
 LABEL_ROLE: PySide6.QtGui.QPalette.ColorRole
 VALUE_ROLE: PySide6.QtGui.QPalette.ColorRole
-TONE_LIGHTNESS: tuple[float, ...]
+TONE_LIGHTNESS: tuple[float, float, float, float, float, float, float, float, float]
 warning_svg: str
 gear_svg: str
 
@@ -112,7 +112,7 @@ class OverrideColorPolicy(ColorPolicy):
     ) -> PySide6.QtGui.QBrush | PySide6.QtGui.QPalette.ColorRole: ...
     def mono(self) -> PySide6.QtGui.QBrush | PySide6.QtGui.QColor | PySide6.QtGui.QPalette.ColorRole: ...
 
-DEFAULT_CHART_COLORS: tuple[str, ...]
+DEFAULT_CHART_COLORS: tuple[str, str, str, str, str, str, str, str, str, str, str, str]
 DEFAULT_COLOR_POLICY: ColorLookupPolicy
 NAMED_COLOR_POLICIES: dict[str, ColorPolicy]
 

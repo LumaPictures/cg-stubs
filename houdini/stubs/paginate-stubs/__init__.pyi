@@ -1,6 +1,6 @@
 import typing
 from collections.abc import Callable as Callable, Mapping, Sequence
-from typing import Any, Generic, TypedDict
+from typing import Generic, TypedDict
 
 from typing import TypeVar
 from typing_extensions import TypeVar
@@ -70,7 +70,7 @@ class Page(list[_I], Generic[_I, _C]):
     collection: Sequence[_I]
     collection_type: type[_C]
     url_maker: Callable[[int], str]
-    kwargs: dict[str, Any]
+    kwargs: dict[str, object]
     page: int
     items_per_page: int
     items: list[_I]
@@ -90,9 +90,9 @@ class Page(list[_I], Generic[_I, _C]):
     link_tag: Callable[[_PageLink], str]
     radius: int
     @typing.overload
-    def __init__(self: Page[_I, Sequence[_I] | None], collection: Sequence[_I] | None, page: int | str = ..., items_per_page: int = ..., item_count: int | None = ..., wrapper_class: None = ..., url_maker: Callable[[int], str] | None = ..., **kwargs: Any) -> None: ...
+    def __init__(self: Page[_I, Sequence[_I] | None], collection: Sequence[_I] | None, page: int | str = ..., items_per_page: int = ..., item_count: int | None = ..., wrapper_class: None = ..., url_maker: Callable[[int], str] | None = ..., **kwargs: object) -> None: ...
     @typing.overload
-    def __init__(self: Page[_I, _T], collection: _T, page: int | str = ..., items_per_page: int = ..., item_count: int | None = ..., *, wrapper_class: Callable[[_T], Sequence[_I]], url_maker: Callable[[int], str] | None = ..., **kwargs: Any) -> None: ...
+    def __init__(self: Page[_I, _T], collection: _T, page: int | str = ..., items_per_page: int = ..., item_count: int | None = ..., *, wrapper_class: Callable[[_T], Sequence[_I]], url_maker: Callable[[int], str] | None = ..., **kwargs: object) -> None: ...
     def pager(self, format: str = '~2~', url: str | None = None, show_if_single_page: bool = False, separator: str = ' ', symbol_first: str = '&lt;&lt;', symbol_last: str = '&gt;&gt;', symbol_previous: str = '&lt;', symbol_next: str = '&gt;', link_attr: Mapping[str, object] = ..., curpage_attr: Mapping[str, object] = ..., dotdot_attr: Mapping[str, object] = ..., link_tag: Callable[[_PageLink], str] | None = None) -> str:
         """
         Return string with links to other pages (e.g. '1 .. 5 6 7 [8] 9 10 11 .. 50').

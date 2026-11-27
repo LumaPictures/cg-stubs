@@ -9,11 +9,12 @@ from typing import TypeVar
 from typing import TypeVar
 _K = TypeVar('_K')
 _V = TypeVar('_V')
+_NodeT = TypeVar('_NodeT', bound=hou.Node)
 _KwargsT = TypeVar('_KwargsT', bound=dict[str, Any])
 DATAMODEL_VERSION: str
 special_nodetypes: list[str]
 nodetype_categories_mapping: dict[str, hou.NodeTypeCategory]
-ramp_point_parmnames: dict[hou.EnumValue[hou.rampParmType], tuple[str, ...]]
+ramp_point_parmnames: dict[hou.EnumValue[hou.rampParmType], tuple[str, str, str] | tuple[str, str, str, str, str]]
 
 class DataCollector:
     def __init__(self) -> None: ...
@@ -79,7 +80,7 @@ def validateTypes(data: Mapping[str, rtypes.NetworkItemData], parent_nodetype_ca
     NOTE: This only validates against the items recorded in the data. It will not validate for any missing type
     that is part of a locked digital asset.
     """
-def checkObject(x: object, t: type | tuple[type, ...]) -> None: ...
+def checkObject(x: object, t: type[object] | tuple[type[object], ...]) -> None: ...
 def skipSetter(o: object, v: object, opts: object) -> None: ...
 def uniquePrefix(length: int = 12) -> str: ...
 def formatFloat(value: float, precision: int = 2) -> int | float: ...
@@ -119,12 +120,23 @@ def validateCallback(callback: rtypes.ParsingCallback | None, raise_error: bool 
     """ Ensures input callback is callable, returns None or raises
         error otherwise.
     """
-def invokeCallback(callback: rtypes.ParsingCallback | None, key: str, value: object) -> None: ...
+@typing.overload
+def invokeCallback(callback: rtypes.ParsingCallback | None, key: Literal['parm_tuple'], value: hou.ParmTuple) -> None: ...
+@typing.overload
+def invokeCallback(callback: rtypes.ParsingCallback | None, key: Literal['parm_template'], value: hou.ParmTemplate) -> None: ...
 def jumpToEditContext(node: hou.Node) -> None: ...
-def findBranchInput(node: hou.Node, limit_items: Sequence[hou.NetworkMovableItem] | None = None) -> hou.Node:
+def _firstInputItem(item: _NodeT, limit_items: Sequence[hou.NetworkMovableItem] | None = None) -> _NodeT | None:
+    """
+    Finds the first output node of the given 'node', aka the node that is the leftest output of 'node'.
+    """
+def findBranchInput(node: _NodeT, limit_items: Sequence[hou.NetworkMovableItem] | None = None) -> _NodeT:
     """ This function searches the start_node's hierarchy limit to the search nodes, to find the most leftest output.
     """
-def findBranchOutput(node: hou.Node, limit_items: Sequence[hou.NetworkMovableItem] | None = None) -> hou.Node:
+def _firstOutputItem(item: _NodeT, limit_items: Sequence[hou.NetworkMovableItem] | None = None) -> _NodeT | None:
+    """
+    Finds the first output node of the given 'node', aka the node that is the leftest output of 'node'.
+    """
+def findBranchOutput(node: _NodeT, limit_items: Sequence[hou.NetworkMovableItem] | None = None) -> _NodeT:
     """ This function searches the start_node's hierarchy limit to the search nodes, to find the most leftest output.
     """
 def insertAtIndex(data: Mapping[_K, _V], new_key: _K, new_value: _V, index: int = 0) -> dict[_K, _V]:
@@ -168,13 +180,13 @@ def dataForTargetInClusterData(cluster_data: rtypes.ClusterData) -> rtypes.Netwo
 def targetParmNames(data: rtypes.NetworkItemData | rtypes.ClusterData) -> list[str]: ...
 def getParameterMode(has_target_parms: bool, options: Mapping[str, object]) -> str: ...
 def isTargetWithItems(data: rtypes.NetworkItemData | rtypes.ClusterData, key: str = 'children') -> bool: ...
-def createRecipeContainer(name: str, nodetype_category: str | None, voptype: str | None, container: hou.Node | None = None) -> tuple[hou.Node, hou.Node]:
+def createRecipeContainer(name: str, nodetype_category: str | None, voptype: str | None, container: hou.OpNode | None = None) -> tuple[hou.OpNode, hou.OpNode]:
     """Creates an empty container in which a recipe can be applied for editing.
 
     :returns: The first hou.Node is the top container, which is always /obj/RECIPE_EDITOR.
     The second node is the parent node in which the recipe can be created safely.
     """
-def scanFromCWD(node: hou.Node | None, search_category_name: str) -> hou.Node | None: ...
+def scanFromCWD(node: _NodeT | None, search_category_name: str) -> _NodeT | hou.OpNode | None: ...
 def handleNetworkChanges(cluster_output_data: rtypes.ClusterOutputData, network_editor: hou.NetworkEditor | None = None, avoid_overlap: bool = False, frame: bool = False, frame_nodes: Sequence[hou.NetworkMovableItem] = ..., default_home_node: hou.NetworkMovableItem | None = None, select: bool = False, select_nodes: Sequence[hou.NetworkMovableItem] = ..., default_selection_node: hou.NetworkMovableItem | None = None, set_current: bool = False, current_node: hou.Node | None = None, default_current_node: hou.Node | None = None) -> None:
     """Handles various network editor changes related to selection, homing and node overlapping based on the
     cluster output data dictionary.

@@ -1,7 +1,7 @@
 import os
 import pathlib
 from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence
-from typing import Any, TypeVar
+from typing import Any, TypeVar, overload
 
 from _typeshed.wsgi import WSGIApplication
 from werkzeug.routing import Rule
@@ -33,6 +33,31 @@ class Config(dict[str, Any]):
     ) -> bool: ...
     def from_mapping(self, mapping: Mapping[str, object] | None = ..., **kwargs: object) -> bool: ...
     def get_plugin(self, name: str) -> Plugin | None: ...
+    # Forwards to wsgi.WsgiApp.start_server(); an address given positionally comes after the name.
+    @overload
+    def start_server(
+        self,
+        name: str | None = ...,
+        *,
+        address: str = ...,
+        port: str | int = ...,
+        workers: int = ...,
+        debug: bool = ...,
+        reload: bool = ...,
+        port_callback: Callable[[], int] | None = ...,
+    ) -> None: ...
+    @overload
+    def start_server(
+        self,
+        name: str | None,
+        address: str,
+        /,
+        port: str | int = ...,
+        workers: int = ...,
+        debug: bool = ...,
+        reload: bool = ...,
+        port_callback: Callable[[], int] | None = ...,
+    ) -> None: ...
     def start_server(self, name: str | None = ..., *args: Any, **kwargs: Any) -> None: ...
 
 class Plugin:

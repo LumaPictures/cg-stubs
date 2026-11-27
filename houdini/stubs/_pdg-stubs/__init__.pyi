@@ -1750,31 +1750,31 @@ class AttributePyObjectBase:
 class AttributeSplit:
     def __init__(self, *, no_constructor: Never) -> None: ...
     @staticmethod
-    def batchByFrame(arg0: Sequence[WorkItem]) -> tuple[list[list[WorkItem]], list[WorkItem]]:
+    def batchByFrame(arg0: Sequence[WorkItem] | ConstWorkItemList | WorkItemList) -> tuple[list[list[WorkItem]], list[WorkItem]]:
         """batchByFrame(arg0: UT_Array[PDG_WorkItem]) -> object
 
         [deprecated] Use pdg.FrameUtils.batchByFrame instead
         """
     @staticmethod
-    def splitByAttribute(arg0: Sequence[WorkItem], arg1: str, arg2: bool) -> tuple[dict[str, list[WorkItem]], list[WorkItem], list[str]]:
+    def splitByAttribute(arg0: Sequence[WorkItem] | ConstWorkItemList | WorkItemList, arg1: str, arg2: bool) -> tuple[dict[str, list[WorkItem]], list[WorkItem], list[str]]:
         """splitByAttribute(arg0: UT_Array[PDG_WorkItem], arg1: str, arg2: bool) -> object
 
         Splits the input work item list by the specified attribute.
         """
     @staticmethod
-    def splitByFloat(arg0: Sequence[WorkItem], arg1: str) -> tuple[dict[float, list[WorkItem]], list[WorkItem], list[float]]:
+    def splitByFloat(arg0: Sequence[WorkItem] | ConstWorkItemList | WorkItemList, arg1: str) -> tuple[dict[float, list[WorkItem]], list[WorkItem], list[float]]:
         """splitByFloat(arg0: UT_Array[PDG_WorkItem], arg1: str) -> object
 
         Splits the input work item list by the specified float attribute
         """
     @staticmethod
-    def splitByInt(arg0: Sequence[WorkItem], arg1: str) -> tuple[dict[int, list[WorkItem]], list[WorkItem], list[int]]:
+    def splitByInt(arg0: Sequence[WorkItem] | ConstWorkItemList | WorkItemList, arg1: str) -> tuple[dict[int, list[WorkItem]], list[WorkItem], list[int]]:
         """splitByInt(arg0: UT_Array[PDG_WorkItem], arg1: str) -> object
 
         Splits the input work item list by the specified int attribute
         """
     @staticmethod
-    def splitByString(arg0: Sequence[WorkItem], arg1: str) -> tuple[dict[str, list[WorkItem]], list[WorkItem], list[str]]:
+    def splitByString(arg0: Sequence[WorkItem] | ConstWorkItemList | WorkItemList, arg1: str) -> tuple[dict[str, list[WorkItem]], list[WorkItem], list[str]]:
         """splitByString(arg0: UT_Array[PDG_WorkItem], arg1: str) -> object
 
         Splits the input work item list by the specified string attribute
@@ -4002,7 +4002,7 @@ class FilterPattern(BasePattern):
 class FrameUtils:
     def __init__(self, *, no_constructor: Never) -> None: ...
     @staticmethod
-    def batchByFrame(arg0: Sequence[WorkItem]) -> tuple[list[list[WorkItem]], list[WorkItem]]:
+    def batchByFrame(arg0: Sequence[WorkItem] | ConstWorkItemList | WorkItemList) -> tuple[list[list[WorkItem]], list[WorkItem]]:
         """batchByFrame(arg0: UT_Array[PDG_WorkItem]) -> object
 
         Splits a list of work items into multiple lists for each
@@ -4919,12 +4919,13 @@ class Node(NodeInterface, EventEmitter):
     def type(self) -> NodeCallbackType: ...
     @property
     def workItems(self) -> WorkItemList: ...
-    # The methods pdg/node.py adds. connect and disconnect pass the ports through str().
+    # The methods pdg/node.py adds. connect and disconnect take port names: they pass the ports
+    # through str(), which for a Port gives `node.port`, not a name the node has.
     def addDependency(self, type_name: str, dep_key: str) -> Dependency: ...
     def addFileDependency(self, file_name: str) -> Dependency: ...
     def addParameter(self, name: str, label: str, tag: str | Sequence[str], param_type: dataType, size: int = ...) -> Port: ...
-    def connect(self, out_port: object, node: Node, in_port: object) -> tuple[Port, Port]: ...
-    def disconnect(self, out_port: object, node: Node, in_port: object) -> bool: ...
+    def connect(self, out_port: str, node: Node, in_port: str) -> tuple[Port, Port]: ...
+    def disconnect(self, out_port: str, node: Node, in_port: str) -> bool: ...
     def removeDependency(self, dep_key: str) -> bool: ...
     def setExpression(self, param_name: str, expression: str, index: int = ..., multiline: bool = ...) -> bool: ...
     def setExpressions(self, expressions: Mapping[str, str] | None = ..., **kwargs: str) -> None: ...
@@ -5159,22 +5160,22 @@ class NodeOptions:
     usesDynamicBatching: bool
     usesSharedServers: bool
     def __init__(self, *, no_constructor: Never) -> None: ...
-    def setInputAttrib(self, arg0: str, arg1: int) -> None:
+    def setInputAttrib(self, arg0: str, arg1: attribOrigin | int) -> None:
         """setInputAttrib(self: _pdg.NodeOptions, arg0: str, arg1: int) -> None
 
         Sets the origin of the specified input attribute name
         """
-    def setInputAttribDefault(self, arg0: int) -> None:
+    def setInputAttribDefault(self, arg0: attribOrigin | int) -> None:
         """setInputAttribDefault(self: _pdg.NodeOptions, arg0: int) -> None
 
         Sets the default origin for input attributes
         """
-    def setOutputAttrib(self, arg0: str, arg1: int) -> None:
+    def setOutputAttrib(self, arg0: str, arg1: attribOrigin | int) -> None:
         """setOutputAttrib(self: _pdg.NodeOptions, arg0: str, arg1: int) -> None
 
         Sets the origin of the specified output attribute name
         """
-    def setOutputAttribDefault(self, arg0: int) -> None:
+    def setOutputAttribDefault(self, arg0: attribOrigin | int) -> None:
         """setOutputAttribDefault(self: _pdg.NodeOptions, arg0: int) -> None
 
         Sets the default origin for output attributes
@@ -7305,19 +7306,19 @@ class WorkItem(EventEmitter, AttributeOwner):
         [deprecated] Returns a list of output files that match the given tag
         """
     @staticmethod
-    def saveArrayDict(work_items: Sequence[WorkItem], global_attributes: bool = ..., skip_defaults: bool = ...) -> Dictionary:
+    def saveArrayDict(work_items: Sequence[WorkItem] | ConstWorkItemList | WorkItemList, global_attributes: bool = ..., skip_defaults: bool = ...) -> Dictionary:
         """saveArrayDict(work_items: UT_Array[_pdg.WorkItem], global_attributes: bool = False, skip_defaults: bool = True) -> _pdg.Dictionary
 
         Saves and reutrns the array of work items as a pdg.Dictionary
         """
     @staticmethod
-    def saveArrayJSONFile(path: str, work_items: Sequence[WorkItem], pretty_print: bool = ..., global_attributes: bool = ..., skip_defaults: bool = ...) -> bool:
+    def saveArrayJSONFile(path: str, work_items: Sequence[WorkItem] | ConstWorkItemList | WorkItemList, pretty_print: bool = ..., global_attributes: bool = ..., skip_defaults: bool = ...) -> bool:
         """saveArrayJSONFile(path: str, work_items: UT_Array[_pdg.WorkItem], pretty_print: bool = False, global_attributes: bool = False, skip_defaults: bool = True) -> bool
 
         Saves the array of work items to a JSON file on disk
         """
     @staticmethod
-    def saveArrayJSONString(work_items: Sequence[WorkItem], pretty_print: bool = ..., global_attributes: bool = ..., skip_defaults: bool = ...) -> str:
+    def saveArrayJSONString(work_items: Sequence[WorkItem] | ConstWorkItemList | WorkItemList, pretty_print: bool = ..., global_attributes: bool = ..., skip_defaults: bool = ...) -> str:
         """saveArrayJSONString(work_items: UT_Array[_pdg.WorkItem], pretty_print: bool = False, global_attributes: bool = False, skip_defaults: bool = True) -> str
 
         Saves and reutrns the array of work items as JSON string

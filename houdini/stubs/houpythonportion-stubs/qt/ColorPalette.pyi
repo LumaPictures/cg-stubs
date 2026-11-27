@@ -7,7 +7,7 @@ from collections.abc import Sequence
 from hutil.PySide import QtWidgets
 from typing import ClassVar
 
-default_colors: tuple[PySide6.QtGui.QColor, ...]
+default_colors: tuple[PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor]
 
 class ColorPalette(QtWidgets.QFrame):
     '''

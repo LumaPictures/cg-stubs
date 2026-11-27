@@ -30,8 +30,8 @@ class PrimPatternHighlighter(HighlighterBase):
     def matchStyle(line: str, pos: int) -> tuple[Style, int] | None: ...
     def highlightBlock(self, line: str) -> None: ...
 
-VEX_KEYWORDS: tuple[str, ...]
-VEX_TYPES: tuple[str, ...]
+VEX_KEYWORDS: tuple[str, str, str, str, str, str, str, str, str, str, str, str, str, str, str]
+VEX_TYPES: tuple[str, str, str, str, str, str, str, str, str, str, str, str]
 kw_expr: re.Pattern[str]
 type_expr: re.Pattern[str]
 attr_expr: re.Pattern[str]

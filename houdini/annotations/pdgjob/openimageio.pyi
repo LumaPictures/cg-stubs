@@ -5,7 +5,7 @@ from pdgjob import pdgjson
 _WorkItem: TypeAlias = pdgjson.WorkItem | pdgjson.NativeWorkItem
 
 OPENIMAGEIO_TOOL_NAME: str
-SANITIZE_VARS: tuple[str, ...]
+SANITIZE_VARS: tuple[str, str]
 BATCH_MODE_OFF: int
 BATCH_MODE_ALL: int
 ALL_FRAMES: int

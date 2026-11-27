@@ -27,7 +27,7 @@ def interactiveSopAlign(pane: hou.SceneViewer | None = None, quick_mode: bool = 
     """ The SOP level implementation of interactiveAlign().
     """
 def showError(msg: str) -> None: ...
-def getObject(node: hou.Node) -> hou.ObjNode: ...
+def getObject(node: hou.ObjNode | hou.SopNode) -> hou.ObjNode: ...
 
 class CoordFrame:
     origin: hou.Vector3
@@ -52,11 +52,11 @@ def setObjParmPivotTransform(obj: hou.ObjNode, new_pivot_xform: hou.Matrix4) -> 
         new_pivot_xform and updates the object pre-transform so that the net
         world transform of the object remains unchanged.
     """
-def initNewSopFromGeometrySelection(newnode: hou.SopNode, container: hou.Node, geoselection: hou.GeometrySelection, groupparminfo: _GroupParmInfo) -> None:
+def initNewSopFromGeometrySelection(newnode: hou.SopNode, container: hou.OpNode, geoselection: hou.GeometrySelection, groupparminfo: _GroupParmInfo) -> None:
     """ Set up the connections and group parameters of a new SOP from a
         hou.GeometrySelection.
     """
-def initNewSopFromSelection(newnode: hou.SopNode, container: hou.Node, inputnode: hou.SopNode, selection: hou.Selection | None, geometry: hou.Geometry | None, groupparminfo: _GroupParmInfo, inheritselectabletemplateflags: bool) -> None:
+def initNewSopFromSelection(newnode: hou.SopNode, container: hou.OpNode, inputnode: hou.SopNode, selection: hou.Selection | None, geometry: hou.Geometry | None, groupparminfo: _GroupParmInfo, inheritselectabletemplateflags: bool) -> None:
     """ Set up the connections and group parameters of a new SOP from an
         input node and optional hou.Selection.  If selection is None the
         group type is assumed to be primitives and the empty group string

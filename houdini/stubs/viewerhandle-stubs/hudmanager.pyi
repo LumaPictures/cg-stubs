@@ -4,9 +4,9 @@ import typing
 import viewerhandle.hudapi as hud
 import viewerhandle.hudviewercache as hudv
 from collections.abc import Callable as Callable, Generator, Mapping
-from houtypes import ViewerHandleKwargs, ViewerHandleParmChangeKwargs, ViewerParmProperties
+from houtypes import SceneViewerEventKwargs, ViewerHandleKwargs, ViewerHandleParmChangeKwargs, ViewerParmProperties
 from types import TracebackType
-from typing import Any, Literal, TypedDict, Unpack
+from typing import Literal, Never, TypedDict, Unpack
 from viewerhandle.hudapi import _CreateHUDWidgetOptions, _HUDHandle, _HUDSettingValue
 from viewerhandle.hudviewercache import _IntWindowSetting, _OptionalStrWindowSetting
 
@@ -19,7 +19,7 @@ class _HUDActiveViewerOptions(TypedDict, total=False):
 ACTIVATE_ACTION_ID: str
 DEACTIVATE_ACTION_ID: str
 DEFERINIT_ACTION_ID: str
-NODE_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], ...]
+NODE_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType]]
 
 class HUDWindowManager:
     """ HUD Handle window manager.
@@ -27,7 +27,7 @@ class HUDWindowManager:
     theWinMgr: HUDWindowManager | None
     @staticmethod
     def instance() -> HUDWindowManager: ...
-    def __init__(self, *args: object, **kwargs: object) -> None: ...
+    def __init__(self, *args: Never, **kwargs: Never) -> None: ...
     def __del__(self) -> None: ...
     def hudPrefHandler(self) -> HUDPrefHandler: ...
     def onWindowHoverEvent(self, event: PySide6.QtCore.QEvent) -> None:
@@ -56,7 +56,7 @@ class HUDWindowManager:
             Note: the window(s), if any, will be deleted when the
             state exits.
         """
-    def onViewerEvent(self, **kwargs: Any) -> None:
+    def onViewerEvent(self, **kwargs: Unpack[SceneViewerEventKwargs]) -> None:
         """ Track viewer and state events for the current viewer.
         """
     def setFreezeState(self, value: bool | int) -> None: ...

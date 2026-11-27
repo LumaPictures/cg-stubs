@@ -1,6 +1,6 @@
 import re
-from collections.abc import Callable, Iterator
-from typing import TypeAlias
+from collections.abc import Callable, Iterator, Sequence
+from typing import ClassVar, TypeAlias
 
 from pygments.lexer import RegexLexer, include
 from pygments.token import _TokenType
@@ -11,22 +11,22 @@ _Rule: TypeAlias = tuple[str, _TokenAction] | tuple[str, _TokenAction, str] | in
 def namedColorToHex(name: str) -> str: ...
 
 class VexLexer(RegexLexer):
-    name: str
-    aliases: list[str]
-    filenames: list[str]
-    mimetypes: list[str]
-    tokens: dict[str, list[_Rule]]
+    name: ClassVar[str]
+    aliases: ClassVar[Sequence[str]]
+    filenames: ClassVar[Sequence[str]]
+    mimetypes: ClassVar[Sequence[str]]
+    tokens: ClassVar[dict[str, list[_Rule]]]
 
 class OpenCLLexer(RegexLexer):
-    name: str
-    aliases: list[str]
-    filenames: list[str]
-    mimetypes: list[str]
-    tokens: dict[str, list[_Rule]]
+    name: ClassVar[str]
+    aliases: ClassVar[Sequence[str]]
+    filenames: ClassVar[Sequence[str]]
+    mimetypes: ClassVar[Sequence[str]]
+    tokens: ClassVar[dict[str, list[_Rule]]]
 
 class HScriptLexer(RegexLexer):
-    name: str
-    aliases: list[str]
-    filenames: list[str]
-    mimetypes: list[str]
-    tokens: dict[str, list[_Rule]]
+    name: ClassVar[str]
+    aliases: ClassVar[Sequence[str]]
+    filenames: ClassVar[Sequence[str]]
+    mimetypes: ClassVar[Sequence[str]]
+    tokens: ClassVar[dict[str, list[_Rule]]]

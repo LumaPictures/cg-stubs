@@ -4,6 +4,7 @@ import enum
 import jinja2
 import jsonpathfx
 import pathlib
+import typing
 from . import images as images, known_dirs as known_dirs
 from .images import _RenderStats
 from collections.abc import Iterator
@@ -98,6 +99,9 @@ def generate(image_path: pathlib.Path, output_path: pathlib.Path | None = None, 
 
 value_to_level: dict[str, images.Level]
 
-def commaSplit(names: str | list[str] | tuple[str, ...]) -> list[str] | tuple[str, ...]: ...
+@typing.overload
+def commaSplit(names: str | list[str]) -> list[str]: ...
+@typing.overload
+def commaSplit(names: tuple[str, ...]) -> tuple[str, ...]: ...
 def makeArgParser() -> argparse.ArgumentParser: ...
 def run() -> NoReturn: ...

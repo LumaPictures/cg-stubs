@@ -6,7 +6,7 @@ def getMyIPAddress() -> str | None:
 
     Return None if the IP address could not be determined.
     """
-def getMyLatLong() -> tuple[float, ...] | None:
+def getMyLatLong() -> tuple[float, float] | None:
     """Return a tuple of (latitude, longitude) values for our location, based
     off my IP address.
 

@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from typing import Any
 
 import PyOpenColorIO as OCIO
 import PySide6.QtCore
@@ -35,7 +36,7 @@ class MessageBoard(hutil.qt.messageboard.MessageBoard):
     def hideMessages(self) -> None: ...
 
 class RuleModel(PySide6.QtCore.QAbstractTableModel):
-    column_labels: tuple[str, ...]
+    column_labels: tuple[str, str, str, str, str]
     NameColumn: int
     PatternColumn: int
     ExtensionColumn: int
@@ -56,7 +57,7 @@ class RuleModel(PySide6.QtCore.QAbstractTableModel):
         self, index: PySide6.QtCore.QModelIndex | PySide6.QtCore.QPersistentModelIndex, role: int = ...
     ) -> str | PySide6.QtGui.QPixmap | PySide6.QtGui.QFont | PySide6.QtCore.QSize | None: ...
     def setData(
-        self, index: PySide6.QtCore.QModelIndex | PySide6.QtCore.QPersistentModelIndex, value: object, role: int = ...
+        self, index: PySide6.QtCore.QModelIndex | PySide6.QtCore.QPersistentModelIndex, value: Any, role: int = ...
     ) -> bool: ...
     def isDefaultRule(self, index: PySide6.QtCore.QModelIndex | PySide6.QtCore.QPersistentModelIndex) -> bool: ...
     def insertRule(
@@ -108,7 +109,7 @@ class NewRuleDialog(PySide6.QtWidgets.QDialog):
 class MonospacedDelegate(PySide6.QtWidgets.QStyledItemDelegate):
     def createEditor(
         self,
-        parent: PySide6.QtWidgets.QWidget,
+        parent: PySide6.QtWidgets.QWidget | None,
         option: PySide6.QtWidgets.QStyleOptionViewItem,
         index: PySide6.QtCore.QModelIndex | PySide6.QtCore.QPersistentModelIndex,
     ) -> PySide6.QtWidgets.QLineEdit: ...
@@ -116,7 +117,7 @@ class MonospacedDelegate(PySide6.QtWidgets.QStyledItemDelegate):
 class ColorSpaceDelegate(PySide6.QtWidgets.QStyledItemDelegate):
     def createEditor(
         self,
-        parent: PySide6.QtWidgets.QWidget,
+        parent: PySide6.QtWidgets.QWidget | None,
         option: PySide6.QtWidgets.QStyleOptionViewItem,
         index: PySide6.QtCore.QModelIndex | PySide6.QtCore.QPersistentModelIndex,
     ) -> PySide6.QtWidgets.QComboBox: ...

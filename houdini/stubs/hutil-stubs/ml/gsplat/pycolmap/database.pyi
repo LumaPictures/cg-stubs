@@ -4,12 +4,26 @@ import numpy.typing as npt
 import os
 import sqlite3
 import typing
+from _typeshed import StrOrBytesPath as StrOrBytesPath
 from collections.abc import Buffer, Callable as Callable, Sequence
-from typing import Any
+from typing import Required, TypedDict, Unpack
 
 from typing import TypeVar
 from typing import TypeVar
 _ScalarT = TypeVar('_ScalarT', bound=np.generic)
+class _ConnectionKwargs(TypedDict, total=False):
+    timeout: float
+    detect_types: int
+    isolation_level: str | None
+    check_same_thread: bool
+    factory: type[sqlite3.Connection] | None
+    cached_statements: int
+    uri: bool
+    autocommit: bool
+
+class _ConnectionDatabaseKwargs(_ConnectionKwargs, total=False):
+    database: Required[StrOrBytesPath]
+
 def array_to_blob(arr: npt.NDArray[np.generic]) -> memoryview: ...
 @typing.overload
 def blob_to_array(blob: Buffer, dtype: type[_ScalarT], shape: Sequence[int] = ...) -> npt.NDArray[_ScalarT]: ...
@@ -48,7 +62,10 @@ class COLMAPDatabase(sqlite3.Connection):
     create_name_index: Callable[[], sqlite3.Cursor]
     @staticmethod
     def connect(database_path: str | os.PathLike[str]) -> COLMAPDatabase: ...
-    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
+    @typing.overload
+    def __init__(self, *args: Unpack[tuple[StrOrBytesPath]], **kwargs: Unpack[_ConnectionKwargs]) -> None: ...
+    @typing.overload
+    def __init__(self, *args: Unpack[tuple[()]], **kwargs: Unpack[_ConnectionDatabaseKwargs]) -> None: ...
     add_camera = add_camera
     add_descriptors = add_descriptors
     add_image = add_image

@@ -8,7 +8,7 @@ from . import core as CORE
 from collections.abc import Callable as Callable, Sequence
 from dataclasses import dataclass as DATACLASS
 from houtypes import NodeEventKwargs, ViewerStateCommandKwargs, ViewerStateDrawKwargs, ViewerStateEnterKwargs, ViewerStateEventKwargs, ViewerStateKwargs, ViewerStateMenuActionKwargs, ViewerStateMenuPreOpenKwargs
-from typing import Any, Protocol, TypeAlias, Unpack
+from typing import Protocol, TypeAlias, Unpack
 
 from typing import TypeAlias
 _CopOutput: TypeAlias = HOU.ImageLayer | HOU.NanoVDB | HOU.DetachedAttrib | HOU.Geometry
@@ -59,11 +59,11 @@ SPACE_COUNT: int
 RESIZE_STROKE_BASE_MULT: float
 RESIZE_WHEEL_BASE_MULT: float
 EMPTY_GEO: HOU.Geometry
-STROKE_REASONS: tuple[HOU.EnumValue[HOU.uiEventReason], ...]
-START_STROKE_REASONS: tuple[HOU.EnumValue[HOU.uiEventReason], ...]
-END_STROKE_REASONS: tuple[HOU.EnumValue[HOU.uiEventReason], ...]
+STROKE_REASONS: tuple[HOU.EnumValue[HOU.uiEventReason], HOU.EnumValue[HOU.uiEventReason], HOU.EnumValue[HOU.uiEventReason], HOU.EnumValue[HOU.uiEventReason]]
+START_STROKE_REASONS: tuple[HOU.EnumValue[HOU.uiEventReason], HOU.EnumValue[HOU.uiEventReason]]
+END_STROKE_REASONS: tuple[HOU.EnumValue[HOU.uiEventReason], HOU.EnumValue[HOU.uiEventReason]]
 HK_CTX: str
-BRUSH_INVALIDATING_PARM_NAMES: tuple[str, ...]
+BRUSH_INVALIDATING_PARM_NAMES: tuple[str, str, str, str, str]
 SOP_VERB: Callable[[str], HOU.OpVerb | None]
 
 class ColourIdxs(ENUM.IntEnum):
@@ -133,7 +133,7 @@ class Mousebind:
     button: MouseButton
     mod: MouseMod
 
-BRUSH_TOOL_BINDINGS: tuple[tuple[CORE.Tool | None, ...], ...]
+BRUSH_TOOL_BINDINGS: tuple[tuple[CORE.Tool | None, CORE.Tool | None, CORE.Tool | None], tuple[CORE.Tool | None, CORE.Tool | None, CORE.Tool | None]]
 STATIC_MOUSEBINDS: tuple[Mousebind, ...]
 
 class HudRowNames:
@@ -203,7 +203,7 @@ class ViewerState(RVS):
     normal_map: HOU.ImageLayer | None
     cursor_pose: COP.CursorPose | None
     cursor_ndc: HOU.Vector2 | None
-    def __init__(self: TY.Self, scene_viewer: HOU.SceneViewer, **kwargs: Any) -> None: ...
+    def __init__(self: TY.Self, scene_viewer: HOU.SceneViewer, **kwargs: str) -> None: ...
     write_masks: WriteMaskCache | None
     def reset_write_masks(self: TY.Self) -> None: ...
     def cached_write_mask(self: TY.Self, vp_cam_pos: HOU.Vector3) -> WriteMaskCacheEntry | None: ...
@@ -231,7 +231,7 @@ class ViewerState(RVS):
     def onMenuPreOpen(self: TY.Self, kwargs: ViewerStateMenuPreOpenKwargs) -> None: ...
     @RVS.recordableEvent
     def onCommand(self: TY.Self, kwargs: ViewerStateCommandKwargs) -> bool: ...
-    def on_parm_changed(self: TY.Self, **kwargs: Any) -> None: ...
+    def on_parm_changed(self: TY.Self, **kwargs: Unpack[NodeEventKwargs]) -> None: ...
     def store_all_brushes(self: TY.Self, opnode: HOU.OpNode) -> None: ...
     def store_brush(self: TY.Self, opnode: HOU.OpNode, tool: CORE.Tool) -> None: ...
     def update_brush_radius_hud_rows(self: TY.Self, opnode: HOU.OpNode) -> None: ...
@@ -289,7 +289,7 @@ def make_switch_to_tool(tool: CORE.Tool) -> Callable[[ViewerState, _ActionKwargs
 @DATACLASS
 class ActionProps:
     label: str
-    default_key: str | tuple[str, ...]
+    default_key: str | tuple[str, str]
     handler_is_transit: bool
     proc: Callable[[ViewerState, _ActionKwargs], None]
     def hk_id(self: TY.Self) -> str: ...
@@ -311,8 +311,8 @@ class Action(ENUM.IntEnum):
     def props(self: TY.Self) -> ActionProps: ...
 
 ACTIONS: tuple[Action, ...]
-ACTION_PROPS: tuple[ActionProps, ...]
-SWITCH_TOOL_ACTIONS: tuple[Action, ...]
+ACTION_PROPS: tuple[ActionProps, ActionProps, ActionProps, ActionProps, ActionProps, ActionProps, ActionProps, ActionProps, ActionProps, ActionProps, ActionProps, ActionProps]
+SWITCH_TOOL_ACTIONS: tuple[Action, Action, Action, Action, Action]
 
 @DATACLASS
 class ToggleAction:

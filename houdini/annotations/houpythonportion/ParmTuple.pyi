@@ -1,4 +1,4 @@
-from typing import Any, Self
+from typing import Self
 
 import hou
 
@@ -43,4 +43,4 @@ def clipData(
     use_blosc_compression: bool = ...,
     sample_rate: float = ...,
 ) -> bytes: ...
-def pressScriptActionButton(self: hou.ParmTuple, **kwargs: Any) -> None: ...
+def pressScriptActionButton(self: hou.ParmTuple, **kwargs: object) -> None: ...

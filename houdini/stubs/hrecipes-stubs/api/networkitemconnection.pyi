@@ -11,7 +11,7 @@ def setParmInputName(item: hou.OpNode, idx: int, input_name: str, input_parm_nam
     """
 def isVopNode(item: hou.NetworkMovableItem) -> bool | None: ...
 def isCopNode(item: hou.NetworkMovableItem) -> bool | None: ...
-def areInputsAsNeeded(node: hou.Node) -> bool | None:
+def areInputsAsNeeded(node: hou.OpNode) -> bool | None:
     """
     Checks if a node's (Vop) last input ends with 'next'.
     """
@@ -61,7 +61,7 @@ def _inputDataIndex(input_data_list: rtypes.NetworkItemInputDataList, input_name
 def lookupParameterInputName(items_dict_data: rtypes.NetworkItemDataDict, item_name: str, input_name: int | str, filter_types: Collection[str] = ...) -> str | None:
     """Finds the name of the input as it would be set on the multiparm instance.
     """
-def setVopInputsFromData(items_dict_data: rtypes.NetworkItemDataDict, container: hou.Node, allowed_names: Collection[str] | None = ...) -> None:
+def setVopInputsFromData(items_dict_data: rtypes.NetworkItemDataDict, container: hou.OpNode, allowed_names: Collection[str] | None = ...) -> None:
     """
     This is kinda silly, but necessary for VOPs where inputs and even
     outputs can be dynamic: if any wiring's succeeded, keep looping over

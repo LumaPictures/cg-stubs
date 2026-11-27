@@ -15,7 +15,7 @@ shapeLibrary(self) -> hou.AgentShapeLibrary
     definition().shapeLibrary().
 
 """
-def layers(self: hou.Agent) -> tuple[hou.AgentLayer, ...]:
+def layers(self: hou.Agent) -> hou._AgentLayerTupleGenerator:
     """
 layers(self) -> tuple of hou.AgentLayer
 
@@ -23,7 +23,7 @@ layers(self) -> tuple of hou.AgentLayer
     definition().layers().
 
 """
-def clipCatalog(self: hou.Agent) -> tuple[hou.AgentClip, ...]:
+def clipCatalog(self: hou.Agent) -> hou._AgentClipTupleGenerator:
     """
 clipCatalog(self) -> tuple of hou.AgentClip
 

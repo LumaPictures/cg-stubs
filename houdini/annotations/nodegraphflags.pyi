@@ -2,7 +2,7 @@ from collections.abc import Sequence
 
 import hou
 
-theRopManagers: tuple[str, ...]
+theRopManagers: tuple[str, str, str, str, str, str, str]
 theFlagEnumLookup: dict[str, hou.EnumValue[hou.nodeFlag]]
 
 def getFlagEnumFromIndex(uidata: int) -> hou.EnumValue[hou.nodeFlag] | None: ...

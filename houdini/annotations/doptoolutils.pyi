@@ -1,13 +1,23 @@
 import hou
 from houtypes import ShelfToolKwargs
 from collections.abc import Callable, Container, Iterable, Mapping, MutableSequence, Sequence
-from typing import Any, Protocol, TypeAlias, TypeVar
+from typing import Any, Literal, Protocol, TypeAlias, TypeVar
 from toolutils import OrientInfo as OrientInfo
 
 _OpNodeT = TypeVar("_OpNodeT", bound=hou.OpNode)
 
-_ControlDefault: TypeAlias = bool | Sequence[str] | Sequence[float]
-_ControlParmSpec: TypeAlias = tuple[str, str, str, int, _ControlDefault] | tuple[str, str, str, int, _ControlDefault, Mapping[str, Any]]
+# (type, name, label, vector size, default) and optionally the keyword arguments of the type's parm
+# template; toggles ignore the size.
+_ControlParmSpec: TypeAlias = (
+    tuple[Literal["toggle"], str, str, int, bool]
+    | tuple[Literal["toggle"], str, str, int, bool, Mapping[str, Any]]
+    | tuple[Literal["string"], str, str, int, Sequence[str]]
+    | tuple[Literal["string"], str, str, int, Sequence[str], Mapping[str, Any]]
+    | tuple[Literal["int"], str, str, int, Sequence[int]]
+    | tuple[Literal["int"], str, str, int, Sequence[int], Mapping[str, Any]]
+    | tuple[Literal["float"], str, str, int, Sequence[float]]
+    | tuple[Literal["float"], str, str, int, Sequence[float], Mapping[str, Any]]
+)
 _RemovalChange: TypeAlias = tuple[hou.OpNode, bool, str, str]
 
 class _InitObjectFunc(Protocol):

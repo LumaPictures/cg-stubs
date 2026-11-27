@@ -15,11 +15,11 @@ from autorigs.modules.spine import spineModule as spineModule
 from autorigs.modules.spine.spineModule import SpineModule as SpineModule
 from collections.abc import Mapping, Sequence
 
-class HandModule(extremityModule.ExtremityModule[HandOptionsWidget, HandParamsWidget, HandGuide]):
+class HandModule(extremityModule.ExtremityModule[HandOptionsWidget, HandParamsWidget, HandGuide, 'HandGuideTab', AutoRigsAsset]):
     autorigs_asset: AutoRigsAsset
     armmodules: Sequence[ArmModule]
     spinemodules: Sequence[SpineModule]
-    guidetab: HandGuideTab
+    guidetab: HandGuideTab | None
     autorigsbuilder: AutoRigsHandBuilder
     MODULE_TYPE: str
     MODULE_DEFAULT_NAME: str

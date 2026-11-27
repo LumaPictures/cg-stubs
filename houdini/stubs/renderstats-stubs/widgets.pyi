@@ -1,3 +1,4 @@
+import hou
 from .images import _RenderStats
 from collections.abc import Mapping
 from houtypes import JSONLike, JSONValue
@@ -8,7 +9,7 @@ from hutil.qt.common import core, qmlviews as qmlviews
 from hutil.qt.info import window
 from hutil.qt.pluto import colors as colors
 from jsonpathfx import JsonPath, JsonValue as JsonValue
-from typing import Any, Protocol
+from typing import Protocol, Unpack
 from typing_extensions import Required, TypedDict
 
 class _XpuDeviceStats(TypedDict, total=False, extra_items=JSONValue):  # type: ignore[call-arg]
@@ -20,14 +21,17 @@ class _XpuDeviceStats(TypedDict, total=False, extra_items=JSONValue):  # type: i
     xpu_device_samples: Required[int]
     xpu_device_memory: dict[str, int]
 
+class _StatsStateKwargs(TypedDict, total=False, extra_items=object):  # type: ignore[call-arg]
+    editor: hou.NetworkEditor | None
+
 class _BriefFormatter(Protocol):
     def __call__(self, value: str | float, markup: bool = ...) -> str: ...
 
 default_content: str
 brief_fmtr: NumberFormatter
 format_brief: _BriefFormatter
-timings_order: tuple[str, ...]
-shader_order: tuple[str, ...]
+timings_order: tuple[str, str, str, str, str, str, str, str]
+shader_order: tuple[str, str, str, str, str, str]
 husk_stats_path: JsonPath
 jsonpath_cache: dict[str, JsonPath]
 
@@ -76,7 +80,7 @@ class StatsState(window.BaseInfoState[window.NodeInfoConfig, StatsInfo]):
     reloadable: bool
     reportFile: str
     reportState: str
-    def __init__(self, **kwargs: Any) -> None: ...
+    def __init__(self, **kwargs: Unpack[_StatsStateKwargs]) -> None: ...
     def setupEngine(self, engine: QtQml.QQmlEngine, **kwargs: object) -> None: ...
     def setReportSource(self, report_key: str, from_buffer: bool = False, viewer_name: str = '') -> None:
         """Point the report UI at the current image.

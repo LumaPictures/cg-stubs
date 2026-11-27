@@ -1,13 +1,12 @@
 import hou
-from collections.abc import Callable, MutableMapping
-from typing import Any, TypeAlias, TypeVar
+from collections.abc import Callable
+from typing import TypeVar
 
 from drawable2d import constants
 from drawable2d.drawable2dgroup import Drawable2DGroup
-from drawable2d.spaceadaptor import SpaceAdaptor, SpaceAdaptorImage
+from drawable2d.spaceadaptor import SpaceAdaptor, SpaceAdaptorImage, _BoundParm
 from houtypes import ViewerHandleEventKwargs, ViewerStateEventKwargs
 
-_BoundParm: TypeAlias = MutableMapping[str, Any] | hou.Parm
 _EventT = TypeVar("_EventT", bound=hou.UIEvent)
 
 class Dragger2D:

@@ -1,5 +1,4 @@
 from collections.abc import Iterable, Mapping
-from typing import Any
 
 import hou
 from autorigs.modules.base import buildBaseGuide
@@ -8,12 +7,12 @@ from autorigs.modules.advancedFace.template.buildTemplateGuide import TemplateGu
 
 class CageGuide(buildBaseGuide.BaseGuide[_BaseGuideJson]):
     assetnode: hou.ObjNode
-    guidenodesdata: dict[str, list[Any]]
+    guidenodesdata: dict[str, list[hou.OpNode | bool | None]]
     templateguides: TemplateGuide
     guideslist: list[str]
     primary_guides: list[str]
     secondary_guides: list[str]
-    json: Mapping[str, Any] | None
+    json: _GuideNamesJson | None
     def __init__(self, assetnode: hou.ObjNode, templateguides: TemplateGuide) -> None: ...
     def buildFromJsonNew(self, json: _GuideNamesJson) -> None: ...
     def buildFromJsonExisting(self, json: _GuideNamesJson) -> None: ...
@@ -33,4 +32,4 @@ class CageGuide(buildBaseGuide.BaseGuide[_BaseGuideJson]):
     def getSecondaryGuides(self) -> list[str]: ...
     def getRootKey(self) -> str: ...
     def getRootNode(self) -> hou.ObjNode | None: ...
-    def setJSON(self, json: Mapping[str, Any]) -> None: ...
+    def setJSON(self, json: _GuideNamesJson) -> None: ...

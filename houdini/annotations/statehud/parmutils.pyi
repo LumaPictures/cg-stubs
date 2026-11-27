@@ -13,6 +13,10 @@ from statehud.window import WidgetBundleWindow
 _HUDParmValue: TypeAlias = (
     bool | int | float | str | list[int] | list[float] | list[str] | hou.Vector2 | hou.Vector3 | hou.Vector4 | None
 )
+# What any parm class's setValue() takes.
+_HUDParmSetValue: TypeAlias = (
+    bool | int | float | str | Sequence[float] | hou.Vector2 | hou.Vector3 | hou.Vector4 | tuple[str | None, bool]
+)
 _NumT = TypeVar("_NumT", int, float)
 # A parm's getValue() and setValue() types; a bare HUDParm is any parm, whose value can't be set
 # without knowing its class.

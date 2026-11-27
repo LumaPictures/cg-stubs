@@ -1,15 +1,15 @@
 from collections.abc import Callable, Iterable, Mapping, Sequence
-from typing import Any, Generic, TypeAlias
+from typing import Any, Generic, Protocol, TypeAlias
 
 from typing_extensions import TypeVar
 
 import hou
 
 from autorigs.asset.autoRigsAsset import AutoRigsAsset
-from autorigs.modules.base import moduleTabsWidget, rootModule
+from autorigs.modules.base import moduleTabsWidget, rootModule as Mod
 from autorigs.modules.base.buildBaseGuide import _GuideNamesJson, _GuideXformJson
 from autorigs.modules.limb.autoRigsLimbInterfaceBuilder import _LimbControls
-from autorigs.modules.limb.buildLimbGuide import LimbFactory, LimbGuide
+from autorigs.modules.limb.buildLimbGuide import LimbGuide
 from autorigs.modules.limb.limbGuideOptions import ModuleOptionsWidget, _LimbOptionsJson
 from autorigs.modules.limb.limbGuideParams import ModuleParamsWidget
 from autorigs.modules.master.masterModule import MasterModule
@@ -25,9 +25,17 @@ _LimbRig: TypeAlias = tuple[_LimbControls, _LimbControls | None]
 _LimbOptions = TypeVar("_LimbOptions", bound=ModuleOptionsWidget, default=Any)
 _LimbParams = TypeVar("_LimbParams", bound=ModuleParamsWidget, default=Any)
 _LimbGuide = TypeVar("_LimbGuide", bound=LimbGuide, default=Any)
+_LimbGuideTab = TypeVar("_LimbGuideTab", bound="LimbGuideTab[Any, Any, Any]", default=Any)
+_Guide_co = TypeVar("_Guide_co", bound=LimbGuide, covariant=True, default=LimbGuide)
+
+# The ArmFactory, LegFactory or QuadLegFactory class.
+class _GuidesFactory(Protocol[_Guide_co]):
+    def createFromDefault(self, json: _LimbModuleJson, assetnode: hou.ObjNode) -> _Guide_co: ...
+    def createFromJsonNew(self, json: _LimbModuleJson, assetnode: hou.ObjNode) -> _Guide_co: ...
+    def createFromJsonExisting(self, json: _LimbModuleJson, assetnode: hou.ObjNode) -> _Guide_co: ...
 
 class LimbModule(
-    rootModule.Module[
+    Mod.Module[
         _LimbOptionsJson,
         _LimbParamsJson,
         _GuideNamesJson,
@@ -37,19 +45,22 @@ class LimbModule(
         _LimbRig | None,
         None,
         None,
+        _LimbGuideTab,
     ],
-    Generic[_LimbOptions, _LimbParams, _LimbGuide],
+    Generic[_LimbOptions, _LimbParams, _LimbGuide, _LimbGuideTab],
 ):
-    guidesfactory: type[LimbFactory]
+    guidesfactory: _GuidesFactory[_LimbGuide]
     builtparentinfo: tuple[MasterModule | SpineModule, hou.OpNode] | None
     mastermodule: MasterModule
     autorigs_asset: AutoRigsAsset | None
     spinemodules: list[SpineModule]
-    guidetab: "LimbGuideTab[_LimbOptions, _LimbParams, _LimbGuide]"
+    guidetab: _LimbGuideTab | None
+    builtrig: _LimbRig | None
+    buildguides: _LimbGuide
 
-    def __init__(self, autorigs_asset: AutoRigsAsset, guidesfactory: type[LimbFactory]) -> None: ...
+    def __init__(self, autorigs_asset: AutoRigsAsset, guidesfactory: _GuidesFactory[_LimbGuide]) -> None: ...
     def initialize(self, autorigs_asset: AutoRigsAsset) -> None: ...
-    def updateParent(self, modulesdict: Mapping[str, Sequence[rootModule.Module]]) -> None: ...
+    def updateParent(self, modulesdict: Mapping[str, Sequence[Mod.Module]]) -> None: ...
     def buildFromDefault(self, json: _LimbModuleJson) -> None: ...
     def buildFromJsonNew(self, json: _LimbModuleJson) -> None: ...
     def buildFromJsonExisting(self, json: _LimbModuleJson) -> None: ...
@@ -64,8 +75,14 @@ class LimbModule(
     def canBeMirrored(self) -> bool: ...
 
 class LimbGuideTab(
-    rootModule.ModuleGuideTab[
-        _LimbOptionsJson, _LimbParamsJson, _GuideNamesJson, _LimbOptions, _LimbParams, _LimbGuide
+    Mod.ModuleGuideTab[
+        _LimbOptionsJson,
+        _LimbParamsJson,
+        _GuideNamesJson,
+        _LimbOptions,
+        _LimbParams,
+        _LimbGuide,
+        moduleTabsWidget.ModuleTabsWidget,
     ],
     Generic[_LimbOptions, _LimbParams, _LimbGuide],
 ):
@@ -73,6 +90,9 @@ class LimbGuideTab(
     GUIDE_OPTIONS: type[_LimbOptions]
     GUIDE_PARAMS: type[_LimbParams]
     tabswidget: moduleTabsWidget.ModuleTabsWidget
+    buildguides: _LimbGuide
+    optionswidget: _LimbOptions
+    paramswidget: _LimbParams
 
     def __init__(self, buildguides: _LimbGuide, spinemodules: Iterable[SpineModule], mastermodule: MasterModule) -> None: ...
     def updateParent(self, spinemodules: Iterable[SpineModule]) -> None: ...

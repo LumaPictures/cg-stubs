@@ -1,15 +1,25 @@
 import collections
 from collections.abc import MutableMapping
-from typing import Any
+from typing import Protocol, TypeVar
 
 import hou
 
 from autorigs.modules.base import buildBaseGuide
 from autorigs.modules.limb.limbModule import _LimbModuleJson
 
+# An arm's, leg's or quadleg's factory, whose createFromJsonNew createFromDefault calls.
+_Guide_co = TypeVar("_Guide_co", bound="LimbGuide", covariant=True)
+_Guide = TypeVar("_Guide", bound="LimbGuide")
+
+class _CreatesFromJsonNew(Protocol[_Guide_co]):
+    @classmethod
+    def createFromJsonNew(cls, json: _LimbModuleJson, assetnode: hou.ObjNode) -> _Guide_co: ...
+
 class LimbFactory(buildBaseGuide.BaseFactory):
     @classmethod
-    def createFromDefault(cls, json: _LimbModuleJson, assetnode: hou.ObjNode) -> "LimbGuide": ...
+    def createFromDefault(
+        cls: type[_CreatesFromJsonNew[_Guide]], json: _LimbModuleJson, assetnode: hou.ObjNode
+    ) -> _Guide: ...
 
 class LimbGuide(buildBaseGuide.BaseGuide[collections.OrderedDict[str, collections.OrderedDict[str, str]]]):
     SIDE_LEFT: int
@@ -25,7 +35,8 @@ class LimbGuide(buildBaseGuide.BaseGuide[collections.OrderedDict[str, collection
     visiblemirrorguides: list[str]
     modulenode: hou.ObjNode | None
     masternode: hou.ObjNode | None
-    guidenodesdata: dict[str, Any]
+    # {name: [node, default selectable, can change display]}; 'modulenode' alone is a tuple.
+    guidenodesdata: dict[str, list[hou.OpNode | bool | None] | tuple[hou.ObjNode | None, bool, bool]]
     deleteguides: list[hou.OpNode | None]
 
     def __init__(self, assetnode: hou.ObjNode) -> None: ...

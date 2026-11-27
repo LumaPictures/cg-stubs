@@ -1,9 +1,9 @@
 from collections.abc import Mapping, Sequence
-from typing import Any, Literal, overload
+from typing import Literal, overload
 
 import hou
 from autorigs.modules.extremity import buildExtremityGuide
-from autorigs.modules.extremity.buildExtremityGuide import _ObjNodeKey, _SopNodeKey
+from autorigs.modules.extremity.buildExtremityGuide import _GuideObject, _ObjNodeKey, _SopNodeKey
 from autorigs.modules.extremity.extremityGuideModel import ModuleOptionModel
 from autorigs.modules.limb.limbModule import LimbModule
 from autorigs.modules.master.masterModule import MasterModule
@@ -52,7 +52,7 @@ class QuadFootGuide(buildExtremityGuide.ExtremityGuide):
         self, guidename: Literal['maindigitsguides', 'mirrordigitsguides']
     ) -> list[list[hou.ObjNode]]: ...
     @overload
-    def getGuideObject(self, guidename: str) -> Any: ...
+    def getGuideObject(self, guidename: str) -> _GuideObject: ...
 
 class FootFactory(buildExtremityGuide.ExtremityFactory):
     @classmethod

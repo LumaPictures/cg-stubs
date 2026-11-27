@@ -1,4 +1,4 @@
-from collections.abc import Callable, Generator, Iterable, Iterator, Mapping, MutableMapping, Sequence
+from collections.abc import Buffer, Callable, Generator, Iterable, Iterator, Mapping, MutableMapping, Sequence
 from types import TracebackType
 from typing import Any, Literal, NoReturn, Never, Protocol, Required, SupportsInt, Tuple, TypeAlias, TypedDict, TypeVar, Unpack
 
@@ -10,12 +10,19 @@ import pdg
 from hrecipes import rtypes
 from hrecipes.api import Ref
 from houtypes import JSONValue, RadialMenuKwargs, ViewerHandleInitKwargs
+import typing_extensions
 from typing_extensions import ReadOnly
 
 _T = TypeVar("_T")
 _NodeT = TypeVar("_NodeT", bound=Node)
 _NetworkMovableItemT = TypeVar("_NetworkMovableItemT", bound=NetworkMovableItem)
 _MenuT = TypeVar("_MenuT", bound=QtWidgets.QMenu)
+
+# What an XMLMenuParser action item hands actionitem_callback: the item's own label and id over
+# the parser's and generateMenu's kwargs, whose keys and values are the caller's own.
+class _MenuActionKwargs(typing_extensions.TypedDict, extra_items=Any):  # type: ignore[call-arg]
+    label: str
+    id: str
 
 # Parm data (hrecipes): brief data is a bare value, a list of per-component values, or, for a
 # ramp or a multiparm, a bare list of its points or of its instances' parm data; full data is a
@@ -32,15 +39,28 @@ _OptionValue: TypeAlias = bool | int | float | str | Vector2 | Vector3 | Vector4
 _OptionDict: TypeAlias = dict[str, _OptionValue]
 # What hou stores as a UT_Options value (it silently drops None, mixed sequences and other objects).
 _OptionArg: TypeAlias = bool | int | float | str | Vector2 | Vector3 | Vector4 | Quaternion | Matrix2 | Matrix3 | Matrix4 | Sequence[int] | Sequence[float] | Sequence[str] | Sequence[Mapping[str, "_OptionArg"]] | Mapping[str, "_OptionArg"]
-_OptionMapping: TypeAlias = Mapping[str, _OptionArg]
+# The dict a UT_Options setter takes: only a real dict converts (other mappings raise TypeError,
+# or crash setAttribValue).  Generic over its values so that a dict[str, str] is accepted.
+_OptionArgT = TypeVar("_OptionArgT", bound=_OptionArg)
+_OptionDictArg: TypeAlias = dict[str, _OptionArgT]
 # HOM converts vectors and quaternions to float tuples for attribute values; matrices are rejected.
-_AttribValueArg: TypeAlias = AttribArgType | _OptionMapping | Sequence[_OptionMapping] | Vector2 | Vector3 | Vector4 | Quaternion
+_AttribValueArg: TypeAlias = AttribArgType | _OptionDictArg[_OptionArgT] | Sequence[_OptionDictArg[_OptionArgT]] | Vector2 | Vector3 | Vector4 | Quaternion
 # The value of a VEX export: runVex gives a tuple for an export that was also a varying input, and
 # None for array and dict exports.
 _VexValue: TypeAlias = int | float | Vector2 | Vector3 | Vector4 | Matrix3 | Matrix4
 _VexResult: TypeAlias = _VexValue | tuple[int, ...] | tuple[float, ...] | tuple[Vector2, ...] | tuple[Vector3, ...] | tuple[Vector4, ...] | tuple[Matrix3, ...] | tuple[Matrix4, ...] | None
 # A verb's parameter values; a multiparm's is a tuple of a dict of parameter values per instance.
 _VerbParmValue: TypeAlias = OptionType | Ramp | tuple[dict[str, "_VerbParmValue"], ...]
+# What HOM gives back for a C++ hboost::any: the types HOMboostAnyToInterpreterObject (in
+# $HFS/toolkit/include/HOM/HOM_Defines.h) converts, with None for an empty value and any other type.
+_BoostAnyValue: TypeAlias = (
+    bool | int | float | str | bytes | Vector2 | Vector3 | Vector4 | Matrix2 | Matrix3 | Matrix4 | Quaternion
+    | Color | Ramp | EnumValue | NodeType | Parm | Geometry | ImageLayer | NanoVDB | DetachedAttrib
+    | tuple[int, ...] | tuple[float, ...] | tuple[str, ...] | tuple[tuple[float, ...], ...]
+    | tuple[Vector2, ...] | tuple[Vector3, ...] | tuple[Vector4, ...] | tuple[Matrix2, ...] | tuple[Matrix3, ...]
+    | tuple[Matrix4, ...] | tuple[Quaternion, ...] | dict[str, "_BoostAnyValue"] | tuple[dict[str, "_BoostAnyValue"], ...]
+    | None
+)
 
 
 class _RendererInfo(TypedDict):
@@ -142,7 +162,7 @@ class _CameraParmsArg(TypedDict, total=False):
     fstop: ReadOnly[float]
     guidescale: ReadOnly[float]
     imagingdistance: ReadOnly[float]
-    metadata: ReadOnly[_OptionMapping]
+    metadata: ReadOnly[_OptionDictArg[_OptionArg]]
     orthozoom: ReadOnly[float]
     pixelaspect: ReadOnly[float]
     projection: ReadOnly[str]
@@ -435,12 +455,29 @@ class _DragValues(TypedDict, total=False):
     rotate_position: Vector3
     delta_rotate_matrix: Matrix3
 
+# The keys SideFX's drawable2d reads from a 2D dragger; a 2D rotation's angles are radians.
+class _Drag2DTranslateValues(TypedDict):
+    delta_position: Vector3
+
+class _Drag2DRotateValues(TypedDict):
+    angle: float
+    delta_angle: float
+
 
 class _ClipInfoDict(TypedDict):
     start: str
     rate: str
     length: str
     tracks: list[str]
+
+
+# What SWIG takes for a C++ sequence of floats: anything with a length and float items, which
+# includes hou.Vector2, Vector3, Vector4 and Quaternion, none of which is a Sequence.  The
+# generator puts it in place of every Sequence[float] parameter (see
+# stubgen_houdini.take_float_sequences).
+class _FloatSequence(Protocol):
+    def __len__(self) -> int: ...
+    def __getitem__(self, index: int, /) -> float: ...
 
 
 # items must be a list: hrecipes appends the contents of minimized network boxes to it.
@@ -456,18 +493,24 @@ class _UndoOperation(Protocol):
 # Houdini calls these with keyword arguments only.  Resource events always pass event_type and
 # resource_type, plus event-specific keys (type_name, package_name, event_message, state_label, ...)
 # and, for custom events, the user data passed to hou.ui.fireResourceCustomEvent, so callbacks must
-# accept any keyword.
+# accept any keyword.  The other keys hold names, labels and messages, severities
+# (event_message_type) and the user data's bool | int | float | str values.
+_ResourceEventValue: TypeAlias = bool | int | float | str | EnumValue
+
 class _ResourceEvent(Protocol):
-    def __call__(self, *, event_type: EnumValue[resourceEventMessage], resource_type: EnumValue[resourceType], **kwargs: Any) -> object: ...
+    def __call__(self, *, event_type: EnumValue[resourceEventMessage], resource_type: EnumValue[resourceType], **kwargs: _ResourceEventValue) -> object: ...
 
 class _ResourceEventTypeName(Protocol):
-    def __call__(self, *, event_type: EnumValue[resourceEventMessage], resource_type: EnumValue[resourceType], type_name: str, **kwargs: Any) -> object: ...
+    def __call__(self, *, event_type: EnumValue[resourceEventMessage], resource_type: EnumValue[resourceType], type_name: str, **kwargs: _ResourceEventValue) -> object: ...
 
 _ResourceEventHandler: TypeAlias = _ResourceEvent | _ResourceEventTypeName
 
+_FileEditorParamT = TypeVar("_FileEditorParamT", bound=int | float | bool | str | EnumValue)
+_FileEditorParamT_contra = TypeVar("_FileEditorParamT_contra", bound=int | float | bool | str | EnumValue, contravariant=True)
+
 # The editor passes its params dict to the callback as keyword arguments.
-class _FileEditorActionCallback(Protocol):
-    def __call__(self, **kwargs: int | float | bool | str | EnumValue) -> object: ...
+class _FileEditorActionCallback(Protocol[_FileEditorParamT_contra]):
+    def __call__(self, **kwargs: _FileEditorParamT_contra) -> object: ...
 
 # Called with keyword arguments: valid (bool) and str fields such as state_type and state_code.
 # Houdini calls a state factory with the keywords `state_name` and `scene_viewer`: SideFX's states
@@ -818,6 +861,227 @@ class _TraversalDemands:
     Loaded: int
     NoDemands: int
     NonAbstract: int
+
+# The keywords hou.data's recipe functions take: the fields of their hrecipes.rtypes options dataclasses
+# (ParmPresetRecipeOptions, ParmPresetRecipeOptionsSetting, ...).
+class _ParmPresetRecipeOpts(TypedDict, total=False):
+    verbose: bool
+    value: bool
+    default_value: bool
+    evaluate_value: bool
+    locked: bool
+    brief: bool
+    multiparm_instances: bool
+    multiparm_links: bool
+    multiparm_default_values: bool
+    multiparms_as_brief: bool
+    metadata: bool
+    parmtype_patterns: str
+    parmname_patterns: str
+    nodetype_patterns: str
+    multiparm_operation: str
+    multiparm_start_index: int
+    multiparm_end_index: int
+    comment: str
+    visible: bool
+    submenu: str
+    record_data: bool
+    prescript: str
+    postscript: str
+    oncreatedscript: str
+    expand_to_dir: bool
+    callback: rtypes.ParsingCallback | None
+
+class _ParmPresetRecipeSetOpts(TypedDict, total=False):
+    multiparm_operation: str
+    multiparm_start_index: int
+    prescript: bool
+    postscript: bool
+
+class _NodePresetRecipeOpts(TypedDict, total=False):
+    verbose: bool
+    nodes_only: bool
+    children: bool
+    editables: bool
+    inputs: bool
+    outputs: bool
+    position: bool
+    flags: bool
+    parms: rtypes.ParmOptionType
+    spareparms: bool
+    parms_as_brief: bool
+    default_parmvalues: bool
+    evaluate_parmvalues: bool
+    parmtemplates: rtypes.ParmTemplateOptionType
+    parmtemplate_order: bool
+    parmfilter: bool
+    metadata: bool
+    callback: rtypes.ParsingCallback | None
+    nodetype_patterns: str
+    comment: str
+    visible: bool
+    submenu: str
+    record_data: bool
+    prescript: str
+    postscript: str
+    oncreatedscript: str
+    expand_to_dir: bool
+
+class _NodePresetRecipeSetOpts(TypedDict, total=False):
+    clear_content: bool
+    force_item_creation: bool
+    parms: bool
+    parmtemplates: bool
+    children: bool
+    editables: bool
+    skip_notes: bool
+    prescript: bool
+    postscript: bool
+
+class _DecorationRecipeOpts(TypedDict, total=False):
+    verbose: bool
+    nodes_only: bool
+    children: bool
+    editables: bool
+    inputs: bool
+    outputs: bool
+    position: bool
+    flags: bool
+    parms: bool
+    spareparms: bool
+    parms_as_brief: bool
+    default_parmvalues: bool
+    evaluate_parmvalues: bool
+    parmtemplates: rtypes.ParmTemplateOptionType
+    parmtemplate_order: bool
+    parmfilter: bool
+    metadata: bool
+    callback: rtypes.ParsingCallback | None
+    anchor_position: Vector2
+    target_node: Node | None
+    dummy_nodes: list[str] | list[Node] | None
+    frame_nodes: list[str] | list[Node] | str | None
+    selected_nodes: list[str] | list[Node] | str | None
+    current_node: str | Node | None
+    selected_node: bool | Node
+    target_children: bool
+    target_editables: bool
+    target_parms: rtypes.ParmOptionType
+    cluster_inputs: list[tuple[Node, int]] | None
+    cluster_outputs: list[tuple[Node, int]] | None
+    nodetype_patterns: str
+    comment: str
+    visible: bool
+    submenu: str
+    central_parms: rtypes.ParmOptionType
+    central_children: bool
+    central_editables: bool
+    record_data: bool
+    prescript: str
+    postscript: str
+    oncreatedscript: str
+    expand_to_dir: bool
+
+class _DecorationRecipeSetOpts(TypedDict, total=False):
+    clear_content: bool
+    force_item_creation: bool
+    parms: bool
+    parmtemplates: bool
+    children: bool
+    editables: bool
+    skip_notes: bool
+    target_node: Node | None
+    external_connections: bool
+    offset_position: Vector2
+    dummy_nodes: list[Node] | None
+    drop_on_wire: bool
+    click_to_place: bool
+    avoid_overlap: bool
+    frame: bool
+    prescript: bool
+    postscript: bool
+
+class _ToolRecipeOpts(TypedDict, total=False):
+    verbose: bool
+    nodes_only: bool
+    children: bool
+    editables: bool
+    inputs: bool
+    outputs: bool
+    position: bool
+    flags: bool
+    parms: bool
+    spareparms: bool
+    parms_as_brief: bool
+    default_parmvalues: bool
+    evaluate_parmvalues: bool
+    parmtemplates: rtypes.ParmTemplateOptionType
+    parmtemplate_order: bool
+    parmfilter: bool
+    metadata: bool
+    callback: rtypes.ParsingCallback | None
+    anchor_position: Vector2
+    target_node: Node | None
+    dummy_nodes: list[str] | list[Node] | None
+    frame_nodes: list[str] | list[Node] | str | None
+    selected_nodes: list[str] | list[Node] | str | None
+    current_node: str | Node | None
+    selected_node: bool | Node
+    target_children: bool
+    target_editables: bool
+    target_parms: rtypes.ParmOptionType
+    cluster_inputs: list[tuple[Node, int]] | None
+    cluster_outputs: list[tuple[Node, int]] | None
+    items: list[NetworkMovableItem] | None
+    anchor_parms: rtypes.ParmOptionType
+    anchor_children: bool
+    anchor_editables: bool
+    tool_types: Iterable[rtypes.ToolType]
+    tool_labels: Iterable[str]
+    tab_submenu: str
+    shelf_tab: str
+    shelf_ordering_index: float
+    help_url: str
+    example: bool
+    icon: str
+    visible: bool
+    comment: str
+    record_data: bool
+    prescript: str
+    postscript: str
+    oncreatedscript: str
+    prompt_type: rtypes.ToolPromptType
+    prompt_messages: list[str] | None
+    prompt_input_nodes: list[Node] | None
+    prompt_posparms: list[str | None]
+    prompt_bboxes: list[BoundingBox | None]
+    expand_to_dir: bool
+
+class _ToolRecipeSetOpts(TypedDict, total=False):
+    clear_content: bool
+    force_item_creation: bool
+    parms: bool
+    parmtemplates: bool
+    children: bool
+    editables: bool
+    skip_notes: bool
+    target_node: Node | None
+    external_connections: bool
+    offset_position: Vector2
+    dummy_nodes: list[Node] | None
+    drop_on_wire: bool
+    click_to_place: bool
+    avoid_overlap: bool
+    frame: bool
+    pane: Pane | None
+    network_editor: NetworkEditor | None
+    scene_viewer: SceneViewer | None
+    parent: Node | None
+    tool_inputs: Sequence[tuple[str, int]]
+    tool_outputs: Sequence[tuple[str, int]]
+    prompt: bool
+    prescript: bool
+    postscript: bool
 lopTraversalDemands: _TraversalDemands
 from houcppportion import *
 from _typeshed import Incomplete
@@ -9746,7 +10010,7 @@ class NetworkMovableItem(NetworkItem):
 
 
         """
-    def setPosition(self, position: Sequence[float]|Vector2) -> None:
+    def setPosition(self, position: _FloatSequence) -> None:
         """
 
         setPosition(self, vector2)
@@ -9756,7 +10020,7 @@ class NetworkMovableItem(NetworkItem):
 
 
         """
-    def move(self, amount: Sequence[float]|Vector2) -> None:
+    def move(self, amount: _FloatSequence) -> None:
         """
 
         move(self, vector2)
@@ -9821,7 +10085,7 @@ class NetworkMovableItem(NetworkItem):
         """
     def setPicked(self, on: bool) -> None: ...
     def isPicked(self) -> bool: ...
-    def shiftPosition(self, delta: Vector2 | Sequence[float]) -> None: ...
+    def shiftPosition(self, delta: _FloatSequence) -> None: ...
 
 class NetworkBox(NetworkMovableItem):
     """
@@ -9899,7 +10163,7 @@ class NetworkBox(NetworkMovableItem):
 
 
         """
-    def setSize(self, size: Sequence[float]) -> None:
+    def setSize(self, size: _FloatSequence) -> None:
         """
 
         setSize(self, size)
@@ -9910,7 +10174,7 @@ class NetworkBox(NetworkMovableItem):
 
 
         """
-    def resize(self, amount: Sequence[float]) -> None:
+    def resize(self, amount: _FloatSequence) -> None:
         """
 
         resize(self, vector2)
@@ -10314,7 +10578,7 @@ class StickyNote(NetworkMovableItem):
 
         """
     def setBounds(self, bounds: BoundingRect) -> None: ...
-    def setSize(self, size: Sequence[float]|Vector2) -> None:
+    def setSize(self, size: _FloatSequence) -> None:
         """
 
         setSize(self, size)
@@ -10325,7 +10589,7 @@ class StickyNote(NetworkMovableItem):
 
 
         """
-    def resize(self, amount: Sequence[float]) -> None:
+    def resize(self, amount: _FloatSequence) -> None:
         """
 
         resize(self, vector2)
@@ -12120,7 +12384,7 @@ class ApexNode(UniNode):
 
 
         """
-    def properties(self) -> dict[str, Any]:
+    def properties(self) -> dict[str, _BoostAnyValue]:
         """
 
         properties(self) -> dictionary
@@ -12138,7 +12402,7 @@ class ApexNode(UniNode):
 
 
         """
-    def inputDebugData(self, input_index: int) -> Any:
+    def inputDebugData(self, input_index: int) -> _BoostAnyValue:
         """
 
         inputDebugData(self, input_index)
@@ -12149,7 +12413,7 @@ class ApexNode(UniNode):
 
 
         """
-    def outputDebugData(self, output_index: int) -> Any:
+    def outputDebugData(self, output_index: int) -> _BoostAnyValue:
         """
 
         outputDebugData(self, output_index)
@@ -12218,7 +12482,7 @@ class ApexUniGraphDebugger:
         """
     def watchPattern(self) -> str: ...
     def watchPaths(self) -> Tuple[str, ...]: ...
-    def data(self, portpath: str) -> Any:
+    def data(self, portpath: str) -> _BoostAnyValue:
         """
 
         data(self, portpath)
@@ -13190,7 +13454,7 @@ class OpNode(Node):
 
         """
     def saveToCompiledVexFile(self, file_name: str, context_name: Optional[str] = None) -> None: ...
-    def cook(self, force: bool = ..., frame_range: Sequence[float] = ...) -> None:
+    def cook(self, force: bool = ..., frame_range: _FloatSequence = ...) -> None:
         """
 
         cook(self, force=False, frame_range=())
@@ -13290,7 +13554,7 @@ class OpNode(Node):
 
 
         """
-    def infoData(self) -> dict[str, Any]:
+    def infoData(self) -> _OptionDict:
         """
 
         infoData(self) -> dict of str to any python object
@@ -13706,7 +13970,7 @@ class OpNode(Node):
 
 
         """
-    def setCachedUserData(self, name: str, value: Any) -> None:
+    def setCachedUserData(self, name: str, value: object) -> None:
         '''
 
         setCachedUserData(self, name, value)
@@ -13881,7 +14145,7 @@ class OpNode(Node):
 
 
         """
-    def evalParmTuple(self, parm_path: str) -> ParmTupleReturnType:
+    def evalParmTuple(self, parm_path: str) -> tuple[int, ...] | tuple[float, ...] | tuple[str, ...] | tuple[Ramp, ...] | tuple[dict[str, str], ...] | tuple[Geometry | None, ...]:
         """
 
         evalParmTuple(self, parm_path) -> tuple of int, float, or str
@@ -14014,7 +14278,7 @@ class OpNode(Node):
     def addControlParmFolder(self, folder_name: str | None = ..., parm_name: str | None = ...) -> None: ...
     def addSpareParmFolder(self, folder_name: str, in_folder: Sequence[str] = ..., parm_name: str | None = ..., create_missing_folders: bool = ...) -> None: ...
     def removeSpareParmFolder(self, folder: Sequence[str]) -> None: ...
-    def setParmsPending(self, parm_dict: Mapping[str, ParmArgType | ParmTupleArgType]) -> None: ...
+    def setParmsPending(self, parm_dict: Mapping[str, ParmArgType | ParmTupleArgType | _FloatSequence]) -> None: ...
     def allParms(self) -> Generator[Parm, None, None]: ...
     def saveChildrenToFile(self, nodes: Iterable[NetworkMovableItem], network_boxes: Iterable[NetworkMovableItem], file_name: str) -> None: ...
     def loadChildrenFromFile(self, file_name: str, ignore_load_warnings: bool = ...) -> None: ...
@@ -14053,7 +14317,7 @@ class OpNode(Node):
     def setInputsFromData(self, data: Sequence[rtypes.NetworkItemInputData]) -> None: ...
     def setOutputsFromData(self, data: Sequence[rtypes.NetworkItemOutputData]) -> None: ...
     def setParmExpressions(self, parm_dict: Mapping[str, str | Sequence[str]], language: EnumValue[exprLanguage] | None = None, replace_expressions: bool = True) -> None: ...
-    def setParms(self, parm_dict: Mapping[str, ParmArgType | ParmTupleArgType | Vector2 | Vector3 | Vector4 | ImageLayer | NanoVDB | DetachedAttrib | CopCable | None]) -> None: ...
+    def setParms(self, parm_dict: Mapping[str, ParmArgType | ParmTupleArgType | _FloatSequence | ImageLayer | NanoVDB | DetachedAttrib | CopCable | None]) -> None: ...
     def setParmsFromData(self, data: rtypes.ParmDataDict) -> None: ...
     def subnetOutputs(self) -> Tuple[OpNode, ...]: ...
     def type(self) -> OpNodeType: ...
@@ -15274,7 +15538,7 @@ class Prim:
 
 
         """
-    def setAttribValue(self, name_or_attrib: Attrib | str, attrib_value: _AttribValueArg, /) -> None:
+    def setAttribValue(self, name_or_attrib: Attrib | str, attrib_value: _AttribValueArg[_OptionArgT], /) -> None:
         '''
 
         setAttribValue(self, name_or_attrib, attrib_value)
@@ -15370,7 +15634,7 @@ class Prim:
 
 
         """
-    def setIntrinsicValue(self, intrinsic_name: str, value: AttribArgType, /) -> None:
+    def setIntrinsicValue(self, intrinsic_name: str, value: AttribArgType | _FloatSequence, /) -> None:
         """
 
         setIntrinsicValue(self, intrinsic_name, value)
@@ -15450,7 +15714,7 @@ class Prim:
 
 
         """
-    def nearestToPosition(self, position: Sequence[float]) -> Tuple[float, float, float]:
+    def nearestToPosition(self, position: _FloatSequence) -> Tuple[float, float, float]:
         """
 
         nearestToPosition(self, pos3)
@@ -15474,7 +15738,7 @@ class Prim:
 
 
         """
-    def primuvConvert(self, uv: Sequence[float]|Vector2, mode: int, tol: float|None = ..., /) -> Vector2:
+    def primuvConvert(self, uv: _FloatSequence, mode: int, tol: float|None = ..., /) -> Vector2:
         """
 
         primuConvert(self, u, mode, tol)
@@ -19877,7 +20141,7 @@ class Agent(PackedPrim):
 
 
         """
-    def currentLayer(self) -> AgentLayer:
+    def currentLayer(self) -> Optional[AgentLayer]:
         """
 
         currentLayer(self) -> hou.AgentLayer
@@ -20023,7 +20287,7 @@ class Agent(PackedPrim):
 
 
         """
-    def setClipTimes(self, times: Sequence[float]) -> None:
+    def setClipTimes(self, times: _FloatSequence) -> None:
         """
 
         setClipTimes(times)
@@ -20040,7 +20304,7 @@ class Agent(PackedPrim):
 
         """
     def clipWeights(self) -> Tuple[float, ...]: ...
-    def setClipWeights(self, weights: Sequence[float]) -> None:
+    def setClipWeights(self, weights: _FloatSequence) -> None:
         """
 
         setClipWeights(weights)
@@ -20408,7 +20672,7 @@ class AgentClip:
 
 
         """
-    def addChannel(self, name: str, samples: Sequence[float]) -> None:
+    def addChannel(self, name: str, samples: _FloatSequence) -> None:
         """
 
         addChannel(self, name, samples)
@@ -20503,7 +20767,7 @@ class AgentClip:
 
 
         """
-    def setAllLocalTransformValues(self, values: Sequence[float]) -> None:
+    def setAllLocalTransformValues(self, values: _FloatSequence) -> None:
         """
 
         setAllLocalTransformValues(self, values)
@@ -21060,7 +21324,7 @@ class AgentMetadata:
 
         """
     @typing.overload
-    def __init__(self, data: _OptionMapping, /) -> None:
+    def __init__(self, data: _OptionDictArg[_OptionArgT], /) -> None:
         """
 
         __init__(data)
@@ -21128,7 +21392,7 @@ class AgentMetadata:
 
 
         """
-    def setData(self, data: _OptionMapping) -> None:
+    def setData(self, data: _OptionDictArg[_OptionArgT]) -> None:
         """
 
         setData(self, data)
@@ -21540,7 +21804,7 @@ class AgentShape:
     def inBetweenShapeNames(self) -> tuple[str, ...] | list[str]: ...
     def inBetweenShapeWeights(self) -> tuple[float, ...] | list[float]: ...
     def addBlendshapeInputs(self, shapes: Sequence[AgentShape], channel_names: Sequence[str]) -> None: ...
-    def addInBetweenShapes(self, shapes: Sequence[AgentShape], weights: Sequence[float]) -> None: ...
+    def addInBetweenShapes(self, shapes: Sequence[AgentShape], weights: _FloatSequence) -> None: ...
     def setBlendshapeDeformerParms(self, attribs: str = ..., point_id_attrib: str = ..., prim_id_attrib: str = ...) -> None: ...
 
 class AgentShapeBinding:
@@ -22009,7 +22273,7 @@ class AgentTransformGroup:
 
         """
     @typing.overload
-    def __init__(self, name: str, transforms: Sequence[int], rig: AgentRig, weights: Sequence[float] = ..., channels: Sequence[int] = ..., /) -> None:
+    def __init__(self, name: str, transforms: Sequence[int], rig: AgentRig, weights: _FloatSequence = ..., channels: Sequence[int] = ..., /) -> None:
         """
 
         __init__(name, transforms, rig, weights, channels)
@@ -23152,7 +23416,7 @@ class AssetGalleryDataSource:
 
 
         """
-    def setMetadata(self, item_id: str, metadata: _OptionMapping) -> bool:
+    def setMetadata(self, item_id: str, metadata: _OptionDictArg[_OptionArgT]) -> bool:
         """
 
         setMetadata(self, item_id, metadata) -> bool
@@ -24366,7 +24630,7 @@ class BoundingBox:
 
 
         """
-    def setTo(self, tuple: Sequence[float]) -> None:
+    def setTo(self, tuple: _FloatSequence) -> None:
         """
 
         setTo(self, bounds_sequence)
@@ -24425,7 +24689,7 @@ class BoundingBox:
           >     return (self.minvec() + self.maxvec()) * 0.5
 
         """
-    def enlargeToContain(self, point_or_bbox: Sequence[float]|Vector3|BoundingBox, /) -> None:
+    def enlargeToContain(self, point_or_bbox: _FloatSequence | BoundingBox, /) -> None:
         """
 
         enlargeToContain(self, point_or_bbox)
@@ -24438,7 +24702,7 @@ class BoundingBox:
 
 
         """
-    def contains(self, point: Sequence[float]) -> bool:
+    def contains(self, point: _FloatSequence) -> bool:
         """
 
         contains(self, point)
@@ -24542,7 +24806,7 @@ class BoundingRect:
           > True
 
         """
-    def setTo(self, tuple: Sequence[float]) -> None:
+    def setTo(self, tuple: _FloatSequence) -> None:
         """
 
         setTo(self, bounds_sequence)
@@ -24554,7 +24818,7 @@ class BoundingRect:
 
 
         """
-    def translate(self, tuple: Sequence[float] | Vector2) -> None:
+    def translate(self, tuple: _FloatSequence) -> None:
         """
 
         translate(self, offset)
@@ -24568,7 +24832,7 @@ class BoundingRect:
           > <hou.BoundingRect [2, 0, 3, 1]>
 
         """
-    def scale(self, tuple: Sequence[float] | Vector2) -> None:
+    def scale(self, tuple: _FloatSequence) -> None:
         """
 
         scale(self, scale)
@@ -24590,7 +24854,7 @@ class BoundingRect:
           > False
 
         """
-    def expand(self, tuple: Sequence[float] | Vector2) -> None:
+    def expand(self, tuple: _FloatSequence) -> None:
         """
 
         expand(self, offset)
@@ -24684,7 +24948,7 @@ class BoundingRect:
           > <hou.Vector2 [0.6, 0.6]>
 
         """
-    def enlargeToContain(self, point_or_rect: Sequence[float]|Vector2|BoundingRect, /) -> None:
+    def enlargeToContain(self, point_or_rect: _FloatSequence | BoundingRect, /) -> None:
         """
 
         enlargeToContain(self, point_or_rect)
@@ -24720,7 +24984,7 @@ class BoundingRect:
 
         """
     @typing.overload
-    def intersects(self, point0: Sequence[float]|Vector2, point1: Sequence[float]|Vector2, /) -> bool:
+    def intersects(self, point0: _FloatSequence, point1: _FloatSequence, /) -> bool:
         """
 
         intersects(self, rect) -> bool
@@ -24738,7 +25002,7 @@ class BoundingRect:
 
         """
     @typing.overload
-    def intersects(self, point0: Sequence[float]|Vector2, point1: Sequence[float]|Vector2, point2: Sequence[float]|Vector2, /) -> bool:
+    def intersects(self, point0: _FloatSequence, point1: _FloatSequence, point2: _FloatSequence, /) -> bool:
         """
 
         intersects(self, rect) -> bool
@@ -24773,7 +25037,7 @@ class BoundingRect:
           > False
 
         """
-    def contains(self, rect: BoundingRect | Vector2 | Sequence[float], /) -> bool:
+    def contains(self, rect: BoundingRect | _FloatSequence, /) -> bool:
         """
 
         contains(self, rect) -> bool
@@ -24788,7 +25052,7 @@ class BoundingRect:
           > False
 
         """
-    def closestPoint(self, point: Sequence[float] | Vector2) -> Vector2:
+    def closestPoint(self, point: _FloatSequence) -> Vector2:
         """
 
         closestPoint(self, point) -> hou.Vector2
@@ -25554,7 +25818,7 @@ class Camera:
 
 
         """
-    def setCropMin(self, min: Sequence[float]) -> None:
+    def setCropMin(self, min: _FloatSequence) -> None:
         """
 
         setCropMin(self, min: tuple[float, float])
@@ -25563,7 +25827,7 @@ class Camera:
 
 
         """
-    def setCropMax(self, max: Sequence[float]) -> None:
+    def setCropMax(self, max: _FloatSequence) -> None:
         """
 
         setCropMax(self, max: tuple[float, float])
@@ -25572,7 +25836,7 @@ class Camera:
 
 
         """
-    def setWindowMin(self, min: Sequence[float]) -> None:
+    def setWindowMin(self, min: _FloatSequence) -> None:
         """
 
         setWindowMin(self, min: tuple[float, float])
@@ -25581,7 +25845,7 @@ class Camera:
 
 
         """
-    def setWindowMax(self, max: Sequence[float]) -> None:
+    def setWindowMax(self, max: _FloatSequence) -> None:
         """
 
         setWindowMax(self, max: tuple[float, float])
@@ -25590,7 +25854,7 @@ class Camera:
 
 
         """
-    def setClippingPlanes(self, planes: Sequence[float]) -> None:
+    def setClippingPlanes(self, planes: _FloatSequence) -> None:
         """
 
         setClippingPlanes(self, planes: tuple[float, float])
@@ -25617,7 +25881,7 @@ class Camera:
 
 
         """
-    def setShutter(self, shutter: Sequence[float]) -> None:
+    def setShutter(self, shutter: _FloatSequence) -> None:
         """
 
         setShutter(self, shutter: tuple[float, float])
@@ -25645,7 +25909,7 @@ class Camera:
 
 
         """
-    def setMetadata(self, metadata: _OptionMapping) -> None:
+    def setMetadata(self, metadata: _OptionDictArg[_OptionArgT]) -> None:
         """
 
         setMetadata(self, metadata: dict)
@@ -27333,7 +27597,7 @@ class CameraPrim(Prim):
 
 
         """
-    def setCropMin(self, min: Sequence[float]) -> None:
+    def setCropMin(self, min: _FloatSequence) -> None:
         """
 
         setCropMin(self, min: tuple[float, float])
@@ -27342,7 +27606,7 @@ class CameraPrim(Prim):
 
 
         """
-    def setCropMax(self, max: Sequence[float]) -> None:
+    def setCropMax(self, max: _FloatSequence) -> None:
         """
 
         setCropMax(self, max: tuple[float, float])
@@ -27351,7 +27615,7 @@ class CameraPrim(Prim):
 
 
         """
-    def setWindowMin(self, min: Sequence[float]) -> None:
+    def setWindowMin(self, min: _FloatSequence) -> None:
         """
 
         setWindowMin(self, min: tuple[float, float])
@@ -27360,7 +27624,7 @@ class CameraPrim(Prim):
 
 
         """
-    def setWindowMax(self, max: Sequence[float]) -> None:
+    def setWindowMax(self, max: _FloatSequence) -> None:
         """
 
         setWindowMax(self, max: tuple[float, float])
@@ -27369,7 +27633,7 @@ class CameraPrim(Prim):
 
 
         """
-    def setClippingPlanes(self, planes: Sequence[float]) -> None:
+    def setClippingPlanes(self, planes: _FloatSequence) -> None:
         """
 
         setClippingPlanes(self, planes: tuple[float, float])
@@ -27396,7 +27660,7 @@ class CameraPrim(Prim):
 
 
         """
-    def setShutter(self, shutter: Sequence[float]) -> None:
+    def setShutter(self, shutter: _FloatSequence) -> None:
         """
 
         setShutter(self, shutter: tuple[float, float])
@@ -27424,7 +27688,7 @@ class CameraPrim(Prim):
 
 
         """
-    def setMetadata(self, metadata: _OptionMapping) -> None:
+    def setMetadata(self, metadata: _OptionDictArg[_OptionArgT]) -> None:
         """
 
         setMetadata(self, metadata: dict)
@@ -27801,7 +28065,7 @@ class ChannelPrim(Prim):
 
 
         """
-    def setKeyValues(self, values: Sequence[float], key_half: Optional[EnumValue[keyHalf]] = None) -> None:
+    def setKeyValues(self, values: _FloatSequence, key_half: Optional[EnumValue[keyHalf]] = None) -> None:
         """
 
         setKeyValues(self, values: list[float], key_half = hou.keyHalf.InOut)
@@ -27817,7 +28081,7 @@ class ChannelPrim(Prim):
 
 
         """
-    def setKeySlopes(self, slopes: Sequence[float], key_half: Optional[EnumValue[keyHalf]] = None) -> None:
+    def setKeySlopes(self, slopes: _FloatSequence, key_half: Optional[EnumValue[keyHalf]] = None) -> None:
         """
 
         setKeySlopes(self, slopes: list[float], key_half = hou.keyHalf.InOut)
@@ -27835,7 +28099,7 @@ class ChannelPrim(Prim):
 
 
         """
-    def setKeyAccels(self, accels: Sequence[float], key_half: Optional[EnumValue[keyHalf]] = None) -> None:
+    def setKeyAccels(self, accels: _FloatSequence, key_half: Optional[EnumValue[keyHalf]] = None) -> None:
         """
 
         setKeyAccels(self, accels: list[float], key_half = hou.keyHalf.InOut)
@@ -27853,7 +28117,7 @@ class ChannelPrim(Prim):
 
 
         """
-    def moveKeyframes(self, key_indices: Sequence[int], frame_offsets: Sequence[float]) -> None:
+    def moveKeyframes(self, key_indices: Sequence[int], frame_offsets: _FloatSequence) -> None:
         """
 
         moveKeyframes(self, key_indices, frame_offsets)
@@ -28202,7 +28466,22 @@ class ChopNode(OpNode):
 
 
         """
+    @typing.overload
     def clipData(self, binary: bool, /) -> bytes:
+        """
+
+        clipData(self, binary) -> str for Python 2, bytes for Python 3
+
+            Returns the clip data for the CHOP node in ASCII or binary,
+            depending on the value of the binary parameter.
+
+            The returned clip data is a bytes object in Python 3 and a str
+            object in Python 2. See HOM binary data for more information.
+
+
+        """
+    @typing.overload
+    def clipData(self, binary: bool, parms: Sequence[str], start: float = ..., end: float = ..., /) -> bytes:
         """
 
         clipData(self, binary) -> str for Python 2, bytes for Python 3
@@ -29185,7 +29464,7 @@ class _clone_Connection:
 
 
         """
-    def setLauncherConfig(self, config: _OptionMapping) -> None:
+    def setLauncherConfig(self, config: _OptionDictArg[_OptionArgT]) -> None:
         """
 
         setLauncherConfig(self, config)
@@ -29436,7 +29715,7 @@ class Color:
 
         """
     @typing.overload
-    def __init__(self, rgb_tuple: Sequence[float], /) -> None:
+    def __init__(self, rgb_tuple: _FloatSequence, /) -> None:
         """
 
         __init__(self, rgb_tuple=(0.0, 0.0, 0.0)) -> Color
@@ -29530,7 +29809,7 @@ class Color:
 
 
         """
-    def setRGB(self, tuple: Sequence[float]) -> None:
+    def setRGB(self, tuple: _FloatSequence) -> None:
         """
 
         setRGB(self, tuple)
@@ -29540,7 +29819,7 @@ class Color:
 
 
         """
-    def setHSV(self, tuple: Sequence[float]) -> None:
+    def setHSV(self, tuple: _FloatSequence) -> None:
         """
 
         setHSV(self, tuple)
@@ -29550,7 +29829,7 @@ class Color:
 
 
         """
-    def setHSL(self, tuple: Sequence[float]) -> None:
+    def setHSL(self, tuple: _FloatSequence) -> None:
         """
 
         setHSL(self, tuple)
@@ -29560,7 +29839,7 @@ class Color:
 
 
         """
-    def setXYZ(self, tuple: Sequence[float]) -> None:
+    def setXYZ(self, tuple: _FloatSequence) -> None:
         """
 
         setXYZ(self, tuple)
@@ -29570,7 +29849,7 @@ class Color:
 
 
         """
-    def setLAB(self, tuple: Sequence[float]) -> None:
+    def setLAB(self, tuple: _FloatSequence) -> None:
         """
 
         setLAB(self, tuple)
@@ -29580,7 +29859,7 @@ class Color:
 
 
         """
-    def setTMI(self, tuple: Sequence[float]) -> None:
+    def setTMI(self, tuple: _FloatSequence) -> None:
         """
 
         setTMI(self, tuple)
@@ -30197,7 +30476,7 @@ class ConstructionPlane:
 
 
         """
-    def setCellSize(self, size: Sequence[float]) -> None:
+    def setCellSize(self, size: _FloatSequence) -> None:
         """
 
         setCellSize(self, size)
@@ -30533,7 +30812,7 @@ class CopCable:
 
 
         """
-    def setDataByIndex(self, *args) -> None:
+    def setDataByIndex(self, idx: int, data: ImageLayer | Geometry | NanoVDB | DetachedAttrib, /) -> None:
         """
 
         setDataByIndex(self, idx, attrib)
@@ -30542,7 +30821,19 @@ class CopCable:
 
 
         """
-    def setData(self, *args) -> None:
+    @typing.overload
+    def setData(self, name: str, data: ImageLayer | Geometry | NanoVDB | DetachedAttrib, /) -> None:
+        """
+
+        setData(self, name, appearance, HOM_DetachedAttrib)
+
+            Sets the appearance-th appearance of wire name name to store
+            DetachedAttrib attrib.
+
+
+        """
+    @typing.overload
+    def setData(self, name: str, appearance: int, data: ImageLayer | Geometry | NanoVDB | DetachedAttrib, /) -> None:
         """
 
         setData(self, name, appearance, HOM_DetachedAttrib)
@@ -31396,7 +31687,7 @@ class Cop2Node(OpNode):
 
 
         '''
-    def setPixelsOfCookingPlane(self, values: Sequence[float], component: Optional[str] = None, interleaved: bool = True, flip_vertically: bool = False) -> None:
+    def setPixelsOfCookingPlane(self, values: _FloatSequence, component: Optional[str] = None, interleaved: bool = True, flip_vertically: bool = False) -> None:
         """
 
         setPixelsOfCookingPlane(self, values, component=None, interleaved=True,
@@ -31545,7 +31836,7 @@ class Cop2Node(OpNode):
 
 
         """
-    def saveImage(self, file_name: str, frame_range: Sequence[float] = ..., /) -> None:
+    def saveImage(self, file_name: str, frame_range: _FloatSequence = ..., /) -> None:
         """
 
         saveImage(self, file_name, frame_range=())
@@ -31704,7 +31995,7 @@ class crowds:
 
         """
     @staticmethod
-    def addInBetweenShapes(primary_shape_geo: Geometry, shapes: Sequence[AgentShape], weights: Sequence[float]) -> None:
+    def addInBetweenShapes(primary_shape_geo: Geometry, shapes: Sequence[AgentShape], weights: _FloatSequence) -> None:
         """
 
         addInBetweenShapes(self, primary_shape_geo, shapes, weights)
@@ -32871,7 +33162,7 @@ class DetachedAttrib:
 
 
         """
-    def properties(self) -> dict[str, Any]:
+    def properties(self) -> _OptionDict:
         """
 
         updateProperties(self, std::map<std::string, p)
@@ -32881,7 +33172,7 @@ class DetachedAttrib:
 
 
         """
-    def setProperties(self, p: dict[str, Any]) -> None:
+    def setProperties(self, p: _OptionDictArg[_OptionArgT]) -> None:
         """
 
         setProperties(self, std::map<std::string, p)
@@ -32890,7 +33181,7 @@ class DetachedAttrib:
 
 
         """
-    def updateProperties(self, p: dict[str, Any]) -> None: ...
+    def updateProperties(self, p: _OptionDictArg[_OptionArgT]) -> None: ...
     def rawDetachedAttrib(self) -> bytes:
         """
 
@@ -32950,7 +33241,7 @@ class DetachedAttrib:
 
 
         """
-    def setFromRawDetachedAttrib(self, values: bytes) -> None: ...
+    def setFromRawDetachedAttrib(self, values: Buffer) -> None: ...
 
 class Dialog:
     """
@@ -33475,7 +33766,7 @@ class DopObject(DopData):
           >     return result
 
         '''
-    def guideGeometry(self, data_name: str, time: float) -> Tuple[Geometry, Matrix4]:
+    def guideGeometry(self, data_name: str, time: float) -> Tuple[Optional[Geometry], Matrix4]:
         """
 
         guideGeometry(self, data_name, time) -> tuple of hou.Goemetry and
@@ -34526,7 +34817,7 @@ class Drawable2D(Drawable):
 
 
         """
-    def params(self) -> dict[str, Any]:
+    def params(self) -> dict[str, _BoostAnyValue]:
         """
 
         params(self) -> dict[str, Any]
@@ -34537,7 +34828,7 @@ class Drawable2D(Drawable):
 
 
         """
-    def draw(self, handle: object, params: _Drawable2DParams | None = ...) -> None:
+    def draw(self, handle: int, params: _Drawable2DParams | None = ...) -> None:
         """
 
         draw(self, handle, params=None)
@@ -34923,7 +35214,7 @@ class AdvancedDrawable(Drawable):
 
 
         """
-    def draw(self, handle: object, params: _DrawableParams | None = ...) -> None:
+    def draw(self, handle: int, params: _DrawableParams | None = ...) -> None:
         """
 
         draw(self, handle, params=None)
@@ -35889,7 +36180,7 @@ class FlipbookSettings:
 
         """
     @typing.overload
-    def frameRange(self, range: Sequence[float], /) -> None:
+    def frameRange(self, range: _FloatSequence, /) -> None:
         """
 
         frameRange(self) -> tuple of double
@@ -37031,7 +37322,7 @@ class FloatParmTemplate(ParmTemplate):
 
     """
     thisown: bool
-    def __init__(self, name: str, label: str, num_components: int, default_value: Sequence[float] = ..., min: float = ..., max: float = ..., min_is_strict: bool = ..., max_is_strict: bool = ..., look: EnumValue[parmLook] = ..., naming_scheme: EnumValue[parmNamingScheme] = ..., disable_when: str|None = ..., is_hidden: bool = ..., is_label_hidden: bool = ..., join_with_next: bool = ..., help: str|None = ..., script_callback: str|None = ..., script_callback_language: EnumValue[scriptLanguage] = ..., tags: Mapping[str, str] = ..., conditionals: Mapping[EnumValue[parmCondType], str] = ..., default_expression: Sequence[str] = ..., default_expression_language: Sequence[EnumValue[scriptLanguage]] = ...) -> None:
+    def __init__(self, name: str, label: str, num_components: int, default_value: _FloatSequence = ..., min: float = ..., max: float = ..., min_is_strict: bool = ..., max_is_strict: bool = ..., look: EnumValue[parmLook] = ..., naming_scheme: EnumValue[parmNamingScheme] = ..., disable_when: str|None = ..., is_hidden: bool = ..., is_label_hidden: bool = ..., join_with_next: bool = ..., help: str|None = ..., script_callback: str|None = ..., script_callback_language: EnumValue[scriptLanguage] = ..., tags: Mapping[str, str] = ..., conditionals: Mapping[EnumValue[parmCondType], str] = ..., default_expression: Sequence[str] = ..., default_expression_language: Sequence[EnumValue[scriptLanguage]] = ...) -> None:
         """
 
         __init__(self, name, label, num_components, default_value=(), min=0.0,
@@ -37220,7 +37511,7 @@ class FloatParmTemplate(ParmTemplate):
 
 
         """
-    def setDefaultValue(self, default_value: Sequence[float]) -> None:
+    def setDefaultValue(self, default_value: _FloatSequence) -> None:
         """
 
         setDefaultValue(self, tuple_of_default_values)
@@ -39788,7 +40079,7 @@ class Geometry:
 
 
         """
-    def setPointFloatAttribValues(self, name: str, values: Sequence[float]) -> None:
+    def setPointFloatAttribValues(self, name: str, values: _FloatSequence) -> None:
         """
 
         setPointFloatAttribValues(self, name, values)
@@ -39817,7 +40108,7 @@ class Geometry:
 
 
         """
-    def setPrimFloatAttribValues(self, name: str, values: Sequence[float]) -> None:
+    def setPrimFloatAttribValues(self, name: str, values: _FloatSequence) -> None:
         """
 
         setPrimFloatAttribValues(self, name, values)
@@ -39846,7 +40137,7 @@ class Geometry:
 
 
         """
-    def setVertexFloatAttribValues(self, name: str, values: Sequence[float]) -> None:
+    def setVertexFloatAttribValues(self, name: str, values: _FloatSequence) -> None:
         """
 
         setVertexFloatAttribValues(self, name, values)
@@ -40341,7 +40632,7 @@ class Geometry:
 
 
         """
-    def createPoints(self, point_positions: Sequence[Sequence[float] | Vector3], /) -> tuple[Point, ...]:
+    def createPoints(self, point_positions: Sequence[_FloatSequence], /) -> tuple[Point, ...]:
         """
 
         createPoints(self, point_positions) -> tuple of hou.Point
@@ -40960,7 +41251,7 @@ class Geometry:
 
 
         """
-    def addAttrib(self, type: EnumValue[hou.attribType], name: str, default_value: _AttribValueArg, transform_as_normal: bool = ..., create_local_variable: bool = ...) -> Attrib:
+    def addAttrib(self, type: EnumValue[hou.attribType], name: str, default_value: _AttribValueArg[_OptionArgT], transform_as_normal: bool = ..., create_local_variable: bool = ...) -> Attrib:
         '''
 
         addAttrib(self, type, name, default_value, transform_as_normal=False,
@@ -41125,7 +41416,7 @@ class Geometry:
 
 
         """
-    def setGlobalAttribValue(self, name_or_attrib: str | Attrib, attrib_value: _AttribValueArg, /) -> None:
+    def setGlobalAttribValue(self, name_or_attrib: str | Attrib, attrib_value: _AttribValueArg[_OptionArgT], /) -> None:
         '''
 
         setGlobalAttribValue(self, name_or_attrib, attrib_value)
@@ -41385,7 +41676,7 @@ class Geometry:
         """
     def intrinsicSize(self, intrinsic_name: str) -> int: ...
     def intrinsicReadOnly(self, intrinsic_name: str) -> bool: ...
-    def setIntrinsicValue(self, intrinsic_name: str, value: AttribArgType, /) -> None:
+    def setIntrinsicValue(self, intrinsic_name: str, value: AttribArgType | _FloatSequence, /) -> None:
         """
 
         setIntrinsicValue(self, intrinsic_name, value)
@@ -42018,7 +42309,7 @@ class Geometry:
 
 
         """
-    def nearestPrim(self, position: Sequence[float] | Vector3) -> tuple[Prim | None, float, float, float]:
+    def nearestPrim(self, position: _FloatSequence) -> tuple[Prim | None, float, float, float]:
         """
 
         nearestPrim(self, position) -> (hou.Prim or None, float, float, float)
@@ -42037,7 +42328,7 @@ class Geometry:
 
 
         """
-    def nearestPoint(self, position: Sequence[float], ptgroup: Optional[str] = None, max_radius: float = 1e+18) -> Optional[Point]:
+    def nearestPoint(self, position: _FloatSequence, ptgroup: Optional[str] = None, max_radius: float = 1e+18) -> Optional[Point]:
         """
 
         nearestPoint(self, position, ptgroup=None, max_radius=1E18) -> hou.Point
@@ -42056,7 +42347,7 @@ class Geometry:
 
 
         """
-    def nearestPoints(self, position: Sequence[float], max_points: int, ptgroup: Optional[str] = None, max_radius: float = 1e+18) -> Tuple[Point, ...]:
+    def nearestPoints(self, position: _FloatSequence, max_points: int, ptgroup: Optional[str] = None, max_radius: float = 1e+18) -> Tuple[Point, ...]:
         """
 
         nearestPoints(self, position, max_points, ptgroup=None, max_radius=1E18)
@@ -44395,6 +44686,9 @@ class GeometryViewport:
 
 
         """
+    # The indices of the drawable and of its primitive under the pixel (-1 for none), then two
+    # values its callers ignore.
+    def _queryPrimOnDrawables(self, drawables: Sequence[Drawable], x: int, y: int, enable_occlusion: bool, handle_pick_radius: bool = False) -> tuple[int, ...]: ...
 
 class GeometryViewportCamera:
     """
@@ -44534,7 +44828,7 @@ class GeometryViewportCamera:
         """
     def setRotation(self, mat: Matrix3) -> None: ...
     def rotation(self) -> Matrix3: ...
-    def setTranslation(self, xyz: Sequence[float]) -> None:
+    def setTranslation(self, xyz: _FloatSequence) -> None:
         """
 
         setTranslation(self, xyz)
@@ -44550,7 +44844,7 @@ class GeometryViewportCamera:
 
 
         """
-    def setPivot(self, xyz: Sequence[float]) -> None:
+    def setPivot(self, xyz: _FloatSequence) -> None:
         """
 
         setPivot(self, xyz)
@@ -44566,7 +44860,7 @@ class GeometryViewportCamera:
 
 
         """
-    def setClipPlanes(self, near_far: Sequence[float]) -> None:
+    def setClipPlanes(self, near_far: _FloatSequence) -> None:
         """
 
         setClipPlanes(self, near_far)
@@ -44582,7 +44876,7 @@ class GeometryViewportCamera:
 
 
         """
-    def setWindowOffset(self, xy: Sequence[float]) -> None:
+    def setWindowOffset(self, xy: _FloatSequence) -> None:
         """
 
         setWindowOffset(self, xy)
@@ -44598,7 +44892,7 @@ class GeometryViewportCamera:
 
 
         """
-    def setWindowSize(self, size: Sequence[float]) -> None:
+    def setWindowSize(self, size: _FloatSequence) -> None:
         """
 
         setWindowSize(self, size)
@@ -47504,7 +47798,7 @@ class GeometryViewportSettings:
 
 
         """
-    def setClipPlanes(self, clip: Sequence[float]) -> None:
+    def setClipPlanes(self, clip: _FloatSequence) -> None:
         """
 
         setClipPlanes(self, clip)
@@ -47894,7 +48188,7 @@ class GeometryViewportSettings:
 
 
         """
-    def setHeadlightDirection(self, dir: Sequence[float]) -> None:
+    def setHeadlightDirection(self, dir: _FloatSequence) -> None:
         """
 
         setHeadlightDirection(self, dir)
@@ -48638,7 +48932,7 @@ class GeometryViewportSettings:
 
 
         """
-    def setUniformFogColor(self, color: Sequence[float]) -> None:
+    def setUniformFogColor(self, color: _FloatSequence) -> None:
         """
 
         setUniformFogColor(self, color)
@@ -48694,7 +48988,7 @@ class GeometryViewportSettings:
 
 
         """
-    def setUniformFogDepthRange(self, range: Sequence[float]) -> None:
+    def setUniformFogDepthRange(self, range: _FloatSequence) -> None:
         """
 
         setUniformFogDepthRange(self, range)
@@ -48876,7 +49170,7 @@ class GeometryViewportSettings:
 
 
         """
-    def setVolumeFogColor(self, color: Sequence[float]) -> None:
+    def setVolumeFogColor(self, color: _FloatSequence) -> None:
         """
 
         setVolumeFogColor(self, color)
@@ -48932,7 +49226,7 @@ class GeometryViewportSettings:
 
 
         """
-    def setVolumeFogDepthRange(self, range: Sequence[float]) -> None:
+    def setVolumeFogDepthRange(self, range: _FloatSequence) -> None:
         """
 
         setVolumeFogDepthRange(self, range)
@@ -49069,7 +49363,7 @@ class GeometryViewportSettings:
 
 
         """
-    def setVolumeFogLightScattering(self, scatter: Sequence[float]) -> None:
+    def setVolumeFogLightScattering(self, scatter: _FloatSequence) -> None:
         """
 
         setVolumeFogLightScattering(self, scatter)
@@ -49202,7 +49496,7 @@ class GeometryViewportSettings:
 
 
         """
-    def setOrthoGridOffset(self, offset: Sequence[float]) -> None:
+    def setOrthoGridOffset(self, offset: _FloatSequence) -> None:
         """
 
         setOrthoGridOffset(self, offset)
@@ -49221,7 +49515,7 @@ class GeometryViewportSettings:
 
 
         """
-    def setOrthoGridSpacing(self, offset: Sequence[float]) -> None:
+    def setOrthoGridSpacing(self, offset: _FloatSequence) -> None:
         """
 
         setOrthoGridSpacing(self, offset)
@@ -49345,7 +49639,7 @@ class GeometryViewportSettings:
 
 
         """
-    def setUVGridPixelOffset(self, offset: Sequence[float]) -> None:
+    def setUVGridPixelOffset(self, offset: _FloatSequence) -> None:
         """
 
         setUVGridPixelOffset(self, offset)
@@ -50795,7 +51089,7 @@ class GeometryViewportBackground:
 
 
         """
-    def setImageOffset(self, offset: Sequence[float]) -> None:
+    def setImageOffset(self, offset: _FloatSequence) -> None:
         """
 
         setImageOffset(self, offset)
@@ -50815,7 +51109,7 @@ class GeometryViewportBackground:
 
 
         """
-    def setImageScale(self, scale: Sequence[float]) -> None:
+    def setImageScale(self, scale: _FloatSequence) -> None:
         """
 
         setImageScale(self, scale)
@@ -50979,7 +51273,7 @@ class Handle:
 
 
         """
-    def update(self, immediate: bool = False, node_update: bool = False, force_update: bool = False, values: Mapping[str, Any] | None = None) -> None:
+    def update(self, immediate: bool = False, node_update: bool = False, force_update: bool = False, values: Mapping[str, object] | None = None) -> None:
         '''
 
         update(self, immediate, node_update=False, force_update=False,
@@ -51129,7 +51423,7 @@ class Handle:
 
 
         """
-    def settingValue(self, setting_name: str) -> Any:
+    def settingValue(self, setting_name: str) -> _BoostAnyValue:
         """
 
         settingValue(self, setting_name) -> value
@@ -53237,7 +53531,7 @@ class HDASection:
           >     section_file.close()
 
         '''
-    def setContents(self, contents: str, compression_type: EnumValue[compressionType] = ...) -> None:
+    def setContents(self, contents: str | bytes, compression_type: EnumValue[compressionType] = ...) -> None:
         """
 
         setContents(self, contents,
@@ -53909,8 +54203,62 @@ class hipFile:
           > hou.hipFile.setGroupColorTable(color_table)
 
         """
+    @typing.overload
     @staticmethod
-    def importFBX(file_name: str, suppress_save_prompt: bool = ..., merge_into_scene: bool = ..., import_cameras: bool = ..., import_joints_and_skin: bool = ..., import_geometry: bool = ..., import_lights: bool = ..., import_animation: bool = ..., import_materials: bool = ..., resample_animation: bool = ..., resample_interval: float = ..., override_framerate: bool = ..., framerate: int = ..., hide_joints_attached_to_skin: bool = ..., convert_joints_to_zyx_rotation_order: bool = ..., material_mode: EnumValue[fbxMaterialMode] = ..., compatibility_mode: EnumValue[fbxCompatibilityMode] = ..., single_precision_vertex_caches: bool = ..., triangulate_nurbs: bool = ..., triangulate_patches: bool = ..., import_global_ambient_light: bool = ..., import_blend_deformers_as_blend_sops: bool = ..., segment_scale_already_baked_in: bool = ..., convert_file_paths_to_relative: bool = ..., unlock_geometry: bool = ..., unlock_deformations: bool = ..., import_nulls_as_subnets: bool = ..., import_into_object_subnet: bool = ..., convert_into_y_up_coordinate_system: bool = ..., create_sibling_bones: bool = ..., override_scene_frame_range: bool = ..., convert_units: bool = ...) -> Tuple[ObjNode,...]:
+    def importFBX(file_name: str, suppress_save_prompt: bool = ..., merge_into_scene: bool = ..., import_cameras: bool = ..., import_joints_and_skin: bool = ..., import_geometry: bool = ..., import_lights: bool = ..., import_animation: bool = ..., import_materials: bool = ..., resample_animation: bool = ..., resample_interval: float = ..., override_framerate: bool = ..., framerate: int = ..., hide_joints_attached_to_skin: bool = ..., convert_joints_to_zyx_rotation_order: bool = ..., material_mode: EnumValue[fbxMaterialMode] = ..., compatibility_mode: EnumValue[fbxCompatibilityMode] = ..., single_precision_vertex_caches: bool = ..., triangulate_nurbs: bool = ..., triangulate_patches: bool = ..., import_global_ambient_light: bool = ..., import_blend_deformers_as_blend_sops: bool = ..., segment_scale_already_baked_in: bool = ..., convert_file_paths_to_relative: bool = ..., unlock_geometry: bool = ..., unlock_deformations: bool = ..., import_nulls_as_subnets: bool = ..., import_into_object_subnet: Literal[True] = ..., convert_into_y_up_coordinate_system: bool = ..., create_sibling_bones: bool = ..., override_scene_frame_range: bool = ..., convert_units: bool = ...) -> tuple[ObjNode, str]:
+        """
+
+        importFBX(file_name, suppress_save_prompt=False, merge_into_scene=True,
+        import_cameras=True, import_joints_and_skin=True, import_geometry=True,
+        import_lights=True, import_animation=True, import_materials=True,
+        resample_animation=False, resample_interval=1.0,
+        override_framerate=False,framerate=-1,
+        hide_joints_attached_to_skin=True,
+        convert_joints_to_zyx_rotation_order=False,
+        material_mode=hou.fbxMaterialMode.FBXShaderNodes,
+        compatibility_mode=hou.fbxCompatibilityMode.Maya,
+        single_precision_vertex_caches=False, triangulate_nurbs=False,
+        triangulate_patches=False, import_global_ambient_light=False,
+        import_blend_deformers_as_blend_sops=False,
+        segment_scale_already_baked_in=True,
+        convert_file_paths_to_relative=True, unlock_geometry=False,
+        unlock_deformations=False, import_nulls_as_subnets=False,
+        import_into_object_subnet=True,
+        convert_into_y_up_coordinate_system=False, create_sibling_bones=True,
+        override_scene_frame_range=False, convert_units=False) -> (hou.ObjNode,
+        str)
+
+            Imports the contents of an FBX file into the scene, like when the
+            user chooses File > Import > FBX. Returns a tuple of the parent
+            Subnetwork Object node containing the FBX nodes (see
+            import_into_object_subnet option) and a string containing any
+            generated load messages.
+
+            Important: see the help for the FBX import dialog for information on
+            the various options.
+
+
+            import_into_object_subnet
+                When this is True (the default), Houdini creates a new
+                Subnetwork node at the object level and puts imported FBX nodes
+                inside the subnet. If you pass import_into_object_subnet=False,
+                Houdini creates the FBX nodes directly at the object level (and
+                the first item in the returned tuple will be the /obj network
+                node).
+
+            Raises hou.OperationFailed if the file to merge doesn't exist or
+            Houdini cannot read the file.
+
+            Also raises hou.OperationFailed if you call this while Houdini is
+            shutting down (see hou.hipFile.isShuttingDown) or if Houdini is
+            already loading or saving the scene file (see
+            hou.hipFile.isLoadingHipFile).
+
+
+        """
+    @typing.overload
+    @staticmethod
+    def importFBX(file_name: str, suppress_save_prompt: bool = ..., merge_into_scene: bool = ..., import_cameras: bool = ..., import_joints_and_skin: bool = ..., import_geometry: bool = ..., import_lights: bool = ..., import_animation: bool = ..., import_materials: bool = ..., resample_animation: bool = ..., resample_interval: float = ..., override_framerate: bool = ..., framerate: int = ..., hide_joints_attached_to_skin: bool = ..., convert_joints_to_zyx_rotation_order: bool = ..., material_mode: EnumValue[fbxMaterialMode] = ..., compatibility_mode: EnumValue[fbxCompatibilityMode] = ..., single_precision_vertex_caches: bool = ..., triangulate_nurbs: bool = ..., triangulate_patches: bool = ..., import_global_ambient_light: bool = ..., import_blend_deformers_as_blend_sops: bool = ..., segment_scale_already_baked_in: bool = ..., convert_file_paths_to_relative: bool = ..., unlock_geometry: bool = ..., unlock_deformations: bool = ..., import_nulls_as_subnets: bool = ..., import_into_object_subnet: bool = ..., convert_into_y_up_coordinate_system: bool = ..., create_sibling_bones: bool = ..., override_scene_frame_range: bool = ..., convert_units: bool = ...) -> tuple[OpNode, str]:
         """
 
         importFBX(file_name, suppress_save_prompt=False, merge_into_scene=True,
@@ -54015,7 +54363,7 @@ class hmath:
 
         """
     @staticmethod
-    def buildTranslate(tx: float | Vector3 | Sequence[float], ty: float = ..., tz: float = ...) -> Matrix4:
+    def buildTranslate(tx: float | _FloatSequence, ty: float = ..., tz: float = ...) -> Matrix4:
         """
 
         buildTranslate(tx, ty, tz) -> hou.Matrix4
@@ -54032,7 +54380,7 @@ class hmath:
 
         """
     @staticmethod
-    def buildScale(sx: float | Vector3 | Sequence[float], sy: float = ..., sz: float = ...) -> Matrix4:
+    def buildScale(sx: float | _FloatSequence, sy: float = ..., sz: float = ...) -> Matrix4:
         """
 
         buildScale(sx, sy, sz) -> hou.Matrix4
@@ -54069,7 +54417,7 @@ class hmath:
 
         """
     @staticmethod
-    def buildShear(shearx: float | Vector3 | Sequence[float], sheary: float = ..., shearz: float = ...) -> Matrix4:
+    def buildShear(shearx: float | _FloatSequence, sheary: float = ..., shearz: float = ...) -> Matrix4:
         """
 
         buildShear(shearx, sheary, shearz) -> hou.Matrix4
@@ -54086,7 +54434,7 @@ class hmath:
 
         """
     @staticmethod
-    def buildRotate(rx: float | Vector3 | Sequence[float], ry: float = ..., rz: float = ..., order: str = ...) -> Matrix4:
+    def buildRotate(rx: float | _FloatSequence, ry: float = ..., rz: float = ..., order: str = ...) -> Matrix4:
         '''
 
         buildRotate(rx, ry, rz, order=\\"xyz\\") -> hou.Matrix4
@@ -54110,7 +54458,7 @@ class hmath:
 
         '''
     @staticmethod
-    def buildRotateAboutAxis(axis: Sequence[float], angle_in_deg: float) -> Matrix4:
+    def buildRotateAboutAxis(axis: _FloatSequence, angle_in_deg: float) -> Matrix4:
         """
 
         buildRotateAboutAxis(axis, angle_in_deg) -> hou.Matrix4
@@ -54168,7 +54516,7 @@ class hmath:
 
         """
     @staticmethod
-    def buildRotateZToAxis(axis: Sequence[float] | Vector3) -> Matrix4:
+    def buildRotateZToAxis(axis: _FloatSequence) -> Matrix4:
         """
 
         buildRotateZToAxis(axis) -> hou.Matrix4
@@ -54223,7 +54571,7 @@ class hmath:
 
         """
     @staticmethod
-    def buildTransform(values_dict: Mapping[str, Vector3|Sequence[float]], transform_order: Literal['srt','str','rst','rts','tsr','trs'] = ..., rotate_order: Literal['xyz','xzy','yxz','yzx','zxy','zyx'] = ...) -> Matrix4:
+    def buildTransform(values_dict: Mapping[str, _FloatSequence], transform_order: Literal['srt','str','rst','rts','tsr','trs'] = ..., rotate_order: Literal['xyz','xzy','yxz','yzx','zxy','zyx'] = ...) -> Matrix4:
         '''
 
         buildTransform(values_dict, transform_order=\\"srt\\", rotate_order=\\"xyz\\")
@@ -54298,7 +54646,7 @@ class hmath:
 
         """
     @staticmethod
-    def noise1d(pos: Sequence[float]) -> float:
+    def noise1d(pos: _FloatSequence) -> float:
         """
 
         noise1d(self, pos) -> float
@@ -54312,7 +54660,7 @@ class hmath:
 
         """
     @staticmethod
-    def noise3d(pos: Sequence[float]) -> Vector3:
+    def noise3d(pos: _FloatSequence) -> Vector3:
         """
 
         noise3d(self, pos) -> hou.Vector3
@@ -54467,7 +54815,7 @@ class hmath:
 
         """
     @staticmethod
-    def orient2d(pa: Sequence[float], pb: Sequence[float], point: Sequence[float]) -> float:
+    def orient2d(pa: _FloatSequence, pb: _FloatSequence, point: _FloatSequence) -> float:
         """
 
         orient2d(pa, pb, point) -> float
@@ -54481,7 +54829,7 @@ class hmath:
 
         """
     @staticmethod
-    def orient3d(pa: Sequence[float], pb: Sequence[float], pc: Sequence[float], point: Sequence[float]) -> float:
+    def orient3d(pa: _FloatSequence, pb: _FloatSequence, pc: _FloatSequence, point: _FloatSequence) -> float:
         """
 
         orient3d(pa, pb, pc, point) -> float
@@ -54495,7 +54843,7 @@ class hmath:
 
         """
     @staticmethod
-    def inCircle(pa: Sequence[float], pb: Sequence[float], pc: Sequence[float], point: Sequence[float]) -> float:
+    def inCircle(pa: _FloatSequence, pb: _FloatSequence, pc: _FloatSequence, point: _FloatSequence) -> float:
         """
 
         inCircle(pa, pb, pc, point) -> float
@@ -54510,7 +54858,7 @@ class hmath:
 
         """
     @staticmethod
-    def inSphere(pa: Sequence[float], pb: Sequence[float], pc: Sequence[float], pd: Sequence[float], point: Sequence[float]) -> float:
+    def inSphere(pa: _FloatSequence, pb: _FloatSequence, pc: _FloatSequence, pd: _FloatSequence, point: _FloatSequence) -> float:
         """
 
         inSphere(pa, pb, pc, pd, point) -> float
@@ -54587,7 +54935,7 @@ class hmath:
 
         """
     @staticmethod
-    def slerpTransforms(xforms: typing.Iterable[Matrix4], input_weights: Sequence[float], normalize_weigths: bool = True, slerp_method: int = 1, slerp_flip_mehtod: int = 1) -> Matrix4:
+    def slerpTransforms(xforms: typing.Iterable[Matrix4], input_weights: _FloatSequence, normalize_weigths: bool = True, slerp_method: int = 1, slerp_flip_mehtod: int = 1) -> Matrix4:
         """
 
         slerpTransforms( xforms, input_weights, normalize_weights, slerp_method,
@@ -56216,7 +56564,7 @@ class ImageLayer:
 
 
         """
-    def makeConstant(self, val: Sequence[float]) -> None:
+    def makeConstant(self, val: _FloatSequence) -> None:
         """
 
         makeConstant(self, val: [float, ...])
@@ -56316,7 +56664,7 @@ class ImageLayer:
 
 
         """
-    def setPixelScale(self, scale: Sequence[float]) -> None:
+    def setPixelScale(self, scale: _FloatSequence) -> None:
         """
 
         setPixelScale(self, scale: float)
@@ -56460,7 +56808,7 @@ class ImageLayer:
 
 
         """
-    def setCameraPosition(self, pos: Sequence[float]) -> None:
+    def setCameraPosition(self, pos: _FloatSequence) -> None:
         """
 
         setCameraPosition(self, pos: [float, float, float])
@@ -56479,7 +56827,7 @@ class ImageLayer:
 
 
         """
-    def setClippingRange(self, range: Sequence[float]) -> None:
+    def setClippingRange(self, range: _FloatSequence) -> None:
         """
 
         setClippingRange(self, range: [float, float])
@@ -56506,7 +56854,7 @@ class ImageLayer:
 
 
         """
-    def setShutter(self, shutter: Sequence[float]) -> None:
+    def setShutter(self, shutter: _FloatSequence) -> None:
         """
 
         setShutter(self, shutter: [float, float])
@@ -56627,7 +56975,7 @@ class ImageLayer:
 
 
         """
-    def imageToPixel(self, p: Sequence[float] | Vector2) -> tuple[float, float]:
+    def imageToPixel(self, p: _FloatSequence) -> tuple[float, float]:
         """
 
         imageToPixel(self, p: [float, float]) -> tuple of float
@@ -56636,7 +56984,7 @@ class ImageLayer:
 
 
         """
-    def imageToBuffer(self, p: Sequence[float] | Vector2) -> tuple[float, float]:
+    def imageToBuffer(self, p: _FloatSequence) -> tuple[float, float]:
         """
 
         imageToBuffer(self, p: [float, float]) -> tuple of float
@@ -56645,7 +56993,7 @@ class ImageLayer:
 
 
         """
-    def imageToTexture(self, p: Sequence[float] | Vector2) -> tuple[float, float]:
+    def imageToTexture(self, p: _FloatSequence) -> tuple[float, float]:
         """
 
         imageToTexture(self, p: [float, float]) -> tuple of float
@@ -56654,7 +57002,7 @@ class ImageLayer:
 
 
         """
-    def imageToWorld(self, p: Sequence[float] | Vector2) -> tuple[float, float, float]:
+    def imageToWorld(self, p: _FloatSequence) -> tuple[float, float, float]:
         """
 
         imageToWorld(self, p: [float, float]) -> tuple of float
@@ -56663,7 +57011,7 @@ class ImageLayer:
 
 
         """
-    def image3ToWorld(self, p: Sequence[float] | Vector3) -> tuple[float, float, float]:
+    def image3ToWorld(self, p: _FloatSequence) -> tuple[float, float, float]:
         """
 
         image3ToWorld(self, p: [float, float, float]) -> tuple of float
@@ -56672,7 +57020,7 @@ class ImageLayer:
 
 
         """
-    def imageToLocal(self, p: Sequence[float] | Vector2) -> tuple[float, float, float]:
+    def imageToLocal(self, p: _FloatSequence) -> tuple[float, float, float]:
         """
 
         imageToLocal(self, p: [float, float]) -> tuple of float
@@ -56681,7 +57029,7 @@ class ImageLayer:
 
 
         """
-    def image3ToLocal(self, p: Sequence[float] | Vector3) -> tuple[float, float, float]:
+    def image3ToLocal(self, p: _FloatSequence) -> tuple[float, float, float]:
         """
 
         image3ToLocal(self, p: [float, float, float]) -> tuple of float
@@ -56690,7 +57038,7 @@ class ImageLayer:
 
 
         """
-    def pixelToImage(self, p: Sequence[float] | Vector2) -> tuple[float, float]:
+    def pixelToImage(self, p: _FloatSequence) -> tuple[float, float]:
         """
 
         pixelToImage(self, p: [float, float]) -> tuple of float
@@ -56699,7 +57047,7 @@ class ImageLayer:
 
 
         """
-    def pixelToBuffer(self, p: Sequence[float] | Vector2) -> tuple[float, float]:
+    def pixelToBuffer(self, p: _FloatSequence) -> tuple[float, float]:
         """
 
         pixelToBuffer(self, p: [float, float]) -> tuple of float
@@ -56708,7 +57056,7 @@ class ImageLayer:
 
 
         """
-    def pixelToTexture(self, p: Sequence[float] | Vector2) -> tuple[float, float]:
+    def pixelToTexture(self, p: _FloatSequence) -> tuple[float, float]:
         """
 
         pixelToTexture(self, p: [float, float]) -> tuple of float
@@ -56717,7 +57065,7 @@ class ImageLayer:
 
 
         """
-    def bufferToPixel(self, p: Sequence[float] | Vector2) -> tuple[float, float]:
+    def bufferToPixel(self, p: _FloatSequence) -> tuple[float, float]:
         """
 
         bufferToPixel(self, p: [float, float]) -> tuple of float
@@ -56726,7 +57074,7 @@ class ImageLayer:
 
 
         """
-    def bufferToImage(self, p: Sequence[float] | Vector2) -> tuple[float, float]:
+    def bufferToImage(self, p: _FloatSequence) -> tuple[float, float]:
         """
 
         bufferToImage(self, p: [float, float]) -> tuple of float
@@ -56735,7 +57083,7 @@ class ImageLayer:
 
 
         """
-    def bufferToTexture(self, p: Sequence[float] | Vector2) -> tuple[float, float]:
+    def bufferToTexture(self, p: _FloatSequence) -> tuple[float, float]:
         """
 
         bufferToTexture(self, p: [float, float]) -> tuple of float
@@ -56744,7 +57092,7 @@ class ImageLayer:
 
 
         """
-    def textureToPixel(self, p: Sequence[float] | Vector2) -> tuple[float, float]:
+    def textureToPixel(self, p: _FloatSequence) -> tuple[float, float]:
         """
 
         textureToPixel(self, p: [float, float]) -> tuple of float
@@ -56753,7 +57101,7 @@ class ImageLayer:
 
 
         """
-    def textureToImage(self, p: Sequence[float] | Vector2) -> tuple[float, float]:
+    def textureToImage(self, p: _FloatSequence) -> tuple[float, float]:
         """
 
         textureToImage(self, p:[float, float]) -> tuple of float
@@ -56762,7 +57110,7 @@ class ImageLayer:
 
 
         """
-    def textureToBuffer(self, p: Sequence[float] | Vector2) -> tuple[float, float]:
+    def textureToBuffer(self, p: _FloatSequence) -> tuple[float, float]:
         """
 
         textureToBuffer(self, p: [float, float]) -> tuple of float
@@ -56771,7 +57119,7 @@ class ImageLayer:
 
 
         """
-    def worldToBuffer(self, p: Sequence[float] | Vector3) -> tuple[float, float]:
+    def worldToBuffer(self, p: _FloatSequence) -> tuple[float, float]:
         """
 
         worldToBuffer(self, p: [float, float, float]) -> tuple of float
@@ -56780,7 +57128,7 @@ class ImageLayer:
 
 
         """
-    def worldToImage(self, p: Sequence[float] | Vector3) -> tuple[float, float]:
+    def worldToImage(self, p: _FloatSequence) -> tuple[float, float]:
         """
 
         worldToImage(self, p: [float, float, float]) -> tuple of float
@@ -56790,7 +57138,7 @@ class ImageLayer:
 
 
         """
-    def worldToImage3(self, p: Sequence[float] | Vector3) -> tuple[float, float, float]:
+    def worldToImage3(self, p: _FloatSequence) -> tuple[float, float, float]:
         """
 
         worldToImage3(self, p: [float, float, float]) -> tuple of float
@@ -56800,7 +57148,7 @@ class ImageLayer:
 
 
         """
-    def worldToLocal(self, p: Sequence[float] | Vector3) -> tuple[float, float, float]:
+    def worldToLocal(self, p: _FloatSequence) -> tuple[float, float, float]:
         """
 
         worldToLocal(self, p: [float, float, float]) -> tuple of float
@@ -56810,7 +57158,7 @@ class ImageLayer:
 
 
         """
-    def localToImage(self, p: Sequence[float] | Vector3) -> tuple[float, float]:
+    def localToImage(self, p: _FloatSequence) -> tuple[float, float]:
         """
 
         localToImage(self, p: [float, float, float]) -> tuple of float
@@ -56820,7 +57168,7 @@ class ImageLayer:
 
 
         """
-    def localToImage3(self, p: Sequence[float] | Vector3) -> tuple[float, float, float]:
+    def localToImage3(self, p: _FloatSequence) -> tuple[float, float, float]:
         """
 
         localToImage3(self, p: [float, float, float]) -> tuple of float
@@ -56830,7 +57178,7 @@ class ImageLayer:
 
 
         """
-    def localToWorld(self, p: Sequence[float] | Vector3) -> tuple[float, float, float]:
+    def localToWorld(self, p: _FloatSequence) -> tuple[float, float, float]:
         """
 
         localToWorld(self, p: [float, float, float]) -> tuple of float
@@ -56878,7 +57226,7 @@ class ImageLayer:
 
 
         """
-    def setBufferIndex(self, x: int, y: int, rgba: float | Sequence[float]) -> None:
+    def setBufferIndex(self, x: int, y: int, rgba: float | list[float] | tuple[float, ...]) -> None:
         """
 
         setBufferIndex(self, int x, int y, val: [float, ...] | float | int)
@@ -56899,7 +57247,7 @@ class ImageLayer:
 
 
         """
-    def setBufferIndexV4(self, x: int, y: int, rgba: Sequence[float]) -> None:
+    def setBufferIndexV4(self, x: int, y: int, rgba: _FloatSequence) -> None:
         """
 
         setBufferIndexV4(self, int x, int y, value: [float, float, float,
@@ -56933,7 +57281,7 @@ class ImageLayer:
 
 
         """
-    def properties(self) -> dict[str, Any]:
+    def properties(self) -> _OptionDict:
         """
 
         properties(self) -> dict
@@ -56942,7 +57290,7 @@ class ImageLayer:
 
 
         """
-    def setProperties(self, p: dict[str, Any]) -> None:
+    def setProperties(self, p: _OptionDictArg[_OptionArgT]) -> None:
         """
 
         setProperties(self, p: dict)
@@ -56951,7 +57299,7 @@ class ImageLayer:
 
 
         """
-    def updateProperties(self, p: dict[str, Any]) -> None:
+    def updateProperties(self, p: _OptionDictArg[_OptionArgT]) -> None:
         """
 
         updateProperties(self, p: dict)
@@ -56961,7 +57309,7 @@ class ImageLayer:
 
 
         """
-    def attributes(self) -> dict[str, Any]:
+    def attributes(self) -> _OptionDict:
         """
 
         attributes(self) -> dict
@@ -56971,7 +57319,7 @@ class ImageLayer:
 
 
         """
-    def setAttributes(self, p: dict[str, Any]) -> None:
+    def setAttributes(self, p: _OptionDictArg[_OptionArgT]) -> None:
         """
 
         setAttributes(self, p: dict)
@@ -56981,7 +57329,7 @@ class ImageLayer:
 
 
         """
-    def updateAttributes(self, p: dict[str, Any]) -> None:
+    def updateAttributes(self, p: _OptionDictArg[_OptionArgT]) -> None:
         """
 
         updateAttributes(self, p: dict)
@@ -63418,7 +63766,7 @@ class LopViewportOverrides:
 
 
         """
-    def soloLights(self) -> pxr.Sdf.Path:
+    def soloLights(self) -> list[pxr.Sdf.Path]:
         """
 
         soloLights(self) -> tuple of pxr.Sdf.Path
@@ -63428,7 +63776,7 @@ class LopViewportOverrides:
 
 
         """
-    def soloGeometry(self) -> pxr.Sdf.Path:
+    def soloGeometry(self) -> list[pxr.Sdf.Path]:
         """
 
         soloGeometry(self) -> tuple of pxr.Sdf.Path
@@ -63450,7 +63798,7 @@ class Matrix2:
 
     """
     thisown: bool
-    def __init__(self, values: float|Sequence[float]|Sequence[Sequence[float]] = ..., /) -> None:
+    def __init__(self, values: float | _FloatSequence | Sequence[_FloatSequence] = ..., /) -> None:
         """
 
         __init__(self, values)
@@ -63531,7 +63879,7 @@ class Matrix2:
 
 
         """
-    def setTo(self, value: Sequence[float], /) -> None:
+    def setTo(self, value: _FloatSequence, /) -> None:
         """
 
         setTo(self, tuple)
@@ -63672,7 +64020,7 @@ class Matrix3:
 
     """
     thisown: bool
-    def __init__(self, values: float|Sequence[float]|Sequence[Sequence[float]]|Matrix4 = ..., /) -> None:
+    def __init__(self, values: float | _FloatSequence | Sequence[_FloatSequence] | Matrix4 = ..., /) -> None:
         """
 
         __init__(self, values)
@@ -63759,7 +64107,7 @@ class Matrix3:
 
 
         """
-    def setTo(self, value: Sequence[float], /) -> None:
+    def setTo(self, value: _FloatSequence, /) -> None:
         """
 
         setTo(self, tuple)
@@ -64025,7 +64373,7 @@ class Matrix4:
 
     """
     thisown: bool
-    def __init__(self, values: float|Sequence[float]|Sequence[Sequence[float]]|Matrix3 = ..., /) -> None:
+    def __init__(self, values: float | _FloatSequence | Sequence[_FloatSequence] | Matrix3 = ..., /) -> None:
         """
 
         __init__(self, values)
@@ -64112,7 +64460,7 @@ class Matrix4:
 
 
         """
-    def setTo(self, value: Sequence[float], /) -> None:
+    def setTo(self, value: _FloatSequence, /) -> None:
         """
 
         setTo(self, sequence)
@@ -64996,7 +65344,7 @@ class NanoVDB:
 
 
         """
-    def properties(self) -> dict[str, Any]:
+    def properties(self) -> _OptionDict:
         """
 
         properties(self) -> std::map<std::string,hboost::any>
@@ -65005,7 +65353,7 @@ class NanoVDB:
 
 
         """
-    def setProperties(self, p: dict[str, Any]) -> None:
+    def setProperties(self, p: _OptionDictArg[_OptionArgT]) -> None:
         """
 
         setProperties(self, std::map<std::string, p)
@@ -65014,7 +65362,7 @@ class NanoVDB:
 
 
         """
-    def updateProperties(self, p: dict[str, Any]) -> None:
+    def updateProperties(self, p: _OptionDictArg[_OptionArgT]) -> None:
         """
 
         updateProperties(self, std::map<std::string, p)
@@ -65024,7 +65372,7 @@ class NanoVDB:
 
 
         """
-    def attributes(self) -> dict[str, Any]:
+    def attributes(self) -> _OptionDict:
         """
 
         attributes(self) -> dict
@@ -65034,7 +65382,7 @@ class NanoVDB:
 
 
         """
-    def setAttributes(self, p: dict[str, Any]) -> None:
+    def setAttributes(self, p: _OptionDictArg[_OptionArgT]) -> None:
         """
 
         setAttributes(self, p: dict)
@@ -65044,7 +65392,7 @@ class NanoVDB:
 
 
         """
-    def updateAttributes(self, p: dict[str, Any]) -> None:
+    def updateAttributes(self, p: _OptionDictArg[_OptionArgT]) -> None:
         """
 
         updateAttributes(self, p: dict)
@@ -68282,7 +68630,7 @@ class OrientedBoundingBox:
 
 
         """
-    def contains(self, point: Sequence[float]) -> bool:
+    def contains(self, point: _FloatSequence) -> bool:
         """
 
         contains(self, point) -> bool
@@ -70809,7 +71157,7 @@ class ParmTuple:
 
 
         """
-    def evalAsGeometries(self) -> Tuple[Geometry, ...]:
+    def evalAsGeometries(self) -> Tuple[Optional[Geometry], ...]:
         """
 
         evalAsGeometries(self) -> tuple of hou.Geometry
@@ -70821,7 +71169,7 @@ class ParmTuple:
 
 
         """
-    def evalAsGeometriesAtFrame(self, frame: float) -> Tuple[Geometry, ...]:
+    def evalAsGeometriesAtFrame(self, frame: float) -> Tuple[Optional[Geometry], ...]:
         """
 
         evalAsGeometriesAtFrame(self, frame) -> tuple of hou.Geometry
@@ -70833,7 +71181,7 @@ class ParmTuple:
 
 
         """
-    def evalAsImageLayers(self) -> Tuple[ImageLayer, ...]:
+    def evalAsImageLayers(self) -> Tuple[Optional[ImageLayer], ...]:
         """
 
         evalAsImageLayers(self) -> tuple of hou.ImageLayer
@@ -70845,7 +71193,7 @@ class ParmTuple:
 
 
         """
-    def evalAsImageLayersAtFrame(self, frame: float) -> Tuple[ImageLayer, ...]:
+    def evalAsImageLayersAtFrame(self, frame: float) -> Tuple[Optional[ImageLayer], ...]:
         """
 
         evalAsImageLayersAtFrame(self, frame) -> tuple of hou.ImageLayer
@@ -70857,7 +71205,7 @@ class ParmTuple:
 
 
         """
-    def evalAsNanoVDBs(self) -> Tuple[NanoVDB, ...]:
+    def evalAsNanoVDBs(self) -> Tuple[Optional[NanoVDB], ...]:
         """
 
         evalAsNanoVDBs(self) -> tuple of hou.NanoVDB
@@ -70869,7 +71217,7 @@ class ParmTuple:
 
 
         """
-    def evalAsNanoVDBsAtFrame(self, frame: float) -> Tuple[NanoVDB, ...]:
+    def evalAsNanoVDBsAtFrame(self, frame: float) -> Tuple[Optional[NanoVDB], ...]:
         """
 
         evalAsNanoVDBsAtFrame(self, frame) -> tuple of hou.NanoVDB
@@ -70881,7 +71229,7 @@ class ParmTuple:
 
 
         """
-    def evalAsDetachedAttribs(self) -> Tuple[DetachedAttrib, ...]:
+    def evalAsDetachedAttribs(self) -> Tuple[Optional[DetachedAttrib], ...]:
         """
 
         evalAsDetachedAttribs(self) -> tuple of hou.DetachedAttrib
@@ -70894,7 +71242,7 @@ class ParmTuple:
 
 
         """
-    def evalAsDetachedAttribsAtFrame(self, frame: float) -> Tuple[DetachedAttrib, ...]:
+    def evalAsDetachedAttribsAtFrame(self, frame: float) -> Tuple[Optional[DetachedAttrib], ...]:
         """
 
         evalAsDetachedAttribsAtFrame(self, frame) -> tuple of hou.DetachedAttrib
@@ -71495,7 +71843,7 @@ class ParmTuple:
     def multiParmInstancesAsData(self, start_index: int=0, end_index: int=-1, value: bool = True, evaluate_value: bool = False, links: bool = True, locked: bool = True, brief: bool = True, metadata: bool = False, verbose: bool = False) -> _MultiParmInstanceDataList | None: ...
     def rampPointsAsData(self, evaluate: bool = True, metadata: bool = False, verbose: bool = False) -> rtypes.RampPointDataList | None: ...
     def saveClip(self, file_name:str, start:float|None=None, end:float|None=None, sample_rate: float=0) -> None: ...
-    def set(self, value: Sequence[int] | Sequence[float] | Sequence[str] | Sequence[Parm] | Sequence[Ramp] | ParmTuple | Vector2 | Vector3 | Vector4 | Quaternion, language: EnumValue[exprLanguage] | None = None, follow_parm_references: bool = True) -> None: ...
+    def set(self, value: Sequence[int] | _FloatSequence | Sequence[str] | Sequence[Parm] | Sequence[Ramp] | ParmTuple, language: EnumValue[exprLanguage] | None = None, follow_parm_references: bool = True) -> None: ...
     def setFromData(self, data: _ParmDataArg) -> None: ...
     def setMultiParmInstancesFromData(self, data: Sequence[rtypes.ParmDataDict], index: int = -1) -> None: ...
     def setRampPointsFromData(self, data: Sequence[rtypes.RampPointData]) -> None: ...
@@ -71507,7 +71855,8 @@ class ParmTuple:
     def appendMultiParmInstancesFromData(self, data: Sequence[rtypes.ParmDataDict]) -> None: ...
     def loadClip(self, file_name: str, sample_rate: float = ..., start: float | None = ...) -> None: ...
     def setClipData(self, data: bytes, binary: bool = ..., blosc_compressed: bool = ..., sample_rate: float = ..., start: float | None = ...) -> None: ...
-    def pressScriptActionButton(self, **kwargs: Any) -> None: ...
+    # The keywords become the script_action script's kwargs, so they can be anything.
+    def pressScriptActionButton(self, **kwargs: object) -> None: ...
     def _asVoidPointer(self) -> SupportsInt: ...
 
 class perfMon:
@@ -73640,7 +73989,7 @@ class Point:
           > hou.Vector3(point.attribValue(\\"P\\"))
 
         '''
-    def setPosition(self, position: Sequence[float] | Vector3 | Vector4) -> None:
+    def setPosition(self, position: _FloatSequence) -> None:
         '''
 
         setPosition(self, position)
@@ -73834,7 +74183,7 @@ class Point:
 
 
         """
-    def setAttribValue(self, name_or_attrib: str | Attrib, attrib_value: _AttribValueArg, /) -> None:
+    def setAttribValue(self, name_or_attrib: str | Attrib, attrib_value: _AttribValueArg[_OptionArgT], /) -> None:
         """
 
         setAttribValue(self, name_or_attrib, attrib_value)
@@ -73932,6 +74281,10 @@ class Point:
 
 
         """
+    def _getPointTransform(self) -> Matrix4: ...
+    def _getPointParent(self) -> Point | None: ...
+    # Added by houpythonportion.Point.
+    def _getPointChildren(self) -> tuple[Point, ...]: ...
 
 class PointGroup:
     """
@@ -75036,7 +75389,7 @@ class Quaternion:
 
         '''
     @typing.overload
-    def __init__(self, values: Sequence[float], /) -> None:
+    def __init__(self, values: _FloatSequence, /) -> None:
         '''
 
         __init__(self)
@@ -75118,7 +75471,7 @@ class Quaternion:
 
         '''
     @typing.overload
-    def __init__(self, angle_in_deg: float, axis: Sequence[float], /) -> None:
+    def __init__(self, angle_in_deg: float, axis: _FloatSequence, /) -> None:
         '''
 
         __init__(self)
@@ -75265,7 +75618,7 @@ class Quaternion:
 
 
         """
-    def setTo(self, tuple: Sequence[float]) -> None:
+    def setTo(self, tuple: _FloatSequence) -> None:
         """
 
         setTo(self, tuple)
@@ -75293,7 +75646,7 @@ class Quaternion:
 
 
         """
-    def setToAngleAxis(self, angle_in_deg: float, axis: Sequence[float]) -> None:
+    def setToAngleAxis(self, angle_in_deg: float, axis: _FloatSequence) -> None:
         """
 
         setToAngleAxis(self, angle_in_deg, axis)
@@ -75322,7 +75675,7 @@ class Quaternion:
 
 
         """
-    def setToEulerRotates(self, angles_in_deg: Sequence[float] | Vector3, rotate_order: Literal['xyz', 'xzy', 'yxz', 'yzx', 'zxy', 'zyx'] = ...) -> None:
+    def setToEulerRotates(self, angles_in_deg: _FloatSequence, rotate_order: Literal['xyz', 'xzy', 'yxz', 'yzx', 'zxy', 'zyx'] = ...) -> None:
         '''
 
         setToEulerRotates(self, angles_in_deg, rotate_order=\\"xyz\\")
@@ -75850,7 +76203,7 @@ class qt:
         def setState(self, state_name: str, state_value: bool, index: int = 0) -> None: ...
         def setValidator(self, validator: QtGui.QValidator) -> None: ...
         def setValue(self, value: int | float | str | None, index: int = 0) -> None: ...
-        def setValues(self, values: Sequence[int] | Sequence[float] | Sequence[str]) -> None: ...
+        def setValues(self, values: Sequence[int] | _FloatSequence | Sequence[str]) -> None: ...
         def setWidth(self, width: int) -> None: ...
         def state(self, state_name: str, index: int = 0) -> bool: ...
         def value(self, index: int = 0) -> int | float | str: ...
@@ -76029,9 +76382,12 @@ class qt:
 
     class XMLMenuParser(object):
         """Class added by stubgen"""
-        def __init__(self, context: str ='', kwargs: Mapping[str, Any] | None=None, kwargsfunc: Callable[[], Mapping[str, Any]] | None=None, xmlfilename: str | None=None, xmlstring: str | None=None) -> None: ...
-        def generateMenu(self, kwargs: dict[str, Any], menu: _MenuT | None=None, actionitem_callback: Callable[[dict[str, Any]], object] | None=None) -> _MenuT | qt.Menu: ...
-        def handleKeyPress(self, keystring: str, kwargs: dict[str, Any], actionitem_callback: Callable[[dict[str, Any]], object] | None=None, hotkey_context: str | None=None) -> bool: ...
+        def __init__(self, context: str ='', kwargs: Mapping[str, object] | None=None, kwargsfunc: Callable[[], Mapping[str, object]] | None=None, xmlfilename: str | None=None, xmlstring: str | None=None) -> None: ...
+        @typing.overload
+        def generateMenu(self, kwargs: MutableMapping[str, Any], menu: None=None, actionitem_callback: Callable[[_MenuActionKwargs], object] | None=None) -> qt.Menu: ...
+        @typing.overload
+        def generateMenu(self, kwargs: MutableMapping[str, Any], menu: _MenuT, actionitem_callback: Callable[[_MenuActionKwargs], object] | None=None) -> _MenuT: ...
+        def handleKeyPress(self, keystring: str, kwargs: MutableMapping[str, Any], actionitem_callback: Callable[[_MenuActionKwargs], object] | None=None, hotkey_context: str | None=None) -> bool: ...
         def hotkeyContext(self) -> str: ...
         def parseFile(self, xmlfile: Path | str) -> None: ...
         def parseFiles(self, xmlfilename: str) -> None: ...
@@ -76569,7 +76925,7 @@ class Ramp:
 
         """
     @typing.overload
-    def __init__(self, basis: Sequence[EnumValue[rampBasis]], keys: Sequence[float], values: Sequence[float]|Sequence[Sequence[float]], /) -> None:
+    def __init__(self, basis: Sequence[EnumValue[rampBasis]], keys: _FloatSequence, values: _FloatSequence | Sequence[_FloatSequence], /) -> None:
         """
 
         __init__(self, basis, keys, values) -> float
@@ -77110,7 +77466,7 @@ class ReferencePlane:
 
 
         """
-    def setCellSize(self, size: Sequence[float]) -> None:
+    def setCellSize(self, size: _FloatSequence) -> None:
         """
 
         setCellSize(self, size)
@@ -77224,7 +77580,7 @@ class RopNode(OpNode):
 
 
         """
-    def render(self, frame_range: Sequence[float] = ..., res: Sequence[int] = ..., output_file: str | None = ..., output_format: str = ..., to_flipbook: bool = ..., quality: int = ..., ignore_inputs: bool = ..., method: EnumValue[renderMethod] = ..., ignore_bypass_flags: bool = ..., ignore_lock_flags: bool = ..., verbose: bool = ..., output_progress: bool = ...) -> None:
+    def render(self, frame_range: _FloatSequence = ..., res: Sequence[int] = ..., output_file: str | None = ..., output_format: str = ..., to_flipbook: bool = ..., quality: int = ..., ignore_inputs: bool = ..., method: EnumValue[renderMethod] = ..., ignore_bypass_flags: bool = ..., ignore_lock_flags: bool = ..., verbose: bool = ..., output_progress: bool = ...) -> None:
         """
 
         render(self, frame_range=(), res=(), output_file=None,
@@ -80520,6 +80876,8 @@ class SceneViewer(PathBasedPaneTab):
         """
     def hudInfo(self, show: bool | int = ..., terminate: bool = ..., state: EnumValue[hudInfoState] = ..., template: _HudTemplate | None = ..., values: _HudUpdates | None = ..., panel: EnumValue[hudPanel] | int = ..., update_hotkey_bindings: bool = ..., **kwargs: Unpack[_HudInfoAliases]) -> None: ...
     def pwd(self) -> OpNode | None: ...
+    def _waitForStateExit(self, state: str | None = None) -> None: ...
+    def _currentBaseState(self) -> str: ...
 
 class ScriptEvalContext:
     """
@@ -82426,6 +82784,7 @@ class SopNode(OpNode):
     def inputAncestors(self, include_ref_inputs: bool = ..., follow_subnets: bool = ..., only_used_inputs: bool = ...) -> tuple[SopNode, ...]: ...
     def generateInputAttribMenu(self, index: int, attrib_type: EnumValue[attribType] | None = ..., data_type: EnumValue[attribData] | None = ..., min_size: int = ..., max_size: int = ..., array_type: bool = ..., scalar_type: bool = ..., case_sensitive: bool = ..., pattern: str = ..., decode_tokens: bool = ...) -> tuple[str, ...]: ...
     def generateInputGroupMenu(self, index: int, group_types: EnumValue[geometryType] | Sequence[EnumValue[geometryType]] | None = ..., include_selection: bool = ..., include_name_attrib: bool = ..., case_sensitive: bool = ..., pattern: str = ..., decode_tokens: bool = ..., parm: Parm | None = ...) -> tuple[str, ...]: ...
+    def _sendSelectionChangedEvent(self) -> None: ...
     def creator(self) -> OpNode: ...
     def parent(self) -> OpNode: ...
     def type(self) -> SopNodeType: ...
@@ -87229,7 +87588,7 @@ class ui:
 
         """
     @staticmethod
-    def getDragSourceData(label: str, index: int = ...) -> Any: ...
+    def getDragSourceData(label: str, index: int = ...) -> _BoostAnyValue | Node | GalleryEntry: ...
     @staticmethod
     def resourceValueFromName(name: str) -> str:
         """
@@ -89170,7 +89529,7 @@ class ui:
 
         """
     @staticmethod
-    def openFileEditor(title: str, file_path: str, action_callback: _FileEditorActionCallback | None = ..., params: Mapping[str, int | float | bool | str | EnumValue] | None = ...) -> None:
+    def openFileEditor(title: str, file_path: str, action_callback: _FileEditorActionCallback[_FileEditorParamT] | None = ..., params: Mapping[str, _FileEditorParamT] | None = ...) -> None:
         """
 
         openFileEditor(title, file_path, action_callback=None, params=None)
@@ -90211,7 +90570,7 @@ class VDB(Prim):
     """
     thisown: bool
     def __init__(self, *, no_constructor: Never) -> None: ...
-    def sample(self, position: Sequence[float]) -> float:
+    def sample(self, position: _FloatSequence) -> float:
         """
 
         sample(self, position) -> float
@@ -90225,7 +90584,7 @@ class VDB(Prim):
 
 
         """
-    def samplev(self, position: Sequence[float]) -> Vector3:
+    def samplev(self, position: _FloatSequence) -> Vector3:
         """
 
         samplev(self, position) -> hou.Vector3
@@ -90239,7 +90598,7 @@ class VDB(Prim):
 
 
         """
-    def gradient(self, position: Sequence[float]) -> Vector3:
+    def gradient(self, position: _FloatSequence) -> Vector3:
         """
 
         gradient(self, position) -> hou.Vector3
@@ -90284,7 +90643,7 @@ class VDB(Prim):
 
 
         """
-    def posToIndex(self, position: Sequence[float]) -> Tuple[int, ...]:
+    def posToIndex(self, position: _FloatSequence) -> Tuple[int, ...]:
         """
 
         posToIndex(self, position) -> tuple of int
@@ -90532,7 +90891,7 @@ class Vector2:
 
         """
     @typing.overload
-    def __init__(self, values: Sequence[float]|Vector2, /) -> None:
+    def __init__(self, values: _FloatSequence, /) -> None:
         """
 
         __init__(self, values=(0.0, 0.0))
@@ -90607,7 +90966,7 @@ class Vector2:
 
 
         """
-    def setTo(self, sequence: Sequence[float]|Vector2) -> None:
+    def setTo(self, sequence: _FloatSequence) -> None:
         """
 
         setTo(self, sequence)
@@ -90840,7 +91199,7 @@ class Vector3:
 
         """
     @typing.overload
-    def __init__(self, values: Sequence[float]|Vector3|Vector4, /) -> None:
+    def __init__(self, values: _FloatSequence, /) -> None:
         """
 
         __init__(self, values=(0.0, 0.0, 0.0))
@@ -90918,7 +91277,7 @@ class Vector3:
 
 
         """
-    def setTo(self, sequence: Sequence[float]|Vector3) -> None:
+    def setTo(self, sequence: _FloatSequence) -> None:
         """
 
         setTo(self, sequence)
@@ -91318,7 +91677,7 @@ class Vector4:
 
         """
     @typing.overload
-    def __init__(self, values: Sequence[float]|Vector3|Vector4, /) -> None:
+    def __init__(self, values: _FloatSequence, /) -> None:
         """
 
         __init__(self, values=(0.0, 0.0, 0.0, 0.0))
@@ -91389,7 +91748,7 @@ class Vector4:
 
 
         """
-    def setTo(self, sequence: Sequence[float]|Vector4) -> None:
+    def setTo(self, sequence: _FloatSequence) -> None:
         """
 
         setTo(self, sequence)
@@ -91799,7 +92158,7 @@ class Vertex:
 
 
         """
-    def setAttribValue(self, name_or_attrib: str | Attrib, attrib_value: _AttribValueArg, /) -> None:
+    def setAttribValue(self, name_or_attrib: str | Attrib, attrib_value: _AttribValueArg[_OptionArgT], /) -> None:
         """
 
         setAttribValue(self, name_or_attrib, attrib_value)
@@ -92577,7 +92936,7 @@ class ViewerDragger2D:
 
 
         """
-    def dragXY(self) -> dict[str, Any]:
+    def dragXY(self) -> _Drag2DTranslateValues:
         """
 
         dragXY(self)
@@ -92588,7 +92947,7 @@ class ViewerDragger2D:
 
 
         """
-    def dragAlongX(self) -> dict[str, Any]:
+    def dragAlongX(self) -> _Drag2DTranslateValues:
         """
 
         dragAlongX(self)
@@ -92600,7 +92959,7 @@ class ViewerDragger2D:
 
 
         """
-    def dragAlongY(self) -> dict[str, Any]:
+    def dragAlongY(self) -> _Drag2DTranslateValues:
         """
 
         dragAlongY(self)
@@ -92612,7 +92971,7 @@ class ViewerDragger2D:
 
 
         """
-    def dragRotate(self) -> dict[str, Any]:
+    def dragRotate(self) -> _Drag2DRotateValues:
         """
 
         dragRotate(self)
@@ -93262,7 +93621,7 @@ class ViewerHandleContext(GadgetContext):
 
 
         """
-    def scaleFactor(self, ref_position: Sequence[float]|Vector3 = ..., /) -> float:
+    def scaleFactor(self, ref_position: _FloatSequence = ..., /) -> float:
         """
 
         scaleFactor(ref_position) -> double
@@ -93292,7 +93651,7 @@ class ViewerHandleContext(GadgetContext):
 
 
         """
-    def handleScaleValue(self, *args) -> float:
+    def handleScaleValue(self, ref_position: _FloatSequence = ..., /) -> float:
         '''
 
         handleScaleValue(ref_position=None) -> double
@@ -93461,7 +93820,7 @@ class ViewerHandleContext(GadgetContext):
 
 
         """
-    def draw(self, handle: object) -> None:
+    def draw(self, handle: int) -> None:
         """
 
         draw(self, draw_handle)
@@ -96626,7 +96985,7 @@ class Volume(Prim):
 
 
         """
-    def sample(self, position: Sequence[float]) -> float:
+    def sample(self, position: _FloatSequence) -> float:
         """
 
         sample(self, position) -> float
@@ -96640,7 +96999,7 @@ class Volume(Prim):
 
 
         """
-    def gradient(self, position: Sequence[float]) -> Vector3:
+    def gradient(self, position: _FloatSequence) -> Vector3:
         """
 
         gradient(self, position) -> hou.Vector3
@@ -96761,7 +97120,7 @@ class Volume(Prim):
 
 
         '''
-    def setAllVoxels(self, values: Sequence[float]) -> None:
+    def setAllVoxels(self, values: _FloatSequence) -> None:
         """
 
         setAllVoxels(self, values)
@@ -96873,7 +97232,7 @@ class Volume(Prim):
 
 
         """
-    def setVoxelSlice(self, values: Sequence[float], plane: str, index: int) -> None:
+    def setVoxelSlice(self, values: _FloatSequence, plane: str, index: int) -> None:
         '''
 
         setVoxelSliceFromString(self, values, plane, index)
@@ -97007,7 +97366,7 @@ class Volume(Prim):
 
 
         """
-    def setDataWindowOffset(self, offset: Sequence[float]) -> None:
+    def setDataWindowOffset(self, offset: _FloatSequence) -> None:
         """
 
         setDataWindowOffset(self, offset)
@@ -97020,7 +97379,7 @@ class Volume(Prim):
 
 
         """
-    def setDisplayWindowOffset(self, offset: Sequence[float]) -> None:
+    def setDisplayWindowOffset(self, offset: _FloatSequence) -> None:
         """
 
         setDisplayWindowOffset(self, offset)
@@ -97033,7 +97392,7 @@ class Volume(Prim):
 
 
         """
-    def setDisplayWindowSize(self, size: Sequence[float]) -> None:
+    def setDisplayWindowSize(self, size: _FloatSequence) -> None:
         """
 
         setDisplayWindowSize(self, size)
@@ -97046,7 +97405,7 @@ class Volume(Prim):
 
 
         """
-    def setWindowVoxelScale(self, scale: Sequence[float]) -> None:
+    def setWindowVoxelScale(self, scale: _FloatSequence) -> None:
         """
 
         setWindowVoxelScale(self, scale)
@@ -97070,7 +97429,7 @@ class Volume(Prim):
 
 
         """
-    def posToIndex(self, position: Sequence[float]) -> Tuple[int, ...]:
+    def posToIndex(self, position: _FloatSequence) -> Tuple[int, ...]:
         """
 
         posToIndex(self, position) -> tuple of int
@@ -98085,7 +98444,7 @@ def applicationName() -> str:
 
 
     """
-def applicationVersion(include_patch: bool = ...) -> Tuple[int, int, int]:
+def applicationVersion(include_patch: bool = ..., /) -> Tuple[int, int, int]:
     """
 
     hou.vdbVersionInfo
@@ -99262,7 +99621,7 @@ def setDefaultColor(color_item: EnumValue[colorItemType], color: Color | None) -
 
 
     """
-def selectedNodes(include_hidden: bool = False) -> Tuple[Node, ...]:
+def selectedNodes(include_hidden: bool = False, /) -> Tuple[Node, ...]:
     '''
 
     hou.selectedNodes
@@ -99580,7 +99939,7 @@ def evalParm(path: str) -> int | float | str | dict[str, str] | Ramp | Geometry 
 
 
     """
-def evalParmTuple(path: str) -> ParmTupleReturnType:
+def evalParmTuple(path: str) -> tuple[int, ...] | tuple[float, ...] | tuple[str, ...] | tuple[Ramp, ...] | tuple[dict[str, str], ...] | tuple[Geometry | None, ...]:
     """
 
     hou.evalParmTuple
@@ -100262,7 +100621,7 @@ def getEnvConfigValue(name: str, default_value: Optional[str] = None) -> Optiona
 
 
     """
-def getenv(name: str, default_value: Optional[str] = None) -> Optional[str]:
+def getenv(name: str, default_value: Optional[str] = None, /) -> Optional[str]:
     """
 
     hou.getenv
@@ -100357,7 +100716,7 @@ def allowEnvironmentToOverwriteVariable(name: str, onoff: bool) -> None:
     > hou.hipFile.load(os.path.expandvars(\\"$JOB/hip/scene.hip\\"))
 
     '''
-def updateProgressAndCheckForInterrupt(percentage: int = -1) -> bool:
+def updateProgressAndCheckForInterrupt(percentage: int = -1, /) -> bool:
     """
 
     hou.updateProgressAndCheckForInterrupt
@@ -100528,7 +100887,7 @@ def runVex(vex_file: str, inputs: Mapping[str, OptionType|OptionSequenceType], p
 
 
     '''
-def saveImageDataToFile(color_and_alpha_data: Sequence[float]|bytes, width: int, height: int, file_name: str) -> None:
+def saveImageDataToFile(color_and_alpha_data: _FloatSequence | bytes, width: int, height: int, file_name: str, /) -> None:
     '''
 
     hou.saveImageDataToFile
@@ -100846,7 +101205,7 @@ def setChopExportConflictResolutionPattern(pattern: str) -> None:
 
 
     """
-def nodeType(category_or_name: NodeTypeCategory|str, internal_name: str|None = ...) -> NodeType|None:
+def nodeType(category_or_name: NodeTypeCategory|str, internal_name: str|None = ..., /) -> NodeType|None:
     '''
 
     hou.nodeType
@@ -105405,25 +105764,25 @@ class data:
     @staticmethod
     def dataFromRecipe(name: str) -> JSONValue: ...
     @staticmethod
-    def saveParmPresetRecipe(name: str, label: str, location: str, parm: ParmTuple, **parmpresetrecipe_opts: Any) -> Ref | None: ...
+    def saveParmPresetRecipe(name: str, label: str, location: str, parm: ParmTuple, **parmpresetrecipe_opts: Unpack[_ParmPresetRecipeOpts]) -> Ref | None: ...
     @staticmethod
-    def applyParmPresetRecipe(name: str, parm: Parm | ParmTuple | None = ..., **parmpresetrecipe_set_opts: Any) -> rtypes.ParmPresetOutputData | None: ...
+    def applyParmPresetRecipe(name: str, parm: Parm | ParmTuple | None = ..., **parmpresetrecipe_set_opts: Unpack[_ParmPresetRecipeSetOpts]) -> rtypes.ParmPresetOutputData | None: ...
     @staticmethod
-    def saveNodePresetRecipe(name: str, label: str, location: str, node: OpNode, **nodepresetrecipe_opts: Any) -> Ref | None: ...
+    def saveNodePresetRecipe(name: str, label: str, location: str, node: OpNode, **nodepresetrecipe_opts: Unpack[_NodePresetRecipeOpts]) -> Ref | None: ...
     @staticmethod
-    def applyNodePresetRecipe(name: str, node: OpNode, **nodepresetrecipe_set_opts: Any) -> rtypes.NodePresetOutputData | tuple[str, str] | None: ...
+    def applyNodePresetRecipe(name: str, node: OpNode, **nodepresetrecipe_set_opts: Unpack[_NodePresetRecipeSetOpts]) -> rtypes.NodePresetOutputData | tuple[str, str] | None: ...
     @staticmethod
-    def saveDecorationRecipe(name: str, label: str, location: str, central_node: OpNode, decorator_items: Sequence[NetworkMovableItem], **decoratorrecipe_opts: Any) -> Ref | None: ...
+    def saveDecorationRecipe(name: str, label: str, location: str, central_node: OpNode, decorator_items: Sequence[NetworkMovableItem], **decoratorrecipe_opts: Unpack[_DecorationRecipeOpts]) -> Ref | None: ...
     @staticmethod
-    def applyDecorationRecipe(name: str, central_node: OpNode | None = ..., **decoratorrecipe_set_opts: Any) -> rtypes.DecorationOutputData | None: ...
+    def applyDecorationRecipe(name: str, central_node: OpNode | None = ..., **decoratorrecipe_set_opts: Unpack[_DecorationRecipeSetOpts]) -> rtypes.DecorationOutputData | None: ...
     @staticmethod
-    def saveToolRecipe(name: str, label: str, location: str, anchor_node: OpNode, **toolrecipe_opts: Any) -> Ref | None: ...
+    def saveToolRecipe(name: str, label: str, location: str, anchor_node: OpNode, **toolrecipe_opts: Unpack[_ToolRecipeOpts]) -> Ref | None: ...
     @staticmethod
-    def applyToolRecipe(name: str, **toolrecipe_set_opts: Any) -> rtypes.ToolOutputData | None: ...
+    def applyToolRecipe(name: str, **toolrecipe_set_opts: Unpack[_ToolRecipeSetOpts]) -> rtypes.ToolOutputData | None: ...
     @staticmethod
-    def saveTabToolRecipe(name: str, label: str, location: str, anchor_node: OpNode, **toolrecipe_opts: Any) -> Ref | None: ...
+    def saveTabToolRecipe(name: str, label: str, location: str, anchor_node: OpNode, **toolrecipe_opts: Unpack[_ToolRecipeOpts]) -> Ref | None: ...
     @staticmethod
-    def applyTabToolRecipe(name: str, **toolrecipe_set_opts: Any) -> rtypes.ToolOutputData | None: ...
+    def applyTabToolRecipe(name: str, **toolrecipe_set_opts: Unpack[_ToolRecipeSetOpts]) -> rtypes.ToolOutputData | None: ...
     @staticmethod
     def clusterItemsAsData(items: Sequence[NetworkMovableItem], target_node: OpNode, frame_nodes: Sequence[NetworkMovableItem]=..., selected_nodes: Sequence[NetworkMovableItem]=..., current_node: NetworkMovableItem =..., flags: bool=True, nodes_only: bool=False, target_children: bool=False, children: bool=True, target_editables: bool=False, editables: bool=True, target_parms: bool | Sequence[ParmTuple] | Sequence[str]=True, parms: bool=True, default_parmvalues: bool=False, evaluate_parmvalues: bool=False, parms_as_brief: bool=True, parmtemplates: str=..., metadata: bool=False, verbose: bool=False) -> rtypes.ClusterData: ...
     @staticmethod

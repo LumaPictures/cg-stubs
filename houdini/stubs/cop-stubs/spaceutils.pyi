@@ -1,5 +1,7 @@
 import hou
+import typing
 from enum import Enum as Enum, StrEnum
+from typing import Literal
 
 from typing import TypeAlias
 from typing import TypeAlias
@@ -25,14 +27,14 @@ SPACE_NAMES: list[str]
 FIRST_SPACE: int
 LAST_SPACE: int
 
-def normalizeToTuple(p: _Point | float, dims: int, *, pad_value: float = 0.0, min_len: int | None = None) -> tuple[float, ...]:
-    """ Helper used for normalizing cop space API arguments.
-        Convert `p` (tuple/list or hou.Vector2/3) to a `dims`
-        tuple of floats. Truncates extra components if necessary. 
-
-        - If `min_len` is set, require at least that many components.
-        - Pads with `pad_value` if too short.
-    """
+@typing.overload
+def normalizeToTuple(p: _Point | float, dims: Literal[1], *, pad_value: float = ..., min_len: int | None = ...) -> tuple[float]: ...
+@typing.overload
+def normalizeToTuple(p: _Point | float, dims: Literal[2], *, pad_value: float = ..., min_len: int | None = ...) -> tuple[float, float]: ...
+@typing.overload
+def normalizeToTuple(p: _Point | float, dims: Literal[3], *, pad_value: float = ..., min_len: int | None = ...) -> tuple[float, float, float]: ...
+@typing.overload
+def normalizeToTuple(p: _Point | float, dims: int, *, pad_value: float = ..., min_len: int | None = ...) -> tuple[float, ...]: ...
 def space(value: Space | str | int) -> Space:
     """ Return a Space enum value from any supported input type.
 
@@ -56,26 +58,13 @@ def spaceIndex(key: str | int | Space) -> int:
     Returns:
         int: The resolved space index.
     """
-def imageToSpace(layer: hou.ImageLayer | None, image_pos: _Point, target_space: str | int | Space | None = None) -> tuple[float, ...]:
-    """
-    Convert an image position into the specified layer space and return 
-    it as a 3-tuple (x, y, z).
-
-    Args:
-        layer (hou.ImageLayer | None): 
-            The target image layer. If None, the image position 
-            is returned unchanged.
-        image_pos (tuple | hou.Vector2 | hou.Vector3): 
-            The position in image space to convert.
-        target_space (str | int | Space | None): 
-            Target space identifier. Can be a string key/alias, 
-            an integer index, or None for the default.
-
-    Returns:
-        tuple[float, float, float]: 
-            The converted coordinates in the requested layer space.
-    """
-def spaceToImage(layer: hou.ImageLayer | None, pos: _Point, src_space: str | int | Space | None) -> tuple[float, ...]:
+@typing.overload
+def imageToSpace(layer: hou.ImageLayer | None, image_pos: _Point, target_space: str | int | Space) -> tuple[float, float, float]: ...
+@typing.overload
+def imageToSpace(layer: None, image_pos: _Point, target_space: None = ...) -> tuple[float, float, float]: ...
+@typing.overload
+def imageToSpace(layer: hou.ImageLayer | None, image_pos: _Point, target_space: None = ...) -> tuple[float, float, float] | tuple[()]: ...
+def spaceToImage(layer: hou.ImageLayer | None, pos: _Point, src_space: str | int | Space | None) -> tuple[float, float, float]:
     """ Convert a position from the given layer space into IMAGE 
         space.
     Args:

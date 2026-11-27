@@ -32,7 +32,7 @@ PARM_PRESET_ICON: hou.qt.Icon
 TOOL_RECIPE_ICON: hou.qt.Icon
 DECORATION_RECIPE_ICON: hou.qt.Icon
 DIFF_DIR_NAME: str
-REF_TYPES: tuple[rtypes.RecipeCategory, ...]
+REF_TYPES: tuple[rtypes.RecipeCategory, rtypes.RecipeCategory, rtypes.RecipeCategory, rtypes.RecipeCategory, rtypes.RecipeCategory]
 REF_ICONS: dict[rtypes.RecipeCategory, hou.qt.Icon]
 
 class MessageType(enum.Enum):
@@ -91,7 +91,7 @@ class RecipeTreeItem:
     def row(self) -> int: ...
 
 class RecipeModel(QtCore.QAbstractItemModel):
-    column_labels: ClassVar[tuple[str, ...]]
+    column_labels: ClassVar[tuple[str, str, str]]
     TitleColumn: ClassVar[int]
     PatternColumn: ClassVar[int]
     NameColumn: ClassVar[int]

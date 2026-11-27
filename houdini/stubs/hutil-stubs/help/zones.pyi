@@ -13,7 +13,15 @@ from collections.abc import Iterator, Mapping
 from datetime import datetime
 from hutil.help.blocks import _WikiData
 from hutil.help.stores import Store as Store, _StoreObj
-from typing import Any
+from typing import Any, Unpack
+from typing_extensions import TypedDict
+
+class _WikiContextCopyKwargs(TypedDict, total=False, extra_items=object):  # type: ignore[call-arg]
+    path: WikiPath
+    conditional: bool
+    save_to_cache: bool
+    including: bool
+    depth: int
 
 WIKI_EXT: str
 DEFAULT_TEMPLATE_NAME: str
@@ -39,7 +47,7 @@ class WikiContext:
     depth: int = ...
     env: dict[str, Any] = dataclasses.field(default_factory=dict)
     cache: dict[str, BlockType] = dataclasses.field(default_factory=dict)
-    def copy(self, **kwargs: Any) -> WikiContext: ...
+    def copy(self, **kwargs: Unpack[_WikiContextCopyKwargs]) -> WikiContext: ...
 
 class Zone:
     store: Store

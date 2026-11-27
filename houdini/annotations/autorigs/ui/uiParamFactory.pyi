@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import Any, Literal, TypeIs, TypeVar, overload
+from typing import Literal, Never, TypedDict, TypeIs, TypeVar, Unpack, overload, type_check_only
 
 import hou
 
@@ -9,6 +9,15 @@ from autorigs.ui.uiParamInt import UiParamInt
 from autorigs.ui.uiParamNum import UiParamNum
 
 _ParamT = TypeVar("_ParamT", bound=UiParamNum)
+
+@type_check_only
+class _SoftRangeKwargs(TypedDict, total=False):
+    soft_range: tuple[float, float]
+
+@type_check_only
+class _UiParamNumKwargs(TypedDict, total=False):
+    defaults: Sequence[float]
+    soft_range: tuple[float, float]
 
 class UiParamFactory:
     TRANSLATE: Literal[0]
@@ -82,6 +91,8 @@ class UiParamFactory:
     def createIntParams(
         cls, nodes: list[hou.OpNode] | None, mapping: tuple[str, Sequence[str]], custom_name: str = ...
     ) -> UiParamInt: ...
+    # The rest of the arguments go to param_class's __init__ as its defaults and soft_range.
+    @overload
     @classmethod
     def createTypeParams(
         cls,
@@ -89,6 +100,27 @@ class UiParamFactory:
         nodes: list[hou.OpNode] | None,
         mapping: tuple[str, Sequence[str]],
         custom_name: str = ...,
-        *args: Any,
-        **kwargs: Any,
+        **kwargs: Unpack[_UiParamNumKwargs],
+    ) -> _ParamT: ...
+    @overload
+    @classmethod
+    def createTypeParams(
+        cls,
+        param_class: type[_ParamT],
+        nodes: list[hou.OpNode] | None,
+        mapping: tuple[str, Sequence[str]],
+        custom_name: str,
+        *args: Unpack[tuple[Sequence[float]]],
+        **kwargs: Unpack[_SoftRangeKwargs],
+    ) -> _ParamT: ...
+    @overload
+    @classmethod
+    def createTypeParams(
+        cls,
+        param_class: type[_ParamT],
+        nodes: list[hou.OpNode] | None,
+        mapping: tuple[str, Sequence[str]],
+        custom_name: str,
+        *args: Unpack[tuple[Sequence[float], tuple[float, float]]],
+        **kwargs: Never,
     ) -> _ParamT: ...

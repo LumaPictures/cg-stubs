@@ -1,7 +1,6 @@
 import hou
 from . import utils as utils
 from collections.abc import Callable as Callable
-from typing import Any
 from typing_extensions import TypeIs
 
 from typing import TypeAlias
@@ -105,10 +104,10 @@ class Drawable2DGroup:
         """ Set the transformation matrix for the group and apply 
             it to all child items.
         """
-    def setParams(self, params: dict[str, Any]) -> None:
+    def setParams(self, params: hou._Drawable2DParams) -> None:
         """ Set the params on all group items.
         """
-    def params(self) -> dict[str, Any]:
+    def params(self) -> hou._Drawable2DParams:
         """ Return the params stored in this group
         """
     def preMulTransform(self, t: hou.Matrix4) -> None:
@@ -126,7 +125,7 @@ class Drawable2DGroup:
     def postTransform(self) -> hou.Matrix4: ...
     def layerTransform(self) -> hou.Matrix4: ...
     def postScale(self) -> hou.Vector3: ...
-    def draw(self, draw_handle: hou.Handle) -> None:
+    def draw(self, draw_handle: int) -> None:
         """ Draw all enabled items in the group.
         """
     def show(self, value: bool) -> None:

@@ -37,7 +37,7 @@ class UsdShaderInputInfoMap:
             of additional USD inputs that should have the same connection 
             as the given main USD shader input.
         """
-    def connectionInfo(self, shader_node: hou.VopNode, wire: hou.NodeConnection) -> tuple[UsdShade.Shader | None, str | None, Sdf.ValueTypeName | None, hou.VopNode | None, str]:
+    def connectionInfo(self, shader_node: hou.VopNode, wire: hou.OpNodeConnection) -> tuple[UsdShade.Shader | None, str | None, Sdf.ValueTypeName | None, hou.VopNode | None, str]:
         """ Returns the info about the next step in the translation traversal.
             The returned tuple is (usd_shader, usd_input_name, usd_input_type,
             vop_node, vop_output_name). This tuple indicates that the
@@ -72,7 +72,7 @@ class MaterialXShaderTranslatorHelper(HelperBase):
         """ This method is run after the shader chain has been authored
             based on the given shader VOP node for its given output.
         """
-    def inputConnectionInfo(self, usd_shader: _UsdShaderSchema, shader_node: hou.VopNode, wire: hou.NodeConnection) -> tuple[_UsdShaderSchema | None, str | None, Sdf.ValueTypeName | None, hou.VopNode | None, str | None]:
+    def inputConnectionInfo(self, usd_shader: _UsdShaderSchema, shader_node: hou.VopNode, wire: hou.OpNodeConnection) -> tuple[_UsdShaderSchema | None, str | None, Sdf.ValueTypeName | None, hou.VopNode | None, str | None]:
         """ Returns a tuple describing how to continue the traversal
             of the input connection given by the wire.
         """

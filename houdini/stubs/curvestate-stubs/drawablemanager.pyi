@@ -4,10 +4,10 @@ import resourceutils as ru
 import viewerstate.utils as su
 from collections.abc import Sequence
 from curvestate import constants as constants, referencegeo as referencegeo
-from curvestate.baseoperation import BaseOperation as BaseOperation, _CurveState
+from curvestate.baseoperation import BaseOperation as BaseOperation, _CurveState, _NodeParmEventKwargs
 from houtypes import ViewerStateDrawKwargs, ViewerStateEnterKwargs, ViewerStateEventKwargs, ViewerStateParmChangeKwargs
 from resourceutils import DragGuide
-from typing import Any, Unpack
+from typing import Unpack
 
 from typing import TypeAlias
 from collections.abc import Mapping
@@ -125,9 +125,9 @@ class DrawableInteractionManager(BaseOperation):
         that need to mouse over the curve, e.g. inserting or dragging curve.
         Overridden to tell it to use special geometry
         """
-        def getShownParams(self) -> tuple[cu._DrawableParams, cu._DrawableParams]:
+        def getShownParams(self) -> tuple[hou._DrawableParams, hou._DrawableParams]:
             """ Get the params for the active drawable and the inactive drawable. """
-        def getHiddenParams(self) -> tuple[cu._DrawableParams, cu._DrawableParams]:
+        def getHiddenParams(self) -> tuple[hou._DrawableParams, hou._DrawableParams]:
             """ Get params for active and inactive hidden drawables. """
         def updateParams(self, show_preview_curve: bool) -> None:
             """
@@ -243,7 +243,7 @@ class DrawableInteractionManager(BaseOperation):
             """ Show/hide all of these drawables. """
         def updateDrawableSelection(self, drawable_selection: _DrawableSelection, color: hou.Color | Sequence[float]) -> None:
             """ Update the located points from the drawable selection. """
-        def draw(self, draw_handle: hou.Handle) -> None:
+        def draw(self, draw_handle: int) -> None:
             """ Draw the located points. """
     class RoundedCornerWidgetPoints(cu.RoundedCornerWidgetPoints[_CurveState]):
         """ Round corner widgets. """
@@ -260,20 +260,20 @@ class DrawableInteractionManager(BaseOperation):
         node: hou.SopNode | None
         def __init__(self, name: str, scene_viewer: hou.SceneViewer, main_state: _CurveState) -> None: ...
         def setNode(self, node: hou.SopNode | None) -> None: ...
-        def setParams(self, params: cu._DrawableParams) -> None: ...
+        def setParams(self, params: hou._DrawableParams) -> None: ...
         def initialize(self) -> None: ...
         def show(self, val: bool) -> None: ...
-        def draw(self, draw_handle: hou.Handle) -> None: ...
+        def draw(self, draw_handle: int) -> None: ...
         def updateConfig(self, kwargs: ViewerStateDrawKwargs) -> None: ...
         def createDrawable(self, name: str) -> hou.GeometryDrawable: ...
-        def getParams(self) -> cu._DrawableParams: ...
+        def getParams(self) -> hou._DrawableParams: ...
         def getGeometry(self) -> hou.Geometry | None: ...
     class BaseGeoLineDrawer(BaseGeoDrawer):
         """ Base class for line drawables. """
         def createDrawable(self, name: str) -> hou.GeometryDrawable: ...
     class BezierPseudoEndPoints(BaseGeoDrawer):
         """ Drawable for bezier inactive handle end points. """
-        def getParams(self) -> cu._DrawableParams: ...
+        def getParams(self) -> hou._DrawableParams: ...
         def getGeometry(self) -> hou.Geometry | None: ...
     class BezierLocateEndPoints(BaseGeoDrawer):
         """ Drawable for located end points. """
@@ -282,7 +282,7 @@ class DrawableInteractionManager(BaseOperation):
         def setLocatePoint(self, ptnum: int) -> None:
             """ Set the given point number to be located. """
         def clearLocatePoint(self) -> None: ...
-        def getParams(self, is_anchor: bool = False, is_broken: bool = False) -> cu._DrawableParams:
+        def getParams(self, is_anchor: bool = False, is_broken: bool = False) -> hou._DrawableParams:
             """
             Get the params to draw the point.
 
@@ -293,15 +293,15 @@ class DrawableInteractionManager(BaseOperation):
         def getGeometry(self) -> hou.Geometry: ...
     class BezierPseudoSmoothLines(BaseGeoLineDrawer):
         """ Drawable wrapper for inactive handles for smooth lines. """
-        def getParams(self) -> cu._DrawableParams: ...
+        def getParams(self) -> hou._DrawableParams: ...
         def getGeometry(self) -> hou.Geometry | None: ...
     class BezierPseudoBrokenLines(BaseGeoLineDrawer):
         """ Drawable wrapper for inactive handles for broken lines. """
-        def getParams(self) -> cu._DrawableParams: ...
+        def getParams(self) -> hou._DrawableParams: ...
         def getGeometry(self) -> hou.Geometry | None: ...
     class SelectRoundedCornerWidgetPoints(BaseGeoDrawer):
         """ Show selected rounded corners. """
-        def getParams(self) -> cu._DrawableParams: ...
+        def getParams(self) -> hou._DrawableParams: ...
         def getGeometry(self) -> hou.Geometry | None:
             """ Get geometry for selected rounded corner widgets. """
     class LocateRoundedCornerWidgetPoints(BaseGeoDrawer):
@@ -309,7 +309,7 @@ class DrawableInteractionManager(BaseOperation):
         show_located: bool
         visible: bool
         def __init__(self, name: str, scene_viewer: hou.SceneViewer, main_state: _CurveState) -> None: ...
-        def getParams(self) -> cu._DrawableParams: ...
+        def getParams(self) -> hou._DrawableParams: ...
         def getGeometry(self) -> hou.Geometry | None:
             """ Get geometry for rounded corner widgets. """
         def show(self, val: bool) -> None: ...
@@ -318,14 +318,14 @@ class DrawableInteractionManager(BaseOperation):
             """ Update from the drawable selection dictionary. """
     class CurveBackbone(BaseGeoLineDrawer):
         """ Used for the cage curve on nurbs and higher order bezier. """
-        def getParams(self) -> cu._DrawableParams: ...
+        def getParams(self) -> hou._DrawableParams: ...
         def getGeometry(self) -> hou.Geometry | None:
             """ Get backbone geo. """
     class AutoPoints(BaseGeoDrawer):
         """ Draw rings around auto points. """
         def pointSize(self) -> int: ...
         def getColor(self) -> hou.Color: ...
-        def getParams(self) -> cu._DrawableParams: ...
+        def getParams(self) -> hou._DrawableParams: ...
         def getGeometry(self) -> hou.Geometry | None:
             """ Get geometry for auto points. """
     class EndAutoPoints(AutoPoints):
@@ -340,7 +340,7 @@ class DrawableInteractionManager(BaseOperation):
         enable: bool
         def __init__(self, *args: Unpack[tuple[str, hou.SceneViewer, _CurveState]]) -> None: ...
         def createDrawable(self, name: str) -> hou.GeometryDrawable: ...
-        def getParams(self) -> cu._DrawableParams: ...
+        def getParams(self) -> hou._DrawableParams: ...
         def getGeometry(self) -> hou.Geometry | None:
             """ Get geometry for orient guides along the curve. """
         def updateConfig(self, kwargs: ViewerStateDrawKwargs) -> None:
@@ -400,7 +400,7 @@ class DrawableInteractionManager(BaseOperation):
         """ Set whether we want to enable picking on anchor points. """
     def setPickingHandles(self, val: bool) -> None:
         """ Set whether we want to enable picking on handles. """
-    def reactNodeParmsUpdate(self, event_type: hou.EnumValue[hou.nodeEventType], node: hou.SopNode, **kwargs: Any) -> None:
+    def reactNodeParmsUpdate(self, event_type: hou.EnumValue[hou.nodeEventType], node: hou.SopNode, **kwargs: Unpack[_NodeParmEventKwargs]) -> None:
         """ React to a node parameter change. """
     def updateNode(self) -> None:
         """ Update the node references. """
@@ -421,13 +421,13 @@ class DrawableInteractionManager(BaseOperation):
     def getOrientCirclesFacesHandle(self) -> DrawableInteractionManager.OrientCirclesFaces: ...
     def show(self, val: bool) -> None:
         """ Show or hide all the drawables. """
-    def drawRoundedCornerWidgets(self, draw_handle: hou.Handle) -> None:
+    def drawRoundedCornerWidgets(self, draw_handle: int) -> None:
         """ Draw the rounded corner widgets. """
     def inOrientMode(self) -> bool:
         """ Whether we are in orient mode. """
     def drawOrientGuideGeometry(self, kwargs: ViewerStateDrawKwargs) -> None:
         """ Draw the orient guide geometry. """
-    def drawHighlightCurveSection(self, draw_handle: hou.Handle) -> None:
+    def drawHighlightCurveSection(self, draw_handle: int) -> None:
         """ Draw a single section of the curve. """
     def onDraw(self, kwargs: ViewerStateDrawKwargs) -> None:
         """ Draw the main set of drawables for the state. """

@@ -12,7 +12,7 @@ from typing import TypeVar
 from typing import TypeAlias
 from typing import TypeVar
 _T = TypeVar('_T')
-_RGB: TypeAlias = list[float] | tuple[float, ...]
+_RGB: TypeAlias = list[float] | tuple[float, float, float]
 _ItemJson: TypeAlias = '_ItemJsonDict | list[_ItemJson]'
 class _ItemJsonDict(TypedDict):
     type: str

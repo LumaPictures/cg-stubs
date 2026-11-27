@@ -16,7 +16,7 @@ IDENTITY4: list[list[int]]
 IDENTITY3: list[list[int]]
 NULL4: list[list[int]]
 NULL3: list[list[int]]
-NODE_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], ...]
+NODE_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType]]
 suffixes: dict[str, str]
 attrib_types: list[hou.EnumValue[hou.attribType]]
 data_types: list[hou.EnumValue[hou.attribData]]
@@ -162,7 +162,7 @@ class AttribTableModel(PySide6.QtCore.QAbstractTableModel):
         | list[float]
         | Matrix
         | PySide6.QtGui.QColor
-        | dict[str, hou.AttribReturnType | dict[str, Any]]
+        | dict[str, hou.AttribReturnType | hou._OptionDict]
         | AttribTableModel
     ): ...
     def setData(

@@ -19,8 +19,8 @@ _UIEvent: TypeAlias = MouseEvent | KeyboardEvent | GestureEvent | ValueEvent | T
 _EditorEvent: TypeAlias = _UIEvent | InitializationEvent | ContextEvent | ContextClearEvent
 _HandlerCoroutine: TypeAlias = Generator[None, _EditorEvent, None]
 target_color: hou.Color
-theItemSelectors: tuple[str, ...]
-theNodeSelectors: tuple[str, ...]
+theItemSelectors: tuple[str, str, str, str, str, str, str, str]
+theNodeSelectors: tuple[str, str, str, str]
 
 def handleEvent(uievent: _EditorEvent, last_handler_coroutine: _HandlerCoroutine | None) -> _HandlerCoroutine | None:
     """
@@ -29,8 +29,7 @@ def handleEvent(uievent: _EditorEvent, last_handler_coroutine: _HandlerCoroutine
     """
 def isScrollStateEvent(uievent: _UIEvent) -> TypeGuard[KeyboardEvent]: ...
 
-class BoxPickHandler(base.EventHandler):
-    start_uievent: MouseEvent
+class BoxPickHandler(base.EventHandler[MouseEvent]):
     start_pos: hou.Vector2
     set_cursor: bool
     exclude_items: Sequence[hou.NetworkItem]
@@ -42,8 +41,7 @@ class BoxPickHandler(base.EventHandler):
     def handleBoxPickComplete(self, items: Sequence[hou.NetworkMovableItem], uievent: MouseEvent) -> None: ...
     def handleEvent(self, uievent: _UIEvent, pending_actions: list[base.PendingAction]) -> base.EventHandler | None: ...
 
-class BackgroundMouseHandler(base.EventHandler):
-    start_uievent: MouseEvent
+class BackgroundMouseHandler(base.EventHandler[MouseEvent]):
     exclude_items: Sequence[hou.NetworkItem]
     def __init__(self, start_uievent: MouseEvent, exclude_items: Sequence[hou.NetworkItem] = ...) -> None: ...
     def handleEvent(self, uievent: _UIEvent, pending_actions: list[base.PendingAction]) -> base.EventHandler | None: ...
@@ -53,7 +51,7 @@ class ItemClickHandler(base.ItemEventHandler):
     def __init__(self, start_uievent: MouseEvent, exclude_items: Sequence[hou.NetworkItem] = ...) -> None: ...
     def handleEvent(self, uievent: _UIEvent, pending_actions: list[base.PendingAction]) -> None: ...
 
-class NodeMouseHandler(base.ItemEventHandler):
+class NodeMouseHandler(base.ItemEventHandler[hou.Node]):
     item: hou.Node
     def __init__(self, start_uievent: MouseEvent, item: hou.Node) -> None: ...
     def handleEvent(self, uievent: _UIEvent, pending_actions: list[base.PendingAction]) -> None: ...

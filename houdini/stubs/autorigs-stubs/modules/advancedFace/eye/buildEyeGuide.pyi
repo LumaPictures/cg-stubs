@@ -4,15 +4,12 @@ from _typeshed import Incomplete
 from autorigs.asset.autoRigsAsset import AutoRigsAsset as AutoRigsAsset
 from autorigs.asset.geometry.buildGeometryGuide import GeometryGuide as GeometryGuide
 from autorigs.modules.advancedFace.lip import buildLipGuide as buildLipGuide
-from autorigs.modules.advancedFace.lip.buildLipGuide import _LipGuideJson, _LipPartJson
+from autorigs.modules.advancedFace.lip.buildLipGuide import _GuideData, _LipGuideJson, _LipPartJson
 from autorigs.modules.base import buildBaseGuide as buildBaseGuide
 from autorigs.utils import faceutils as faceutils, rigutils as rigutils
 from collections.abc import Mapping
 from typing import Any, TypedDict, Unpack
 
-from typing import TypeAlias
-from typing import TypeAlias
-_GuideData: TypeAlias = list[Any] | tuple[hou.OpNode, bool, bool]
 class _EyePartJson(_LipPartJson):
     mirror_guidenames: Mapping[str, str]
     mirror_ctrl_keys: list[str]

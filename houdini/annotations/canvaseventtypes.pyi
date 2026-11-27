@@ -99,5 +99,5 @@ class WireSegment(NamedTuple):
     segment: int
 
 class NodeDependency(NamedTuple):
-    node: hou.Node
-    othernode: hou.Node | None
+    node: hou.OpNode
+    othernode: hou.OpNode | None

@@ -1,18 +1,22 @@
 import hou
+import typing
 from autorigs.asset.autoRigsAsset import AutoRigsAsset as AutoRigsAsset
 from autorigs.modules.base.baseGuideModel import BaseGuideModel as BaseGuideModel
 from autorigs.modules.base.buildBaseGuide import BaseGuide as BaseGuide
 from autorigs.modules.base.rootModule import Module as Module
 from autorigs.modules.geometry.autoRigsGeoBuilder import AutoRigsGeoBuilder as AutoRigsGeoBuilder
 from autorigs.utils import captureutils as captureutils, geometryutils as geometryutils, rigutils as rigutils
-from collections.abc import Iterable, Mapping, Sequence as Sequence
-from typing import Any, Generic, TypedDict
+from collections.abc import Callable as Callable, Iterable, Mapping, Sequence as Sequence
+from typing import Any, Concatenate, Generic, TypedDict
 
+from typing import ParamSpec
 from typing import TypeAlias
 from typing import TypeVar
+from typing import ParamSpec
 from typing import TypeAlias
 from typing_extensions import TypeVar
 _PT = TypeVar('_PT', bound=hou.ParmTemplate)
+_P = ParamSpec('_P')
 _InterfaceEntry: TypeAlias = tuple[str, str] | tuple[str, str, list[str]]
 _Guide = TypeVar('_Guide', bound=BaseGuide, default=Any)
 _Model = TypeVar('_Model', bound=BaseGuideModel | None, default=Any)
@@ -84,7 +88,10 @@ class AutoRigsBaseBuilder(Generic[_Guide, _Model]):
         node: the node to set up the parm expression
         parm_info: (tuple) (parm_id, parm_label, link_parm_id)
         """
-    def createParm(self, template_type: type[_PT], key: str, *args: Any, **kwargs: Any) -> _PT: ...
+    @typing.overload
+    def createParm(self, template_type: Callable[Concatenate[str, str, _P], _PT], key: str, *args: _P.args, **kwargs: _P.kwargs) -> _PT: ...
+    @typing.overload
+    def createParm(self, template_type: type[_PT], key: str, *args: Any, grp_idx: int, **kwargs: Any) -> _PT: ...
     def captureGeometry(self) -> None:
         """Captures the geometry"""
     def addBoneGroupToGeoSkin(self, group: hou.NodeGroup) -> None: ...
@@ -144,7 +151,7 @@ class BuilderGroup:
     NODES: Mapping[str, tuple[str]]
     INTERFACE: Mapping[str, _InterfaceEntry]
     def __init__(self, assetnode: hou.ObjNode, module_prefix: str, group_prefix: str, nodes_dict: Mapping[str, tuple[str]], interface_dict: Mapping[str, _InterfaceEntry]) -> None: ...
-    def createParm(self, template_type: type[_PT], key: str, *args: Any, **kwargs: Any) -> _PT:
+    def createParm(self, template_type: Callable[Concatenate[str, str, _P], _PT], key: str, *args: _P.args, **kwargs: _P.kwargs) -> _PT:
         """
         Creates and adds a parmTemplate of template_type as part of the class
         template_type: one of the hou.ParmTemplate type,

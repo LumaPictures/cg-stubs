@@ -6,9 +6,11 @@ from typing import Callable, Collection, Generic, TypeAlias, TypeVar
 
 from typing import TypeAlias
 from typing import TypeVar
+from typing import Never
 K = TypeVar('K', bound=enum.Enum)
 T = TypeVar('T')
-_F = TypeVar('_F', bound=Callable[..., object])
+_PrefixF = TypeVar('_PrefixF', bound=Callable[[Never, Never], object])
+_InfixF = TypeVar('_InfixF', bound=Callable[[Never, Never, Never], object])
 LexerFn: TypeAlias = Callable[[str, int], 'tuple[Token[K], int] | None']
 PrefixParselet: TypeAlias = Callable[['Token[K]'], T]
 InfixParselet: TypeAlias = Callable[[T, 'Token[K]'], T]
@@ -35,8 +37,8 @@ class Token(Generic[K]):
     end_pos: int
     groupdict: dict[str, str] | None = ...
 
-def prefix(kind: enum.Enum) -> Callable[[_F], _F]: ...
-def infix(kind: enum.Enum, precedence: int = 1) -> Callable[[_F], _F]: ...
+def prefix(kind: enum.Enum) -> Callable[[_PrefixF], _PrefixF]: ...
+def infix(kind: enum.Enum, precedence: int = 1) -> Callable[[_InfixF], _InfixF]: ...
 def parse_string(text: str, pos: int) -> tuple[str, int] | None: ...
 
 class Parser(Generic[K, T]):

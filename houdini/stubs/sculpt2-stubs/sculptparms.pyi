@@ -1,3 +1,4 @@
+import apex
 import statehud.window as shud
 import typing
 from collections.abc import Callable as Callable, Sequence
@@ -8,7 +9,7 @@ from houtypes import ViewerStateKwargs
 from sculpt2.sculpttool import SculptTool as SculptTool
 from statehud.baseconfig import AbstractConfig
 from statehud.parmwidgetset import ParmWidgetSet, _HUDParmTemplate
-from typing import Any, Literal
+from typing import Literal
 
 from typing import TypeAlias
 from typing import TypeAlias
@@ -95,7 +96,7 @@ menuData_LabelToKey: dict[str, str]
 
 class SculptSettingsWidget(ParameterWidget):
     tool: SculptTool
-    registry: Any
+    registry: apex.Registry
     mode: str
     prevBrush: str | None
     prevToggleBrush: str | None

@@ -1,7 +1,7 @@
 [project]
 name = "types-houdini"
-version = "22.0.508.1"
-requires-python = ">=3"
+version = "22.0.508.2"
+requires-python = ">=3.9"
 
 readme = "README.md"
 authors = [{name="Chad Dombrova"}, {name="Ben Andersen"}]
@@ -31,6 +31,10 @@ dev = [
     "basedpyright",
     "typeguard>=4.4.4",
 ]
+
+[tool.uv]
+# The tools here run on Houdini's python; the package itself works on any python 3.
+environments = ["python_version >= '3.13'"]
 
 [tool.uv.sources]
 stubgenlib = { path = "../common" }

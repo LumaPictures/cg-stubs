@@ -1,7 +1,12 @@
 from collections.abc import Sequence
 from cop.copsettings import getCopProjectSettings as getCopProjectSettings
 from hutil.PySide import QtCore, QtGui, QtWidgets
-from typing import Any
+from typing import TypedDict, Unpack
+
+class _QSliderKwargs(TypedDict, total=False):
+    parent: QtWidgets.QWidget | None
+    tickPosition: QtWidgets.QSlider.TickPosition | None
+    tickInterval: int | None
 
 WINDOW_WIDTH: int
 WINDOW_HEIGHT: int
@@ -20,7 +25,7 @@ class IntegerSlider(QtWidgets.QSlider):
     """
     @staticmethod
     def dataType() -> type[int]: ...
-    def __init__(self, *args: QtCore.Qt.Orientation | QtWidgets.QWidget | None, tickmarks: bool = False, tickrate: int = 1, **kwargs: Any) -> None: ...
+    def __init__(self, *args: QtCore.Qt.Orientation | QtWidgets.QWidget | None, tickmarks: bool = False, tickrate: int = 1, **kwargs: Unpack[_QSliderKwargs]) -> None: ...
     def toType(self, value: str | float) -> int: ...
     def intValue(self, value: int) -> int: ...
     def toTypeValue(self, value: int) -> int: ...

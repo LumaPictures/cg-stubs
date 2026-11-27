@@ -20,7 +20,7 @@ class MergeRule:
     :param name: The name of the registered function in DataMerge class to be used for the merging.
     :param keys: This rule will apply to the values under this key. Use full path if you want to be specific about what key this should affect.
     """
-    type: builtins.type[object]
+    type: builtins.type[JSONValue]
     name: str
     keys: list[str]
     def matches(self, key: str) -> bool:

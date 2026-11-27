@@ -54,7 +54,7 @@ def overlaid_files(libs: pathlib.Path) -> list[str]:
             or str(rel) in COMPILED_MODULE_OVERLAYS
         ):
             continue
-        if (libs / rel).is_file():
+        if annotation_overlays.source_path(libs, str(rel)).is_file():
             files.append(str(rel))
     return files
 
@@ -77,7 +77,9 @@ def make_typings(root: pathlib.Path, libs: pathlib.Path) -> str:
     digest = hashlib.sha256()
     for package in sorted(STUBS_DIR.glob("*-stubs")):
         name = package.name.removesuffix("-stubs")
-        has_source = (libs / f"{name}.py").exists() or (libs / name).is_dir()
+        has_source = annotation_overlays.source_path(libs, f"{name}.py").exists() or (
+            annotation_overlays.source_path(libs, name).is_dir()
+        )
         if name in SKIPPED or not has_source:
             (typings / name).symlink_to(package)
             for stub in sorted(package.rglob("*.pyi")):
@@ -141,7 +143,7 @@ def baseline_errors(
     todo = []
     keys = {}
     for rel in files:
-        source = (libs / rel).read_bytes()
+        source = annotation_overlays.source_path(libs, rel).read_bytes()
         keys[rel] = hashlib.sha256(source + typings_hash.encode()).hexdigest()
         cache = cache_dir / (rel + ".json")
         if cache.exists():
@@ -155,7 +157,11 @@ def baseline_errors(
         annotation_overlays.stage_tree(libs, tree, SKIPPED, apply_overlays=False)
         found = run_pyright(root, tree, libs, todo)
         for rel in todo:
-            lines = (libs / rel).read_text(errors="replace").splitlines()
+            lines = (
+                annotation_overlays.source_path(libs, rel)
+                .read_text(errors="replace")
+                .splitlines()
+            )
             errors = [error_key(d, lines) for d in found.get(rel, [])]
             result[rel] = errors
             cache = cache_dir / (rel + ".json")
@@ -172,10 +178,16 @@ def loose_items(stub_text: str) -> list[str]:
 
     items: list[str] = []
 
-    def walk(body: list[ast.stmt], scope: str) -> None:
+    def is_enum(node: ast.ClassDef) -> bool:
+        return any(
+            ast.unparse(base).rpartition(".")[2].endswith(("Enum", "Flag"))
+            for base in node.bases
+        )
+
+    def walk(body: list[ast.stmt], scope: str, enum: bool = False) -> None:
         for node in body:
             if isinstance(node, ast.ClassDef):
-                walk(node.body, f"{scope}{node.name}.")
+                walk(node.body, f"{scope}{node.name}.", is_enum(node))
             elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 problems = []
                 args = node.args
@@ -204,8 +216,13 @@ def loose_items(stub_text: str) -> list[str]:
                     items.append(
                         f"{scope}{node.target.id}: {ast.unparse(node.annotation)}"
                     )
-            elif isinstance(node, ast.Assign) and isinstance(node.value, ast.Constant):
-                # `name = ...`; an alias (`name = other`) is typed by what it names.
+            elif (
+                isinstance(node, ast.Assign)
+                and isinstance(node.value, ast.Constant)
+                and not enum
+            ):
+                # `name = ...`; an alias (`name = other`) is typed by what it names, and an
+                # enum's members by their enum.
                 for target in node.targets:
                     if isinstance(target, ast.Name):
                         items.append(f"{scope}{target.id}: untyped")
@@ -219,14 +236,23 @@ def untyped_report(
 ) -> dict[str, list[str]]:
     """What is still loosely typed in the stubs generated from the annotated sources."""
     out = root / "stubgen"
+    # As the stub generator does (see stage_sources there): stubgen names a module after its
+    # nearest __init__.py, and fails on the relative imports of a namespace package's modules.
+    # pyright has already checked the tree.
+    for directory in tree.iterdir():
+        if directory.is_dir() and not (directory / "__init__.py").exists():
+            (directory / "__init__.py").touch()
     cwd = os.getcwd()
     os.chdir(tree)
     try:
+        # With the stub generator's fixes to stubgen (stubgen_houdini_libs), which keep the
+        # annotation of a module-level function's first `self` or `cls` parameter.
         proc = subprocess.run(
             [
                 sys.executable,
-                "-m",
-                "mypy.stubgen",
+                "-c",
+                "import sys, stubgen_houdini_libs, mypy.stubgen; "
+                "mypy.stubgen.main(sys.argv[1:])",
                 "--no-import",
                 "-o",
                 str(out),
@@ -234,6 +260,7 @@ def untyped_report(
             ],
             capture_output=True,
             text=True,
+            env={**os.environ, "PYTHONPATH": str(HERE)},
         )
     finally:
         os.chdir(cwd)
@@ -269,7 +296,7 @@ def main() -> None:
     if not files:
         parser.error("give FILEs or --all")
     for rel in files:
-        if not (libs / rel).is_file():
+        if not annotation_overlays.source_path(libs, rel).is_file():
             raise SystemExit(f"No such source file: {libs / rel}")
 
     with tempfile.TemporaryDirectory(prefix="check_annotations_") as tmp:

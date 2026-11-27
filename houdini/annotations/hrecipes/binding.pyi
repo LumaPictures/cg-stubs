@@ -14,6 +14,18 @@ class _RecipeDataEntry(TypedDict, Generic[_D]):
     label: str
     data: _D
 
+def recipeMenu(
+    node_or_parm: hou.Node | hou.Parm | hou.ParmTuple,
+    recipe_category: rtypes.RecipeCategory | Sequence[rtypes.RecipeCategory],
+    legacy_presets: bool = ...,
+    examples_only: bool = ...,
+    submenu_filter: str = ...,
+    visible: bool = ...,
+    valid: bool = ...,
+    build_submenus: bool = ...,
+    show_last_invoked: bool = ...,
+    no_default_entry: bool = ...,
+) -> list[str]: ...
 def hasRecipe(
     node_or_parm: hou.Node | hou.ParmTuple,
     recipe_category: rtypes.RecipeCategory | Sequence[rtypes.RecipeCategory],
@@ -28,27 +40,27 @@ def canMakeTool(items: Sequence[hou.NetworkMovableItem]) -> bool: ...
 def canMakeDecoration(items: Sequence[hou.NetworkMovableItem]) -> bool | Sequence[hou.NetworkMovableItem]: ...
 # kwargs is unused.
 def showParmPresetDialog(parm: hou.Parm | hou.ParmTuple, kwargs: Mapping[str, object] | None = ...) -> None: ...
-def showNodePresetDialog(node: hou.Node, kwargs: Mapping[str, object] | None = ...) -> None: ...
+def showNodePresetDialog(node: hou.OpNode, kwargs: Mapping[str, object] | None = ...) -> None: ...
 def _showGenericNodeDialog(
     kind: rtypes.RecipeCategory = ...,
     items: Sequence[hou.NetworkMovableItem] = ...,
-    central: hou.Node | None = ...,
+    central: hou.OpNode | None = ...,
     editor: hou.NetworkEditor | None = ...,
     kwargs: NodeContextMenuKwargs | None = ...,
 ) -> None: ...
 def showDecorationDialog(
     items: Sequence[hou.NetworkMovableItem] = ...,
-    central: hou.Node | None = ...,
+    central: hou.OpNode | None = ...,
     editor: hou.NetworkEditor | None = ...,
     kwargs: NodeContextMenuKwargs | None = ...,
 ) -> None: ...
 def showToolDialog(
     items: Sequence[hou.NetworkMovableItem] = ...,
-    central: hou.Node | None = ...,
+    central: hou.OpNode | None = ...,
     editor: hou.NetworkEditor | None = ...,
     kwargs: NodeContextMenuKwargs | None = ...,
 ) -> None: ...
-def showPermanentDefaultDialog(node: hou.Node) -> None: ...
+def showPermanentDefaultDialog(node: hou.OpNode) -> None: ...
 def recipeExists(
     name_pattern: str, recipe_categories: rtypes.RecipeCategory | list[rtypes.RecipeCategory] | tuple[rtypes.RecipeCategory, ...]
 ) -> bool: ...

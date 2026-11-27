@@ -55,7 +55,7 @@ class Command:
 
 class DataBackend:
     def __init__(self, *, no_constructor: Never) -> None: ...
-    def buildFilteredSet(self, *args, **kwargs) -> Never:
+    def buildFilteredSet(self, arg0: Never, arg1: QueryDefinition, arg2: DataLayerInterface) -> Never:
         """buildFilteredSet(self: _pdgd.DataBackend, arg0: UT_SortedSet<PDGD_DataBackend::QueryResultEntry, PDGD_DataBackend::QueryResultEntryComparer>, arg1: PDGD_QueryDefinition, arg2: _pdgd.DataLayerInterface) -> UT_SortedSet<PDGD_DataBackend::QueryResultEntry, PDGD_DataBackend::QueryResultEntryComparer>"""
     def getDataLayerInterface(self) -> DataLayerInterface:
         """getDataLayerInterface(self: _pdgd.DataBackend) -> _pdgd.DataLayerInterface"""
@@ -197,7 +197,7 @@ class DataLayerVisualizerManager:
         """Instance() -> _pdgd.DataLayerVisualizerManager"""
     def clear(self) -> None:
         """clear(self: _pdgd.DataLayerVisualizerManager) -> None"""
-    def createVisualizer(self, *args, **kwargs) -> DataLayerVisualizer:
+    def createVisualizer(self, type_name: str, /, *args: Any) -> DataLayerVisualizer:
         """createVisualizer(*args, **kwargs) -> PDGD_DataLayerVisualizer"""
     def destroyVisualizer(self, arg0: DataLayerVisualizer) -> None:
         """destroyVisualizer(self: _pdgd.DataLayerVisualizerManager, arg0: PDGD_DataLayerVisualizer) -> None"""
@@ -645,7 +645,7 @@ class SubscriptionHandlerManager:
         """Instance() -> _pdgd.SubscriptionHandlerManager"""
     def clear(self) -> None:
         """clear(self: _pdgd.SubscriptionHandlerManager) -> None"""
-    def createSubscriptionHandler(self, *args, **kwargs) -> SubscriptionHandler | None:
+    def createSubscriptionHandler(self, object_name: str, type_name: str, /, *args: Any) -> SubscriptionHandler | None:
         """createSubscriptionHandler(*args, **kwargs) -> PDGD_SubscriptionHandler"""
     def destroySubscriptionHandler(self, arg0: SubscriptionHandler) -> None:
         """destroySubscriptionHandler(self: _pdgd.SubscriptionHandlerManager, arg0: PDGD_SubscriptionHandler) -> None"""

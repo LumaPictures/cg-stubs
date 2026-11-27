@@ -35,7 +35,7 @@ options: optparse.Values
 args: list[str]
 
 def ismultiparm(parm: hou.ParmTemplate) -> bool: ...
-def describeparm(type_name: str, parm: hou.ParmTemplate | None, brief: bool) -> tuple[_ParmDescription | None, tuple[hou.ParmTemplate, ...] | None]:
+def describeparm(type_name: str, parm: hou.ParmTemplate | None, brief: bool) -> tuple[None, None] | tuple[None, tuple[hou.ParmTemplate, ...]] | tuple[_ParmDescription, None]:
     """ Takes an indivdual ParmTemplate and returns a dictionary
         describing it.
         WIll return None if it is not describable.

@@ -1,11 +1,12 @@
 import enum
 import re
 from collections.abc import Callable, Collection, Mapping
-from typing import Generic, TypeAlias, TypeVar
+from typing import Generic, Never, TypeAlias, TypeVar
 
 K = TypeVar("K", bound=enum.Enum)
 T = TypeVar("T")
-_F = TypeVar("_F", bound=Callable[..., object])
+_PrefixF = TypeVar("_PrefixF", bound=Callable[[Never, Never], object])
+_InfixF = TypeVar("_InfixF", bound=Callable[[Never, Never, Never], object])
 
 # Generic in the parser's token kinds K (and T, what its parselets build).
 LexerFn: TypeAlias = Callable[[str, int], "tuple[Token[K], int] | None"]
@@ -20,8 +21,8 @@ class ParserError(Exception):
     def __init__(self, msg: str, pos: int, end_pos: int) -> None: ...
     def __str__(self) -> str: ...
 
-def prefix(kind: enum.Enum) -> Callable[[_F], _F]: ...
-def infix(kind: enum.Enum, precedence: int = ...) -> Callable[[_F], _F]: ...
+def prefix(kind: enum.Enum) -> Callable[[_PrefixF], _PrefixF]: ...
+def infix(kind: enum.Enum, precedence: int = ...) -> Callable[[_InfixF], _InfixF]: ...
 def parse_string(text: str, pos: int) -> tuple[str, int] | None: ...
 
 class Token(Generic[K]):

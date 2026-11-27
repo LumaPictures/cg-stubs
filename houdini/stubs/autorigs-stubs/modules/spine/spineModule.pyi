@@ -1,6 +1,5 @@
 import hou
 from . import buildSpineGuide as buildSpineGuide, spineGuideOptions as spineGuideOptions, spineGuideParams as spineGuideParams
-from _typeshed import Incomplete
 from autorigs.asset import defaultProperties as defaultProperties
 from autorigs.asset.autoRigsAsset import AutoRigsAsset as AutoRigsAsset
 from autorigs.modules.base import moduleTabsWidget as moduleTabsWidget, rootModule as Mod
@@ -19,15 +18,17 @@ from typing import TypeAlias
 from autorigs.modules.base.rootModule import _ModuleJson
 from typing import TypeAlias
 _SpineModuleJson: TypeAlias = _ModuleJson[_SpineOptionsJson, _SpineParamsJson, _GuideNamesJson]
-class SpineModule(Mod.Module[_SpineOptionsJson, _SpineParamsJson, _GuideNamesJson, ModuleOptions, ModuleParams, SpineGuide, _SpineControls | None, None, None]):
+class SpineModule(Mod.Module[_SpineOptionsJson, _SpineParamsJson, _GuideNamesJson, ModuleOptions, ModuleParams, SpineGuide, _SpineControls | None, None, None, 'SpineGuideTab', AutoRigsAsset]):
     autorigs_asset: AutoRigsAsset
     mastermodule: MasterModule
     assetnode: hou.ObjNode
     builtRig: None
     hookrigmap: None
-    guidetab: SpineGuideTab
+    guidetab: SpineGuideTab | None
     autorigsbuilder: AutoRigsSpineBuilder
     hookrigmapping: dict[str, hou.ObjNode | None]
+    buildguides: SpineGuide
+    builtrig: _SpineControls | None
     MODULE_TYPE: str
     MODULE_DEFAULT_NAME: str
     DEFAULT_JSON_FILE: str
@@ -35,11 +36,9 @@ class SpineModule(Mod.Module[_SpineOptionsJson, _SpineParamsJson, _GuideNamesJso
     def __init__(self, autorigs_asset: AutoRigsAsset) -> None: ...
     def initialize(self, autorigs_asset: AutoRigsAsset) -> None: ...
     def updateParent(self, modulesdict: Mapping[str, Sequence[Mod.Module]]) -> None: ...
-    buildguides: Incomplete
     def buildFromDefault(self, modulestyle: int = 0) -> None: ...
     def buildFromJsonNew(self, json: _SpineModuleJson) -> None: ...
     def buildFromJsonExisting(self, json: _SpineModuleJson) -> None: ...
-    builtrig: Incomplete
     def buildRig(self, orig_asset: AutoRigsAsset, index: int) -> None: ...
     def buildHookRigMapping(self) -> None: ...
     def getModuleHooks(self) -> list[hou.OpNode | None]: ...
@@ -53,11 +52,11 @@ class SpineModule(Mod.Module[_SpineOptionsJson, _SpineParamsJson, _GuideNamesJso
     def getBuiltLocalHook(self) -> hou.ObjNode | None: ...
     def getLastSpineBone(self) -> hou.ObjNode | None: ...
 
-class SpineGuideTab(Mod.ModuleGuideTab[_SpineOptionsJson, _SpineParamsJson, _GuideNamesJson, ModuleOptions, ModuleParams, SpineGuide]):
+class SpineGuideTab(Mod.ModuleGuideTab[_SpineOptionsJson, _SpineParamsJson, _GuideNamesJson, ModuleOptions, ModuleParams, SpineGuide, ModuleTabsWidget]):
     assetnode: hou.ObjNode
     tabswidget: ModuleTabsWidget
+    buildguides: SpineGuide
+    optionswidget: ModuleOptions
+    paramswidget: ModuleParams
     PREFIX: str
-    buildguides: Incomplete
-    optionswidget: Incomplete
-    paramswidget: Incomplete
     def __init__(self, assetnode: hou.ObjNode, buildguides: SpineGuide, mastermodule: MasterModule) -> None: ...

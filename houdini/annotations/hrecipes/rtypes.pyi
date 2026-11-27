@@ -1,6 +1,6 @@
 import hou
 from collections.abc import Iterable, Mapping, Sequence
-from typing import Any, Never, NotRequired, Protocol, Self, TypeAlias, TypedDict, Unpack
+from typing import Any, Literal, Never, NotRequired, Protocol, Self, TypeAlias, TypedDict, Unpack
 
 from houtypes import JSONLike, JSONValue
 from hrecipes.utils import _UserDataContents
@@ -23,6 +23,7 @@ class _GeometryValueData(TypedDict):
 class _DictionaryValueData(TypedDict):
     dictionary: dict[str, str]
 
+ParmTemplateOptionType: TypeAlias = Literal["none", "spare_only", "all"]
 LiteralData: TypeAlias = int | float | str | bool | _GeometryValueData | _DictionaryValueData
 
 # A parm's brief data is its value alone, or the list of its ramp points or multiparm instances
@@ -78,7 +79,7 @@ class NetworkItemMetadata:
 class BaseOptions:
     def asdict(self) -> dict[str, Any]: ...
     def replace(self, /, **changes: Any) -> Self: ...
-    def update(self, data: Mapping[str, Any], overwrite_existing: bool = ...) -> None: ...
+    def update(self, data: Mapping[str, object], overwrite_existing: bool = ...) -> None: ...
 
 class ParmOptions:
     def __post_init__(self) -> None: ...
@@ -104,7 +105,7 @@ class ItemOptions:
     def __post_init__(self) -> None: ...
 
 class ItemOptionsSettingList:
-    target_node: hou.Node | None
+    target_node: hou.OpNode | None
     def __post_init__(self) -> None: ...
 
 class NodeOptionsList:
@@ -120,7 +121,7 @@ class StickyNoteOptions:
     def __post_init__(self) -> None: ...
 
 class ClusterOptions:
-    target_node: hou.Node | None
+    target_node: hou.OpNode | None
     dummy_nodes: list[str] | list[hou.Node] | None
     frame_nodes: list[str] | list[hou.Node] | str | None
     selected_nodes: list[str] | list[hou.Node] | str | None
@@ -129,7 +130,7 @@ class ClusterOptions:
     cluster_outputs: list[tuple[hou.Node, int]] | None
 
 class ClusterOptionsSetting:
-    target_node: hou.Node | None
+    target_node: hou.OpNode | None
     dummy_nodes: list[hou.Node] | None
 
 class ParmPresetRecipeOptions:
@@ -156,7 +157,7 @@ class ToolRecipeOptionsSetting:
     pane: hou.Pane | None
     network_editor: hou.NetworkEditor | None
     scene_viewer: hou.SceneViewer | None
-    parent: hou.Node | None
+    parent: hou.OpNode | None
     tool_inputs: Sequence[tuple[str, int]]
     tool_outputs: Sequence[tuple[str, int]]
 

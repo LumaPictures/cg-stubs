@@ -17,7 +17,7 @@ def saveConfig(config: OCIO.Config) -> None: ...
 def loadConfig(filepath: str | None = None) -> OCIO.Config: ...
 
 class RuleModel(QtCore.QAbstractTableModel):
-    column_labels: tuple[str, ...]
+    column_labels: tuple[str, str, str, str, str]
     NameColumn: int
     PatternColumn: int
     ExtColumn: int

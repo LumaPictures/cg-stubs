@@ -27,7 +27,7 @@ class NetworkCompilationError(Exception):
     def __init__(self, message: str) -> None: ...
 
 def nameLookup(name_from_index: Iterable[_K]) -> dict[_K, int]: ...
-def compileModuleConfigurations(module_class_lookup: Mapping[str, int], named_module_configurations: Mapping[str, tuple[str, Mapping[str, Any]]]) -> tuple[list[ModuleConfigurationAtomic], dict[str, int]]:
+def compileModuleConfigurations(module_class_lookup: Mapping[str, int], named_module_configurations: Mapping[str, tuple[str, Mapping[str, object]]]) -> tuple[list[ModuleConfigurationAtomic], dict[str, int]]:
     """
     Construct a lookup from module_configuration names to their indices
     and a list that maps these indices to compiled module configurations

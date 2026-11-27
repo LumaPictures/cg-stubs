@@ -8,17 +8,6 @@ import resourceutils
 import viewerstate.utils as su
 from houtypes import ViewerParmProperties, ViewerStateDrawKwargs, ViewerStateEventKwargs
 
-_DrawableParams: TypeAlias = dict[
-    str,
-    float
-    | hou.EnumValue[hou.drawableHighlightMode]
-    | hou.EnumValue[hou.drawableGeometryLineStyle]
-    | hou.EnumValue[hou.drawableGeometryFaceStyle]
-    | hou.EnumValue[hou.drawableGeometryPointStyle]
-    | hou.Vector3
-    | hou.Vector4
-    | tuple[float, float],
-]
 _StateParms: TypeAlias = Mapping[str, ViewerParmProperties]
 _Intersection: TypeAlias = tuple[Literal[True], int, int] | tuple[Literal[False], None, None]
 _LandmarkLists: TypeAlias = tuple[list["Landmark"], list["Landmark | None"], list["Landmark"], list["Landmark"]]
@@ -75,15 +64,15 @@ tt_purple: hou.Vector4
 tt_xray: hou.Vector4
 
 class STYLE_GUIDE:
-    line_params: _DrawableParams
-    xray_params: _DrawableParams
-    src_point_params: _DrawableParams
-    tgt_point_params: _DrawableParams
-    selection_circle_params: _DrawableParams
-    selection_point_params: _DrawableParams
-    match_point_params: _DrawableParams
-    match_line_params: _DrawableParams
-    highlight_params: _DrawableParams
+    line_params: hou._DrawableParams
+    xray_params: hou._DrawableParams
+    src_point_params: hou._DrawableParams
+    tgt_point_params: hou._DrawableParams
+    selection_circle_params: hou._DrawableParams
+    selection_point_params: hou._DrawableParams
+    match_point_params: hou._DrawableParams
+    match_line_params: hou._DrawableParams
+    highlight_params: hou._DrawableParams
 
 class PointParser:
     string: str

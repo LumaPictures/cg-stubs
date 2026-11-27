@@ -1,5 +1,5 @@
 from collections.abc import Mapping, Sequence
-from typing import Any, TypeAlias, TypedDict
+from typing import TypeAlias, TypedDict
 
 import hou
 from autorigs.asset.autoRigsAsset import AutoRigsAsset
@@ -45,14 +45,14 @@ _BuiltSide: TypeAlias = tuple[_QuadFootControls, hou.ParmTemplateGroup]
 
 class DelayConstraints:
     cls: type["AutoRigsQuadFootBuilder"]
-    old_constraints: list[list[Any]]
+    old_constraints: list[list[str | hou.ObjNode | int]]
     def __init__(self, cls: type["AutoRigsQuadFootBuilder"]) -> None: ...
     def __del__(self) -> None: ...
 
 class AutoRigsQuadFootBuilder(AutoRigsExtremityBuilder):
     INTERFACE_NAME_LABEL: dict[str, tuple[str, str]]
     SUFFIX: dict[str, str]
-    delayconstraints: list[list[Any]]
+    delayconstraints: list[list[str | hou.ObjNode | int]]
     def __init__(self) -> None: ...
     @classmethod
     def buildRig(

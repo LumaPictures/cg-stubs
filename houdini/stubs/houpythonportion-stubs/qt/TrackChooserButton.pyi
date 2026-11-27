@@ -35,7 +35,7 @@ EXAMPLES
 
 '''
     relative_to_node: None
-    initial_selection: dict[str, list[tuple[hou.ChopNode | None, str]]]
+    initial_selection: hou._NodeDataInitialSelection
     node_filter: hou.EnumValue[hou.nodeTypeFilter]
     select_multiple: bool
     __module__: str

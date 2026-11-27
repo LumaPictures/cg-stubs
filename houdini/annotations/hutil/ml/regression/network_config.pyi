@@ -1,5 +1,7 @@
 import enum
 
+from hutil.ml.regression.connectivity_MLP import ModelMLPConfig
+
 class NetworkComposition(enum.Enum):
     @classmethod
     def menu(cls) -> list[str]: ...
@@ -22,6 +24,10 @@ class ModelCustomFormat(enum.Enum):
 
 class ModelNetworkConfig:
     model_kind: ModelKind | None
+    # Set by configure_network.configureModelNetwork, not __init__; create_network reads these
+    # rather than model_kind.
+    kind: ModelKind
+    mlp_config: ModelMLPConfig
     standard_type: ModelStandardType | None
     custom_format: ModelCustomFormat | None
     specification_script: str | None

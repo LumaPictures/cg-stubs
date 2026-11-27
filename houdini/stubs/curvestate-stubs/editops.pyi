@@ -1,10 +1,10 @@
 import curveutils as cu
 import hou
-from collections.abc import Mapping as Mapping, Sequence
+from collections.abc import Sequence
 from curvestate import constants as constants, referencegeo as referencegeo, stateparms as stateparms
-from curvestate.baseoperation import BaseSelectPointOperation as BaseSelectPointOperation, BaseSubTool as BaseSubTool, _CurveState, _SwitchHandleToolArgs
+from curvestate.baseoperation import BaseSelectPointOperation as BaseSelectPointOperation, BaseSubTool as BaseSubTool, _CurveState, _NodeParmEventKwargs, _SwitchHandleToolArgs
 from houtypes import ViewerStateDrawKwargs, ViewerStateEnterKwargs, ViewerStateEventKwargs, ViewerStateHandleDragKwargs, ViewerStateHandleToStateKwargs, ViewerStateKwargs, ViewerStateMenuActionKwargs, ViewerStateStateToHandleKwargs
-from typing import Any, TypedDict
+from typing import TypedDict, Unpack
 
 class _XFormHandleSaveState(TypedDict):
     active: bool
@@ -355,8 +355,8 @@ class PointMoveOperation(BaseMoveOperation):
             """ Make the point balanced, then return one of the tangents. """
     class PreDragBreak(BasePreDragOperation):
         """ Encapsulate breaking one or more anchors before starting drag. """
-        break_anchors: Sequence[int]
-        def __init__(self, parent: PointMoveOperation, snap_pt: hou.Point, break_anchors: Sequence[int]) -> None: ...
+        break_anchors: list[int]
+        def __init__(self, parent: PointMoveOperation, snap_pt: hou.Point, break_anchors: list[int]) -> None: ...
         def formatAnchorGroup(self) -> str:
             """ Format the anchor points into a group string. """
         def execute(self) -> hou.Point | None:
@@ -399,7 +399,7 @@ class PointMoveOperation(BaseMoveOperation):
         When we move mouse away from it, we still want to see the handles
         of currently selected point.
         """
-    def reactNodeParmsUpdate(self, event_type: hou.EnumValue[hou.nodeEventType], node: hou.SopNode, **kwargs: Any) -> None:
+    def reactNodeParmsUpdate(self, event_type: hou.EnumValue[hou.nodeEventType], node: hou.SopNode, **kwargs: Unpack[_NodeParmEventKwargs]) -> None:
         """ React to a node parm change. """
     def onUndoOrRedo(self) -> None:
         """ On undo or redo, update xform pivot. """
@@ -527,7 +527,7 @@ class EditTool(BaseSubTool):
     def setEnableHudOnEnter(self, val: bool) -> None: ...
     def getDefaultActiveOperation(self) -> BaseSelectPointOperation | None:
         """ Default to move operation in edit mode. """
-    def reactNodeParmsUpdate(self, event_type: hou.EnumValue[hou.nodeEventType], node: hou.SopNode, **kwargs: Any) -> None:
+    def reactNodeParmsUpdate(self, event_type: hou.EnumValue[hou.nodeEventType], node: hou.SopNode, **kwargs: Unpack[_NodeParmEventKwargs]) -> None:
         """
         React to node parameter changes, to also respond to round corner
         radius changes and send them off to the round corner radius change op.

@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import Any
+from typing import TypedDict, Unpack, type_check_only
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
@@ -15,10 +15,17 @@ UNLOAD_MODES: list[tuple[str, str]]
 PIXSCALE_MIN: int
 PIXSCALE_MAX: int
 
+# The keywords QSlider's constructors take.
+@type_check_only
+class _QSliderKwargs(TypedDict, total=False):
+    parent: QtWidgets.QWidget | None
+    tickPosition: QtWidgets.QSlider.TickPosition | None
+    tickInterval: int | None
+
 class IntegerSlider(QtWidgets.QSlider):
     @staticmethod
     def dataType() -> type[int]: ...
-    def __init__(self, *args: QtCore.Qt.Orientation | QtWidgets.QWidget | None, tickmarks: bool = ..., tickrate: int = ..., **kwargs: Any) -> None: ...
+    def __init__(self, *args: QtCore.Qt.Orientation | QtWidgets.QWidget | None, tickmarks: bool = ..., tickrate: int = ..., **kwargs: Unpack[_QSliderKwargs]) -> None: ...
     def toType(self, value: str | float) -> int: ...
     def intValue(self, value: int) -> int: ...
     def toTypeValue(self, value: int) -> int: ...

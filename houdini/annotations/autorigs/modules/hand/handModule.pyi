@@ -12,7 +12,9 @@ from autorigs.modules.hand.autoRigsHandBuilder import AutoRigsHandBuilder
 from autorigs.modules.hand.buildHandGuide import HandGuide
 from autorigs.modules.spine.spineModule import SpineModule
 
-class HandModule(extremityModule.ExtremityModule[HandOptionsWidget, HandParamsWidget, HandGuide]):
+class HandModule(
+    extremityModule.ExtremityModule[HandOptionsWidget, HandParamsWidget, HandGuide, "HandGuideTab", AutoRigsAsset]
+):
     MODULE_TYPE: str
     MODULE_DEFAULT_NAME: str
     DEFAULT_JSON_FILE: str
@@ -20,7 +22,7 @@ class HandModule(extremityModule.ExtremityModule[HandOptionsWidget, HandParamsWi
     autorigs_asset: AutoRigsAsset
     armmodules: Sequence[ArmModule]
     spinemodules: Sequence[SpineModule]
-    guidetab: "HandGuideTab"
+    guidetab: "HandGuideTab | None"
     autorigsbuilder: AutoRigsHandBuilder
     def __init__(self, autorigs_asset: AutoRigsAsset) -> None: ...
     def initialize(self, autorigs_asset: AutoRigsAsset, arg2: object = ..., arg3: object = ...) -> None: ...

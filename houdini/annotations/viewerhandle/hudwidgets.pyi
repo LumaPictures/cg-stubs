@@ -9,6 +9,12 @@ from viewerhandle.hudwindow import HUDWindow
 
 _KwargsT = TypeVar("_KwargsT", bound=Mapping[str, object])
 
+# What HUDWindowManager.createHUDWidget adds to the `kwargs` given to hudapi.createHUDWidget
+# before passing them to the HUD widget type's constructor.
+class _HUDWidgetOptions(TypedDict, total=False):
+    parent: HUDWindow | None
+    scene_loading: bool
+
 class _KeyFrameEventKwargs(TypedDict, total=False):
     frame: float | None
     color: QtGui.QColor | None

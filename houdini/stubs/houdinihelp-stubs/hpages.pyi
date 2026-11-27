@@ -9,6 +9,7 @@ from bookish.wiki import pipeline, wikipages
 from bookish.wiki.wikipages import WikiPages, _WikiBlock, _WikiNode
 from collections.abc import Mapping
 from typing import Any
+from typing_extensions import Never, TypedDict, Unpack
 from whoosh.results import Hit as Hit
 
 from typing import TypeVar
@@ -16,6 +17,9 @@ from bookish.wiki.wikipages import _WikiText
 from typing import TypeVar
 _PagesT = TypeVar('_PagesT', bound=WikiPages)
 _WikiTextT = TypeVar('_WikiTextT', bound=_WikiText)
+class _WikiPagesKwargs(TypedDict, total=False):
+    logger: logging.Logger | None
+
 table_to_dir: dict[str, str]
 shelves_file_path: str
 
@@ -27,11 +31,17 @@ def jinja_from_config(config: Mapping[str, Any], store: Store, jinja_env: jinja2
 
 class HoudiniPages(wikipages.WikiPages):
     use_hou: bool
-    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
+    @typing.overload
+    def __init__(self, *args: Unpack[tuple[Store, jinja2.Environment, Mapping[str, Any]]], **kwargs: Unpack[_WikiPagesKwargs]) -> None: ...
+    @typing.overload
+    def __init__(self, *args: Unpack[tuple[Store, jinja2.Environment, Mapping[str, Any], logging.Logger | None]], **kwargs: Never) -> None: ...
 
 class HoudiniPagesWithoutHou(HoudiniPages):
     use_hou: bool
-    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
+    @typing.overload
+    def __init__(self, *args: Unpack[tuple[Store, jinja2.Environment, Mapping[str, Any]]], **kwargs: Unpack[_WikiPagesKwargs]) -> None: ...
+    @typing.overload
+    def __init__(self, *args: Unpack[tuple[Store, jinja2.Environment, Mapping[str, Any], logging.Logger | None]], **kwargs: Never) -> None: ...
 
 scheme_map: dict[str, str]
 

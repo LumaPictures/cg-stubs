@@ -31,18 +31,18 @@ def addobstacle(kwargs: ShelfToolKwargs) -> None: ...
 def addClip(
     agent_obj: hou.ObjNode,
     input_type: str,
-    subnet: hou.Node | None,
+    subnet: hou.ObjNode | None,
     clipname: str,
     filepath: str | None = ...,
-    lopnode: hou.Node | None = ...,
+    lopnode: hou.LopNode | None = ...,
 ) -> hou.SopNode: ...
 def bakeAgent(
     input_type: str,
-    subnet: hou.Node | None,
+    subnet: hou.ObjNode | None,
     filepath: str | None,
     agentname: str,
     clipname: str,
-    lopnode: hou.Node | None = ...,
+    lopnode: hou.LopNode | None = ...,
 ) -> hou.ObjNode: ...
 def bakeAgentInteractive(kwargs: ShelfToolKwargs) -> None: ...
 def addClipInteractive(kwargs: ShelfToolKwargs) -> None: ...
@@ -69,6 +69,9 @@ def findAgent(geo: hou.Geometry | None, group_str: str = ...) -> hou.Agent | Non
 def findAgentDefinitions(
     geo: hou.Geometry, group_str: str = ..., group_type: hou.EnumValue[hou.geometryType] | None = ...
 ) -> tuple[hou.AgentDefinition, ...] | list[hou.AgentDefinition]: ...
+def _unpackClipProperties(
+    crowd_geo: hou.Geometry, group_str: str, group_type: hou.EnumValue[hou.geometryType] | None
+) -> hou.Geometry: ...
 def buildMenuStringList(names: Sequence[str]) -> list[str]: ...
 def buildClipMenu(
     node: hou.SopNode,

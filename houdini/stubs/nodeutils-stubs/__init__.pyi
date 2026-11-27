@@ -2,7 +2,11 @@ import hou
 import re
 from collections import defaultdict
 from collections.abc import Generator, Iterable, Mapping, Sequence
+from typing import Generic
 
+from typing import TypeVar
+from typing import TypeVar
+_PosT_co = TypeVar('_PosT_co', bound=int | None, covariant=True, default=int | None)
 part_pattern: str
 neg_pattern: str
 part_exp: re.Pattern[str]
@@ -10,8 +14,8 @@ valid_name: re.Pattern[str]
 
 class NodeMissingError(Exception): ...
 
-class Part:
-    pos: int | None
+class Part(Generic[_PosT_co]):
+    pos: _PosT_co
     is_glob: bool
     def __init__(self) -> None: ...
     def as_regex(self) -> str: ...
@@ -19,13 +23,13 @@ class Part:
     def is_star(self) -> bool: ...
     def is_negation(self) -> bool: ...
 
-class Literal(Part):
+class Literal(Part[int | None]):
     text: str
     def __init__(self, text: str) -> None: ...
     def as_regex(self) -> str: ...
     def replacement(self, context: RenameContext) -> str: ...
 
-class Glob(Part):
+class Glob(Part[int]):
     pattern: str
     pos: int
     capturing: bool
@@ -37,14 +41,14 @@ class Glob(Part):
     def as_regex(self) -> str: ...
     def replacement(self, context: RenameContext) -> str: ...
 
-class Negation(Part):
+class Negation(Part[int | None]):
     glob: Glob
     def __init__(self, pattern: str) -> None: ...
     def is_negation(self) -> bool: ...
     def as_regex(self) -> str: ...
     def replacement(self, context: RenameContext) -> str: ...
 
-class GroupRef(Part):
+class GroupRef(Part[int | None]):
     text: str
     num: int
     def __init__(self, text: str, num: int) -> None: ...
@@ -55,7 +59,7 @@ class RenameContext:
     pattern_map: dict[str, int]
     counters: defaultdict[str, int]
     groups: tuple[str, ...]
-    def __init__(self, find_parts: Iterable[Part]) -> None: ...
+    def __init__(self, find_parts: Iterable[Part[int | None]]) -> None: ...
 
 def find_and_replace(find: str, replace: str, names: Iterable[str], whole_name: bool = False, ignore_case: bool = True) -> list[tuple[str, str]]:
     '''

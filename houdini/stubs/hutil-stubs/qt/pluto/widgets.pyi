@@ -1,12 +1,25 @@
+import typing
 from hutil.PySide import QtCore as QtCore, QtGui as QtGui, QtWidgets as QtWidgets
 from hutil.PySide.QtCore import Qt as Qt
 from hutil.qt.pluto import parts as parts
 from hutil.qt.pluto.colors import NamedColor as NamedColor, Subtype as Subtype, blend as blend
 from hutil.qt.pluto.themes import newUI as newUI
-from typing import Any, ClassVar, Sequence as Sequence
+from typing import Any, ClassVar, Sequence as Sequence, TypedDict, Unpack
+
+class _QToolButtonKwargs(TypedDict, total=False):
+    parent: QtWidgets.QWidget | None
+    popupMode: QtWidgets.QToolButton.ToolButtonPopupMode | None
+    toolButtonStyle: Qt.ToolButtonStyle | None
+    autoRaise: bool | None
+    arrowType: Qt.ArrowType | None
 
 class FancyButton(QtWidgets.QPushButton):
-    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
+    @typing.overload
+    def __init__(self, parent: QtWidgets.QWidget | None = ..., **kwargs: object) -> None: ...
+    @typing.overload
+    def __init__(self, text: str, /, parent: QtWidgets.QWidget | None = ..., **kwargs: object) -> None: ...
+    @typing.overload
+    def __init__(self, icon: QtGui.QIcon | QtGui.QPixmap, text: str, /, parent: QtWidgets.QWidget | None = ..., **kwargs: object) -> None: ...
     def paintEvent(self, event: QtGui.QPaintEvent) -> None: ...
 
 def widgetScale(widget: QtWidgets.QWidget) -> float: ...
@@ -133,7 +146,7 @@ class HueCircle(QtWidgets.QFrame):
     def paintEvent(self, event: QtGui.QPaintEvent) -> None: ...
 
 class MenuArrowButton(QtWidgets.QToolButton):
-    def __init__(self, *args: QtWidgets.QWidget | None, **kwargs: Any) -> None: ...
+    def __init__(self, *args: QtWidgets.QWidget | None, **kwargs: Unpack[_QToolButtonKwargs]) -> None: ...
     def paintEvent(self, ev: QtGui.QPaintEvent) -> None: ...
 
 class ToolScrollerArrow(QtWidgets.QWidget):

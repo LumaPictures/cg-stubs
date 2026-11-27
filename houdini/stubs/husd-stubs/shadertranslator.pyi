@@ -395,7 +395,7 @@ class ShaderTranslatorHelper:
         """ This method is run after the shader chain has been authored
             based on the given shader VOP node for its given output.
         """
-    def inputConnectionInfo(self, usd_shader: _UsdShaderSchema, shader_node: hou.VopNode, wire: hou.NodeConnection) -> tuple[_UsdShaderSchema | None, str | None, Sdf.ValueTypeName | None, hou.VopNode | None, str | None]:
+    def inputConnectionInfo(self, usd_shader: _UsdShaderSchema, shader_node: hou.VopNode, wire: hou.OpNodeConnection) -> tuple[_UsdShaderSchema | None, str | None, Sdf.ValueTypeName | None, hou.VopNode | None, str | None]:
         """ Returns a tuple describing how to continue the traversal
             of the input connection given by the wire.
             The returned info describes on which node
@@ -671,7 +671,7 @@ class ShaderTranslatorHelper:
         """ Returns the Sdf type of the parent subnet's output that corresponds
             to the output of the given child node.
         """
-    def inputNodeFromWire(self, wire: hou.NodeConnection) -> tuple[hou.VopNode | None, str]:
+    def inputNodeFromWire(self, wire: hou.OpNodeConnection) -> tuple[hou.VopNode | None, str]:
         """ Returns a tuple of an Houdini input node and its output name,
             given the connection wire between two Houdini nodes.
         """

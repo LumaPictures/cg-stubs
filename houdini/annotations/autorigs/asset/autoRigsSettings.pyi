@@ -22,9 +22,9 @@ class _CaptureSettingsJson(TypedDict, closed=True):  # type: ignore[call-arg]
 
 class _GeoOperatorPlacementJson(TypedDict, closed=True):  # type: ignore[call-arg]
     option: int
-    operatoroffsettranslate: tuple[float, ...]
-    operatoroffsetrotate: tuple[float, ...]
-    operatoroffsetscale: tuple[float, ...]
+    operatoroffsettranslate: tuple[float, float, float]
+    operatoroffsetrotate: tuple[float, float, float]
+    operatoroffsetscale: tuple[float, float, float]
 
 class _GeoOperatorJson(TypedDict, closed=True):  # type: ignore[call-arg]
     operatornode: str
@@ -33,15 +33,15 @@ class _GeoOperatorJson(TypedDict, closed=True):  # type: ignore[call-arg]
 
 class _GeoStandinJson(TypedDict, closed=True):  # type: ignore[call-arg]
     option: int
-    standinoffsettranslate: tuple[float, ...]
-    standinoffsetrotate: tuple[float, ...]
-    standinoffsetscale: tuple[float, ...]
+    standinoffsettranslate: tuple[float, float, float]
+    standinoffsetrotate: tuple[float, float, float]
+    standinoffsetscale: tuple[float, float, float]
 
 class _GeoFilePlacementJson(TypedDict, closed=True):  # type: ignore[call-arg]
     option: int
-    fileoffsettranslate: tuple[float, ...]
-    fileoffsetrotate: tuple[float, ...]
-    fileoffsetscale: tuple[float, ...]
+    fileoffsettranslate: tuple[float, float, float]
+    fileoffsetrotate: tuple[float, float, float]
+    fileoffsetscale: tuple[float, float, float]
 
 class _GeoFileJson(TypedDict, closed=True):  # type: ignore[call-arg]
     filepath: str

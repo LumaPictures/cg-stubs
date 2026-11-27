@@ -30,7 +30,7 @@ def generateSelectionString(selection: hou.GeometrySelection) -> str:
 def selectedPointNumbers(geopath: str, pattern: str) -> list[int]:
     """ Turns a point selection string into an array of point numbers. 
         The * pattern represents all points here."""
-def groupCentroid(dopnet: hou.Node, objname: str, ptgroup: str) -> hou.Vector3:
+def groupCentroid(dopnet: hou.OpNode, objname: str, ptgroup: str) -> hou.Vector3:
     """ Calculates the centroid of a group of points. """
 def modifierGroupCentroid(modifier: hou.DopNode) -> hou.Vector3:
     """ Returns the centroid of the point selection of a particular node. """
@@ -73,9 +73,9 @@ def generateSBDAttachmentGoalPTGroup(goalSelectionData: _GoalSelectionData | Non
         object selection.
     """
 @typing.overload
-def performTwoStepDynamicsPointSelection(activepane: hou.SceneViewer, alsoselconstraints: Literal[False], use_existing_selection: bool, objprompt: str, specprompt: str, specseltype: str) -> tuple[Literal[True], Sequence[tuple[hou.DopData, hou.GeometrySelection]]] | None: ...
+def performTwoStepDynamicsPointSelection(activepane: hou.SceneViewer, alsoselconstraints: Literal[False], use_existing_selection: bool, objprompt: str, specprompt: str, specseltype: str) -> tuple[Literal[True], tuple[tuple[hou.DopObject, hou.GeometrySelection], ...]] | None: ...
 @typing.overload
-def performTwoStepDynamicsPointSelection(activepane: hou.SceneViewer, alsoselconstraints: bool, use_existing_selection: bool, objprompt: str, specprompt: str, specseltype: str) -> tuple[Literal[False], tuple[hou.DopData, ...]] | tuple[Literal[True], Sequence[tuple[hou.DopData, hou.GeometrySelection]]] | None: ...
+def performTwoStepDynamicsPointSelection(activepane: hou.SceneViewer, alsoselconstraints: bool, use_existing_selection: bool, objprompt: str, specprompt: str, specseltype: str) -> tuple[Literal[False], tuple[hou.DopData, ...]] | tuple[Literal[True], tuple[tuple[hou.DopObject, hou.GeometrySelection], ...]] | None: ...
 def createSBDAttachmentConstraints(scriptargs: ShelfToolKwargs, nodetype: str, objecttypename: str, goalseltype: str | None) -> None:
     """ Create spring/pin constraints between a set of points and the nearest
         points on a selected dynamics object.

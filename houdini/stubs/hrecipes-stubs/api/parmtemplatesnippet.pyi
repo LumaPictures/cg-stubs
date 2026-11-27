@@ -1,14 +1,14 @@
 import hou
 from . import utils as utils
 from .. import rtypes as rtypes
-from collections.abc import Mapping
+from collections.abc import Mapping, MutableSequence
 from hutil.pprint import pprint as pprint
 from os.path import split as split
 from typing import Any, Sequence, TypedDict
 
 from typing import TypeVar
 from typing import TypeVar
-_D = TypeVar('_D', bound=Mapping[str, Any])
+_D = TypeVar('_D', bound=Mapping[str, object])
 class ParmTemplateSnippetData(TypedDict, total=False):
     parms: rtypes.ParmDataDict
     parmtemplates: rtypes.ParmTemplateBundleData
@@ -17,7 +17,7 @@ class ParmTemplateSnippetData(TypedDict, total=False):
 def nested_set(dic: dict[str, Any], keys: Sequence[str], value: object) -> None: ...
 def nameToLabel(name: str) -> str:
     """process the name for be a pretty label"""
-def reorderKeys(data: _D, ordered_names: list[str] = ..., names_to_end: Sequence[str] = ...) -> _D: ...
+def reorderKeys(data: _D, ordered_names: MutableSequence[str] = ..., names_to_end: Sequence[str] = ...) -> _D: ...
 def updateParmTemplateOrder(data: Mapping[str, rtypes.ParmTemplateData], recursive: bool = True) -> rtypes.ParmTemplateDataDict:
     """generates a new nested parmtemplate data dictionary with correct ordering index. Ordering index is needed to restore
     the correct dictionary entry order when the data is saved in such a way that the dictionary order is not preserved.

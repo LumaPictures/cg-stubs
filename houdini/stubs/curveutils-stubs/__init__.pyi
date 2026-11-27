@@ -24,57 +24,10 @@ PickCurveResultType: TypeAlias = tuple[hou.Prim, float, hou.Vector3]
 PickRoundCornerResultType: TypeAlias = tuple[hou.Point, hou.Vector3]
 PickFaceResultType: TypeAlias = tuple[hou.Prim, hou.Vector3, hou.Vector3] | tuple[hou.Prim, None, None]
 PickResultType: TypeAlias = hou.Point | PickHandleLineResultType | PickCurveResultType | PickRoundCornerResultType | PickFaceResultType
-_PickCallback: TypeAlias = Callable[[ViewerStateEventKwargs, dict[str, Any]], bool]
+_PickCallback: TypeAlias = Callable[[ViewerStateEventKwargs, dict[str, PickResultType]], bool]
 _KeyCallback: TypeAlias = Callable[[int | None, list[str]], bool]
-_DrawableColor: TypeAlias = hou.Vector4 | hou.Color | Sequence[float]
 _GadgetStateT_co = TypeVar('_GadgetStateT_co', bound=_GadgetState, covariant=True, default=_GadgetState)
 _StateT_co = TypeVar('_StateT_co', covariant=True, default=object)
-class _SpriteImageData(TypedDict):
-    data: bytes
-    width: int
-    height: int
-
-class _DrawableParams(TypedDict, total=False):
-    color1: _DrawableColor
-    color2: _DrawableColor
-    fade_factor: float
-    glow_width: float
-    highlight_mode: hou.EnumValue[hou.drawableHighlightMode]
-    translate: hou.Vector3 | Sequence[float]
-    rotation: hou.Vector3 | Sequence[float]
-    scale: hou.Vector3 | Sequence[float]
-    screen_space: Sequence[float]
-    use_cd: bool
-    use_uv: bool
-    clip_plane: hou.Vector4 | Sequence[float]
-    line_width: float
-    style: hou.EnumValue[hou.drawableGeometryPointStyle] | hou.EnumValue[hou.drawableGeometryLineStyle] | hou.EnumValue[hou.drawableGeometryFaceStyle] | Sequence[float]
-    backface_culling: bool
-    color_ramp_parm: hou.Parm
-    glyphe_scale: float
-    indices: Sequence[int]
-    period: float
-    ramp_clamp: hou.EnumValue[hou.drawableRampClamp]
-    ramp_range: hou.Vector2 | Sequence[float]
-    reverse_winding: bool
-    use_color_ramp: bool
-    falloff_range: hou.Vector2 | Sequence[float]
-    num_rings: int
-    radius: float
-    bidirect: bool
-    length_scale: float
-    vector_width: int
-    use_arrow: bool
-    base_fade_factor: float
-    images: Mapping[str, str | hou.ImageLayer | hou.Vector3 | _SpriteImageData]
-    default: str
-    max_resolution: Sequence[float]
-    draw_color: _DrawableColor
-    pick_color: _DrawableColor
-    locate_color: _DrawableColor
-    locate_highlight: hou.EnumValue[hou.drawableHighlightMode]
-    locate_glow: float
-
 class _GadgetState(Protocol):
     @property
     def state_gadgets(self) -> Mapping[str, hou.GadgetDrawable]: ...
@@ -1082,7 +1035,7 @@ class HighlightPoint:
         """
     def pointSize(self) -> int:
         """ The point size of the drawable points. """
-    def setParams(self, params: _DrawableParams) -> None:
+    def setParams(self, params: hou._DrawableParams) -> None:
         """
         Call to set the parameters for the drawable points.
 
@@ -1104,7 +1057,7 @@ class HighlightPoint:
 
         :posns: The positions to set for the first len(posns) points.
         """
-    def draw(self, draw_handle: hou.Handle) -> None:
+    def draw(self, draw_handle: int) -> None:
         """ Draw the points. """
 
 class HighlightCurveSection:
@@ -1122,7 +1075,7 @@ class HighlightCurveSection:
 
         :n: Number of samples.
         """
-    def setParams(self, params: _DrawableParams) -> None:
+    def setParams(self, params: hou._DrawableParams) -> None:
         """
         Set the parameters of the curve drawable.
 
@@ -1158,7 +1111,7 @@ class HighlightCurveSection:
         """
     def primNum(self) -> int:
         """Return the cached source primitive number for this section."""
-    def draw(self, draw_handle: hou.Handle) -> None:
+    def draw(self, draw_handle: int) -> None:
         """ Draw the curve drawable. """
 
 class BoxSelector:
@@ -1182,7 +1135,7 @@ class BoxSelector:
     def updateBoxGeo(self, ui_event: hou.ViewerEvent) -> None:
         """ Update the box geometry.
         """
-    def draw(self, handle: hou.Handle) -> None:
+    def draw(self, handle: int) -> None:
         """ Draw the box drawable.
         """
     def clear(self) -> None:
@@ -1364,7 +1317,7 @@ class BaseHandleWrapper(Generic[_GadgetStateT_co]):
         """ Show or hide the drawables. """
     def setEnableInteraction(self, val: bool) -> None:
         """ Set whether the widget can be interacted with or not. """
-    def setParams(self, active_params: _DrawableParams, inactive_params: _DrawableParams) -> None:
+    def setParams(self, active_params: hou._DrawableParams, inactive_params: hou._DrawableParams) -> None:
         """
         Set the parameters for the active and inactive drawables.
 
@@ -1373,7 +1326,7 @@ class BaseHandleWrapper(Generic[_GadgetStateT_co]):
         """
     def isActiveGadget(self) -> bool:
         """ Return whether this gadget is currently being picked. """
-    def draw(self, draw_handle: hou.Handle) -> None:
+    def draw(self, draw_handle: int) -> None:
         """ Draw this object. Uses the provided getGeometry() function. """
     def onMouseEvent(self, kwargs: ViewerStateEventKwargs) -> bool:
         """ Called on mouse events, checks whether this object is hovered. """
@@ -1499,7 +1452,7 @@ def pickCurveDrawable(c1: int, c2: int | None, ray_orig: hou.Vector3, ray_dir: h
 class BasePointHandle(BaseHandleWrapper[_GadgetStateT_co]):
     """ Base class for interactive point widgets in the Curve::2.0 state. """
     def __init__(self, gadget_name: str, scene_viewer: hou.SceneViewer, main_state: _GadgetStateT_co) -> None: ...
-    def setParams(self, active_params: _DrawableParams, inactive_params: _DrawableParams) -> None:
+    def setParams(self, active_params: hou._DrawableParams, inactive_params: hou._DrawableParams) -> None:
         """ Set the parameters for the active and inactive drawables. """
     def checkHoverHandle(self, ray_orig: hou.Vector3 | None = None, ray_dir: hou.Vector3 | None = None) -> hou.Point | None:
         """
@@ -1654,7 +1607,7 @@ class ControlPointHandleBundle(BaseHandleWrapper[_GadgetStateT_co]):
         """ Specify the double click callback to use. """
     def setNode(self, node: hou.SopNode) -> None:
         """ Set the sop node. """
-    def setParams(self, handle_name: str, active_params: _DrawableParams, inactive_params: _DrawableParams) -> None:  # type: ignore[override]
+    def setParams(self, handle_name: str, active_params: hou._DrawableParams, inactive_params: hou._DrawableParams) -> None:  # type: ignore[override]
         """
         Set the active and inactive params on the drawables for the given sub handle.
 
@@ -1670,7 +1623,7 @@ class ControlPointHandleBundle(BaseHandleWrapper[_GadgetStateT_co]):
         """ Set whether to allow interacting with these widgets. """
     def isActiveGadget(self) -> bool:
         """ Return true if either of the widgets is being picked. """
-    def draw(self, draw_handle: hou.Handle) -> None:
+    def draw(self, draw_handle: int) -> None:
         """ Draw the point drawables. """
     def getSubGeometry(self, h: BezierSubHandle) -> hou.Geometry | None:
         """
@@ -1755,7 +1708,7 @@ class LineHandleBundle(BaseHandleWrapper[_GadgetStateT_co]):
         """ Set the callback that is called on a double click event. """
     def setNode(self, node: hou.SopNode) -> None:
         """ Set the sop node. """
-    def setParams(self, handle_name: str, active_params: _DrawableParams, inactive_params: _DrawableParams) -> None:  # type: ignore[override]
+    def setParams(self, handle_name: str, active_params: hou._DrawableParams, inactive_params: hou._DrawableParams) -> None:  # type: ignore[override]
         """
         Set the active and inactive drawable params for this sub handle.
 
@@ -1771,7 +1724,7 @@ class LineHandleBundle(BaseHandleWrapper[_GadgetStateT_co]):
         """ Set whether to allow interacting with these widgets. """
     def isActiveGadget(self) -> bool:
         """ Return true if either of the widgets is being picked. """
-    def draw(self, draw_handle: hou.Handle) -> None:
+    def draw(self, draw_handle: int) -> None:
         """ Draw the line drawables. """
     def getSubGeometry(self, h: SubBezierLine) -> hou.Geometry | None:
         """
@@ -1846,7 +1799,7 @@ class PointSelectorBundle(Generic[_StateT_co]):
         """ Set the sop node. """
     def pointSize(self) -> int:
         """ Get point size for the drawable. """
-    def setParams(self, name: str, params: _DrawableParams) -> None:
+    def setParams(self, name: str, params: hou._DrawableParams) -> None:
         """
         Set params for the drawable with the given name.
 
@@ -1857,7 +1810,7 @@ class PointSelectorBundle(Generic[_StateT_co]):
         """ Called after constructing the object. """
     def show(self, val: bool) -> None:
         """ Show or hide the drawables. """
-    def draw(self, draw_handle: hou.Handle) -> None:
+    def draw(self, draw_handle: int) -> None:
         """ Draw the selected points. """
     def getGeometry(self, drawable_name: str) -> hou.Geometry | None:
         """
@@ -1876,9 +1829,9 @@ class BezierPointSelector(PointSelectorBundle[_StateT_co]):
     broken_name: str
     smooth_name: str
     def __init__(self, name: str, scene_viewer: hou.SceneViewer, main_state: _StateT_co) -> None: ...
-    def setSmoothParams(self, params: _DrawableParams) -> None:
+    def setSmoothParams(self, params: hou._DrawableParams) -> None:
         """ Set params for the smooth points drawable. """
-    def setBrokenParams(self, params: _DrawableParams) -> None:
+    def setBrokenParams(self, params: hou._DrawableParams) -> None:
         """ Set params for the broken points drawable. """
     def getGeometry(self, drawable_name: str) -> hou.Geometry | None:
         """

@@ -1,3 +1,4 @@
+import torch.nn as nn
 from collections.abc import Mapping
 
 from houtypes import JSONLike
@@ -30,7 +31,7 @@ def createModelNetworkFactory(
     /,
     *,
     log: Log | None = ...,
-) -> ModelMLPFactory | ModelGeneralFactory | ModuleFactoryAtomic | None: ...
+) -> ModelMLPFactory | ModelGeneralFactory | ModuleFactoryAtomic[nn.Module] | None: ...
 def createLossNetworkFactory(
     hyperparameter_dict: Mapping[str, JSONLike],
     config: LossNetworkConfig,
@@ -39,7 +40,7 @@ def createLossNetworkFactory(
     /,
     *,
     log: Log | None = ...,
-) -> LossMSEFactory | ModelGeneralFactory | ModuleFactoryAtomic | None: ...
+) -> LossMSEFactory | ModelGeneralFactory | ModuleFactoryAtomic[nn.Module] | None: ...
 def createNetworkPartitioned(
     hyperparameter_dict: Mapping[str, JSONLike],
     config: PartitionedNetworkConfig,

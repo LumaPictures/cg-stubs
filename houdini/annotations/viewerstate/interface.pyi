@@ -1,4 +1,6 @@
-from typing import Any, Generic, TypedDict, TypeAlias, TypeVar, Unpack
+from typing import Any, Generic, TypeAlias, TypeVar
+
+from typing_extensions import TypedDict, Unpack
 
 import hou
 from houtypes import (
@@ -38,10 +40,15 @@ class _StateHandlerKwargs(TypedDict, Generic[_A]):
     state: Any
     args: _A
 
+# What hou.ui.addResourceEventCallback passes (see hou._ResourceEvent).
+class _ResourceEventKwargs(TypedDict, extra_items=hou._ResourceEventValue):  # type: ignore[call-arg]
+    event_type: hou.EnumValue[hou.resourceEventMessage]
+    resource_type: hou.EnumValue[hou.resourceType]
+
 class _HasAttrArgs(TypedDict):
     attr: str
 
-def onViewerStateEvent(self: Any, **kwargs: Any) -> None: ...
+def onViewerStateEvent(self: Any, **kwargs: Unpack[_ResourceEventKwargs]) -> None: ...
 def debug_log(self: Any, *args: object, **kwargs: Unpack[_LogMessageOptions]) -> None: ...
 def onInit(**kwargs: Unpack[_StateHandlerKwargs[ViewerStateKwargs]]) -> None: ...
 def onTerm(**kwargs: Unpack[_StateHandlerKwargs[ViewerStateKwargs]]) -> None: ...

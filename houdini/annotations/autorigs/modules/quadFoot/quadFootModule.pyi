@@ -1,4 +1,4 @@
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 
 from autorigs.asset.autoRigsAsset import AutoRigsAsset
 from autorigs.modules.arm.armModule import ArmModule
@@ -13,7 +13,11 @@ from autorigs.modules.quadleg.quadLegModule import QuadLegModule
 
 class QuadFootModule(
     extremityModule.ExtremityModule[
-        extremityGuideOptions.QuadFootOptionsWidget, extremityGuideParams.QuadFootParamsWidget, QuadFootGuide
+        extremityGuideOptions.QuadFootOptionsWidget,
+        extremityGuideParams.QuadFootParamsWidget,
+        QuadFootGuide,
+        "QuadFootGuideTab",
+        AutoRigsAsset | None,
     ]
 ):
     MODULE_TYPE: str
@@ -25,7 +29,7 @@ class QuadFootModule(
     legmodules: Sequence[LegModule]
     armmodules: Sequence[ArmModule]
     quadlegmodules: Sequence[QuadLegModule]
-    guidetab: "QuadFootGuideTab"
+    guidetab: "QuadFootGuideTab | None"
     autorigsbuilder: AutoRigsQuadFootBuilder
     def __init__(self, autorig_asset: AutoRigsAsset) -> None: ...
     def updateParent(self, modulesdict: Mapping[str, Sequence[Module]]) -> None: ...
@@ -40,3 +44,5 @@ class QuadFootGuideTab(
     ]
 ):
     prefix: str
+    GUIDE_OPTIONS: type[extremityGuideOptions.QuadFootOptionsWidget]
+    GUIDE_PARAMS: type[extremityGuideParams.QuadFootParamsWidget]

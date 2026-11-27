@@ -48,7 +48,7 @@ class GhostTyper(DashEditPlugin):
     def paintEvent(self, event: PySide6.QtGui.QPaintEvent) -> None: ...
 
 class DashEdit(PySide6.QtWidgets.QTextEdit):
-    COMPLETION_KEYS: tuple[PySide6.QtCore.Qt.Key, ...]
+    COMPLETION_KEYS: tuple[PySide6.QtCore.Qt.Key, PySide6.QtCore.Qt.Key, PySide6.QtCore.Qt.Key, PySide6.QtCore.Qt.Key, PySide6.QtCore.Qt.Key]
     def __init__(
         self,
         text: str = ...,

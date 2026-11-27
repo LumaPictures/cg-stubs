@@ -25,6 +25,7 @@ class EyeModule(
         None,
         None,
         None,
+        "EyeGuideTab",
     ]
 ):
     MODULE_TYPE: str
@@ -32,7 +33,7 @@ class EyeModule(
     DEFAULT_JSON_FILE: str
     DEFAULT_JSON: _EyeModuleJson
     assetnode: hou.ObjNode
-    guidetab: "EyeGuideTab"
+    guidetab: "EyeGuideTab | None"
     autorigsbuilder: AutoRigsEyeBuilder
 
     def __init__(self, autorigs_asset: AutoRigsAsset) -> None: ...
@@ -42,7 +43,9 @@ class EyeModule(
     def buildRig(self, index: int) -> None: ...
 
 class EyeGuideTab(
-    Mod.ModuleGuideTab[_EyeOptionsJson, _ParamsJson, _EyeGuideJson, ModuleOptionsWidget, ModuleParamsWidget, EyeGuide]
+    Mod.ModuleGuideTab[
+        _EyeOptionsJson, _ParamsJson, _EyeGuideJson, ModuleOptionsWidget, ModuleParamsWidget, EyeGuide, ModuleTabsWidget
+    ]
 ):
     tabswidget: ModuleTabsWidget
 

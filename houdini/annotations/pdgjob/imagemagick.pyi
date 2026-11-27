@@ -5,7 +5,7 @@ from pdgjob import pdgjson
 _WorkItem: TypeAlias = pdgjson.WorkItem | pdgjson.NativeWorkItem
 
 IMAGEMAGICK_TOOL_NAME: str
-SANITIZE_VARS: tuple[str, ...]
+SANITIZE_VARS: tuple[str, str]
 USE_SYSTEM_PATH: int
 USE_PDG_IMAGEMAGICK_DIR: int
 USE_PDG_IMAGEMAGICK: int

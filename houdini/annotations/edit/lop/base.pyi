@@ -13,6 +13,7 @@ class LopBaseState(BaseState):
     physprimpattern: str
     dragprimpath: str | None
     dragprimchildnums: list[int]
+    prompt: str | None
 
     @staticmethod
     def bindMenu(template: hou.ViewerStateTemplate, menu: hou.ViewerStateMenu) -> None: ...

@@ -1,14 +1,14 @@
 import hou
 import typing
 from autorigs.modules.extremity import buildExtremityGuide as buildExtremityGuide
-from autorigs.modules.extremity.buildExtremityGuide import _ObjNodeKey, _SopNodeKey
+from autorigs.modules.extremity.buildExtremityGuide import _GuideObject, _ObjNodeKey, _SopNodeKey
 from autorigs.modules.extremity.extremityGuideModel import ModuleOptionModel as ModuleOptionModel
 from autorigs.modules.extremity.extremityGuideParams import QuadFootParamsWidget as QuadFootParamsWidget, _ExtremityParamsJson
 from autorigs.modules.extremity.extremityModule import _ExtremityModuleJson
 from autorigs.modules.limb.limbModule import LimbModule as LimbModule
 from autorigs.modules.master.masterModule import MasterModule as MasterModule
 from collections.abc import Mapping as Mapping, Sequence
-from typing import Any, Literal
+from typing import Literal
 
 class QuadFootGuide(buildExtremityGuide.ExtremityGuide):
     show_extremity_root: bool
@@ -40,7 +40,7 @@ class QuadFootGuide(buildExtremityGuide.ExtremityGuide):
     @typing.overload
     def getGuideObject(self, guidename: Literal['maindigitsguides', 'mirrordigitsguides']) -> list[list[hou.ObjNode]]: ...
     @typing.overload
-    def getGuideObject(self, guidename: str) -> Any: ...
+    def getGuideObject(self, guidename: str) -> _GuideObject: ...
 
 class FootFactory(buildExtremityGuide.ExtremityFactory):
     @classmethod

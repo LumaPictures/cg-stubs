@@ -1,5 +1,4 @@
 from collections.abc import Callable, Iterable, Mapping
-from typing import Any
 
 import hou
 from houtypes import ViewerStateDrawKwargs, ViewerStateEnterKwargs, ViewerStateEventKwargs, ViewerStateKwargs
@@ -29,7 +28,7 @@ class Curve3EditTool(Curve3ToolBase):
     tool_name: str
     tool_label: str
     default_optype: str | None
-    hud_hints: list[dict[str, str]]
+    hud_hints: list[hou._HudRow]
     prompt_message: str
     drag_on_view_plane: bool
     def __init__(self, controller: Curve3Controller) -> None: ...
@@ -59,10 +58,10 @@ class Curve3EditTool(Curve3ToolBase):
     def hud_tool_hints(
         self,
         *,
-        hint_fn: Callable[[str, str], dict[str, str]],
-        selection_hints: list[dict[str, str]],
+        hint_fn: Callable[[str, str], hou._HudRow],
+        selection_hints: list[hou._HudRow],
         hotkey_refs: Mapping[str, str],
-    ) -> list[dict[str, str]]: ...
+    ) -> list[hou._HudRow]: ...
     def on_mouse_event(self, kwargs: ViewerStateEventKwargs) -> bool: ...
     def on_pick_handle_point(self, kwargs: ViewerStateEventKwargs, handle_event: _HandlePointPickEvent) -> bool: ...
     def on_pick_handle_line(self, kwargs: ViewerStateEventKwargs, handle_event: _HandleLinePickEvent) -> bool: ...

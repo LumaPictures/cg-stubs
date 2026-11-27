@@ -4,12 +4,31 @@ import PySide6.QtGui
 import PySide6.QtWidgets
 import hou
 import resourceui as rui
+import typing
 from collections.abc import Callable as Callable, Iterable, Mapping, Sequence
 from enum import Enum
 from hutil.PySide import QtCore, QtGui, QtWidgets
 from statehud.window import HUDWindow as HUDWindow, WidgetBundleWindow as WidgetBundleWindow
-from typing import Any, ClassVar, Literal, Protocol, Self
+from typing import Any, ClassVar, Literal, Never, Protocol, Required, Self
+from typing_extensions import TypedDict, Unpack
 from viewerhandle.hudmanager import HUDPrefHandler
+
+class _InputFieldKwargs(TypedDict, total=False):
+    label: str | None
+    size_policy: PySide6.QtWidgets.QSizePolicy | None
+    notify_pending_changes: bool
+    parent: PySide6.QtWidgets.QWidget | None
+
+class _ResizeGripOptions(TypedDict, total=False):
+    parent: PySide6.QtWidgets.QWidget | None
+    direction: rui.ResizeDirection
+    min_width: int | None
+    size: PySide6.QtCore.QSize | None
+    constraint_resize: bool
+
+class _ResizeGripKwargs(_ResizeGripOptions, total=False):
+    target_widget: Required[PySide6.QtWidgets.QWidget]
+    scene_viewer: Required[hou.SceneViewer]
 
 class _AnimBinding(Protocol):
     def channelIsPending(self, scene: _KeyframeScene, channel: str, /) -> bool: ...
@@ -37,7 +56,7 @@ PIN_RIGHT_YOFFSET: int
 PIN_TOP_RIGHT_YOFFSET: int
 PIN_LEFT_YOFFSET: int
 PIN_MIN_RESIZE_HEIGHT: int
-SUPPORTED_PREFS: tuple[str, ...]
+SUPPORTED_PREFS: tuple[str, str, str, str, str, str, str, str, str, str, str]
 
 class StateHUDPrefHandler(HUDPrefHandler):
     """ Override the HUD Pref Handler to change how some of it works. """
@@ -95,7 +114,10 @@ class DiagResizeGrip(ResizeGrip):
     height_start: int
     bottom_start: int
     min_height: int
-    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
+    @typing.overload
+    def __init__(self, *args: Unpack[tuple[PySide6.QtWidgets.QWidget, hou.SceneViewer]], **kwargs: Unpack[_ResizeGripOptions]) -> None: ...
+    @typing.overload
+    def __init__(self, *args: Unpack[tuple[()]], **kwargs: Unpack[_ResizeGripKwargs]) -> None: ...
     def getResizeRegion(self) -> int:
         """ Get the resize region that this grip applies to. """
     def setMinimumHeight(self, height: int) -> None:
@@ -212,7 +234,7 @@ class KeyableSlider(rui.SelectableValueField):
         Event callback used to unbind the keyframe handler and unset the
         keyframe event callback.
         """
-    def onParmChangedEvent(self, kwargs: dict[str, Any]) -> None:
+    def onParmChangedEvent(self, kwargs: Mapping[str, object]) -> None:
         """
         Event callback invoked when a bound parm changes.
         """
@@ -230,7 +252,7 @@ class KeyableToggle(rui.CheckBoxWrapper):
         Event callback used to unbind the keyframe handler and unset the
         keyframe event callback.
         """
-    def onParmChangedEvent(self, kwargs: dict[str, Any]) -> None:
+    def onParmChangedEvent(self, kwargs: Mapping[str, object]) -> None:
         """
         Event callback invoked when a bound parm changes.
         """
@@ -261,8 +283,8 @@ class VectorWidget(hou.qt.InputField):
     mouse_hotkeys: Mapping[tuple[int, int], str] | None
     vectorValueChanged: ClassVar[PySide6.QtCore.Signal]
     vectorHotkeyInvoked: ClassVar[PySide6.QtCore.Signal]
-    def __init__(self, data_type: int, num_components: int = 1, min_value: float | None = None, max_value: float | None = None, min_locked: bool | None = False, max_locked: bool | None = False, mouse_hotkeys: Mapping[tuple[int, int], str] | None = None, **kwargs: Any) -> None: ...
-    def setValues(self, values: Sequence[int] | Sequence[float] | Sequence[str]) -> None: ...
+    def __init__(self, data_type: int, num_components: int = 1, min_value: float | None = None, max_value: float | None = None, min_locked: bool | None = False, max_locked: bool | None = False, mouse_hotkeys: Mapping[tuple[int, int], str] | None = None, **kwargs: Unpack[_InputFieldKwargs]) -> None: ...
+    def setValues(self, values: Sequence[int] | hou._FloatSequence | Sequence[str]) -> None: ...
     def setValue(self, value: float | str | None, index: int = 0) -> None: ...
 
 STEP_SIZES: list[float]
@@ -328,7 +350,7 @@ class SliderGroupingManager:
 
 class SliderSelectionManager(SliderGroupingManager):
     LABEL_DRAG_DEADZONE: int
-    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
+    def __init__(self, *args: Unpack[tuple[PySide6.QtWidgets.QWidget, Callable[[str], PySide6.QtWidgets.QWidget | None], _SliderUpdater]], **kwargs: Never) -> None: ...
     def bindSignals(self, name: str, slider: KeyableSlider) -> None: ...
     def removeSlider(self, name: str) -> None: ...
     def mousePressEvent(self, event: PySide6.QtGui.QMouseEvent) -> bool:
@@ -403,7 +425,7 @@ class ChannelKeyFrameHandler(QtCore.QObject):
     def hasKeyFrame(self, frame: float | None = None) -> bool: ...
     def setKeyFrame(self, function: Callable[[], object] | None = None) -> bool: ...
     def removeKeyFrame(self, function: Callable[[], object] | None = None) -> bool: ...
-    def onPlaybarChanged(self, kwargs: dict[str, Any]) -> None: ...
+    def onPlaybarChanged(self, kwargs: Mapping[str, object]) -> None: ...
 SliderBound = float | int | list[float] | list[int]
 
 def resolveSliderBounds(bound: SliderBound, num_components: int) -> list[float] | list[int]: ...

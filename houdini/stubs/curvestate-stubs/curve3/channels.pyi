@@ -21,7 +21,7 @@ class Curve3ChannelManager:
         used to keep animation channels synchronized with selection and SOP
         changes without creating undo noise.
         """
-    def on_enter(self, node: hou.Node | None) -> None:
+    def on_enter(self, node: hou.OpNode | None) -> None:
         """
         Initialize channel-list state and register Houdini callbacks on state entry.
 

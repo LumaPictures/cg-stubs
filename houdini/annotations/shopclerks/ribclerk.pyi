@@ -1,4 +1,5 @@
 from collections.abc import Iterable, Mapping, Sequence
+from typing import Literal
 
 import hou
 from shopclerks.clerkutil import ParmEvaluator, ShaderStringEvaluator, _ShopOptions
@@ -53,7 +54,7 @@ class RibParmEval(ParmEvaluator):
     def getVStructParmValues(
         self, parm: hou.ParmTuple, values: str
     ) -> list[tuple[str, str]]: ...
-    def isArrayParm(self, parm: hou.ParmTuple, n: int) -> bool: ...
+    def isArrayParm(self, parm: hou.ParmTuple, n: int) -> bool | Literal[""]: ...
     def shopParmTupleOverride(
         self, parm: hou.ParmTuple, frame: float
     ) -> list[str] | None: ...

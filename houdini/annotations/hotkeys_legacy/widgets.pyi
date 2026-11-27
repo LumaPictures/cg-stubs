@@ -36,7 +36,7 @@ class ConflictWarning(QtWidgets.QWidget):
         key: str,
         dir: str | None,
         callback: Callable[[str], object],
-        *args: Any,
+        *args: QtWidgets.QWidget | None,
         **kwargs: Any,
     ) -> None: ...
 
@@ -55,7 +55,7 @@ class AssignmentInfo(QtWidgets.QWidget):
         key: str,
         dir: str | None,
         callback: Callable[[str], object],
-        *args: Any,
+        *args: QtWidgets.QWidget | None,
         **kwargs: Any,
     ) -> None: ...
 
@@ -72,7 +72,7 @@ class NoAssignmentInfo(QtWidgets.QWidget):
         label: str,
         key: str,
         callback: Callable[[str], object],
-        *args: Any,
+        *args: QtWidgets.QWidget | None,
         **kwargs: Any,
     ) -> None: ...
 

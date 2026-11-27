@@ -5,7 +5,7 @@ import PySide6.QtCore
 import PySide6.QtGui
 import PySide6.QtWidgets
 
-default_colors: tuple[PySide6.QtGui.QColor, ...]
+default_colors: tuple[PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor]
 
 class ColorPalette(PySide6.QtWidgets.QFrame):
     paletteChanged: ClassVar[PySide6.QtCore.Signal]

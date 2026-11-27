@@ -82,7 +82,7 @@ class AssetInfo:
     objectNodeId: int
     transformInputCount: int
     versionSH: int
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class AssetInvalidError(HapiError): ...
@@ -96,7 +96,7 @@ class AttributeInfo:
     totalArrayElements: int
     tupleSize: int
     typeInfo: attributeTypeInfo
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class BoxInfo:
@@ -125,7 +125,7 @@ class CameraInfo:
     shutterOpen: float
     winX: tuple[float, float]
     winY: tuple[float, float]
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class CantGeneratePresetError(HapiError): ...
@@ -139,7 +139,7 @@ class CantLoadfileError(HapiError): ...
 class CompositorOptions:
     maximumResolutionX: int
     maximumResolutionY: int
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class CookOptions:
@@ -160,7 +160,7 @@ class CookOptions:
     splitGeosByGroup: bool
     splitGroupSH: int
     splitPointsByVertexAttributes: bool
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class CurveInfo:
@@ -173,7 +173,7 @@ class CurveInfo:
     knotCount: int
     order: int
     vertexCount: int
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class DisallowedHengineindieW3partyPluginError(HapiError): ...
@@ -201,7 +201,7 @@ class GeoInfo:
     pointGroupCount: int
     primitiveGroupCount: int
     type: geoType
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class HandleBindingInfo:
@@ -209,14 +209,14 @@ class HandleBindingInfo:
     assetParmIndex: int
     assetParmNameSH: int
     handleParmNameSH: int
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class HandleInfo:
     bindingsCount: int
     nameSH: int
     typeNameSH: int
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class HapiError(Exception): ...
@@ -225,7 +225,7 @@ class ImageFileFormat:
     defaultExtensionSH: int
     descriptionSH: int
     nameSH: int
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class ImageInfo:
@@ -236,7 +236,7 @@ class ImageInfo:
     packing: imagePacking
     xRes: int
     yRes: int
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class InputCurveInfo:
@@ -246,7 +246,7 @@ class InputCurveInfo:
     inputMethod: inputCurveMethod
     order: int
     reverse: bool
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class InvalidArgumentError(HapiError): ...
@@ -260,14 +260,14 @@ class Keyframe:
     outTangent: float
     time: float
     value: float
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class MaterialInfo:
     exists: bool
     hasChanged: bool
     nodeId: int
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class NoLicenseFoundError(HapiError): ...
@@ -291,7 +291,7 @@ class NodeInfo:
     totalCookCount: int
     type: nodeType
     uniqueHoudiniNodeId: int
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class NodeInvalidError(HapiError): ...
@@ -309,7 +309,7 @@ class ObjectInfo:
     nodeId: int
     objectInstancePathSH: int
     objectToInstanceId: int
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class PDG_EventInfo:
@@ -350,7 +350,7 @@ class ParmChoiceInfo:
     labelSH: int
     parentParmId: int
     valueSH: int
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class ParmInfo:
@@ -397,7 +397,7 @@ class ParmInfo:
     typeInfoSH: int
     useMenuItemTokenAsValue: bool
     visibilityConditionSH: int
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class ParmSetFailedError(HapiError): ...
@@ -414,7 +414,7 @@ class PartInfo:
     pointCount: int
     type: partType
     vertexCount: int
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class Session:
@@ -431,13 +431,13 @@ class SessionInfo:
     ports: tuple[int, ...]
     sharedMemoryBufferSize: int
     sharedMemoryBufferType: thriftSharedMemoryBufferType
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class SessionSyncInfo:
     cookUsingHoudiniTime: bool
     syncViewport: bool
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class SharedMemoryBufferOverflowError(HapiError): ...
@@ -455,14 +455,14 @@ class ThriftServerOptions:
     sharedMemoryBufferType: thriftSharedMemoryBufferType
     timeoutMs: float
     verbosity: statusVerbosity
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class TimelineOptions:
     endTime: float
     fps: float
     startTime: float
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class Transform:
@@ -471,7 +471,7 @@ class Transform:
     rstOrder: hapi.rstOrder
     scale: tuple[float, float, float]
     shear: tuple[float, float, float]
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class TransformEuler:
@@ -481,7 +481,7 @@ class TransformEuler:
     rstOrder: hapi.rstOrder
     scale: tuple[float, float, float]
     shear: tuple[float, float, float]
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class UserInterruptedError(HapiError): ...
@@ -490,7 +490,7 @@ class Viewport:
     offset: float
     position: tuple[float, float, float]
     rotationQuaternion: tuple[float, float, float, float]
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class VolumeInfo:
@@ -509,7 +509,7 @@ class VolumeInfo:
     yLength: int
     yTaper: float
     zLength: int
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class VolumeTileInfo:
@@ -517,7 +517,7 @@ class VolumeTileInfo:
     minX: int
     minY: int
     minZ: int
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         """__init__(self, **kwargs) -> None"""
 
 class VolumeVisualInfo:
@@ -1633,7 +1633,7 @@ def convertTransformEulerToMatrix(session: Session | None, transform: TransformE
         The hapi.TransformEuler you wish to convert.
     
     """
-def convertTransformEulerToMatrix_np(*args, **kwargs) -> NDArray[numpy.float32]:
+def convertTransformEulerToMatrix_np(session: Session | None, transform: TransformEuler) -> NDArray[numpy.float32]:
     """convertTransformEulerToMatrix_np(session: hapi.Session | None = None, transform: hapi.TransformEuler) -> numpy.ndarray[dtype=float32]
 
     Converts hapi.TransformEuler into a 4x4 transform matrix.
@@ -1667,7 +1667,7 @@ def convertTransformQuatToMatrix(session: Session | None, transform: Transform) 
         The hapi.Transform you wish to convert.
     
     """
-def convertTransformQuatToMatrix_np(*args, **kwargs) -> NDArray[numpy.float32]:
+def convertTransformQuatToMatrix_np(session: Session | None, transform: Transform) -> NDArray[numpy.float32]:
     """convertTransformQuatToMatrix_np(session: hapi.Session | None = None, transform: hapi.Transform) -> numpy.ndarray[dtype=float32]
 
     Converts hapi.Transform into a 4x4 transform matrix.
@@ -3628,7 +3628,7 @@ def getAttributeFloat64DataAsync_np(session: Session | None, node_id: int, part_
         do nothing and return hapi.result.Success.
     
     """
-def getAttributeFloat64Data_np(*args, **kwargs) -> NDArray[numpy.float64]:
+def getAttributeFloat64Data_np(session: Session | None, node_id: int, part_id: int, name: str, attr_info: AttributeInfo, stride: int, start: int, length: int) -> NDArray[numpy.float64]:
     """getAttributeFloat64Data_np(session: hapi.Session | None = None, node_id: int, part_id: int, name: str, attr_info: hapi.AttributeInfo, stride: int, start: int = 0, length: int) -> numpy.ndarray[dtype=float64]
 
     Get 64-bit attribute float data.
@@ -4040,7 +4040,7 @@ def getAttributeFloatDataAsync_np(session: Session | None, node_id: int, part_id
         do nothing and return hapi.result.Success.
     
     """
-def getAttributeFloatData_np(*args, **kwargs) -> NDArray[numpy.float32]:
+def getAttributeFloatData_np(session: Session | None, node_id: int, part_id: int, name: str, attr_info: AttributeInfo, stride: int, start: int, length: int) -> NDArray[numpy.float32]:
     """getAttributeFloatData_np(session: hapi.Session | None = None, node_id: int, part_id: int, name: str, attr_info: hapi.AttributeInfo, stride: int, start: int = 0, length: int) -> numpy.ndarray[dtype=float32]
 
     Get attribute float data.
@@ -4789,7 +4789,7 @@ def getAttributeInt64DataAsync_np(session: Session | None, node_id: int, part_id
         do nothing and return hapi.result.Success.
     
     """
-def getAttributeInt64Data_np(*args, **kwargs) -> NDArray[numpy.int64]:
+def getAttributeInt64Data_np(session: Session | None, node_id: int, part_id: int, name: str, attr_info: AttributeInfo, stride: int, start: int, length: int) -> NDArray[numpy.int64]:
     """getAttributeInt64Data_np(session: hapi.Session | None = None, node_id: int, part_id: int, name: str, attr_info: hapi.AttributeInfo, stride: int, start: int = 0, length: int) -> numpy.ndarray[dtype=int64]
 
     Get attribute 64-bit integer data.
@@ -5509,7 +5509,7 @@ def getAttributeIntDataAsync_np(session: Session | None, node_id: int, part_id: 
         do nothing and return hapi.result.Success.
     
     """
-def getAttributeIntData_np(*args, **kwargs) -> NDArray[numpy.int32]:
+def getAttributeIntData_np(session: Session | None, node_id: int, part_id: int, name: str, attr_info: AttributeInfo, stride: int, start: int, length: int) -> NDArray[numpy.int32]:
     """getAttributeIntData_np(session: hapi.Session | None = None, node_id: int, part_id: int, name: str, attr_info: hapi.AttributeInfo, stride: int, start: int = 0, length: int) -> numpy.ndarray[dtype=int32]
 
     Get attribute integer data.
@@ -6583,7 +6583,7 @@ def getCurveCounts(session: Session | None, node_id: int, part_id: int, start: i
         The number of curves' counts to retrieve.
     
     """
-def getCurveCounts_np(*args, **kwargs) -> NDArray[numpy.int32]:
+def getCurveCounts_np(session: Session | None, node_id: int, part_id: int, start: int, length: int) -> NDArray[numpy.int32]:
     """getCurveCounts_np(session: hapi.Session | None = None, node_id: int, part_id: int, start: int = 0, length: int) -> numpy.ndarray[dtype=int32]
 
     Retrieve the number of vertices for each curve in the part.
@@ -6667,7 +6667,7 @@ def getCurveKnots(session: Session | None, node_id: int, part_id: int, start: in
         and hapi.getCurveCounts.
     
     """
-def getCurveKnots_np(*args, **kwargs) -> NDArray[numpy.float32]:
+def getCurveKnots_np(session: Session | None, node_id: int, part_id: int, start: int, length: int) -> NDArray[numpy.float32]:
     """getCurveKnots_np(session: hapi.Session | None = None, node_id: int, part_id: int, start: int = 0, length: int) -> numpy.ndarray[dtype=float32]
 
     Retrieve the knots of the curves in this part.
@@ -6730,7 +6730,7 @@ def getCurveOrders(session: Session | None, node_id: int, part_id: int, start: i
         The number of curves' orders to retrieve.
     
     """
-def getCurveOrders_np(*args, **kwargs) -> NDArray[numpy.int32]:
+def getCurveOrders_np(session: Session | None, node_id: int, part_id: int, start: int, length: int) -> NDArray[numpy.int32]:
     """getCurveOrders_np(session: hapi.Session | None = None, node_id: int, part_id: int, start: int = 0, length: int) -> numpy.ndarray[dtype=int32]
 
     Retrieve the orders for each curve in the part if the
@@ -6858,7 +6858,7 @@ def getFaceCounts(session: Session | None, node_id: int, part_id: int, start: in
         hapi.PartInfo.faceCount - `start`.
     
     """
-def getFaceCounts_np(*args, **kwargs) -> NDArray[numpy.int32]:
+def getFaceCounts_np(session: Session | None, node_id: int, part_id: int, start: int, length: int) -> NDArray[numpy.int32]:
     """getFaceCounts_np(session: hapi.Session | None = None, node_id: int, part_id: int, start: int = 0, length: int) -> numpy.ndarray[dtype=int32]
 
     Get the array of faces where the nth integer in the array is
@@ -7344,7 +7344,7 @@ def getHeightFieldData(session: Session | None, node_id: int, part_id: int, star
         - `start`.
     
     """
-def getHeightFieldData_np(*args, **kwargs) -> NDArray[numpy.float32]:
+def getHeightFieldData_np(session: Session | None, node_id: int, part_id: int, start: int, length: int) -> NDArray[numpy.float32]:
     """getHeightFieldData_np(session: hapi.Session | None = None, node_id: int, part_id: int, start: int, length: int) -> numpy.ndarray[dtype=float32]
 
     Get the height field data for a terrain volume as a flattened
@@ -7481,7 +7481,7 @@ def getImageMemoryBuffer(session: Session | None, material_node_id: int, length:
         the call to hapi.extractImageToMemory.
     
     """
-def getImageMemoryBuffer_np(*args, **kwargs) -> NDArray[numpy.int8]:
+def getImageMemoryBuffer_np(session: Session | None, material_node_id: int, length: int) -> NDArray[numpy.int8]:
     """getImageMemoryBuffer_np(session: hapi.Session | None = None, material_node_id: int, length: int) -> numpy.ndarray[dtype=int8]
 
     Fill your allocated buffer with the just extracted
@@ -8474,7 +8474,7 @@ def getParmFloatValues(session: Session | None, node_id: int, start: int, length
         hapi.NodeInfo.parmFloatValueCount - start.
     
     """
-def getParmFloatValues_np(*args, **kwargs) -> NDArray[numpy.float32]:
+def getParmFloatValues_np(session: Session | None, node_id: int, start: int, length: int) -> NDArray[numpy.float32]:
     """getParmFloatValues_np(session: hapi.Session | None = None, node_id: int, start: int = 0, length: int) -> numpy.ndarray[dtype=float32]
 
     Fill an array of parameter float values. This is more efficient
@@ -8624,7 +8624,7 @@ def getParmIntValues(session: Session | None, node_id: int, start: int, length: 
         hapi.NodeInfo.parmIntValueCount - start.
     
     """
-def getParmIntValues_np(*args, **kwargs) -> NDArray[numpy.int32]:
+def getParmIntValues_np(session: Session | None, node_id: int, start: int, length: int) -> NDArray[numpy.int32]:
     """getParmIntValues_np(session: hapi.Session | None = None, node_id: int, start: int = 0, length: int) -> numpy.ndarray[dtype=int32]
 
     Fill an array of parameter int values. This is more efficient
@@ -8959,7 +8959,7 @@ def getPresetNames(session: Session | None, buffer: str, buffer_length: int, pre
         the count returned by hapi.getPresetCount
     
     """
-def getPreset_np(*args, **kwargs) -> NDArray[numpy.int8]:
+def getPreset_np(session: Session | None, node_id: int, buffer_length: int) -> NDArray[numpy.int8]:
     """getPreset_np(session: hapi.Session | None = None, node_id: int, buffer_length: int) -> numpy.ndarray[dtype=int8]
 
     Generates a preset for the given asset.
@@ -9289,7 +9289,7 @@ def getStringBatchSize_np(session: Session | None, string_handle_array: NDArray[
         Length of `string_handle_array`
     
     """
-def getStringBatch_np(*args, **kwargs) -> NDArray[numpy.int8]:
+def getStringBatch_np(session: Session | None, char_array_length: int) -> NDArray[numpy.int8]:
     """getStringBatch_np(session: hapi.Session | None = None, char_array_length: int) -> numpy.ndarray[dtype=int8]
 
     Gives back the values of the given string handles.
@@ -9476,7 +9476,7 @@ def getVertexList(session: Session | None, node_id: int, part_id: int, start: in
         hapi.PartInfo.vertexCount - `start`.
     
     """
-def getVertexList_np(*args, **kwargs) -> NDArray[numpy.int32]:
+def getVertexList_np(session: Session | None, node_id: int, part_id: int, start: int, length: int) -> NDArray[numpy.int32]:
     """getVertexList_np(session: hapi.Session | None = None, node_id: int, part_id: int, start: int = 0, length: int) -> numpy.ndarray[dtype=int32]
 
     Get array containing the vertex-point associations where the
@@ -9606,7 +9606,7 @@ def getVolumeTileFloatData(session: Session | None, node_id: int, part_id: int, 
         The length should be ( 8 ^ 3 ) * tupleSize.
     
     """
-def getVolumeTileFloatData_np(*args, **kwargs) -> NDArray[numpy.float32]:
+def getVolumeTileFloatData_np(session: Session | None, node_id: int, part_id: int, fill_value: float, tile: VolumeTileInfo, length: int) -> NDArray[numpy.float32]:
     """getVolumeTileFloatData_np(session: hapi.Session | None = None, node_id: int, part_id: int, fill_value: float, tile: hapi.VolumeTileInfo, length: int) -> numpy.ndarray[dtype=float32]
 
     Retrieve floating point values of the voxels pointed to
@@ -9684,7 +9684,7 @@ def getVolumeTileIntData(session: Session | None, node_id: int, part_id: int, fi
         The length should be ( 8 ^ 3 ) * tupleSize.
     
     """
-def getVolumeTileIntData_np(*args, **kwargs) -> NDArray[numpy.int32]:
+def getVolumeTileIntData_np(session: Session | None, node_id: int, part_id: int, fill_value: int, tile: VolumeTileInfo, length: int) -> NDArray[numpy.int32]:
     """getVolumeTileIntData_np(session: hapi.Session | None = None, node_id: int, part_id: int, fill_value: int, tile: hapi.VolumeTileInfo, length: int) -> numpy.ndarray[dtype=int32]
 
     Retrieve integer point values of the voxels pointed to
@@ -9784,7 +9784,7 @@ def getVolumeVoxelFloatData(session: Session | None, node_id: int, part_id: int,
         hapi.VolumeInfo.tupleSize.
     
     """
-def getVolumeVoxelFloatData_np(*args, **kwargs) -> NDArray[numpy.float32]:
+def getVolumeVoxelFloatData_np(session: Session | None, node_id: int, part_id: int, x_index: int, y_index: int, z_index: int, value_count: int) -> NDArray[numpy.float32]:
     """getVolumeVoxelFloatData_np(session: hapi.Session | None = None, node_id: int, part_id: int, x_index: int, y_index: int, z_index: int, value_count: int) -> numpy.ndarray[dtype=float32]
 
     Retrieve floating point values of the voxel at a specific
@@ -9864,7 +9864,7 @@ def getVolumeVoxelIntData(session: Session | None, node_id: int, part_id: int, x
         hapi.VolumeInfo.tupleSize.
     
     """
-def getVolumeVoxelIntData_np(*args, **kwargs) -> NDArray[numpy.int32]:
+def getVolumeVoxelIntData_np(session: Session | None, node_id: int, part_id: int, x_index: int, y_index: int, z_index: int, value_count: int) -> NDArray[numpy.int32]:
     """getVolumeVoxelIntData_np(session: hapi.Session | None = None, node_id: int, part_id: int, x_index: int, y_index: int, z_index: int, value_count: int) -> numpy.ndarray[dtype=int32]
 
     Retrieve integer point values of the voxel at a specific
@@ -9959,7 +9959,7 @@ def getWorkItemFloatAttribute(session: Session | None, node_id: int, work_item_i
         The length of the `data_array`
     
     """
-def getWorkItemFloatAttribute_np(*args, **kwargs) -> NDArray[numpy.float32]:
+def getWorkItemFloatAttribute_np(session: Session | None, node_id: int, work_item_id: int, attribute_name: str, length: int) -> NDArray[numpy.float32]:
     """getWorkItemFloatAttribute_np(session: hapi.Session | None = None, node_id: int, work_item_id: int, attribute_name: str, length: int) -> numpy.ndarray[dtype=float32]
 
     Gets float data from a work item attribute.
@@ -10038,7 +10038,7 @@ def getWorkItemIntAttribute(session: Session | None, node_id: int, work_item_id:
         The length of `data_array`
     
     """
-def getWorkItemIntAttribute_np(*args, **kwargs) -> NDArray[numpy.int32]:
+def getWorkItemIntAttribute_np(session: Session | None, node_id: int, work_item_id: int, attribute_name: str, length: int) -> NDArray[numpy.int32]:
     """getWorkItemIntAttribute_np(session: hapi.Session | None = None, node_id: int, work_item_id: int, attribute_name: str, length: int) -> numpy.ndarray[dtype=int32]
 
     Gets int data from a work item attribute.
@@ -10144,7 +10144,7 @@ def getWorkItems(session: Session | None, node_id: int, length: int) -> list[int
         The length of the `work_item_ids` buffer
     
     """
-def getWorkItems_np(*args, **kwargs) -> NDArray[numpy.int32]:
+def getWorkItems_np(session: Session | None, node_id: int, length: int) -> NDArray[numpy.int32]:
     """getWorkItems_np(session: hapi.Session | None = None, node_id: int, length: int) -> numpy.ndarray[dtype=int32]
 
     Gets the list of work item ids for the given node
@@ -11147,7 +11147,7 @@ def saveGeoToMemory(session: Session | None, node_id: int, length: int) -> list[
         The size of the buffer passed in.
     
     """
-def saveGeoToMemory_np(*args, **kwargs) -> NDArray[numpy.int8]:
+def saveGeoToMemory_np(session: Session | None, node_id: int, length: int) -> NDArray[numpy.int8]:
     """saveGeoToMemory_np(session: hapi.Session | None = None, node_id: int, length: int) -> numpy.ndarray[dtype=int8]
 
     Saves the cached geometry to your buffer in memory,

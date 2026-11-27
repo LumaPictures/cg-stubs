@@ -13,7 +13,9 @@ Must be run with hython, so that the compiled extensions can be imported.
 from __future__ import annotations
 
 import ast
+import collections
 import copy
+import ctypes
 import enum
 import functools
 import importlib
@@ -22,12 +24,13 @@ import os
 import pathlib
 import re
 import shutil
+import subprocess
 import sys
 import tempfile
 import tokenize
 import traceback
 from types import ModuleType
-from typing import Any, Iterable
+from typing import Any, Iterable, NamedTuple
 
 import annotation_overlays
 import libcst as cst
@@ -62,6 +65,11 @@ STUBS_DIR = HERE / "stubs"
 # Compiled extension modules, stubbed by runtime inspection.
 COMPILED_MODULES = [
     "_alembic_hom_extensions",
+    # From the packages in $HFS/packages (see EXTRA_SOURCES in annotation_overlays.py).
+    "_apex",
+    "_apexscene",
+    "_kinefx",
+    "_shotbuilder",
     "_cop",
     "_gltf_hom_extensions",
     "_haio",
@@ -222,8 +230,10 @@ class CppScopedDocstringSignatureGenerator(DocstringSignatureGenerator):
         if ctx.docstring and "::" in ctx.docstring:
             ctx = copy.copy(ctx)
             ctx.docstring = CPP_SCOPED_NAME.sub(
-                lambda m: python_name_of_scoped(ctx.module_name, m.group(1), m.group(2))
-                or m.group(0),
+                lambda m: (
+                    python_name_of_scoped(ctx.module_name, m.group(1), m.group(2))
+                    or m.group(0)
+                ),
                 ctx.docstring,
             )
         return super().get_function_sig(default_sig, ctx)
@@ -337,6 +347,30 @@ class UsdSchemaSignatureGenerator(SignatureGenerator):
         return None
 
 
+class DocStringParser(mypy.stubdoc.DocStringParser):
+    """mypy's docstring parser, reading every signature of an overloaded function.
+
+    mypy's keeps the position of a signature's `/` and `*` into the next signature, and drops
+    that one as having two, so it only reads the first of nanobind's overloads
+    (`unitLayerPath(self, arg: str, /) -> str` and `unitLayerPath(self, arg0: str, arg1: str,
+    /) -> str`).
+    """
+
+    def add_token(self, token: tokenize.TokenInfo) -> None:
+        super().add_token(token)
+        if (
+            token.type in (tokenize.NEWLINE, tokenize.ENDMARKER)
+            and self.state[-1] == mypy.stubdoc.STATE_INIT
+        ):
+            self.pos_only = None
+            self.keyword_only = None
+
+    def reset(self) -> None:
+        super().reset()
+        self.pos_only = None
+        self.keyword_only = None
+
+
 def is_nanobind_routine(obj: object) -> bool:
     return type(obj).__name__ in ("nb_func", "nb_method")
 
@@ -358,6 +392,9 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
         module = super().get_obj_module(obj)
         if module is not None and module == CLASS_MODULE_ALIASES.get(self.module_name):
             return self.module_name
+        if module == "Shiboken":
+            # The base of Shiboken's classes reports the module shiboken6 imports it as.
+            return "shiboken6.Shiboken"
         return module
 
     def get_sig_generators(self) -> list[SignatureGenerator]:
@@ -381,6 +418,14 @@ class InspectionStubGenerator(mypy.stubgenc.InspectionStubGenerator):
 
     def is_method(self, class_info: ClassInfo, name: str, obj: object) -> bool:
         return super().is_method(class_info, name, obj) or is_nanobind_routine(obj)
+
+    def is_staticmethod(
+        self, class_info: ClassInfo | None, name: str, obj: object
+    ) -> bool:
+        # nanobind's static methods are plain `nb_func`s in the class, its methods `nb_method`s.
+        return super().is_staticmethod(class_info, name, obj) or (
+            class_info is not None and type(obj).__name__ == "nb_func"
+        )
 
     def strip_or_import(self, type_name: str) -> str:
         # Types from the other pdg extensions are referenced by module, so import it.
@@ -576,6 +621,7 @@ mypy.stubgenc.InspectionStubGenerator = InspectionStubGenerator  # type: ignore[
 mypy.stubgen.ASTStubGenerator = ASTStubGenerator  # type: ignore[misc]
 mypy.stubgen.ModuleInspect = InProcessModuleInspect  # type: ignore[misc,assignment]
 mypy.stubgen.SelfTraverser = SelfTraverser  # type: ignore[misc]
+mypy.stubdoc.DocStringParser = DocStringParser  # type: ignore[misc]
 
 
 def stage_sources(libs: pathlib.Path, staging: pathlib.Path) -> list[str]:
@@ -617,12 +663,29 @@ def import_compiled_modules() -> list[str]:
     found = []
     for name in COMPILED_MODULES:
         try:
-            importlib.import_module(name)
+            module = importlib.import_module(name)
         except ImportError as exc:
             print(f"Skipping {name}: {exc}")
         else:
-            found.append(name)
+            found.extend([name, *compiled_submodules(module)])
     return found
+
+
+def compiled_submodules(module: ModuleType) -> list[str]:
+    """The submodules a compiled module makes itself (`_apex.graphops`), recursively.
+
+    stubgen only stubs the modules it is given, and these have no file to be found by.
+    """
+    names = []
+    for value in vars(module).values():
+        if (
+            isinstance(value, ModuleType)
+            and value.__name__.startswith(f"{module.__name__}.")
+            and getattr(value, "__file__", None) is None
+            and sys.modules.get(value.__name__) is value
+        ):
+            names.extend([value.__name__, *compiled_submodules(value)])
+    return names
 
 
 def module_name_of(rel: pathlib.Path) -> str:
@@ -658,8 +721,9 @@ def package_stubs(
             text = drop_callable_attributes_of_methods(text)
             text = prune_unreachable_overloads(text)
             text = fix_nested_enums(text, sys.modules[module_name])
-            text = drop_unsigned_methods(text, sys.modules[module_name])
+            text = stub_unsigned_methods(text, sys.modules[module_name])
             text = parameterize_compiled_generics(text, sys.modules[module_name])
+            text = accept_bound_vectors(text)
             text = type_enum_format(text)
             text = type_constructors(text, sys.modules[module_name])
         else:
@@ -1419,6 +1483,68 @@ def parameterize_compiled_generics(text: str, module: ModuleType) -> str:
     return "\n".join(lines) + "\n"
 
 
+def accept_bound_vectors(text: str) -> str:
+    """Let the `Sequence[T]` parameters of a stub take its pybind11 bound vectors of T.
+
+    pybind11 converts any python sequence to a C++ array argument (`UT_Array[_pdg.WorkItem]`),
+    and a bound vector (`_pdg.WorkItemList`) is one, but it isn't a `Sequence` subclass: the
+    stub names it in each such parameter's type.  A bound vector is a class with `append` and
+    an integer `__getitem__`; its own methods already take it where they do.
+    """
+    tree = ast.parse(text)
+    vectors: dict[str, list[str]] = collections.defaultdict(list)
+    for cls in tree.body:
+        if not isinstance(cls, ast.ClassDef):
+            continue
+        methods = [f for f in cls.body if isinstance(f, ast.FunctionDef)]
+        if not any(f.name == "append" for f in methods):
+            continue
+        for f in methods:
+            args = f.args.args
+            if (
+                f.name == "__getitem__"
+                and len(args) == 2
+                and args[1].annotation is not None
+                and ast.unparse(args[1].annotation) in ("int", "SupportsIndex")
+                and f.returns is not None
+            ):
+                vectors[ast.unparse(f.returns)].append(cls.name)
+    if not vectors:
+        return text
+    vector_classes = {name for names in vectors.values() for name in names}
+    lines = text.splitlines()
+    # Splices are made from the end of each line, so earlier offsets stay valid.
+    splices: list[tuple[int, int, int, str]] = []
+
+    def visit(body: list[ast.stmt], owner: str | None) -> None:
+        for node in body:
+            if isinstance(node, ast.ClassDef):
+                visit(node.body, node.name)
+            elif isinstance(node, ast.FunctionDef) and owner not in vector_classes:
+                args = node.args
+                for arg in [*args.posonlyargs, *args.args, *args.kwonlyargs]:
+                    annotation = arg.annotation
+                    if annotation is None or annotation.lineno != annotation.end_lineno:
+                        continue
+                    match = re.fullmatch(r"Sequence\[(\w+)\]", ast.unparse(annotation))
+                    if match and match.group(1) in vectors:
+                        names = " | ".join(sorted(vectors[match.group(1)]))
+                        splices.append(
+                            (
+                                annotation.lineno - 1,
+                                annotation.col_offset,
+                                annotation.end_col_offset or 0,
+                                f"{ast.unparse(annotation)} | {names}",
+                            )
+                        )
+
+    visit(tree.body, None)
+    for lineno, start, end, replacement in sorted(splices, reverse=True):
+        line = lines[lineno]
+        lines[lineno] = line[:start] + replacement + line[end:]
+    return "\n".join(lines) + "\n"
+
+
 # What a binding raises when a class has no constructor python can call: pybind11's default
 # __init__, Boost.Python's no_init, Shiboken's tp_new for a class it can't create.
 NO_CONSTRUCTOR_MESSAGE = re.compile(
@@ -1609,11 +1735,927 @@ def type_enum_format(text: str) -> str:
     )
 
 
-def drop_unsigned_methods(text: str, module: ModuleType) -> str:
-    """Leave out the methods with no signature from the classes a module attributes elsewhere.
+CPP_METHOD_SYMBOL = re.compile(
+    r"\s[TUVW]\s(\w+)::(\w+)(?:\[abi:\w+\])*\((.*)\)(?: const)?$"
+)
+CPP_NUMBERS = {
+    "bool": "bool",
+    "short": "int",
+    "unsigned short": "int",
+    "int": "int",
+    "unsigned int": "int",
+    "long": "int",
+    "unsigned long": "int",
+    "long long": "int",
+    "unsigned long long": "int",
+    "float": "float",
+    "double": "float",
+}
+CPP_STRINGS = {
+    "QString",
+    "std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >",
+    "UT_StringHolder",
+    "UT_StringRef",
+}
+QT_MODULES = ("QtCore", "QtGui", "QtWidgets")
 
-    _houqt's `hou.qt` classes (see CLASS_MODULE_ALIASES) have no signatures for their own
-    methods, which would be untyped; the stubs give their names and Qt base classes.
+
+@functools.cache
+def cpp_methods(path: str) -> dict[tuple[str, str], list[list[str]]]:
+    """The parameter types of each overload of the C++ methods a compiled module defines or
+    calls, by class and method name, from its dynamic symbols ({} if `nm` can't read them).
+
+    The symbols give a method's parameters, but not its result or its default arguments.
+    """
+    try:
+        output = subprocess.run(
+            ["nm", "-DC", path], capture_output=True, text=True, check=True
+        ).stdout
+    except (OSError, subprocess.CalledProcessError):
+        return {}
+    methods: dict[tuple[str, str], list[list[str]]] = collections.defaultdict(list)
+    for line in output.splitlines():
+        if match := CPP_METHOD_SYMBOL.search(line):
+            params = [
+                p for p in split_template_args(match.group(3)) if p and p != "void"
+            ]
+            if params not in methods[match.group(1), match.group(2)]:
+                methods[match.group(1), match.group(2)].append(params)
+    return methods
+
+
+def python_class_of_cpp(name: str, module: ModuleType) -> str | None:
+    """The python class of a C++ class or enum (`NLE_QtTimelineItem`, `Qt::Orientation`)."""
+    parts = name.split("::")
+    qt = importlib.import_module("PySide6")
+    owners: list[tuple[Any, str | None]] = [(module, None)]
+    owners += [(getattr(qt, m), f"PySide6.{m}") for m in QT_MODULES]
+    for owner, prefix in owners:
+        obj = owner
+        for part in parts:
+            obj = getattr(obj, part, None)
+        if isinstance(obj, type):
+            return ".".join([prefix, *parts] if prefix else parts)
+    return None
+
+
+def python_type_of_cpp(cpp: str, module: ModuleType) -> str | None:
+    """The type of a python argument Shiboken converts to a C++ parameter type, or None if it
+    is not known (an output parameter, a container it may not convert, an unbound class)."""
+    if cpp == "char const*":
+        return "str"
+    pointer = cpp.endswith("*")
+    if cpp.endswith((" const&", " const*")):
+        name = cpp[: -len(" const&")]
+    elif cpp.endswith(("&", "*")):
+        name = cpp[:-1]
+        if name in CPP_NUMBERS or name in CPP_STRINGS or "<" in name:
+            return None
+    else:
+        name = cpp
+    if not pointer and name in CPP_NUMBERS:
+        return CPP_NUMBERS[name]
+    if not pointer and name in CPP_STRINGS:
+        return "str"
+    if match := re.fullmatch(r"QFlags<(.+)>", name):
+        name = match.group(1)
+    if match := re.fullmatch(r"QList<(.+)>", name):
+        item = python_type_of_cpp(match.group(1), module)
+        return f"Sequence[{item}]" if item and not pointer else None
+    if "<" in name:
+        return (
+            None if pointer else python_type_of_cpp_value(name, module, argument=True)
+        )
+    python = python_class_of_cpp(name, module)
+    if python is None:
+        return None
+    # Shiboken passes None as a null pointer.
+    return f"{python} | None" if pointer else python
+
+
+def unsigned_method_signatures(
+    cls: type, name: str, raw: Any, module: ModuleType
+) -> list[tuple[str, str]]:
+    """The `(*args, **kwargs)` parameters and the result of each overload of a compiled method
+    with no signature, typed from the C++ methods it wraps and from how python calls it.
+
+    A method Shiboken binds as taking no arguments, or exactly one, has the
+    `__text_signature__` python gives those; it takes the C++ overloads of that many
+    parameters.  Of one that takes any arguments, a single C++ parameter must have a default.
+    Other defaults are not known.  The parameters are typed as the stub's other Shiboken
+    methods are (`*args: Unpack[tuple[str, int]], **kwargs: Never`), which keeps their names
+    for overlay entries.  The results are those of the method's wrapper (see
+    shiboken_wrappers).
+    """
+    func = raw.__func__ if isinstance(raw, staticmethod) else raw
+    text_signature = getattr(func, "__text_signature__", None)
+    arity = None
+    if text_signature is not None:
+        arity = len(
+            [
+                p
+                for p in text_signature.strip("()").split(",")
+                if p.strip() and not p.strip().startswith(("$", "/"))
+            ]
+        )
+    methods = cpp_methods(module.__file__) if module.__file__ else {}
+    # A method takes the overloads its C++ base classes have too
+    # (NLE_QtTimelinePlayhead.mapFromTimeline takes NLE_TimelinePlayhead's `double`).  Shiboken
+    # gives some of _houqt's classes their C++ name as __name__, others as __qualname__.
+    cpp_names = list(
+        dict.fromkeys(
+            cpp_name
+            for base in cls.__mro__
+            for cpp_name in (base.__name__, base.__qualname__.replace(".", "_"))
+        )
+    )
+    overloads = [
+        params for cpp_name in cpp_names for params in methods.get((cpp_name, name), [])
+    ]
+    wrappers = shiboken_wrappers(module)
+    # The wrapper is the defining class's: the first class in the MRO that has one.
+    wrapper = next(
+        (wrappers[c, name] for c in cpp_names if (c, name) in wrappers),
+        ShibokenWrapper([], [], None),
+    )
+    if not overloads and wrapper.arity is not None:
+        # A pure virtual method has no symbol, but the methods overriding it take the same
+        # parameters.
+        overloads = [
+            params
+            for sub in vars(module).values()
+            if isinstance(sub, type) and sub is not cls and issubclass(sub, cls)
+            for cpp_name in (sub.__name__, sub.__qualname__.replace(".", "_"))
+            for params in methods.get((cpp_name, name), [])
+        ]
+    results = wrapper.results
+    if any(r.startswith("tuple[") for _, r in results):
+        # A pointer to a number is an output parameter, whose value is returned in a tuple.
+        overloads = [
+            [p for p in params if not (p.endswith("*") and p[:-1] in CPP_NUMBERS)]
+            for params in overloads
+        ]
+    overloads = list(map(list, dict.fromkeys(map(tuple, overloads))))
+    if wrapper.arity is not None:
+        overloads = wrapper_overloads(overloads, wrapper, module)
+    # The C++ parameters each overload's result is of: its own, or those of the overload it
+    # leaves defaults out of.
+    full = {tuple(o): o for o in overloads}
+
+    def result_of(params: list[str] | None) -> str:
+        """The result of the overload of these C++ parameters (None: of any of them)."""
+        kinds = list(dict.fromkeys(r for _, r in results))
+        if params is not None and len(kinds) > 1:
+            own = list(dict.fromkeys(r for p, r in results if p == params))
+            claimed = {
+                r
+                for p, r in results
+                if p is not None and p != params and p in overloads
+            }
+            kinds = (
+                own
+                if len(own) == 1
+                else [r for r in kinds if r not in claimed] or kinds
+            )
+        if not kinds or "Incomplete" in kinds:
+            return "Incomplete"
+        return join_union(kinds)
+
+    def argument_at(position: int) -> str:
+        """The type of a positional argument, from the types the wrapper checks it against."""
+        if position >= len(wrapper.arguments):
+            return "Incomplete"
+        types = wrapper.arguments[position]
+        return "Incomplete" if "Incomplete" in types else join_union(types)
+
+    if not overloads and arity is None and wrapper.arity is not None:
+        # No C++ symbols: the wrapper takes one overload per number of arguments it accepts.
+        low, high = wrapper.arity
+        overloads = [["?"] * count for count in range(low, high + 1)]
+    if arity is not None:
+        overloads = [o for o in overloads if len(o) == arity] or [["?"] * arity]
+    elif wrapper.arity is None and len(overloads) == 1 and len(overloads[0]) == 1:
+        overloads = [[], overloads[0]]
+    elif wrapper.arity is not None and overloads:
+        # The wrapper takes counts of arguments no overload has: those are the longest
+        # overloads' with defaults left out, if one is the longest, or if the longest all
+        # end in the same parameters (`mapFromTimeline(QPoint const&, bool)` and
+        # `mapFromTimeline(double, bool)`).
+        low, high = wrapper.arity
+        longest = [o for o in overloads if len(o) == high]
+        for count in range(low, high):
+            if longest and all(len(o) != count for o in overloads):
+                if len(longest) == 1 or len({tuple(o[count:]) for o in longest}) == 1:
+                    for overload in longest:
+                        overloads.append(overload[:count])
+                        full[tuple(overload[:count])] = overload
+    if not overloads:
+        return [("*args: Incomplete, **kwargs: Incomplete", result_of(None))]
+    signatures: list[tuple[list[str], list[str]]] = []
+    for params in overloads:
+        types = [
+            python_type_of_cpp(p, module) or argument_at(i)
+            for i, p in enumerate(params)
+        ]
+        result = result_of(full.get(tuple(params)) if "?" not in params else None)
+        # An earlier overload that takes all this one does (`QRectF | None` for `QRectF`).
+        covering = next(
+            (
+                earlier
+                for earlier in signatures
+                if len(earlier[0]) == len(types)
+                and all(
+                    e == "Incomplete" or set(t.split(" | ")) <= set(e.split(" | "))
+                    for e, t in zip(earlier[0], types)
+                )
+            ),
+            None,
+        )
+        if covering is None:
+            signatures.append((types, [result]))
+        elif result not in covering[1]:
+            covering[1].append(result)
+    # One with a parameter of unknown type takes anything there, so it goes after the others.
+    signatures.sort(key=lambda signature: signature[0].count("Incomplete"))
+    return [
+        (
+            f"*args: Unpack[tuple[{', '.join(types)}]], **kwargs: Never"
+            if types
+            else "*args: Never, **kwargs: Never",
+            "Incomplete" if "Incomplete" in results_ else join_union(results_),
+        )
+        for types, results_ in signatures
+    ]
+
+
+def wrapper_overloads(
+    overloads: list[list[str]], wrapper: ShibokenWrapper, module: ModuleType
+) -> list[list[str]]:
+    """The C++ overloads (parameter lists) a Shiboken wrapper takes: those it accepts the
+    number and the types of the arguments of.  A C++ method hides the overloads of its base
+    classes' method of the same name, which the C++ symbols don't show.  All of them if the
+    wrapper seems to take none."""
+    assert wrapper.arity is not None
+    low, high = wrapper.arity
+
+    def accepts(params: list[str]) -> bool:
+        if not low <= len(params) <= high:
+            return False
+        for position, cpp in enumerate(params):
+            python = python_type_of_cpp(cpp, module)
+            if python is None or position >= len(wrapper.arguments):
+                continue
+            checked = wrapper.arguments[position]
+            if "Incomplete" in checked:
+                continue
+            members = {m.strip() for t in checked for m in split_union(t)}
+            if not {m.strip() for m in split_union(python)} <= members:
+                return False
+        return True
+
+    return [o for o in overloads if accepts(o)] or overloads
+
+
+def join_union(types: Iterable[str]) -> str:
+    """The union of types (`X | None`, `float`), each member once and None last."""
+    members = list(dict.fromkeys(m.strip() for t in types for m in split_union(t)))
+    return " | ".join(sorted(members, key=lambda m: m == "None"))
+
+
+# The python types of Shiboken's primitive converters, by index (shiboken6's sbkconverter.h).
+# The char types are left out: which of str or int they make is not known here.
+SHIBOKEN_PRIMITIVES = {
+    0: "int",
+    1: "bool",
+    3: "str | None",  # const char *: None for a null pointer
+    4: "float",
+    5: "float",
+    6: "int",
+    7: "int",
+    8: "int",
+    10: "str",
+    11: "str",
+    12: "int",
+    14: "int",
+    15: "int",
+    16: "int",
+    18: "None",
+}
+ASM_FUNCTION = re.compile(r"^[0-9a-f]+ <(.+)>:$")
+ASM_INSTRUCTION = re.compile(r"^\s*([0-9a-f]+):\s+(\S+)\s*(.*?)\s*$")
+ASM_SYMBOL = re.compile(r"\s*#\s+([0-9a-f]+) <([^>]+)>$")
+ASM_CALL_TARGET = re.compile(r"^[0-9a-f]+ <(.+?)(?:@plt)?>$")
+ASM_MEMORY = re.compile(r"^(-?0x[0-9a-f]+)?\(%(\w+)\)$")
+ASM_CALLER_SAVED = {"rax", "rcx", "rdx", "rsi", "rdi", "r8", "r9", "r10", "r11"}
+ASM_ARGUMENTS = ("rdi", "rsi", "rdx", "rcx", "r8", "r9")
+SHIBOKEN_WRAPPER = re.compile(r"Sbk_(\w+?)Func_(\w+)")
+# The functions a Shiboken wrapper checks or converts its python arguments with, by the
+# kind of C++ parameter they are for.
+SHIBOKEN_ARGUMENT_CHECKS_BY_KIND = [
+    (kind, f"Shiboken::Conversions::{function}")
+    for kind, functions in [
+        (
+            "converter",
+            [
+                "pythonToCppConversion(SbkConverter",
+                "pythonToCppReferenceConversion(SbkConverter",
+                "isPythonToCppConvertible(SbkConverter",
+            ],
+        ),
+        (
+            "pointer",
+            [
+                "pythonToCppPointerConversion(_typeobject",
+                "isPythonToCppPointerConvertible(_typeobject",
+            ],
+        ),
+        (
+            "value",
+            [
+                "pythonToCppReferenceConversion(_typeobject",
+                "pythonToCppValueConversion(_typeobject",
+                "isPythonToCppReferenceConvertible(_typeobject",
+                "isPythonToCppValueConvertible(_typeobject",
+            ],
+        ),
+    ]
+    for function in functions
+]
+SHIBOKEN_ARGUMENT_CHECKS = tuple(f for _, f in SHIBOKEN_ARGUMENT_CHECKS_BY_KIND)
+CPP_CALL = re.compile(r"[\w:<>, *&\[\]~]+?\((.*)\)(?: const)?")
+
+
+def asm_register(operand: str) -> str:
+    """The 64-bit register an operand names (`%edi` -> `rdi`, `%r12d` -> `r12`)."""
+    name = operand.lstrip("%")
+    if match := re.fullmatch(r"e([a-d]x|[sd]i|[sb]p)", name):
+        return f"r{match.group(1)}"
+    if match := re.fullmatch(r"(r\d+)[dwb]?", name):
+        return match.group(1)
+    return name
+
+
+def asm_operands(text: str) -> list[str]:
+    """An instruction's operands, split at the commas outside parentheses."""
+    operands, depth, current = [], 0, ""
+    for char in text:
+        depth += {"(": 1, ")": -1}.get(char, 0)
+        if char == "," and depth == 0:
+            operands.append(current.strip())
+            current = ""
+        else:
+            current += char
+    return [o for o in [*operands, current.strip()] if o]
+
+
+def asm_functions(path: str) -> dict[str, list[tuple[int, str, str]]]:
+    """The instructions (address, mnemonic, operands) of each function in a library's code,
+    from `objdump` ({} if it can't read them)."""
+    try:
+        output = subprocess.run(
+            ["objdump", "-d", "-C", "--no-show-raw-insn", "-j", ".text", path],
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+    except (OSError, subprocess.CalledProcessError):
+        return {}
+    functions: dict[str, list[tuple[int, str, str]]] = {}
+    current: list[tuple[int, str, str]] | None = None
+    for line in output.splitlines():
+        if match := ASM_FUNCTION.match(line):
+            current = functions.setdefault(match.group(1), [])
+        elif current is not None and (match := ASM_INSTRUCTION.match(line)):
+            current.append((int(match.group(1), 16), match.group(2), match.group(3)))
+    return functions
+
+
+# The kinds of the conversions of a wrapper's result (see AsmValues.step).
+RESULT_CONVERSIONS = {"converter", "value", "pointer", "tuple", "none"}
+
+
+class AsmValues:
+    """The values that matter to a Shiboken wrapper, through the registers and the stack, as
+    its instructions are stepped through (see shiboken_conversions).
+
+    A value is one of ("var", symbol, address), the address of a global; ("base", symbol),
+    the table a global points to; ("addr", symbol, offset) and ("elem", symbol, offset), the
+    address and value of a table's entry; ("imm", n); ("type", symbol, offset), the python type
+    of a type table's entry; ("prim", index); ("setp", type), an enum type's private data;
+    ("enumconv", type), an enum's converter; ("newconv", function), a converter the module
+    creates; ("pyobj", (kind, converter)), the python object a conversion made; ("pyin",), the
+    wrapper's python argument (the one argument of a METH_O wrapper); and ("slot", base,
+    offset) and ("slotval", base, offset), the address and value of a stack slot
+    (`PyArg_UnpackTuple` unpacks the arguments into an array of them).
+    """
+
+    def __init__(self) -> None:
+        self.registers: dict[str, tuple[Any, ...]] = {"rsi": ("pyin",)}
+        # The tables each register has pointed to: a block laid out after another can still
+        # have one in a register that the other reused.
+        self.tables: dict[str, tuple[Any, ...]] = {}
+        self.bases: dict[str, tuple[Any, ...]] = {}
+        self.stack: dict[tuple[str, int], tuple[Any, ...] | None] = {}
+        self.pushed: list[tuple[Any, ...] | None] = []
+        # rbp addresses the stack only in a function that makes it its frame pointer.
+        self.frames = {"rsp"}
+
+    def copy(self) -> AsmValues:
+        return copy.deepcopy(self)
+
+    def step(self, mnemonic: str, text: str) -> list[tuple[str, Any]]:
+        """Follow one instruction, and return what it does that matters, as (kind, value):
+        ("call", symbol), a call of a C++ method (`*` for a virtual one); a conversion of a
+        result to python (see RESULT_CONVERSIONS) and what it converts with; ("arg", ((kind,
+        converter), source)), a check or conversion of a python argument; ("return", value),
+        the wrapper returning a value (("none",) for Py_None); ("slots", slots)
+        and ("unpack", (minimum, maximum)), where the wrapper unpacks its arguments to and how
+        many it takes; and ("name", (converter, name)) and ("store", (table, offset,
+        function)), a converter the module registers."""
+        registers = self.registers
+        symbol = ASM_SYMBOL.search(text)
+        operands = asm_operands(ASM_SYMBOL.sub("", text))
+        events: list[tuple[str, Any]] = []
+        if mnemonic.startswith("call"):
+            target = ASM_CALL_TARGET.match(operands[0]) if operands else None
+            function = target.group(1) if target else None
+            rdi = registers.get("rdi")
+            result: tuple[Any, ...] | None = None
+            conversion: tuple[str, Any] | None = None
+            if function is None:
+                # A virtual call (`*0x70(%rax)`); a call through a register is to a function
+                # a converter returned.
+                if operands and not operands[0].startswith("*%"):
+                    events.append(("call", "*"))
+            elif function.startswith("Shiboken::Module::get("):
+                if rdi and rdi[0] in ("addr", "base"):
+                    result = ("type", rdi[1], rdi[2] if rdi[0] == "addr" else 0)
+            elif function.startswith("Shiboken::Conversions::primitiveTypeConverter("):
+                if rdi and rdi[0] == "imm":
+                    result = ("prim", rdi[1])
+            elif function.startswith("PepType_SETP"):
+                if rdi and rdi[0] == "type":
+                    result = ("setp", rdi)
+            elif function.startswith("Shiboken::Conversions::createConverter("):
+                rsi = registers.get("rsi")
+                result = ("newconv", rsi[1] if rsi else None)
+            elif function.startswith("Shiboken::Conversions::registerConverterName("):
+                events.append(("name", (rdi, registers.get("rsi"))))
+            elif function.startswith(
+                "Shiboken::Conversions::copyToPython(SbkConverter"
+            ):
+                conversion = ("converter", rdi)
+            elif function.startswith(
+                (
+                    "Shiboken::Conversions::copyToPython(_typeobject",
+                    "Shiboken::Conversions::referenceToPython(",
+                    "Shiboken::Object::newObject(",
+                )
+            ):
+                conversion = ("value", rdi)
+            elif function.startswith("Shiboken::Conversions::pointerToPython("):
+                conversion = ("pointer", rdi)
+            elif function == "PyTuple_Pack":
+                count = rdi[1] if rdi and rdi[0] == "imm" else 0
+                items = [registers.get(r) for r in ASM_ARGUMENTS[1 : count + 1]]
+                conversion = (
+                    "tuple",
+                    [
+                        item[1] if item and item[0] == "pyobj" else None
+                        for item in items
+                    ],
+                )
+            elif function == "Sbk_ReturnFromPython_None":
+                conversion = ("none", None)
+            elif function == "Sbk_ReturnFromPython_Result":
+                events.append(("return", rdi))
+            elif function.startswith(SHIBOKEN_ARGUMENT_CHECKS):
+                kind = next(
+                    k
+                    for k, f in SHIBOKEN_ARGUMENT_CHECKS_BY_KIND
+                    if function.startswith(f)
+                )
+                events.append(("arg", ((kind, rdi), registers.get("rsi"))))
+            elif function in ("PyArg_UnpackTuple", "PyArg_ParseTuple"):
+                # The addresses of the slots it unpacks into follow the tuple, the name or
+                # format, and PyArg_UnpackTuple's counts; any after the sixth argument are
+                # pushed, the last first.
+                first = 4 if function == "PyArg_UnpackTuple" else 2
+                slots = [registers.get(r) for r in ASM_ARGUMENTS[first:]]
+                slots += reversed(self.pushed)
+                events.append(("slots", [v[1:] for v in slots if v and v[0] == "slot"]))
+                if function == "PyArg_UnpackTuple":
+                    events.append(
+                        ("unpack", (registers.get("rdx"), registers.get("rcx")))
+                    )
+            elif function.startswith("Shiboken::checkInvalidArgumentCount("):
+                # Before PyArg_ParseTuple, which takes no counts.
+                events.append(("unpack", (registers.get("rsi"), registers.get("rdx"))))
+            elif "::" in function and not function.startswith(
+                ("Shiboken::", "PySide::", "std::", "operator", "QArrayDataPointer<")
+            ):
+                owner, _, method = function.split("(")[0].rpartition("::")
+                # Not the constructor or destructor of a temporary.
+                if method.lstrip("~") != owner.rpartition("::")[2]:
+                    events.append(("call", function))
+            for name in ASM_CALLER_SAVED:
+                registers.pop(name, None)
+            self.pushed = []
+            if conversion is not None:
+                events.append(conversion)
+                result = ("pyobj", conversion)
+            if result is not None:
+                registers["rax"] = result
+            return events
+        if mnemonic in ("push", "pop"):
+            # Saving and restoring callee-saved registers: in layout order an epilogue's
+            # restores come before blocks that still have the function's values in them.
+            if mnemonic == "push" and operands and operands[0].startswith("%"):
+                self.pushed.append(registers.get(asm_register(operands[0])))
+            return events
+        if len(operands) != 2:
+            if len(operands) == 1 and operands[0].startswith("%"):
+                registers.pop(asm_register(operands[0]), None)
+            return events
+        source, destination = operands
+        if not destination.startswith("%"):
+            match = ASM_MEMORY.match(destination)
+            if match and match.group(2) in self.frames and source.startswith("%"):
+                offset = int(match.group(1), 16) if match.group(1) else 0
+                self.stack[match.group(2), offset] = registers.get(asm_register(source))
+            elif (
+                match
+                and source == "%rax"
+                and registers.get("rax", ("",))[0] == "newconv"
+            ):
+                table = registers.get(asm_register(match.group(2)))
+                if table and table[0] == "base":
+                    offset = int(match.group(1), 16) if match.group(1) else 0
+                    events.append(("store", (table[1], offset, registers["rax"][1])))
+            return events
+        register = asm_register(destination)
+        if (mnemonic, source, destination) == ("mov", "%rsp", "%rbp"):
+            self.frames.add("rbp")
+            return events
+        value: tuple[Any, ...] | None = None
+        if mnemonic in ("lea", "mov") and symbol and "(%rip)" in source:
+            if symbol.group(2).startswith("_Py_NoneStruct"):
+                value = ("none",)
+            elif mnemonic == "lea":
+                value = ("var", symbol.group(2), int(symbol.group(1), 16))
+            else:
+                value = ("base", symbol.group(2))
+        elif mnemonic == "mov" and source.startswith("$"):
+            value = ("imm", int(source[1:], 16))
+        elif mnemonic == "xor" and source == destination:
+            value = ("imm", 0)
+        elif mnemonic == "mov" and source.startswith("%"):
+            value = registers.get(asm_register(source))
+        elif mnemonic in ("mov", "lea") and (match := ASM_MEMORY.match(source)):
+            offset = int(match.group(1), 16) if match.group(1) else 0
+            if match.group(2) in self.frames:
+                slot = (match.group(2), offset)
+                if mnemonic == "lea":
+                    value = ("slot", *slot)
+                else:
+                    value = self.stack.get(slot) or ("slotval", *slot)
+            else:
+                held = registers.get(asm_register(match.group(2)))
+                if not held or held[0] in ("slot", "slotval"):
+                    held = self.tables.get(asm_register(match.group(2)), held)
+                if held and held[0] == "var" and offset == 0 and mnemonic == "mov":
+                    value = ("base", held[1])
+                elif held and held[0] == "base":
+                    value = ("elem" if mnemonic == "mov" else "addr", held[1], offset)
+                elif held and held[0] == "setp" and mnemonic == "mov":
+                    value = ("enumconv", held[1])
+        elif mnemonic == "add" and source.startswith("$"):
+            # A branch can add an entry's offset to a table loaded before the branch, which
+            # in layout order a call in the other branch's block has clobbered since.
+            held = registers.get(register) or self.bases.get(register)
+            if held and held[0] == "base":
+                value = ("addr", held[1], int(source[1:], 16))
+        if value is None:
+            registers.pop(register, None)
+        else:
+            registers[register] = value
+            if value[0] in ("var", "base") and register not in ASM_CALLER_SAVED:
+                self.tables[register] = value
+            if value[0] == "base":
+                self.bases[register] = value
+        return events
+
+
+def shiboken_conversions(
+    instructions: list[tuple[int, str, str]],
+) -> tuple[list[tuple[str, Any]], list[tuple[str | None, tuple[str, Any]]]]:
+    """What a Shiboken wrapper's code does that matters (see AsmValues.step), and the
+    conversion of the result it returns after each C++ method it calls: (the method's
+    demangled symbol, `*` for a virtual call, (kind, converter)).
+
+    The code is followed down each branch, an instruction once for each C++ method called on
+    the way to it (overloads share the code that converts and returns their results), which
+    is enough for the code Shiboken generates: each conversion takes its converter from a
+    table (`SbkPySide6_QtGuiTypeStructs` plus the type's offset), or from
+    `primitiveTypeConverter(index)`.  A method with output parameters returns them in a
+    tuple with its result.
+    """
+    positions = {address: i for i, (address, _, _) in enumerate(instructions)}
+
+    def target(text: str) -> int | None:
+        match = re.match(r"([0-9a-f]+) <", text)
+        return positions.get(int(match.group(1), 16)) if match else None
+
+    events: list[tuple[str, Any]] = []
+    results: list[tuple[str | None, tuple[str, Any]]] = []
+    visited: set[tuple[int, str | None]] = set()
+    pending: list[tuple[int, str | None, AsmValues]] = [(0, None, AsmValues())]
+    while pending:
+        position, call, values = pending.pop()
+        while position < len(instructions) and (position, call) not in visited:
+            visited.add((position, call))
+            _, mnemonic, text = instructions[position]
+            position += 1
+            if mnemonic.startswith("ret"):
+                break
+            if mnemonic.startswith("j"):
+                jump = target(text)
+                if mnemonic in ("jmp", "jmpq"):
+                    if jump is None:
+                        break
+                    position = jump
+                elif jump is not None:
+                    pending.append((jump, call, values.copy()))
+                continue
+            for kind, value in values.step(mnemonic, text):
+                if kind == "call":
+                    call = value
+                elif kind == "none":
+                    results.append((call, ("none", None)))
+                elif kind == "return":
+                    if value == ("none",):
+                        # Py_None, inlined (`Py_RETURN_NONE`).
+                        results.append((call, ("none", None)))
+                    elif value and value[0] == "pyobj":
+                        results.append((call, value[1]))
+                elif kind not in RESULT_CONVERSIONS and (kind, value) not in events:
+                    events.append((kind, value))
+    return events, [r for i, r in enumerate(results) if r not in results[:i]]
+
+
+@functools.cache
+def pyside_converter_types(qt_module: str) -> dict[int, str]:
+    """The C++ types of a PySide6 module's converters (`QString`, `QList<int>`), by index,
+    from the header PySide6 installs."""
+    header = (
+        pathlib.Path(importlib.import_module("PySide6").__file__ or "").parent
+        / "include"
+        / qt_module
+        / f"pyside6_{qt_module.lower()}_python.h"
+    )
+    try:
+        text = header.read_text()
+    except OSError:
+        return {}
+    types = {}
+    # The header has the indices twice: in a deprecated enum of names in capitals, then in
+    # the one Shiboken uses now.
+    for block in re.findall(
+        r"// Converter indices\nenum : int \{(.*?)\};", text, re.DOTALL
+    ):
+        for match in re.finditer(r"SBK_(\w+?)_IDX\s*=\s*(\d+),(?:\s*// (.+))?", block):
+            if not match.group(1).endswith("CONVERTERS"):
+                types[int(match.group(2))] = (match.group(3) or match.group(1)).strip()
+    return types
+
+
+def python_type_of_cpp_value(
+    cpp: str, module: ModuleType, argument: bool
+) -> str | None:
+    """The type of the python object Shiboken converts a C++ value of this type to, or of
+    the python argument it converts to one (`argument`), or None if it is not known.  A
+    container's items are not None."""
+    name = cpp.strip().removeprefix("const ").removesuffix("*").strip()
+    if name in CPP_NUMBERS:
+        return CPP_NUMBERS[name]
+    if name in CPP_STRINGS or name in ("std::string", "QChar"):
+        return "str"
+    if name == "QStringList":
+        return "Sequence[str]" if argument else "list[str]"
+    if name in ("QVariant", "std::any"):
+        # Whatever the value held.
+        return "Any"
+    if match := re.fullmatch(r"(QList|QVector|QSet|std::vector|UT_Array)<(.+)>", name):
+        # std::vector<int, std::allocator<int> >
+        item_cpp = split_template_args(match.group(2))[0]
+        item = python_type_of_cpp_value(item_cpp, module, argument)
+        if item is None:
+            return None
+        # Shiboken converts any sequence to a C++ container, a QSet too (but not a set).
+        container = "set" if match.group(1) == "QSet" else "list"
+        return f"{'Sequence' if argument else container}[{item}]"
+    if match := re.fullmatch(r"(QMap|QHash|std::map|std::pair)<(.+)>", name):
+        items = [
+            python_type_of_cpp_value(p, module, argument)
+            for p in split_template_args(match.group(2))
+        ]
+        if len(items) != 2 or None in items:
+            return None
+        if match.group(1) == "std::pair":
+            return f"tuple[{items[0]}, {items[1]}]"
+        # Shiboken converts only a dict to a C++ map.
+        return f"dict[{items[0]}, {items[1]}]"
+    return python_class_of_cpp(name, module)
+
+
+def python_name_of_shiboken_type(full_name: str, module: ModuleType) -> str | None:
+    """How the stub names the class of a Shiboken type table's entry
+    (`PySide6.QtCore.Qt.ItemFlags` is `PySide6.QtCore.Qt.ItemFlag`)."""
+    parts = full_name.split(".")
+    for length in range(len(parts) - 1, 0, -1):
+        owner = sys.modules.get(".".join(parts[:length]))
+        if owner is None:
+            continue
+        obj: Any = owner
+        for part in parts[length:]:
+            obj = getattr(obj, part, None)
+        if not isinstance(obj, type):
+            return None
+        if owner is module:
+            return ".".join(parts[length:])
+        return f"{obj.__module__}.{obj.__qualname__}"
+    return None
+
+
+class ShibokenWrapper(NamedTuple):
+    """What a Shiboken method wrapper's machine code shows of the method's signatures."""
+
+    # The parameters of the C++ method each result is of (None for a virtual call), and the
+    # result's python type.
+    results: list[tuple[list[str] | None, str]]
+    # The python types each positional argument is checked against, by position (one per
+    # overload that takes it), and how many arguments it takes, if that is known.
+    arguments: list[list[str]]
+    arity: tuple[int, int] | None
+
+
+@functools.cache
+def shiboken_wrappers(module: ModuleType) -> dict[tuple[str, str], ShibokenWrapper]:
+    """The method wrappers of a Shiboken module, by C++ class and method name.
+
+    Shiboken embeds no signatures for some modules (_houqt), and the C++ symbols give no
+    results, nor the parameters of methods that are inlined or only called virtually, so they
+    are read from the wrappers' machine code (see shiboken_conversions): the type tables a
+    conversion indexes are read from the loaded module, and the names of its converters from
+    the code that registers them.  {} if the module's symbols or code can't be read.
+    """
+    path = module.__file__
+    if not path:
+        return {}
+    try:
+        output = subprocess.run(
+            ["nm", path], capture_output=True, text=True, check=True
+        ).stdout
+    except (OSError, subprocess.CalledProcessError):
+        return {}
+    symbols = {}
+    for line in output.splitlines():
+        fields = line.split()
+        if len(fields) == 3:
+            symbols[fields[2]] = int(fields[0], 16)
+    init = f"PyInit_{module.__name__}"
+    functions = asm_functions(path)
+    if init not in symbols or init not in functions:
+        return {}
+    library = ctypes.CDLL(path)
+    base = ctypes.cast(getattr(library, init), ctypes.c_void_p).value or 0
+    base -= symbols[init]
+
+    # Each type table entry is a Shiboken::Module::TypeInitStruct {type, fullName}.
+    type_names: dict[tuple[str, int], str] = {}
+    for symbol, address in symbols.items():
+        if symbol.endswith("TypeStructs"):
+            table = ctypes.c_void_p.from_address(base + address).value
+            index = 0
+            while table and (
+                name := ctypes.c_void_p.from_address(table + 16 * index + 8).value
+            ):
+                type_names[symbol, 16 * index] = ctypes.string_at(name).decode()
+                index += 1
+    converter_types: dict[tuple[str, int], str] = {}
+    for qt_module in QT_MODULES:
+        for index, cpp in pyside_converter_types(qt_module).items():
+            converter_types[f"SbkPySide6_{qt_module}TypeConverters", 8 * index] = cpp
+    for kind, value in shiboken_conversions(functions[init])[0]:
+        if kind == "name":
+            converter, name = value
+            if converter and converter[0] == "elem" and name and name[0] == "var":
+                converter_types.setdefault(
+                    (converter[1], converter[2]),
+                    ctypes.string_at(base + name[2]).decode(),
+                )
+
+    def type_of(kind: str, value: Any, argument: bool = False) -> str:
+        if kind == "none":
+            return "None"
+        if kind == "tuple":
+            items = [type_of(*item) if item else "Incomplete" for item in value]
+            return f"tuple[{', '.join(items)}]"
+        if not value:
+            return "Incomplete"
+        if kind == "converter" and value[0] == "prim":
+            if argument and value[1] == 3:
+                return "str | None"
+            return SHIBOKEN_PRIMITIVES.get(value[1], "Incomplete")
+        if kind == "converter" and value[0] == "elem":
+            cpp = converter_types.get((value[1], value[2]))
+            python = cpp and python_type_of_cpp_value(cpp, module, argument)
+            return python or "Incomplete"
+        if kind == "converter" and value[0] == "enumconv":
+            value, kind = value[1], "value"
+        if kind in ("value", "pointer") and value[0] == "type":
+            full_name = type_names.get((value[1], value[2]))
+            name = full_name and python_name_of_shiboken_type(full_name, module)
+            if not name:
+                return "Incomplete"
+            # Shiboken makes None of a null pointer, and a null pointer of None.
+            return f"{name} | None" if kind == "pointer" else name
+        return "Incomplete"
+
+    wrappers: dict[tuple[str, str], ShibokenWrapper] = {}
+    for function, instructions in functions.items():
+        match = SHIBOKEN_WRAPPER.fullmatch(function)
+        if not match:
+            continue
+        if instructions and instructions[0][1] in ("jmp", "jmpq"):
+            # The linker folded the wrapper into another of the same code.
+            folded = re.match(r"[0-9a-f]+ <([^+>]+)>$", instructions[0][2])
+            instructions = functions.get(folded.group(1), []) if folded else []
+        events, conversions = shiboken_conversions(instructions)
+        results = []
+        for call, conversion in conversions:
+            params = None
+            if call and call != "*" and (signature := CPP_CALL.fullmatch(call)):
+                params = [
+                    p
+                    for p in split_template_args(signature.group(1))
+                    if p and p != "void"
+                ]
+            result = (params, type_of(*conversion))
+            if result not in results:
+                results.append(result)
+
+        # A METH_O wrapper checks its argument; another unpacks its arguments into an
+        # array of stack slots, which it then checks.
+        checks = [value for kind, value in events if kind == "arg"]
+        unpacks = [value for kind, value in events if kind == "unpack"]
+        slots: list[Any] = next((v for kind, v in events if kind == "slots"), [])
+        arity = None
+        if unpacks and all(v and v[0] == "imm" for v in unpacks[0]):
+            arity = (unpacks[0][0][1], unpacks[0][1][1])
+        elif not unpacks and any(source == ("pyin",) for _, source in checks):
+            arity, slots = (1, 1), [()]
+        arguments: list[list[str]] = []
+        if arity is not None and len(slots) == arity[1]:
+            positions = {slot: i for i, slot in enumerate(slots)}
+            arguments = [[] for _ in slots]
+            for (kind, converter), source in checks:
+                key = (
+                    source[1:] if source and source[0] in ("slotval", "pyin") else None
+                )
+                if key in positions:
+                    argument = type_of(kind, converter, argument=True)
+                    if argument not in arguments[positions[key]]:
+                        arguments[positions[key]].append(argument)
+        wrappers[match.group(1), match.group(2)] = ShibokenWrapper(
+            results, arguments, arity
+        )
+    return wrappers
+
+
+def signal_signatures(cls: type, name: str) -> list[str]:
+    """The Qt signatures of a class's signal (`clipSelectionChanged()`)."""
+    meta = getattr(cls, "staticMetaObject", None)
+    if meta is None:
+        return []
+    signal = importlib.import_module("PySide6.QtCore").QMetaMethod.MethodType.Signal
+    methods = (meta.method(i) for i in range(meta.methodCount()))
+    return [
+        bytes(m.methodSignature().data()).decode()
+        for m in methods
+        if m.methodType() == signal and bytes(m.name().data()).decode() == name
+    ]
+
+
+def stub_unsigned_methods(text: str, module: ModuleType) -> str:
+    """Stub the methods with no signature of a module that attributes classes elsewhere.
+
+    _houqt's classes, its `hou.qt` ones (see CLASS_MODULE_ALIASES) and its own, have no
+    signatures for most of their methods.  Their signals are declared as such, the methods a
+    PySide6 base class has are left to it, and the others are typed from the C++ methods they
+    wrap and from their Shiboken wrappers (see unsigned_method_signatures).  The special
+    methods with no signature are left out.  An overlay entry types a method before this (with
+    the `*args, **kwargs` parameters the stub has for it until then).
     """
     alias = CLASS_MODULE_ALIASES.get(module.__name__)
     if alias is None:
@@ -1625,8 +2667,9 @@ def drop_unsigned_methods(text: str, module: ModuleType) -> str:
         if not isinstance(node, ast.ClassDef):
             continue
         runtime = getattr(module, node.name, None)
-        if getattr(runtime, "__module__", None) != alias:
+        if getattr(runtime, "__module__", None) not in (alias, module.__name__):
             continue
+        assert isinstance(runtime, type)
         unsigned = [
             item
             for item in node.body
@@ -1642,17 +2685,65 @@ def drop_unsigned_methods(text: str, module: ModuleType) -> str:
                 + [a for a in (item.args.vararg, item.args.kwarg) if a]
             )
         ]
-        if not unsigned:
-            continue
-        if len(unsigned) == len([n for n in node.body if not isinstance(n, ast.Expr)]):
+        dropped = 0
+        for item in unsigned:
+            raw = vars(runtime).get(item.name)
+            start, end = first_line(item), item.end_lineno or item.lineno
+            if type(raw).__name__ == "Signal":
+                qt_signatures = ", ".join(signal_signatures(runtime, item.name))
+                comment = f"  # {qt_signatures}" if qt_signatures else ""
+                stub = (
+                    f"    {item.name}: ClassVar[PySide6.QtCore.Signal] = ...{comment}"
+                )
+                edits.append((start, end, [stub]))
+            elif (
+                raw is None
+                or item.name.startswith("__")
+                or any(
+                    item.name in vars(base)
+                    for base in runtime.__mro__[1:]
+                    if base.__module__.startswith("PySide6.")
+                )
+            ):
+                dropped += 1
+                edits.append((start, end, []))
+            else:
+                signatures = unsigned_method_signatures(runtime, item.name, raw, module)
+                static = isinstance(raw, staticmethod)
+                decorators = ["    @staticmethod"] if static else []
+                if len(signatures) > 1:
+                    decorators.append("    @overload")
+                params = "" if static else "self, "
+                edits.append(
+                    (
+                        start,
+                        end,
+                        [
+                            line
+                            for signature, result in signatures
+                            for line in [
+                                *decorators,
+                                f"    def {item.name}({params}{signature}) -> {result}: ...",
+                            ]
+                        ],
+                    )
+                )
+        if dropped and dropped == len(
+            [n for n in node.body if not isinstance(n, ast.Expr)]
+        ):
             end = node.end_lineno or node.lineno
             edits.append((end + 1, end, ["    ..."]))
-        edits += [
-            (first_line(item), item.end_lineno or item.lineno, []) for item in unsigned
-        ]
+    if not edits:
+        return text
     for start, end, replacement in sorted(edits, reverse=True):
         lines[start - 1 : end] = replacement
-    return "\n".join(lines) + "\n"
+    return insert_after_imports(
+        "\n".join(lines) + "\n",
+        [
+            "from typing import Any, ClassVar, Never, Unpack, overload",
+            "from _typeshed import Incomplete",
+        ],
+    )
 
 
 SIMPLE_TYPE_ORDER = {"bool": 0, "int": 1, "float": 2, "complex": 3}
@@ -2551,8 +3642,9 @@ IMPLICIT_IMPORTS += (
 def stub_modules() -> list[str]:
     """The top-level modules with stubs, which an annotation may refer to without importing."""
     libs = libs_dir()
-    names = {p.stem for p in libs.glob("*.py")} | {
-        p.name for p in libs.iterdir() if p.is_dir()
+    names = {
+        pathlib.PurePath(rel).parts[0].removesuffix(".py")
+        for rel, _ in annotation_overlays.source_files(libs)
     }
     names |= {name.split(".")[0] for name in COMPILED_MODULES}
     return sorted(
@@ -2630,9 +3722,11 @@ def reexport_rebound_builtins(text: str) -> str:
     import builtins
 
     return REBOUND_NAME.sub(
-        lambda m: f"from builtins import {m[1]} as {m[1]}"
-        if hasattr(builtins, m[1])
-        else m[0],
+        lambda m: (
+            f"from builtins import {m[1]} as {m[1]}"
+            if hasattr(builtins, m[1])
+            else m[0]
+        ),
         text,
     )
 

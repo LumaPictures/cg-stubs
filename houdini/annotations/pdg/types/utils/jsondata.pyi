@@ -1,0 +1,108 @@
+import _pdg
+from houtypes import JSONLike
+from pdg.processor import PyProcessor
+
+class JsonInput(PyProcessor):
+    Retrieve: int
+    ArrayRetrieve: int
+    Deserialize: int
+    SourceUpstream: int
+    SourceFilePath: int
+    SourceAttribute: int
+    InputNone: int
+    InputAttrib: int
+    InputFile: int
+    StoreStr: int
+    StoreInt: int
+    StoreFloat: int
+    StorePython: int
+    StoreStrArray: int
+    StoreIntArray: int
+    StoreFloatArray: int
+    StoreAuto: int
+    StoreUnpack: int
+    StoreDict: int
+    StoreDictArray: int
+    def __init__(self, node: _pdg.Node) -> None: ...
+    @classmethod
+    def templateName(cls) -> str: ...
+    @classmethod
+    def templateBody(cls) -> str: ...
+    def onConfigureNode(self, node_options: _pdg.NodeOptions) -> _pdg.result: ...
+    def onPrepareTask(self, work_item: _pdg.WorkItem) -> _pdg.result: ...
+    def onGenerate(
+        self,
+        item_holder: _pdg.WorkItemHolder,
+        upstream_items: _pdg.WorkItemList,
+        generation_type: _pdg.generationType,
+    ) -> _pdg.result: ...
+    # op is one of Retrieve, ArrayRetrieve and Deserialize.
+    def processAttribute(
+        self,
+        item_holder: _pdg.WorkItemHolder,
+        upstream_item: _pdg.WorkItem,
+        attrib_name: str,
+        op: int,
+    ) -> None: ...
+    def processFile(
+        self,
+        item_holder: _pdg.WorkItemHolder,
+        upstream_item: _pdg.WorkItem | None,
+        file_in: str,
+        file_tag: str,
+        op: int,
+    ) -> None: ...
+    # json_data is parsed JSON, a dict attribute's value, or a PyObject attribute's object.
+    def retrieve(
+        self,
+        item_holder: _pdg.WorkItemHolder,
+        upstream_item: _pdg.WorkItem | None,
+        json_data: JSONLike | _pdg.Dictionary,
+    ) -> None: ...
+    def arrayRetrieve(
+        self,
+        item_holder: _pdg.WorkItemHolder,
+        upstream_item: _pdg.WorkItem | None,
+        json_data: JSONLike | _pdg.Dictionary,
+    ) -> None: ...
+
+class JsonOutput(PyProcessor):
+    OutputFile: int
+    OutputString: int
+    OutputPython: int
+    OutputDict: int
+    InputUpstreamItem: int
+    InputUpstreamFile: int
+    InputCustomFile: int
+    InputAttribute: int
+    def __init__(self, node: _pdg.Node) -> None: ...
+    @classmethod
+    def templateName(cls) -> str: ...
+    @classmethod
+    def templateBody(cls) -> str: ...
+    def onConfigureNode(self, node_options: _pdg.NodeOptions) -> _pdg.result: ...
+    def onGenerate(
+        self,
+        item_holder: _pdg.WorkItemHolder,
+        upstream_items: _pdg.WorkItemList,
+        generation_type: _pdg.generationType,
+    ) -> None: ...
+    def writeUpstreamItem(
+        self, item_holder: _pdg.WorkItemHolder, upstream_item: _pdg.WorkItem
+    ) -> None: ...
+    def writeUpstreamFile(
+        self, item_holder: _pdg.WorkItemHolder, upstream_item: _pdg.WorkItem
+    ) -> None: ...
+    def writeCustomFile(
+        self, item_holder: _pdg.WorkItemHolder, upstream_item: _pdg.WorkItem | None
+    ) -> None: ...
+    def writeAttribute(
+        self, item_holder: _pdg.WorkItemHolder, upstream_item: _pdg.WorkItem | None
+    ) -> None: ...
+    def writeFile(self, work_item: _pdg.WorkItem, file_path: str) -> None: ...
+    # json_data is parsed JSON, a dict attribute's value, or a PyObject attribute's object.
+    def writeJSON(self, work_item: _pdg.WorkItem, json_data: JSONLike) -> None: ...
+    @staticmethod
+    def prepareOutputPath(output_file: str) -> None: ...
+
+def registerTypes(type_registry: _pdg.TypeRegistry) -> None: ...

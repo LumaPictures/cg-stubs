@@ -1,5 +1,5 @@
 from collections.abc import Container, Iterable, Mapping, Sequence
-from typing import Any, Literal, Protocol, TypeAlias
+from typing import Literal, Protocol, TypeAlias
 
 from typing_extensions import TypedDict
 
@@ -56,7 +56,7 @@ class _AssetDataSourceInfo(TypedDict):
 class _NodeParmNames(TypedDict):
     folder: str
     parmnames: dict[str, str]
-    extraparms: dict[str, Any]
+    extraparms: dict[str, object]
 
 theThumbnailCameraPrimPath: str
 theThumbnailFileName: str

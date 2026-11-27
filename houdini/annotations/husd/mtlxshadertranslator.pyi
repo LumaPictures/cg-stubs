@@ -33,7 +33,7 @@ class UsdShaderInputInfoMap:
         usd_shader_extra_input_names: Sequence[str] | None = ...,
     ) -> None: ...
     def connectionInfo(
-        self, shader_node: hou.VopNode, wire: hou.NodeConnection
+        self, shader_node: hou.VopNode, wire: hou.OpNodeConnection
     ) -> tuple[UsdShade.Shader | None, str | None, Sdf.ValueTypeName | None, hou.VopNode | None, str]: ...
     def extraInputs(
         self, usd_shader: UsdShade.Shader
@@ -76,7 +76,7 @@ class MaterialXShaderTranslatorHelper(HelperBase):
         self,
         usd_shader: _UsdShaderSchema,
         shader_node: hou.VopNode,
-        wire: hou.NodeConnection,
+        wire: hou.OpNodeConnection,
     ) -> tuple[
         _UsdShaderSchema | None,
         str | None,

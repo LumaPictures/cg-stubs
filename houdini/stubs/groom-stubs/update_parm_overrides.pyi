@@ -1,7 +1,7 @@
 import hou
 from collections.abc import Iterable, Iterator
 from os import PathLike
-from typing import Any, TypedDict
+from typing import TypedDict
 from typing_extensions import NotRequired
 
 class _OverrideParm(TypedDict):
@@ -22,7 +22,7 @@ class _TypeOverrides(TypedDict):
 
 support_dir: str
 loadedfiles: set[str]
-cattypemaps: dict[hou.NodeTypeCategory, dict[str, Any]]
+cattypemaps: dict[hou.NodeTypeCategory, dict[str, object]]
 
 def allParmTemplates(group_or_folder: hou.ParmTemplateGroup | hou.FolderParmTemplate) -> Iterator[hou.ParmTemplate]: ...
 def find(name: str, path: str) -> list[str]: ...

@@ -1,11 +1,7 @@
-from typing import TypeAlias
-
 from hrecipes import rtypes
 
 import hou
-
-# hrecipes._ParmOption, spelled out.
-_ParmOption: TypeAlias = bool | list[hou.ParmTuple] | list[str] | set[str] | tuple[str, ...]
+from houpythonportion.OpNode import _ParmOption
 
 def set(
     self: hou.Parm,

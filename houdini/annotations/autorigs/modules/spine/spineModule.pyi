@@ -28,6 +28,8 @@ class SpineModule(
         _SpineControls | None,
         None,
         None,
+        "SpineGuideTab",
+        AutoRigsAsset,
     ]
 ):
     MODULE_TYPE: str
@@ -39,9 +41,11 @@ class SpineModule(
     assetnode: hou.ObjNode
     builtRig: None
     hookrigmap: None
-    guidetab: "SpineGuideTab"
+    guidetab: "SpineGuideTab | None"
     autorigsbuilder: AutoRigsSpineBuilder
     hookrigmapping: dict[str, hou.ObjNode | None]
+    buildguides: SpineGuide
+    builtrig: _SpineControls | None
     def __init__(self, autorigs_asset: AutoRigsAsset) -> None: ...
     def initialize(self, autorigs_asset: AutoRigsAsset) -> None: ...
     def updateParent(self, modulesdict: Mapping[str, Sequence[Mod.Module]]) -> None: ...
@@ -62,9 +66,12 @@ class SpineModule(
     def getLastSpineBone(self) -> hou.ObjNode | None: ...
 
 class SpineGuideTab(
-    Mod.ModuleGuideTab[_SpineOptionsJson, _SpineParamsJson, _GuideNamesJson, ModuleOptions, ModuleParams, SpineGuide]
+    Mod.ModuleGuideTab[_SpineOptionsJson, _SpineParamsJson, _GuideNamesJson, ModuleOptions, ModuleParams, SpineGuide, ModuleTabsWidget]
 ):
     PREFIX: str
     assetnode: hou.ObjNode
     tabswidget: ModuleTabsWidget
+    buildguides: SpineGuide
+    optionswidget: ModuleOptions
+    paramswidget: ModuleParams
     def __init__(self, assetnode: hou.ObjNode, buildguides: SpineGuide, mastermodule: MasterModule) -> None: ...

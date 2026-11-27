@@ -1,4 +1,5 @@
 import enum
+from hutil.ml.regression.connectivity_MLP import ModelMLPConfig as ModelMLPConfig
 from hutil.ml.utils.menu import indexed_menu as indexed_menu
 
 class NetworkComposition(enum.Enum):
@@ -49,6 +50,8 @@ class ModelNetworkConfig:
     Specify structure and initialization for custom model
     """
     model_kind: ModelKind | None
+    kind: ModelKind
+    mlp_config: ModelMLPConfig
     standard_type: ModelStandardType | None
     custom_format: ModelCustomFormat | None
     specification_script: str | None

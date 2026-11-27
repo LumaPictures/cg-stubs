@@ -1,10 +1,24 @@
 from collections.abc import Mapping
-from typing import Any, TypeAlias
+from typing import Literal, NotRequired, Protocol, ReadOnly, TypeAlias, TypedDict, Unpack
 
 import hou
 from houtypes import RadialMenuKwargs
 
-_RadialEntry: TypeAlias = Mapping[str, Any]
+class _RadialActionScript(Protocol):
+    def __call__(self, **kwargs: Unpack[RadialMenuKwargs]) -> object: ...
+
+class _RadialCheckScript(Protocol):
+    def __call__(self, **kwargs: Unpack[RadialMenuKwargs]) -> bool: ...
+
+# ReadOnly so that callers' narrower item TypedDicts (e.g. curvestate.radialmenu's) are accepted.
+class _RadialEntry(TypedDict):
+    type: ReadOnly[Literal["script_action", "action", "script_submenu", "submenu", "link"]]
+    label: NotRequired[ReadOnly[str]]
+    script: NotRequired[ReadOnly[str | _RadialActionScript]]
+    check: NotRequired[ReadOnly[str | _RadialCheckScript]]
+    shortcut: NotRequired[ReadOnly[str]]
+    icon: NotRequired[ReadOnly[str]]
+    name: NotRequired[ReadOnly[str]]
 _RadialMenu: TypeAlias = (
     Mapping[str, _RadialEntry] | Mapping[int, _RadialEntry] | Mapping[str | int, _RadialEntry]
 )

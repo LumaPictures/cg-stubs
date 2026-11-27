@@ -7,7 +7,7 @@ from dbg import DbgPrinter
 from husdui.common import debugPerfPaneEvent as debugPerfPaneEvent, debug_print as debug_print, error_print as error_print, getAttrBase as getAttrBase, getAttrIndex as getAttrIndex, getAttrIndexAndBase as getAttrIndexAndBase
 from husdui.models.items import _ItemJson, _ItemJsonData
 from pxr import Sdf, Usd
-from typing import Never
+from typing import Never, TypedDict
 
 from typing import TypeAlias
 from typing import TypeVar
@@ -24,6 +24,12 @@ _LinkTuple: TypeAlias = tuple[str, str, str, int, bool, str, str, bool, bool]
 _StageValue: TypeAlias = _SdfValue | tuple[float, ...]
 _AttrValue: TypeAlias = _StageValue | Sequence[float]
 _ParmValueArg: TypeAlias = float | str | Sequence[float] | Sequence[str]
+class _CollectionParms(TypedDict):
+    prim: hou.Parm
+    name: hou.Parm
+    includes: hou.Parm
+    excludes: hou.Parm
+
 dbg: DbgPrinter
 COLLECTIONS_FOLDER_NAME: str
 SETTINGS_FOLDER_NAME: str
@@ -404,7 +410,7 @@ class ParmDB(StageDB):
         If the parameter does not exist and create=True the method will create
         it on the current node.
         """
-    def parmsForCollection(self, prim_path: _PathLike, name: str) -> dict[str, hou.Parm] | None: ...
+    def parmsForCollection(self, prim_path: _PathLike, name: str) -> _CollectionParms | None: ...
     def parmForCollection(self, prim_path: _PathLike, name: str) -> hou.Parm | None: ...
     def getDetailString(self, name: str) -> str: ...
     def setDetailString(self, name: str, value: str) -> None: ...

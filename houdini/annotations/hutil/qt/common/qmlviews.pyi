@@ -17,7 +17,7 @@ DEBUG_QML: bool
 QML_RESOURCE_PATH: str
 USE_QML_RESOURCE: bool
 BASE_URL: QtCore.QUrl
-NODE_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], ...]
+NODE_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType]]
 
 def copyTextToClipboard(text: str) -> None: ...
 

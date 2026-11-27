@@ -9,14 +9,14 @@ import PySide6.QtWidgets
 from pxr import Sdf
 
 _AnyIndex: TypeAlias = PySide6.QtCore.QModelIndex | PySide6.QtCore.QPersistentModelIndex
-_ColorLike: TypeAlias = hou.Color | PySide6.QtGui.QColor | list[float] | tuple[float, ...]
+_ColorLike: TypeAlias = hou.Color | PySide6.QtGui.QColor | list[float] | tuple[float, float, float] | tuple[float, float, float, float]
 
 MARGIN: int
 PADDING: int
 DROP_INDICATOR_LINE_WIDTH: int
 
 class PrimTreeView(_houqt.QT_PrimTreeView):
-    DefaultColumns: tuple[int, ...]
+    DefaultColumns: tuple[int]
     def __init__(self, enable_create_collections: bool = ..., enable_drop: bool = ...) -> None: ...
     def addAttributes(self, attr_names: Iterable[str]) -> None: ...
     def setAttributes(self, attr_names: Iterable[str]) -> None: ...
@@ -61,7 +61,7 @@ class AttrTreeView(PrimTreeView):
     def mouseReleaseEvent(self, event: PySide6.QtGui.QMouseEvent) -> None: ...
 
 class ColorEditorCreator(PySide6.QtWidgets.QItemEditorCreatorBase):
-    def createWidget(self, parent: PySide6.QtWidgets.QWidget) -> None: ...
+    def createWidget(self, parent: PySide6.QtWidgets.QWidget | None) -> None: ...
     def valuePropertyName(self) -> str: ...
 
 class TreeItemDelegate(_houqt.QT_HighlightTreeViewDelegate):

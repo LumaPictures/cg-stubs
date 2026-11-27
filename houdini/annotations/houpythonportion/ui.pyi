@@ -11,7 +11,7 @@ _NodeDataSelection = TypedDict(
     {
         "Parameters": list[hou.Parm | hou.ParmTuple],
         "Attributes": list[tuple[hou.Attrib, int]],
-        "Transforms": list[tuple[hou.OpNode, str, str | None]],
+        "Transforms": list[tuple[hou.OpNode, Literal["World", "Local"], str | None]],
         "Bounding Boxes": list[tuple[hou.OpNode, str]],
         "Custom": list[tuple[hou.OpNode, str]],
     },
@@ -23,16 +23,16 @@ _NodeDataInitialSelection = TypedDict(
     {
         "Parameters": Sequence[hou.Parm | hou.ParmTuple],
         "Attributes": Sequence[tuple[hou.Attrib, int]],
-        "Transforms": Sequence[tuple[hou.Node, str, str | None]],
-        "Bounding Boxes": Sequence[tuple[hou.Node, str | None]],
-        "Custom": Sequence[tuple[hou.Node, str]],
+        "Transforms": Sequence[tuple[hou.OpNode, Literal["World", "Local"], str | None]],
+        "Bounding Boxes": Sequence[tuple[hou.OpNode, str | None]],
+        "Custom": Sequence[tuple[hou.OpNode, str]],
     },
     total=False,
 )
 
 def openTypePropertiesDialog(
     self: hou.ui,
-    node_or_node_type: hou.Node | hou.NodeType,
+    node_or_node_type: hou.OpNode | hou.OpNodeType,
     promote_spare_parms: bool = ...,
     immediately_save: bool = ...,
 ) -> None: ...

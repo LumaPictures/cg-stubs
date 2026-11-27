@@ -13,7 +13,8 @@ from charpicker.tabview import TabViewContextMenu as TabViewContextMenu
 from charpicker.tabwindow import TabWindow as TabWindow
 from collections.abc import Callable as Callable
 from hutil.PySide import QtCore, QtGui, QtWidgets
-from typing import Any, NotRequired, TypeAlias, TypedDict
+from poselib.poselib import _AssetSavedKwargs
+from typing import NotRequired, TypeAlias, TypedDict, Unpack
 
 
 from typing import TypeAlias
@@ -121,7 +122,7 @@ class CharacterPicker(QtWidgets.QFrame):
     def showHelp(self) -> None: ...
     def handleHipFileEvent(self, event_type: hou.EnumValue[hou.hipFileEventType]) -> None:
         """Callback handler for .hip file events."""
-    def handleHDAEvent(self, event_type: hou.EnumValue[hou.hdaEventType], **kwargs: Any) -> None:
+    def handleHDAEvent(self, event_type: hou.EnumValue[hou.hdaEventType], **kwargs: Unpack[_AssetSavedKwargs]) -> None:
         """Callback handler for HDA events."""
     def historyAction(self, action: QtGui.QAction) -> None:
         """Called when an item from the history list is selected"""

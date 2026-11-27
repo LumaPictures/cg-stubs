@@ -1,6 +1,7 @@
 from collections.abc import Mapping
-from typing import Any, Protocol
+from typing import Protocol, Unpack
 
+import hou
 from PySide6 import QtCore, QtGui, QtQml, QtWidgets
 
 from hutil.formatting import NumberFormatter
@@ -21,14 +22,18 @@ class _XpuDeviceStats(TypedDict, total=False, extra_items=JSONValue):  # type: i
     xpu_device_samples: Required[int]
     xpu_device_memory: dict[str, int]
 
+# BaseInfoState's keyword arguments; the rest go on to QObject.
+class _StatsStateKwargs(TypedDict, total=False, extra_items=object):  # type: ignore[call-arg]
+    editor: hou.NetworkEditor | None
+
 class _BriefFormatter(Protocol):
     def __call__(self, value: str | float, markup: bool = ...) -> str: ...
 
 default_content: str
 brief_fmtr: NumberFormatter
 format_brief: _BriefFormatter
-timings_order: tuple[str, ...]
-shader_order: tuple[str, ...]
+timings_order: tuple[str, str, str, str, str, str, str, str]
+shader_order: tuple[str, str, str, str, str, str]
 husk_stats_path: JsonPath
 jsonpath_cache: dict[str, JsonPath]
 
@@ -52,7 +57,7 @@ class StatsState:
     reloadable: bool
     reportFile: str
     reportState: str
-    def __init__(self, **kwargs: Any) -> None: ...
+    def __init__(self, **kwargs: Unpack[_StatsStateKwargs]) -> None: ...
     def setupEngine(self, engine: QtQml.QQmlEngine, **kwargs: object) -> None: ...
     def setReportSource(self, report_key: str, from_buffer: bool = ..., viewer_name: str = ...) -> None: ...
     def generateReport(self) -> None: ...

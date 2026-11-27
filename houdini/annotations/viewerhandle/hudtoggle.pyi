@@ -2,11 +2,11 @@ import PySide6.QtCore
 import PySide6.QtGui
 import PySide6.QtWidgets
 from collections.abc import Callable
-from typing import Any
+from typing import Unpack
 
 
 import hou
-from viewerhandle.hudwidgets import _KeyFrameEventKwargs
+from viewerhandle.hudwidgets import _HUDWidgetOptions, _KeyFrameEventKwargs
 from viewerhandle.hudapi import _HUDHandle, _HUDParmAnimatedKwargs, _HUDParmChangeKwargs, _HUDParmTemplateChangeKwargs, _HUDSettings
 import resourceui as rui
 from hutil.qt.pluto.parts import ParmState
@@ -30,7 +30,7 @@ class ToggleImpl(PySide6.QtWidgets.QWidget):
 
 class HUDToggle(hudapi.HUDWidgetBase):
     def __init__(
-        self, handle: _HUDHandle, target_parm: hou.Parm | None, hud_widget_key: str, window_key: str, **kwargs: Any
+        self, handle: _HUDHandle, target_parm: hou.Parm | None, hud_widget_key: str, window_key: str, **kwargs: Unpack[_HUDWidgetOptions]
     ) -> None: ...
     def onParmChangeEvent(self, kwargs: _HUDParmChangeKwargs) -> None: ...
     def onUpdateVisualSize(self) -> None: ...

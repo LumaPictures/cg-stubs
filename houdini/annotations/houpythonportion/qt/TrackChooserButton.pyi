@@ -8,7 +8,7 @@ import hou
 class TrackChooserButton(PySide6.QtWidgets.QToolButton):
     trackSelected: ClassVar[PySide6.QtCore.Signal]
     relative_to_node: None
-    initial_selection: dict[str, list[tuple[hou.ChopNode | None, str]]]
+    initial_selection: hou._NodeDataInitialSelection
     node_filter: hou.EnumValue[hou.nodeTypeFilter]
     select_multiple: bool
     def __init__(self) -> None: ...

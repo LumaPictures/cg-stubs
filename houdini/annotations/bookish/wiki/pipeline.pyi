@@ -182,8 +182,8 @@ class PythonAPI(Processor):
     def apply(self, block: _WikiBlock, context: Context) -> None: ...
     def process_indexed(self, pages: WikiPages, block: _WikiBlock, doc: _SearchDoc, cache: _IndexCache) -> None: ...
 
-default_preprocessor_classes: tuple[type[Processor], ...]
-default_postprocessor_classes: tuple[type[Processor], ...]
+default_preprocessor_classes: tuple[type[Processor], type[Processor], type[Processor], type[Processor], type[Processor], type[Processor], type[Processor], type[Processor], type[Processor], type[Processor], type[Processor], type[Processor], type[Processor], type[Processor], type[Processor], type[Processor], type[Processor]]
+default_postprocessor_classes: tuple[type[Processor], type[Processor], type[Processor], type[Processor], type[Processor], type[Processor], type[Processor]]
 
 class CircularDependencyError(Exception): ...
 

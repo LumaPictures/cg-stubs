@@ -4,13 +4,13 @@ import pdgd.util
 from .houparmtuplehandler import HouParmTupleHandler as HouParmTupleHandler
 from _pdgd import _PythonValue
 from collections.abc import Callable
-from typing import ClassVar
+from typing import ClassVar, Concatenate
 
 from typing import TypeVar
 from typing import TypeVar
-_F = TypeVar('_F', bound=Callable[..., object])
+_F = TypeVar('_F', bound=Callable[Concatenate['HouNodeHandler', ...], object])
 class EventHandlerBase(pdgd.util.SimpleHandler):
-    event_handlers: ClassVar[dict[hou.EnumValue[hou.nodeEventType], Callable[..., object]]]
+    event_handlers: ClassVar[dict[hou.EnumValue[hou.nodeEventType], Callable[Concatenate['HouNodeHandler', ...], object]]]
     def __init__(self, handler: _pdgd.SubscriptionHandler) -> None: ...
     @classmethod
     def eventHandler(cls, event_type: hou.EnumValue[hou.nodeEventType]) -> Callable[[_F], Callable[[], _F]]: ...

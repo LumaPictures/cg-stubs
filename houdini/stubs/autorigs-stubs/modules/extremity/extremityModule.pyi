@@ -1,6 +1,5 @@
 import hou
 from . import extremityGuideController as extremityGuideController, extremityGuideModel as extremityGuideModel
-from _typeshed import Incomplete
 from autorigs.asset.autoRigsAsset import AutoRigsAsset as AutoRigsAsset
 from autorigs.modules.base import moduleTabsWidget as moduleTabsWidget, rootModule as Mod
 from autorigs.modules.base.moduleTabsWidget import ModuleTabsWidget as ModuleTabsWidget
@@ -29,23 +28,25 @@ _ExtremityModuleJson: TypeAlias = _ModuleJson[_ExtremityOptionsJson, _ExtremityP
 _ExtremityOptions = TypeVar('_ExtremityOptions', bound=ModuleOptionsWidget, default=Any)
 _ExtremityParams = TypeVar('_ExtremityParams', bound=ModuleParamsWidget, default=Any)
 _ExtremityGuideT = TypeVar('_ExtremityGuideT', bound=HandGuide | FootGuide | QuadFootGuide, default=Any)
+_ExtremityGuideTab = TypeVar('_ExtremityGuideTab', bound='ExtremityGuideTab[Any, Any, Any]', default=Any)
+_ExtremityAsset = TypeVar('_ExtremityAsset', bound=AutoRigsAsset | None, default=Any)
 _Guide_co = TypeVar('_Guide_co', bound=ExtremityGuide, covariant=True, default=ExtremityGuide)
 class _GuidesFactory(Protocol[_Guide_co]):
     def createFromDefault(self, json: _ExtremityModuleJson, assetnode: hou.ObjNode, model: ModuleOptionModel, parent: hou.ObjNode | None = ...) -> _Guide_co: ...
     def createFromJsonNew(self, json: _ExtremityModuleJson, assetnode: hou.ObjNode, model: ModuleOptionModel, parent: hou.ObjNode | None = ...) -> _Guide_co: ...
     def createFromJsonExisting(self, json: _ExtremityModuleJson, assetnode: hou.ObjNode, model: ModuleOptionModel, parent: hou.ObjNode | None = ...) -> _Guide_co: ...
 
-class ExtremityModule(Mod.Module[_ExtremityOptionsJson, _ExtremityParamsJson, _ExtremityGuideJson, _ExtremityOptions, _ExtremityParams, _ExtremityGuideT, None, ModuleOptionModel, ModuleOptionController], Generic[_ExtremityOptions, _ExtremityParams, _ExtremityGuideT]):
+class ExtremityModule(Mod.Module[_ExtremityOptionsJson, _ExtremityParamsJson, _ExtremityGuideJson, _ExtremityOptions, _ExtremityParams, _ExtremityGuideT, None, ModuleOptionModel, ModuleOptionController, _ExtremityGuideTab, _ExtremityAsset], Generic[_ExtremityOptions, _ExtremityParams, _ExtremityGuideT, _ExtremityGuideTab, _ExtremityAsset]):
     limbmodules: Sequence[LimbModule]
     guidesfactory: _GuidesFactory[_ExtremityGuideT]
     assetnode: hou.ObjNode
     mastermodule: MasterModule
     spinemodules: Sequence[SpineModule]
-    model: Incomplete
-    controller: Incomplete
+    model: ModuleOptionModel
+    controller: ModuleOptionController
+    buildguides: _ExtremityGuideT
     def __init__(self, autorigs_asset: AutoRigsAsset, limbmodules: Sequence[LimbModule], guidesfactory: _GuidesFactory[_ExtremityGuideT]) -> None: ...
     def initialize(self, autorigs_asset: AutoRigsAsset, arg2: object = None, arg3: object = None) -> None: ...
-    buildguides: Incomplete
     def buildFromDefault(self, json: _ExtremityModuleJson) -> None: ...
     def buildFromJsonNew(self, json: _ExtremityModuleJson) -> None: ...
     def buildFromJsonExisting(self, json: _ExtremityModuleJson) -> None: ...
@@ -55,14 +56,14 @@ class ExtremityModule(Mod.Module[_ExtremityOptionsJson, _ExtremityParamsJson, _E
     def buildRig(self, index: int) -> None: ...
     def canBeMirrored(self) -> bool: ...
 
-class ExtremityGuideTab(Mod.ModuleGuideTab[_ExtremityOptionsJson, _ExtremityParamsJson, _ExtremityGuideJson, _ExtremityOptions, _ExtremityParams, _ExtremityGuideT], Generic[_ExtremityOptions, _ExtremityParams, _ExtremityGuideT]):
+class ExtremityGuideTab(Mod.ModuleGuideTab[_ExtremityOptionsJson, _ExtremityParamsJson, _ExtremityGuideJson, _ExtremityOptions, _ExtremityParams, _ExtremityGuideT, ModuleTabsWidget], Generic[_ExtremityOptions, _ExtremityParams, _ExtremityGuideT]):
     GUIDE_OPTIONS: type[_ExtremityOptions]
     GUIDE_PARAMS: type[_ExtremityParams]
     tabswidget: ModuleTabsWidget
+    buildguides: _ExtremityGuideT
+    optionswidget: _ExtremityOptions
+    paramswidget: _ExtremityParams
     PREFIX: str
-    buildguides: Incomplete
-    optionswidget: Incomplete
-    paramswidget: Incomplete
     def __init__(self, buildguides: _ExtremityGuideT, assetnode: hou.ObjNode, mastermodule: MasterModule, limbmodules: Sequence[LimbModule], spinemodules: Sequence[SpineModule], model: ModuleOptionModel, controller: ModuleOptionController) -> None: ...
     def updateParent(self, limbmodules: Sequence[LimbModule], spinemodules: Sequence[SpineModule]) -> None: ...
     def getBuiltParentInfo(self) -> tuple[MasterModule | LimbModule | SpineModule, hou.ObjNode]: ...

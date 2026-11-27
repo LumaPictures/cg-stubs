@@ -11,13 +11,14 @@ from autorigs.modules.master.masterModule import MasterModule as MasterModule
 from autorigs.ui.uiParamFactory import UiParamFactory as UiParamFactory
 from autorigs.utils import buildGuideHelper as buildGuideHelper, rigutils as rigutils
 from collections.abc import Iterable, Mapping, MutableMapping, MutableSequence, Sequence
-from typing import Any, Literal, Protocol, TypedDict
+from typing import Literal, Protocol, TypedDict
 
 from typing import TypeAlias
 from typing import TypeVar
 from typing import TypeAlias
 from typing import TypeVar
 _ExtremityGuideNamesJson: TypeAlias = dict[str, str | list[dict[str, str]] | dict[str, str]]
+_GuideObject: TypeAlias = hou.ObjNode | hou.SopNode | list[hou.ObjNode] | list[list[hou.ObjNode]]
 _ObjNodePart: TypeAlias = Literal['root', 'extremitystart', 'extremityrot', 'extremityroll', 'digitroll', 'digitrootguide', 'metaguide', 'bigdigitgeo', 'guidecurve']
 _SopNodePart: TypeAlias = Literal['metaline', 'metawristpts', 'metaresample', 'metaadd', 'metabox', 'metaends', 'metapointcolor', 'metacopy', 'metaout', 'metabigdigit', 'metadeletecolor', 'metacopybigdigit', 'metacopynobigdigit', 'metafirstpoint', 'metamergebigdigit', 'metaswitchbigdigit', 'linepointline', 'linepointmerge', 'linemetaend', 'linedigitend', 'lineresample', 'lineadddash', 'guidecurve_merge', 'guidecurve_add', 'guidecurve_polywire', 'guidecurve_out']
 _ObjNodeKey: TypeAlias = Literal['modulenode', 'rootnode', 'mainroot', 'mainextremitystart', 'mainextremityrot', 'mainextremityroll', 'maindigitroll', 'maindigitrootguide', 'mainmetaguide', 'mainbigdigitgeo', 'mainguidecurve', 'mirrorroot', 'mirrorextremitystart', 'mirrorextremityrot', 'mirrorextremityroll', 'mirrordigitroll', 'mirrordigitrootguide', 'mirrormetaguide', 'mirrorbigdigitgeo', 'mirrorguidecurve']
@@ -41,7 +42,8 @@ class _MetaThumbNodes(TypedDict):
     lineadddash: hou.SopNode
 
 class _CreatesFromJsonNew(Protocol[_Guide_co]):
-    def createFromJsonNew(self, json: _ExtremityModuleJson, assetnode: hou.ObjNode, model: ModuleOptionModel, parent: hou.ObjNode | None = ...) -> _Guide_co: ...
+    @classmethod
+    def createFromJsonNew(cls, json: _ExtremityModuleJson, assetnode: hou.ObjNode, model: ModuleOptionModel, parent: hou.ObjNode | None = ...) -> _Guide_co: ...
 
 class ExtremityFactory(buildBaseGuide.BaseFactory):
     @classmethod
@@ -49,7 +51,7 @@ class ExtremityFactory(buildBaseGuide.BaseFactory):
 
 class ExtremityGuide(buildBaseGuide.BaseGuide[_ExtremityGuideJson]):
     display: bool
-    guidenodesdata: dict[str, list[Any]]
+    guidenodesdata: dict[str, list[_GuideObject | bool | int]]
     parent: hou.ObjNode | None
     assetnode: hou.ObjNode
     model: ModuleOptionModel
@@ -133,8 +135,8 @@ class ExtremityGuide(buildBaseGuide.BaseGuide[_ExtremityGuideJson]):
     @typing.overload
     def getGuideObject(self, guidename: Literal['maindigitsguides', 'mirrordigitsguides']) -> list[list[hou.ObjNode]]: ...
     @typing.overload
-    def getGuideObject(self, guidename: str) -> Any: ...
-    def getGuideObjectData(self, guidename: str) -> list[Any] | None: ...
+    def getGuideObject(self, guidename: str) -> _GuideObject: ...
+    def getGuideObjectData(self, guidename: str) -> list[_GuideObject | bool | int] | None: ...
     @typing.overload
     def getGuideObjectSide(self, ismain: bool, guidename: _ObjNodePart) -> hou.ObjNode: ...
     @typing.overload
@@ -144,8 +146,8 @@ class ExtremityGuide(buildBaseGuide.BaseGuide[_ExtremityGuideJson]):
     @typing.overload
     def getGuideObjectSide(self, ismain: bool, guidename: Literal['digitsguides']) -> list[list[hou.ObjNode]]: ...
     @typing.overload
-    def getGuideObjectSide(self, ismain: bool, guidename: str) -> Any: ...
-    def getGuideObjectDataSide(self, ismain: bool, guidepart: str) -> list[Any] | None: ...
+    def getGuideObjectSide(self, ismain: bool, guidename: str) -> _GuideObject: ...
+    def getGuideObjectDataSide(self, ismain: bool, guidepart: str) -> list[_GuideObject | bool | int] | None: ...
     @typing.overload
     def getDigitsGuidesObjectSide(self, ismain: bool, guidepart: Literal['bigdigit']) -> list[hou.ObjNode]: ...
     @typing.overload

@@ -4,17 +4,19 @@ from collections.abc import Iterable, Iterator
 from typing import Any, ClassVar, NamedTuple
 
 import PySide6.QtCore
+from typing_extensions import Unpack
 
 import hou
 import pdg
 from hutil.qt.common import core
 from hutil.qt.info import window
+from hutil.qt.info.window import _BaseInfoStateKwargs
 
 pdg_type_registry: pdg.TypeRegistry
 ws_expr: re.Pattern[str]
 type_name: dict[type, str]
 cache_state_label: dict[str, str]
-NODE_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], ...]
+NODE_EVENTS: tuple[hou.EnumValue[hou.nodeEventType]]
 current_workitem_win: WorkItemViewWindow | None
 log_expr: re.Pattern[str]
 def getWorkItem(node: hou.TopNode, id: int) -> pdg.WorkItem | None: ...
@@ -311,7 +313,7 @@ class WorkItemState(window.BaseInfoState[WorkItemConfig, WorkItemInfo]):
     workItemSelected: ClassVar[PySide6.QtCore.Signal]
     filteringChanged: ClassVar[PySide6.QtCore.Signal]
     filterTextChanged: ClassVar[PySide6.QtCore.Signal]
-    def __init__(self, **kwargs: Any) -> None: ...
+    def __init__(self, **kwargs: Unpack[_BaseInfoStateKwargs]) -> None: ...
     def outOfDate(self) -> bool: ...
     def openFile(self, url: PySide6.QtCore.QUrl, tag: str) -> None: ...
     def saveText(self, text: str) -> None: ...

@@ -22,6 +22,8 @@ class SimpleModule(
         None,
         None,
         None,
+        "SimpleGuideTab",
+        AutoRigsAsset | None,
     ]
 ):
     MODULE_TYPE: str
@@ -29,7 +31,8 @@ class SimpleModule(
     DEFAULT_JSON_FILE: str
     DEFAULT_JSON: _SimpleModuleJson
     assetnode: hou.ObjNode
-    guidetab: "SimpleGuideTab"
+    guidetab: "SimpleGuideTab | None"
+    buildguides: buildSimpleGuide.SimpleGuide
     def __init__(self, autorigs_asset: AutoRigsAsset) -> None: ...
     def buildFromDefault(self) -> None: ...
     def buildFromJsonNew(self, json: _SimpleModuleJson) -> None: ...
@@ -44,7 +47,11 @@ class SimpleGuideTab(
         simpleGuideOptions.ModuleOptionsWidget,
         simpleGuideParams.ModuleParamsWidget,
         buildSimpleGuide.SimpleGuide,
+        moduleTabsWidget.ModuleTabsWidget,
     ]
 ):
     tabswidget: moduleTabsWidget.ModuleTabsWidget
+    optionswidget: simpleGuideOptions.ModuleOptionsWidget
+    paramswidget: simpleGuideParams.ModuleParamsWidget
+    buildguides: buildSimpleGuide.SimpleGuide
     def __init__(self, buildguides: buildSimpleGuide.SimpleGuide) -> None: ...

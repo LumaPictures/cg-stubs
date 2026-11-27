@@ -15,7 +15,7 @@ from autorigs.modules.quadleg import quadLegModule as quadLegModule
 from autorigs.modules.spine import spineModule as spineModule
 from autorigs.utils import buildGuideHelper as buildGuideHelper, fkcontrols as fkcontrols, geometryutils as geometryutils, rigutils as rigutils
 from collections.abc import Mapping as Mapping, Sequence
-from typing import Any, TypedDict
+from typing import TypedDict
 
 from typing import TypeAlias
 from typing import TypeAlias
@@ -52,12 +52,12 @@ class _QuadFootControls(TypedDict):
 
 class DelayConstraints:
     cls: type['AutoRigsQuadFootBuilder']
-    old_constraints: list[list[Any]]
+    old_constraints: list[list[str | hou.ObjNode | int]]
     def __init__(self, cls: type['AutoRigsQuadFootBuilder']) -> None: ...
     def __del__(self) -> None: ...
 
 class AutoRigsQuadFootBuilder(AutoRigsExtremityBuilder):
-    delayconstraints: list[list[Any]]
+    delayconstraints: list[list[str | hou.ObjNode | int]]
     INTERFACE_NAME_LABEL: dict[str, tuple[str, str]]
     SUFFIX: dict[str, str]
     def __init__(self) -> None: ...

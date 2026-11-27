@@ -1,5 +1,6 @@
 import re
-from collections.abc import Mapping, MutableSequence, Sequence
+from collections import defaultdict
+from collections.abc import MutableSequence, Sequence
 from typing import TypeAlias
 
 import PySide6.QtGui
@@ -23,7 +24,7 @@ TYPE_ICON: hou.qt.Icon
 PARM_ICON: hou.qt.Icon
 
 def addContextSuggestions(search: SearchSpec, sugs: MutableSequence[Sug]) -> None: ...
-def buildNodePathCatalog(nodes: Sequence[hou.Node]) -> tuple[list[str], Mapping[str, list[str]]]: ...
+def buildNodePathCatalog(nodes: Sequence[hou.Node]) -> tuple[list[str], defaultdict[str, list[str]]]: ...
 def buildNodeTypeCatalog() -> tuple[dict[str, hou.NodeType], dict[str, hou.NodeType], dict[str, dict[str, hou.NodeType]], dict[str, dict[str, hou.NodeType]]]: ...
 def filterNodeTypes(
     search: SearchSpec,

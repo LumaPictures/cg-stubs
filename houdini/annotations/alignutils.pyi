@@ -15,7 +15,7 @@ def interactiveAlign(pane: hou.SceneViewer | None = ..., quick_mode: bool = ...)
 def interactiveObjectAlign(pane: hou.SceneViewer | None = ..., quick_mode: bool = ...) -> None: ...
 def interactiveSopAlign(pane: hou.SceneViewer | None = ..., quick_mode: bool = ...) -> None: ...
 def showError(msg: str) -> None: ...
-def getObject(node: hou.Node) -> hou.ObjNode: ...
+def getObject(node: hou.ObjNode | hou.SopNode) -> hou.ObjNode: ...
 
 class CoordFrame:
     origin: hou.Vector3
@@ -42,13 +42,13 @@ def alignObject(src_obj: hou.ObjNode, src_frame: CoordFrame, dst_obj: hou.ObjNod
 def setObjParmPivotTransform(obj: hou.ObjNode, new_pivot_xform: hou.Matrix4) -> None: ...
 def initNewSopFromGeometrySelection(
     newnode: hou.SopNode,
-    container: hou.Node,
+    container: hou.OpNode,
     geoselection: hou.GeometrySelection,
     groupparminfo: _GroupParmInfo,
 ) -> None: ...
 def initNewSopFromSelection(
     newnode: hou.SopNode,
-    container: hou.Node,
+    container: hou.OpNode,
     inputnode: hou.SopNode,
     selection: hou.Selection | None,
     geometry: hou.Geometry | None,

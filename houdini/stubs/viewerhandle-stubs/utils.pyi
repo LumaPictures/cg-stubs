@@ -4,7 +4,7 @@ import types
 import typing
 from collections.abc import Callable as Callable, Mapping, Sequence
 from houtypes import ViewerHandleEventKwargs, ViewerHandleMenuActionKwargs, ViewerHandleMenuPreOpenKwargs, ViewerParmProperties
-from typing import Any, Literal, TypedDict, Unpack
+from typing import Literal, Protocol, TypedDict, Unpack
 
 from typing import ParamSpec
 from typing import TypeVar
@@ -20,6 +20,20 @@ class _LogMessageOptions(TypedDict, total=False):
     richtext_format: str
     richtext: str
     severity: hou.EnumValue[hou.severityType]
+
+class _DebugAidHandle(Protocol):
+    @property
+    def handle_name(self) -> str: ...
+    @property
+    def handle_instance_name(self) -> str: ...
+
+class _TransformAidHandle(Protocol):
+    @property
+    def handle_context(self) -> hou.ViewerHandleContext: ...
+    @property
+    def handle_parms(self) -> dict[str, ViewerParmProperties]: ...
+    @property
+    def scene_viewer(self) -> hou.SceneViewer: ...
 
 HPX: str
 HPY: str
@@ -109,7 +123,7 @@ class DebugAid(ru.DebugAidBase):
     """
     DebugAid utility for viewer handles
     """
-    def __init__(self, obj: Any) -> None:
+    def __init__(self, obj: _DebugAidHandle) -> None:
         """ obj: viewer handle instance
         """
     def browserName(self) -> str: ...
@@ -134,7 +148,7 @@ def addDebugEntriesToMenu(hotkey_definitions: hou.PluginHotkeyDefinitions, handl
     """
     Add debug entries to a menu, ending up with a flat list of menu items.
     """
-def onDebugMenuAction(obj: Any, kwargs: ViewerHandleMenuActionKwargs) -> None:
+def onDebugMenuAction(obj: _DebugAidHandle, kwargs: ViewerHandleMenuActionKwargs) -> None:
     """ The menu handler associated to the menu built with createDebugMenu.
         The handler just delegates to the Viewer Handle Browser.
 
@@ -149,10 +163,10 @@ class TransformAid:
     """ Utility for handling transform spaces for viewer handles.
     """
     xform: hou.Matrix4
-    handle: Any
+    handle: _TransformAidHandle
     handle_context: hou.ViewerHandleContext
     handle_parms: dict[str, ViewerParmProperties]
-    def __init__(self, handle: Any, parm_names: Mapping[str, Sequence[str]] | None = None) -> None:
+    def __init__(self, handle: _TransformAidHandle, parm_names: Mapping[str, Sequence[str]] | None = None) -> None:
         ''' handle: instance of the viewer handle
             parm_names: Optional dictionary to map the kwargs parm names
                         to a key name. This can be handy for setting

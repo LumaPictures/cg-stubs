@@ -6,11 +6,14 @@ from frameworkstate.hotkeymanager import HotkeyManager as HotkeyManager
 from frameworkstate.parameterwidget import ParameterWidget as ParameterWidget
 from houtypes import ViewerStateCommandKwargs, ViewerStateDrawKwargs, ViewerStateEnterKwargs, ViewerStateEventKwargs, ViewerStateKwargs, ViewerStateParmChangeKwargs, ViewerStateVolatileClientKwargs
 from statehud.baseconfig import AbstractConfig
-from typing import Any, Literal
+from typing import Any, Generic, Literal
 
 from typing import TypeVar
 from typing import TypeVar
+import statehud.window as shud
 _T = TypeVar('_T')
+_W_co = TypeVar('_W_co', bound=shud.WidgetBundleWindow, default=shud.WidgetBundleWindow, covariant=True)
+_P_co = TypeVar('_P_co', bound='FrameWorkParameterWidget[shud.WidgetBundleWindow]', default='FrameWorkParameterWidget[shud.WidgetBundleWindow]', covariant=True)
 TOOL_MODE: str
 ANIMATE_TOOL_ICON: str
 SCENE_NODE_CONFIG: Literal['scene_node']
@@ -27,7 +30,7 @@ TAB_NAMES: list[str]
 TOOL_STANDARD: str
 DEFAULT_PACKAGE_NAME: str
 
-class FrameWorkParameterWidget(ParameterWidget['State']):
+class FrameWorkParameterWidget(ParameterWidget['State[FrameWorkParameterWidget[shud.WidgetBundleWindow]]', _W_co]):
     """we build our basic settings parameter widget for our example frame work 
     we want to have a few Generic parameters that we want to have always available in one tab, 
     our tools can then add and remove tabs to that widgets for tool specific parameters."""
@@ -51,7 +54,7 @@ class FrameWorkParameterWidget(ParameterWidget['State']):
         """ Save to userdata on exiting tool. the user data saving happens in the frame work! 
         in the function state._saveToolHUDSettings for example"""
 
-class State:
+class State(Generic[_P_co]):
     state_name: str
     scene_viewer: hou.SceneViewer
     scene_node: hou.OpNode | None
@@ -65,7 +68,7 @@ class State:
     hud_menu_rows: list[dict[str, str]]
     hud_template: dict[str, str | list[dict[str, str]]]
     hud_pin_mgr: shu.PinManager
-    hud_parameter_panel: FrameWorkParameterWidget | None
+    hud_parameter_panel: _P_co | None
     include_framework_tab: bool
     hud_initialized: bool
     DEFAULT_TOOLS: list[str]
@@ -130,14 +133,14 @@ class State:
         this is our generic tool event wrapper. if if finds an event it runs it from the current active
         subtool otherwise it simly does noting and returns False
         """
-    def loadAndSwitchToTool(self, module_name: str | None, on_activate_kwargs: dict[str, Any] | None) -> None:
+    def loadAndSwitchToTool(self, module_name: str | None, on_activate_kwargs: dict[str, object] | None) -> None:
         """we can use this to trigger a tool module load and switch via a command
         """
     def loadTool(self, module_name: str, do_reload: bool) -> None:
         """loads and instanciates the a tool object for the frame work based on a module path. this allows us
         to load custom tools from any path if we want to
         """
-    def setActiveTool(self, toolname: str, on_activate_kwargs: dict[str, Any] | None = None) -> None:
+    def setActiveTool(self, toolname: str, on_activate_kwargs: dict[str, object] | None = None) -> None:
         """ Change the active tool to toolname. Pass toolname=None to
             swap to the main animate tool.
 

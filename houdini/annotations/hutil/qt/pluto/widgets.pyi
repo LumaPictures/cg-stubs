@@ -1,12 +1,34 @@
 from collections.abc import Sequence
-from typing import Any, ClassVar
+from typing import Any, ClassVar, TypedDict, Unpack, overload, type_check_only
 
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import Qt
 
 from hutil.qt.pluto.colors import NamedColor
 
+# The keywords QToolButton's constructor takes.
+@type_check_only
+class _QToolButtonKwargs(TypedDict, total=False):
+    parent: QtWidgets.QWidget | None
+    popupMode: QtWidgets.QToolButton.ToolButtonPopupMode | None
+    toolButtonStyle: Qt.ToolButtonStyle | None
+    autoRaise: bool | None
+    arrowType: Qt.ArrowType | None
+
 class FancyButton(QtWidgets.QPushButton):
+    @overload
+    def __init__(self, parent: QtWidgets.QWidget | None = ..., **kwargs: object) -> None: ...
+    @overload
+    def __init__(self, text: str, /, parent: QtWidgets.QWidget | None = ..., **kwargs: object) -> None: ...
+    @overload
+    def __init__(
+        self,
+        icon: QtGui.QIcon | QtGui.QPixmap,
+        text: str,
+        /,
+        parent: QtWidgets.QWidget | None = ...,
+        **kwargs: object,
+    ) -> None: ...
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     def paintEvent(self, event: QtGui.QPaintEvent) -> None: ...
 
@@ -141,7 +163,7 @@ class HueCircle(QtWidgets.QFrame):
     def paintEvent(self, event: QtGui.QPaintEvent) -> None: ...
 
 class MenuArrowButton(QtWidgets.QToolButton):
-    def __init__(self, *args: QtWidgets.QWidget | None, **kwargs: Any) -> None: ...
+    def __init__(self, *args: QtWidgets.QWidget | None, **kwargs: Unpack[_QToolButtonKwargs]) -> None: ...
     def paintEvent(self, ev: QtGui.QPaintEvent) -> None: ...
 
 class ToolScrollerArrow(QtWidgets.QWidget):

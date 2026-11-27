@@ -7,7 +7,7 @@ import _pdg
 
 # registerPythonModules() loads the modules on the PDG type search path ($HOUDINI_PATH/pdg/types,
 # so `pdg.types.utils`, `pdg.types.houdini`, ... and a studio's own) and sets them on this package.
-__getattr__: Callable[[str], Any]
+__getattr__: Callable[[str], ModuleType]
 
 class SearchPathManager:
     search_paths: list[str]

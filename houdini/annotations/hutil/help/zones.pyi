@@ -2,7 +2,9 @@ import pathlib
 import re
 from datetime import datetime
 from collections.abc import Iterator, Mapping
-from typing import Any
+from typing import Any, Unpack
+
+from typing_extensions import TypedDict
 
 from hutil.help import processing
 from hutil.help.blocks import BlockType, Root, _WikiData
@@ -20,8 +22,16 @@ class Redirect(Exception):
     newpath: str
     def __init__(self, newpath: str) -> None: ...
 
+# WikiContext.copy() takes these fields' new values; any other keyword goes into the copy's env.
+class _WikiContextCopyKwargs(TypedDict, total=False, extra_items=object):  # type: ignore[call-arg]
+    path: WikiPath
+    conditional: bool
+    save_to_cache: bool
+    including: bool
+    depth: int
+
 class WikiContext:
-    def copy(self, **kwargs: Any) -> WikiContext: ...
+    def copy(self, **kwargs: Unpack[_WikiContextCopyKwargs]) -> WikiContext: ...
 
 class Zone:
     store: Store

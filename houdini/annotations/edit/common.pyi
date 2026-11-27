@@ -8,7 +8,7 @@ XFORM_ATTR: str
 PIVOT_SET_ATTR: str
 PIVOT_TRANSLATE_ATTR: str
 PIVOT_ROTATE_ATTR: str
-SUPPORTED_NODE_TYPES: tuple[str, ...]
+SUPPORTED_NODE_TYPES: tuple[str, str, str, str]
 SUPPORTED_STATES: list[str]
 hk_multisnap: str
 HUD_TEMPLATE_TRANSFORMS: list[dict[str, str]]

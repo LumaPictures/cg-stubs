@@ -1,5 +1,5 @@
 from collections.abc import Callable, Sequence
-from typing import Any, Protocol, TypeAlias, Unpack
+from typing import Protocol, TypeAlias, Unpack
 
 import _cop as COP
 import hou as HOU
@@ -41,11 +41,11 @@ SPACE_COUNT: int
 RESIZE_STROKE_BASE_MULT: float
 RESIZE_WHEEL_BASE_MULT: float
 EMPTY_GEO: HOU.Geometry
-STROKE_REASONS: tuple[HOU.EnumValue[HOU.uiEventReason], ...]
-START_STROKE_REASONS: tuple[HOU.EnumValue[HOU.uiEventReason], ...]
-END_STROKE_REASONS: tuple[HOU.EnumValue[HOU.uiEventReason], ...]
+STROKE_REASONS: tuple[HOU.EnumValue[HOU.uiEventReason], HOU.EnumValue[HOU.uiEventReason], HOU.EnumValue[HOU.uiEventReason], HOU.EnumValue[HOU.uiEventReason]]
+START_STROKE_REASONS: tuple[HOU.EnumValue[HOU.uiEventReason], HOU.EnumValue[HOU.uiEventReason]]
+END_STROKE_REASONS: tuple[HOU.EnumValue[HOU.uiEventReason], HOU.EnumValue[HOU.uiEventReason]]
 HK_CTX: str
-BRUSH_INVALIDATING_PARM_NAMES: tuple[str, ...]
+BRUSH_INVALIDATING_PARM_NAMES: tuple[str, str, str, str, str]
 SOP_VERB: Callable[[str], HOU.OpVerb | None]
 PALETTE_IDX_LABELS: tuple[str, str]
 PALETTE_PARM_NAMES: list[tuple[str, ...]]
@@ -81,7 +81,10 @@ def opnode_dev_get_brush_tool(
 class Mousebind:
     mod: MouseMod
 
-BRUSH_TOOL_BINDINGS: tuple[tuple[CORE.Tool | None, ...], ...]
+BRUSH_TOOL_BINDINGS: tuple[
+    tuple[CORE.Tool | None, CORE.Tool | None, CORE.Tool | None],
+    tuple[CORE.Tool | None, CORE.Tool | None, CORE.Tool | None],
+]
 STATIC_MOUSEBINDS: tuple[Mousebind, ...]
 ON_OFF_STRS: tuple[str, str]
 
@@ -125,7 +128,7 @@ class ViewerState:
     sd_writing_alpha: _CopOutput | None
     pos_map: HOU.ImageLayer | None
     normal_map: HOU.ImageLayer | None
-    def __init__(self, scene_viewer: HOU.SceneViewer, **kwargs: Any) -> None: ...
+    def __init__(self, scene_viewer: HOU.SceneViewer, **kwargs: str) -> None: ...
     def reset_write_masks(self) -> None: ...
     def cached_write_mask(self, vp_cam_pos: HOU.Vector3) -> WriteMaskCacheEntry | None: ...
     def make_geo_drawable(self, label: str, colour: Sequence[float] | None) -> HOU.GeometryDrawable: ...
@@ -140,7 +143,7 @@ class ViewerState:
     def onMenuAction(self, kwargs: ViewerStateMenuActionKwargs) -> bool: ...
     def onMenuPreOpen(self, kwargs: ViewerStateMenuPreOpenKwargs) -> None: ...
     def onCommand(self, kwargs: ViewerStateCommandKwargs) -> bool: ...
-    def on_parm_changed(self, **kwargs: Any) -> None: ...
+    def on_parm_changed(self, **kwargs: Unpack[NodeEventKwargs]) -> None: ...
     def store_all_brushes(self, opnode: HOU.OpNode) -> None: ...
     def store_brush(self, opnode: HOU.OpNode, tool: CORE.Tool) -> None: ...
     def update_brush_radius_hud_rows(self, opnode: HOU.OpNode) -> None: ...
@@ -198,12 +201,25 @@ def make_switch_to_tool(tool: CORE.Tool) -> Callable[[ViewerState, _ActionKwargs
 
 class ActionProps:
     # Since 22.0.508 a key and its numpad twin, e.g. ('1', 'Pad1'); SideFX still annotates str.
-    default_key: str | tuple[str, ...]
+    default_key: str | tuple[str, str]
     proc: Callable[[ViewerState, _ActionKwargs], None]
 
 ACTIONS: tuple[Action, ...]
-ACTION_PROPS: tuple[ActionProps, ...]
-SWITCH_TOOL_ACTIONS: tuple[Action, ...]
+ACTION_PROPS: tuple[
+    ActionProps,
+    ActionProps,
+    ActionProps,
+    ActionProps,
+    ActionProps,
+    ActionProps,
+    ActionProps,
+    ActionProps,
+    ActionProps,
+    ActionProps,
+    ActionProps,
+    ActionProps,
+]
+SWITCH_TOOL_ACTIONS: tuple[Action, Action, Action, Action, Action]
 TOGGLE_ACTIONS: tuple[ToggleAction, ToggleAction, ToggleAction]
 AXN_MENU_ID_PREFIX: str
 

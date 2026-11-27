@@ -4,21 +4,25 @@ import PySide6.QtWidgets
 from . import capturewidget as capturewidget, infowindow as infowindow, itemgrid as itemgrid, itemlibrary as itemlibrary, itemnavigator as itemnavigator, plglobals as plglobals, poselibundos as poselibundos, posemodel as posemodel
 from collections.abc import Sequence
 from hutil.PySide import QtCore, QtWidgets
-from typing import Any
+from typing import Any, Generic
 
+from typing import TypeVar
+from typing import TypeVar
+_ItemModelT_co = TypeVar('_ItemModelT_co', bound=itemlibrary.ItemModel, covariant=True, default=itemlibrary.ItemModel)
+_GridViewT_co = TypeVar('_GridViewT_co', bound=itemgrid.GridView, covariant=True, default=itemgrid.GridView)
 DELETE_POSE: str
 ADD_POSE: str
 DELETE_FOLDER: str
 ADD_FOLDER: str
 
-class ItemBrowser(QtWidgets.QWidget):
+class ItemBrowser(QtWidgets.QWidget, Generic[_ItemModelT_co, _GridViewT_co]):
     """Contains generic interface for navigating and modifying an item 
        library."""
     newLibraryDialog: NewLibraryDialog
     infoWindow: infowindow.InfoWindow
-    itemModel: itemlibrary.ItemModel
+    itemModel: _ItemModelT_co
     treeView: itemnavigator.TreeView
-    gridView: itemgrid.GridView
+    gridView: _GridViewT_co
     libraryPathLabel: QtWidgets.QLabel
     toolTip: ToolTip
     contextMenu: QtWidgets.QMenu

@@ -2,6 +2,7 @@ import PySide6.QtCore
 import PySide6.QtGui
 import PySide6.QtWidgets
 import hou
+import typing
 from collections.abc import Callable as Callable, Mapping, Sequence
 from houpythonportion.qt.ColorField import ColorField as ColorField
 from houpythonportion.qt.ColorPalette import ColorPalette as ColorPalette
@@ -386,18 +387,10 @@ Note that hou.Color does not store an alpha which is why the alpha is
 returned separately.
 
 """
-def createCheckBox(self: hou.qt, *args: Any, **kwargs: Any) -> PySide6.QtWidgets.QCheckBox:
-    """
-hou.qt.createCheckBox
-
-This method is deprecated.
-
-USAGE
-  createCheckBox() -> QtWidgets.QCheckBox
-
-This method is deprecated. Use QtWidgets.QCheckBox instead.
-
-"""
+@typing.overload
+def createCheckBox(self: hou.qt, /, parent: PySide6.QtWidgets.QWidget | None = ..., *, tristate: bool | None = ...) -> PySide6.QtWidgets.QCheckBox: ...
+@typing.overload
+def createCheckBox(self: hou.qt, text: str, /, parent: PySide6.QtWidgets.QWidget | None = ..., *, tristate: bool | None = ...) -> PySide6.QtWidgets.QCheckBox: ...
 def createComboBox(self: hou.qt, *args: Never, **kwargs: Never) -> ComboBox:
     """
 hou.qt.createComboBox

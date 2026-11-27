@@ -14,7 +14,9 @@ from autorigs.modules.leg.legModule import LegModule
 from autorigs.modules.limb.limbModule import LimbModule
 from autorigs.modules.quadleg.quadLegModule import QuadLegModule
 
-class FootModule(extremityModule.ExtremityModule[FootOptionsWidget, FootParamsWidget, FootGuide]):
+class FootModule(
+    extremityModule.ExtremityModule[FootOptionsWidget, FootParamsWidget, FootGuide, "FootGuideTab", AutoRigsAsset]
+):
     MODULE_TYPE: str
     MODULE_DEFAULT_NAME: str
     DEFAULT_JSON_FILE: str
@@ -24,7 +26,7 @@ class FootModule(extremityModule.ExtremityModule[FootOptionsWidget, FootParamsWi
     legmodules: Sequence[LegModule]
     armmodules: Sequence[ArmModule]
     quadlegmodules: Sequence[QuadLegModule]
-    guidetab: "FootGuideTab"
+    guidetab: "FootGuideTab | None"
     autorigsbuilder: AutoRigsFootBuilder
     def __init__(self, autorigs_asset: AutoRigsAsset) -> None: ...
     def initialize(self, autorigs_asset: AutoRigsAsset, arg2: object = ..., arg3: object = ...) -> None: ...

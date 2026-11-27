@@ -4,7 +4,7 @@ from typing import ClassVar, TypeAlias
 import hou
 from PySide6 import QtCore, QtGui, QtWidgets
 
-_ColorLike: TypeAlias = hou.Color | QtGui.QColor | list[float] | tuple[float, ...]
+_ColorLike: TypeAlias = hou.Color | QtGui.QColor | list[float] | tuple[float, float, float] | tuple[float, float, float, float]
 
 ICON_SIZE: int
 BUTTON_SIZE: float

@@ -6,9 +6,9 @@ import viewerstate.utils
 from _typeshed import Incomplete
 from collections.abc import Callable as Callable, Collection, Container, Iterable, Mapping, Sequence
 from edit import common as common
-from houtypes import JSONValue, ViewerStateCommandKwargs, ViewerStateEnterKwargs, ViewerStateEventKwargs, ViewerStateHandleDragKwargs, ViewerStateHandleToStateKwargs, ViewerStateKwargs, ViewerStateMenuActionKwargs, ViewerStateMenuPreOpenKwargs, ViewerStateParmChangeKwargs, ViewerStateSelectionKwargs, ViewerStateStateToHandleKwargs
+from houtypes import JSONValue, NodeEventKwargs, ViewerStateCommandKwargs, ViewerStateEnterKwargs, ViewerStateEventKwargs, ViewerStateHandleDragKwargs, ViewerStateHandleToStateKwargs, ViewerStateKwargs, ViewerStateMenuActionKwargs, ViewerStateMenuPreOpenKwargs, ViewerStateParmChangeKwargs, ViewerStateSelectionKwargs, ViewerStateStateToHandleKwargs
 from pxr import Gf as Gf, Sdf as Sdf, Usd as Usd, UsdGeom as UsdGeom
-from typing import Any, TypedDict
+from typing import TypedDict, Unpack
 
 from typing import ParamSpec
 from typing import TypeAlias
@@ -20,7 +20,7 @@ _P = ParamSpec('_P')
 _R = TypeVar('_R')
 _T = TypeVar('_T')
 _SerializedValue: TypeAlias = str | list[float] | tuple[hou.Vector3, hou.Vector3] | hou.UIEventDevice | None
-_RecordedValue: TypeAlias = 'None | bool | int | float | str | list[_RecordedValue] | dict[str, _RecordedValue] | BaseState.EventRecorder.MethodDict | hou.Node | hou.Vector3'
+_RecordedValue: TypeAlias = 'None | bool | int | float | str | list[_RecordedValue] | dict[str, _RecordedValue] | BaseState.EventRecorder.MethodDict | hou.OpNode | hou.Vector3'
 class _NodeSettings(TypedDict, total=False):
     physics: bool
     drawsimguide: bool
@@ -139,7 +139,7 @@ class BaseState(Incomplete, metaclass=abc.ABCMeta):
         @classmethod
         def serializeHook(myclass: type[BaseState.EventRecorder], obj: _T) -> dict[str, _SerializedValue] | _T | None: ...
         @classmethod
-        def unserializeHook(myclass: type[BaseState.EventRecorder], literal: dict[str, _RecordedValue]) -> BaseState.EventRecorder.MethodDict | hou.Node | hou.Vector3 | dict[str, _RecordedValue] | None: ...
+        def unserializeHook(myclass: type[BaseState.EventRecorder], literal: dict[str, _RecordedValue]) -> BaseState.EventRecorder.MethodDict | hou.OpNode | hou.Vector3 | dict[str, _RecordedValue] | None: ...
         @classmethod
         def writeEvents(myclass: type[BaseState.EventRecorder], filepath: str) -> None: ...
         @classmethod
@@ -258,7 +258,7 @@ class BaseState(Incomplete, metaclass=abc.ABCMeta):
     @EventRecorder.recordEvent
     def onStopSelection(self, kwargs: ViewerStateSelectionKwargs[list[str]]) -> bool: ...
     @EventRecorder.recordEvent
-    def onNodeSelectionChanged(self, **kwargs: Any) -> None: ...
+    def onNodeSelectionChanged(self, **kwargs: Unpack[NodeEventKwargs]) -> None: ...
     @EventRecorder.recordEvent
     def onMenuPreOpen(self, kwargs: ViewerStateMenuPreOpenKwargs) -> None: ...
     @EventRecorder.recordEvent
@@ -279,7 +279,7 @@ class BaseState(Incomplete, metaclass=abc.ABCMeta):
     @EventRecorder.recordEvent
     def onEndHandleToState(self, kwargs: ViewerStateHandleDragKwargs) -> None: ...
     @EventRecorder.recordEvent
-    def onParmTupleChanged(self, **kwargs: Any) -> None: ...
+    def onParmTupleChanged(self, **kwargs: Unpack[NodeEventKwargs]) -> None: ...
     def addBulletAttribs(self, geo: hou.Geometry) -> None: ...
     @abc.abstractmethod
     def initSimGeo(self, geo: hou.Geometry) -> None:

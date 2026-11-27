@@ -1,5 +1,6 @@
 import hou
 import types
+from typing import Literal
 
 class MocapBodyPart:
     """ Create an object that stores data for a Mocap body part asset.
@@ -15,7 +16,7 @@ class MocapBodyPart:
     maplocations: list[str]
     parameters: list[str]
     useend: bool
-    customtwist: tuple[bool, *tuple[str, ...]]
+    customtwist: tuple[Literal[False]] | tuple[Literal[True], str, str]
     autocontrols: list[str]
     animcontrols: list[str]
     pretransforms: list[str]

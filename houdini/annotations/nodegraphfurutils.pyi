@@ -39,7 +39,7 @@ def getSurroundingGroomNodesAndIndex(
     outputindex: int | None,
     outputitem: hou.Node | hou.NetworkDot | None,
     inputindex: int | None,
-) -> tuple[hou.OpNode | hou.SubnetIndirectInput | None, hou.Node | None, int]: ...
+) -> tuple[hou.OpNode | hou.SubnetIndirectInput | None, hou.OpNode | None, int]: ...
 def getGroomNodeConnections(
     inputitem: hou.Node | hou.IndirectInput | None,
     outputindex: int | None,

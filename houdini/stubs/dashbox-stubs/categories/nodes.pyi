@@ -3,8 +3,9 @@ import hou
 import re
 from ..common import BLANK_ICON as BLANK_ICON, Category as Category, Hit as Hit, SearchSpec as SearchSpec, Sug as Sug, Tag as Tag
 from ..ui import DashWindow as DashWindow
+from collections import defaultdict
 from collections.abc import MutableSequence
-from typing import Mapping, Sequence, TypeAlias
+from typing import Sequence, TypeAlias
 
 from typing import TypeAlias
 TypeDict: TypeAlias = 'dict[str, hou.NodeType]'
@@ -23,7 +24,7 @@ TYPE_ICON: hou.qt.Icon
 PARM_ICON: hou.qt.Icon
 
 def addContextSuggestions(search: SearchSpec, sugs: MutableSequence[Sug]) -> None: ...
-def buildNodePathCatalog(nodes: Sequence[hou.Node]) -> tuple[list[str], Mapping[str, list[str]]]: ...
+def buildNodePathCatalog(nodes: Sequence[hou.Node]) -> tuple[list[str], defaultdict[str, list[str]]]: ...
 def buildNodeTypeCatalog() -> tuple[dict[str, hou.NodeType], dict[str, hou.NodeType], dict[str, dict[str, hou.NodeType]], dict[str, dict[str, hou.NodeType]]]: ...
 def filterNodeTypes(search: SearchSpec, catnames: Sequence[str], catalog: tuple[dict[str, hou.NodeType], dict[str, hou.NodeType], dict[str, dict[str, hou.NodeType]], dict[str, dict[str, hou.NodeType]]], use_internal: bool = True) -> list[Hit]: ...
 

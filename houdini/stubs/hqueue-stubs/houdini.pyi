@@ -2,6 +2,21 @@ import hou
 import typing
 from collections.abc import Sequence
 from typing import Any
+from typing_extensions import TypedDict, Unpack
+
+class _RopRenderKwargs(TypedDict, total=False):
+    frame_range: hou._FloatSequence
+    res: Sequence[int]
+    output_file: str | None
+    output_format: str
+    to_flipbook: bool
+    quality: int
+    ignore_inputs: bool
+    method: hou.EnumValue[hou.renderMethod]
+    ignore_bypass_flags: bool
+    ignore_lock_flags: bool
+    verbose: bool
+    output_progress: bool
 
 def hqScriptsDirPath() -> str:
     """Return the unexpanded directory containing the HQueue scripts."""
@@ -31,7 +46,7 @@ def setParmValue(parm: hou.Parm | hou.ParmTuple, value: int | float | str | Sequ
 def setParmValueInRopNodeAndInputs(rop: hou.OpNode, parm_name: str, val: int | float | str | Sequence[int | float | str]) -> None:
     """Set the value for the given parameter in the specified ROP node
        and recursively in each of its ROP input nodes."""
-def render(node: hou.OpNode, *args: Any, **kwargs: Any) -> None:
+def render(node: hou.OpNode, *args: Any, **kwargs: Unpack[_RopRenderKwargs]) -> None:
     """Render the specified node.
 
     Raise an exception if the node could not be rendered.

@@ -12,11 +12,16 @@ from hutil.PySide.QtCore import Qt as Qt
 from hutil.qt.common import config as config, core as core, qmlviews as qmlviews
 from hutil.qt.pluto import colors as colors
 from typing import Any, ClassVar, Collection, Generic, NamedTuple, TypeVar
+from typing_extensions import ReadOnly, TypedDict, Unpack
+
 
 from typing import TypeVar
 SST = TypeVar('SST', bound='BaseInfoState[Any, Any]')
 IT = TypeVar('IT', bound=core.Info)
 CT = TypeVar('CT', bound=NodeInfoConfig)
+class _BaseInfoStateKwargs(TypedDict, total=False, extra_items=ReadOnly[object]):  # type: ignore[call-arg]
+    editor: hou.NetworkEditor | None
+
 CURRENT_VERSION: int
 DEFAULT_NODE_COLOR: hou.Color
 DEBUG_QML: bool
@@ -122,7 +127,7 @@ class NodeInfoState(BaseInfoState[NodeInfoConfig, nodeinfo.NodeInfo]):
     info: nodeinfo.NodeInfo
     flagChanged: ClassVar[PySide6.QtCore.Signal]
     liveUpdatesChanged: ClassVar[PySide6.QtCore.Signal]
-    def __init__(self, **kwargs: Any) -> None: ...
+    def __init__(self, **kwargs: Unpack[_BaseInfoStateKwargs]) -> None: ...
     def __del__(self) -> None: ...
     def themeEditorTitle(self) -> str: ...
     def outOfDate(self) -> bool: ...

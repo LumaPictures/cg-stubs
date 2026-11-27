@@ -2,19 +2,26 @@ import curveutils as cu
 import hou
 from collections.abc import Iterable, Sequence
 from curvestate import constants as constants, referencegeo as referencegeo
-from curvestate.baseoperation import BaseSelectPointOperation as BaseSelectPointOperation, _CurveState
+from curvestate.baseoperation import BaseSelectPointOperation as BaseSelectPointOperation, _CurveState, _SelectPointOperationKwargs, _TriggerOperationKwargs
 from curvestate.undos import getUndoBlock as getUndoBlock
 from houtypes import ViewerStateEventKwargs
-from typing import Any
+from typing import Required, TypedDict, Unpack
+
+class _PointTypeOperationKwargs(TypedDict, total=False):
+    op_idx: Required[str]
+    to_type: Required[int]
+    avoid_round_corners: bool
+    avoid_branched_points: bool
+    pre_update_groups: bool
 
 class ReverseOperation(BaseSelectPointOperation):
     """ For the reverse operation. """
-    def triggerOperation(self, **kwargs: Any) -> list[int] | None:
+    def triggerOperation(self, **kwargs: Unpack[_TriggerOperationKwargs]) -> list[int] | None:
         """ Override to set pre_update_groups=True """
 
 class PasteOperation(BaseSelectPointOperation):
     """ Encapsulate the copy and paste operation. """
-    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
+    def __init__(self, *args: Unpack[tuple[str, hou.SceneViewer, _CurveState]], **kwargs: Unpack[_SelectPointOperationKwargs]) -> None: ...
     def onMouseEvent(self, kwargs: ViewerStateEventKwargs, snap_pt: hou.Point | None = None, snap_prim: hou.Prim | None = None, snap_upos: float | None = None, snap_pos: hou.Vector3 | None = None) -> None:
         """
         Called by the EditTool on mouse events to update the paste position.
@@ -85,13 +92,13 @@ class PointFuseOperation(PointJoinBaseOperation):
         """
     def updatePostJoinSelection(self, pre_geo: hou.Geometry) -> None:
         """ Update the selection to the kept point after fusing. """
-    def triggerOperation(self, **kwargs: Any) -> list[int] | None:
+    def triggerOperation(self, **kwargs: Unpack[_TriggerOperationKwargs]) -> list[int] | None:
         """ Override to set pre_update_group=True. """
 
 class PointJoinOperation(PointJoinBaseOperation):
     """ Class to handle joining end points with a segment. """
     def __init__(self, name: str, scene_viewer: hou.SceneViewer, main_state: _CurveState) -> None: ...
-    def triggerOperation(self, **kwargs: Any) -> list[int] | None:
+    def triggerOperation(self, **kwargs: Unpack[_TriggerOperationKwargs]) -> list[int] | None:
         """ Override to set pre_update_groups=True """
 
 class CurveCloseOperation(PointJoinBaseOperation):
@@ -116,7 +123,7 @@ class CutBranchOperation(BaseSelectPointOperation):
     def __init__(self, name: str, scene_viewer: hou.SceneViewer, main_state: _CurveState) -> None: ...
     def onMyButtonPress(self) -> None:
         """ Override to handle button press. """
-    def triggerOperation(self, **kwargs: Any) -> list[int]:
+    def triggerOperation(self, **kwargs: Unpack[_TriggerOperationKwargs]) -> list[int]:
         """ Override to return new points added to selection. """
 
 class PointTypeBaseOperation(BaseSelectPointOperation):
@@ -142,7 +149,7 @@ class PointTypePerPointOperation(PointTypeBaseOperation):
     to types for each point in the operation.
     """
     added_pts_reverse_map: dict[int, int]
-    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
+    def __init__(self, *args: Unpack[tuple[str, hou.SceneViewer, _CurveState]], **kwargs: Unpack[_PointTypeOperationKwargs]) -> None: ...
     def setupToType(self, op_points: list[int], pre_geo: hou.Geometry) -> None:
         """ Set up any mappings we need to determine types. """
     def setupMappings(self, op_points: list[int], pre_geo: hou.Geometry) -> None:

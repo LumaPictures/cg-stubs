@@ -2,8 +2,9 @@ import hou
 from . import model as model
 from collections.abc import Callable as Callable
 from hutil.PySide import QtCore, QtWidgets
-from typing import Any, IO
+from typing import IO, Unpack
 from typing_extensions import TypedDict
+from viewerstate.interface import _ResourceEventKwargs
 
 class _BrowserCommand(TypedDict, total=False, extra_items=object):  # type: ignore[call-arg]
     args: dict[str, str]
@@ -21,7 +22,7 @@ class _BrowserCommand(TypedDict, total=False, extra_items=object):  # type: igno
 class ViewerStateBrowser(QtWidgets.QFrame):
     def __init__(self, parent: QtWidgets.QWidget | None = None) -> None: ...
     def resourceType(self) -> hou.EnumValue[hou.resourceType]: ...
-    def printMessage(self, msg: object, msg_type: hou.EnumValue[hou.severityType] = ..., immediate: bool = False) -> None:
+    def printMessage(self, msg: str | list[str], msg_type: hou.EnumValue[hou.severityType] = ..., immediate: bool = False) -> None:
         ''' Print a message in the console.
         msg: The message to log. The message can be formatted with 
              rich text tags:
@@ -78,7 +79,7 @@ class ViewerStateBrowser(QtWidgets.QFrame):
     def onEventHandlerTraceOptions(self) -> None: ...
     def onEnterState(self) -> None: ...
     def onExitState(self) -> None: ...
-    def onResourceEvent(self, **kwargs: Any) -> None: ...
+    def onResourceEvent(self, **kwargs: Unpack[_ResourceEventKwargs]) -> None: ...
     def runCommand(self, kwargs: _BrowserCommand) -> dict[str, bool]: ...
 
 def onApplyAction(**kwargs: str) -> None:

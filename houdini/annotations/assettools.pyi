@@ -25,8 +25,8 @@ class _ListEditorKwargs(TypedDict, total=False):
     exclusive_check: bool
     allow_empty_list: bool
 
-HDA_LIB_EXTENSIONS: tuple[str, ...]
-EXCLUDE_NAMESPACES: tuple[str, ...]
+HDA_LIB_EXTENSIONS: tuple[str, str, str, str]
+EXCLUDE_NAMESPACES: tuple[str, str, str, str]
 ASSET_NAME_CHARS: str
 NS_PART_SEP: str
 HFS_PATH: pathlib.Path

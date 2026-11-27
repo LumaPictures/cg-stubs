@@ -1,10 +1,12 @@
 import datetime
 from collections.abc import Generator, Iterable, Mapping, Sequence
-from typing import Literal, TypeAlias
+from typing import Literal, TypeAlias, TypeVar
 
 from hrecipes import rtypes
 
 import hou
+
+_OpNodeT = TypeVar("_OpNodeT", bound=hou.OpNode)
 
 # hrecipes.rtypes.ParmOptionType and ParmTemplateOptionType, spelled out.
 _ParmOption: TypeAlias = bool | list[hou.ParmTuple] | list[str] | set[str] | tuple[str, ...]
@@ -87,7 +89,7 @@ def parmClipData(
     sample_rate: float = ...,
     scoped_only: bool = ...,
 ) -> bytes: ...
-def copyTo(self: hou.OpNode, destination_node: hou.Node) -> hou.OpNode: ...
+def copyTo(self: _OpNodeT, destination_node: hou.OpNode) -> _OpNodeT: ...
 def asData(self: hou.OpNode, **item_opts: _ItemOption) -> rtypes.NetworkItemData: ...
 def setFromData(
     self: hou.OpNode, data: rtypes.NetworkItemData, **item_set_opts: bool

@@ -1,6 +1,6 @@
 import collections
 from collections.abc import Iterable, Mapping, MutableMapping, MutableSequence, Sequence
-from typing import Any, Literal, Protocol, TypeAlias, TypedDict, TypeVar, overload
+from typing import Literal, Protocol, TypeAlias, TypedDict, TypeVar, overload
 
 import hou
 from autorigs.modules.base import buildBaseGuide
@@ -21,6 +21,8 @@ class _ExtremityGuideJson(TypedDict):
     digitspacing: float
     digitguidespacing: float
     digitinitialspacing: float
+
+_GuideObject: TypeAlias = hou.ObjNode | hou.SopNode | list[hou.ObjNode] | list[list[hou.ObjNode]]
 
 _ObjNodePart: TypeAlias = Literal[
     'root',
@@ -152,8 +154,9 @@ _Guide_co = TypeVar("_Guide_co", bound="ExtremityGuide", covariant=True)
 _Guide = TypeVar("_Guide", bound="ExtremityGuide")
 
 class _CreatesFromJsonNew(Protocol[_Guide_co]):
+    @classmethod
     def createFromJsonNew(
-        self, json: _ExtremityModuleJson, assetnode: hou.ObjNode, model: ModuleOptionModel, parent: hou.ObjNode | None = ...
+        cls, json: _ExtremityModuleJson, assetnode: hou.ObjNode, model: ModuleOptionModel, parent: hou.ObjNode | None = ...
     ) -> _Guide_co: ...
 
 class ExtremityFactory(buildBaseGuide.BaseFactory):
@@ -179,7 +182,7 @@ class ExtremityGuide(buildBaseGuide.BaseGuide[_ExtremityGuideJson]):
     DISPLAY_DEFAULT: int
 
     display: bool
-    guidenodesdata: dict[str, list[Any]]
+    guidenodesdata: dict[str, list[_GuideObject | bool | int]]
     parent: hou.ObjNode | None
     assetnode: hou.ObjNode
     model: ModuleOptionModel
@@ -269,8 +272,8 @@ class ExtremityGuide(buildBaseGuide.BaseGuide[_ExtremityGuideJson]):
         self, guidename: Literal['maindigitsguides', 'mirrordigitsguides']
     ) -> list[list[hou.ObjNode]]: ...
     @overload
-    def getGuideObject(self, guidename: str) -> Any: ...
-    def getGuideObjectData(self, guidename: str) -> list[Any] | None: ...
+    def getGuideObject(self, guidename: str) -> _GuideObject: ...
+    def getGuideObjectData(self, guidename: str) -> list[_GuideObject | bool | int] | None: ...
     @overload
     def getGuideObjectSide(self, ismain: bool, guidename: _ObjNodePart) -> hou.ObjNode: ...
     @overload
@@ -280,8 +283,8 @@ class ExtremityGuide(buildBaseGuide.BaseGuide[_ExtremityGuideJson]):
     @overload
     def getGuideObjectSide(self, ismain: bool, guidename: Literal['digitsguides']) -> list[list[hou.ObjNode]]: ...
     @overload
-    def getGuideObjectSide(self, ismain: bool, guidename: str) -> Any: ...
-    def getGuideObjectDataSide(self, ismain: bool, guidepart: str) -> list[Any] | None: ...
+    def getGuideObjectSide(self, ismain: bool, guidename: str) -> _GuideObject: ...
+    def getGuideObjectDataSide(self, ismain: bool, guidepart: str) -> list[_GuideObject | bool | int] | None: ...
     @overload
     def getDigitsGuidesObjectSide(self, ismain: bool, guidepart: Literal['bigdigit']) -> list[hou.ObjNode]: ...
     @overload

@@ -15,6 +15,7 @@ class LopBaseState(BaseState):
     physprimpattern: str
     dragprimpath: str | None
     dragprimchildnums: list[int]
+    prompt: str | None
     @staticmethod
     def bindMenu(template: hou.ViewerStateTemplate, menu: hou.ViewerStateMenu) -> None: ...
     def __init__(self, state_name: str, scene_viewer: hou.SceneViewer) -> None: ...
@@ -75,7 +76,6 @@ class LopBaseState(BaseState):
         """
         Override of BaseState.getCorrectDescriptor
         """
-    prompt: str
     def handleDescriptorDNE(self, simgeo: hou.Geometry, primpath: str) -> str:
         """
         Override of BaseState.handleDescriptorDNE

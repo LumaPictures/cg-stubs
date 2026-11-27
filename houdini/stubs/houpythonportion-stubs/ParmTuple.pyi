@@ -1,5 +1,5 @@
 import hou
-from typing import Any, Self
+from typing import Self
 
 class ParmTupleIterator:
     """
@@ -156,4 +156,4 @@ sample_rate=0) -> str for Python 2, bytes for Python 3
     use_blosc_compression = True.
 
 """
-def pressScriptActionButton(self: hou.ParmTuple, **kwargs: Any) -> None: ...
+def pressScriptActionButton(self: hou.ParmTuple, **kwargs: object) -> None: ...

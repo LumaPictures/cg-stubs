@@ -1,5 +1,5 @@
 from collections.abc import KeysView, Mapping, Sequence
-from typing import Any, ClassVar
+from typing import ClassVar, TypedDict, Unpack
 
 import hou
 from viewerhandle.hudapi import _HUDHandle, _HUDParmChangeKwargs, _HUDParmTemplateChangeKwargs, _HUDSettings
@@ -14,6 +14,14 @@ TRACKPAD_SCENE_SIZE: int
 TRACKPAD_ITEM_SIZE: float
 TRACKPAD_DEPTH: int
 TRACKPAD_ITEM_COLOR: QtCore.Qt.GlobalColor
+
+# The keywords of rui.LabelEdit's constructor that TrackpadLabel's doesn't set itself.
+class _TrackpadLabelKwargs(TypedDict, total=False):
+    parent: QtWidgets.QWidget | None
+    text: str | None
+    tooltip: str | None
+    alignment: QtCore.Qt.AlignmentFlag
+    width: int | None
 
 class ParmInfo:
     enabled: bool
@@ -79,13 +87,13 @@ class Trackpad(QtWidgets.QFrame):
     def type(self) -> type[int] | type[float]: ...
 
 class TrackpadLabel(rui.LabelEdit):
-    def __init__(self, **kwargs: Any) -> None: ...
+    def __init__(self, **kwargs: Unpack[_TrackpadLabelKwargs]) -> None: ...
     def hasShadowEffect(self) -> bool: ...
     def setShadowEffectState(self, value: bool) -> None: ...
 
 class HUDTrackPad(hudapi.HUDWidgetBase):
     def __init__(
-        self, handle: _HUDHandle, target_parm: hou.Parm | None, hud_widget_key: str, window_key: str, **kwargs: Any
+        self, handle: _HUDHandle, target_parm: hou.Parm | None, hud_widget_key: str, window_key: str, **kwargs: Unpack[hudw._HUDWidgetOptions]
     ) -> None: ...
     def computeDistance(self, x: float, y: float) -> list[float]: ...
     def setPreviousMousePos(self, x: float, y: float) -> None: ...

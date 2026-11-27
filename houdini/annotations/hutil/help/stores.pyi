@@ -1,7 +1,7 @@
 import pathlib
 from collections.abc import Iterator, Mapping
 from importlib.resources.abc import Traversable
-from typing import IO, Any, TypeAlias
+from typing import IO, Any, TypeAlias, TypedDict
 
 from hutil.help.config import Config
 from hutil.help.paths import WikiPath
@@ -10,7 +10,14 @@ DOC_KEY: str
 EXTRA_DOC_KEY: str
 MOUNTS_KEY: str
 
-_StoreObj: TypeAlias = "str | pathlib.Path | Store | dict[str, Any] | list[_StoreObj] | tuple[_StoreObj, ...] | Config"
+# A store's class (or its importable name), its constructor's keyword arguments, and, for a
+# WrappingStore, the store it wraps.
+_StoreDict = TypedDict(
+    "_StoreDict",
+    {"class": "type[Store]", "classname": str, "args": Mapping[str, Any], "child": "_StoreObj"},
+    total=False,
+)
+_StoreObj: TypeAlias = "str | pathlib.Path | Store | _StoreDict | list[_StoreObj] | tuple[_StoreObj, ...] | Config"
 
 def store_from_obj(obj: _StoreObj) -> Store: ...
 

@@ -9,8 +9,8 @@ from hrecipes.config import ConfigDict as ConfigDict
 from types import UnionType as UnionType
 from typing import Callable as Callable, Iterable, Literal, Sequence
 
-ASSET_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.hdaEventType], ...]
-HIPFILE_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.hipFileEventType], ...]
+ASSET_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.hdaEventType], hou.EnumValue[hou.hdaEventType], hou.EnumValue[hou.hdaEventType], hou.EnumValue[hou.hdaEventType], hou.EnumValue[hou.hdaEventType]]
+HIPFILE_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.hipFileEventType], hou.EnumValue[hou.hipFileEventType], hou.EnumValue[hou.hipFileEventType]]
 
 def recipeStorage() -> PresetStore: ...
 def initStorage() -> None: ...

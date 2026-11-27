@@ -43,8 +43,8 @@ EXAMPLES
   > node_chooser_btn.nodeSelected.connect(onNodeSelected)
 
 '''
-    relative_to_node: hou.Node | None
-    initial_node: hou.Node | None
+    relative_to_node: hou.OpNode | None
+    initial_node: hou.OpNode | None
     node_filter: hou.EnumValue[hou.nodeTypeFilter]
     select_multiple: bool
     __module__: str
@@ -58,7 +58,7 @@ __init__(self)
     Create and return a new NodeChooserButton object.
 
 """
-    def setNodeChooserRelativeToNode(self, relative_to_node: hou.Node | None) -> None:
+    def setNodeChooserRelativeToNode(self, relative_to_node: hou.OpNode | None) -> None:
         """
 setNodeChooserRelativeToNode(self, relative_to_node)
 
@@ -73,7 +73,7 @@ setNodeChooserRelativeToNode(self, relative_to_node)
     not set then returned paths will be absolute.
 
 """
-    def setNodeChooserInitialNode(self, initial_node: hou.Node | None) -> None:
+    def setNodeChooserInitialNode(self, initial_node: hou.OpNode | None) -> None:
         """
 setNodeChooserInitialNode(self, initial_node)
 

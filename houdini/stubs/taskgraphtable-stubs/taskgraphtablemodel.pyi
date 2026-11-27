@@ -8,7 +8,7 @@ from .taskgraphtable import TaskGraphTable as TaskGraphTable
 from collections.abc import Mapping, Sequence
 from hutil.Qt import QtCore
 from pdgd.util import PDGDObject
-from typing import Any, ClassVar
+from typing import ClassVar
 
 ICON_SIZE: int
 ATTRIBUTE_PREFIX: str
@@ -64,7 +64,7 @@ class TaskGraphTableModel(QtCore.QAbstractTableModel):
         """ Number of rows in the model """
     def columnCount(self, index: QtCore.QModelIndex | QtCore.QPersistentModelIndex = ...) -> int:
         """ Number of columns in the model """
-    def data(self, index: QtCore.QModelIndex | QtCore.QPersistentModelIndex, role: int = ...) -> Any:
+    def data(self, index: QtCore.QModelIndex | QtCore.QPersistentModelIndex, role: int = ...) -> str | int | float | hou.qt.Icon | None:
         """ Return data for the given role. """
     def attributeSelectionChanged(self, attribute_item: AttributeEntry) -> None:
         """ Called when an attribute visibility has changed """

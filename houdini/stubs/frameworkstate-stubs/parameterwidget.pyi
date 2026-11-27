@@ -7,7 +7,8 @@ from typing import Generic
 from typing import TypeVar
 from typing import TypeVar
 _S = TypeVar('_S', default=object)
-class ParameterWidget(Generic[_S]):
+_W_co = TypeVar('_W_co', bound=shud.WidgetBundleWindow | None, default=shud.WidgetBundleWindow | None, covariant=True)
+class ParameterWidget(Generic[_S, _W_co]):
     """ 
     this is a basic class for a hud window that can bundle various commonly used 
     settings in a frame work. tools can easily add additional tabs to that widget. 
@@ -22,7 +23,7 @@ class ParameterWidget(Generic[_S]):
     scene_viewer: hou.SceneViewer
     state: _S
     storage_interface: StorageInterface | None
-    hud_window: shud.WidgetBundleWindow | None
+    hud_window: _W_co
     tab_widget_name: str | None
     tab_name: str | None
     is_visible: bool

@@ -1,6 +1,7 @@
 from collections.abc import Callable, Mapping, MutableMapping
-from typing import Any, TypedDict, TypeVar, overload
+from typing import Any, TypeAlias, TypeVar, overload
 
+import hou
 import PySide6.QtCore
 import PySide6.QtGui
 import PySide6.QtWidgets
@@ -8,13 +9,12 @@ import PySide6.QtWidgets
 
 _MenuT = TypeVar("_MenuT", bound=PySide6.QtWidgets.QMenu)
 
-# What an action item hands actionitem_callback: the item's own label and id over the
-# parser's and generateMenu's kwargs, whose keys and values are the caller's own.
-class _MenuActionKwargs(TypedDict, extra_items=Any):  # type: ignore[call-arg]
-    label: str
-    id: str
+_MenuActionKwargs: TypeAlias = hou._MenuActionKwargs
 
 ICON_SIZE: int
+
+class _MenuTitleLabel(PySide6.QtWidgets.QLabel):
+    def __init__(self, text: str | None = ..., parent: PySide6.QtWidgets.QWidget | None = ...) -> None: ...
 
 class MenuTitleItem(PySide6.QtWidgets.QWidgetAction):
     def __init__(self, text: str | None = ..., parent: PySide6.QtCore.QObject | None = ...) -> None: ...

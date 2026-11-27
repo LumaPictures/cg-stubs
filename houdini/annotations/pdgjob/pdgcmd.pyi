@@ -6,6 +6,7 @@ from types import ModuleType, TracebackType
 from typing import IO, Any, Literal, Never, Protocol, Self, TextIO, TypeAlias, TypeIs, TypeVar, overload
 
 import pdg
+from houtypes import JSONLike
 from pdgjob import pdgjson
 from pdgutils import PDGNetMQRelay
 
@@ -23,7 +24,7 @@ _XmlRpcValue: TypeAlias = (
 )
 
 class _RpcProxy(Protocol):
-    def call(self, fn_name: str, /, *args: object) -> Any: ...
+    def call(self, fn_name: str, /, *args: JSONLike | xmlrpc.client.Binary) -> Any: ...
     def commitMulti(self, name: str, /) -> object: ...
 
 class _RpcDelegate(Protocol):

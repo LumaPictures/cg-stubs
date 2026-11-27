@@ -3,7 +3,7 @@ import concurrent.futures
 import contextvars
 import os
 import socket
-from collections.abc import Awaitable, Callable, Coroutine, Iterable, Mapping, Sequence
+from collections.abc import Awaitable, Callable, Collection, Coroutine, Iterable, Mapping, MutableMapping, Sequence
 from ssl import SSLContext
 from typing import IO, Any, Never, NoReturn, Protocol, TypeAlias, TypedDict, TypeVar, TypeVarTuple, Unpack, overload
 
@@ -51,6 +51,28 @@ class _TaskOptions(TypedDict, total=False):
     name: str | None
     context: contextvars.Context | None
     eager_start: bool
+
+# The subprocess.Popen keywords a subprocess transport passes on (it gives the others itself).
+class _PopenKwargs(TypedDict, total=False):
+    executable: _StrOrBytesPath | None
+    preexec_fn: Callable[[], object] | None
+    close_fds: bool
+    cwd: _StrOrBytesPath | None
+    env: Mapping[str, _StrOrBytesPath] | Mapping[bytes, _StrOrBytesPath] | None
+    creationflags: int
+    restore_signals: bool
+    start_new_session: bool
+    pass_fds: Collection[int]
+    user: str | int | None
+    group: str | int | None
+    extra_groups: Iterable[str | int] | None
+    umask: int
+    pipesize: int
+    process_group: int | None
+
+class _SubprocessTransportKwargs(_PopenKwargs, total=False):
+    waiter: asyncio.Future[None] | None
+    extra: MutableMapping[str, object] | None
 
 def check_thread() -> None: ...
 def convert_boost_error(err: ErrorCode) -> asyncio.CancelledError | OSError: ...
@@ -111,7 +133,7 @@ class BasePipeTransport(asyncio.BaseTransport):
         f: "AsyncioReadPipe | AsyncioWritePipe | AsyncioSocket",
         protocol: asyncio.BaseProtocol,
         waiter: asyncio.Future[None] | None = ...,
-        extra: Mapping[str, Any] | None = ...,
+        extra: MutableMapping[str, object] | None = ...,
         server: "AsyncioServer | None" = ...,
     ) -> None: ...
     def __repr__(self) -> str: ...
@@ -131,7 +153,7 @@ class ReadPipeTransport(BasePipeTransport):
         f: _PipeFile,
         protocol: asyncio.BaseProtocol,
         waiter: asyncio.Future[None] | None = ...,
-        extra: Mapping[str, Any] | None = ...,
+        extra: MutableMapping[str, object] | None = ...,
         server: "AsyncioServer | None" = ...,
         buffer_size: int = ...,
     ) -> None: ...
@@ -146,7 +168,7 @@ class WritePipeTransport(BasePipeTransport):
         f: _PipeFile,
         protocol: asyncio.BaseProtocol,
         waiter: asyncio.Future[None] | None = ...,
-        extra: Mapping[str, Any] | None = ...,
+        extra: MutableMapping[str, object] | None = ...,
         server: "AsyncioServer | None" = ...,
     ) -> None: ...
     def writelines(self, list_of_data: Iterable[_Buffer]) -> None: ...
@@ -167,8 +189,8 @@ class BaseSubprocessTransport(asyncio.SubprocessTransport):
         stderr: int | IO[Any] | None,
         bufsize: int,
         waiter: asyncio.Future[None] | None = ...,
-        extra: Mapping[str, Any] | None = ...,
-        **kwargs: Any,
+        extra: MutableMapping[str, object] | None = ...,
+        **kwargs: Unpack[_PopenKwargs],
     ) -> None: ...
     def __repr__(self) -> str: ...
     def set_protocol(self, protocol: asyncio.BaseProtocol) -> None: ...
@@ -202,7 +224,20 @@ class AsyncioPIDWatcher(object):
     def __init__(self, pid: int, clb: Callable[[int], object], cancel_clb: Callable[[], object]) -> None: ...
 
 class AsyncioSubprocessTransport(BaseSubprocessTransport):
-    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
+    def __init__(
+        self,
+        *args: *tuple[
+            "HoudiniEventLoop",
+            asyncio.SubprocessProtocol,
+            str | bytes | Sequence[_StrOrBytesPath],
+            bool,
+            int | IO[Any] | None,
+            int | IO[Any] | None,
+            int | IO[Any] | None,
+            int,
+        ],
+        **kwargs: Unpack[_SubprocessTransportKwargs],
+    ) -> None: ...
 
 class AsyncioAcceptor(object):
     def __init__(self, loop: "HoudiniEventLoop", af: int, socktype: int, *, fileno: int | None = ...) -> None: ...
@@ -286,7 +321,7 @@ class AsyncioDatagramTransport(BasePipeTransport):
         protocol: asyncio.DatagramProtocol,
         address: _IPAddress | None = ...,
         waiter: asyncio.Future[None] | None = ...,
-        extra: Mapping[str, Any] | None = ...,
+        extra: MutableMapping[str, object] | None = ...,
     ) -> None: ...
     def get_write_buffer_size(self) -> int: ...
     def abort(self) -> None: ...
@@ -299,7 +334,7 @@ class AsyncioTransport(asyncio.BaseTransport):
         socket: "AsyncioSocket",
         protocol: asyncio.BaseProtocol,
         waiter: asyncio.Future[None] | None = ...,
-        extra: Mapping[str, Any] | None = ...,
+        extra: MutableMapping[str, object] | None = ...,
         server: "AsyncioServer | None" = ...,
     ) -> None: ...
     def __del__(self, _warn: _WarnFunc = ...) -> None: ...

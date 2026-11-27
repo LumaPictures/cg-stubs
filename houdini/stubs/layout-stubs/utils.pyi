@@ -7,7 +7,7 @@ from typing import Protocol, TypeAlias
 from typing import TypeAlias
 AssetGeneratorSig: TypeAlias = _AssetGeneratorSig
 class _AssetGeneratorSig(Protocol):
-    def __call__(self, container: hou.Node, asset_info: _AssetInfo | _AssetDataSourceInfo, primpath: str, prev_item: hou.NetworkMovableItem | None, next_node: hou.Node | None, force_gen: bool = ...) -> hou.Node | None: ...
+    def __call__(self, container: hou.LopNetwork | hou.LopNode, asset_info: _AssetInfo | _AssetDataSourceInfo, primpath: str, prev_item: hou.LopNode | None, next_node: hou.LopNode | None, force_gen: bool = ...) -> hou.LopNode | None: ...
 
 
 def selectBrushByType(brush_type_name: str) -> None:

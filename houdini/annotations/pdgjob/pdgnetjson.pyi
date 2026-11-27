@@ -1,7 +1,8 @@
 import builtins
 import json
 import xmlrpc.client
-from typing import Any, Generic, TypeAlias, overload
+from collections.abc import Callable
+from typing import Any, Generic, Never, TypeAlias, Unpack, overload
 
 from typing_extensions import TypedDict, TypeVar
 
@@ -38,11 +39,19 @@ class _KlassInfo(TypedDict):
 class _KlassJSON(TypedDict):
     _klass: _KlassInfo
 
+# json.JSONDecoder's keywords, less the object_hook this decoder always passes.
+class _DecoderKwargs(TypedDict, total=False):
+    parse_float: Callable[[str], Any] | None
+    parse_int: Callable[[str], Any] | None
+    parse_constant: Callable[[str], Any] | None
+    strict: bool
+    object_pairs_hook: Callable[[list[tuple[str, Any]]], Any] | None
+
 class PDGNetRPCJsonEncoder(json.JSONEncoder):
     def default(self, obj: object) -> _BytesJSON | _BinaryJSON | _KlassJSON: ...
 
 class PDGNetRPCJsonDecoder(json.JSONDecoder):
-    def __init__(self, *args: object, **kwargs: Any) -> None: ...
+    def __init__(self, *args: Never, **kwargs: Unpack[_DecoderKwargs]) -> None: ...
     def object_hook(self, obj: dict[str, _RpcJSON]) -> _RpcJSON: ...
 
 class PDGNetRPCJsonWrapper(Generic[_J]):

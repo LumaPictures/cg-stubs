@@ -20,8 +20,7 @@ _StitchItem: TypeAlias = hou.Node | hou.NetworkDot | hou.SubnetIndirectInput
 _StitchHit: TypeAlias = tuple[_StitchItem, str, int]
 _StitchPair: TypeAlias = tuple[_StitchItem, int, _StitchItem, int]
 
-class BoxPickHandler(base.EventHandler):
-    start_uievent: MouseEvent
+class BoxPickHandler(base.EventHandler[MouseEvent]):
     start_pos: hou.Vector2
     set_cursor: bool
     oldcursormap: dict[tuple[str, int], str]
@@ -32,8 +31,7 @@ class BoxPickHandler(base.EventHandler):
     def handleBoxPickComplete(self, items: Sequence[hou.NetworkItem], uievent: MouseEvent) -> None: ...
     def handleEvent(self, uievent: _UIEvent, pending_actions: list[base.PendingAction]) -> base.EventHandler | None: ...
 
-class VolatileStateHandler(base.EventHandler):
-    start_uievent: KeyboardEvent
+class VolatileStateHandler(base.EventHandler[KeyboardEvent]):
     editor_updates: utils.EditorUpdates
     startkey: str
     subhandler: base.EventHandler | None
@@ -116,7 +114,7 @@ class StitchStateHandler(VolatileStateHandler):
     @staticmethod
     def isSubnetInput(part_type: str) -> bool: ...
     @staticmethod
-    def nextConnector(connector_func: Callable[[], Sequence[Sequence[hou.NodeConnection]]]) -> int: ...
+    def nextConnector(connector_func: Callable[[], Iterable[Sequence[hou.NodeConnection]]]) -> int: ...
     def stitch(self) -> None: ...
     def update(self, hits: list[_StitchHit]) -> None: ...
     @staticmethod

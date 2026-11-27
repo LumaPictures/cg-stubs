@@ -46,7 +46,7 @@ _RendererInfo = TypedDict(
 theDataMap: dict[str, _RendererInfo] | None
 env_prefix: str
 platform_prefix: str
-relative_path_keys: tuple[str, ...]
+relative_path_keys: tuple[str]
 
 def resolve_inherit_from(
     name: str, base: _RendererInfo, datamap: dict[str, _RendererInfo]

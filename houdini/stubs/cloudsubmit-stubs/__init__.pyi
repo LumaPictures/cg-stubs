@@ -4,8 +4,8 @@ import hutil.enum
 import queue
 import threading
 import xmlrpc.client
-from houtypes import JSONValue
-from typing import Any, NotRequired, TypedDict
+from houtypes import JSONLike, JSONValue
+from typing import NotRequired, TypedDict
 
 from typing import TypeAlias
 from typing import TypeAlias
@@ -58,7 +58,7 @@ class RobustConnection:
     NUM_WAIT_SECONDS: int
     def __init__(self, conn: hjsonrpc.ServiceProxy | xmlrpc.client.ServerProxy | None, conn_desc: str, method_name: str | None = None) -> None: ...
     def __getattr__(self, name: str) -> RobustConnection: ...
-    def __call__(self, *args: Any) -> JSONValue | _XmlRpcValue: ...
+    def __call__(self, *args: JSONLike | _XmlRpcValue) -> JSONValue | _XmlRpcValue: ...
 
 def getConnection() -> hjsonrpc.ServiceProxy | None:
     """Return a connection to the local cloud submission process's RPC

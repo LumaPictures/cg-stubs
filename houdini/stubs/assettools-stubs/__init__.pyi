@@ -29,8 +29,8 @@ class _ListEditorKwargs(TypedDict, total=False):
     initial_check: bool
     exclusive_check: bool
     allow_empty_list: bool
-HDA_LIB_EXTENSIONS: tuple[str, ...]
-EXCLUDE_NAMESPACES: tuple[str, ...]
+HDA_LIB_EXTENSIONS: tuple[str, str, str, str]
+EXCLUDE_NAMESPACES: tuple[str, str, str, str]
 
 def expandedPath(path: str | pathlib.Path) -> pathlib.Path: ...
 def expandedPathString(pathstr: str) -> str: ...

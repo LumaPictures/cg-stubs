@@ -16,9 +16,9 @@ from typing import TypeAlias
 from autorigs.modules.base.rootModule import _ModuleJson
 from typing import TypeAlias
 _EyeModuleJson: TypeAlias = _ModuleJson[_EyeOptionsJson, _ParamsJson, _EyeGuideJson]
-class EyeModule(Mod.Module[_EyeOptionsJson, _ParamsJson, _EyeGuideJson, ModuleOptionsWidget, ModuleParamsWidget, EyeGuide, None, None, None]):
+class EyeModule(Mod.Module[_EyeOptionsJson, _ParamsJson, _EyeGuideJson, ModuleOptionsWidget, ModuleParamsWidget, EyeGuide, None, None, None, 'EyeGuideTab']):
     assetnode: hou.ObjNode
-    guidetab: EyeGuideTab
+    guidetab: EyeGuideTab | None
     autorigsbuilder: AutoRigsEyeBuilder
     MODULE_TYPE: str
     MODULE_DEFAULT_NAME: str
@@ -31,7 +31,7 @@ class EyeModule(Mod.Module[_EyeOptionsJson, _ParamsJson, _EyeGuideJson, ModuleOp
     def buildFromJsonExisting(self, json: _EyeModuleJson) -> None: ...
     def buildRig(self, index: int) -> None: ...
 
-class EyeGuideTab(Mod.ModuleGuideTab[_EyeOptionsJson, _ParamsJson, _EyeGuideJson, ModuleOptionsWidget, ModuleParamsWidget, EyeGuide]):
+class EyeGuideTab(Mod.ModuleGuideTab[_EyeOptionsJson, _ParamsJson, _EyeGuideJson, ModuleOptionsWidget, ModuleParamsWidget, EyeGuide, ModuleTabsWidget]):
     tabswidget: ModuleTabsWidget
     buildguides: Incomplete
     optionswidget: Incomplete

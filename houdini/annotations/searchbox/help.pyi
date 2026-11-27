@@ -16,7 +16,7 @@ HOM_Q: query.Or
 EXPR_Q: query.Term
 FILTERS: list[tuple[str, query.Query]]
 FILTER_LOOKUP: dict[str, query.Query]
-STD_FILTER_TYPES: tuple[str, ...]
+STD_FILTER_TYPES: tuple[str, str, str, str, str, str]
 STANDARD_FILTERS: query.Or
 BOOSTS: list[query.And]
 STANDARD_ICONS: dict[str, hou.qt.Icon]

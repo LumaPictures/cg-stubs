@@ -22,7 +22,9 @@ class _RegisterModuleTypes(Protocol):
     def __call__(self, module: types.ModuleType, quiet: bool = ..., /) -> None: ...
 
 class DataBackend:
-    def buildFilteredSet(self, *args, **kwargs) -> Never: ...
+    # Its first argument and its result are C++ sets with no Python binding.
+    @replace
+    def buildFilteredSet(self, arg0: Never, arg1: QueryDefinition, arg2: DataLayerInterface) -> Never: ...
 
 class DataBackendQueryResults:
     InitialResults: Never
@@ -40,6 +42,11 @@ class DataLayerInterfaceManager:
 class DataLayerServerManager:
     def createServer(self, arg0: str, arg1: int) -> DataLayerServer | None: ...
     def listActiveServers(self) -> list[DataLayerServer]: ...
+
+class DataLayerVisualizerManager:
+    # The extra arguments go to the registered visualizer class's __init__; keywords are dropped.
+    @replace
+    def createVisualizer(self, type_name: str, /, *args: Any) -> DataLayerVisualizer: ...
 
 class Message:
     class MessageType:
@@ -77,7 +84,9 @@ class PySubscriptionHandlerType:
     def typeObject(self) -> type[Any]: ...
 
 class SubscriptionHandlerManager:
-    def createSubscriptionHandler(self, *args, **kwargs) -> SubscriptionHandler | None: ...
+    # The extra arguments go to the registered handler class's __init__.
+    @replace
+    def createSubscriptionHandler(self, object_name: str, type_name: str, /, *args: Any) -> SubscriptionHandler | None: ...
 
 class TypeRegistry:
     registerBackend: ClassVar[_RegisterType]

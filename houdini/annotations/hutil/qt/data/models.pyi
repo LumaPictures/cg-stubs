@@ -6,6 +6,8 @@ import PySide6.QtCore
 import PySide6.QtGui
 import PySide6.QtWidgets
 
+from houtypes import JSONLike
+
 from . import formatting, styling
 
 _DataItemSource: TypeAlias = tuple[str, float] | str | float
@@ -25,8 +27,8 @@ _DecoType: TypeAlias = (
     PySide6.QtGui.QBrush | PySide6.QtGui.QColor | PySide6.QtGui.QPixmap | PySide6.QtGui.QPalette.ColorRole | None
 )
 _Index: TypeAlias = PySide6.QtCore.QModelIndex | PySide6.QtCore.QPersistentModelIndex
-_RowSource: TypeAlias = Mapping[str, Any] | Iterable[
-    tuple[str, float] | str | float | Mapping[str, Any] | Sequence[Any]
+_RowSource: TypeAlias = Mapping[str, JSONLike] | Iterable[
+    tuple[str, float] | str | float | Mapping[str, JSONLike] | Sequence[JSONLike]
 ]
 
 class ChartItem:

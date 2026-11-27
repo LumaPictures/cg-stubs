@@ -8,13 +8,18 @@ from houtypes import ViewerStateEventKwargs, ViewerStateKwargs, ViewerStateVolat
 # The viewer state that manages the widget. ParameterWidget only probes it for `hud_parm_hk`, so
 # any state will do; subclasses that use more of it say which (ParameterWidget[State]).
 _S = TypeVar("_S", default=object)
+# The HUD window: `None` until `initWindow`; subclasses that call it in `__init__` take a
+# `WidgetBundleWindow`. Only the widget's own `initWindow` sets it, so it is covariant.
+_W_co = TypeVar(
+    "_W_co", bound=shud.WidgetBundleWindow | None, default=shud.WidgetBundleWindow | None, covariant=True
+)
 
-class ParameterWidget(Generic[_S]):
+class ParameterWidget(Generic[_S, _W_co]):
     name: str
     scene_viewer: hou.SceneViewer
     state: _S
     storage_interface: StorageInterface | None
-    hud_window: shud.WidgetBundleWindow | None
+    hud_window: _W_co
     tab_widget_name: str | None
     tab_name: str | None
     is_visible: bool

@@ -1,13 +1,17 @@
-import curveutils as cu
 import hou
 import resourceutils as ru
 from .controller_backend import scene_node_geometry as scene_node_geometry
 from .debug import debug_print as debug_print
 from .tool_helpers import point_group_string as point_group_string
 from collections.abc import Callable as Callable, Iterable, Mapping
+from curvestate.curve3.controller_backend import _VerbParmArg
 from enum import Enum
 from typing import Final, Literal, Protocol
 
+from typing import TypeAlias
+from typing import TypeAlias
+import curveutils as cu
+_PseudoHandle: TypeAlias = cu.PseudoHandleTuple | tuple[hou.Vector3 | None, hou.Vector3 | None, hou.Vector3 | None, bool, int | None] | tuple[hou.Vector3 | None, hou.Vector3 | None, hou.Vector3 | None, bool, int | None, str]
 class _AmbiguousNodeEndpoint(Enum):
     AMBIGUOUS_NODE_ENDPOINT = 0
 
@@ -16,14 +20,14 @@ class _GroupPointsGeoFn(Protocol):
 
 AMBIGUOUS_NODE_ENDPOINT: Final[Literal[_AmbiguousNodeEndpoint.AMBIGUOUS_NODE_ENDPOINT]]
 
-def _handle_build_attribvop_verb(style: str, cache: dict[str, hou.SopVerb]) -> hou.SopVerb | None:
+def _handle_build_attribvop_verb(style: str, cache: dict[str, hou.SopVerb]) -> hou.SopVerb:
     """
     Return a cached Attribute VOP verb for generating Bezier handle geometry.
 
     Supports the reference-geometry construction pipeline. Uses the supplied inputs and
     cached geometry state to perform this focused step.
     """
-def _anchor_class_groups_attribvop_verb(cache: dict[str, hou.SopVerb]) -> hou.SopVerb | None:
+def _anchor_class_groups_attribvop_verb(cache: dict[str, hou.SopVerb]) -> hou.SopVerb:
     """
     Return a cached Attribute VOP verb that classifies anchor points as ends or branches.
 
@@ -202,7 +206,7 @@ class _CurveHandleGeoBuildAdapter:
         Derives selection or topology data needed by later builders. Evaluates the provided
         geometry/groups with SOP verbs or HOM iteration.
         """
-    def compute_pseudo_handle_geos(self, pts: list[cu.PseudoHandleTuple]) -> tuple[hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry] | None:
+    def compute_pseudo_handle_geos(self, pts: list[_PseudoHandle]) -> tuple[hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry] | None:
         """
         Compute pseudo-handle geometries from ad hoc pseudo-handle inputs.
 
@@ -210,7 +214,7 @@ class _CurveHandleGeoBuildAdapter:
         geometry/groups with SOP verbs or HOM iteration.
         """
 
-def build_curve_pseudo_handle_geos(pseudo_handle_pts: list[int | cu.PseudoHandleTuple], *, source_geo: hou.Geometry | None, reference_geo: hou.Geometry | None) -> tuple[hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry] | None:
+def build_curve_pseudo_handle_geos(pseudo_handle_pts: list[int | _PseudoHandle], *, source_geo: hou.Geometry | None, reference_geo: hou.Geometry | None) -> tuple[hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry] | None:
     """
     Build pseudo-handle line and endpoint geometries.
 
@@ -218,7 +222,7 @@ def build_curve_pseudo_handle_geos(pseudo_handle_pts: list[int | cu.PseudoHandle
     or filters the input geometry, applies the required SOP verbs/groups, and returns
     derived geometry data.
     """
-def build_curve_pseudo_handle_only_geos(pseudo_handle_pts: list[int | cu.PseudoHandleTuple], *, source_geo: hou.Geometry | None, reference_geo: hou.Geometry | None) -> tuple[hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry]:
+def build_curve_pseudo_handle_only_geos(pseudo_handle_pts: list[int | _PseudoHandle], *, source_geo: hou.Geometry | None, reference_geo: hou.Geometry | None) -> tuple[hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry]:
     """
     Build only pseudo-handle geometries for empty or preview-only states.
 
@@ -226,7 +230,7 @@ def build_curve_pseudo_handle_only_geos(pseudo_handle_pts: list[int | cu.PseudoH
     or filters the input geometry, applies the required SOP verbs/groups, and returns
     derived geometry data.
     """
-def build_curve_handle_geos(work_geo: hou.Geometry, *, source_geo: hou.Geometry | None, reference_geo: hou.Geometry | None, handle_build_verb_cache: dict[str, hou.SopVerb] | None, active_handle_pts: list[int], pseudo_handle_pts: list[int | cu.PseudoHandleTuple]) -> tuple[hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry]:
+def build_curve_handle_geos(work_geo: hou.Geometry, *, source_geo: hou.Geometry | None, reference_geo: hou.Geometry | None, handle_build_verb_cache: dict[str, hou.SopVerb] | None, active_handle_pts: Iterable[int], pseudo_handle_pts: list[int | _PseudoHandle]) -> tuple[hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry, hou.Geometry]:
     """
     Build tangent line and tangent endpoint geometries for Bezier anchors.
 
@@ -288,7 +292,7 @@ class Curve3ReferenceGeo:
         Centralizes the state needed by later geometry-builder calls. stores constructor
         arguments on the instance without producing geometry.
         """
-    def set_node(self, node: hou.Node | None) -> None:
+    def set_node(self, node: hou.OpNode | None) -> None:
         """
         Set the node used by later reference-geometry rebuilds.
 
@@ -472,7 +476,7 @@ class Curve3ReferenceGeo:
         provide a stable read API for drawable and picker code. Reads the current cached member
         and returns it directly.
         """
-    def execute_curve3core_preview_verb(self, node: hou.Node, *, base_parms: Mapping[str, object] | None = None, override_parms: Mapping[str, object] | None = None, input_geo: hou.Geometry | None = None, prune_prim_typenames: Iterable[str] = ('PackedGeometry', 'Channel'), log_label: str = 'preview verb') -> hou.Geometry | None:
+    def execute_curve3core_preview_verb(self, node: hou.OpNode, *, base_parms: Mapping[str, _VerbParmArg] | None = None, override_parms: Mapping[str, _VerbParmArg] | None = None, input_geo: hou.Geometry | None = None, prune_prim_typenames: Iterable[str] = ('PackedGeometry', 'Channel'), log_label: str = 'preview verb') -> hou.Geometry | None:
         """
         Execute curve3core as a non-destructive preview verb.
 
@@ -537,14 +541,14 @@ class Curve3ReferenceGeo:
         Clears stale derived geometry after source geometry changes. Replaces cached
         geometries/state with empty defaults.
         """
-    def set_pseudo_handle_pts(self, pts: Iterable[int | cu.PseudoHandleTuple]) -> None:
+    def set_pseudo_handle_pts(self, pts: Iterable[int | _PseudoHandle]) -> None:
         """
         Set the pseudo handle pts used by later reference-geometry rebuilds.
 
         Lets the owner configure reference-geometry generation without reaching into internals.
         Normalizes and stores the supplied value for use by the next update/build.
         """
-    def get_pseudo_handle_pts(self) -> list[int | cu.PseudoHandleTuple]:
+    def get_pseudo_handle_pts(self) -> list[int | _PseudoHandle]:
         """
         Return the cached pseudo handle pts.
 

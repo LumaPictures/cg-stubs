@@ -21,7 +21,7 @@ class AutoRigsCharacterBuilder(AutoRigsBaseBuilder[CharacterGuide, BaseGuideMode
     bone_keys: list[str]
     parent_keys: list[str]
     blend_keys: list[str]
-    default_uvs: list[tuple[float, ...]]
+    default_uvs: list[tuple[float, float]]
     lpc_character: hou.ObjNode
     capture_lines: hou.SopNode
     stash: hou.SopNode

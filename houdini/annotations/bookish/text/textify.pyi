@@ -2,9 +2,9 @@ import re
 from collections.abc import Callable, Iterable, Iterator, Mapping, MutableMapping, Sequence
 import io
 from types import TracebackType
-from typing import Any, Generic, Self, TypeAlias
+from typing import Any, Generic, Self, TypeAlias, Unpack, type_check_only
 
-from typing_extensions import TypeVar
+from typing_extensions import TypedDict, TypeVar
 
 from bookish.avenue import avenue
 from bookish.avenue.patterns import Pattern
@@ -14,7 +14,36 @@ _Charmap: TypeAlias = Iterable[tuple[str, str]]
 _Block: TypeAlias = "_WikiBlock | list[_WikiBlock] | tuple[_WikiBlock, ...]"
 _RootT = TypeVar("_RootT", bound=_Block, default=_Block)
 
-default_charmap: tuple[tuple[str, str], ...]
+@type_check_only
+class _EmitKwargs(TypedDict, total=False):
+    indent: int
+    wrap: bool
+    top: int
+    bottom: int
+    first: str
+    rest: str
+    upper: bool
+    lower: bool
+    before: str
+    after: str
+
+# TextifierBase.push()'s options; any other keyword becomes a frame variable.
+@type_check_only
+class _PushKwargs(TypedDict, total=False, extra_items=int):  # type: ignore[call-arg]
+    indent: int
+    left: int | None
+    top: int
+    bottom: int
+    width: int | None
+    padding_top: int
+    padding_bottom: int
+    replacements: _Charmap | None
+    buffered: bool
+    charfilter: bool | None
+    charmap: _Charmap | None
+    xform: Callable[[str], str] | None
+
+default_charmap: tuple[tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str]]
 normalize_exp: re.Pattern[str]
 lstrip_exp: re.Pattern[str]
 
@@ -135,7 +164,9 @@ class TextifierBase(Generic[_RootT]):
     def find(self, block: object, ave: str | Pattern, **vars: object) -> Iterator[Any]: ...
     def write(self, string: str) -> None: ...
     def blank_lines(self, n: int) -> None: ...
-    def render_body(self, body: _WikiBlock | Sequence[_WikiBlock], eat_top: bool = ..., **kwargs: Any) -> None: ...
+    def render_body(
+        self, body: _WikiBlock | Sequence[_WikiBlock], eat_top: bool = ..., **kwargs: Unpack[_PushKwargs]
+    ) -> None: ...
     def render_super(self, block: _Block) -> None: ...
     def render(self, block: _Block, ns: object = ...) -> None: ...
     def render_text(
@@ -156,7 +187,7 @@ class TextifierBase(Generic[_RootT]):
         before: str = ...,
         after: str = ...,
     ) -> None: ...
-    def emit_block_text(self, block: _WikiBlock, **kwargs: Any) -> None: ...
+    def emit_block_text(self, block: _WikiBlock, **kwargs: Unpack[_EmitKwargs]) -> None: ...
 
 class BookishTextifier(TextifierBase[_RootT]):
     def para_block(self, block: _WikiBlock) -> None: ...

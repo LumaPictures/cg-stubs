@@ -5,13 +5,15 @@
 Merges annotations/<module>.pyi into the stub in stubs/ (as the generator does), then reports
 overlay entries that match nothing, mypy errors in the merged stub, and what is still untyped or
 `Any`.  The stubs in stubs/ are not changed; `--stub` checks another copy of the module's stub
-instead (e.g. one a fixup was tried on).  Runs with this directory's venv; no Houdini needed.
+instead (e.g. one a fixup was tried on).  Runs with this directory's venv; no Houdini needed,
+but with $HFS set, mypy reads Houdini's PySide6 stubs.
 """
 
 from __future__ import annotations
 
 import argparse
 import ast
+import os
 import pathlib
 import re
 import subprocess
@@ -24,11 +26,24 @@ HERE = pathlib.Path(__file__).parent
 LOOSE = re.compile(r"\b(?:Any|Incomplete)\b")
 
 
+def site_packages() -> list[pathlib.Path]:
+    """Houdini's site-packages directories, if $HFS is set."""
+    hfs = os.environ.get("HFS")
+    if not hfs:
+        return []
+    version = f"python{sys.version_info.major}.{sys.version_info.minor}"
+    lib = pathlib.Path(hfs) / "python" / "lib" / version
+    return [lib / "site-packages-forced", lib / "site-packages"]
+
+
 def stub_for(module: str) -> tuple[pathlib.Path, str]:
     """The generated stub for a module, and the source-relative path its overlay is keyed by."""
     top, *rest = module.split(".")
     package = HERE / "stubs" / f"{top}-stubs"
     stub = package.joinpath(*rest, "__init__.pyi")
+    if rest and not stub.exists():
+        # A compiled module's submodule (`_apex.graphops`).
+        stub = package.joinpath(*rest).with_suffix(".pyi")
     if module == "husd.UsdHoudini":
         return stub, "husd/UsdHoudini/__init__.py"
     return stub, module.replace(".", "/") + ".py"
@@ -68,10 +83,21 @@ def main() -> None:
             name = package.name.removesuffix("-stubs")
             if name != module.split(".")[0]:
                 (root / name).symlink_to(package)
+        # Houdini's PySide6 and shiboken6, which ship their own stubs: without them, their
+        # types are Any to mypy, and overloads that differ by them can't be told apart.
+        for qt_package in ("PySide6", "shiboken6"):
+            for site in site_packages():
+                if (site / qt_package / "py.typed").exists():
+                    (root / qt_package).symlink_to(site / qt_package)
+                    break
         target = root / module.split(".")[0]
         target.mkdir()
-        # Only the module itself; other submodules of its package are not needed.
-        (target / "__init__.pyi").write_text(text if "." not in module else "")
+        # Only the module itself, and for a submodule its package's stub, which the submodule's
+        # overlay can use (`_apex.StringArray` in `_apex.graphops`).
+        package_stub = HERE / "stubs" / f"{module.split('.')[0]}-stubs" / "__init__.pyi"
+        (target / "__init__.pyi").write_text(
+            text if "." not in module else package_stub.read_text()
+        )
         if "." in module:
             sub = target.joinpath(*module.split(".")[1:], "__init__.pyi")
             sub.parent.mkdir(parents=True, exist_ok=True)

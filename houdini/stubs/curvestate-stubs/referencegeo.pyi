@@ -14,6 +14,7 @@ from typing import TypeVar
 _K = TypeVar('_K')
 _DK = TypeVar('_DK', default=int)
 _DV = TypeVar('_DV', default=float)
+_PointAttribValue: TypeAlias = hou.AttribReturnType | hou._OptionDict | tuple[hou._OptionDict, ...]
 PointMoveData: TypeAlias = tuple[int, hou.Vector3]
 class _CurveState(Protocol):
     @property
@@ -462,11 +463,11 @@ def formatDictStringParm(kvmap: Mapping[_K, object], key_set: Iterable[_K] | Non
     :key_set: The set of keys to use, if none uses all.
     """
 @typing.overload
-def splitDictStringParm(parmstr: str, geo: hou.Geometry | None, key_fn: Callable[[str], _DK] | None = ..., val_fn: Callable[[str], _DV] | None = ..., attrib_name: None = ..., attrib_keep_fn: Callable[[hou.AttribReturnType | hou.AttribDictReturnType], bool] | None = ...) -> dict[_DK | int, _DV | float]: ...
+def splitDictStringParm(parmstr: str, geo: hou.Geometry | None, key_fn: Callable[[str], _DK] | None = ..., val_fn: Callable[[str], _DV] | None = ..., attrib_name: None = ..., attrib_keep_fn: Callable[[_PointAttribValue], bool] | None = ...) -> dict[_DK | int, _DV | float]: ...
 @typing.overload
-def splitDictStringParm(parmstr: str, geo: hou.Geometry | None, key_fn: Callable[[str], _DK] | None, val_fn: Callable[[str], _DV] | None, attrib_name: str, attrib_keep_fn: Callable[[hou.AttribReturnType | hou.AttribDictReturnType], bool] | None = ...) -> dict[_DK | int, _DV | float | hou.AttribReturnType | hou.AttribDictReturnType]: ...
+def splitDictStringParm(parmstr: str, geo: hou.Geometry | None, key_fn: Callable[[str], _DK] | None, val_fn: Callable[[str], _DV] | None, attrib_name: str, attrib_keep_fn: Callable[[_PointAttribValue], bool] | None = ...) -> dict[_DK | int, _DV | float | _PointAttribValue]: ...
 @typing.overload
-def splitDictStringParm(parmstr: str, geo: hou.Geometry | None, key_fn: Callable[[str], _DK] | None = ..., val_fn: Callable[[str], _DV] | None = ..., *, attrib_name: str, attrib_keep_fn: Callable[[hou.AttribReturnType | hou.AttribDictReturnType], bool] | None = ...) -> dict[_DK | int, _DV | float | hou.AttribReturnType | hou.AttribDictReturnType]: ...
+def splitDictStringParm(parmstr: str, geo: hou.Geometry | None, key_fn: Callable[[str], _DK] | None = ..., val_fn: Callable[[str], _DV] | None = ..., *, attrib_name: str, attrib_keep_fn: Callable[[_PointAttribValue], bool] | None = ...) -> dict[_DK | int, _DV | float | _PointAttribValue]: ...
 def getOrientAttribValue(ptnum: int, geo: hou.Geometry | None, node: hou.SopNode | None) -> hou.Quaternion | None:
     """
     Get the orient attribute value at a point.
@@ -573,30 +574,30 @@ class ReferenceCurve:
     handle_point_collections: list[PointGeoWrapper]
     point_collections: list[PointGeoWrapper]
     in_update: bool
-    PRIMIDX_ATTRIB = PRIMIDX_ATTRIB
-    PTPRIMIDX_ATTRIB = PTPRIMIDX_ATTRIB
-    PTIDX_INPRIM_ATTRIB = PTIDX_INPRIM_ATTRIB
-    PRE_PTNUM_ATTRIB = PRE_PTNUM_ATTRIB
-    PRIM_LASTIDX_ATTRIB = PRIM_LASTIDX_ATTRIB
-    CURVEUPOS_ATTRIB = CURVEUPOS_ATTRIB
-    CURVENUM_ATTRIB = CURVENUM_ATTRIB
-    CURVETANGENT_ATTRIB = CURVETANGENT_ATTRIB
-    CURVEUP_ATTRIB = CURVEUP_ATTRIB
-    CURVEORIENT_ATTRIB = CURVEORIENT_ATTRIB
-    ANCHORPTS_ATTRIB = ANCHORPTS_ATTRIB
-    ANCHORPTS_GROUP = ANCHORPTS_GROUP
-    BROKENPTS_GROUP = BROKENPTS_GROUP
-    SMOOTHPTS_GROUP = SMOOTHPTS_GROUP
-    AUTOPTS_GROUP = AUTOPTS_GROUP
-    ROUNDCORNERPTS_GROUP = ROUNDCORNERPTS_GROUP
-    SELECTEDPTS_GROUP = SELECTEDPTS_GROUP
-    ACTIVEPRIM_GROUP = ACTIVEPRIM_GROUP
-    POLYPRIMS_GROUP = POLYPRIMS_GROUP
-    POLYPTS_GROUP = POLYPTS_GROUP
-    NURBSPRIMS_GROUP = NURBSPRIMS_GROUP
-    NURBSPTS_GROUP = NURBSPTS_GROUP
-    BEZIERPRIMS_GROUP = BEZIERPRIMS_GROUP
-    BEZIERPTS_GROUP = BEZIERPTS_GROUP
+    PRIMIDX_ATTRIB: str
+    PTPRIMIDX_ATTRIB: str
+    PTIDX_INPRIM_ATTRIB: str
+    PRE_PTNUM_ATTRIB: str
+    PRIM_LASTIDX_ATTRIB: str
+    CURVEUPOS_ATTRIB: str
+    CURVENUM_ATTRIB: str
+    CURVETANGENT_ATTRIB: str
+    CURVEUP_ATTRIB: str
+    CURVEORIENT_ATTRIB: str
+    ANCHORPTS_ATTRIB: str
+    ANCHORPTS_GROUP: str
+    BROKENPTS_GROUP: str
+    SMOOTHPTS_GROUP: str
+    AUTOPTS_GROUP: str
+    ROUNDCORNERPTS_GROUP: str
+    SELECTEDPTS_GROUP: str
+    ACTIVEPRIM_GROUP: str
+    POLYPRIMS_GROUP: str
+    POLYPTS_GROUP: str
+    NURBSPRIMS_GROUP: str
+    NURBSPTS_GROUP: str
+    BEZIERPRIMS_GROUP: str
+    BEZIERPTS_GROUP: str
     def __init__(self, main_state: _CurveState) -> None: ...
     def setAutoUpdate(self, val: bool) -> None:
         """
@@ -1011,11 +1012,11 @@ class ReferenceCurve:
     def softTransformEnabled(self) -> bool | None:
         """ Get whether soft transform is enabled. """
     @typing.overload
-    def splitDictStringParm(self, parmstr: str | None = ..., key_fn: Callable[[str], _DK] | None = ..., val_fn: Callable[[str], _DV] | None = ..., override_geo: hou.Geometry | None = ..., attrib_name: None = ..., attrib_keep_fn: Callable[[hou.AttribReturnType | hou.AttribDictReturnType], bool] | None = ...) -> dict[_DK | int, _DV | float]: ...
+    def splitDictStringParm(self, parmstr: str | None = ..., key_fn: Callable[[str], _DK] | None = ..., val_fn: Callable[[str], _DV] | None = ..., override_geo: hou.Geometry | None = ..., attrib_name: None = ..., attrib_keep_fn: Callable[[_PointAttribValue], bool] | None = ...) -> dict[_DK | int, _DV | float]: ...
     @typing.overload
-    def splitDictStringParm(self, parmstr: str | None, key_fn: Callable[[str], _DK] | None, val_fn: Callable[[str], _DV] | None, override_geo: hou.Geometry | None, attrib_name: str, attrib_keep_fn: Callable[[hou.AttribReturnType | hou.AttribDictReturnType], bool] | None = ...) -> dict[_DK | int, _DV | float | hou.AttribReturnType | hou.AttribDictReturnType]: ...
+    def splitDictStringParm(self, parmstr: str | None, key_fn: Callable[[str], _DK] | None, val_fn: Callable[[str], _DV] | None, override_geo: hou.Geometry | None, attrib_name: str, attrib_keep_fn: Callable[[_PointAttribValue], bool] | None = ...) -> dict[_DK | int, _DV | float | _PointAttribValue]: ...
     @typing.overload
-    def splitDictStringParm(self, parmstr: str | None = ..., key_fn: Callable[[str], _DK] | None = ..., val_fn: Callable[[str], _DV] | None = ..., override_geo: hou.Geometry | None = ..., *, attrib_name: str, attrib_keep_fn: Callable[[hou.AttribReturnType | hou.AttribDictReturnType], bool] | None = ...) -> dict[_DK | int, _DV | float | hou.AttribReturnType | hou.AttribDictReturnType]: ...
+    def splitDictStringParm(self, parmstr: str | None = ..., key_fn: Callable[[str], _DK] | None = ..., val_fn: Callable[[str], _DV] | None = ..., override_geo: hou.Geometry | None = ..., *, attrib_name: str, attrib_keep_fn: Callable[[_PointAttribValue], bool] | None = ...) -> dict[_DK | int, _DV | float | _PointAttribValue]: ...
     def getTargetVectorByIndex(self, index: int, parm_name: str | None = None) -> hou.Vector3 | None:
         """
         Get the vector parm by index into the multiparm.

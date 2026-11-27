@@ -6,6 +6,7 @@ from _typeshed import Incomplete
 from abc import ABC, abstractmethod
 from collections.abc import Callable as Callable, Iterable, Mapping, Sequence
 from houtypes import ViewerHandleDrawKwargs, ViewerHandleMenuActionKwargs, ViewerHandleMenuPreOpenKwargs, ViewerStateEventKwargs, ViewerStateMenuActionKwargs, ViewerStateMenuPreOpenKwargs
+from hutil.pprint import _MessageOptions, _RTFOptions
 from past.utils import old_div as old_div
 from typing import Any, Generic, Protocol, TypedDict, Unpack
 
@@ -26,23 +27,6 @@ class _DragData(TypedDict, total=False):
     rot_axis: hou.Vector3
     radius: float
     start_dir: hou.Vector3
-
-class _MessageOptions(TypedDict, total=False):
-    plain_text: bool
-    compact: bool
-    rt: str
-    rt_format: str
-    richtext_format: str
-    richtext: str
-
-class _LogMessageOptions(_MessageOptions, total=False):
-    severity: hou.EnumValue[hou.severityType]
-
-class _RTFOptions(TypedDict, total=False):
-    severity: hou.EnumValue[hou.severityType]
-    want_timestamp: bool
-    counter: int | None
-    key_color: str | None
 
 class _Showable(Protocol):
     def show(self, value: bool, /) -> object: ...
@@ -77,7 +61,7 @@ class Py23:
 
 def formatMessage(*args: object, **kwargs: Unpack[_MessageOptions]) -> str: ...
 def formatMessageToRTF(*args: object, **kwargs: Unpack[_RTFOptions]) -> tuple[str, int | None]: ...
-def logMessage(resource_type: hou.EnumValue[hou.resourceType], *args: object, **kwargs: Unpack[_LogMessageOptions]) -> None:
+def logMessage(resource_type: hou.EnumValue[hou.resourceType], *args: object, **kwargs: Unpack[_MessageOptions]) -> None:
     """
     Print a value in the browser associated to the resource_type
     """
@@ -176,7 +160,7 @@ class HUD(Generic[_HUDValue]):
             name:           A prefix name for creating the the
                             underlying drawable names.
         """
-    def draw(self, draw_handle: hou.Handle) -> None:
+    def draw(self, draw_handle: int) -> None:
         """ Draw the HUD in the current viewport.
 
             draw_handle: Draw handle.
@@ -220,7 +204,7 @@ class CursorLabel:
     def drawable(self) -> hou.TextDrawable | hou.Drawable2D | None: ...
     def setLabel(self, label: str | None) -> None: ...
     def label(self) -> str | None: ...
-    def draw(self, draw_handle: hou.Handle) -> None:
+    def draw(self, draw_handle: int) -> None:
         """ Draw the cursor label in the current viewport.
 
             draw_handle: Draw handle
@@ -284,7 +268,7 @@ class Tracer(Generic[_TracerId]):
 
             Callback format is callback(string id) -> (int x, int y)
         """
-    def draw(self, draw_handle: hou.Handle) -> None:
+    def draw(self, draw_handle: int) -> None:
         """ Draw the cursor label in the current viewport.
 
             draw_handle: Draw handle
@@ -337,7 +321,7 @@ class Line:
             :param callback - function with the following signature:
                               callback() -> string formattable object
         """
-    def setParams(self, params: Mapping[str, Any]) -> None:
+    def setParams(self, params: hou._DrawableParams | None) -> None:
         """
             Function to manually set or bulk update the drawable parameters.
         """
@@ -358,13 +342,13 @@ class Line:
     def setLineWidth(self, width: float) -> None: ...
     def setStartPoint(self, pos: hou.Vector3 | Sequence[float]) -> None: ...
     def setEndPoint(self, pos: hou.Vector3 | Sequence[float]) -> None: ...
-    def draw(self, draw_handle: hou.Handle) -> None:
+    def draw(self, draw_handle: int) -> None:
         """
             Draw the line in the current viewport.
 
             draw_handle: Draw handle
         """
-    def drawTracer(self, draw_handle: hou.Handle) -> None:
+    def drawTracer(self, draw_handle: int) -> None:
         """
             Draw the tracer in the current viewport.
             You want to draw text drawables last otherwise
@@ -394,10 +378,10 @@ class LineSegmentDrawable:
     line_pts: tuple[hou.Point, ...]
     line_p: hou.Attrib
     line_drawable: hou.GeometryDrawable
-    def __init__(self, scene_viewer: hou.SceneViewer, name: str, params: Mapping[str, Any]) -> None: ...
+    def __init__(self, scene_viewer: hou.SceneViewer, name: str, params: hou._DrawableParams | None) -> None: ...
     def show(self, val: bool) -> None:
         """ Show or hide the line drawable. """
-    def draw(self, draw_handle: hou.Handle) -> None:
+    def draw(self, draw_handle: int) -> None:
         """ Draw the line drawable. """
     def update(self, pos0: hou.Vector3, pos1: hou.Vector3) -> None:
         """ Update both points. """
@@ -428,7 +412,7 @@ class DebugAidBase(ABC, metaclass=abc.ABCMeta):
     def stateValue(self, key: str) -> bool: ...
     def resourceType(self) -> hou.EnumValue[hou.resourceType]: ...
     def enable(self, value: bool) -> None: ...
-    def log(self, *args: object, **kwargs: Unpack[_LogMessageOptions]) -> None:
+    def log(self, *args: object, **kwargs: Unpack[_MessageOptions]) -> None:
         """ Log a message via the state or handle instance
         """
     def logging(self) -> None:
@@ -487,7 +471,7 @@ def isDebugMenuItem(menu_item: str) -> bool: ...
 def updateDebugMenu(resource_type: hou.EnumValue[hou.resourceType], kwargs: ViewerStateMenuPreOpenKwargs | ViewerHandleMenuPreOpenKwargs) -> None:
     """ Function for updating the debug menu.
     """
-def debugMenuItems() -> tuple[str, ...]: ...
+def debugMenuItems() -> tuple[str, str, str, str, str, str, str]: ...
 def debugMenuEntries() -> list[list[str | bool]]: ...
 
 class Encoder:
@@ -559,7 +543,7 @@ class SelectionRegionDrawable:
 
         :on: Whether to show (True) or hide (False).
         """
-    def draw(self, handle: hou.Handle) -> None:
+    def draw(self, handle: int) -> None:
         """ Draw the drawables. """
 
 def _drawableTypeToTypeString(drawable_type: hou.EnumValue[hou.drawableGeometryType]) -> str:
@@ -715,7 +699,7 @@ class DrawableSelector:
         """
     def show(self, on: bool) -> None:
         """ Show or hide the selection region. """
-    def draw(self, draw_handle: hou.Handle) -> None:
+    def draw(self, draw_handle: int) -> None:
         """ Draw the selection region. """
     def onLocateSingleSelection(self, kwargs: ViewerStateEventKwargs, result: SingleSelectResult) -> bool:
         """
@@ -987,7 +971,7 @@ class DragGuide:
         Hide the guides used for showing the tangent drag
         when dragging rotate rings.
         """
-    def draw(self, draw_handle: hou.Handle) -> None:
+    def draw(self, draw_handle: int) -> None:
         """ Draw all of the guides. """
 
 class CursorIcon:
@@ -1088,7 +1072,7 @@ class CursorIcon:
         """ shows the text drawable if for is set to true then the 
             current status of the geo icon is ignored and the 
             status gets updated to the on value"""
-    def draw(self, draw_handle: hou.Handle) -> None:
+    def draw(self, draw_handle: int) -> None:
         """shows all the advanced drawable"""
     def setIconLibrary(self, library: hou.Geometry | None) -> None:
         """ set a packed geometry that can be used to access 

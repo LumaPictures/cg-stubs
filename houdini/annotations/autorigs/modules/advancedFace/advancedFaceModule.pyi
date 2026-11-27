@@ -27,13 +27,15 @@ class AdvancedFaceModule(
         None,
         AdvancedFaceGuideModel,
         AdvancedFaceGuideController,
+        "AdvancedFaceGuideTab",
+        AutoRigsAsset,
     ]
 ):
     DEFAULT_JSON_FILE: str
     DEFAULT_JSON: _AdvancedFaceModuleJson
     autorigs_asset: AutoRigsAsset
     assetnode: hou.ObjNode
-    guidetab: "AdvancedFaceGuideTab"
+    guidetab: "AdvancedFaceGuideTab | None"
     autorigsbuilder: AutoRigsAdvancedFaceBuilder
     def __init__(self, autorigs_asset: AutoRigsAsset) -> None: ...
     def buildFromDefault(self) -> None: ...
@@ -50,6 +52,7 @@ class AdvancedFaceGuideTab(
         advancedFaceGuideOptions.ModuleOptionsWidget,
         advancedFaceGuideParams.ModuleParamsWidget,
         AdvancedFaceGuide,
+        moduleTabsWidget.ModuleTabsWidget,
     ]
 ):
     tabswidget: moduleTabsWidget.ModuleTabsWidget

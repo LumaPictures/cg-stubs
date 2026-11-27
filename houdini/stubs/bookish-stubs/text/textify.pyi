@@ -7,7 +7,8 @@ from bookish.compat import BytesIO as BytesIO, StringIO as StringIO, string_type
 from bookish.wiki.wikipages import _WikiBlock, _WikiSpan, _WikiText
 from collections.abc import Callable as Callable, Iterator, Mapping as Mapping, MutableMapping, Sequence
 from types import TracebackType
-from typing import Any, Generic, Self
+from typing import Any, Generic, Self, Unpack
+from typing_extensions import TypedDict
 
 from typing import TypeAlias
 from typing import TypeVar
@@ -17,7 +18,33 @@ from typing_extensions import TypeVar
 _Charmap: TypeAlias = Iterable[tuple[str, str]]
 _Block: TypeAlias = '_WikiBlock | list[_WikiBlock] | tuple[_WikiBlock, ...]'
 _RootT = TypeVar('_RootT', bound=_Block, default=_Block)
-default_charmap: tuple[tuple[str, str], ...]
+class _EmitKwargs(TypedDict, total=False):
+    indent: int
+    wrap: bool
+    top: int
+    bottom: int
+    first: str
+    rest: str
+    upper: bool
+    lower: bool
+    before: str
+    after: str
+
+class _PushKwargs(TypedDict, total=False, extra_items=int):  # type: ignore[call-arg]
+    indent: int
+    left: int | None
+    top: int
+    bottom: int
+    width: int | None
+    padding_top: int
+    padding_bottom: int
+    replacements: _Charmap | None
+    buffered: bool
+    charfilter: bool | None
+    charmap: _Charmap | None
+    xform: Callable[[str], str] | None
+
+default_charmap: tuple[tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str]]
 
 def dechar(text: str, charmap: _Charmap = ...) -> str: ...
 def addindent(first: str, subsequent: str, text: str, trim: bool = False) -> str: ...
@@ -70,13 +97,13 @@ class TextifierBase(Generic[_RootT]):
     def find(self, block: object, ave: str | Pattern, **vars: object) -> Iterator[Any]: ...
     def write(self, string: str) -> None: ...
     def blank_lines(self, n: int) -> None: ...
-    def render_body(self, body: _WikiBlock | Sequence[_WikiBlock], eat_top: bool = True, **kwargs: Any) -> None: ...
+    def render_body(self, body: _WikiBlock | Sequence[_WikiBlock], eat_top: bool = True, **kwargs: Unpack[_PushKwargs]) -> None: ...
     def render_super(self, block: _Block) -> None: ...
     def render(self, block: _Block, ns: object = None) -> None: ...
     def render_text(self, text: _WikiText | _WikiSpan | tuple[str | _WikiSpan, ...]) -> str: ...
     def render_span(self, span: str | _WikiSpan) -> str: ...
     def emit(self, text: str, indent: int = 0, wrap: bool = True, top: int = 0, bottom: int = 0, first: str = '', rest: str = '', upper: bool = False, lower: bool = False, before: str = '', after: str = '') -> None: ...
-    def emit_block_text(self, block: _WikiBlock, **kwargs: Any) -> None: ...
+    def emit_block_text(self, block: _WikiBlock, **kwargs: Unpack[_EmitKwargs]) -> None: ...
 
 class BookishTextifier(TextifierBase[_RootT]):
     def para_block(self, block: _WikiBlock) -> None: ...

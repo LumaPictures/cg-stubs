@@ -1,5 +1,3 @@
-from collections.abc import Mapping
-
 import hou
 
 class Brush:
@@ -19,25 +17,25 @@ class Brush:
     def getRadius(self) -> float: ...
     def drawCircle(
         self,
-        handle: hou.Handle,
+        handle: int,
         radius: float,
         normal: hou.Vector3,
         position: hou.Vector3,
-        color: Mapping[str, hou.Vector4],
+        color: hou._DrawableParams,
         thickness: float = ...,
     ) -> None: ...
     def drawLine(
         self,
-        handle: hou.Handle,
+        handle: int,
         p0: hou.Vector3,
         p1: hou.Vector3,
-        color: Mapping[str, hou.Vector4],
+        color: hou._DrawableParams,
         thickness: float = ...,
     ) -> None: ...
-    def getLazyColor(self, lazyLength: float, lazyDistance: float) -> dict[str, hou.Vector4]: ...
+    def getLazyColor(self, lazyLength: float, lazyDistance: float) -> hou._DrawableParams: ...
     def draw(
         self,
-        handle: hou.Handle,
+        handle: int,
         shouldDrawMirrorPos: bool | int,
         symorig: hou.Vector3,
         symdir: hou.Vector3,

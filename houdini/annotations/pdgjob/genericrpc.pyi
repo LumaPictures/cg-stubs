@@ -1,6 +1,7 @@
 from collections.abc import Callable, Mapping
 from io import TextIOWrapper
 from typing import Any, Concatenate, NotRequired, TypedDict, TypeVar
+from xmlrpc.client import Binary
 from xmlrpc.server import SimpleXMLRPCServer
 
 from houtypes import JSONLike
@@ -39,7 +40,7 @@ class StdoutBuffer(TextIOWrapper):
 class RPCProxy:
     captured_calls: list[_CallRecord]
     def __init__(self) -> None: ...
-    def call(self, fn_name: str, *args: object, **kwargs: object) -> int: ...
+    def call(self, fn_name: str, *args: JSONLike | Binary, **kwargs: object) -> int: ...
     def commitMulti(self, name: str) -> int: ...
 
 class XMLRPCServer(SimpleXMLRPCServer):

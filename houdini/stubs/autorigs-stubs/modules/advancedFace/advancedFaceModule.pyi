@@ -17,10 +17,10 @@ from typing import TypeAlias
 from autorigs.modules.base.rootModule import _ModuleJson
 from typing import TypeAlias
 _AdvancedFaceModuleJson: TypeAlias = _ModuleJson[_AdvancedFaceOptionsJson, _ParamsJson, _AdvancedFaceGuideJson]
-class AdvancedFaceModule(Mod.Module[_AdvancedFaceOptionsJson, _ParamsJson, _AdvancedFaceGuideJson, advancedFaceGuideOptions.ModuleOptionsWidget, advancedFaceGuideParams.ModuleParamsWidget, AdvancedFaceGuide, None, AdvancedFaceGuideModel, AdvancedFaceGuideController]):
+class AdvancedFaceModule(Mod.Module[_AdvancedFaceOptionsJson, _ParamsJson, _AdvancedFaceGuideJson, advancedFaceGuideOptions.ModuleOptionsWidget, advancedFaceGuideParams.ModuleParamsWidget, AdvancedFaceGuide, None, AdvancedFaceGuideModel, AdvancedFaceGuideController, 'AdvancedFaceGuideTab', AutoRigsAsset]):
     autorigs_asset: AutoRigsAsset
     assetnode: hou.ObjNode
-    guidetab: AdvancedFaceGuideTab
+    guidetab: AdvancedFaceGuideTab | None
     autorigsbuilder: AutoRigsAdvancedFaceBuilder
     MODULE_TYPE: str
     MODULE_DEFAULT_NAME: str
@@ -36,7 +36,7 @@ class AdvancedFaceModule(Mod.Module[_AdvancedFaceOptionsJson, _ParamsJson, _Adva
     def updateParent(self, modulesdict: Mapping[str, Sequence[Mod.Module]]) -> None: ...
     def buildRig(self, index: int) -> None: ...
 
-class AdvancedFaceGuideTab(Mod.ModuleGuideTab[_AdvancedFaceOptionsJson, _ParamsJson, _AdvancedFaceGuideJson, advancedFaceGuideOptions.ModuleOptionsWidget, advancedFaceGuideParams.ModuleParamsWidget, AdvancedFaceGuide]):
+class AdvancedFaceGuideTab(Mod.ModuleGuideTab[_AdvancedFaceOptionsJson, _ParamsJson, _AdvancedFaceGuideJson, advancedFaceGuideOptions.ModuleOptionsWidget, advancedFaceGuideParams.ModuleParamsWidget, AdvancedFaceGuide, moduleTabsWidget.ModuleTabsWidget]):
     tabswidget: moduleTabsWidget.ModuleTabsWidget
     optionswidget: Incomplete
     paramswidget: Incomplete

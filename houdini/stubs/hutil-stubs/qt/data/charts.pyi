@@ -4,21 +4,20 @@ from .config import getLookup as getLookup, hasSetter as hasSetter, setSettable 
 from houtypes import JSONLike, JSONValue
 from hutil.PySide import QtCore as QtCore, QtGui as QtGui, QtWidgets as QtWidgets
 from hutil.PySide.QtCore import Qt as Qt
-from typing import Callable, ClassVar, Iterable, Mapping, Self, Sequence
+from typing import Any, Callable, ClassVar, Iterable, Mapping, Self, Sequence, TypeAlias
 
 from typing import TypeAlias
 from typing import TypeVar
 from collections.abc import Collection
-from typing import TypeAlias
 from typing import TypeVar
 _ChartClassT = TypeVar('_ChartClassT', bound='type[Chart]')
 _BrushLike: TypeAlias = QtGui.QBrush | QtGui.QColor | QtGui.QPixmap | Qt.GlobalColor
+Brushlike: TypeAlias = QtGui.QColor | QtGui.QBrush
 _ChartValues: TypeAlias = Mapping[str, float] | Collection[tuple[str, float] | str | float]
-Brushlike = QtGui.QColor | QtGui.QBrush
 Normalizer = Callable[[Iterable[float]], float]
 ChartItemSource = tuple[str, float] | str | float
 ChartSource = Iterable[ChartItemSource] | Mapping[str, float]
-default_palette: tuple[QtGui.QColor, ...]
+default_palette: themes._ColorCycle
 DEFAULT_TRACK_ROLE: QtGui.QPalette.ColorRole
 DEFAULT_TRACK_ALPHA: float
 SQRT_2: float
@@ -37,7 +36,7 @@ class Chart(QtWidgets.QWidget):
     def setDrawFrame(self, drawframe: bool) -> None: ...
     def setPropertiesFromData(self, data: Mapping[str, JSONLike]) -> None: ...
     def chartProperties(self) -> list[str]: ...
-    def setChartProperty(self, key: str, v: object) -> None: ...
+    def setChartProperty(self, key: str, v: Any) -> None: ...
     def hasChartProperty(self, key: str) -> bool: ...
     def model(self) -> QtCore.QAbstractTableModel: ...
     def setModel(self, model: QtCore.QAbstractTableModel) -> None: ...

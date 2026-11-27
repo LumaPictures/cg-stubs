@@ -1,5 +1,5 @@
 from collections.abc import Callable, Iterable, Mapping, Sequence
-from typing import Any, Literal, TypeAlias
+from typing import Literal, TypeAlias
 
 import hou
 from curvestate.curve3.referencegeo import _AmbiguousNodeEndpoint
@@ -103,7 +103,7 @@ class Curve3DrawTool(Curve3ToolBase):
     tool_name: str
     tool_label: str
     default_optype: str | None
-    hud_hints: list[dict[str, str]]
+    hud_hints: list[hou._HudRow]
     prompt_message: str
     draw_on_view_plane: bool
     def __init__(self, controller: Curve3Controller) -> None: ...
@@ -148,10 +148,10 @@ class Curve3DrawTool(Curve3ToolBase):
     def hud_tool_hints(
         self,
         *,
-        hint_fn: Callable[[str, str], dict[str, str]],
-        selection_hints: list[dict[str, str]],
+        hint_fn: Callable[[str, str], hou._HudRow],
+        selection_hints: list[hou._HudRow],
         hotkey_refs: Mapping[str, str],
-    ) -> list[dict[str, str]]: ...
+    ) -> list[hou._HudRow]: ...
     def update_menu_item_states(
         self,
         menu_item_states: dict[str, ViewerMenuItemState],

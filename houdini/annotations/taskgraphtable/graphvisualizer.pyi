@@ -1,10 +1,11 @@
 from collections.abc import Callable
 from threading import Timer
-from typing import Any
+from typing import Unpack
 
 import _pdgd
 import hou
 import pdgd
+from houtypes import NodeEventKwargs
 
 from .taskgraphtable import TaskGraphTable
 
@@ -17,7 +18,7 @@ class GraphVisualizer(pdgd.DataLayerVisualizer):
     graph_name: str
     graph_path: str
     top_path: str | None
-    top_node: hou.Node | None
+    top_node: hou.OpNode | None
     id: int | None
     child_nodes: list[str]
     selected_nodes: set[str]
@@ -35,5 +36,5 @@ class GraphVisualizer(pdgd.DataLayerVisualizer):
     def updateSelectedChildren(
         self, current_node: hou.Node | None = ..., force: bool = ..., select_all: bool = ...
     ) -> None: ...
-    def eventCallback(self, **kwargs: Any) -> None: ...
+    def eventCallback(self, **kwargs: Unpack[NodeEventKwargs]) -> None: ...
     def term(self) -> None: ...

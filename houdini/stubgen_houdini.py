@@ -4,14 +4,17 @@ hou.py is SWIG's wrappers, which take `(*args)`, so hou's signatures and types c
 SideFX's docs: each wrapper's docstring and the C++ signatures in it.  stubgen turns them into
 the stub with generic rules, here (C++ to python types) and in hou_cleanup_config.py (type
 aliases, enum values, the comparison operators of every class), and the passes below add what
-the docs imply: positional-only parameters for SWIG's overloaded wrappers, and the enum of
-each `EnumValue`.
+the docs imply: the enum of each `EnumValue`.
 
 Everything else, i.e. whatever is wrong for one member or missing from the docs, is in the
-overlay annotations/hou.pyi, which is merged in last (see annotation_overlays.py and
+overlay annotations/hou.pyi, which is merged in after them (see annotation_overlays.py and
 annotate/README.md): a plain entry retypes a member, a `@replace` entry replaces its signature
 (or `@replace` `@overload` entries give its overloads), and a `@type_check_only` entry declares a
-member the docs lack.  The generator reports overlay entries whose member is gone.
+member the docs lack.  The generator reports overlay entries whose member is gone.  Then the
+parameters typed `Sequence[float]` become the overlay's `_FloatSequence`, which hou's vectors
+match too.  Last, the
+parameters of the functions that take no keywords are made positional-only, in the overlay's
+signatures too: SWIG's overloaded wrappers, and hou's C builtins (`hou.getenv`).
 """
 
 from __future__ import absolute_import, annotations, division, print_function
@@ -21,7 +24,7 @@ import inspect
 import re
 import sys
 import textwrap
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from functools import lru_cache
 
 import mypy.stubdoc
@@ -639,6 +642,95 @@ def type_unconstructible_classes(path: str) -> None:
     stub.write_text("\n".join(lines))
 
 
+def type_exception_messages(path: str) -> None:
+    """Let hou's exceptions take a message of None, as SWIG passes None for a `char *`."""
+    import ast
+    import pathlib
+
+    import hou
+
+    stub = pathlib.Path(path)
+    text = stub.read_text()
+    lines = text.split("\n")
+    for node in ast.parse(text).body:
+        if not isinstance(node, ast.ClassDef):
+            continue
+        cls = getattr(hou, node.name, None)
+        if not (isinstance(cls, type) and issubclass(cls, hou.Error)):
+            continue
+        for func in node.body:
+            if isinstance(func, ast.FunctionDef) and func.name == "__init__":
+                line = lines[func.lineno - 1]
+                lines[func.lineno - 1] = line.replace(
+                    "(self, message: str = ...", "(self, message: str | None = ..."
+                )
+    stub.write_text("\n".join(lines))
+
+
+# The hou classes that _FloatSequence matches, made redundant beside it in a union.
+FLOAT_SEQUENCE_CLASSES = {"Vector2", "Vector3", "Vector4", "Quaternion"}
+
+
+class FloatSequenceTaker(ast.NodeTransformer):
+    """Turn `Sequence[float]` into `_FloatSequence` in an annotation, dropping the classes it
+    already matches from the unions it is in."""
+
+    def visit_Subscript(self, node: ast.Subscript) -> ast.AST:
+        node = self.generic_visit(node)
+        if ast.unparse(node) == "Sequence[float]":
+            return ast.Name(id="_FloatSequence", ctx=ast.Load())
+        return node
+
+    def visit_BinOp(self, node: ast.BinOp) -> ast.AST:
+        if not isinstance(node.op, ast.BitOr):
+            return self.generic_visit(node)
+        members = [self.visit(m) for m in union_members(node)]
+        names = [ast.unparse(m) for m in members]
+        if "_FloatSequence" in names:
+            members = [
+                m
+                for i, (m, name) in enumerate(zip(members, names))
+                if name not in FLOAT_SEQUENCE_CLASSES and name not in names[:i]
+            ]
+        union = members[0]
+        for member in members[1:]:
+            union = ast.BinOp(left=union, op=ast.BitOr(), right=member)
+        return union
+
+
+def union_members(node: ast.expr) -> list[ast.expr]:
+    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.BitOr):
+        return union_members(node.left) + union_members(node.right)
+    return [node]
+
+
+def take_float_sequences(path: str) -> None:
+    """Type the parameters that take a sequence of floats as `_FloatSequence` (see the overlay),
+    so that they take hou's vectors, which SWIG accepts there."""
+    import pathlib
+
+    stub = pathlib.Path(path)
+    text = stub.read_text()
+    lines = text.split("\n")
+    edits = []
+    for node in ast.walk(ast.parse(text)):
+        if not isinstance(node, ast.FunctionDef):
+            continue
+        args = node.args
+        for arg in [*args.posonlyargs, *args.args, *args.kwonlyargs]:
+            ann = arg.annotation
+            if ann is None or "Sequence[float]" not in ast.unparse(ann):
+                continue
+            assert ann.lineno == ann.end_lineno, f"multi-line annotation: {node.name}"
+            new = ast.unparse(FloatSequenceTaker().visit(ann))
+            edits.append((ann.lineno - 1, ann.col_offset, ann.end_col_offset, new))
+    # From the end of each line, so the earlier offsets (in UTF-8 bytes) stay right.
+    for lineno, start, end, new in sorted(edits, reverse=True):
+        line = lines[lineno].encode()
+        lines[lineno] = (line[:start] + new.encode() + line[end:]).decode()
+    stub.write_text("\n".join(lines))
+
+
 def report_untyped_constructors(path: str) -> None:
     """List the untyped constructors left, which hython does not reject."""
     import pathlib
@@ -656,9 +748,12 @@ def main(outdir: str):
     )
     fix_swig_attributes("stubs/hou.pyi")
     type_unconstructible_classes("stubs/hou.pyi")
-    mark_positional_only("stubs/hou.pyi")
+    type_exception_messages("stubs/hou.pyi")
     type_enum_values("stubs/hou.pyi")
     apply_overlay("stubs/hou.pyi")
+    take_float_sequences("stubs/hou.pyi")
+    # After the overlay, whose replaced signatures must take no keywords either.
+    mark_positional_only("stubs/hou.pyi")
     report_untyped_constructors("stubs/hou.pyi")
     report_bare_enum_values("stubs/hou.pyi")
 
@@ -680,9 +775,10 @@ def split_params(params: str) -> list[str]:
 
 
 def mark_positional_only(path: str) -> None:
-    """Make the parameters of SWIG's overloaded wrappers positional-only.
+    """Make the parameters of the functions that take no keywords positional-only.
 
-    SWIG wraps an overloaded C++ method as `def name(self, *args)`, which takes no keywords.
+    SWIG wraps an overloaded C++ method as `def name(self, *args)`, which takes no keywords, and
+    some of hou's functions are C builtins that take none (`hou.getenv`).
     """
     import pathlib
 
@@ -706,13 +802,17 @@ def mark_positional_only(path: str) -> None:
 
 
 def swig_positional_only_lines(text: str) -> list[int]:
-    """The (0-based) line numbers of the stub's functions whose SWIG wrapper takes only `*args`."""
+    """The (0-based) line numbers of the stub's functions whose SWIG wrapper takes only `*args`,
+    and of those that are C builtins that take no keywords."""
     import ast
     import inspect
+    import types
 
     import hou
 
     def takes_only_args(func: object) -> bool:
+        if isinstance(func, types.BuiltinFunctionType):
+            return rejects_keywords(func)
         try:
             params = list(inspect.signature(func).parameters.values())  # type: ignore[arg-type]
         except (TypeError, ValueError):
@@ -741,6 +841,24 @@ def swig_positional_only_lines(text: str) -> list[int]:
                     if runtime is not None and takes_only_args(runtime):
                         found.append(func.lineno - 1)
     return found
+
+
+def rejects_keywords(func: Callable[..., object]) -> bool:
+    """Whether a C builtin takes no keyword arguments.
+
+    Without a text signature to tell, it is called with an unknown keyword: CPython rejects
+    keywords for a builtin that takes none before calling it, and one that takes keywords fails
+    on the unknown name in its argument parsing.
+    """
+    try:
+        params = inspect.signature(func).parameters.values()
+    except ValueError:
+        try:
+            func(__no_such_keyword__=None)
+        except TypeError as e:
+            return "takes no keyword arguments" in str(e)
+        return False
+    return all(p.kind is inspect.Parameter.POSITIONAL_ONLY for p in params)
 
 
 BARE_ENUM_VALUE = re.compile(r"\bEnumValue\b(?!\[)")

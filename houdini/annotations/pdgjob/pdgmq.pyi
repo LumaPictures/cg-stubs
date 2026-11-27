@@ -83,10 +83,12 @@ class ResultDataArrayEvent(NamedTuple):
     hash_code_array: Sequence[int]
     jobid: str
 
+# pdgcmd.writeAttribute only checks the first element's type, so the list may be mixed. Nothing
+# handles the event: the dispatcher's workItemSetAttribute no longer exists.
 class WriteAttrEvent(NamedTuple):
     workitem_id: _WorkItemId
     attr_name: str
-    value: Sequence[str] | Sequence[int] | Sequence[float]
+    value: Sequence[str | int | float]
     jobid: str
 
 class SetStringAttribArrayEvent(NamedTuple):
@@ -313,7 +315,7 @@ class CallbackServerAPI:
         self,
         workitem_id: _WorkItemId,
         attr_name: str,
-        attr_value: Sequence[str] | Sequence[int] | Sequence[float],
+        attr_value: Sequence[str | int | float],
         jobid: str = ...,
     ) -> str: ...
     def set_string_attrib_array(

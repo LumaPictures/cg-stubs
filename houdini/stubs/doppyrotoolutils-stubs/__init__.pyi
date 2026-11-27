@@ -59,10 +59,10 @@ def selectObject(kwargs: ShelfToolKwargs, prompt: str, force_newobj: bool = Fals
 def clusterRasterization(noisenode: hou.SopNode) -> None:
     """ Enables separate rasterization for each cluster.
     """
-def cluster(fuelsource: hou.Node = ...) -> list[hou.SopNode | None]:
+def cluster(fuelsource: hou.SopNode = ...) -> list[hou.SopNode | None]:
     """ Set Up Clustering, return list of new geo and instancepoints
     """
-def clustertrail(fuelsource: hou.Node = ...) -> list[hou.SopNode | None]:
+def clustertrail(fuelsource: hou.SopNode = ...) -> list[hou.SopNode | None]:
     """ Set Up Clustering, return list of new geo and instancepoints
     """
 def sparseExplosion(kwargs: ShelfToolKwargs) -> None:

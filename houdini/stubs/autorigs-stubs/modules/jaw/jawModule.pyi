@@ -1,6 +1,5 @@
 import hou
 from . import buildJawGuide as buildJawGuide, jawGuideOptions as jawGuideOptions, jawGuideParams as jawGuideParams
-from _typeshed import Incomplete
 from autorigs.asset import defaultProperties as defaultProperties
 from autorigs.asset.autoRigsAsset import AutoRigsAsset as AutoRigsAsset
 from autorigs.modules.base import rootModule as Mod
@@ -17,25 +16,25 @@ from typing import TypeAlias
 from autorigs.modules.base.rootModule import _ModuleJson
 from typing import TypeAlias
 _JawModuleJson: TypeAlias = _ModuleJson[_JawOptionsJson, _ParamsJson, _GuideNamesJson]
-class JawModule(Mod.Module[_JawOptionsJson, _ParamsJson, _GuideNamesJson, ModuleOptionsWidget, ModuleParamsWidget, JawGuide, None, None, None]):
+class JawModule(Mod.Module[_JawOptionsJson, _ParamsJson, _GuideNamesJson, ModuleOptionsWidget, ModuleParamsWidget, JawGuide, None, None, None, 'JawGuideTab']):
     assetnode: hou.ObjNode
-    guidetab: JawGuideTab
+    guidetab: JawGuideTab | None
     autorigsbuilder: AutoRigsJawBuilder
+    buildguides: JawGuide
     MODULE_TYPE: str
     MODULE_DEFAULT_NAME: str
     DEFAULT_JSON_FILE: str
     DEFAULT_JSON: _JawModuleJson
     def __init__(self, autorigs_asset: AutoRigsAsset) -> None: ...
     def initialize(self, autorigs_asset: AutoRigsAsset) -> None: ...
-    buildguides: Incomplete
     def buildFromDefault(self) -> None: ...
     def buildFromJsonNew(self, json: _JawModuleJson, is_submodule: bool = False) -> None: ...
     def buildFromJsonExisting(self, json: _JawModuleJson) -> None: ...
     def buildRig(self, index: int) -> None: ...
 
-class JawGuideTab(Mod.ModuleGuideTab[_JawOptionsJson, _ParamsJson, _GuideNamesJson, ModuleOptionsWidget, ModuleParamsWidget, JawGuide]):
+class JawGuideTab(Mod.ModuleGuideTab[_JawOptionsJson, _ParamsJson, _GuideNamesJson, ModuleOptionsWidget, ModuleParamsWidget, JawGuide, ModuleTabsWidget]):
     tabswidget: ModuleTabsWidget
-    buildguides: Incomplete
-    optionswidget: Incomplete
-    paramswidget: Incomplete
+    buildguides: JawGuide
+    optionswidget: ModuleOptionsWidget
+    paramswidget: ModuleParamsWidget
     def __init__(self, buildguides: JawGuide) -> None: ...

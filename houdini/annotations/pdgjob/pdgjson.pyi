@@ -37,15 +37,19 @@ class _AttribJSON(TypedDict):
 class _ServiceStatus(TypedDict):
     status: str
 
+class _OutputFileJSON(TypedDict):
+    file: str
+    tag: str
+
 class _ServiceResponse(TypedDict):
     status: str
     msg: str
     version: int
     memory: int
-    # Copied from the work item's JSON patch (_pdg.WorkItem.createJSONPatch).
-    outputs: NotRequired[Any]
-    attributes: NotRequired[Any]
-    graph: NotRequired[Any]
+    # NativeWorkItem copies these from its JSON patch (_pdg.WorkItem.createJSONPatch).
+    outputs: NotRequired[list[_OutputFileJSON] | JSONValue]
+    attributes: NotRequired[dict[str, _AttribJSON] | JSONValue]
+    graph: NotRequired[dict[str, _AttribJSON] | JSONValue]
 
 _AnyWorkItem: TypeAlias = "WorkItem | NativeWorkItem | pdg.WorkItem"
 _PdgAttribute: TypeAlias = (

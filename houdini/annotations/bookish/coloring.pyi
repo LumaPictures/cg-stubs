@@ -1,4 +1,5 @@
 from collections.abc import Mapping, Sequence
+from typing import ClassVar
 
 from bookish.wiki.wikipages import _WikiBlock
 
@@ -40,6 +41,6 @@ class Ansi(object):
 def cstring(code: str, string: str) -> str: ...
 
 class DraculaStyle(Style):
-    background_color: str
+    background_color: ClassVar[str]
     default_style: str
-    styles: dict[_TokenType, str]
+    styles: ClassVar[Mapping[_TokenType, str]]

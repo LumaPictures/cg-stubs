@@ -3,6 +3,7 @@ from houtypes import JSONLike
 from io import TextIOWrapper
 from pdgjob import pdgcmd as pdgcmd, pdgjson as pdgjson
 from typing import Any, Concatenate, NotRequired, TypedDict
+from xmlrpc.client import Binary
 from xmlrpc.server import SimpleXMLRPCServer
 
 from typing import TypeVar
@@ -37,7 +38,7 @@ class StdoutBuffer(TextIOWrapper):
 class RPCProxy:
     captured_calls: list[_CallRecord]
     def __init__(self) -> None: ...
-    def call(self, fn_name: str, *args: object, **kwargs: object) -> int: ...
+    def call(self, fn_name: str, *args: JSONLike | Binary, **kwargs: object) -> int: ...
     def commitMulti(self, name: str) -> int: ...
 
 class XMLRPCServer(SimpleXMLRPCServer):

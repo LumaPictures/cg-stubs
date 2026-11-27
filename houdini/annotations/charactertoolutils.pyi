@@ -1,4 +1,4 @@
-from collections.abc import Iterable, Mapping, Sequence
+from collections.abc import Iterable, Sequence
 
 import hou
 from houtypes import ShelfToolKwargs
@@ -16,6 +16,6 @@ def addPoseScopeValues(attribname: str, geo: hou.Geometry, primgrouppattern: str
 def selectTrack(
     title: str | None = ...,
     message: str | None = ...,
-    initial_selection: Mapping[str, Sequence[tuple[hou.ChopNode, str]]] | None = ...,
+    initial_selection: hou._NodeDataInitialSelection | None = ...,
     multiple_select: bool = ...,
 ) -> list[hou.Track | None]: ...

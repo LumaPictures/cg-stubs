@@ -4,6 +4,10 @@ from hutil.PySide import QtGui
 from pygments.lexer import Lexer as Lexer, RegexLexer, _TokenType
 from pygments.lexers import Python3Lexer as Python3Lexer
 from pygments.style import Style as Style
+from typing import TypedDict, Unpack
+
+class _BlockUserDataKwargs(TypedDict, total=False):
+    syntax_stack: tuple[str, ...] | list[str]
 
 def get_tokens_unprocessed(self: RegexLexer, text: str, stack: Sequence[str] = ('root',)) -> Generator[tuple[int, _TokenType, str], None, None]: ...
 
@@ -12,7 +16,7 @@ class PygmentsBlockUserData(QtGui.QTextBlockUserData):
     Storage for the user data associated with each line.
     """
     syntax_stack: tuple[str, ...] | list[str]
-    def __init__(self, **kwds: object) -> None: ...
+    def __init__(self, **kwds: Unpack[_BlockUserDataKwargs]) -> None: ...
 
 class PygmentsHighlighter(QtGui.QSyntaxHighlighter):
     """

@@ -1,5 +1,5 @@
 from collections.abc import Callable, Iterable, Mapping
-from typing import Any
+from typing import Concatenate
 
 def read_url_contents(
     url: str,
@@ -21,7 +21,7 @@ def save_url_to_file(
     file_name: str,
     post_data: bytes | None = ...,
     extra_headers: Iterable[tuple[str, str]] = ...,
-    progress_callback: Callable[..., object] | None = ...,
+    progress_callback: Callable[Concatenate[int, int, ...], object] | None = ...,
     callback_additional_kwargs: Mapping[str, object] = ...,
     disable_proxy: bool = ...,
 ) -> None: ...

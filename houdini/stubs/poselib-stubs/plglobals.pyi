@@ -118,7 +118,7 @@ def chooseAndLoadClip(prompt_title: str) -> str | None:
 
     Return chosen Clip path, or None if no file was chosen.
     """
-def createEditor(parent: QtWidgets.QWidget, option: QtWidgets.QStyleOptionViewItem, index: QtCore.QModelIndex | QtCore.QPersistentModelIndex, margins: QtCore.QMargins) -> QtWidgets.QWidget:
+def createEditor(parent: QtWidgets.QWidget | None, option: QtWidgets.QStyleOptionViewItem, index: QtCore.QModelIndex | QtCore.QPersistentModelIndex, margins: QtCore.QMargins) -> QtWidgets.QWidget:
     """Create custom editor interface for items."""
 def jsonToStr(json_struct: object) -> str:
     """Converts JSON structure to string."""

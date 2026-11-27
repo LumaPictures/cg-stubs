@@ -65,7 +65,7 @@ def showError(msg: str) -> None: ...
 
 class AutoPaneState:
     pane: hou.SceneViewer
-    oldpwd: hou.Node
+    oldpwd: hou.OpNode | None
     oldstate: str
     def __init__(self, pane: hou.SceneViewer) -> None: ...
     def __enter__(self) -> Self: ...
@@ -444,7 +444,7 @@ def selectPrimitiveUVs(
     prompt: str,
     icon: str,
     label: str,
-) -> list[bool | int | hou.Node | hou.Vector3 | None]: ...
+) -> list[bool | int | hou.ObjNode | hou.SopNode | hou.Vector3 | None]: ...
 def constraintsurfacePicked(
     n: hou.OpNode,
     npr: hou.Parm,

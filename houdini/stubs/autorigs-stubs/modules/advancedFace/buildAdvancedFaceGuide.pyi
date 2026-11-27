@@ -21,7 +21,7 @@ from autorigs.modules.jaw import buildJawGuide as buildJawGuide
 from autorigs.modules.jaw.buildJawGuide import JawGuide as JawGuide
 from autorigs.utils.guideParamsHelper import _ParamsJson
 from collections.abc import Mapping
-from typing import Any, NotRequired, TypedDict
+from typing import NotRequired, TypedDict
 
 class _AdvancedFaceGuideJson(TypedDict):
     guidenames: Mapping[str, str]
@@ -38,7 +38,7 @@ class AdvancedFaceGuide(buildBaseGuide.BaseGuide[_AdvancedFaceGuideJson]):
     autorigs_asset: AutoRigsAsset
     json: _AdvancedFaceModuleJson
     assetnode: hou.ObjNode
-    guidenodesdata: dict[str, list[Any]]
+    guidenodesdata: dict[str, list[hou.OpNode | bool | None]]
     geometryguides: GeometryGuide
     jawguides: JawGuide
     templateguides: TemplateGuide

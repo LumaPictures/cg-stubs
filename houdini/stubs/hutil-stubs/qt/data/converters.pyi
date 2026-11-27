@@ -3,17 +3,17 @@ from datetime import datetime
 from houtypes import JSONValue
 from hutil.PySide import QtCore as QtCore, QtGui as QtGui, QtWidgets as QtWidgets
 from hutil.PySide.QtCore import Qt as Qt
-from typing import Any, Callable, Generic, Sequence, TypeVar
+from typing import Any, Callable, Generic, Sequence, TypeAlias, TypeVar
 
 from typing import TypeAlias
 from typing import TypeVar
-from typing import TypeAlias
-_F = TypeVar('_F', bound=Callable[..., Any])
+from typing import Never
+_F = TypeVar('_F', bound=Callable[[Never], object])
 _In = TypeVar('_In')
 _Out = TypeVar('_Out')
+ColorSpec: TypeAlias = str | QtGui.QColor | Sequence[float]
 _ColorData: TypeAlias = str | list[float] | tuple[float, ...]
 T = TypeVar('T')
-ColorSpec = str | QtGui.QColor | Sequence[float]
 converter_registry: dict[int, Callable[[Any], Any]]
 color_roles: dict[str, QtGui.QPalette.ColorRole]
 alignment_names: dict[str, Qt.AlignmentFlag]

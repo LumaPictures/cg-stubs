@@ -2,7 +2,7 @@ import hou
 import types
 import typing
 from collections.abc import Callable as Callable, Iterable, Mapping, Sequence
-from houtypes import ParmActionButtonKwargs, ParmCallbackKwargs, ShelfToolKwargs
+from houtypes import ParmActionButtonKwargs, ParmCallbackKwargs, RadialMenuKwargs, ShelfToolKwargs
 from typing import Any, Literal
 
 from typing import ParamSpec
@@ -12,6 +12,7 @@ from typing import TypeVar
 _P = ParamSpec('_P')
 _R = TypeVar('_R')
 _NodeT = TypeVar('_NodeT', bound=hou.Node)
+_ParentNodeT = TypeVar('_ParentNodeT', hou.OpNode, hou.Node)
 def safe_reload(module: types.ModuleType) -> None:
     """ Reloads the given module when the HOUDINI_PYTHON_DEVELOPMENT
         environment is set to 1
@@ -49,14 +50,14 @@ def compositorViewer() -> hou.CompositorViewer:
 def networkEditor() -> hou.NetworkEditor:
     """ Returns an existing open Network Editor pane if there is one.
     """
-def activePane(scriptargs: Mapping[str, Any]) -> hou.PaneTab:
+def activePane(scriptargs: ShelfToolKwargs | ParmActionButtonKwargs | ParmCallbackKwargs | RadialMenuKwargs) -> hou.PaneTab:
     ''' Returns the current active pane. If the current tool was launched
         from a Tab menu, the "pane" scriptarg will be set, and indicates the
         active pane. Otherwise the tool was launched from the shelf and
         we have to look for an open viewer pane of the right type for the
         running tool.
     '''
-def activeCompositorPane(scriptargs: Mapping[str, Any]) -> hou.PaneTab: ...
+def activeCompositorPane(scriptargs: ShelfToolKwargs | ParmActionButtonKwargs | ParmCallbackKwargs) -> hou.PaneTab: ...
 def homeToSelectionNetworkEditorsFor(node: hou.NetworkMovableItem) -> None:
     """ Homes to their selection all network editors to that are showing the
     network that contains node. """
@@ -227,10 +228,10 @@ def findOutputNodeOfBaseType(endnode: _NodeT, nodetype: str | None, includeme: b
 def findOutputNodeOfBaseType(endnode: _NodeT | None, nodetype: str | None, includeme: bool = ..., seennodes: set[hou.Node] | None = ..., *, returnall: Literal[True]) -> list[_NodeT] | None: ...
 @typing.overload
 def findOutputNodeOfBaseType(endnode: _NodeT | None, nodetype: str | None, includeme: bool = ..., seennodes: set[hou.Node] | None = ..., returnall: bool = ...) -> _NodeT | list[_NodeT] | None: ...
-@typing.overload
-def findAllChildNodesOfTypeWithParms(parentnode: hou.OpNode, nodetype: str | None, parmlist: Mapping[str, object], dorecurse: bool = ..., findfirst: bool = ..., basetypematch: bool = ...) -> list[hou.OpNode]: ...
-@typing.overload
-def findAllChildNodesOfTypeWithParms(parentnode: hou.Node, nodetype: str | None, parmlist: Mapping[str, object], dorecurse: bool = ..., findfirst: bool = ..., basetypematch: bool = ...) -> list[hou.Node]: ...
+def findAllChildNodesOfTypeWithParms(parentnode: _ParentNodeT, nodetype: str | None, parmlist: Mapping[str, object], dorecurse: bool = False, findfirst: bool = False, basetypematch: bool = False) -> list[_ParentNodeT]:
+    """ Returns a list of all nodes contained in parent that match
+        the nodetype & parmlist filters.
+    """
 @typing.overload
 def findChildNodeOfTypeWithParms(parentnode: hou.OpNode, nodetype: str | None, parmlist: Mapping[str, object], dorecurse: bool = ..., basetypematch: bool = ...) -> hou.OpNode | None: ...
 @typing.overload
@@ -239,10 +240,10 @@ def findChildNodeOfTypeWithParms(parentnode: hou.Node, nodetype: str | None, par
 def findChildNodeOfType(parentnode: hou.OpNode, nodetype: str | None, dorecurse: bool = ..., basetypematch: bool = ...) -> hou.OpNode | None: ...
 @typing.overload
 def findChildNodeOfType(parentnode: hou.Node, nodetype: str | None, dorecurse: bool = ..., basetypematch: bool = ...) -> hou.Node | None: ...
-@typing.overload
-def findAllChildNodesOfType(parentnode: hou.OpNode, nodetype: str | None, dorecurse: bool = ..., findfirst: bool = ..., basetypematch: bool = ...) -> list[hou.OpNode]: ...
-@typing.overload
-def findAllChildNodesOfType(parentnode: hou.Node, nodetype: str | None, dorecurse: bool = ..., findfirst: bool = ..., basetypematch: bool = ...) -> list[hou.Node]: ...
+def findAllChildNodesOfType(parentnode: _ParentNodeT, nodetype: str | None, dorecurse: bool = False, findfirst: bool = False, basetypematch: bool = False) -> list[_ParentNodeT]:
+    """ Returns a list of all child nodes that match the given node
+        type
+    """
 @typing.overload
 def findAncestorOfType(startnode: hou.OpNode | None, category: hou.NodeTypeCategory, nodetype: str | None, basetypematch: bool = ...) -> hou.OpNode | None: ...
 @typing.overload

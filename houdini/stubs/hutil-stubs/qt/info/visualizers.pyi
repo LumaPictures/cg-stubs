@@ -4,14 +4,14 @@ from . import general as general, nodeinfo as nodeinfo
 from typing import Sequence
 
 VIZ_CATEGORY: hou.EnumValue[hou.viewportVisualizerCategory]
-VISUALIZER_EVENTS: tuple[hou.EnumValue[hou.viewportVisualizerEventType], ...]
+VISUALIZER_EVENTS: tuple[hou.EnumValue[hou.viewportVisualizerEventType], hou.EnumValue[hou.viewportVisualizerEventType], hou.EnumValue[hou.viewportVisualizerEventType]]
 DEFAULT_RAMP: hou.Ramp
 GENERIC_VIZ: hou.ViewportVisualizerType
 TAG_VIZ: hou.ViewportVisualizerType
 COLOR_VIZ: hou.ViewportVisualizerType
 MARKER_VIZ: hou.ViewportVisualizerType
 VOLUME_VIZ: hou.ViewportVisualizerType
-EXCLUSIVE_VIZ_TYPES: tuple[str, ...]
+EXCLUSIVE_VIZ_TYPES: tuple[str, str]
 token_expr: re.Pattern[str]
 
 def attrVisName(type_name: str, name: str) -> str: ...

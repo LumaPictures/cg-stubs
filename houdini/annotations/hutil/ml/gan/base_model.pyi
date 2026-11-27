@@ -24,7 +24,7 @@ class BaseGANModel:
     test_data: DataLoader[tuple[torch.Tensor, ...]] | None
     def __init__(
         self,
-        input_config: DataConfig | None = ...,
+        input_config: DataConfig = ...,
         test_config: DataConfig | None = ...,
-        training_config: TrainingConfig | None = ...,
+        training_config: TrainingConfig = ...,
     ) -> None: ...

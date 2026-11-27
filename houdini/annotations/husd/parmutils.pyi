@@ -17,7 +17,9 @@ class _TemplateDescription(TypedDict):
     kwargs: _TemplateKwargs
 
 _ParmScalar: TypeAlias = bool | int | float | str
-_ParmDefaultValue: TypeAlias = _ParmScalar | tuple[_ParmScalar, ...] | list[_ParmScalar]
+_ParmDefaultValue: TypeAlias = (
+    _ParmScalar | tuple[_ParmScalar, ...] | list[bool] | list[int] | list[float] | list[str]
+)
 
 HUSD_PROPERTY_CATEGORY: str
 TYPE_TEMPLATE_MAP: dict[str, _TemplateDescription]

@@ -1,6 +1,23 @@
 from collections.abc import Iterable
+from typing import Literal, TypedDict, type_check_only
 
 import hou
+
+@type_check_only
+class _PerspectiveCameraParms(TypedDict):
+    win: tuple[float, float]
+    winsize: tuple[float, float]
+    projection: Literal["perspective"]
+    aperture: float
+    focal: float
+    nearclip: float
+
+@type_check_only
+class _OrthoCameraParms(TypedDict):
+    win: tuple[float, float]
+    winsize: tuple[float, float]
+    projection: Literal["ortho"]
+    orthowidth: float
 
 def checkParmsWriteable(node: hou.OpNode, parms: Iterable[str]) -> bool: ...
 def applyCameraTransform(
@@ -10,7 +27,7 @@ def applyCameraTransform(
     parent_transform: hou.Matrix4,
     time: float,
 ) -> bool: ...
-def cameraParms(viewport: hou.GeometryViewport) -> dict[str, str | float | tuple[float, ...]]: ...
+def cameraParms(viewport: hou.GeometryViewport) -> _PerspectiveCameraParms | _OrthoCameraParms: ...
 def createCameraInCurrentState(
     viewer: hou.SceneViewer,
     viewport: hou.GeometryViewport,

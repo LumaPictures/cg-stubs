@@ -3,6 +3,7 @@ import pdg
 import typing
 import xmlrpc.client
 from collections.abc import Callable as Callable, Iterable, Sequence
+from houtypes import JSONLike
 from io import TextIOWrapper
 from pdgjob import pdgjson as pdgjson
 from pdgutils import PDGNetMQRelay
@@ -20,7 +21,7 @@ _FileTuple: TypeAlias = tuple[str, str, int, bool]
 _T = TypeVar('_T')
 _W = TypeVar('_W', bound=pdg.WorkItem | pdgjson.WorkItem | pdgjson.NativeWorkItem)
 class _RpcProxy(Protocol):
-    def call(self, fn_name: str, /, *args: object) -> Any: ...
+    def call(self, fn_name: str, /, *args: JSONLike | xmlrpc.client.Binary) -> Any: ...
     def commitMulti(self, name: str, /) -> object: ...
 
 class _RpcDelegate(Protocol):

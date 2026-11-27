@@ -43,8 +43,8 @@ def addterrain(kwargs: ShelfToolKwargs) -> None:
 def addobstacle(kwargs: ShelfToolKwargs) -> None:
     """ Add obstacle object to the crowd simulation.
     """
-def addClip(agent_obj: hou.ObjNode, input_type: str, subnet: hou.Node | None, clipname: str, filepath: str | None = None, lopnode: hou.Node | None = None) -> hou.SopNode: ...
-def bakeAgent(input_type: str, subnet: hou.Node | None, filepath: str | None, agentname: str, clipname: str, lopnode: hou.Node | None = None) -> hou.ObjNode: ...
+def addClip(agent_obj: hou.ObjNode, input_type: str, subnet: hou.ObjNode | None, clipname: str, filepath: str | None = None, lopnode: hou.LopNode | None = None) -> hou.SopNode: ...
+def bakeAgent(input_type: str, subnet: hou.ObjNode | None, filepath: str | None, agentname: str, clipname: str, lopnode: hou.LopNode | None = None) -> hou.ObjNode: ...
 def bakeAgentInteractive(kwargs: ShelfToolKwargs) -> None: ...
 def addClipInteractive(kwargs: ShelfToolKwargs) -> None: ...
 def crowdpath(kwargs: ShelfToolKwargs) -> None:
@@ -97,6 +97,12 @@ def buildMenuStringList(names: Sequence[str]) -> list[str]:
     ''' Duplicates each element in a list of strings.
         For example, ["walk", "run"] becomes ["walk", "walk", "run", "run"]
     '''
+def _unpackClipProperties(crowd_geo: hou.Geometry, group_str: str, group_type: hou.EnumValue[hou.geometryType] | None) -> hou.Geometry:
+    """
+    Unpacks the clip properties from the agent definition.
+    This is used for SOPs that don't have an explicit clip properties input,
+    such as motion paths.
+    """
 def buildClipMenu(node: hou.SopNode, include_clip_properties: bool = False, clip_properties_input: int = -1, input_index: int = 0, group_str: str = '', group_type: hou.EnumValue[hou.geometryType] | None = ...) -> list[str]:
     """ Build a menu containing the available clip names for an agent."""
 def buildMotionPathClipMenu(node: hou.SopNode) -> list[str]:

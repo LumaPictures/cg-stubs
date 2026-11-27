@@ -1,11 +1,15 @@
 import hou
-from typing import Any, Protocol
+from types import TracebackType
+from typing import Protocol, TypedDict, Unpack
 
 class _UndoRedoListener(Protocol):
     def onUndoOrRedo(self) -> None: ...
 
 class _SelectionUndoListener(Protocol):
     def handleSelectionUndoOrRedo(self, new_sel: hou.Selection) -> None: ...
+
+class _UndosGroupKwargs(TypedDict, total=False):
+    editor: hou.NetworkEditor | None
 
 class UndoPreviewUpdater:
     """
@@ -63,10 +67,10 @@ class UndoBlockWrapper:
     def __init__(self, source_block: hou.UndosGroup, main_state: _UndoRedoListener) -> None: ...
     def __enter__(self) -> None:
         """ Called when a with block is entered. """
-    def __exit__(self, *args: Any) -> None:
+    def __exit__(self, *args: Unpack[tuple[type[BaseException] | None, BaseException | None, TracebackType | None]]) -> None:
         """ Called when a with block is exited. """
 
-def getUndoBlock(make_undo_block: bool, main_state: _UndoRedoListener, *args: Any, **kwargs: Any) -> NothingBlock | UndoBlockWrapper:
+def getUndoBlock(make_undo_block: bool, main_state: _UndoRedoListener, *args: Unpack[tuple[str]], **kwargs: Unpack[_UndosGroupKwargs]) -> NothingBlock | UndoBlockWrapper:
     """
     Get the undo block object to use.
 

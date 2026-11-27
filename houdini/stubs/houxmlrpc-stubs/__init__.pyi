@@ -1,11 +1,13 @@
 from xmlrpc.server import *
 import http.client
+import ssl
 import threading
 import typing
 import xmlrpc.client
 from _typeshed import SizedBuffer
-from collections.abc import Callable, Hashable, Sequence
+from collections.abc import Callable, Hashable, Iterable, Sequence
 from typing import Any, Generic
+from typing_extensions import Required, TypedDict, Unpack
 
 from typing import TypeAlias
 from typing import TypeVar
@@ -20,6 +22,18 @@ _Unwrapped: TypeAlias = _T | None | bool | int | float | str | list['_Unwrapped[
 _Wrapped: TypeAlias = str | int | float | bool | list['_Wrapped'] | dict['_Wrapped', '_Wrapped'] | _RemoteRef | None
 _HostType: TypeAlias = tuple[str, dict[str, str]] | str
 __all__ = ['HouXMLRPCServer', 'ServerProxy']
+
+class _ServerProxyKwargs(TypedDict, total=False):
+    transport: xmlrpc.client.Transport | None
+    encoding: str | None
+    verbose: bool
+    use_datetime: bool
+    use_builtin_types: bool
+    headers: Iterable[tuple[str, str]]
+    context: ssl.SSLContext | None
+
+class _ServerProxyUriKwargs(_ServerProxyKwargs, total=False):
+    uri: Required[str]
 
 def wrapObj(o: object, wrapperFunc: Callable[[object], _RemoteRef]) -> _Wrapped:
     """Wraps an object o in preparation for XMLRPC marshalling.
@@ -92,6 +106,9 @@ class PersistantTransport(xmlrpc.client.Transport):
     def request(self, host: _HostType, handler: str, request_body: SizedBuffer, verbose: int = 0) -> tuple[_XMLRPCValue, ...]: ...
 
 class ServerProxy(xmlrpc.client.ServerProxy):
-    def __init__(self, *args: Any, **kw: Any) -> None: ...
+    @typing.overload
+    def __init__(self, *args: Unpack[tuple[str]], **kw: Unpack[_ServerProxyKwargs]) -> None: ...
+    @typing.overload
+    def __init__(self, *args: Unpack[tuple[()]], **kw: Unpack[_ServerProxyUriKwargs]) -> None: ...
 
 def run(port: int = 8888) -> threading.Thread: ...

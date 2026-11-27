@@ -11,6 +11,7 @@ from typing import TypeVar
 from typing import TypeVar
 _NodeT = TypeVar('_NodeT', bound=hou.Node)
 class _VopFxMenuKwargs(TypedDict, total=False):
+    """The `kwargs` of a `VOPFXmenu.xml` script."""
     parm: Required[str]
     node: Required[str]
     input: Required[int]
@@ -109,11 +110,11 @@ def getInputNode(node: hou.VopNode, input_index_or_name: int | str) -> hou.VopNo
 @typing.overload
 def getInputNode(node: hou.OpNode, input_index_or_name: int | str) -> hou.OpNode | None: ...
 @typing.overload
-def getInputNode(node: hou.Node, input_index_or_name: int | str) -> hou.Node | None: ...
+def getInputNode(node: _NodeT, input_index_or_name: int | str) -> _NodeT | None: ...
 def getInputNodeOutputIndex(node: hou.Node, input_index_or_name: int | str) -> int | None: ...
 def getInputParmTuple(node: hou.VopNode, index_or_name: int | str) -> hou.ParmTuple | None: ...
 def setConnection(start_node: hou.OpNode, start_node_output: int | str, end_node: hou.VopNode, end_node_input: int | str, delete_unused: bool = True) -> None: ...
-def findExclusiveInputNodes(endnode: hou.Node, endnode_input: int | str | None = None) -> list[hou.Node]:
+def findExclusiveInputNodes(endnode: _NodeT, endnode_input: int | str | None = None) -> list[_NodeT]:
     """ Recursively finds nodes that only output to 'endnode'. If endnode_input
         is not None, only nodes that only output to that input are returned.
     """

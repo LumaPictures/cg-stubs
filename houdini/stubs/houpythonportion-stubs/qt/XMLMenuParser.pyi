@@ -1,24 +1,22 @@
-import hou
 import PySide6.QtCore
 import PySide6.QtGui
 import PySide6.QtWidgets
 import typing
-from _typeshed import Incomplete
 from collections.abc import Callable as Callable, Mapping, MutableMapping
 from hutil.Qt import QtWidgets
-from typing import Any, TypedDict
+from typing import Any
 
+from typing import TypeAlias
 from typing import TypeVar
+from typing import TypeAlias
 from typing import TypeVar
+import hou
 _MenuT = TypeVar('_MenuT', bound=PySide6.QtWidgets.QMenu)
-class _MenuActionKwargs(TypedDict, extra_items=Any):  # type: ignore[call-arg]
-    label: str
-    id: str
-
+_MenuActionKwargs: TypeAlias = hou._MenuActionKwargs
 ICON_SIZE: int
 
 class _MenuTitleLabel(QtWidgets.QLabel):
-    def __init__(self, text: Incomplete | None = None, parent: Incomplete | None = None) -> None: ...
+    def __init__(self, text: str | None = None, parent: PySide6.QtWidgets.QWidget | None = None) -> None: ...
 
 class MenuTitleItem(QtWidgets.QWidgetAction):
     """ A custom widget action to be used as a menu title.  This is not

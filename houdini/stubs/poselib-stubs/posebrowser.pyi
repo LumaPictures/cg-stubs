@@ -5,7 +5,7 @@ from hutil.PySide import QtCore, QtWidgets
 from poselib.poselib import PoseLibrary as PoseLibrary
 from poselib.settings import Settings as Settings
 
-class PoseBrowser(itembrowser.ItemBrowser):
+class PoseBrowser(itembrowser.ItemBrowser[posemodel.PoseLibraryModel, posegrid.PoseGrid]):
     itemModel: posemodel.PoseLibraryModel
     gridView: posegrid.PoseGrid
     exportToClipAction: QtGui.QAction

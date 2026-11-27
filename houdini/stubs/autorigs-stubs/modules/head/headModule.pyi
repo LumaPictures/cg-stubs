@@ -1,6 +1,5 @@
 import hou
 from . import buildHeadGuide as buildHeadGuide, headGuideOptions as headGuideOptions, headGuideParams as headGuideParams
-from _typeshed import Incomplete
 from autorigs.asset import defaultProperties as defaultProperties
 from autorigs.asset.autoRigsAsset import AutoRigsAsset as AutoRigsAsset
 from autorigs.modules.base import moduleTabsWidget as moduleTabsWidget, rootModule as Mod
@@ -21,12 +20,14 @@ from typing import TypeAlias
 from autorigs.modules.base.rootModule import _ModuleJson
 from typing import TypeAlias
 _HeadModuleJson: TypeAlias = _ModuleJson[_HeadOptionsJson, _HeadParamsJson, _GuideNamesJson]
-class HeadModule(Mod.Module[_HeadOptionsJson, _HeadParamsJson, _GuideNamesJson, ModuleOptionsWidget, ModuleParamsWidget, HeadGuide, _HeadControls | None, None, None]):
+class HeadModule(Mod.Module[_HeadOptionsJson, _HeadParamsJson, _GuideNamesJson, ModuleOptionsWidget, ModuleParamsWidget, HeadGuide, _HeadControls | None, None, None, 'HeadGuideTab', AutoRigsAsset]):
     autorigs_asset: AutoRigsAsset
     mastermodule: MasterModule
     spinemodules: Sequence[SpineModule]
-    guidetab: HeadGuideTab
+    guidetab: HeadGuideTab | None
     autorigsbuilder: AutoRigsHeadBuilder
+    buildguides: HeadGuide
+    builtrig: _HeadControls | None
     MODULE_TYPE: str
     MODULE_DEFAULT_NAME: str
     DEFAULT_JSON_FILE: str
@@ -34,22 +35,20 @@ class HeadModule(Mod.Module[_HeadOptionsJson, _HeadParamsJson, _GuideNamesJson, 
     def __init__(self, autorigs_asset: AutoRigsAsset) -> None: ...
     def initialize(self, autorigs_asset: AutoRigsAsset) -> None: ...
     def updateParent(self, modulesdict: Mapping[str, Sequence[Mod.Module]]) -> None: ...
-    buildguides: Incomplete
     def buildFromDefault(self) -> None: ...
     def buildFromJsonNew(self, json: _HeadModuleJson) -> None: ...
     def buildFromJsonExisting(self, json: _HeadModuleJson) -> None: ...
     def getModuleHooks(self) -> list[hou.ObjNode | None]: ...
-    builtrig: Incomplete
     def buildRig(self, orig_asset: AutoRigsAsset, index: int) -> None: ...
     def getMainHook(self) -> hou.ObjNode: ...
     def getHeadBone(self) -> hou.ObjNode: ...
 
-class HeadGuideTab(Mod.ModuleGuideTab[_HeadOptionsJson, _HeadParamsJson, _GuideNamesJson, ModuleOptionsWidget, ModuleParamsWidget, HeadGuide]):
+class HeadGuideTab(Mod.ModuleGuideTab[_HeadOptionsJson, _HeadParamsJson, _GuideNamesJson, ModuleOptionsWidget, ModuleParamsWidget, HeadGuide, ModuleTabsWidget]):
     tabswidget: ModuleTabsWidget
+    buildguides: HeadGuide
+    optionswidget: ModuleOptionsWidget
+    paramswidget: ModuleParamsWidget
     PREFIX: str
-    buildguides: Incomplete
-    optionswidget: Incomplete
-    paramswidget: Incomplete
     def __init__(self, buildguides: HeadGuide, spinemodules: Sequence[SpineModule], mastermodule: MasterModule) -> None: ...
     def updateParent(self, spinemodules: Sequence[SpineModule]) -> None: ...
     def getBuiltParentInfo(self) -> tuple[MasterModule | SpineModule, hou.ObjNode]: ...

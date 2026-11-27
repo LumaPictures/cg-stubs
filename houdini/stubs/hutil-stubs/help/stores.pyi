@@ -1,4 +1,3 @@
-from typing import Any
 import io
 import pathlib
 import zipfile
@@ -8,11 +7,12 @@ from .paths import WikiPath as WikiPath
 from collections.abc import Iterator, Mapping
 from datetime import datetime
 from importlib.resources.abc import Traversable
-from typing import IO, Iterable, Sequence
+from typing import Any, IO, Iterable, Sequence, TypedDict
 
 from typing import TypeAlias
 from typing import TypeAlias
-_StoreObj: TypeAlias = 'str | pathlib.Path | Store | dict[str, Any] | list[_StoreObj] | tuple[_StoreObj, ...] | Config'
+_StoreObj: TypeAlias = 'str | pathlib.Path | Store | _StoreDict | list[_StoreObj] | tuple[_StoreObj, ...] | Config'
+_StoreDict = TypedDict('_StoreDict', {'class': 'type[Store]', 'classname': str, 'args': Mapping[str, Any], 'child': '_StoreObj'}, total=False)
 DOC_KEY: str
 EXTRA_DOC_KEY: str
 MOUNTS_KEY: str

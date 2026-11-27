@@ -12,8 +12,10 @@ from hutil.PySide.QtCore import Qt as Qt
 from hutil.formatting import format_duration as format_duration, format_time as format_time
 from hutil.qt.common import core as core
 from hutil.qt.common.qmlviews import SST as SST
+from hutil.qt.info.window import _BaseInfoStateKwargs
 from hutil.qt.pluto import colors as colors
 from typing import Any, ClassVar, Iterable, NamedTuple
+from typing_extensions import Unpack
 
 from typing import TypeAlias
 AttribTypes: TypeAlias = pdg.AttributeFile | pdg.AttributeInt | pdg.AttributeFloat | pdg.AttributeString | pdg.AttributePyObject | pdg.AttributeDictionary | pdg.AttributeGeometry
@@ -21,7 +23,7 @@ pdg_type_registry: pdg.TypeRegistry
 ws_expr: re.Pattern[str]
 type_name: dict[type, str]
 cache_state_label: dict[str, str]
-NODE_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], ...]
+NODE_EVENTS: tuple[hou.EnumValue[hou.nodeEventType]]
 current_workitem_win: WorkItemViewWindow | None
 log_expr: re.Pattern[str]
 
@@ -327,7 +329,7 @@ class WorkItemState(window.BaseInfoState[WorkItemConfig, WorkItemInfo]):
     filtering: bool
     filterText: str
     workItemSelected: ClassVar[PySide6.QtCore.Signal]
-    def __init__(self, **kwargs: Any) -> None: ...
+    def __init__(self, **kwargs: Unpack[_BaseInfoStateKwargs]) -> None: ...
     def outOfDate(self) -> bool: ...
     def openFile(self, url: PySide6.QtCore.QUrl, tag: str) -> None: ...
     def saveText(self, text: str) -> None: ...

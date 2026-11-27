@@ -1,8 +1,5 @@
 import hou
-from typing import Protocol
-
-class _SupportsWriteStr(Protocol):
-    def write(self, s: str, /) -> object: ...
+from _typeshed import SupportsWrite
 
 SHADERHDA_OP_TABLE_NAME: str
 
@@ -157,7 +154,7 @@ class ShaderSignatureSet:
 
             Returns a pair of status and error message (which can be None).
         """
-    def writeToDialogScript(self, fp: _SupportsWriteStr) -> None:
+    def writeToDialogScript(self, fp: SupportsWrite[str]) -> None:
         """ Write the information about all the signatures to the Dialog Script.
 
             In addition to node parameters, it writes the node input information
@@ -222,15 +219,15 @@ class ShaderSignature:
         """ Returns error message if this signature is incomptible with the
             given one. Otherwise, returns None.
         """
-    def writeInputsToDialogScript(self, fp: _SupportsWriteStr) -> None:
+    def writeInputsToDialogScript(self, fp: SupportsWrite[str]) -> None:
         """ Write the shader input port definitions to the dialog
             script file given by the file descriptor object parameter.
         """
-    def writeOutputsToDialogScript(self, fp: _SupportsWriteStr) -> None:
+    def writeOutputsToDialogScript(self, fp: SupportsWrite[str]) -> None:
         """ Write the shader output port definitions to the dialog
             script file given by the file descriptor object parameter.
         """
-    def writeSignatureToDialogScript(self, fp: _SupportsWriteStr, default_signature: ShaderSignature | None = None) -> None:
+    def writeSignatureToDialogScript(self, fp: SupportsWrite[str], default_signature: ShaderSignature | None = None) -> None:
         """ Write the signature information (name, label, input/output types,
             and the shader function name) to the dialog script file
             given by the file descriptor object parameter.

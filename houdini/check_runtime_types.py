@@ -1139,6 +1139,7 @@ class Walker:
             if ok:
                 self.check(member, value, getter, f"{receiver}.{member.name}()")
                 self.enqueue(value, depth + 1)
+        self.exercise_at_time(member, func, receiver_obj, receiver, depth)
         one_arg = [
             s
             for s in member.signatures
@@ -1152,6 +1153,36 @@ class Walker:
         for arg in arg_candidates(receiver_obj, member, one_arg[0].params[0]):
             example = f"{receiver}.{member.name}({short_repr(arg, 60)})"
             ok, value = self.call(member, func, (arg,), example)
+            if ok:
+                self.check(member, value, returns, example)
+                self.enqueue(value, depth + 1)
+
+    def exercise_at_time(
+        self,
+        member: Member,
+        func: Callable[..., object],
+        receiver_obj: object,
+        receiver: str,
+        depth: int,
+    ) -> None:
+        """Call a lookup by name at a time (`DopObject.guideGeometry(data_name, time)`) with
+        each candidate name."""
+        at_time = [
+            s
+            for s in member.signatures
+            if len(s.required) == 2
+            and s.params[0].required
+            and s.params[0].annotation == "str"
+            and s.params[1].annotation == "float"
+            and FRAME_PARAM.search(s.params[1].name)
+            and s.returns
+        ]
+        if not at_time:
+            return
+        returns = [s.returns for s in at_time if s.returns]
+        for name in string_candidates(receiver_obj, member, at_time[0].params[0]):
+            example = f"{receiver}.{member.name}({name!r}, 1.0)"
+            ok, value = self.call(member, func, (name, 1.0), example)
             if ok:
                 self.check(member, value, returns, example)
                 self.enqueue(value, depth + 1)
@@ -1336,6 +1367,8 @@ def string_candidates(obj: object, member: Member, param: Param) -> list[str]:
             names += list(obj.sections())
         elif isinstance(obj, hou.DopSimulation) and "object" in lowered:
             names += first_names(obj.objects(), 10)
+        elif isinstance(obj, hou.DopData) and "data" in lowered:
+            names += list(obj.subData())[:10]
         elif obj is hou and re.search("node|item|path", lowered):
             names += ["/obj", "/obj/geo", "/obj/geo/scene", "/obj/geo/scene/tx"]
         elif obj is hou and "parm" in lowered:
@@ -1431,6 +1464,8 @@ definition.addTransformGroup(hou.AgentTransformGroup("group", [0], rig))
 agent = geo.createPacked("PackedAgent")
 agent.setDefinition(definition)
 agent.setCurrentLayer(definition.layers()[0])
+# One with no current layer, for the methods that return None then.
+geo.createPacked("PackedAgent").setDefinition(definition)
 """
 
 
@@ -1547,6 +1582,10 @@ class Scene:
             hou.DataParmTemplate(
                 "geodata", "Geometry Data", 1, data_parm_type=hou.dataParmType.Geometry
             ),
+            # Left without a value: its components evaluate to None.
+            hou.DataParmTemplate(
+                "geoempty", "Empty Data", 2, data_parm_type=hou.dataParmType.Geometry
+            ),
             hou.DataParmTemplate(
                 "kvdata",
                 "Key-Value Data",
@@ -1594,7 +1633,8 @@ class Scene:
             node.setComment("comment")
 
         self.attempt("parm values", values)
-        self.seeds += list(node.parms())
+        # The tuples too: a walk reaches only the first few of a node's parmTuples().
+        self.seeds += list(node.parms()) + list(node.parmTuples())
 
     def build_sops(self, obj: Any) -> None:
         geo = self.node(obj, "geo", "geo")

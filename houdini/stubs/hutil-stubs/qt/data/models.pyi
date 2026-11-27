@@ -11,12 +11,13 @@ from hutil.PySide.QtCore import Qt as Qt
 from typing import Any, Callable as Callable, ClassVar, Iterable, Mapping, Self, Sequence, TypedDict
 
 from typing import TypeAlias
+from houtypes import JSONLike
 from typing import TypeAlias
 _DataItemSource: TypeAlias = tuple[str, float] | str | float
 _DataSource: TypeAlias = Iterable[_DataItemSource] | Mapping[str, float]
 _DecoType: TypeAlias = PySide6.QtGui.QBrush | PySide6.QtGui.QColor | PySide6.QtGui.QPixmap | PySide6.QtGui.QPalette.ColorRole | None
 _Index: TypeAlias = PySide6.QtCore.QModelIndex | PySide6.QtCore.QPersistentModelIndex
-_RowSource: TypeAlias = Mapping[str, Any] | Iterable[tuple[str, float] | str | float | Mapping[str, Any] | Sequence[Any]]
+_RowSource: TypeAlias = Mapping[str, JSONLike] | Iterable[tuple[str, float] | str | float | Mapping[str, JSONLike] | Sequence[JSONLike]]
 class _XpuDeviceMemory(TypedDict):
     used: int
     peak_used: int

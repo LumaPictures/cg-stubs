@@ -5,10 +5,10 @@ import typing
 from collections.abc import Callable as Callable, Collection, Sequence
 from typing import Literal, TypedDict
 
-_NodeDataSelection = TypedDict('_NodeDataSelection', {'Parameters': list[hou.Parm | hou.ParmTuple], 'Attributes': list[tuple[hou.Attrib, int]], 'Transforms': list[tuple[hou.OpNode, str, str | None]], 'Bounding Boxes': list[tuple[hou.OpNode, str]], 'Custom': list[tuple[hou.OpNode, str]]}, total=False)
-_NodeDataInitialSelection = TypedDict('_NodeDataInitialSelection', {'Parameters': Sequence[hou.Parm | hou.ParmTuple], 'Attributes': Sequence[tuple[hou.Attrib, int]], 'Transforms': Sequence[tuple[hou.Node, str, str | None]], 'Bounding Boxes': Sequence[tuple[hou.Node, str | None]], 'Custom': Sequence[tuple[hou.Node, str]]}, total=False)
+_NodeDataSelection = TypedDict('_NodeDataSelection', {'Parameters': list[hou.Parm | hou.ParmTuple], 'Attributes': list[tuple[hou.Attrib, int]], 'Transforms': list[tuple[hou.OpNode, Literal['World', 'Local'], str | None]], 'Bounding Boxes': list[tuple[hou.OpNode, str]], 'Custom': list[tuple[hou.OpNode, str]]}, total=False)
+_NodeDataInitialSelection = TypedDict('_NodeDataInitialSelection', {'Parameters': Sequence[hou.Parm | hou.ParmTuple], 'Attributes': Sequence[tuple[hou.Attrib, int]], 'Transforms': Sequence[tuple[hou.OpNode, Literal['World', 'Local'], str | None]], 'Bounding Boxes': Sequence[tuple[hou.OpNode, str | None]], 'Custom': Sequence[tuple[hou.OpNode, str]]}, total=False)
 
-def openTypePropertiesDialog(self: hou.ui, node_or_node_type: hou.Node | hou.NodeType, promote_spare_parms: bool = False, immediately_save: bool = False) -> None:
+def openTypePropertiesDialog(self: hou.ui, node_or_node_type: hou.OpNode | hou.OpNodeType, promote_spare_parms: bool = False, immediately_save: bool = False) -> None:
     """
 openTypePropertiesDialog(node_or_node_type, promote_spare_parms=False,
 immediately_save=False)

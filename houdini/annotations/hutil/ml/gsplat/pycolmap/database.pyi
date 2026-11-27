@@ -1,8 +1,9 @@
 import argparse
 import os
 import sqlite3
+from _typeshed import StrOrBytesPath
 from collections.abc import Buffer, Callable, Sequence
-from typing import Any, TypeVar, overload
+from typing import Required, TypedDict, TypeVar, Unpack, overload
 
 import numpy as np
 import numpy.typing as npt
@@ -61,6 +62,20 @@ def add_inlier_matches(
 def add_keypoints(db: sqlite3.Connection, image_id: int, keypoints: npt.NDArray[np.number]) -> None: ...
 def add_matches(db: sqlite3.Connection, image_id1: int, image_id2: int, matches: npt.NDArray[np.integer]) -> None: ...
 
+# What COLMAPDatabase forwards to sqlite3.Connection, after the database.
+class _ConnectionKwargs(TypedDict, total=False):
+    timeout: float
+    detect_types: int
+    isolation_level: str | None
+    check_same_thread: bool
+    factory: type[sqlite3.Connection] | None
+    cached_statements: int
+    uri: bool
+    autocommit: bool
+
+class _ConnectionDatabaseKwargs(_ConnectionKwargs, total=False):
+    database: Required[StrOrBytesPath]
+
 class COLMAPDatabase(sqlite3.Connection):
     @staticmethod
     def connect(database_path: str | os.PathLike[str]) -> "COLMAPDatabase": ...
@@ -72,6 +87,9 @@ class COLMAPDatabase(sqlite3.Connection):
     initialize_keypoints: Callable[[], sqlite3.Cursor]
     initialize_matches: Callable[[], sqlite3.Cursor]
     create_name_index: Callable[[], sqlite3.Cursor]
-    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
+    @overload
+    def __init__(self, *args: Unpack[tuple[StrOrBytesPath]], **kwargs: Unpack[_ConnectionKwargs]) -> None: ...
+    @overload
+    def __init__(self, *args: Unpack[tuple[()]], **kwargs: Unpack[_ConnectionDatabaseKwargs]) -> None: ...
 
 def main(args: argparse.Namespace) -> None: ...

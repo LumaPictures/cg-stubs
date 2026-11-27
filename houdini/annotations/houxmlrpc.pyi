@@ -1,9 +1,12 @@
 import http.client
+import ssl
 import threading
 import xmlrpc.client
 from _typeshed import SizedBuffer
-from collections.abc import Callable, Hashable, Sequence
+from collections.abc import Callable, Hashable, Iterable, Sequence
 from typing import Any, Generic, TypeAlias, TypeVar, overload
+
+from typing_extensions import Required, TypedDict, Unpack
 
 _T = TypeVar("_T")
 _K = TypeVar("_K", bound=Hashable)
@@ -83,7 +86,23 @@ class PersistantTransport:
     def make_connection(self, host: _HostType) -> http.client.HTTPConnection: ...
     def request(self, host: _HostType, handler: str, request_body: SizedBuffer, verbose: int = ...) -> tuple[_XMLRPCValue, ...]: ...
 
+# What ServerProxy forwards to xmlrpc.client.ServerProxy; allow_none is always forced on.
+class _ServerProxyKwargs(TypedDict, total=False):
+    transport: xmlrpc.client.Transport | None
+    encoding: str | None
+    verbose: bool
+    use_datetime: bool
+    use_builtin_types: bool
+    headers: Iterable[tuple[str, str]]
+    context: ssl.SSLContext | None
+
+class _ServerProxyUriKwargs(_ServerProxyKwargs, total=False):
+    uri: Required[str]
+
 class ServerProxy:
-    def __init__(self, *args: Any, **kw: Any) -> None: ...
+    @overload
+    def __init__(self, *args: Unpack[tuple[str]], **kw: Unpack[_ServerProxyKwargs]) -> None: ...
+    @overload
+    def __init__(self, *args: Unpack[tuple[()]], **kw: Unpack[_ServerProxyUriKwargs]) -> None: ...
 
 def run(port: int = ...) -> threading.Thread: ...

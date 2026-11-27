@@ -4,7 +4,7 @@ from .extremityNodePositions import POS_DICT_FOOT as POS_DICT_FOOT, POS_DICT_HAN
 from autorigs.asset.autoRigsAsset import AutoRigsAsset as AutoRigsAsset
 from autorigs.modules.arm import armModule as armModule
 from autorigs.modules.base.rootModule import Module as Module
-from autorigs.modules.extremity.autoRigsExtremityInterfaceBuilder import AutoRigsExtremityInterfaceBuilder as AutoRigsExtremityInterfaceBuilder, _DigitChainControls, _DigitSideControls, _FullSideControls, _Metadigits
+from autorigs.modules.extremity.autoRigsExtremityInterfaceBuilder import AutoRigsExtremityInterfaceBuilder as AutoRigsExtremityInterfaceBuilder, _DigitChainControls, _DigitSideControls, _FullSideControls, _Metadigits, _SideControls
 from autorigs.modules.extremity.buildExtremityGuide import ExtremityGuide as ExtremityGuide
 from autorigs.modules.extremity.extremityGuideModel import ModuleOptionModel as ModuleOptionModel
 from autorigs.modules.leg import legModule as legModule
@@ -18,7 +18,6 @@ from collections.abc import Iterable, Mapping, Sequence
 
 from typing import TypeAlias
 from typing import TypeVar
-from autorigs.modules.extremity.autoRigsExtremityInterfaceBuilder import _SideControls
 from typing import TypeAlias
 from typing import TypeVar
 _BuiltSide: TypeAlias = tuple[_SideControls, hou.ParmTemplateGroup]
@@ -59,7 +58,7 @@ class AutoRigsExtremityBuilder:
     @classmethod
     def buildDigitRigSide(cls, prefix: str, autorig_asset: AutoRigsAsset, optionsmodel: ModuleOptionModel, extremityguide: ExtremityGuide, ismain: bool, rigscale: float, side: int, modulename: str) -> _DigitSideControls: ...
     @classmethod
-    def cleanupMainViewport(cls, rigcontrols: Mapping[str, object], bonegroup: hou.NodeGroup) -> None: ...
+    def cleanupMainViewport(cls, rigcontrols: _SideControls, bonegroup: hou.NodeGroup) -> None: ...
     @classmethod
     def createMetadigits(cls, digitscontrols: Sequence[_DigitChainControls], metastart: hou.ObjNode, extremityguide: ExtremityGuide, prefix: str, assetnode: hou.ObjNode, extremitytwist: hou.ObjNode, chopnet: hou.OpNode, ismain: bool, side: int) -> _Metadigits | None: ...
     @classmethod

@@ -1,5 +1,3 @@
-from typing import TypedDict
-
 import hou
 from houtypes import (
     ViewerStateDrawKwargs,
@@ -12,24 +10,6 @@ from houtypes import (
     ViewerStateNodeChangeKwargs,
     ViewerStateStateToHandleKwargs,
 )
-
-class _HUDRow(TypedDict, total=False):
-    id: str
-    type: str
-    visible: bool
-    label: str
-    value: str | float | int
-    key: str
-    wide: bool
-    count: int
-    rows: list["_HUDRow"]
-    current: int | str | None
-
-class _HUDTemplate(TypedDict, total=False):
-    title: str
-    icon: str
-    desc: str
-    rows: list["_HUDRow"]
 
 PHYSICAL_LENS_NO_DISTORTION: dict[str, str | int]
 RENDER_STYLE_DISABLED: int
@@ -58,7 +38,7 @@ class BaseState:
     HK_FOCAL_LENGTH_HOTKEY: str
     HK_TILT_HOTKEY: str
     HK_CLEAR_HOTKEY: str
-    HUD_TEMPLATE: _HUDTemplate
+    HUD_TEMPLATE: hou._HudTemplate
     node: hou.OpNode
     def __init__(self, state_name: str, scene_viewer: hou.SceneViewer, state_cat: hou.OpNodeTypeCategory | None = ..., state_icon: str = ..., state_label: str = ...) -> None: ...
     def setupMappings(self) -> None: ...
@@ -81,8 +61,8 @@ class BaseState:
     def setLookAtPosition(self, worldPos: hou.Vector3) -> None: ...
     def primstr(self) -> str | None: ...
     def updateFocusGeo(self) -> None: ...
-    def renderFocusPlane(self, handle: hou.Handle) -> None: ...
-    def renderPlanePoints(self, handle: hou.Handle) -> None: ...
+    def renderFocusPlane(self, handle: int) -> None: ...
+    def renderPlanePoints(self, handle: int) -> None: ...
     def updateTilt(self) -> None: ...
     def placeFocus(self, kwargs: ViewerStateEventKwargs) -> None: ...
     def updateHUD(self) -> None: ...

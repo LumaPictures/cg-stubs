@@ -3,13 +3,16 @@ from .move_points import apply_drag_display_context as apply_drag_display_contex
 from .tool_helpers import anchor_ptnums_from_ptnums as anchor_ptnums_from_ptnums, point_group_string as point_group_string
 from .undo_helpers import execute_with_undo as execute_with_undo
 from apex import xformgadget as xg
-from collections.abc import Callable as Callable
+from collections.abc import Callable as Callable, Mapping
 from curvestate.curve3.controller import Curve3Controller as Curve3Controller
 from curvestate.curve3.state import CurveState as CurveState
 from dataclasses import dataclass, field
 from houtypes import ViewerStateCommandKwargs, ViewerStateDrawKwargs, ViewerStateEnterKwargs, ViewerStateEventKwargs, ViewerStateKwargs, ViewerStateMenuActionKwargs, ViewerStateMenuPreOpenKwargs, ViewerStateParmChangeKwargs, ViewerStateVolatileClientKwargs
 from typing import TypedDict
 
+from typing import TypeAlias
+from typing import TypeAlias
+_XformHandleEvent: TypeAlias = xg._HandleUpdateKwargs | xg._HandleSettingsUpdateKwargs | xg._HandleCustomActionKwargs
 class _HandleContext(TypedDict):
     controller: Curve3Controller
     geometry: hou.Geometry | None
@@ -45,47 +48,11 @@ class _HandleDragState(TypedDict, total=False):
     current_value: float | hou.Vector3
     scale_start_value: float
 
-class _XformHandleEventBase(TypedDict):
-    index: int
-    event_kwargs: ViewerStateKwargs | None
-
-class _XformHandleCustomActionEvent(_XformHandleEventBase):
-    menu_item: str
-
-class _XformHandleUpdateEvent(_XformHandleEventBase):
-    name: str
-    parms: dict[str, hou.Vector3] | None
-    in_undo: bool
-    interactive: bool
-
-class _XformHandleStartEvent(_XformHandleUpdateEvent):
-    component: str
-    pivot_mode: bool
-
-class _XformHandleSettings(TypedDict):
-    rOrd: int
-    xOrd: int
-    pre_rOrd: int
-    pre_xOrd: int
-    xform_mode: str
-    t_alignment: str
-    r_alignment: str
-    s_alignment: str
-    separate_align: int
-    name: str
-    label: str
-    gimbal_mode: int
-    pivot_mode: int
-    enabled_components: dict[str, int]
-    visible: int
-    enabled_modes: dict[str, bool]
-    reflection_hint: hou.Vector3
-    has_reflection_hint: bool
-
-class _XformHandleSettingsEvent(_XformHandleEventBase):
-    name: str
-    settings: _XformHandleSettings | None
-    in_undo: bool
+class _PreservedXformState(TypedDict):
+    parms: dict[str, hou.Vector3]
+    base_xform: hou.Matrix4
+    full_xform: hou.Matrix4
+    local_full_delta: hou.Matrix4
 
 def _mark_command_ret(command_args: object, handled: bool = True) -> None:
     """Mark state-command args as consumed for Houdini's command dispatcher."""
@@ -108,15 +75,15 @@ class Curve3HandleProviderBase:
         """Build the semantic handle targets for the active tool and geometry."""
     def configure_instance(self, manager: Curve3HandleManager, instance_index: int, target: HandleTarget, context: _HandleInstanceContext) -> None:
         """Configure one Apex gadget instance for a provider target."""
-    def on_handle_start(self, event: _XformHandleStartEvent, target: HandleTarget, context: _HandleContext) -> None:
+    def on_handle_start(self, event: xg._HandleStartUpdateKwargs, target: HandleTarget, context: _HandleContext) -> None:
         """React to the start of a handle drag for a target."""
-    def on_handle_update(self, event: _XformHandleUpdateEvent, target: HandleTarget, context: _HandleContext) -> None:
+    def on_handle_update(self, event: xg._HandleUpdateKwargs, target: HandleTarget, context: _HandleContext) -> None:
         """React to an interactive handle drag update for a target."""
-    def on_handle_end(self, event: _XformHandleUpdateEvent, target: HandleTarget, context: _HandleContext) -> None:
+    def on_handle_end(self, event: xg._HandleUpdateKwargs, target: HandleTarget, context: _HandleContext) -> None:
         """React to the end of a handle drag for a target."""
-    def on_settings_update(self, event: _XformHandleSettingsEvent, target: HandleTarget, context: _HandleContext) -> None:
+    def on_settings_update(self, event: xg._HandleSettingsUpdateKwargs, target: HandleTarget, context: _HandleContext) -> None:
         """React to Apex handle setting changes for a target."""
-    def on_custom_action(self, event: _XformHandleCustomActionEvent, target: HandleTarget, context: _HandleContext) -> None:
+    def on_custom_action(self, event: xg._HandleCustomActionKwargs, target: HandleTarget, context: _HandleContext) -> None:
         """React to Apex handle custom menu/action events for a target."""
     def uses_custom_drag_lifecycle(self) -> bool:
         """
@@ -210,11 +177,11 @@ class Curve3HandleManager:
         """Bake the live standard handle transform before a shared edit command runs."""
     def rebase_active_drag_after_command(self) -> bool:
         """Re-establish transform-drag context after a point-type command cooks."""
-    def event_xform_parms(self, event: _XformHandleEventBase) -> dict[str, hou.Vector3]:
+    def event_xform_parms(self, event: _XformHandleEvent) -> dict[str, hou.Vector3]:
         """Provider-facing accessor for current gadget xform parms by event index."""
-    def _external_pick(self, kwargs: ViewerStateEventKwargs) -> dict[str, hou.Vector3 | str] | None:
+    def _external_pick(self, kwargs: ViewerStateEventKwargs) -> xg._ExternalPick | None:
         """Let Apex xform picking target Curve3 drawable points and tangent lines."""
-    def _sync_instances(self, targets: list[HandleTarget], context: _HandleContext, *, preserved_xform_state_by_key: dict[str, dict[str, object]] | None = None) -> None:
+    def _sync_instances(self, targets: list[HandleTarget], context: _HandleContext, *, preserved_xform_state_by_key: Mapping[str, _PreservedXformState] | None = None) -> None:
         """
         Match Apex gadget instances to provider targets and configure each one.
 
@@ -233,11 +200,11 @@ class Curve3HandleManager:
         reconfigure instances because the same semantic target key can now have
         a different geometry-derived position after undo, redo, or cook sync.
         """
-    def _target_from_event(self, event: _XformHandleEventBase) -> HandleTarget:
+    def _target_from_event(self, event: _XformHandleEvent) -> HandleTarget:
         """Resolve the semantic target associated with an Apex callback event."""
-    def _event_position(self, event: _XformHandleEventBase) -> hou.Vector3:
+    def _event_position(self, event: _XformHandleEvent) -> hou.Vector3:
         """Return the world-space handle position for an Apex callback event."""
-    def _on_handle_start(self, event: _XformHandleStartEvent) -> None:
+    def _on_handle_start(self, event: xg._HandleStartUpdateKwargs) -> None:
         """
         Initialize Curve3 drag state for an Apex handle drag.
 
@@ -248,7 +215,7 @@ class Curve3HandleManager:
         standard transform providers additionally enter transient transform
         preview mode.
         """
-    def _on_handle_update(self, event: _XformHandleUpdateEvent) -> None:
+    def _on_handle_update(self, event: xg._HandleUpdateKwargs) -> None:
         """
         Apply interactive handle-drag preview for the active target.
 
@@ -257,7 +224,7 @@ class Curve3HandleManager:
         values. Custom providers receive the raw event and own their preview
         behavior completely.
         """
-    def _on_handle_end(self, event: _XformHandleUpdateEvent) -> None:
+    def _on_handle_end(self, event: xg._HandleUpdateKwargs) -> None:
         """
         Commit or finish an Apex handle drag.
 
@@ -268,7 +235,9 @@ class Curve3HandleManager:
         method always clears preview parms and restores the pre-drag selection
         display state before returning control to the provider.
         """
-    def _on_handle_settings_update(self, event: _XformHandleSettingsEvent) -> None:
+    def _on_handle_settings_update(self, event: xg._HandleSettingsUpdateKwargs) -> None:
         """Dispatch Apex handle setting updates to the active provider."""
-    def _on_handle_custom_action(self, event: _XformHandleCustomActionEvent) -> None:
+    def _on_handle_custom_action(self, event: xg._HandleCustomActionKwargs) -> None:
         """Dispatch Apex handle custom actions to the active provider."""
+    def _on_handle_visibility(self, event: xg._HandleVisEvent) -> None:
+        """Receive Apex visibility callbacks; Curve3 currently owns visibility state."""

@@ -21,32 +21,32 @@ class MenuProvider:
 
 class VopGroupInputsMenu(MenuProvider):
     menuitems: list[_MenuItem]
-    title: str
+    title: str | None
     def __init__(self, connector: connect.BaseConnectHandler, node: hou.VopNode, group_index: int) -> None: ...
 
 class VopHiddenInputsMenu(MenuProvider):
     menuitems: list[_MenuItem]
-    title: str
+    title: str | None
     def __init__(self, connector: connect.BaseConnectHandler, node: hou.VopNode) -> None: ...
 
 class VopHiddenOutputsMenu(MenuProvider):
     menuitems: list[_MenuItem]
-    title: str
+    title: str | None
     def __init__(self, connector: connect.BaseConnectHandler, node: hou.VopNode) -> None: ...
 
 class AllInputsMenu(MenuProvider):
     menuitems: list[_MenuItem]
-    title: str
+    title: str | None
     def __init__(self, connector: connect.BaseConnectHandler, node: hou.Node) -> None: ...
 
 class AllOutputsMenu(MenuProvider):
     menuitems: list[_MenuItem]
-    title: str
+    title: str | None
     def __init__(self, connector: connect.BaseConnectHandler, node: hou.Node) -> None: ...
 
 class AllInputsAndOutputsMenu(MenuProvider):
     menuitems: list[_MenuItem]
-    title: str
+    title: str | None
     def __init__(self, connector: connect.BaseConnectHandler, node: hou.Node) -> None: ...
 
 class WireContextMenu(MenuProvider):
@@ -97,10 +97,10 @@ class LocalDependencyContextMenu(MenuProvider):
 
 class ExternalDependencyContextMenu(MenuProvider):
     menuitems: list[_MenuItem]
+    title: str | None
     start_uievent: MouseEvent
     dependency: NodeDependency
     isinput: bool
-    title: str
     def __init__(self, uievent: MouseEvent, dependency: NodeDependency, isinput: bool) -> None: ...
     def executeCommand(self, command: str | None) -> None: ...
 

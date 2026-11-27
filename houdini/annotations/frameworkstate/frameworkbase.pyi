@@ -1,8 +1,9 @@
 from collections.abc import Mapping
-from typing import Any, Literal, TypeVar, overload
+from typing import Any, Generic, Literal, TypeVar, overload
 
 import hou
 import statehud.utils as shu
+import statehud.window as shud
 from frameworkstate.hotkeymanager import HotkeyManager
 from frameworkstate.parameterwidget import ParameterWidget
 from houtypes import (
@@ -17,6 +18,16 @@ from houtypes import (
 from statehud.baseconfig import AbstractConfig
 
 _T = TypeVar("_T")
+# The HUD window, which `__init__` builds through `setupUI`.
+_W_co = TypeVar("_W_co", bound=shud.WidgetBundleWindow, default=shud.WidgetBundleWindow, covariant=True)
+# The settings panel `onEnter` builds; subclasses build their own. Only the state's own `onEnter`
+# sets it, so it is covariant, and any subclass's state passes as a plain `State`.
+_P_co = TypeVar(
+    "_P_co",
+    bound="FrameWorkParameterWidget[shud.WidgetBundleWindow]",
+    default="FrameWorkParameterWidget[shud.WidgetBundleWindow]",
+    covariant=True,
+)
 
 TOOL_MODE: str
 ANIMATE_TOOL_ICON: str
@@ -34,7 +45,7 @@ TAB_NAMES: list[str]
 TOOL_STANDARD: str
 DEFAULT_PACKAGE_NAME: str
 
-class FrameWorkParameterWidget(ParameterWidget["State"]):
+class FrameWorkParameterWidget(ParameterWidget["State[FrameWorkParameterWidget[shud.WidgetBundleWindow]]", _W_co]):
     DEFAULT_LABEL_WIDTH: int
     include_framework_tab: bool
     def __init__(self, state: "State", scene_viewer: hou.SceneViewer, include_framework_tab: bool) -> None: ...
@@ -44,7 +55,7 @@ class FrameWorkParameterWidget(ParameterWidget["State"]):
     def loadFromConfig(self, the_config: AbstractConfig, **kwargs: object) -> None: ...
     def saveToConfig(self, the_config: AbstractConfig, **kwargs: object) -> None: ...
 
-class State:
+class State(Generic[_P_co]):
     state_name: str
     scene_viewer: hou.SceneViewer
     scene_node: hou.OpNode | None
@@ -58,7 +69,7 @@ class State:
     hud_menu_rows: list[dict[str, str]]
     hud_template: dict[str, str | list[dict[str, str]]]
     hud_pin_mgr: shu.PinManager
-    hud_parameter_panel: FrameWorkParameterWidget | None
+    hud_parameter_panel: _P_co | None
     include_framework_tab: bool
     hud_initialized: bool
     DEFAULT_TOOLS: list[str]
@@ -108,9 +119,9 @@ class State:
     def getConfigValue(self, key: str, default: Any = ...) -> Any: ...
     def updateHUD(self) -> None: ...
     def toolEvent(self, eventname: str, *args: object, **kwargs: object) -> Any: ...
-    def loadAndSwitchToTool(self, module_name: str | None, on_activate_kwargs: dict[str, Any] | None) -> None: ...
+    def loadAndSwitchToTool(self, module_name: str | None, on_activate_kwargs: dict[str, object] | None) -> None: ...
     def loadTool(self, module_name: str, do_reload: bool) -> None: ...
-    def setActiveTool(self, toolname: str, on_activate_kwargs: dict[str, Any] | None = ...) -> None: ...
+    def setActiveTool(self, toolname: str, on_activate_kwargs: dict[str, object] | None = ...) -> None: ...
     def createRadialMenuCommandScript(self, command_name: str, args: Mapping[str, object]) -> str: ...
     def createRadialMenuSetToolScript(self, toolname: str) -> str: ...
     def onCommand(self, kwargs: ViewerStateCommandKwargs) -> bool: ...

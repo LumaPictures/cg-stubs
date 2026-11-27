@@ -6,24 +6,24 @@ from houtypes import JSONValue
 from typing_extensions import Required, TypedDict
 
 TIMESTAMP_FORMAT: str
-MEMORY_TIERS: tuple[tuple[int, str], ...]
-OIIO_CONFIG_KEYS: tuple[str, ...]
-OIIO_STAT_KEYS: tuple[str, ...]
+MEMORY_TIERS: tuple[tuple[int, str], tuple[int, str], tuple[int, str], tuple[int, str]]
+OIIO_CONFIG_KEYS: tuple[str, str, str, str, str, str, str, str, str, str, str, str, str, str, str]
+OIIO_STAT_KEYS: tuple[str, str, str, str, str, str, str, str, str, str, str, str, str]
 LIGHT_TYPE_ALIASES: dict[str, str]
 OBJECT_ALIASES: dict[str, str]
 GEOMETRY_ALIASES: dict[str, str]
 SHADER_NODE_ALIASES: dict[str, str]
 RAY_ALIASES: dict[str, str]
 SHADER_CALL_ALIASES: dict[str, str]
-CACHE_HEADINGS: tuple[str, ...]
+CACHE_HEADINGS: tuple[str, str, str, str, str]
 CACHE_FORMAT: str
-PRIMVAR_HEADINGS: tuple[str, ...]
+PRIMVAR_HEADINGS: tuple[str, str, str]
 PRIMVAR_FORMAT: str
-BUCKET_HEADINGS: tuple[str, ...]
+BUCKET_HEADINGS: tuple[str, str, str]
 BUCKET_FORMAT: str
-XPU_TIMINGS_HEADINGS: tuple[str, ...]
+XPU_TIMINGS_HEADINGS: tuple[str, str]
 XPU_TIMINGS_FORMAT: str
-XPU_COMPILES_HEADINGS: tuple[str, ...]
+XPU_COMPILES_HEADINGS: tuple[str, str]
 XPU_COMPILES_FORMAT: str
 MAX_HISTORY_SIZE: int
 

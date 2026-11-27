@@ -6,7 +6,7 @@ from typing import ClassVar
 
 from typing import TypeAlias
 from typing import TypeAlias
-_ColorLike: TypeAlias = hou.Color | QtGui.QColor | list[float] | tuple[float, ...]
+_ColorLike: TypeAlias = hou.Color | QtGui.QColor | list[float] | tuple[float, float, float] | tuple[float, float, float, float]
 ICON_SIZE: int
 BUTTON_SIZE: float
 

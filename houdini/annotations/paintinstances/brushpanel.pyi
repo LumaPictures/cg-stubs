@@ -51,7 +51,7 @@ class BrushItemDelegate(PySide6.QtWidgets.QStyledItemDelegate):
     def __init__(self, roles: Sequence[int], parent: PySide6.QtCore.QObject | None = ...) -> None: ...
     def createEditor(
         self,
-        parent: PySide6.QtWidgets.QWidget,
+        parent: PySide6.QtWidgets.QWidget | None,
         option: PySide6.QtWidgets.QStyleOptionViewItem,
         index: PySide6.QtCore.QModelIndex | PySide6.QtCore.QPersistentModelIndex,
     ) -> PySide6.QtWidgets.QLineEdit: ...

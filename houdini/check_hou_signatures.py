@@ -10,8 +10,10 @@ the stub's without calling anything.  This reports:
   function that takes `**kwargs` (houpythonportion's options), the stub's first parameters must
   be the runtime's explicit ones.
 - required: parameters required in one and optional in the other.
-- positional-only: functions SWIG wraps as `(self, *args)` (C++ overloads), which take no
-  keywords, but whose stub parameters aren't positional-only.
+- positional-only: functions SWIG wraps as `(self, *args)` (C++ overloads), and C builtins
+  (`hou.getenv`), which take no keywords, but whose stub parameters aren't positional-only.
+  A builtin without a text signature is called with an unknown keyword to find out, which
+  CPython or the builtin's argument parsing rejects before it does anything.
 - order: for those functions, positional parameters the stub orders differently from the C++
   declaration in the HDK's HOM headers, which is the order SWIG passes them in.
 - types: parameter types the C++ type SWIG records for them can't take, `None` the stub allows
@@ -38,6 +40,7 @@ import pathlib
 import re
 import subprocess
 import sys
+import types
 from typing import Any, NamedTuple
 
 import hou
@@ -61,10 +64,21 @@ def stub_params(func: ast.FunctionDef, is_method: bool) -> tuple[list[ast.arg], 
     return params, len(func.args.defaults)
 
 
+def rejects_keywords(func: Any) -> bool:
+    """Whether a C builtin without a text signature takes no keyword arguments."""
+    try:
+        func(__no_such_keyword__=None)
+    except TypeError as e:
+        return "takes no keyword arguments" in str(e)
+    return False
+
+
 def runtime_params(func: Any, is_method: bool) -> list[inspect.Parameter] | None:
     try:
         params = list(inspect.signature(func).parameters.values())
     except (TypeError, ValueError):
+        if isinstance(func, types.BuiltinFunctionType) and rejects_keywords(func):
+            return [inspect.Parameter("args", inspect.Parameter.VAR_POSITIONAL)]
         return None
     if is_method and params and params[0].name == "self":
         params = params[1:]
@@ -581,6 +595,8 @@ def member_head(member: str) -> tuple[str, str | None]:
 def accepts(cpp_type: str, member: str) -> bool | None:
     """Whether C++ can take a value of one member of a stub's union type (None: can't tell)."""
     name, inner = member_head(member)
+    if name == "_FloatSequence":
+        name, inner = "Sequence", "float"
     if name in ("Any", "object") or name == "None":
         return None
     if cpp_type in SCALARS:

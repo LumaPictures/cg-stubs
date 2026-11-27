@@ -1,5 +1,5 @@
 import hou
-from collections.abc import Iterable, Mapping, Sequence
+from collections.abc import Iterable, Sequence
 from houtypes import ShelfToolKwargs
 
 pointMuscles: dict[str, int]
@@ -50,5 +50,5 @@ def addPoseScopeValues(attribname: str, geo: hou.Geometry, primgrouppattern: str
     to given channels - Ie. /obj/null1/tx), and pickscripts is a list of strings (in json format
     as specified in createPoseScopePickscript).
     """
-def selectTrack(title: str | None = None, message: str | None = None, initial_selection: Mapping[str, Sequence[tuple[hou.ChopNode, str]]] | None = None, multiple_select: bool = False) -> list[hou.Track | None]:
+def selectTrack(title: str | None = None, message: str | None = None, initial_selection: hou._NodeDataInitialSelection | None = None, multiple_select: bool = False) -> list[hou.Track | None]:
     """ Open a chooser to select a channel. """

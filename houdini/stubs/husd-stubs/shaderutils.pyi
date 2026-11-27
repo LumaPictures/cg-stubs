@@ -1,4 +1,5 @@
 import hou
+import typing
 from collections.abc import Iterable
 from husd.typeutils import _SdfScalarValue, _SdfValue
 from pxr import Gf, Sdf, Usd, UsdShade
@@ -215,11 +216,11 @@ def primvarNameFromPrimvarDefiner(vop_node: hou.OpNode) -> str:
         'primvar' attribute, given the VOP node (Bind VOP) that represents 
         the Primvar Reader.
     """
-def fallbackValueFromPrimvarDefiner(vop_node: hou.OpNode) -> tuple[int, ...] | tuple[float, ...] | tuple[str, ...] | hou.Ramp:
+def fallbackValueFromPrimvarDefiner(vop_node: hou.OpNode) -> tuple[int, ...] | tuple[float, ...] | tuple[str, ...] | tuple[hou.Ramp, ...]:
     """ Returns usd value for theUSD Primvar Reader shader 'fallback' attrib,
         given the vop node that represents that primvar reader (ie Bind VOP).
     """
-def valueFromConstantNode(vop_node: hou.OpNode) -> tuple[int, ...] | tuple[float, ...] | tuple[str, ...] | hou.Ramp:
+def valueFromConstantNode(vop_node: hou.OpNode) -> tuple[int, ...] | tuple[float, ...] | tuple[str, ...] | tuple[hou.Ramp, ...]:
     """ Returns USD value represented by the Constant VOP.
     """
 def evalParmAsInt(vop_node: hou.OpNode, parm_name: str) -> int | None:
@@ -267,15 +268,14 @@ def nodeInputTypeName(vop_node: hou.VopNode, input_name: str) -> str | None:
 def nodeOutputTypeName(vop_node: hou.VopNode, output_name: str) -> str | None:
     """ Returns the vop type (string) of the given VOP node output.
     """
-def wireToSubnetOutputNode(subnet_node: hou.VopNode, subnet_node_output_name: str | None) -> hou.NodeConnection | None:
+def wireToSubnetOutputNode(subnet_node: hou.VopNode, subnet_node_output_name: str | None) -> hou.OpNodeConnection | None:
     """ Returns the connection wire inside the subnet that connects to 
         subnet output node which corresponds to the given subnet output name.
     """
-def wireToNodeInput(node: hou.Node, input_name: str) -> hou.NodeConnection | None:
-    """ Returns a connection to the given node input,
-        or None if input is not connected.
-
-    """
+@typing.overload
+def wireToNodeInput(node: hou.OpNode, input_name: str) -> hou.OpNodeConnection | None: ...
+@typing.overload
+def wireToNodeInput(node: hou.Node, input_name: str) -> hou.NodeConnection | None: ...
 def parmNameFromNodeInput(node: hou.VopNode, input_name: str) -> str:
     """ Returns the parameter name holding the value corresponding
         to the given input.
@@ -288,19 +288,19 @@ def usdShaderSourceType(vop_node: hou.OpNode) -> str | None:
         eg, 'glsl', 'vex', 'osl' (effectively the language name). 
         Used in constructing the shader source property.
     """
-def findParentSubnetOutputIndex(child_node: hou.Node, child_node_output_name: str) -> int:
+def findParentSubnetOutputIndex(child_node: hou.VopNode, child_node_output_name: str) -> int:
     """ Returns the index of the subnet's output that corresponds to the
         output of the given child node, if the child defines the subnet output
     """
-def parentSubnetOutputName(child_node: hou.Node, child_node_output_name: str) -> str | None:
+def parentSubnetOutputName(child_node: hou.VopNode, child_node_output_name: str) -> str | None:
     """ Returns the name of the subnet's output that corresponds to the
         output of the given child node, if the child defines the subnet output.
     """
-def parentSubnetOutputVopTypeName(child_node: hou.Node, child_node_output_name: str) -> str | None:
+def parentSubnetOutputVopTypeName(child_node: hou.VopNode, child_node_output_name: str) -> str | None:
     """ Returns the VOP type name of the subnet's outputs that corresponds
         to the output of the given child node, if the child defines one.
     """
-def parentSubnetOutputSdfType(child_node: hou.Node, child_node_output_name: str) -> Sdf.ValueTypeName:
+def parentSubnetOutputSdfType(child_node: hou.VopNode, child_node_output_name: str) -> Sdf.ValueTypeName:
     """ Returns the Sdf type of the subnet's outputs that corresponds
         to the output of the given child node, if the child defines one.
     """

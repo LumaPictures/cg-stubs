@@ -7,7 +7,7 @@ from wsgiref.types import StartResponse, WSGIEnvironment as WSGIEnvironment
 from typing import TypeVar
 from collections.abc import Callable
 from typing import TypeVar
-_F = TypeVar('_F', bound=Callable[..., Any])
+_F = TypeVar('_F', bound=Callable[..., object])
 class _RPCServiceHandler(Protocol):
     def handleRequest(self, json: str | bytes) -> bytes: ...
 

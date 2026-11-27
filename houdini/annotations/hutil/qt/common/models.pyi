@@ -41,8 +41,8 @@ class RampModel(QtCore.QAbstractListModel):
     RgbRole: ClassVar[int]
     BasisRole: ClassVar[int]
     ColorRole: ClassVar[int]
-    basis_names: ClassVar[tuple[str, ...]]
-    basis_labels: ClassVar[tuple[str, ...]]
+    basis_names: ClassVar[tuple[str, str, str, str, str, str, str]]
+    basis_labels: ClassVar[tuple[str, str, str, str, str, str, str]]
     countChanged: ClassVar[QtCore.Signal]
     isColor: bool
     def __init__(self, parent: QtCore.QObject | None = ...) -> None: ...

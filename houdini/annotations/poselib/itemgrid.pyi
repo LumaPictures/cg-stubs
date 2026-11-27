@@ -66,7 +66,7 @@ class GridDelegate(PySide6.QtWidgets.QStyledItemDelegate):
     GRID_ICON_MARGIN: int
     def createEditor(
         self,
-        parent: PySide6.QtWidgets.QWidget,
+        parent: PySide6.QtWidgets.QWidget | None,
         option: PySide6.QtWidgets.QStyleOptionViewItem,
         index: PySide6.QtCore.QModelIndex | PySide6.QtCore.QPersistentModelIndex,
     ) -> PySide6.QtWidgets.QWidget: ...

@@ -3,7 +3,6 @@ import hou
 from autorigs.modules.base import buildBaseGuide as buildBaseGuide
 from autorigs.modules.master.masterModule import _MasterModuleJson
 from autorigs.ui.uiParamFactory import UiParamFactory as UiParamFactory
-from typing import Any
 
 class MasterGuide(buildBaseGuide.BaseGuide[collections.OrderedDict[str, collections.OrderedDict[str, str]]]):
     assetnode: hou.ObjNode
@@ -11,7 +10,7 @@ class MasterGuide(buildBaseGuide.BaseGuide[collections.OrderedDict[str, collecti
     module_master: hou.ObjNode
     modulenode: hou.ObjNode | None
     master_null: hou.ObjNode | None
-    guidenodesdata: dict[str, list[Any]]
+    guidenodesdata: dict[str, list[hou.ObjNode | bool | None]]
     JSON_LABEL: dict[str, str]
     JSON_LABELS: dict[str, str]
     def __init__(self, assetnode: hou.ObjNode) -> None: ...

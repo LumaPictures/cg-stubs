@@ -1,19 +1,20 @@
 from collections.abc import Callable, Collection, Iterable, Mapping, Sequence
-from typing import ClassVar, Self, TypeAlias, TypeVar
+from typing import Any, ClassVar, Self, TypeAlias, TypeVar
 
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import Qt
 
 from houtypes import JSONLike, JSONValue
 
-from . import models, styling
+from . import models, styling, themes
 
 _ChartClassT = TypeVar("_ChartClassT", bound="type[Chart]")
 
 _BrushLike: TypeAlias = QtGui.QBrush | QtGui.QColor | QtGui.QPixmap | Qt.GlobalColor
+Brushlike: TypeAlias = QtGui.QColor | QtGui.QBrush
 _ChartValues: TypeAlias = Mapping[str, float] | Collection[tuple[str, float] | str | float]
 
-default_palette: tuple[QtGui.QColor, ...]
+default_palette: themes._ColorCycle
 DEFAULT_TRACK_ROLE: QtGui.QPalette.ColorRole
 DEFAULT_TRACK_ALPHA: float
 SQRT_2: float
@@ -32,7 +33,7 @@ class Chart(QtWidgets.QWidget):
     def setDrawFrame(self, drawframe: bool) -> None: ...
     def setPropertiesFromData(self, data: Mapping[str, JSONLike]) -> None: ...
     def chartProperties(self) -> list[str]: ...
-    def setChartProperty(self, key: str, v: object) -> None: ...
+    def setChartProperty(self, key: str, v: Any) -> None: ...
     def model(self) -> QtCore.QAbstractTableModel: ...
     def setModel(self, model: QtCore.QAbstractTableModel) -> None: ...
     def setHighlightedRow(self, row: int) -> None: ...

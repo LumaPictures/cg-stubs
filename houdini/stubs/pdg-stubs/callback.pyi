@@ -22,7 +22,7 @@ class PythonCallback:
         Returns a pdg.Port for the specified port name, using the implementation
         defined in C++
         """
-    def __setitem__(self, key: str, value: object) -> None:
+    def __setitem__(self, key: str, value: _pdg.Port | _pdg._ParmValue) -> None:
         """
         __setitem__(self, key, value) -> pdg.Port
 

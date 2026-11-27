@@ -1,5 +1,4 @@
 from collections.abc import Mapping, Sequence
-from typing import Any
 
 import hou
 from hutil.qt.data.panels import _HudTemplate, _HudUpdates
@@ -13,7 +12,7 @@ def hudInfo(
     values: _HudUpdates | None = ...,
     panel: hou.EnumValue[hou.hudPanel] | int = ...,
     update_hotkey_bindings: bool = ...,
-    **kwargs: Any,
+    **kwargs: object,
 ) -> None: ...
 def clearPromptMessage(self: hou.CompositorViewer) -> None: ...
 def setPromptMessage(

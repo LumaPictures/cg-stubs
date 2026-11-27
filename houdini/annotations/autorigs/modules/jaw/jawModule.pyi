@@ -26,6 +26,7 @@ class JawModule(
         None,
         None,
         None,
+        "JawGuideTab",
     ]
 ):
     MODULE_TYPE: str
@@ -33,8 +34,9 @@ class JawModule(
     DEFAULT_JSON_FILE: str
     DEFAULT_JSON: _JawModuleJson
     assetnode: hou.ObjNode
-    guidetab: "JawGuideTab"
+    guidetab: "JawGuideTab | None"
     autorigsbuilder: AutoRigsJawBuilder
+    buildguides: JawGuide
     def __init__(self, autorigs_asset: AutoRigsAsset) -> None: ...
     def initialize(self, autorigs_asset: AutoRigsAsset) -> None: ...
     def buildFromDefault(self) -> None: ...
@@ -43,7 +45,12 @@ class JawModule(
     def buildRig(self, index: int) -> None: ...
 
 class JawGuideTab(
-    Mod.ModuleGuideTab[_JawOptionsJson, _ParamsJson, _GuideNamesJson, ModuleOptionsWidget, ModuleParamsWidget, JawGuide]
+    Mod.ModuleGuideTab[
+        _JawOptionsJson, _ParamsJson, _GuideNamesJson, ModuleOptionsWidget, ModuleParamsWidget, JawGuide, ModuleTabsWidget
+    ]
 ):
     tabswidget: ModuleTabsWidget
+    buildguides: JawGuide
+    optionswidget: ModuleOptionsWidget
+    paramswidget: ModuleParamsWidget
     def __init__(self, buildguides: JawGuide) -> None: ...

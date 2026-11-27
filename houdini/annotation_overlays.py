@@ -617,6 +617,17 @@ class OverlayTransformer(cst.CSTTransformer):
         if self.function_depth:
             return updated_node
         qualname = self.qualname(updated_node.name.value)
+        if (
+            self.scope
+            and qualname in self.overlay.variables
+            and qualname not in self.overlay.functions
+            and qualname not in self.overlay.overloads
+            and qualname not in self.overlay.replacements
+        ):
+            # An instance attribute that shadows a method of the same name (`self.msg = ...`
+            # and `def msg(self)`): the overlay's attribute, declared in the class body by
+            # leave_ClassDef, replaces the method.
+            return cst.RemoveFromParent()
         replacement = self.overlay.replacements.get(qualname)
         if replacement is not None:
             return self._replace(qualname, updated_node, replacement)
@@ -920,6 +931,49 @@ def merge(source: str, overlay_text: str, stub: bool = False) -> MergeResult:
 
 CACHE_DIR = HERE / ".annotate"
 
+# Python sources outside the libs directory that Houdini puts on the path, as the package
+# they import as ("" for top-level modules) and their directory under $HFS, where `{libs}`
+# is the libs directory's name (python3.13libs):
+# - PDG loads its built-in node types from $HFS/houdini/pdg/types as `pdg.types.<name>`
+#   (see pdg/types/__init__.py).
+# - The packages in $HFS/packages that Houdini loads by default add their own libs.
+EXTRA_SOURCES = [
+    ("pdg/types", "houdini/pdg/types"),
+    ("", "packages/apex/{libs}"),
+    ("", "packages/kinefx/{libs}"),
+    ("", "packages/shotbuilder/{libs}"),
+]
+
+
+def extra_roots(libs: pathlib.Path) -> list[tuple[str, pathlib.Path]]:
+    """EXTRA_SOURCES for the Houdini whose libs directory is `libs`."""
+    hfs = libs.parent.parent
+    return [
+        (package, hfs / directory.format(libs=libs.name))
+        for package, directory in EXTRA_SOURCES
+    ]
+
+
+def source_path(libs: pathlib.Path, rel: str) -> pathlib.Path:
+    """The source file of `rel`, a path relative to `libs` as the module imports."""
+    if (libs / rel).exists():
+        return libs / rel
+    for package, root in extra_roots(libs):
+        prefix = f"{package}/" if package else ""
+        if rel.startswith(prefix) and (root / rel.removeprefix(prefix)).exists():
+            return root / rel.removeprefix(prefix)
+    return libs / rel
+
+
+def source_files(libs: pathlib.Path) -> list[tuple[str, pathlib.Path]]:
+    """Every python source in `libs` and EXTRA_SOURCES, as (path relative to libs, file)."""
+    found = {str(path.relative_to(libs)): path for path in libs.rglob("*.py*")}
+    for package, root in extra_roots(libs):
+        prefix = f"{package}/" if package else ""
+        for path in root.rglob("*.py*"):
+            found.setdefault(f"{prefix}{path.relative_to(root)}", path)
+    return sorted(found.items())
+
 
 def merged_source(libs: pathlib.Path, rel: str) -> MergeResult:
     """Merge the overlay for `rel` into its source, caching the result."""
@@ -927,7 +981,9 @@ def merged_source(libs: pathlib.Path, rel: str) -> MergeResult:
     import json
     import os
 
-    source = (libs / rel).read_text(encoding="utf-8", errors="surrogateescape")
+    source = source_path(libs, rel).read_text(
+        encoding="utf-8", errors="surrogateescape"
+    )
     overlay = overlay_path(rel).read_text()
     key = hashlib.sha256(
         "\0".join([source, overlay, pathlib.Path(__file__).read_text()]).encode(
@@ -966,17 +1022,17 @@ def stage_tree(
     apply_overlays: bool = True,
     namespace_inits: bool = False,
 ) -> Staging:
-    """Mirror the python sources in `libs` into `staging`, with overlays merged in.
+    """Mirror the python sources in `libs` (and EXTRA_SOURCES) into `staging`, with overlays
+    merged in.
 
     Files are symlinked, except those with an overlay, which are written merged.  `skip` names
     top-level modules to leave out.  With `namespace_inits`, top-level directories without an
     __init__.py are given one (see stubgen_houdini_libs.py).
     """
     result = Staging([], {}, {})
-    for path in sorted(libs.rglob("*.py*")):
+    for rel, path in source_files(libs):
         if path.suffix not in (".py", ".pyi") or "__pycache__" in path.parts:
             continue
-        rel = str(path.relative_to(libs))
         top = pathlib.PurePath(rel).parts[0]
         if top.removesuffix(".py") in skip or top.startswith("."):
             continue

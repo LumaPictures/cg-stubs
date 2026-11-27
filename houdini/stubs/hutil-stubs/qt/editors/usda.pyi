@@ -4,9 +4,9 @@ from .syntax import HighlighterBase as HighlighterBase, Style as Style, keywordE
 from collections.abc import Iterator
 from hutil.PySide.QtCore import Qt as Qt
 
-USDA_KEYWORDS: tuple[str, ...]
-SPEC_KEYWORDS: tuple[str, ...]
-MOD_KEYWORDS: tuple[str, ...]
+USDA_KEYWORDS: tuple[str, str, str, str, str, str, str, str, str]
+SPEC_KEYWORDS: tuple[str, str, str]
+MOD_KEYWORDS: tuple[str, str, str, str]
 PROPSPEC_KEYWORDS: tuple[str, ...]
 newline_expr: re.Pattern[str]
 ws_expr: re.Pattern[str]

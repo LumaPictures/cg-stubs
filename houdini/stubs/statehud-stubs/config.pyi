@@ -1,7 +1,13 @@
 from collections.abc import KeysView
 from houtypes import JSONValue
 from statehud import baseconfig as baseconfig
+from typing import TypeAlias
 
+
+from typing import TypeAlias
+AbstractConfig: TypeAlias = baseconfig.AbstractConfig
+BaseNodeConfig: TypeAlias = baseconfig.BaseNodeConfig
+ConfigWrapper: TypeAlias = baseconfig.ConfigWrapper
 def getBoolPref(pref: str, default_value: bool = False) -> bool:
     """ Get a boolean preference value. """
 def setBoolPref(pref: str, val: bool) -> bool:
@@ -14,9 +20,6 @@ def getIntPref(pref: str, default_value: int = 0) -> int:
     """ Get an int preference value. """
 def setIntPref(pref: str, val: int) -> bool:
     """ Set an int preference value. """
-AbstractConfig = baseconfig.AbstractConfig
-BaseNodeConfig = baseconfig.BaseNodeConfig
-ConfigWrapper = baseconfig.ConfigWrapper
 
 class UserDataConfig(BaseNodeConfig):
     """ A config class for storing config information in the user data on

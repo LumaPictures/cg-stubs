@@ -2,9 +2,10 @@ import PySide6.QtGui
 import PySide6.QtWidgets
 import hou
 import resourceui as rui
-from typing import Any
+from typing import Unpack
 from viewerhandle import hudapi as hudapi
 from viewerhandle.hudapi import _HUDHandle, _HUDParmChangeKwargs, _HUDParmTemplateChangeKwargs, _HUDSettings
+from viewerhandle.hudwidgets import _HUDWidgetOptions
 
 class Label(rui.LabelEdit):
     def __init__(self, text: str, tooltip: str | None = None, parent: PySide6.QtWidgets.QWidget | None = None) -> None: ...
@@ -14,7 +15,7 @@ class Label(rui.LabelEdit):
 class HUDButton(hudapi.HUDWidgetBase):
     """ HUD handle widget to manipulate a button strip parm.
     """
-    def __init__(self, handle: _HUDHandle, target_parm: hou.Parm | None, hud_widget_key: str, window_key: str, **kwargs: Any) -> None: ...
+    def __init__(self, handle: _HUDHandle, target_parm: hou.Parm | None, hud_widget_key: str, window_key: str, **kwargs: Unpack[_HUDWidgetOptions]) -> None: ...
     def factoryStyleSheet(self) -> str: ...
     def onParmChangeEvent(self, kwargs: _HUDParmChangeKwargs) -> None: ...
     def onUpdateShadowEffectState(self, value: bool) -> None: ...

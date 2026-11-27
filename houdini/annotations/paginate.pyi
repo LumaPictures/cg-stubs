@@ -43,7 +43,7 @@ class Page(list[_I], Generic[_I, _C]):
     collection: Sequence[_I]
     collection_type: type[_C]
     url_maker: Callable[[int], str]
-    kwargs: dict[str, Any]
+    kwargs: dict[str, object]
     page: int
     items_per_page: int
     items: list[_I]
@@ -71,7 +71,7 @@ class Page(list[_I], Generic[_I, _C]):
         item_count: int | None = ...,
         wrapper_class: None = ...,
         url_maker: Callable[[int], str] | None = ...,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None: ...
     @overload
     def __init__(
@@ -83,7 +83,7 @@ class Page(list[_I], Generic[_I, _C]):
         *,
         wrapper_class: Callable[[_T], Sequence[_I]],
         url_maker: Callable[[int], str] | None = ...,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None: ...
     def __init__(
         self,
@@ -93,7 +93,7 @@ class Page(list[_I], Generic[_I, _C]):
         item_count: int | None = ...,
         wrapper_class: Callable[[Any], Sequence[_I]] | None = ...,
         url_maker: Callable[[int], str] | None = ...,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None: ...
     def __str__(self) -> str: ...
     def __repr__(self) -> str: ...

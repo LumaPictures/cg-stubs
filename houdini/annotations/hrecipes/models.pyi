@@ -1,11 +1,20 @@
 import enum
 from collections.abc import Callable, Collection, Iterable, Sequence
-from typing import Any, ClassVar, TypedDict
+from typing import Any, ClassVar, Generic, TypedDict
 
 import hou
 from PySide6 import QtCore, QtGui, QtWidgets
 from hrecipes import rtypes
 from hrecipes.utils import _ParmTupleUserData
+from typing_extensions import TypeVar
+
+# A cluster item holds the whole cluster's data, a movable item one network item's data.
+_DataT_co = TypeVar(
+    "_DataT_co",
+    bound=rtypes.ClusterData | rtypes.NetworkItemData,
+    covariant=True,
+    default=rtypes.ClusterData | rtypes.NetworkItemData,
+)
 
 MAX_CONNECTOR_COUNT: int
 SMALL_MARGIN: int
@@ -37,11 +46,13 @@ def checkerBoard(
     c1: QtGui.QColor | QtCore.Qt.GlobalColor = ..., c2: QtGui.QColor | QtCore.Qt.GlobalColor = ..., size: int = ...
 ) -> QtGui.QPixmap: ...
 
-class NetworkItem:
+class NetworkItem(Generic[_DataT_co]):
+    def __init__(self, data: _DataT_co, parent: NetworkItem | None = ...) -> None: ...
+    def data(self) -> _DataT_co: ...
     def isItemNode(self) -> int: ...
     def row(self) -> int | None: ...
 
-class ClusterItem(NetworkItem):
+class ClusterItem(NetworkItem[rtypes.ClusterData]):
     def centralInputCount(self) -> int | None: ...
     def centralOutputCount(self) -> int | None: ...
     def setCentralName(self, name: str) -> None: ...
@@ -63,7 +74,7 @@ class ClusterItem(NetworkItem):
     def likelyInputNames(self, count: int | None = ...) -> Sequence[str | None]: ...
     def likelyOutputNames(self, count: int | None = ...) -> Sequence[str | None]: ...
 
-class MovableItem(NetworkItem):
+class MovableItem(NetworkItem[rtypes.NetworkItemData]):
     @classmethod
     def fromData(
         cls, name: str, data: rtypes.NetworkItemData, parent: NetworkItem
@@ -233,7 +244,7 @@ class ParmValueDelegate(QtWidgets.QStyledItemDelegate):
     def __init__(self, parent: QtWidgets.QWidget | None = ...) -> None: ...
     def createEditor(
         self,
-        parent: QtWidgets.QWidget,
+        parent: QtWidgets.QWidget | None,
         option: QtWidgets.QStyleOptionViewItem,
         index: QtCore.QModelIndex | QtCore.QPersistentModelIndex,
     ) -> QtWidgets.QWidget: ...

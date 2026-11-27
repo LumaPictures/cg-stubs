@@ -3,6 +3,12 @@ from typing import TypeAlias
 import PySide6.QtGui
 
 
+_ColorCycle: TypeAlias = tuple[
+    PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor,
+    PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor,
+    PySide6.QtGui.QColor, PySide6.QtGui.QColor, PySide6.QtGui.QColor,
+]
+
 blue_light: PySide6.QtGui.QColor
 green_light: PySide6.QtGui.QColor
 indigo_light: PySide6.QtGui.QColor
@@ -37,8 +43,8 @@ tan_dark: PySide6.QtGui.QColor
 mint_dark: PySide6.QtGui.QColor
 grey_dark: PySide6.QtGui.QColor
 
-chart_cycle_light: tuple[PySide6.QtGui.QColor, ...]
-chart_cycle_dark: tuple[PySide6.QtGui.QColor, ...]
+chart_cycle_light: _ColorCycle
+chart_cycle_dark: _ColorCycle
 
 class ColorSlot:
     name: str
@@ -92,7 +98,7 @@ light_colors: ColorSet
 dark_colors: ColorSet
 
 def get_color(palette: PySide6.QtGui.QPalette, key: _ColorKey) -> PySide6.QtGui.QColor: ...
-def get_color_cycle(palette: PySide6.QtGui.QPalette) -> tuple[PySide6.QtGui.QColor, ...]: ...
+def get_color_cycle(palette: PySide6.QtGui.QPalette) -> _ColorCycle: ...
 def make_palette(background: PySide6.QtGui.QColor, text: _ColorKey, accent: PySide6.QtGui.QColor, tint: float = ...) -> PySide6.QtGui.QPalette: ...
 def blue_mint_palette(accent: PySide6.QtGui.QColor, tint: float = ...) -> PySide6.QtGui.QPalette: ...
 def gentle_palette(accent: PySide6.QtGui.QColor, tint: float = ...) -> PySide6.QtGui.QPalette: ...

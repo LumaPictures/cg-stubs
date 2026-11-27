@@ -1,7 +1,24 @@
 from collections.abc import Sequence
-from typing import Any, overload
+from typing import Any, overload, type_check_only
 
 import hou
+from typing_extensions import TypedDict, Unpack
+
+# hou.RopNode.render's keywords.
+@type_check_only
+class _RopRenderKwargs(TypedDict, total=False):
+    frame_range: hou._FloatSequence
+    res: Sequence[int]
+    output_file: str | None
+    output_format: str
+    to_flipbook: bool
+    quality: int
+    ignore_inputs: bool
+    method: hou.EnumValue[hou.renderMethod]
+    ignore_bypass_flags: bool
+    ignore_lock_flags: bool
+    verbose: bool
+    output_progress: bool
 
 def hqScriptsDirPath() -> str: ...
 def loadHipFile(hip_file: str) -> None: ...
@@ -13,7 +30,7 @@ def setParmValue(parm: hou.ParmTuple, value: Sequence[int | float | str]) -> Non
 @overload
 def setParmValue(parm: hou.Parm | hou.ParmTuple, value: int | float | str | Sequence[int | float | str]) -> None: ...
 def setParmValueInRopNodeAndInputs(rop: hou.OpNode, parm_name: str, val: int | float | str | Sequence[int | float | str]) -> None: ...
-def render(node: hou.OpNode, *args: Any, **kwargs: Any) -> None: ...
+def render(node: hou.OpNode, *args: Any, **kwargs: Unpack[_RopRenderKwargs]) -> None: ...
 def fileExists(file_path: str) -> bool: ...
 def getFarmPathValue(parm: hou.Parm) -> str: ...
 def getVerboseLevel(rop: hou.OpNode | None = ...) -> int: ...

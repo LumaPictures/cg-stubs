@@ -43,14 +43,14 @@ class EditPrimPatternWindow(QtWidgets.QDialog):
         self,
         node: hou.OpNode,
         parm: hou.Parm,
-        stageorlop: Usd.Stage | hou.Node | None,
+        stageorlop: Usd.Stage | hou.LopNode | None,
         allowinstanceproxies: bool,
         ispathexpressionparm: hou.Parm | None,
         allowpointinstancesparm: hou.Parm | None,
     ) -> None: ...
     def displayModal(
         self,
-        stageorlop: Usd.Stage | hou.Node | None,
+        stageorlop: Usd.Stage | hou.LopNode | None,
         initialpattern: str,
         allowinstanceproxies: bool,
         ispathexpressionparm: hou.Parm | None,
@@ -61,13 +61,13 @@ def closePrimPatternEditor() -> None: ...
 def createPrimPatternEditor(
     node: hou.OpNode,
     parm: hou.Parm,
-    stageorlop: Usd.Stage | hou.Node | None,
+    stageorlop: Usd.Stage | hou.LopNode | None,
     allowinstanceproxies: bool,
     ispathexpressionparm: hou.Parm | None = ...,
     allowpointinstancesparm: hou.Parm | None = ...,
 ) -> EditPrimPatternWindow: ...
 def getPrimPattern(
-    stageorlop: Usd.Stage | hou.Node | None,
+    stageorlop: Usd.Stage | hou.LopNode | None,
     initialpattern: str,
     allowinstanceproxies: bool,
     ispathexpressionparm: hou.Parm | None = ...,

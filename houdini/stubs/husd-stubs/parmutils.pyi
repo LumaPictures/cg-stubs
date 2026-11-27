@@ -9,7 +9,7 @@ from typing import TypedDict
 from typing import TypeAlias
 from typing import TypeAlias
 _ParmScalar: TypeAlias = bool | int | float | str
-_ParmDefaultValue: TypeAlias = _ParmScalar | tuple[_ParmScalar, ...] | list[_ParmScalar]
+_ParmDefaultValue: TypeAlias = _ParmScalar | tuple[_ParmScalar, ...] | list[bool] | list[int] | list[float] | list[str]
 class _TemplateKwargs(TypedDict, total=False):
     num_components: int
     string_type: hou.EnumValue[hou.stringParmType]

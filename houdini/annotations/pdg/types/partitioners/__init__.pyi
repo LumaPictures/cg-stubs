@@ -1,0 +1,3 @@
+import _pdg
+
+def registerTypes(type_registry: _pdg.TypeRegistry) -> None: ...

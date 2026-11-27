@@ -2,7 +2,6 @@ import EC2
 import hou
 import typing
 from collections.abc import Generator, Mapping as Mapping
-from typing import Any
 from typing_extensions import TypedDict
 
 from typing import TypeVar
@@ -40,10 +39,10 @@ class EC2Region:
     location: tuple[float, float]
     def __init__(self, code: str, name: str, location: tuple[float, float]) -> None: ...
 
-SUPPORTED_INSTANCE_TYPES: tuple[EC2InstanceType, ...]
+SUPPORTED_INSTANCE_TYPES: tuple[EC2InstanceType, EC2InstanceType, EC2InstanceType, EC2InstanceType, EC2InstanceType, EC2InstanceType, EC2InstanceType, EC2InstanceType, EC2InstanceType]
 SUPPORTED_INSTANCE_TYPE_MODELS: Generator[str, None, None]
 DEFAULT_INSTANCE_TYPE_MODEL: str
-SUPPORTED_REGIONS: tuple[EC2Region, ...]
+SUPPORTED_REGIONS: tuple[EC2Region, EC2Region, EC2Region, EC2Region, EC2Region]
 SUPPORTED_REGION_CODES: Generator[str, None, None]
 DEFAULT_REGION_CODE: str
 ACCESS_KEY_ID_FILE_NAME: str
@@ -85,7 +84,7 @@ class AWSConnection:
     def getSSHKeyName(self) -> str: ...
     def getSSHKeyPath(self) -> str: ...
     @classmethod
-    def getErrorType(cls, response: EC2.Response[Any]) -> str: ...
+    def getErrorType(cls, response: EC2.Response[_T]) -> str: ...
 
 def getAWSConnection(cloud_region: str) -> AWSConnection | None:
     """Return an AWSConnection that has been tested to be valid, or None if the

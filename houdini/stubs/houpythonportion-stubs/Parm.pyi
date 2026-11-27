@@ -1,10 +1,8 @@
 from typing import Any
 import hou
+from houpythonportion.OpNode import _ParmOption
 from hrecipes import rtypes
 
-from typing import TypeAlias
-from typing import TypeAlias
-_ParmOption: TypeAlias = bool | list[hou.ParmTuple] | list[str] | set[str] | tuple[str, ...]
 def set(self: hou.Parm, value: int | float | str | dict[str, str] | hou.Geometry | hou.ImageLayer | hou.NanoVDB | hou.DetachedAttrib | hou.CopCable | hou.Ramp | hou.Parm | None, language: hou.EnumValue[hou.exprLanguage] | None = None, follow_parm_reference: bool | None = None) -> None:
     """
 set(self, value, language=None, follow_parm_reference=True)

@@ -98,7 +98,7 @@ class EyeGuide(buildBaseGuide.BaseGuide[collections.OrderedDict[str, _GuideNames
     def updateSide(self, value: int) -> None: ...
     def flipAngleParm(self, node: hou.ObjNode) -> None:
         """Flip the angle parm to mirror the angle properly"""
-    def snapEyeToGeometry(self, node: hou.Node, geo: hou.Geometry, primgrp: str | None = None) -> None:
+    def snapEyeToGeometry(self, node: hou.ObjNode | hou.SopNode, geo: hou.Geometry, primgrp: str | None = None) -> None:
         """Snap the eye_root to the eye geometry
         node: the obj node of the geometry
         geometry: the geometry data (hou.Geometry)

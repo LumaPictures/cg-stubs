@@ -5,7 +5,11 @@ from autorigs.modules.base.buildBaseGuide import _BaseGuideJson, _GuideNamesJson
 from autorigs.modules.geometry.buildGeometryGuide import GeometryGuide as GeometryGuide
 from collections.abc import MutableMapping, MutableSequence
 from houtypes import NodeEventKwargs
-from typing import Any, Protocol, Unpack
+from typing import Protocol, TypedDict, Unpack
+
+class _ParmTupleChangedKwargs(TypedDict):
+    node: hou.OpNode
+    parm_tuple: hou.ParmTuple | None
 
 class _NodeEventCallback(Protocol):
     def __call__(self, **kwargs: Unpack[NodeEventKwargs]) -> None: ...
@@ -42,7 +46,7 @@ class TemplateGuide(buildBaseGuide.BaseGuide[_BaseGuideJson]):
     def getRootNode(self) -> hou.ObjNode | None: ...
     def getCagePoints(self) -> tuple[hou.Point, ...]: ...
     def getDefaultGuideNames(self) -> list[str]: ...
-    def generateCageGuides(self, cageguides: CageGuide, guidesdata: MutableMapping[str, list[Any]], guideslist: MutableSequence[str]) -> None:
+    def generateCageGuides(self, cageguides: CageGuide, guidesdata: MutableMapping[str, list[hou.OpNode | bool | None]], guideslist: MutableSequence[str]) -> None:
         """Generates the cage guides subnet inside the asset"""
     def cageGuideFromPoint(self, point: hou.Point, parent: hou.OpNode) -> hou.ObjNode: ...
     def resetCageGuides(self, cageguides: CageGuide) -> None:
@@ -65,5 +69,5 @@ class TemplateGuide(buildBaseGuide.BaseGuide[_BaseGuideJson]):
             free translate control in the viewport.
             So add a callback to that resets the x value of the guide
             every time it\'s changed'''
-    def resetX(self, event_type: hou.EnumValue[hou.nodeEventType], x: float, **kwargs: Any) -> None: ...
+    def resetX(self, event_type: hou.EnumValue[hou.nodeEventType], x: float, **kwargs: Unpack[_ParmTupleChangedKwargs]) -> None: ...
     def generateLPC(self) -> None: ...

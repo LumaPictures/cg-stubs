@@ -1,6 +1,7 @@
 from collections.abc import Callable, Sequence
-from typing import Any, Literal, TypeAlias, overload
+from typing import Literal, TypeAlias, overload
 
+import apex
 import statehud.window as shud
 from frameworkstate.parameterwidget import ParameterWidget
 from frameworkstate.storageinterface import StorageInterface
@@ -110,7 +111,7 @@ class SculptSettingsWidget(ParameterWidget):
     DEFAULT_SIZE: int
     DEFAULT_LABEL_WIDTH: int
     tool: SculptTool
-    registry: Any
+    registry: apex.Registry
     mode: str
     prevBrush: str | None
     prevToggleBrush: str | None

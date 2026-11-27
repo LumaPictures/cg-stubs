@@ -1,5 +1,5 @@
-from collections.abc import Iterable, Sequence
-from typing import NamedTuple, Self, TypeAlias
+from collections.abc import Iterable, MutableSequence, Sequence
+from typing import NamedTuple, Self, TypeAlias, TypeVar
 
 import hou
 import nodegraphbase as base
@@ -17,10 +17,11 @@ from canvaseventtypes import (
 
 _UIEvent: TypeAlias = MouseEvent | KeyboardEvent | GestureEvent | ValueEvent | TimerEvent | ModalUIEvent
 _ConnectableItem: TypeAlias = hou.Node | hou.IndirectInput
+_ItemT_co = TypeVar("_ItemT_co", bound=hou.NetworkItem, covariant=True, default=hou.NetworkItem)
 
-theInputConnectorNames: tuple[str, ...]
-theOutputConnectorNames: tuple[str, ...]
-theNodeBodyNames: tuple[str, ...]
+theInputConnectorNames: tuple[str, str, str, str]
+theOutputConnectorNames: tuple[str, str, str, str]
+theNodeBodyNames: tuple[str, str, str, str]
 theMergeNodeTypes: dict[hou.NodeTypeCategory, str]
 
 class ConnectorEndInfo(NamedTuple):
@@ -35,8 +36,8 @@ class PendingTabMenuAction(base.PendingAction):
     def __init__(self, editor_updates: utils.EditorUpdates) -> None: ...
     def completeAction(self, uievent: _UIEvent) -> bool: ...
 
-def makeConnection(innode: hou.Node | hou.NetworkDot, inidx: int, outitem: _ConnectableItem | None, outidx: int, connect_next_unordered: bool, new_inputs: list[tuple[hou.Node | hou.NetworkDot, int]] | None = ...) -> hou.NodeConnection | None: ...
-def makeTopMapperConnection(innode: hou.TopNode, inidx: int, outitem: hou.TopNode, outidx: int, connect_next_unordered: bool, new_inputs: list[tuple[hou.Node | hou.NetworkDot, int]] | None = ...) -> list[hou.NodeConnection | None]: ...
+def makeConnection(innode: hou.Node | hou.NetworkDot, inidx: int, outitem: _ConnectableItem | None, outidx: int, connect_next_unordered: bool, new_inputs: MutableSequence[tuple[hou.Node | hou.NetworkDot, int]] | None = ...) -> hou.NodeConnection | None: ...
+def makeTopMapperConnection(innode: hou.TopNode, inidx: int, outitem: hou.TopNode, outidx: int, connect_next_unordered: bool, new_inputs: MutableSequence[tuple[hou.Node | hou.NetworkDot, int]] | None = ...) -> list[hou.NodeConnection | None]: ...
 def shouldMakeTopMapperConnection(ctrl: bool, item: hou.NetworkMovableItem | None, other_item: hou.NetworkMovableItem | None) -> bool: ...
 def inputOutOfRange(item: hou.NetworkMovableItem | None, inidx: int) -> bool: ...
 def outputOutOfRange(item: hou.NetworkMovableItem | None, outidx: int) -> bool: ...
@@ -44,7 +45,7 @@ def getNextAvailableInput(innode: hou.Node | hou.NetworkDot, inidx: int) -> int:
 def getRootInputs(inputs: list[ConnectorEndInfo]) -> list[ConnectorEndInfo]: ...
 def getEndOutputs(outputs: list[ConnectorEndInfo]) -> list[ConnectorEndInfo]: ...
 
-class BaseConnectHandler(base.ItemEventHandler):
+class BaseConnectHandler(base.ItemEventHandler[_ItemT_co]):
     inputs: list[ConnectorEndInfo]
     outputs: list[ConnectorEndInfo]
     picked_output: ConnectorEndInfo | None
@@ -61,7 +62,7 @@ class BaseConnectHandler(base.ItemEventHandler):
     isapex: bool
     iscopy: bool
     destination: NetworkComponent
-    item: hou.NetworkItem
+    item: _ItemT_co
     def __init__(self, uievent: MouseEvent) -> None: ...
     def sendEventToSubHandler(self, uievent: _UIEvent, pending_actions: list[base.PendingAction]) -> Self: ...
     def handleTabMenuRequest(self, uievent: MouseEvent | KeyboardEvent, pending_actions: list[base.PendingAction]) -> None: ...
@@ -76,8 +77,7 @@ class BaseConnectHandler(base.ItemEventHandler):
     def connect(self, uievent: MouseEvent, other_item: _ConnectableItem | None, other_index: int, other_name: str | None = ...) -> None: ...
     def getPrompt(self, uievent: MouseEvent | KeyboardEvent) -> str | None: ...
 
-class ItemConnectHandler(BaseConnectHandler):
-    item: _ConnectableItem
+class ItemConnectHandler(BaseConnectHandler[_ConnectableItem]):
     inputs: list[ConnectorEndInfo]
     outputs: list[ConnectorEndInfo]
     picked_output: ConnectorEndInfo | None
@@ -86,7 +86,7 @@ class ItemConnectHandler(BaseConnectHandler):
     def __init__(self, uievent: MouseEvent) -> None: ...
     def initializePendingConnections(self, selected: NetworkComponent, eventtype: str, modifierstate: ModifierState) -> bool: ...
 
-class WireConnectHandler(BaseConnectHandler):
+class WireConnectHandler(BaseConnectHandler[hou.NetworkItem]):
     wires: list[hou.NodeConnection]
     iscopy: bool
     def __init__(self, uievent: MouseEvent) -> None: ...

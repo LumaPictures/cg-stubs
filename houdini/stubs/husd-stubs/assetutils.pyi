@@ -3,7 +3,7 @@ from collections.abc import Container, Iterable, Mapping, Sequence
 from houtypes import JSONLike
 from husd.utils import createFramedCameraToBounds as createFramedCameraToBounds
 from pxr import Sdf, Usd
-from typing import Any, Literal, Protocol
+from typing import Literal, Protocol
 from typing_extensions import TypedDict
 
 from typing import TypeAlias
@@ -41,7 +41,7 @@ class _AssetDataSourceInfo(TypedDict):
 class _NodeParmNames(TypedDict):
     folder: str
     parmnames: dict[str, str]
-    extraparms: dict[str, Any]
+    extraparms: dict[str, object]
 
 theThumbnailCameraPrimPath: str
 theThumbnailFileName: str

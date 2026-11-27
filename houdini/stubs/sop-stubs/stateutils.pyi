@@ -1,4 +1,5 @@
 import hou
+from collections.abc import Mapping
 from enum import Enum
 
 thePickerStateName: str
@@ -37,7 +38,7 @@ class InputCache:
     def setNode(self, node: hou.SopNode) -> None: ...
     def attribName(self) -> str: ...
     def attribType(self) -> SampleElement: ...
-    def sample(self, ui_event: hou.ViewerEvent, viewport: hou.GeometryViewport, drawable: hou.GeometryDrawable | hou.SimpleDrawable | None = None) -> list[float] | list[hou.AttribReturnType | hou.AttribDictReturnType]: ...
+    def sample(self, ui_event: hou.ViewerEvent, viewport: hou.GeometryViewport, drawable: hou.GeometryDrawable | hou.SimpleDrawable | None = None) -> list[float] | list[hou.AttribReturnType | hou._OptionDict | tuple[hou._OptionDict, ...]]: ...
     def needsGeometryDrawable(self) -> bool: ...
     def validateInput(self) -> bool | None:
         """
@@ -56,7 +57,7 @@ def enterPickerState(node: hou.OpNode, parm: str, attrib: str, geo_node: hou.Sop
     Parm: The name of the parameter to set, eg. threshold. Name, not label !
     
     '''
-def setAndConfigureState(state_name: str, viewer: hou.SceneViewer, args: dict[str, object]) -> None:
+def setAndConfigureState(state_name: str, viewer: hou.SceneViewer, args: Mapping[str, object]) -> None:
     """
     Wrapper that handles hou.OperationFailed    
     """

@@ -18,13 +18,13 @@ def getDistance(source: hou.ObjNode, target: hou.ObjNode) -> float:
     """ Calculate the distance between two objects."""
 def checkForCOGBone(skeleton: hou.OpNode, mocapobjects: Sequence[MocapBodyPart]) -> None:
     """ Check to determine if a COG bone needs to be created."""
-def createCOG(skeleton: hou.OpNode, root: hou.ObjNode, legs: Container[hou.Node | None]) -> None:
+def createCOG(skeleton: hou.OpNode, root: hou.ObjNode, legs: Container[hou.OpNode | None]) -> None:
     """ Create a bone that will act as the COG."""
 def configureMocapRigs(mocappart: MocapBodyPart, skeleton: hou.OpNode) -> None:
     """ Setup all the parameters and modify any skeleton parts to
         correctly initialize the mocap object and skeleton.
     """
-def doCheck(bone: hou.OpNode, bones: Container[hou.Node | None]) -> None:
+def doCheck(bone: hou.OpNode, bones: Container[hou.OpNode | None]) -> None:
     """ Check a bone to see if there are any bones attached to its
         input. 
         

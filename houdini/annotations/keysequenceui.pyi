@@ -23,7 +23,14 @@ COMPLETED_BG_COLOR: PySide6.QtGui.QColor
 EXPAND_DELAY_MS: int
 EXPAND_DURATION_MS: int
 COMPLETED_DELAY_MS: int
-border_colors: tuple[PySide6.QtGui.QColor, ...]
+border_colors: tuple[
+    PySide6.QtGui.QColor,
+    PySide6.QtGui.QColor,
+    PySide6.QtGui.QColor,
+    PySide6.QtGui.QColor,
+    PySide6.QtGui.QColor,
+    PySide6.QtGui.QColor,
+]
 
 def makeLabel(
     parent: PySide6.QtWidgets.QWidget | None,

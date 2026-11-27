@@ -6,10 +6,10 @@ import resourceui as rui
 from collections.abc import Callable as Callable
 from hutil.PySide import QtWidgets
 from hutil.qt.pluto.parts import ParmState
-from typing import Any
+from typing import Unpack
 from viewerhandle import hudapi as hudapi
 from viewerhandle.hudapi import _HUDHandle, _HUDParmAnimatedKwargs, _HUDParmChangeKwargs, _HUDParmTemplateChangeKwargs, _HUDSettings
-from viewerhandle.hudwidgets import _KeyFrameEventKwargs
+from viewerhandle.hudwidgets import _HUDWidgetOptions, _KeyFrameEventKwargs
 
 class ToggleImpl(QtWidgets.QWidget):
     """ The hud toggle widget implementation:
@@ -35,7 +35,7 @@ class ToggleImpl(QtWidgets.QWidget):
 class HUDToggle(hudapi.HUDWidgetBase):
     """ HUD handle widget to manipulate a toggle parm.
     """
-    def __init__(self, handle: _HUDHandle, target_parm: hou.Parm | None, hud_widget_key: str, window_key: str, **kwargs: Any) -> None: ...
+    def __init__(self, handle: _HUDHandle, target_parm: hou.Parm | None, hud_widget_key: str, window_key: str, **kwargs: Unpack[_HUDWidgetOptions]) -> None: ...
     def onParmChangeEvent(self, kwargs: _HUDParmChangeKwargs) -> None: ...
     def onUpdateVisualSize(self) -> None: ...
     def settingValues(self) -> _HUDSettings: ...

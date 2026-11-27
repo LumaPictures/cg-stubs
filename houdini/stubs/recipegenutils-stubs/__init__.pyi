@@ -13,16 +13,27 @@ from hrecipes import api as api
 from hrecipes.ui import parmpresetpanel as parmpresetpanel
 from hutil.PySide import QtCore, QtWidgets
 from hutil.pprint import pprint as pprint
-from typing import Any, Callable as Callable, ClassVar, Collection, Iterable, Literal, Sequence, TypedDict
+from typing import Callable as Callable, ClassVar, Collection, Iterable, Literal, NotRequired, Sequence, TypedDict, Unpack
 
 from typing import TypeAlias
 from typing import TypeVar
+from houtypes import JSONLike
 from typing import TypeAlias
 from typing import TypeVar
 _LineEditT = TypeVar('_LineEditT', bound=PySide6.QtWidgets.QLineEdit)
 _RecipeOptions: TypeAlias = hrecipes.rtypes.ParmPresetRecipeOptions | hrecipes.rtypes.NodePresetRecipeOptions | hrecipes.rtypes.DecorationRecipeOptions | hrecipes.rtypes.ToolRecipeOptions | hrecipes.rtypes.DataRecipeOptions
-_CatalogData: TypeAlias = dict[str, Any] | list[Any] | str
+_CatalogData: TypeAlias = Mapping[str, JSONLike] | Sequence[JSONLike] | str
 _ParentIndex: TypeAlias = PySide6.QtCore.QModelIndex | PySide6.QtCore.QPersistentModelIndex
+class _ParmEventKwargs(TypedDict):
+    node: hou.OpNode
+    parm_tuple: NotRequired[hou.ParmTuple | None]
+
+class _ChildEventKwargs(TypedDict):
+    node: hou.OpNode
+    child_node: NotRequired[hou.OpNode]
+    old_name: NotRequired[str]
+    input_index: NotRequired[int]
+
 class _DiffNodeDict(TypedDict):
     Adding: dict[str | int, JSONValue]
     Removing: dict[str | int, JSONValue]
@@ -384,7 +395,7 @@ class BaseDialog(QtWidgets.QDialog):
     def accept(self) -> None: ...
     def reject(self) -> None: ...
 
-NODEPARMS_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], ...]
+NODEPARMS_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType]]
 
 def patternFilter(name: str, patterns: Iterable[str]) -> bool: ...
 
@@ -415,13 +426,13 @@ class SelectParmsFromNodeDialog(BaseDialog):
     def handle_dClicked(self, index: PySide6.QtCore.QPoint | PySide6.QtCore.QPointF) -> None: ...
     def setAllChecks(self) -> None: ...
     def reloadItems(self) -> None: ...
-    def _nodeCallback(self, event_type: hou.EnumValue[hou.nodeEventType], **kwargs: Any) -> None: ...
+    def _nodeCallback(self, event_type: hou.EnumValue[hou.nodeEventType], **kwargs: Unpack[_ParmEventKwargs]) -> None: ...
     def __del__(self) -> None: ...
     def accept(self) -> None: ...
     def reject(self) -> None: ...
 
-NODE_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], ...]
-CHILD_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], ...]
+NODE_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType]]
+CHILD_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType]]
 
 def IOItems(items: Sequence[hou.NetworkMovableItem]) -> tuple[list[hou.NetworkMovableItem], list[hou.NetworkMovableItem]]: ...
 def itemsOnSelectionBoundary(items: Sequence[hou.NetworkMovableItem]) -> tuple[list[hou.NetworkMovableItem], list[hou.NetworkMovableItem]] | None:
@@ -490,7 +501,7 @@ class SelectItemsFromNodeDialog(BaseDialog):
     def reloadItems(self) -> None: ...
     def accept(self) -> None: ...
     def reject(self) -> None: ...
-    def _nodeCallback(self, event_type: hou.EnumValue[hou.nodeEventType], **kwargs: Any) -> None: ...
+    def _nodeCallback(self, event_type: hou.EnumValue[hou.nodeEventType], **kwargs: Unpack[_ChildEventKwargs]) -> None: ...
     def __del__(self) -> None: ...
 
 class JsonLineMapper:

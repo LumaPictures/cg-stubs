@@ -29,7 +29,7 @@ class ConflictWarning(QtWidgets.QWidget):
     key: str
     dir: str | None
     callback: Callable[[str], object]
-    def __init__(self, context: str, action: str, label: str, key: str, dir: str | None, callback: Callable[[str], object], *args: Any, **kwargs: Any) -> None: ...
+    def __init__(self, context: str, action: str, label: str, key: str, dir: str | None, callback: Callable[[str], object], *args: QtWidgets.QWidget | None, **kwargs: Any) -> None: ...
 
 class AssignmentInfo(QtWidgets.QWidget):
     context: str
@@ -38,7 +38,7 @@ class AssignmentInfo(QtWidgets.QWidget):
     key: str
     dir: str | None
     callback: Callable[[str], object]
-    def __init__(self, context: str, action: str, label: str, key: str, dir: str | None, callback: Callable[[str], object], *args: Any, **kwargs: Any) -> None: ...
+    def __init__(self, context: str, action: str, label: str, key: str, dir: str | None, callback: Callable[[str], object], *args: QtWidgets.QWidget | None, **kwargs: Any) -> None: ...
 
 class NoAssignmentInfo(QtWidgets.QWidget):
     context: str
@@ -46,7 +46,7 @@ class NoAssignmentInfo(QtWidgets.QWidget):
     label: str
     key: str
     callback: Callable[[str], object]
-    def __init__(self, context: str, action: str, label: str, key: str, callback: Callable[[str], object], *args: Any, **kwargs: Any) -> None: ...
+    def __init__(self, context: str, action: str, label: str, key: str, callback: Callable[[str], object], *args: QtWidgets.QWidget | None, **kwargs: Any) -> None: ...
 
 def make_conflict_list(rows: Iterable[QtWidgets.QWidget]) -> QtWidgets.QScrollArea: ...
 

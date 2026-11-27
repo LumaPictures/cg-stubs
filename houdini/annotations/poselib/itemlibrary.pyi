@@ -23,7 +23,7 @@ GRID_THUMBNAIL_HEIGHT: int
 ROW_PADDING: int
 ROW_THUMBNAIL_WIDTH: int
 ROW_THUMBNAIL_HEIGHT: int
-ZOOM_MULTIPLIERS: tuple[float, ...]
+ZOOM_MULTIPLIERS: tuple[float, float, float, float, float, float, float, float, float, float]
 MIN_ZOOM: float
 MAX_ZOOM: float
 DEFAULT_ZOOM_INDEX: int
@@ -158,7 +158,7 @@ class Item(Generic[_D_co]):
         separate_data_section: Literal[True],
         ignore_data_for_saved_items: bool = ...,
         save_item_id: bool = ...,
-    ) -> tuple[_ItemJson, Any]: ...
+    ) -> tuple[_ItemJson, _D_co | JSONValue | bytes | None]: ...
     @overload
     def toJSON(
         self,
@@ -178,7 +178,7 @@ class Item(Generic[_D_co]):
         separate_data_section: bool = ...,
         ignore_data_for_saved_items: bool = ...,
         save_item_id: bool = ...,
-    ) -> _ItemJson | tuple[_ItemJson, Any]: ...
+    ) -> _ItemJson | tuple[_ItemJson, _D_co | JSONValue | bytes | None]: ...
     def toJSON(
         self,
         recursive: bool,
@@ -187,7 +187,7 @@ class Item(Generic[_D_co]):
         separate_data_section: bool = ...,
         ignore_data_for_saved_items: bool = ...,
         save_item_id: bool = ...,
-    ) -> _ItemJson | tuple[_ItemJson, Any]: ...
+    ) -> _ItemJson | tuple[_ItemJson, _D_co | JSONValue | bytes | None]: ...
     def getId(self) -> int: ...
     def hasData(self) -> bool: ...
     def hasImage(self) -> bool: ...

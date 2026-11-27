@@ -1,6 +1,6 @@
 from pxr import Usd
 
-usd_base_kinds: tuple[str, ...]
+usd_base_kinds: tuple[str, str, str, str, str]
 
 def iconExists(name: str) -> bool: ...
 def getIconForKind(kind: str) -> str: ...

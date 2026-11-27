@@ -9,7 +9,9 @@ from typing_extensions import TypedDict
 _ParmValue: TypeAlias = bool | int | float | str | list[float]
 
 # The parameters of an ml_traincomputervision TOP, which its attributefromparameters node stores
-# (spare parameters too) in a dictionary attribute.
+# (spare parameters too) in a dictionary attribute. The fcos, retinanet, semantic_segmentor
+# and rrpn modules (which modelConfig never uses) read keys the TOP has no parameters for, so
+# only spare parameters can supply them, through extra_items.
 class _CVTrainParms(TypedDict, extra_items=_ParmValue):  # type: ignore[call-arg]
     basedirectory: str
     basename: str

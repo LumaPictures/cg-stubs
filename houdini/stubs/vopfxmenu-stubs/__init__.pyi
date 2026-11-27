@@ -1,18 +1,8 @@
 import hou
 from collections.abc import Sequence
-from typing import Required, TypedDict
+from typing import Required
 from vopcallbacks import ShaderFxCallbacks
-
-class _VopFxMenuKwargs(TypedDict, total=False):
-    """The `kwargs` of a `VOPFXmenu.xml` script."""
-    node: Required[str]
-    input: Required[int]
-    parm: str
-    toolname: str
-    altclick: bool
-    ctrlclick: bool
-    shiftclick: bool
-    cmdclick: bool
+from voptoolutils import _VopFxMenuKwargs
 
 class _VopFxMenuActionKwargs(_VopFxMenuKwargs, total=False):
     """The `kwargs` of a `VOPFXmenu.xml` dynamic menu's script, for the item picked."""

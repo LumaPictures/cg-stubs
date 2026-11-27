@@ -1,14 +1,12 @@
 from collections.abc import Mapping
-from typing import Any, NotRequired, TypeAlias, TypedDict, Unpack
+from typing import Any, NotRequired, TypedDict, Unpack
 
 import hou
 from autorigs.asset.autoRigsAsset import AutoRigsAsset
 from autorigs.asset.geometry.buildGeometryGuide import GeometryGuide
 from autorigs.modules.advancedFace.lip import buildLipGuide
 from autorigs.modules.base import buildBaseGuide
-from autorigs.modules.advancedFace.lip.buildLipGuide import _LipGuideJson, _LipPartJson
-
-_GuideData: TypeAlias = list[Any] | tuple[hou.OpNode, bool, bool]
+from autorigs.modules.advancedFace.lip.buildLipGuide import _GuideData, _LipGuideJson, _LipPartJson
 
 class _EyePartJson(_LipPartJson):
     mirror_guidenames: Mapping[str, str]

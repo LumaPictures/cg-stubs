@@ -7,7 +7,7 @@ import viewerhandle.hudapi as hud
 import viewerhandle.hudwidgets as hudw
 from collections.abc import Generator
 from dataclasses import dataclass
-from typing import Any, Callable as Callable, TypedDict, Unpack
+from typing import Callable as Callable, Required, TypedDict, Unpack
 from viewerhandle.hudapi import _HUDHandle, _HUDParmAnimatedKwargs, _HUDParmChangeKwargs, _HUDParmTemplateChangeKwargs, _HUDSettings
 from viewerhandle.hudwidgets import _KeyFrameEventKwargs
 from viewerhandle.hudwindow import HUDWindow as HUDWindow
@@ -15,6 +15,9 @@ from viewerhandle.hudwindow import HUDWindow as HUDWindow
 class _ContextMenuHandlerOptions(TypedDict):
     slider: rui.Slider
     parm_index: int
+
+class _HUDSliderOptions(hudw._HUDWidgetOptions, total=False):
+    slider_type: Required[type[rui.FloatSlider] | type[rui.IntSlider]]
 
 @dataclass
 class ParmInfo:
@@ -64,7 +67,7 @@ class HUDSlider(hud.HUDWidgetBase):
     BG_STYLE_SHEET: str
     SLIDER_FIXED_HEIGHT: int
     HIDE_SLIDER_WIDTH_THRESHOLD: int
-    def __init__(self, handle: _HUDHandle, target_parm: hou.Parm | None, hud_widget_key: str, window_key: str, **kwargs: Any) -> None: ...
+    def __init__(self, handle: _HUDHandle, target_parm: hou.Parm | None, hud_widget_key: str, window_key: str, **kwargs: Unpack[_HUDSliderOptions]) -> None: ...
     def computeDistance(self, x: float, y: float) -> list[float]:
         """ Compute the distance between the slider(s) and x,y, returns
             the closest distance along with the slider index.

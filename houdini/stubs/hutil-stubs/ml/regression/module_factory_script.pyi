@@ -1,3 +1,4 @@
+import torch.nn as nn
 from _typeshed import SupportsWrite
 from collections.abc import Mapping
 from houtypes import JSONLike
@@ -16,7 +17,7 @@ def moduleFactoryFromNetworkSpecification(script: str, hyperparameter_dict: Mapp
     Each node in this network corresponds to a torch.nn.Module subclass
     See network_compiler.py for more details
     """
-def applyCreationScript(script: str, const_locals: Mapping[str, object], /, *, log: SupportsWrite[str] | None = None) -> ModuleFactoryAtomic:
+def applyCreationScript(script: str, const_locals: Mapping[str, object], /, *, log: SupportsWrite[str] | None = None) -> ModuleFactoryAtomic[nn.Module]:
     """
     From a creation script, obtain factory that creates a torch.nn.Module subclass
 

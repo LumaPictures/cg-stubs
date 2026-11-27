@@ -6,7 +6,7 @@ from wsgiref.types import StartResponse, WSGIEnvironment
 
 from houtypes import JSONLike, JSONValue
 
-_F = TypeVar("_F", bound=Callable[..., Any])
+_F = TypeVar("_F", bound=Callable[..., object])
 
 class _RPCServiceHandler(Protocol):
     def handleRequest(self, json: str | bytes) -> bytes: ...

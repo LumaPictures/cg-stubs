@@ -2,7 +2,7 @@ from canvaseventtypes import *
 import hou
 from collections.abc import Sequence
 
-theRopManagers: tuple[str, ...]
+theRopManagers: tuple[str, str, str, str, str, str, str]
 theFlagEnumLookup: dict[str, hou.EnumValue[hou.nodeFlag]]
 
 def getFlagEnumFromIndex(uidata: int) -> hou.EnumValue[hou.nodeFlag] | None: ...

@@ -19,13 +19,13 @@ from autorigs.modules.quadleg.quadLegModule import QuadLegModule as QuadLegModul
 from autorigs.modules.spine import spineModule as spineModule
 from collections.abc import Mapping, Sequence
 
-class FootModule(extremityModule.ExtremityModule[FootOptionsWidget, FootParamsWidget, FootGuide]):
+class FootModule(extremityModule.ExtremityModule[FootOptionsWidget, FootParamsWidget, FootGuide, 'FootGuideTab', AutoRigsAsset]):
     autorigs_asset: AutoRigsAsset
     limbmodules: Sequence[LimbModule]
     legmodules: Sequence[LegModule]
     armmodules: Sequence[ArmModule]
     quadlegmodules: Sequence[QuadLegModule]
-    guidetab: FootGuideTab
+    guidetab: FootGuideTab | None
     autorigsbuilder: AutoRigsFootBuilder
     MODULE_TYPE: str
     MODULE_DEFAULT_NAME: str

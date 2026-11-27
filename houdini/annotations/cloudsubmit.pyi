@@ -1,12 +1,12 @@
 import queue
 import threading
 import xmlrpc.client
-from typing import Any, NotRequired, TypeAlias, TypedDict
+from typing import NotRequired, TypeAlias, TypedDict
 
 import cloud
 import hjsonrpc
 import hutil.enum
-from houtypes import JSONValue
+from houtypes import JSONLike, JSONValue
 
 # What an XML-RPC ServerProxy (default flags) unmarshals a reply into.
 _XmlRpcValue: TypeAlias = (
@@ -71,7 +71,7 @@ class RobustConnection:
         method_name: str | None = ...,
     ) -> None: ...
     def __getattr__(self, name: str) -> "RobustConnection": ...
-    def __call__(self, *args: Any) -> JSONValue | _XmlRpcValue: ...
+    def __call__(self, *args: JSONLike | _XmlRpcValue) -> JSONValue | _XmlRpcValue: ...
 
 def getConnection() -> hjsonrpc.ServiceProxy | None: ...
 def openBrowser() -> None: ...

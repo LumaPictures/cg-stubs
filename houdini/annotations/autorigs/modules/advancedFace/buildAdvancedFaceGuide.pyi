@@ -1,5 +1,5 @@
 from collections.abc import Mapping
-from typing import Any, NotRequired, TypedDict
+from typing import NotRequired, TypedDict
 
 import hou
 from autorigs.asset.autoRigsAsset import AutoRigsAsset
@@ -34,7 +34,7 @@ class AdvancedFaceGuide(buildBaseGuide.BaseGuide[_AdvancedFaceGuideJson]):
     autorigs_asset: AutoRigsAsset
     json: _AdvancedFaceModuleJson
     assetnode: hou.ObjNode
-    guidenodesdata: dict[str, list[Any]]
+    guidenodesdata: dict[str, list[hou.OpNode | bool | None]]
     geometryguides: GeometryGuide
     jawguides: JawGuide
     templateguides: TemplateGuide

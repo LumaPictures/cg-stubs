@@ -14,7 +14,7 @@ def startDataLayerServer(port: int, iface: str = '0.0.0.0') -> tuple[str, int]:
     This will be a websocket-based server.
     FIXME: bind to given interface
     """
-def getDisplayNode(parent_node: hou.Node, timestamp: bool) -> hou.TopNode | None: ...
+def getDisplayNode(parent_node: hou.OpNode, timestamp: bool) -> hou.TopNode | None: ...
 def cookTopNode(node_path: str, taskgraph: str = '', print_logs: bool = False, verbosity: int = 1, timestamp: bool = True, uselabels: bool = False, expected_prefix: str = '') -> tuple[bool, hou.TopNode]:
     """
     Does a PDG cook of the given TOP node.

@@ -2,6 +2,8 @@ from collections.abc import Mapping
 from datetime import datetime
 from typing import Any, TypedDict
 
+from houtypes import JSONLike
+
 import hou
 from hrecipes import rtypes
 
@@ -42,7 +44,7 @@ _RecipeMetadata = TypedDict(
         "prompt_bboxes": list[list[float]],
         "prompt_posparms": list[str],
         "name": str,
-        "name_components": tuple[str, ...],
+        "name_components": tuple[str, str, str, str],
         "basename": str,
         "name_with_category": str,
         "title": str,
@@ -70,7 +72,7 @@ class AssetIO:
     def loadRecipePostScript(self) -> str: ...
     def saveRecipePostScript(self, script: str) -> None: ...
     def loadMetadata(self) -> _RecipeMetadata: ...
-    def saveMetadata(self, metadata: Mapping[str, object]) -> None: ...
+    def saveMetadata(self, metadata: Mapping[str, JSONLike]) -> None: ...
     def deleteDefinition(self) -> None: ...
     def location(self) -> str: ...
     def setTitle(self, title: str) -> None: ...

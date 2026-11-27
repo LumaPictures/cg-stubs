@@ -39,14 +39,18 @@ class _AttribJSON(TypedDict):
 class _ServiceStatus(TypedDict):
     status: str
 
+class _OutputFileJSON(TypedDict):
+    file: str
+    tag: str
+
 class _ServiceResponse(TypedDict):
     status: str
     msg: str
     version: int
     memory: int
-    outputs: NotRequired[Any]
-    attributes: NotRequired[Any]
-    graph: NotRequired[Any]
+    outputs: NotRequired[list[_OutputFileJSON] | JSONValue]
+    attributes: NotRequired[dict[str, _AttribJSON] | JSONValue]
+    graph: NotRequired[dict[str, _AttribJSON] | JSONValue]
 
 def getTempDir() -> str | None: ...
 def getWorkingDir() -> str | None: ...

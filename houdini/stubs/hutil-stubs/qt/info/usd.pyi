@@ -5,8 +5,10 @@ from _typeshed import Incomplete
 from hutil.PySide.QtCore import Qt as Qt
 from hutil.qt.common import core as core
 from hutil.qt.common.qmlviews import SST as SST
+from hutil.qt.info.window import _BaseInfoStateKwargs
 from pxr import Pcp, Usd
-from typing import Any, ClassVar, Self
+from typing import ClassVar, Self
+from typing_extensions import Unpack
 
 from typing import TypeAlias
 UsdType: TypeAlias = Usd.Prim | Usd.CollectionAPI | Usd.Attribute | Usd.Relationship | None
@@ -147,7 +149,7 @@ class UsdConfig(window.NodeInfoConfig): ...
 class UsdState(window.BaseInfoState[UsdConfig, UsdInfo]):
     reloadableChanged: ClassVar[PySide6.QtCore.Signal]
     reloadable: bool
-    def __init__(self, **kwargs: Any) -> None: ...
+    def __init__(self, **kwargs: Unpack[_BaseInfoStateKwargs]) -> None: ...
     def reload(self, recook: bool = False, force_update: bool = False) -> None: ...
     def outOfDate(self) -> bool: ...
     def lopNode(self) -> hou.LopNode | None: ...

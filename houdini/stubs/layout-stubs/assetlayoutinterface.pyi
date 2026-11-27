@@ -5,7 +5,7 @@ from . import brush as lb
 from _typeshed import Incomplete
 from collections import defaultdict as defaultdict
 from collections.abc import Callable as Callable, Sequence
-from husd.assetutils import _AssetDataSourceInfo, _AssetInfo
+from layout.utils import AssetGeneratorSig as _AssetGenerator
 from typing import Any, ClassVar, Literal, Protocol, TypedDict
 
 from typing import TypeAlias
@@ -14,9 +14,6 @@ from houtypes import NodeEventKwargs
 from typing import TypeAlias
 _ALIEventKwargs: TypeAlias = NodeEventKwargs | HDALibraryEventKwargs | _ALISelectionChangedKwargs | _ALICustomEventKwargs
 _DataSourceArg: TypeAlias = hou.AssetGalleryDataSource | list[str] | tuple[str, str]
-class _AssetGenerator(Protocol):
-    def __call__(self, container: hou.Node, asset_info: _AssetInfo | _AssetDataSourceInfo, primpath: str, prev_item: hou.NetworkMovableItem | None, next_node: hou.Node | None, force_gen: bool = ...) -> hou.Node | None: ...
-
 class _AssetGenerateKwargs(TypedDict):
     container: hou.OpNode | None
     id: str

@@ -1,0 +1,3 @@
+import hou
+
+def chooseAndOpenImportFile() -> hou.OpNode | None: ...

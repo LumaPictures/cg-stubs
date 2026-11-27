@@ -42,7 +42,7 @@ class Ordering(enum.Enum):
 def by_name_key(diff: AttrDiff) -> tuple[int, str]: ...
 def by_change_key(diff: AttrDiff) -> tuple[int, int, str]: ...
 
-attr_types: tuple[hou.EnumValue[hou.attribType], ...]
+attr_types: tuple[hou.EnumValue[hou.attribType], hou.EnumValue[hou.attribType], hou.EnumValue[hou.attribType], hou.EnumValue[hou.attribType]]
 attr_type_to_name: dict[hou.EnumValue[hou.attribType], str]
 attr_type_to_intrinsic_name: dict[hou.EnumValue[hou.attribType], str]
 attr_data_type_to_name: dict[hou.EnumValue[hou.attribData], str]

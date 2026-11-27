@@ -6,11 +6,18 @@ from autorigs.ui.uiParamFloat import UiParamFloat as UiParamFloat
 from autorigs.ui.uiParamInt import UiParamInt as UiParamInt
 from autorigs.ui.uiParamNum import UiParamNum as UiParamNum
 from collections.abc import Sequence
-from typing import Any, Literal, TypeIs
+from typing import Literal, Never, TypeIs, TypedDict, Unpack
 
 from typing import TypeVar
 from typing import TypeVar
 _ParamT = TypeVar('_ParamT', bound=UiParamNum)
+class _SoftRangeKwargs(TypedDict, total=False):
+    soft_range: tuple[float, float]
+
+class _UiParamNumKwargs(TypedDict, total=False):
+    defaults: Sequence[float]
+    soft_range: tuple[float, float]
+
 class UiParamFactory:
     TRANSLATE: Literal[0]
     ROTATE: Literal[1]
@@ -71,5 +78,12 @@ class UiParamFactory:
     def createColorParams(cls, nodes: list[hou.OpNode] | None, mapping: tuple[str, Sequence[str]]) -> UiParamColor: ...
     @classmethod
     def createIntParams(cls, nodes: list[hou.OpNode] | None, mapping: tuple[str, Sequence[str]], custom_name: str = '') -> UiParamInt: ...
+    @typing.overload
     @classmethod
-    def createTypeParams(cls, param_class: type[_ParamT], nodes: list[hou.OpNode] | None, mapping: tuple[str, Sequence[str]], custom_name: str = '', *args: Any, **kwargs: Any) -> _ParamT: ...
+    def createTypeParams(cls, param_class: type[_ParamT], nodes: list[hou.OpNode] | None, mapping: tuple[str, Sequence[str]], custom_name: str = ..., **kwargs: Unpack[_UiParamNumKwargs]) -> _ParamT: ...
+    @typing.overload
+    @classmethod
+    def createTypeParams(cls, param_class: type[_ParamT], nodes: list[hou.OpNode] | None, mapping: tuple[str, Sequence[str]], custom_name: str, *args: Unpack[tuple[Sequence[float]]], **kwargs: Unpack[_SoftRangeKwargs]) -> _ParamT: ...
+    @typing.overload
+    @classmethod
+    def createTypeParams(cls, param_class: type[_ParamT], nodes: list[hou.OpNode] | None, mapping: tuple[str, Sequence[str]], custom_name: str, *args: Unpack[tuple[Sequence[float], tuple[float, float]]], **kwargs: Never) -> _ParamT: ...

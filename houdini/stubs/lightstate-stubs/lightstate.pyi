@@ -1,8 +1,8 @@
 import hou
 from collections.abc import Mapping, MutableMapping, Sequence
-from houtypes import ViewerStateDrawKwargs, ViewerStateEnterKwargs, ViewerStateEventKwargs, ViewerStateHandleToStateKwargs, ViewerStateKwargs, ViewerStateMenuActionKwargs, ViewerStateMenuPreOpenKwargs, ViewerStateParmChangeKwargs, ViewerStateStateToHandleKwargs
+from houtypes import NodeEventKwargs, ViewerStateDrawKwargs, ViewerStateEnterKwargs, ViewerStateEventKwargs, ViewerStateHandleToStateKwargs, ViewerStateKwargs, ViewerStateMenuActionKwargs, ViewerStateMenuPreOpenKwargs, ViewerStateParmChangeKwargs, ViewerStateStateToHandleKwargs
 from lightstate.lightdata import LightStateData as LightStateData
-from typing import Any, Literal
+from typing import Literal, Unpack
 
 from typing import TypeAlias
 from houtypes import ViewerParmProperties
@@ -28,8 +28,8 @@ DISK_LIGHTTYPE: str
 RECT_LIGHTTYPE: str
 CYL_LIGHTTYPE: str
 PORTAL_LIGHTTYPE: str
-LIGHT_TYPES_NO_RESIZE: tuple[str, ...]
-LIGHT_TYPES_UNIFORM_RESIZE: tuple[str, ...]
+LIGHT_TYPES_NO_RESIZE: tuple[str, str, str, str]
+LIGHT_TYPES_UNIFORM_RESIZE: tuple[str, str]
 BBOX_LIGHT_TYPES: list[str]
 BRECT_LIGHT_TYPES: list[str]
 NO_SPOTLIGHT_LIGHT_TYPES: list[str]
@@ -166,9 +166,9 @@ class LightState:
     def handleMouseDrag(self, kwargs: ViewerStateEventKwargs) -> None: ...
     def handleModeChange(self, kwargs: ViewerStateKwargs, newMode: str) -> None: ...
     def _updateHUD(self) -> None: ...
-    def renderLine(self, handle: hou.Handle) -> None: ...
-    def renderPivotAndTarget(self, handle: hou.Handle) -> None: ...
-    def updateNodeParmCB(self, **kwargs: Any) -> None:
+    def renderLine(self, handle: int) -> None: ...
+    def renderPivotAndTarget(self, handle: int) -> None: ...
+    def updateNodeParmCB(self, **kwargs: Unpack[NodeEventKwargs]) -> None:
         """
             Callback for when node parm/parm_tuple gets modified.
         """

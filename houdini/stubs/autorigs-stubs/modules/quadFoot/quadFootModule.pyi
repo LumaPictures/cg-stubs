@@ -14,15 +14,15 @@ from autorigs.modules.quadFoot.buildQuadFootGuide import QuadFootGuide as QuadFo
 from autorigs.modules.quadleg import quadLegModule as quadLegModule
 from autorigs.modules.quadleg.quadLegModule import QuadLegModule as QuadLegModule
 from autorigs.modules.spine import spineModule as spineModule
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable as Callable, Mapping, Sequence
 
-class QuadFootModule(extremityModule.ExtremityModule[extremityGuideOptions.QuadFootOptionsWidget, extremityGuideParams.QuadFootParamsWidget, QuadFootGuide]):
+class QuadFootModule(extremityModule.ExtremityModule[extremityGuideOptions.QuadFootOptionsWidget, extremityGuideParams.QuadFootParamsWidget, QuadFootGuide, 'QuadFootGuideTab', AutoRigsAsset | None]):
     autorig_asset: AutoRigsAsset
     limbmodules: Sequence[LimbModule]
     legmodules: Sequence[LegModule]
     armmodules: Sequence[ArmModule]
     quadlegmodules: Sequence[QuadLegModule]
-    guidetab: QuadFootGuideTab
+    guidetab: QuadFootGuideTab | None
     autorigsbuilder: AutoRigsQuadFootBuilder
     MODULE_TYPE: str
     MODULE_DEFAULT_NAME: str
@@ -37,5 +37,5 @@ class QuadFootModule(extremityModule.ExtremityModule[extremityGuideOptions.QuadF
 
 class QuadFootGuideTab(extremityModule.ExtremityGuideTab[extremityGuideOptions.QuadFootOptionsWidget, extremityGuideParams.QuadFootParamsWidget, QuadFootGuide]):
     prefix: str
-    GUIDE_OPTIONS = extremityGuideOptions.QuadFootOptionsWidget
-    GUIDE_PARAMS = extremityGuideParams.QuadFootParamsWidget
+    GUIDE_OPTIONS: type[extremityGuideOptions.QuadFootOptionsWidget]
+    GUIDE_PARAMS: type[extremityGuideParams.QuadFootParamsWidget]

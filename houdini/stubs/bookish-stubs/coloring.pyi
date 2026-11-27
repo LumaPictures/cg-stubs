@@ -5,6 +5,7 @@ from markupsafe import Markup
 from pygments.lexer import Lexer as Lexer
 from pygments.style import Style
 from pygments.token import _TokenType
+from typing import ClassVar
 
 def jinja_format_code(block: _WikiBlock, lexername: str | None = None, pre: bool = False, extras: Mapping[str, Lexer | type[Lexer]] | None = None) -> Markup: ...
 def lexer_for(name: str | None) -> Lexer | None: ...
@@ -39,6 +40,6 @@ class Ansi:
 def cstring(code: str, string: str) -> str: ...
 
 class DraculaStyle(Style):
-    background_color: str
+    background_color: ClassVar[str]
     default_style: str
-    styles: dict[_TokenType, str]
+    styles: ClassVar[Mapping[_TokenType, str]]

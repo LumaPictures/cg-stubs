@@ -28,6 +28,8 @@ class HeadModule(
         _HeadControls | None,
         None,
         None,
+        "HeadGuideTab",
+        AutoRigsAsset,
     ]
 ):
     MODULE_TYPE: str
@@ -37,8 +39,10 @@ class HeadModule(
     autorigs_asset: AutoRigsAsset
     mastermodule: MasterModule
     spinemodules: Sequence[SpineModule]
-    guidetab: "HeadGuideTab"
+    guidetab: "HeadGuideTab | None"
     autorigsbuilder: AutoRigsHeadBuilder
+    buildguides: HeadGuide
+    builtrig: _HeadControls | None
     def __init__(self, autorigs_asset: AutoRigsAsset) -> None: ...
     def initialize(self, autorigs_asset: AutoRigsAsset) -> None: ...
     def updateParent(self, modulesdict: Mapping[str, Sequence[Mod.Module]]) -> None: ...
@@ -52,11 +56,20 @@ class HeadModule(
 
 class HeadGuideTab(
     Mod.ModuleGuideTab[
-        _HeadOptionsJson, _HeadParamsJson, _GuideNamesJson, ModuleOptionsWidget, ModuleParamsWidget, HeadGuide
+        _HeadOptionsJson,
+        _HeadParamsJson,
+        _GuideNamesJson,
+        ModuleOptionsWidget,
+        ModuleParamsWidget,
+        HeadGuide,
+        ModuleTabsWidget,
     ]
 ):
     PREFIX: str
     tabswidget: ModuleTabsWidget
+    buildguides: HeadGuide
+    optionswidget: ModuleOptionsWidget
+    paramswidget: ModuleParamsWidget
     def __init__(self, buildguides: HeadGuide, spinemodules: Sequence[SpineModule], mastermodule: MasterModule) -> None: ...
     def updateParent(self, spinemodules: Sequence[SpineModule]) -> None: ...
     def getBuiltParentInfo(self) -> tuple[MasterModule | SpineModule, hou.ObjNode]: ...

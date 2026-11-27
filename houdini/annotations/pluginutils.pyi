@@ -12,7 +12,7 @@ split_exp: re.Pattern[str]
 
 def invalidateCache() -> None: ...
 def loadModule(
-    filepath: str, silent: bool = ..., context: Mapping[str, Any] | None = ...
+    filepath: str, silent: bool = ..., context: Mapping[str, object] | None = ...
 ) -> types.ModuleType | None: ...
 def findModules(
     dirname: str,
@@ -37,7 +37,7 @@ def runFunctions(
     dirname: str,
     fn_name: str,
     args: Iterable[Any] = ...,
-    kwargs: Mapping[str, Any] | None = ...,
+    kwargs: Mapping[str, object] | None = ...,
     path_dirs: Sequence[str] | None = ...,
     file_pattern: str = ...,
     include_shadowed: bool = ...,
@@ -50,7 +50,7 @@ def pipelineFunctions(
     fn_name: str,
     main_arg: _T,
     args: Iterable[Any] = ...,
-    kwargs: Mapping[str, Any] | None = ...,
+    kwargs: Mapping[str, object] | None = ...,
     path_dirs: Sequence[str] | None = ...,
     file_pattern: str = ...,
     include_shadowed: bool = ...,
@@ -63,7 +63,7 @@ def typedPipeline(
     fn_name: str,
     main_arg: dict[str, Any],
     args: Iterable[Any] = ...,
-    kwargs: Mapping[str, Any] | None = ...,
+    kwargs: Mapping[str, object] | None = ...,
     path_dirs: Sequence[str] | None = ...,
     file_pattern: str = ...,
     include_shadowed: bool = ...,
@@ -76,7 +76,7 @@ def typedPipeline(
 def runSnapshotMetadataPlugins(
     meta_dict: dict[str, Any],
     args: Iterable[Any] = ...,
-    kwargs: Mapping[str, Any] | None = ...,
+    kwargs: Mapping[str, object] | None = ...,
     dirname: str = ...,
     fn_name: str = ...,
     set_fields: Iterable[str] = ...,

@@ -1,7 +1,7 @@
 import re
 import threading
 from collections.abc import Callable, MutableSet, Sequence
-from typing import Literal, NamedTuple, TypeVar
+from typing import Literal, NamedTuple, TypeVar, TypeVarTuple
 
 from typing_extensions import TypedDict, Unpack
 from urllib.parse import ParseResult
@@ -13,6 +13,7 @@ from bookish.search import WhooshSearcher
 from bookish.wiki.wikipages import WikiPages, _WikiBlock
 
 _T = TypeVar("_T")
+_Ts = TypeVarTuple("_Ts")
 
 # What hou.hda passes an asset library event callback besides event_type (see
 # houtypes.HDALibraryEventKwargs); None queues a full reindex with no keywords.
@@ -32,7 +33,8 @@ dir_to_table: dict[str, str]
 load_script_path: str
 tooltip_regex: re.Pattern[str]
 
-def memoize(func: Callable[..., _T]) -> Callable[..., _T]: ...
+# The cached wrapper takes only positional arguments (they are the cache key).
+def memoize(func: Callable[[Unpack[_Ts]], _T]) -> Callable[[Unpack[_Ts]], _T]: ...
 
 class FastExitException(Exception): ...
 

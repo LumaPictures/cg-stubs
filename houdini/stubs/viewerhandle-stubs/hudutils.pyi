@@ -1,6 +1,6 @@
 import hou
 import typing
-from collections.abc import Callable, Collection, Mapping
+from collections.abc import Callable, Collection, MutableMapping
 from hutil.PySide import QtCore
 from hutil.undo import Command as Command
 from viewerhandle.hudapi import HUDWidgetBase, _HUDHandle
@@ -22,7 +22,7 @@ def listToString(item_list: Collection[object]) -> str:
 def stringToList(encoded_string: str, to_type: None = ...) -> list[str]: ...
 @typing.overload
 def stringToList(encoded_string: str, to_type: Callable[[str], _T]) -> list[_T]: ...
-def formatSettings(setting_dict: Mapping[str, int | float | str | list[str] | None]) -> str:
+def formatSettings(setting_dict: MutableMapping[str, int | float | str | list[str] | None]) -> str:
     ''' Builds a setting string usable with hou.ViewerStateState.bindHandle,
         hou.ViewerStateState.bindHandleStatic or hou.Handle.applySettings.
 

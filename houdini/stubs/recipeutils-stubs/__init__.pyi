@@ -165,7 +165,7 @@ def missingNodeTypesForRecipe(name: str, recipe_category: RecipeCategory) -> dic
     :param recipe_category: The recipe category in which to search for recipes. Use the RecipeCategory enum provided
     in this module.
     """
-def updateRecipeBuilder(node: hou.Node) -> None:
+def updateRecipeBuilder(node: hou.OpNode) -> None:
     """Updates the spare parameter interface of a recipe builder subnetwork.
 
     :param node: The recipe generator subnetwork to update.

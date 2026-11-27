@@ -41,7 +41,7 @@ class Curve3EditTool(Curve3ToolBase):
     tool_name: str
     tool_label: str
     default_optype: str | None
-    hud_hints: list[dict[str, str]]
+    hud_hints: list[hou._HudRow]
     prompt_message: str
     def __init__(self, controller: Curve3Controller) -> None:
         """Create edit-mode state, insert preview, handle provider, and drag sessions."""
@@ -76,7 +76,7 @@ class Curve3EditTool(Curve3ToolBase):
         """Return anchor plus the single actively dragged tangent side."""
     def tangent_command_source_ptnums(self, tangent_ptnum: int, active_handle_ptnums: Iterable[int]) -> tuple[int, ...]:
         """Return the point-type command source for an active tangent-side drag."""
-    def hud_tool_hints(self, *, hint_fn: Callable[[str, str], dict[str, str]], selection_hints: list[dict[str, str]], hotkey_refs: Mapping[str, str]) -> list[dict[str, str]]:
+    def hud_tool_hints(self, *, hint_fn: Callable[[str, str], hou._HudRow], selection_hints: list[hou._HudRow], hotkey_refs: Mapping[str, str]) -> list[hou._HudRow]:
         """Return edit HUD hints in the established order."""
     def on_mouse_event(self, kwargs: ViewerStateEventKwargs) -> bool:
         """

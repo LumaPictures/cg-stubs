@@ -11,7 +11,7 @@ class _ViewportState(TypedDict, total=False):
     old_pickingcurrentnode: bool
     old_displaynode: hou.Node | None
     old_current: hou.Node | None
-    old_pwd: hou.Node | None
+    old_pwd: hou.OpNode | None
     old_state: str
     node_was_current: bool
     old_group_picking: bool

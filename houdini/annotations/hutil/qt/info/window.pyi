@@ -9,10 +9,15 @@ import PySide6.QtWidgets
 
 import hou
 from houtypes import JSONValue
+from typing_extensions import ReadOnly, TypedDict, Unpack
 from hutil.qt.common import config, core, qmlviews
 from hutil.qt.info import nodeinfo
 
 SST = TypeVar("SST", bound="BaseInfoState[Any, Any]")
+
+# The keyword BaseInfoState takes; any others are set as Info fields.
+class _BaseInfoStateKwargs(TypedDict, total=False, extra_items=ReadOnly[object]):  # type: ignore[call-arg]
+    editor: hou.NetworkEditor | None
 
 CURRENT_VERSION: int
 DEFAULT_NODE_COLOR: hou.Color
@@ -119,7 +124,7 @@ class NodeInfoState(BaseInfoState[NodeInfoConfig, nodeinfo.NodeInfo]):
     outputIndexChanged: ClassVar[PySide6.QtCore.Signal]
     infoChanged: ClassVar[PySide6.QtCore.Signal]
     zoom: float
-    def __init__(self, **kwargs: Any) -> None: ...
+    def __init__(self, **kwargs: Unpack[_BaseInfoStateKwargs]) -> None: ...
     def __del__(self) -> None: ...
     def themeEditorTitle(self) -> str: ...
     def outOfDate(self) -> bool: ...

@@ -6,7 +6,7 @@ from PySide6 import QtCore, QtGui
 from pxr import Sdf, Usd
 
 _T = TypeVar("_T")
-_RGB: TypeAlias = list[float] | tuple[float, ...]
+_RGB: TypeAlias = list[float] | tuple[float, float, float]
 
 class _ItemJsonDict(TypedDict):
     type: str

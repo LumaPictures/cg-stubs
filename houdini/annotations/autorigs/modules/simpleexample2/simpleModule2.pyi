@@ -23,6 +23,8 @@ class SimpleModule2(
         None,
         None,
         None,
+        "SimpleGuideTab",
+        AutoRigsAsset,
     ]
 ):
     MODULE_TYPE: str
@@ -30,7 +32,8 @@ class SimpleModule2(
     DEFAULT_JSON_FILE: str
     DEFAULT_JSON: _SimpleModuleJson
     autorigs_asset: AutoRigsAsset
-    guidetab: "SimpleGuideTab"
+    guidetab: "SimpleGuideTab | None"
+    buildguides: SimpleGuide
     def __init__(self, autorigs_asset: AutoRigsAsset) -> None: ...
     def updateParent(self, modulesdict: Mapping[str, Sequence[Mod.Module]]) -> None: ...
     def buildFromDefault(self) -> None: ...
@@ -40,9 +43,12 @@ class SimpleModule2(
 
 class SimpleGuideTab(
     Mod.ModuleGuideTab[
-        _SimpleOptionsJson, _SimpleParamsJson, _GuideNamesJson, ModuleOptionsWidget, ModuleParamsWidget, SimpleGuide
+        _SimpleOptionsJson, _SimpleParamsJson, _GuideNamesJson, ModuleOptionsWidget, ModuleParamsWidget, SimpleGuide, ModuleTabsWidget
     ]
 ):
     tabswidget: ModuleTabsWidget
+    buildguides: SimpleGuide
+    optionswidget: ModuleOptionsWidget
+    paramswidget: ModuleParamsWidget
     def __init__(self, modulesdict: Mapping[str, Sequence[Mod.Module]], buildguides: SimpleGuide) -> None: ...
     def updateParent(self, modulesdict: Mapping[str, Sequence[Mod.Module]]) -> None: ...

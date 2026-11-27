@@ -6,10 +6,10 @@ import resourceui as rui
 from collections.abc import Callable as Callable, Sequence
 from hutil.PySide import QtWidgets
 from hutil.PySide.QtWidgets import QComboBox
-from typing import Any
+from typing import Unpack
 from viewerhandle import hudapi as hudapi
 from viewerhandle.hudapi import _HUDHandle, _HUDParmAnimatedKwargs, _HUDParmChangeKwargs, _HUDParmTemplateChangeKwargs, _HUDSettings
-from viewerhandle.hudwidgets import _KeyFrameEventKwargs
+from viewerhandle.hudwidgets import _HUDWidgetOptions, _KeyFrameEventKwargs
 
 class ComboBox(QComboBox):
     def __init__(self, parent: PySide6.QtWidgets.QWidget | None = None) -> None: ...
@@ -45,7 +45,7 @@ class Menu(QtWidgets.QWidget):
 
 class HUDMenu(hudapi.HUDWidgetBase):
     BG_STYLE_SHEET: str
-    def __init__(self, handle: _HUDHandle, target_parm: hou.Parm | None, hud_widget_key: str, window_key: str, **kwargs: Any) -> None: ...
+    def __init__(self, handle: _HUDHandle, target_parm: hou.Parm | None, hud_widget_key: str, window_key: str, **kwargs: Unpack[_HUDWidgetOptions]) -> None: ...
     def onParmChangeEvent(self, kwargs: _HUDParmChangeKwargs) -> None: ...
     def onUpdateShadowEffectState(self, value: bool) -> None: ...
     def hasShadowEffect(self) -> bool: ...

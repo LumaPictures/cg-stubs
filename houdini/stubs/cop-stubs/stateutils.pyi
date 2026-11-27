@@ -81,7 +81,7 @@ class PickingAreaDrawable(hou.Drawable2D):
     size: hou.Vector2
     drawable: hou.Drawable2D
     def __init__(self, viewer: hou.SceneViewer | hou.CompositorViewer, name: str) -> None: ...
-    def draw(self, handle: hou.Handle) -> None: ...
+    def draw(self, handle: int) -> None: ...
     def getDrawableAttribute(self, name: str) -> Any: ...
     def setSize(self, size: hou.Vector2) -> None: ...
     def getSize(self) -> hou.Vector2: ...
@@ -97,7 +97,7 @@ class LayerDrawable:
     drawable: hou.Drawable2D
     def __init__(self, scene_viewer: hou.SceneViewer | hou.CompositorViewer, layer: hou.ImageLayer, pickable: bool = False, name: str = 'layer_drawable', show: bool = True) -> None: ...
     def show(self) -> None: ...
-    def draw(self, draw_handle: hou.Handle) -> None: ...
+    def draw(self, draw_handle: int) -> None: ...
     def setVisible(self, i_see_you: bool) -> None: ...
     def isVisible(self) -> bool: ...
     def update(self, layer: hou.ImageLayer) -> None: ...
@@ -108,13 +108,13 @@ class LayerDrawable:
         We've decided that if the node display flag is not set on the node
         then its layer drawable should not render    
         """
-    def setCopOutputVisibility(self, scene_viewer: hou.SceneViewer | hou.CompositorViewer, node: hou.Node, show: bool) -> None:
+    def setCopOutputVisibility(self, scene_viewer: hou.SceneViewer | hou.CompositorViewer, node: hou.OpNode, show: bool) -> None:
         """
         To prevent z-fighting, it's better to hide the COP output    
         When the layer drawable is being displayed, hide the
         COP output
         """
-    def toggleCopOutputVisibility(self, scene_viewer: hou.SceneViewer | hou.CompositorViewer, node: hou.Node) -> None: ...
+    def toggleCopOutputVisibility(self, scene_viewer: hou.SceneViewer | hou.CompositorViewer, node: hou.OpNode) -> None: ...
 
 class CopInputType(Enum):
     INVALID = 0
@@ -158,7 +158,7 @@ class CopCryptomattePicker(CopPicker):
     attribs is equal to HOM_ImageLayer.attributes()  
     """
     manifest: dict[int, str]
-    def __init__(self, attribs: Mapping[str, Any]) -> None: ...
+    def __init__(self, attribs: Mapping[str, hou._OptionValue]) -> None: ...
     def authorIndices(self, crypto_buffers: Sequence[bytes], device: hou.UIEventDevice) -> None:
         """
         converts the crypto buffer into an id and then adds it to the
@@ -169,7 +169,7 @@ class CopCryptomattePicker(CopPicker):
         """
         Get an id from the raw crypto buffer    
         """
-    def unionedManifestFromAttributes(self, attribs: Mapping[str, Any]) -> dict[int, str]:
+    def unionedManifestFromAttributes(self, attribs: Mapping[str, hou._OptionValue]) -> dict[int, str]:
         """
         From a HOM_ImageLayer, generate a unioned manifest to use
         as a map to look into with our indices 
@@ -206,7 +206,7 @@ class CopCryptomattePicker(CopPicker):
         But this means we need to expand these because the picker does not    
         """
     @staticmethod
-    def getAllCryptoKeysAsString(attribs: Mapping[str, Any]) -> str: ...
+    def getAllCryptoKeysAsString(attribs: Mapping[str, hou._OptionValue]) -> str: ...
 
 class Transform2dStaticBinder:
     """
@@ -230,10 +230,18 @@ class LayerBuilder:
     def buildPreHighlightLayer(scene_viewer: hou.SceneViewer | hou.CompositorViewer, dev: hou.UIEventDevice | None = None, layer: hou.ImageLayer | None = None) -> hou.ImageLayer: ...
     @staticmethod
     def buildColorLayer(layer: hou.ImageLayer | None = None, color: Sequence[float] = [0.0, 0.0, 0.0]) -> hou.ImageLayer: ...
+    @typing.overload
     @staticmethod
-    def getPrimHighlightColor(scene_viewer: hou.SceneViewer | hou.CompositorViewer) -> tuple[float, ...]: ...
+    def getPrimHighlightColor(scene_viewer: hou.SceneViewer) -> tuple[float, float, float, float]: ...
+    @typing.overload
     @staticmethod
-    def getPrimPreHighlightColor(scene_viewer: hou.SceneViewer | hou.CompositorViewer, pick_mod: hou.EnumValue[hou.pickModifier]) -> tuple[float, ...]: ...
+    def getPrimHighlightColor(scene_viewer: hou.CompositorViewer) -> tuple[float, float, float]: ...
+    @typing.overload
+    @staticmethod
+    def getPrimPreHighlightColor(scene_viewer: hou.SceneViewer, pick_mod: hou.EnumValue[hou.pickModifier]) -> tuple[float, float, float, float]: ...
+    @typing.overload
+    @staticmethod
+    def getPrimPreHighlightColor(scene_viewer: hou.CompositorViewer, pick_mod: hou.EnumValue[hou.pickModifier]) -> tuple[float, float, float]: ...
 
 class VerbExecutioner:
     verb: hou.CopVerb
@@ -331,19 +339,19 @@ def handleExpansion(buffer: float | list[float] | tuple[float, ...], target_coun
     we need to handle that expansion ...
     """
 def layerIsHeight(layer: hou.ImageLayer) -> bool: ...
-def getInputLayer(node: hou.Node | None, index: int = 0) -> hou.ImageLayer | None:
+def getInputLayer(node: hou.CopNode | None, index: int = 0) -> hou.ImageLayer | None:
     """
     Gets the layer plugged into the index-th input of this node
     """
-def getInputLayerAsGeo(node: hou.Node | None, index: int = 0) -> hou.Geometry | None:
+def getInputLayerAsGeo(node: hou.CopNode | None, index: int = 0) -> hou.Geometry | None:
     """
     Gets the layer as geomtry plugged into the index-th input of this node
     """
-def getInputLayers(node: hou.Node) -> list[hou.ImageLayer | None]:
+def getInputLayers(node: hou.CopNode) -> list[hou.ImageLayer | None]:
     """
     Grab all the layers plugged into the node    
     """
-def getInputLayerOrVDB(node: hou.Node | None, index: int = 0) -> hou.ImageLayer | hou.NanoVDB | None:
+def getInputLayerOrVDB(node: hou.CopNode | None, index: int = 0) -> hou.ImageLayer | hou.NanoVDB | None:
     """
     Gets the layer or VDB plugged into the index-th input of this node
     when convert is set to True, Height layers get converted to geometry

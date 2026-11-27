@@ -11,7 +11,7 @@ def isSupportedAssetPath(file_path: str) -> bool:
 def isSupportedAssetExt(file_ext: str) -> bool:
     """ Returns whether the asset is supported based on 
         the extension."""
-def create_instance(node_type: hou.NodeType) -> tuple[hou.Node, hou.Node | None]:
+def create_instance(node_type: hou.NodeType) -> tuple[hou.OpNode, hou.OpNode | None]:
     """
     Create an instance (i.e. a node) of the given node type, finding the
     proper parent node to hold it.

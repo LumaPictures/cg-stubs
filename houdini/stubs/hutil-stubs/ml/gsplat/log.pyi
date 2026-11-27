@@ -1,6 +1,40 @@
-from collections.abc import Iterable, Iterator
+from _typeshed import SupportsWrite
+from collections.abc import Iterable, Iterator, Mapping
 from types import TracebackType
-from typing import Any, Literal, Self, TextIO
+from typing import Literal, NotRequired, Self, TextIO, TypedDict, Unpack
+
+class _LogState(TypedDict):
+    log_to_standard_output: bool
+    log_file: TextIO | None
+    _reopen_path: NotRequired[str]
+    _reopen_encoding: NotRequired[str]
+
+class _TqdmKwargs(TypedDict, total=False):
+    desc: str | None
+    total: float | None
+    leave: bool | None
+    file: SupportsWrite[str] | None
+    ncols: int | None
+    mininterval: float
+    maxinterval: float
+    miniters: float | None
+    ascii: bool | str | None
+    disable: bool | None
+    unit: str
+    unit_scale: bool | float
+    dynamic_ncols: bool
+    smoothing: float
+    bar_format: str | None
+    initial: float
+    position: int | None
+    postfix: Mapping[str, object] | str | None
+    unit_divisor: float
+    write_bytes: bool
+    lock_args: tuple[bool | None, float | None] | tuple[bool | None] | None
+    nrows: int | None
+    colour: str | None
+    delay: float | None
+    gui: bool
 
 class TeeStdout:
     """
@@ -50,7 +84,7 @@ class LoggedTqdm:
             # do work
             logged_pbar.set_description(f"loss={loss:.3f}")
     '''
-    def __init__(self, iterable: Iterable[int] | None = None, log: Log | None = None, log_every: int = 100, log_on_complete: bool = True, **tqdm_kwargs: Any) -> None:
+    def __init__(self, iterable: Iterable[int] | None = None, log: Log | None = None, log_every: int = 100, log_on_complete: bool = True, **tqdm_kwargs: Unpack[_TqdmKwargs]) -> None:
         """
         Initialize the logged tqdm wrapper.
 
@@ -79,7 +113,7 @@ class LoggedTqdm:
     def n(self) -> float:
         """Current iteration count."""
 
-def logged_trange(*args: int, log: Log | None = None, log_every: int = 100, log_on_complete: bool = True, **kwargs: Any) -> LoggedTqdm:
+def logged_trange(*args: int, log: Log | None = None, log_every: int = 100, log_on_complete: bool = True, **kwargs: Unpack[_TqdmKwargs]) -> LoggedTqdm:
     '''
     Shorthand for LoggedTqdm(range(*args), ...).
 

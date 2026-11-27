@@ -1,0 +1,13 @@
+import hou
+
+class Prompter:
+    # Set in __init__, so instances never reach the method msg() of the same name.
+    msg: str | None
+    end_time: float | None
+    scene_viewer: hou.SceneViewer
+    enabled: bool
+    msg_type: hou.EnumValue[hou.promptMessageType]
+    def enable(self, val: bool) -> bool: ...
+    def show(self, msg: str, duration_sec: float | None = ..., msg_type: hou.EnumValue[hou.promptMessageType] | None = ...) -> None: ...
+    def reshow(self) -> None: ...
+    def clear(self) -> None: ...

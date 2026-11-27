@@ -1,6 +1,6 @@
 from collections.abc import Callable, Sequence
 from datetime import datetime
-from typing import Any, Generic, TypeAlias, TypeVar
+from typing import Any, Generic, Never, TypeAlias, TypeVar
 
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import Qt
@@ -9,10 +9,11 @@ from houtypes import JSONValue
 
 from . import charts, formatting, styling
 
-_F = TypeVar("_F", bound=Callable[..., Any])
+_F = TypeVar("_F", bound=Callable[[Never], object])
 _In = TypeVar("_In")
 _Out = TypeVar("_Out")
 
+ColorSpec: TypeAlias = str | QtGui.QColor | Sequence[float]
 _ColorData: TypeAlias = str | list[float] | tuple[float, ...]
 
 converter_registry: dict[int, Callable[[Any], Any]]

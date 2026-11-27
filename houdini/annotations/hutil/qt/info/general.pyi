@@ -8,10 +8,10 @@ from hutil.qt.pluto import colors
 BATCH_SIZE: int
 UNUSED_POINTS_LABEL: str
 DEFAULT_NODE_COLOR: PySide6.QtGui.QColor
-EXCLUSIVE_VIZ_TYPES: tuple[str, ...]
+EXCLUSIVE_VIZ_TYPES: tuple[str, str]
 LIGHTING_CATEGORY: str
 VIZ_CATEGORY: hou.EnumValue[hou.viewportVisualizerCategory]
-VISUALIZER_EVENTS: tuple[hou.EnumValue[hou.viewportVisualizerEventType], ...]
+VISUALIZER_EVENTS: tuple[hou.EnumValue[hou.viewportVisualizerEventType], hou.EnumValue[hou.viewportVisualizerEventType], hou.EnumValue[hou.viewportVisualizerEventType], hou.EnumValue[hou.viewportVisualizerEventType], hou.EnumValue[hou.viewportVisualizerEventType]]
 TIME_FORMAT_12HR: str
 TIME_FORMAT_24HR: str
 DATE_FORMAT: str
@@ -31,7 +31,7 @@ type_name_to_plural: dict[str, str]
 image_storage_name: dict[hou.EnumValue[hou.imageLayerStorageType], str]
 image_storage_name_brief: dict[hou.EnumValue[hou.imageLayerStorageType], str]
 xform_order_codes: dict[str, str]
-usd_base_kinds: tuple[str, ...]
+usd_base_kinds: tuple[str, str, str, str, str]
 usd_categories: dict[str, Sequence[str]]
 usd_category_lookup: dict[str, str] | None
 prim_count_renames: dict[str, str]

@@ -1,5 +1,5 @@
-from collections.abc import Callable, Iterable, Mapping
-from typing import Any, Literal, Unpack, overload, type_check_only
+from collections.abc import Iterable, Mapping
+from typing import Literal, Unpack, overload, type_check_only
 
 import hou
 import statehud.window as shs
@@ -26,7 +26,6 @@ from curvestate.curve3.adapters import SceneViewerAdapter
 from curvestate.curve3.channels import Curve3ChannelManager
 from curvestate.curve3.controller import Curve3Controller
 from curvestate.curve3.tool_base import Curve3ToolBase
-from hutil.qt.data.panels import _HudTemplate
 
 
 # The parameters Curve3SettingsHUD binds in its window, by name, so that getParmValue() gives
@@ -50,7 +49,7 @@ class _Curve3SettingsHUDWindow(shs.WidgetBundleWindow):
     def getParmValue(self, name: str, menus_as_int: bool = ...) -> _HUDParmValue: ...
 
 
-class Curve3SettingsHUD(FrameWorkParameterWidget):
+class Curve3SettingsHUD(FrameWorkParameterWidget[_Curve3SettingsHUDWindow]):
     PRIMTYPE_WIDGET: Literal["curve3_draw_primtype"]
     ORDER_WIDGET: Literal["curve3_draw_order"]
     NEW_ANCHORTYPE_WIDGET: Literal["curve3_draw_new_anchortype"]
@@ -65,10 +64,10 @@ class Curve3SettingsHUD(FrameWorkParameterWidget):
     CONVERT_DIVS_WIDGET: Literal["curve3_convert_divs"]
     PRIMTYPE_LABELS: list[str]
     MODE_TABS: Literal["curve3_mode_tabs"]
-    TAB_GENERAL: str
-    TAB_EDIT: str
-    TAB_DRAW: str
-    TAB_ORIENT_SCALE: str
+    TAB_GENERAL: Literal["general"]
+    TAB_EDIT: Literal["edit"]
+    TAB_DRAW: Literal["draw"]
+    TAB_ORIENT_SCALE: Literal["orient_scale"]
     TAB_NAMES: list[str]
     TAB_LABELS: list[str]
     SHOW_FRAME_GUIDE_WIDGET: Literal["curve3_show_frame_guide"]
@@ -83,9 +82,17 @@ class Curve3SettingsHUD(FrameWorkParameterWidget):
     controller: Curve3Controller
     active_tool_name: str
     hud_window: _Curve3SettingsHUDWindow
+    @type_check_only
+    @property
+    def widgethotkey(self) -> str | None: ...
+    @type_check_only
+    @widgethotkey.setter
+    def widgethotkey(self, val: str | None) -> None: ...
     def __init__(self, curve_state: "CurveState", scene_viewer: hou.SceneViewer, include_framework_tab: bool) -> None: ...
-    def initWindow(self, width: float = ...) -> None: ...
-    def set_setting_value(self, widget_name: str, value: object, *, state_parms: dict[str, ViewerParmProperties] | None = ...) -> None: ...
+    def initWindow(self, width: int = ...) -> None: ...
+    def set_setting_value(
+        self, widget_name: str, value: bool | int | float | str, *, state_parms: dict[str, ViewerParmProperties] | None = ...
+    ) -> None: ...
     def handle_node_setting_parm_changes(self, parm_names: Iterable[str]) -> None: ...
     def loadParmsFromStorage(self) -> None: ...
     def saveParmsToStorage(self) -> None: ...
@@ -97,7 +104,7 @@ class Curve3SettingsHUD(FrameWorkParameterWidget):
     def sync_show_handle_widget(self) -> None: ...
 
 
-class Curve3FrameworkState(FrameworkState, RecordableViewerState):
+class Curve3FrameworkState(FrameworkState[Curve3SettingsHUD], RecordableViewerState):
     DEFAULT_TOOLS: list[str]
     DEFAULT_TOOLS_STR_TO_LABEL: dict[str, str]
     DEFAULT_TOOLS_STR_TO_RADIAL_LOCATION: dict[str, hou.EnumValue[hou.radialItemLocation]]
@@ -105,10 +112,12 @@ class Curve3FrameworkState(FrameworkState, RecordableViewerState):
     hud_parameter_panel: Curve3SettingsHUD | None
     active_tool: Curve3ToolBase | None
     def __init__(
-        self, *args: Unpack[tuple[str, hou.SceneViewer | hou.CompositorViewer, HotkeyManager]], **kwargs: object
+        self,
+        *args: Unpack[tuple[str, hou.SceneViewer | hou.CompositorViewer, HotkeyManager]],
+        **kwargs: str | hou.SceneViewer | hou.CompositorViewer | HotkeyManager,
     ) -> None: ...
     def onEnter(self, kwargs: ViewerStateEnterKwargs) -> None: ...
-    def setActiveTool(self, toolname: str, on_activate_kwargs: ViewerStateKwargs | dict[str, Any] | None = ...) -> None: ...
+    def setActiveTool(self, toolname: str, on_activate_kwargs: ViewerStateKwargs | dict[str, object] | None = ...) -> None: ...
     def onKeyTransitEvent(self, kwargs: ViewerStateEventKwargs) -> bool: ...
     def onExit(self, kwargs: ViewerStateKwargs) -> None: ...
     def onCommand(self, kwargs: ViewerStateCommandKwargs) -> bool: ...
@@ -116,7 +125,7 @@ class Curve3FrameworkState(FrameworkState, RecordableViewerState):
 
 
 class CurveState(Curve3FrameworkState):
-    HUD_TEMPLATE: _HudTemplate
+    HUD_TEMPLATE: hou._HudTemplate
     state_category: hou.OpNodeTypeCategory
     hotkeys: HotkeyManager
     include_framework_tab: bool
@@ -148,12 +157,12 @@ class CurveState(Curve3FrameworkState):
     def set_settings_hud_value(
         self,
         widget_name: str,
-        value: object,
+        value: bool | int | float | str,
         *,
         state_parms: dict[str, ViewerParmProperties] | None = ...,
     ) -> bool: ...
-    def setActiveTool(self, toolname: str, on_activate_kwargs: ViewerStateKwargs | dict[str, Any] | None = ...) -> None: ...
-    def hud_hints_for_tool(self, tool_name: str) -> list[dict[str, str]]: ...
+    def setActiveTool(self, toolname: str, on_activate_kwargs: ViewerStateKwargs | dict[str, object] | None = ...) -> None: ...
+    def hud_hints_for_tool(self, tool_name: str) -> list[hou._HudRow]: ...
     def show(self, visible: bool) -> None: ...
     def onGenerate(self, kwargs: ViewerStateKwargs) -> None: ...
     def onEnter(self, kwargs: ViewerStateEnterKwargs) -> None: ...
@@ -195,6 +204,6 @@ def createCurveStateTemplate(
     state_label: str,
     icon_name: str,
     state_category: hou.OpNodeTypeCategory,
-    state_class_type: Callable[[str, hou.SceneViewer | hou.CompositorViewer], object],
+    state_class_type: hou._SceneViewerStateFactory | hou._CompositorViewerStateFactory,
 ) -> hou.ViewerStateTemplate: ...
 def createViewerStateTemplate() -> hou.ViewerStateTemplate: ...

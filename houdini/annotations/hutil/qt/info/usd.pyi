@@ -1,4 +1,6 @@
-from typing import Any, ClassVar, Self
+from typing import ClassVar, Self
+
+from typing_extensions import Unpack
 
 import PySide6.QtCore
 from pxr import Pcp, Usd
@@ -6,6 +8,7 @@ from pxr import Pcp, Usd
 import hou
 from hutil.qt.common import core
 from hutil.qt.info import nodeinfo, window
+from hutil.qt.info.window import _BaseInfoStateKwargs
 
 current_prim_win: UsdInfoWindow | None
 attr_source_label: dict[Usd.ResolveInfoSource, str]
@@ -144,7 +147,7 @@ class UsdConfig(window.NodeInfoConfig): ...
 class UsdState(window.BaseInfoState[UsdConfig, UsdInfo]):
     reloadable: bool
     reloadableChanged: ClassVar[PySide6.QtCore.Signal]
-    def __init__(self, **kwargs: Any) -> None: ...
+    def __init__(self, **kwargs: Unpack[_BaseInfoStateKwargs]) -> None: ...
     def reload(self, recook: bool = ..., force_update: bool = ...) -> None: ...
     def outOfDate(self) -> bool: ...
     def lopNode(self) -> hou.LopNode | None: ...

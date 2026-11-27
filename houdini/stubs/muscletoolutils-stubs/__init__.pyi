@@ -2,16 +2,30 @@ import hou
 import stateutils as su
 from collections.abc import Container, Iterable, Mapping, Sequence
 from houtypes import ParmActionButtonKwargs, ParmCallbackKwargs, ParmMenuScriptKwargs, ShelfToolKwargs, ViewerStateKwargs
-from typing import Any, Protocol
+from typing import Literal, Protocol, TypedDict, Unpack
 
 from typing import TypeVar
 from typing import TypeVar
 _T = TypeVar('_T')
+_NodeT = TypeVar('_NodeT', bound=hou.Node)
 class _FlexState(Protocol):
     @property
     def autoflexid_selection(self) -> Sequence[str] | None: ...
     @property
     def muscleid_selection(self) -> Sequence[str]: ...
+
+class _StrokeDataKwargs(TypedDict, total=False):
+    pos: hou.Vector3
+    dir: hou.Vector3
+    proj_pos: hou.Vector3
+    proj_uv: hou.Vector3
+    proj_prim: int
+    proj_success: bool
+    pressure: float
+    time: float
+    tilt: float
+    angle: float
+    roll: float
 
 def updateMirrorNameParmInstance(kwargs: ParmCallbackKwargs) -> None: ...
 def selectAndSetCapturePose() -> None:
@@ -25,7 +39,7 @@ def detachMuscleInputs(node: hou.ObjNode | None) -> None: ...
 def fixMuscleSelection(objselection: Iterable[hou.ObjNode], my_types: Container[str]) -> tuple[hou.ObjNode, ...]:
     """Return a tuple of items, uniqued, and only if they match types from my_types"""
 def removeFromSelection(n: hou.Node, sel: tuple[_T, ...]) -> tuple[_T, ...]: ...
-def nodeTypeInSelection(types: Iterable[str], selection: Iterable[hou.Node]) -> int:
+def nodeTypeInSelection(types: Iterable[str], selection: Iterable[hou.Node]) -> Literal[0, 1]:
     """find any occurrence of the types listed in the selection"""
 def displaceSkinWithMuscle() -> None: ...
 def enterNodeState(sceneviewer: hou.SceneViewer, node: hou.OpNode) -> None: ...
@@ -39,7 +53,7 @@ def createTissueSim() -> int | None:
     """creates a tissue system by combining muscles, bones, and connective tissue into a physical simulation."""
 def modifyTissueSim(tissue_system: hou.ObjNode) -> None:
     """modifies a tissue system by adding/removing muscles and bones."""
-def isMuscle(sel: hou.Node) -> int: ...
+def isMuscle(sel: hou.Node) -> Literal[0, 1]: ...
 def mirrorMuscle(obj: hou.ObjNode, scale: hou.Vector3 | Sequence[float], from_node: hou.ObjNode) -> None:
     """ Given a riggedmuscle, mirror it inplace using the given scale
     """
@@ -47,7 +61,7 @@ def mirrorFrankenMuscle(obj: hou.ObjNode, scale: hou.Vector3 | Sequence[float], 
     """ Mirroring a FrankenMuscle just does the naming and parenting business without any scaling.
         Mirror scales are applied to the component pieces instead.
     """
-def findNodeWithMirrorPrefix(orignode: hou.Node | None) -> hou.Node | None:
+def findNodeWithMirrorPrefix(orignode: _NodeT | None) -> _NodeT | hou.OpNode | None:
     """ Return the node that has the same name as the current node, but with a mirrored prefix L_ <=> R_.
         return the original node if none is found.
     """
@@ -153,7 +167,7 @@ class StrokeData:
     angle: float
     roll: float
     VERSION: int
-    def __init__(self, **kwargs: Any) -> None: ...
+    def __init__(self, **kwargs: Unpack[_StrokeDataKwargs]) -> None: ...
     @staticmethod
     def create() -> StrokeData: ...
     def encode(self) -> su.ByteStream:

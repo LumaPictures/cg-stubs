@@ -1,8 +1,8 @@
 from collections.abc import Callable, Sequence
-from typing import Protocol
+from typing import Literal, Protocol
 
 import hou
-from curvestate.curve3.adapters import ViewerAdapter
+from curvestate.curve3.adapters import SceneViewerAdapter
 from curvestate.curve3.controller import Curve3Controller
 
 class _DraggerFlagFn(Protocol):
@@ -25,12 +25,12 @@ def restore_drag_display_context(
 
 class PointMoveSession:
     controller: Curve3Controller
-    adapter: ViewerAdapter
+    adapter: SceneViewerAdapter
     undo_label: str
     def __init__(
         self,
         controller: Curve3Controller,
-        adapter: ViewerAdapter,
+        adapter: SceneViewerAdapter,
         dragger_name: str,
         undo_label: str,
         dragger_flag_fn: _DraggerFlagFn,
@@ -53,7 +53,7 @@ class PointMoveSession:
         undo_label: str | None = ...,
         drag_center_pos: hou.Vector3 | None = ...,
         lock_length: bool = ...,
-        guide_mode: str = ...,
+        guide_mode: Literal["point", "line"] = ...,
         anchor_pos: hou.Vector3 | None = ...,
         start_pos_override: hou.Vector3 | None = ...,
         is_anchor_drag: bool = ...,

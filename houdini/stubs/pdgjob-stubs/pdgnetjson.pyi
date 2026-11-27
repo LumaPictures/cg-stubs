@@ -1,7 +1,8 @@
 import builtins
 import json
 import typing
-from typing import Any, Generic
+from collections.abc import Callable as Callable
+from typing import Any, Generic, Never, Unpack
 from typing_extensions import TypedDict
 
 from typing import TypeAlias
@@ -28,13 +29,20 @@ class _KlassInfo(TypedDict):
 class _KlassJSON(TypedDict):
     _klass: _KlassInfo
 
+class _DecoderKwargs(TypedDict, total=False):
+    parse_float: Callable[[str], Any] | None
+    parse_int: Callable[[str], Any] | None
+    parse_constant: Callable[[str], Any] | None
+    strict: bool
+    object_pairs_hook: Callable[[list[tuple[str, Any]]], Any] | None
+
 class PDGNetRPCJsonEncoder(json.JSONEncoder):
     """ Json Encoder for PDGNet RPC """
     def default(self, obj: object) -> _BytesJSON | _BinaryJSON | _KlassJSON: ...
 
 class PDGNetRPCJsonDecoder(json.JSONDecoder):
     """ Json Decoder for PDGNet RPC """
-    def __init__(self, *args: object, **kwargs: Any) -> None: ...
+    def __init__(self, *args: Never, **kwargs: Unpack[_DecoderKwargs]) -> None: ...
     def object_hook(self, obj: dict[str, _RpcJSON]) -> _RpcJSON: ...
 
 class PDGNetRPCJsonWrapper(Generic[_J]):

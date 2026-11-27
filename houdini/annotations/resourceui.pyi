@@ -1,6 +1,6 @@
 from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence
 from contextlib import contextmanager
-from typing import Any, ClassVar, Literal, ParamSpec, Protocol, Self, TypeAlias, TypeVar
+from typing import Any, ClassVar, Literal, ParamSpec, Protocol, Self, TypeAlias, TypedDict, TypeVar, Unpack, type_check_only
 
 import numpy
 import PySide6.QtCore
@@ -48,13 +48,13 @@ class _MessageView(PySide6.QtWidgets.QTextEdit):
 def messageView(parent: PySide6.QtWidgets.QWidget | None = ...) -> _MessageView: ...
 
 class TraceEventHandlerDialog(PySide6.QtWidgets.QDialog):
-    UNCHECK_LIST: tuple[str, ...]
+    UNCHECK_LIST: tuple[str, str, str, str]
     log_options_group: PySide6.QtWidgets.QButtonGroup
     def __init__(self, browser: _ResourceBrowser) -> None: ...
     def __del__(self) -> None: ...
     def display(self) -> None: ...
     def setTraceOption(self, log_option: str) -> None: ...
-    def onResourceEvent(self, **kwargs: Any) -> None: ...
+    def onResourceEvent(self, **kwargs: hou._ResourceEventValue) -> None: ...
     def accept(self) -> None: ...
 
 # QPushButton or QToolButton, depending on a preference.
@@ -274,18 +274,48 @@ class TabWidgetTab(PySide6.QtWidgets.QScrollArea):
     def addWidget(self, widget: PySide6.QtWidgets.QWidget, widget_name: str) -> None: ...
     def removeWidget(self, widget_name: str) -> None: ...
 
+# The keywords QLabel's constructors take.
+class _QLabelKwargs(TypedDict, total=False):
+    parent: PySide6.QtWidgets.QWidget | None
+    f: PySide6.QtCore.Qt.WindowType
+    text: str | None
+    textFormat: PySide6.QtCore.Qt.TextFormat | None
+    pixmap: PySide6.QtGui.QPixmap | None
+    scaledContents: bool | None
+    alignment: PySide6.QtCore.Qt.AlignmentFlag | None
+    wordWrap: bool | None
+    margin: int | None
+    indent: int | None
+    openExternalLinks: bool | None
+    textInteractionFlags: PySide6.QtCore.Qt.TextInteractionFlag | None
+    hasSelectedText: bool | None
+    selectedText: str | None
+
+@type_check_only
+class _LabelMinSpacerKwargs(_QLabelKwargs, total=False):
+    min_size_hint: int | None
+
+@type_check_only
+class _LabelMaxSpacerKwargs(TypedDict, total=False):
+    max_size_hint: int | None
+
 class LabelMinSpacer(PySide6.QtWidgets.QLabel):
     min_size_hint: int
     def __init__(
-        self, *args: str | PySide6.QtWidgets.QWidget | PySide6.QtCore.Qt.WindowType | None, **kwargs: Any
+        self,
+        *args: str | PySide6.QtWidgets.QWidget | PySide6.QtCore.Qt.WindowType | None,
+        **kwargs: Unpack[_LabelMinSpacerKwargs],
     ) -> None: ...
     def sizeHint(self) -> PySide6.QtCore.QSize: ...
     def label(self) -> Self: ...
 
 class LabelMaxSpacer(PySide6.QtWidgets.QLabel):
     max_size_hint: int
+    # The keywords are not passed on to QLabel.
     def __init__(
-        self, *args: str | PySide6.QtWidgets.QWidget | PySide6.QtCore.Qt.WindowType | None, **kwargs: Any
+        self,
+        *args: str | PySide6.QtWidgets.QWidget | PySide6.QtCore.Qt.WindowType | None,
+        **kwargs: Unpack[_LabelMaxSpacerKwargs],
     ) -> None: ...
     def sizeHint(self) -> PySide6.QtCore.QSize: ...
     def label(self) -> Self: ...
@@ -395,9 +425,20 @@ class WindowBar(PySide6.QtWidgets.QLabel):
     def paintEvent(self, paint_event: PySide6.QtGui.QPaintEvent) -> None: ...
     def backgroundColor(self) -> tuple[float, float, float, float]: ...
 
+@type_check_only
+class _LabelEditKwargs(TypedDict, total=False):
+    parent: PySide6.QtWidgets.QWidget | None
+    text: str | None
+    tooltip: str | None
+    alignment: PySide6.QtCore.Qt.AlignmentFlag
+    bold_font: bool
+    width: int | None
+    use_max_width: bool
+    label_editing: bool
+
 class LabelEdit(PySide6.QtWidgets.QWidget):
     textChanged: ClassVar[PySide6.QtCore.Signal]
-    def __init__(self, **kwargs: Any) -> None: ...
+    def __init__(self, **kwargs: Unpack[_LabelEditKwargs]) -> None: ...
     def toolTip(self) -> ToolTip: ...
     def label(self) -> PySide6.QtWidgets.QLabel: ...
     def enterEvent(self, event: PySide6.QtGui.QEnterEvent) -> None: ...
@@ -540,9 +581,18 @@ def mapSliderToValue(slider: SliderBase, value: float, value_min: float, value_m
 def clampInt32(value: _NumT) -> _NumT | int: ...
 def clampFloat64Exp(value: float) -> float: ...
 
+# The keywords QSlider's constructors take.
+@type_check_only
+class _QSliderKwargs(TypedDict, total=False):
+    parent: PySide6.QtWidgets.QWidget | None
+    tickPosition: PySide6.QtWidgets.QSlider.TickPosition | None
+    tickInterval: int | None
+
 class SliderBase(PySide6.QtWidgets.QSlider):
     TYPE: type[float] | type[int]
-    def __init__(self, *args: PySide6.QtCore.Qt.Orientation | PySide6.QtWidgets.QWidget | None, **kwargs: Any) -> None: ...
+    def __init__(
+        self, *args: PySide6.QtCore.Qt.Orientation | PySide6.QtWidgets.QWidget | None, **kwargs: Unpack[_QSliderKwargs]
+    ) -> None: ...
     def event(self, event: PySide6.QtCore.QEvent) -> bool: ...
     def leaveEvent(self, event: PySide6.QtCore.QEvent) -> None: ...
     def precision(self) -> int: ...
@@ -569,7 +619,9 @@ class FloatSlider(SliderBase):
     DECIMALS: int
     @staticmethod
     def dataType() -> type[float]: ...
-    def __init__(self, *args: PySide6.QtCore.Qt.Orientation | PySide6.QtWidgets.QWidget | None, **kwargs: Any) -> None: ...
+    def __init__(
+        self, *args: PySide6.QtCore.Qt.Orientation | PySide6.QtWidgets.QWidget | None, **kwargs: Unpack[_QSliderKwargs]
+    ) -> None: ...
     def intValue(self, value: float) -> int | None: ...
     def toTypeValue(self, value: float) -> float | None: ...
     def sizeHint(self) -> PySide6.QtCore.QSize: ...
@@ -585,7 +637,9 @@ class IntSlider(SliderBase):
     sliderChanged: ClassVar[PySide6.QtCore.Signal]
     @staticmethod
     def dataType() -> type[int]: ...
-    def __init__(self, *args: PySide6.QtCore.Qt.Orientation | PySide6.QtWidgets.QWidget | None, **kwargs: Any) -> None: ...
+    def __init__(
+        self, *args: PySide6.QtCore.Qt.Orientation | PySide6.QtWidgets.QWidget | None, **kwargs: Unpack[_QSliderKwargs]
+    ) -> None: ...
     def sizeHint(self) -> PySide6.QtCore.QSize: ...
     def toType(self, value: float | str) -> int: ...
     def intValue(self, value: int) -> int: ...
@@ -597,14 +651,18 @@ class IntSlider(SliderBase):
 class LogFloatSlider(FloatSlider):
     DECIMALS: int
     DOMAIN_MINIMUM: float
-    def __init__(self, *args: PySide6.QtCore.Qt.Orientation | PySide6.QtWidgets.QWidget | None, **kwargs: Any) -> None: ...
+    def __init__(
+        self, *args: PySide6.QtCore.Qt.Orientation | PySide6.QtWidgets.QWidget | None, **kwargs: Unpack[_QSliderKwargs]
+    ) -> None: ...
     def paintEvent(self, paint_event: PySide6.QtGui.QPaintEvent) -> None: ...
     def setTickmarkColor(self, color: PySide6.QtGui.QColor) -> None: ...
 
 class LogIntSlider(IntSlider):
     DECIMALS: int
     DOMAIN_MINIMUM: int
-    def __init__(self, *args: PySide6.QtCore.Qt.Orientation | PySide6.QtWidgets.QWidget | None, **kwargs: Any) -> None: ...
+    def __init__(
+        self, *args: PySide6.QtCore.Qt.Orientation | PySide6.QtWidgets.QWidget | None, **kwargs: Unpack[_QSliderKwargs]
+    ) -> None: ...
     def paintEvent(self, paint_event: PySide6.QtGui.QPaintEvent) -> None: ...
     def setTickmarkColor(self, color: PySide6.QtGui.QColor) -> None: ...
 
@@ -615,11 +673,83 @@ class SliderLabel(LabelEdit):
     def mousePressEvent(self, event: PySide6.QtGui.QMouseEvent) -> None: ...
     def lockUI(self, value: bool) -> None: ...
 
+# The keywords QWidget's constructor takes, less the `width` LabelWrapper takes for itself.
+class _LabelWrapperKwargs(TypedDict, total=False):
+    parent: PySide6.QtWidgets.QWidget | None
+    f: PySide6.QtCore.Qt.WindowType
+    modal: bool | None
+    windowModality: PySide6.QtCore.Qt.WindowModality | None
+    enabled: bool | None
+    geometry: PySide6.QtCore.QRect | None
+    frameGeometry: PySide6.QtCore.QRect | None
+    normalGeometry: PySide6.QtCore.QRect | None
+    x: int | None
+    y: int | None
+    pos: PySide6.QtCore.QPoint | None
+    frameSize: PySide6.QtCore.QSize | None
+    size: PySide6.QtCore.QSize | None
+    height: int | None
+    rect: PySide6.QtCore.QRect | None
+    childrenRect: PySide6.QtCore.QRect | None
+    childrenRegion: PySide6.QtGui.QRegion | None
+    sizePolicy: PySide6.QtWidgets.QSizePolicy | None
+    minimumSize: PySide6.QtCore.QSize | None
+    maximumSize: PySide6.QtCore.QSize | None
+    minimumWidth: int | None
+    minimumHeight: int | None
+    maximumWidth: int | None
+    maximumHeight: int | None
+    sizeIncrement: PySide6.QtCore.QSize | None
+    baseSize: PySide6.QtCore.QSize | None
+    palette: PySide6.QtGui.QPalette | None
+    font: PySide6.QtGui.QFont | None
+    cursor: PySide6.QtGui.QCursor | None
+    mouseTracking: bool | None
+    tabletTracking: bool | None
+    isActiveWindow: bool | None
+    focusPolicy: PySide6.QtCore.Qt.FocusPolicy | None
+    focus: bool | None
+    contextMenuPolicy: PySide6.QtCore.Qt.ContextMenuPolicy | None
+    updatesEnabled: bool | None
+    visible: bool | None
+    minimized: bool | None
+    maximized: bool | None
+    fullScreen: bool | None
+    sizeHint: PySide6.QtCore.QSize | None
+    minimumSizeHint: PySide6.QtCore.QSize | None
+    acceptDrops: bool | None
+    windowTitle: str | None
+    windowIcon: PySide6.QtGui.QIcon | None
+    windowIconText: str | None
+    windowOpacity: float | None
+    windowModified: bool | None
+    toolTip: str | None
+    toolTipDuration: int | None
+    statusTip: str | None
+    whatsThis: str | None
+    accessibleName: str | None
+    accessibleDescription: str | None
+    layoutDirection: PySide6.QtCore.Qt.LayoutDirection | None
+    autoFillBackground: bool | None
+    styleSheet: str | None
+    locale: PySide6.QtCore.QLocale | None
+    windowFilePath: str | None
+    inputMethodHints: PySide6.QtCore.Qt.InputMethodHint | None
+
+# The keywords QWidget's constructor takes.
+@type_check_only
+class _QWidgetKwargs(_LabelWrapperKwargs, total=False):
+    width: int | None
+
 class LabelWrapper(PySide6.QtWidgets.QWidget):
     toggle: PySide6.QtWidgets.QCheckBox
     label: PySide6.QtWidgets.QWidget
     def __init__(
-        self, toggle: PySide6.QtWidgets.QCheckBox, label: PySide6.QtWidgets.QWidget, width: int | None = ..., **kwargs: Any
+        self,
+        toggle: PySide6.QtWidgets.QCheckBox,
+        label: PySide6.QtWidgets.QWidget,
+        width: int | None = ...,
+        **kwargs: Unpack[_LabelWrapperKwargs],
     ) -> None: ...
 
 class SliderValue(hou.qt.InputField):
@@ -739,7 +869,7 @@ class ToolBar(PySide6.QtWidgets.QWidget):
         margin: PySide6.QtCore.QMargins | None = ...,
         transparent: bool = ...,
         stretch_end: bool = ...,
-        **kwargs: Any,
+        **kwargs: Unpack[_QWidgetKwargs],
     ) -> None: ...
     def addButton(self, btn_action: PySide6.QtGui.QAction, icon_names: list[str] | None = ...) -> None: ...
     def updateLook(self) -> None: ...

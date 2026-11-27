@@ -1,5 +1,5 @@
 from collections.abc import Iterable, Iterator, Sequence
-from typing import Never, TypeAlias, overload
+from typing import Never, TypeAlias, TypedDict, overload, type_check_only
 
 from typing_extensions import TypeVar
 
@@ -26,6 +26,13 @@ _StageValue: TypeAlias = _SdfValue | tuple[float, ...]
 _AttrValue: TypeAlias = _StageValue | Sequence[float]
 # What sets an attribute's parm.
 _ParmValueArg: TypeAlias = float | str | Sequence[float] | Sequence[str]
+
+@type_check_only
+class _CollectionParms(TypedDict):
+    prim: hou.Parm
+    name: hou.Parm
+    includes: hou.Parm
+    excludes: hou.Parm
 
 dbg: DbgPrinter
 COLLECTIONS_FOLDER_NAME: str
@@ -209,7 +216,7 @@ class ParmDB(StageDB):
     def parmTupleForAttr(
         self, prim_path: _PathLike, attr_name: str, create: bool = ..., custom: bool = ..., value: _ParmValueArg | None = ...
     ) -> hou.ParmTuple | None: ...
-    def parmsForCollection(self, prim_path: _PathLike, name: str) -> dict[str, hou.Parm] | None: ...
+    def parmsForCollection(self, prim_path: _PathLike, name: str) -> _CollectionParms | None: ...
     def parmForCollection(self, prim_path: _PathLike, name: str) -> hou.Parm | None: ...
     def getDetailString(self, name: str) -> str: ...
     def setDetailString(self, name: str, value: str) -> None: ...

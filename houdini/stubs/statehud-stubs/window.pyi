@@ -3,20 +3,24 @@ import resourceui as rui
 import statehud.config as config
 import statehud.utils as shu
 import typing
-from collections.abc import Callable as Callable, Iterable, Mapping, Sequence
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from hutil.PySide import QtCore, QtGui, QtWidgets
 from statehud.baseconfig import AbstractConfig as AbstractConfig
 from statehud.config import ConfigWrapper as ConfigWrapper
-from statehud.parmutils import ButtonParm as ButtonParm, ButtonStripParm as ButtonStripParm, FloatParm as FloatParm, HUDParm as HUDParm, IntegerParm as IntegerParm, LabelParm as LabelParm, MenuParm as MenuParm, ParmEvent as ParmEvent, StringParm as StringParm, ToggleParm as ToggleParm, _HUDParmValue
-from typing import Any, ClassVar, Concatenate, Literal, NotRequired, Protocol, TypedDict
+from statehud.parmutils import ButtonParm as ButtonParm, ButtonStripParm as ButtonStripParm, FloatParm as FloatParm, HUDParm as HUDParm, IntegerParm as IntegerParm, LabelParm as LabelParm, MenuParm as MenuParm, ParmEvent as ParmEvent, StringParm as StringParm, ToggleParm as ToggleParm, _HUDParmSetValue, _HUDParmValue
+from typing import Any, ClassVar, Concatenate, Literal, Never, NotRequired, Protocol, TypedDict, Unpack
 
 from typing import ParamSpec
+from typing import TypeAlias
 from typing import TypeVar
 from typing import ParamSpec
+from typing import TypeAlias
 from typing import TypeVar
 _P = ParamSpec('_P')
 _R = TypeVar('_R')
 _ParmT = TypeVar('_ParmT', bound=HUDParm)
+_ToggleCallback: TypeAlias = Callable[[], object] | Callable[[int], object]
+_ParmEventCallback: TypeAlias = _ParmChangedCallback | Callable[Concatenate[int, ...], None] | Callable[[str], None] | Callable[[int, str], None] | Callable[[bool], None]
 class _ParmUpdater(Protocol):
     def __call__(self, fn: Callable[_P, _R], /) -> Callable[_P, _R]: ...
 
@@ -34,8 +38,31 @@ class _ParmEventDict(TypedDict):
     on: NotRequired[bool]
     action: NotRequired[str]
 
+class _PrefixKwargs(TypedDict, total=False):
+    prefix: str | None
+
 class _MultiChangeCallback(Protocol):
     def __call__(self, driver_name: str, started: bool, names: list[str] = ..., /) -> object: ...
+
+class _ParmChangedCallback(Protocol):
+    def __call__(self, *args: object) -> None: ...
+
+class _WrapAndBindKwargs(TypedDict, total=False):
+    right_label: str | None
+    toggle_name: str | None
+    toggle_callback: _ToggleCallback | None
+    toggle_value: bool | None
+    create_widget_shadow: bool
+
+class _WrapAndBindExtraKwargs(_WrapAndBindKwargs, total=False):
+    expanding: bool
+    action_button: shu.ActionButtonManager | None
+
+class _VectorBindKwargs(_WrapAndBindExtraKwargs, total=False):
+    tooltip: str | None
+    label: str | None
+    label_width: int | None
+    centered: bool
 
 SIZE12: int
 ICON_SIZE: int
@@ -81,17 +108,17 @@ class HUDWindow(hou.qt.ViewerOverlay):
         """ Callback for the HUD pref handler. """
     def isDrawBackgroundEnabled(self) -> bool:
         """ Callback for the HUD pref handler. """
-    def setDrawBackgroundColor(self, color: hou.Color | tuple[float, ...]) -> None:
+    def setDrawBackgroundColor(self, color: tuple[float, float, float, float]) -> None:
         """
         Callback for the HUD pref handler.
 
         :color: The color to set the background to.
         """
-    def drawBackgroundColor(self) -> hou.Color | tuple[float, ...]:
+    def drawBackgroundColor(self) -> hou.Color | tuple[float, float, float, float]:
         """ Callback for the HUD pref handler. Get the background color. """
-    def setDrawLabelColor(self, color: tuple[float, ...]) -> None:
+    def setDrawLabelColor(self, color: tuple[float, float, float, float]) -> None:
         """ Callback for the HUD pref handler. """
-    def drawLabelColor(self) -> hou.Color | tuple[float, ...]:
+    def drawLabelColor(self) -> hou.Color | tuple[float, float, float, float]:
         """ Callback for the HUD pref handler. """
     def setShadowEffectState(self, pref_value: bool) -> None:
         """ Callback for the HUD pref handler. """
@@ -343,9 +370,9 @@ class HUDWindow(hou.qt.ViewerOverlay):
         """
     def onMouseDoubleClickEvent(self, event: QtGui.QMouseEvent) -> None:
         """ Called by the WindowBar widget when double clicked. """
-    def setBackgroundColor(self, col: hou.Color | tuple[float, ...]) -> None:
+    def setBackgroundColor(self, col: tuple[float, float, float, float]) -> None:
         """ Set the background colour of the panel. """
-    def backgroundColor(self) -> hou.Color | tuple[float, ...]: ...
+    def backgroundColor(self) -> hou.Color | tuple[float, float, float, float]: ...
     def paintEvent(self, event: QtGui.QPaintEvent) -> None:
         """
         Draw the window background with rounded corners.
@@ -377,7 +404,10 @@ class HUDConfig(config.ConfigWrapper):
 
 class HUDUserDataConfig(HUDConfig):
     """ A config wrapper for storing HUD settings to user data. """
-    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
+    @typing.overload
+    def __init__(self, *args: Unpack[tuple[hou.Node | None, str | None]], **kwargs: Never) -> None: ...
+    @typing.overload
+    def __init__(self, *args: Unpack[tuple[hou.Node | None]], **kwargs: Unpack[_PrefixKwargs]) -> None: ...
 
 class WidgetBundleWindow(HUDWindow):
     """
@@ -451,7 +481,7 @@ class WidgetBundleWindow(HUDWindow):
         """
     def bindFolder(self, name: str, tab_widget_name: str | None = None, tab_name: str | None = None, collapsible: bool = False, collapsed: bool = False, label: str | None = None, label_width: int | None = None) -> rui.FolderWidget | rui.CollapsibleFolderWidget:
         """ Binds a folder widget. """
-    def wrapAndBindWidget(self, name: str, widget: QtWidgets.QWidget, tooltip: str | None = None, label: str | None = None, right_label: str | None = None, label_width: int | None = None, centered: bool = False, expanding: bool = False, tab_widget_name: str | None = None, tab_name: str | None = None, action_button: shu.ActionButtonManager | None = None, toggle_name: str | None = None, toggle_callback: Callable[..., object] | None = None, toggle_value: bool | None = None, **kwargs: object) -> rui.HUDWidgetWrapper:
+    def wrapAndBindWidget(self, name: str, widget: QtWidgets.QWidget, tooltip: str | None = None, label: str | None = None, right_label: str | None = None, label_width: int | None = None, centered: bool = False, expanding: bool = False, tab_widget_name: str | None = None, tab_name: str | None = None, action_button: shu.ActionButtonManager | None = None, toggle_name: str | None = None, toggle_callback: _ToggleCallback | None = None, toggle_value: bool | None = None, **kwargs: object) -> rui.HUDWidgetWrapper:
         """
         Wrap a generic Qt widget and bind it to the window.
         The returned widget is a HUDWidgetWrapper around widget.
@@ -604,7 +634,7 @@ class WidgetBundleWindow(HUDWindow):
         """
     def onContextMenuAction(self, action: str, widget_name: str) -> None: ...
     @parmUpdater
-    def bindSlider(self, name: str, label: str | None = None, min_value: float = 0.0, max_value: float = 10.0, default_value: float = 2.5, min_locked: bool = False, max_locked: bool = False, tooltip: str | None = None, hide_slider: bool = False, keep_slider_space: bool = True, bind_context_menu: bool = True, mouse_hotkeys: Mapping[tuple[int, int], str] | None = None, use_mouse_wheel: bool = False, slider_type: type[rui.SliderBase] | None = None, callback: Callable[[float], object] | Callable[[int], object] | None = None, selectable: bool = False, tab_widget_name: str | None = None, tab_name: str | None = None, label_width: float | None = None, toggle_name: str | None = None, toggle_callback: Callable[..., object] | None = None, toggle_value: bool | None = None, **kwargs: object) -> shu.KeyableSlider:
+    def bindSlider(self, name: str, label: str | None = None, min_value: float = 0.0, max_value: float = 10.0, default_value: float = 2.5, min_locked: bool = False, max_locked: bool = False, tooltip: str | None = None, hide_slider: bool = False, keep_slider_space: bool = True, bind_context_menu: bool = True, mouse_hotkeys: Mapping[tuple[int, int], str] | None = None, use_mouse_wheel: bool = False, slider_type: type[rui.SliderBase] | None = None, callback: Callable[[float], object] | Callable[[int], object] | None = None, selectable: bool = False, tab_widget_name: str | None = None, tab_name: str | None = None, label_width: float | None = None, toggle_name: str | None = None, toggle_callback: _ToggleCallback | None = None, toggle_value: bool | None = None, **kwargs: object) -> shu.KeyableSlider:
         """
         Bind a slider with the given parameters to the slider bundle
         window.
@@ -634,34 +664,34 @@ class WidgetBundleWindow(HUDWindow):
         :toggle_value: The default value of the preceeding toggle parameter.
         """
     @typing.overload
-    def bindFloatSlider(self, name: str, label: str | None = ..., min_value: float | list[float] = ..., max_value: float | list[float] = ..., default_value: float | Sequence[float] | None = ..., min_locked: bool = ..., max_locked: bool = ..., tooltip: str | None = ..., hide_slider: bool = ..., keep_slider_space: bool = ..., bind_context_menu: bool = ..., mouse_hotkeys: Mapping[tuple[int, int], str] | None = ..., use_mouse_wheel: bool = ..., callback: Callable[..., object] | None = ..., selectable: bool = ..., tab_widget_name: str | None = ..., tab_name: str | None = ..., num_components: Literal[1] = ..., use_component_label: bool = ..., **kwargs: Any) -> shu.KeyableSlider: ...
+    def bindFloatSlider(self, name: str, label: str | None = ..., min_value: float | list[float] = ..., max_value: float | list[float] = ..., default_value: float | Sequence[float] | None = ..., min_locked: bool = ..., max_locked: bool = ..., tooltip: str | None = ..., hide_slider: bool = ..., keep_slider_space: bool = ..., bind_context_menu: bool = ..., mouse_hotkeys: Mapping[tuple[int, int], str] | None = ..., use_mouse_wheel: bool = ..., callback: Callable[[], object] | Callable[[float], object] | None = ..., selectable: bool = ..., tab_widget_name: str | None = ..., tab_name: str | None = ..., num_components: Literal[1] = ..., use_component_label: bool = ..., **kwargs: Any) -> shu.KeyableSlider: ...
     @typing.overload
-    def bindFloatSlider(self, name: str, label: str | None = ..., min_value: float | list[float] = ..., max_value: float | list[float] = ..., default_value: float | Sequence[float] | None = ..., min_locked: bool = ..., max_locked: bool = ..., tooltip: str | None = ..., hide_slider: bool = ..., keep_slider_space: bool = ..., bind_context_menu: bool = ..., mouse_hotkeys: Mapping[tuple[int, int], str] | None = ..., use_mouse_wheel: bool = ..., callback: Callable[..., object] | None = ..., selectable: bool = ..., tab_widget_name: str | None = ..., tab_name: str | None = ..., num_components: int = ..., use_component_label: bool = ..., **kwargs: Any) -> shu.KeyableSlider | list[shu.KeyableSlider] | None: ...
+    def bindFloatSlider(self, name: str, label: str | None = ..., min_value: float | list[float] = ..., max_value: float | list[float] = ..., default_value: float | Sequence[float] | None = ..., min_locked: bool = ..., max_locked: bool = ..., tooltip: str | None = ..., hide_slider: bool = ..., keep_slider_space: bool = ..., bind_context_menu: bool = ..., mouse_hotkeys: Mapping[tuple[int, int], str] | None = ..., use_mouse_wheel: bool = ..., callback: Callable[[], object] | Callable[[float | hou.Vector2 | hou.Vector3 | hou.Vector4], object] | None = ..., selectable: bool = ..., tab_widget_name: str | None = ..., tab_name: str | None = ..., num_components: int = ..., use_component_label: bool = ..., **kwargs: Any) -> shu.KeyableSlider | list[shu.KeyableSlider] | None: ...
     @parmUpdater
-    def bindFloatVector(self, name: str, num_components: int = 1, default_value: Sequence[float] | None = None, callback: Callable[..., object] | None = None, min_value: float | None = None, max_value: float | None = None, min_locked: bool | None = None, max_locked: bool | None = None, mouse_hotkeys: Mapping[tuple[int, int], str] | None = None, tab_widget_name: str | None = None, tab_name: str | None = None, **kwargs: Any) -> rui.HUDWidgetWrapper:
+    def bindFloatVector(self, name: str, num_components: int = 1, default_value: Sequence[float] | None = None, callback: Callable[[], object] | Callable[[list[float]], object] | None = None, min_value: float | None = None, max_value: float | None = None, min_locked: bool | None = None, max_locked: bool | None = None, mouse_hotkeys: Mapping[tuple[int, int], str] | None = None, tab_widget_name: str | None = None, tab_name: str | None = None, **kwargs: Unpack[_VectorBindKwargs]) -> rui.HUDWidgetWrapper:
         """
         Binds an float vector parameter to the HUD
         """
     @typing.overload
-    def bindIntSlider(self, name: str, label: str | None = ..., min_value: int | list[int] = ..., max_value: int | list[int] = ..., default_value: int | Sequence[int] | None = ..., min_locked: bool = ..., max_locked: bool = ..., tooltip: str | None = ..., hide_slider: bool = ..., keep_slider_space: bool = ..., bind_context_menu: bool = ..., mouse_hotkeys: Mapping[tuple[int, int], str] | None = ..., use_mouse_wheel: bool = ..., callback: Callable[..., object] | None = ..., selectable: bool = ..., tab_widget_name: str | None = ..., tab_name: str | None = ..., num_components: Literal[1] = ..., **kwargs: Any) -> shu.KeyableSlider: ...
+    def bindIntSlider(self, name: str, label: str | None = ..., min_value: int | list[int] = ..., max_value: int | list[int] = ..., default_value: int | Sequence[int] | None = ..., min_locked: bool = ..., max_locked: bool = ..., tooltip: str | None = ..., hide_slider: bool = ..., keep_slider_space: bool = ..., bind_context_menu: bool = ..., mouse_hotkeys: Mapping[tuple[int, int], str] | None = ..., use_mouse_wheel: bool = ..., callback: Callable[[], object] | Callable[[int], object] | None = ..., selectable: bool = ..., tab_widget_name: str | None = ..., tab_name: str | None = ..., num_components: Literal[1] = ..., **kwargs: Any) -> shu.KeyableSlider: ...
     @typing.overload
-    def bindIntSlider(self, name: str, label: str | None = ..., min_value: int | list[int] = ..., max_value: int | list[int] = ..., default_value: int | Sequence[int] | None = ..., min_locked: bool = ..., max_locked: bool = ..., tooltip: str | None = ..., hide_slider: bool = ..., keep_slider_space: bool = ..., bind_context_menu: bool = ..., mouse_hotkeys: Mapping[tuple[int, int], str] | None = ..., use_mouse_wheel: bool = ..., callback: Callable[..., object] | None = ..., selectable: bool = ..., tab_widget_name: str | None = ..., tab_name: str | None = ..., num_components: int = ..., **kwargs: Any) -> shu.KeyableSlider | list[shu.KeyableSlider] | None: ...
+    def bindIntSlider(self, name: str, label: str | None = ..., min_value: int | list[int] = ..., max_value: int | list[int] = ..., default_value: int | Sequence[int] | None = ..., min_locked: bool = ..., max_locked: bool = ..., tooltip: str | None = ..., hide_slider: bool = ..., keep_slider_space: bool = ..., bind_context_menu: bool = ..., mouse_hotkeys: Mapping[tuple[int, int], str] | None = ..., use_mouse_wheel: bool = ..., callback: Callable[[], object] | Callable[[int | list[int]], object] | None = ..., selectable: bool = ..., tab_widget_name: str | None = ..., tab_name: str | None = ..., num_components: int = ..., **kwargs: Any) -> shu.KeyableSlider | list[shu.KeyableSlider] | None: ...
     @parmUpdater
-    def bindIntVector(self, name: str, num_components: int = 1, default_value: Sequence[int] | None = None, callback: Callable[..., object] | None = None, min_value: float | None = None, max_value: float | None = None, min_locked: bool | None = None, max_locked: bool | None = None, mouse_hotkeys: Mapping[tuple[int, int], str] | None = None, tab_widget_name: str | None = None, tab_name: str | None = None, **kwargs: Any) -> rui.HUDWidgetWrapper:
+    def bindIntVector(self, name: str, num_components: int = 1, default_value: Sequence[int] | None = None, callback: Callable[[], object] | Callable[[list[int]], object] | None = None, min_value: float | None = None, max_value: float | None = None, min_locked: bool | None = None, max_locked: bool | None = None, mouse_hotkeys: Mapping[tuple[int, int], str] | None = None, tab_widget_name: str | None = None, tab_name: str | None = None, **kwargs: Unpack[_VectorBindKwargs]) -> rui.HUDWidgetWrapper:
         """
         Binds an int vector parameter to the HUD
         """
     @parmUpdater
     def createActionButton(self, name: str, iconpath: str | None, callback: Callable[[bool], object] | None = None, tooltip: str | None = None) -> shu.ActionButtonManager: ...
     @parmUpdater
-    def bindButton(self, name: str, label: str, callback: Callable[..., object] | None = None, tooltip: str | None = None, front_label: str | None = None, label_width: int | None = None, centered: bool = False, tab_widget_name: str | None = None, tab_name: str | None = None, **kwargs: Any) -> rui.HUDWidgetWrapper:
+    def bindButton(self, name: str, label: str, callback: Callable[[], object] | Callable[[bool], object] | None = None, tooltip: str | None = None, front_label: str | None = None, label_width: int | None = None, centered: bool = False, tab_widget_name: str | None = None, tab_name: str | None = None, **kwargs: Unpack[_WrapAndBindExtraKwargs]) -> rui.HUDWidgetWrapper:
         """
         Bind a Qt Push Button with the given name and label.
         Optionally you can also pass in a callback to have it
         connect the button to the callback.
         """
     @parmUpdater
-    def bindComboBox(self, name: str, items: Sequence[str], callback: Callable[..., object] | None = None, tooltip: str | None = None, label: str | None = None, label_width: int | None = None, centered: bool = False, tab_widget_name: str | None = None, tab_name: str | None = None, **kwargs: Any) -> rui.HUDWidgetWrapper:
+    def bindComboBox(self, name: str, items: Sequence[str], callback: Callable[[], object] | Callable[[int], object] | None = None, tooltip: str | None = None, label: str | None = None, label_width: int | None = None, centered: bool = False, tab_widget_name: str | None = None, tab_name: str | None = None, **kwargs: Unpack[_WrapAndBindExtraKwargs]) -> rui.HUDWidgetWrapper:
         """
         Bind a Qt Combo Box with the given name and items.
         Optionally you can also pass in a callback to have it
@@ -693,7 +723,7 @@ class WidgetBundleWindow(HUDWindow):
         connect the button to the callback.
         """
     @parmUpdater
-    def bindInputStringField(self, name: str, value: str, menu: QtWidgets.QMenu | None = None, menu_callback: Callable[..., object] | None = None, callback: Callable[..., object] | None = None, tooltip: str | None = None, label: str | None = None, label_width: int | None = None, centered: bool = False, expanding: bool = True, tab_widget_name: str | None = None, tab_name: str | None = None, field_width: int | None = None, action_button: shu.ActionButtonManager | None = None, **kwargs: Any) -> rui.HUDWidgetWrapper:
+    def bindInputStringField(self, name: str, value: str, menu: QtWidgets.QMenu | None = None, menu_callback: Callable[..., object] | None = None, callback: Callable[[], object] | Callable[[list[str]], object] | None = None, tooltip: str | None = None, label: str | None = None, label_width: int | None = None, centered: bool = False, expanding: bool = True, tab_widget_name: str | None = None, tab_name: str | None = None, field_width: int | None = None, action_button: shu.ActionButtonManager | None = None, **kwargs: Unpack[_WrapAndBindKwargs]) -> rui.HUDWidgetWrapper:
         """
         Bind a Qt Input Field of type String with the given name and value.
         Optionally you can also pass in a callback to have it
@@ -705,12 +735,12 @@ class WidgetBundleWindow(HUDWindow):
         parameter pane.
         """
     @parmUpdater
-    def bindFieldLabel(self, name: str, text: str, tooltip: str | None = None, max_width: int | None = None, label: str | None = None, label_width: int | None = None, centered: bool = False, bold_font: bool = True, tab_widget_name: str | None = None, tab_name: str | None = None, **kwargs: Any) -> rui.HUDWidgetWrapper:
+    def bindFieldLabel(self, name: str, text: str, tooltip: str | None = None, max_width: int | None = None, label: str | None = None, label_width: int | None = None, centered: bool = False, bold_font: bool = True, tab_widget_name: str | None = None, tab_name: str | None = None, **kwargs: Unpack[_WrapAndBindExtraKwargs]) -> rui.HUDWidgetWrapper:
         """
         Bind a Qt Field Label with the given text.
         """
     @parmUpdater
-    def bindButtonStrip(self, name: str, button_names: list[str], button_labels: list[str] | None = None, callback: Callable[..., object] | None = None, tooltip: str | None = None, allow_multi_selection: bool = False, iconpaths: Sequence[str] | None = None, off_iconpaths: Sequence[str | None] | None = None, label: str | None = None, label_width: int | None = None, align_left: bool = False, centered: bool = False, checkable: bool = True, tab_widget_name: str | None = None, tab_name: str | None = None, button_tooltips: Sequence[str] = ..., **kwargs: Any) -> rui.HUDWidgetWrapper:
+    def bindButtonStrip(self, name: str, button_names: list[str], button_labels: list[str] | None = None, callback: Callable[[], object] | Callable[[str], object] | Callable[[str, bool], object] | None = None, tooltip: str | None = None, allow_multi_selection: bool = False, iconpaths: Sequence[str] | None = None, off_iconpaths: Sequence[str | None] | None = None, label: str | None = None, label_width: int | None = None, align_left: bool = False, centered: bool = False, checkable: bool = True, tab_widget_name: str | None = None, tab_name: str | None = None, button_tooltips: Sequence[str] = ..., **kwargs: Unpack[_WrapAndBindExtraKwargs]) -> rui.HUDWidgetWrapper:
         """
         Bind a button strip, which is a strip of Qt Push Buttons.
         The full strip is given 'name', the individual buttons are
@@ -727,7 +757,7 @@ class WidgetBundleWindow(HUDWindow):
             button strip.
         """
     @parmUpdater
-    def bindToggle(self, name: str, label: str, default_value: bool = False, callback: Callable[..., object] | None = None, tooltip: str | None = None, front_label: str | None = None, label_width: int | None = None, mouse_hotkeys: Mapping[tuple[int, int], str] | None = None, centered: bool = False, tab_widget_name: str | None = None, tab_name: str | None = None, **kwargs: object) -> shu.KeyableToggle:
+    def bindToggle(self, name: str, label: str, default_value: bool = False, callback: Callable[[], object] | Callable[[bool], object] | None = None, tooltip: str | None = None, front_label: str | None = None, label_width: int | None = None, mouse_hotkeys: Mapping[tuple[int, int], str] | None = None, centered: bool = False, tab_widget_name: str | None = None, tab_name: str | None = None, **kwargs: object) -> shu.KeyableToggle:
         """
         Bind a Qt Check Box with the given name and label.
         Optionally you can also pass in a callback to have it
@@ -871,7 +901,7 @@ class WidgetBundleWindow(HUDWindow):
         Gets the value of a parameter in the window.
         """
     @parmUpdater
-    def setParmValue(self, name: str, value: object) -> None:
+    def setParmValue(self, name: str, value: _HUDParmSetValue) -> None:
         """
         Sets the value of a parameter in the window.
         """
@@ -885,7 +915,7 @@ class WidgetBundleWindow(HUDWindow):
         Loads the parameter value from the configuration.
         """
     @typing.overload
-    def parmCallback(self, name: str, event_type: Literal[ParmEvent.Changed] = ..., expect_index: Literal[False] = ..., **kwargs: object) -> Callable[..., None]: ...
+    def parmCallback(self, name: str, event_type: Literal[ParmEvent.Changed] = ..., expect_index: Literal[False] = ..., **kwargs: object) -> _ParmChangedCallback: ...
     @typing.overload
     def parmCallback(self, name: str, event_type: Literal[ParmEvent.Changed], expect_index: Literal[True], **kwargs: object) -> Callable[Concatenate[int, ...], None]: ...
     @typing.overload
@@ -897,7 +927,7 @@ class WidgetBundleWindow(HUDWindow):
     @typing.overload
     def parmCallback(self, name: str, event_type: Literal[ParmEvent.SelectionChanged], expect_index: bool = ..., **kwargs: object) -> Callable[[bool], None]: ...
     @typing.overload
-    def parmCallback(self, name: str, event_type: ParmEvent, expect_index: bool = ..., **kwargs: object) -> Callable[..., None] | None: ...
+    def parmCallback(self, name: str, event_type: ParmEvent, expect_index: bool = ..., **kwargs: object) -> _ParmEventCallback | None: ...
     def parmStartCallback(self, name: str, **kwargs: object) -> Callable[[], None]:
         """
         Creates a callback function for the parm start event
@@ -948,5 +978,8 @@ class WidgetBundleConfig(HUDConfig):
 
 class WidgetBundleUserDataConfig(WidgetBundleConfig):
     """ A config wrapper for storing HUD settings to user data. """
-    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
+    @typing.overload
+    def __init__(self, *args: Unpack[tuple[hou.Node | None, str | None]], **kwargs: Never) -> None: ...
+    @typing.overload
+    def __init__(self, *args: Unpack[tuple[hou.Node | None]], **kwargs: Unpack[_PrefixKwargs]) -> None: ...
 SliderBundleWindow = WidgetBundleWindow

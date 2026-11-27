@@ -26,6 +26,8 @@ class QuadHeadModule(
         _QuadHeadControls | None,
         None,
         None,
+        "QuadHeadGuideTab",
+        AutoRigsAsset | None,
     ]
 ):
     MODULE_TYPE: str
@@ -35,8 +37,10 @@ class QuadHeadModule(
     mastermodule: MasterModule
     spinemodules: Sequence[SpineModule]
     autorig_asset: AutoRigsAsset
-    guidetab: "QuadHeadGuideTab"
+    guidetab: "QuadHeadGuideTab | None"
     autorigsbuilder: AutoRigsQuadHeadBuilder
+    buildguides: buildQuadHeadGuide.QuadHeadGuide
+    builtrig: _QuadHeadControls | None
     def __init__(self, autorig_asset: AutoRigsAsset) -> None: ...
     def updateParent(self, modulesdict: Mapping[str, Sequence[Mod.Module]]) -> None: ...
     def buildFromDefault(self) -> None: ...
@@ -52,10 +56,14 @@ class QuadHeadGuideTab(
         quadHeadGuideOptions.ModuleOptionsWidget,
         quadHeadGuideParams.ModuleParamsWidget,
         buildQuadHeadGuide.QuadHeadGuide,
+        moduleTabsWidget.ModuleTabsWidget,
     ]
 ):
     PREFIX: str
     tabswidget: moduleTabsWidget.ModuleTabsWidget
+    buildguides: buildQuadHeadGuide.QuadHeadGuide
+    optionswidget: quadHeadGuideOptions.ModuleOptionsWidget
+    paramswidget: quadHeadGuideParams.ModuleParamsWidget
     def __init__(
         self,
         buildguides: buildQuadHeadGuide.QuadHeadGuide,

@@ -7,8 +7,8 @@ from hrecipes import api, rtypes
 from hrecipes.api.recipeassetio import _RecipeMetadata
 from hrecipes.config import ConfigDict
 
-ASSET_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.hdaEventType], ...]
-HIPFILE_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.hipFileEventType], ...]
+ASSET_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.hdaEventType], hou.EnumValue[hou.hdaEventType], hou.EnumValue[hou.hdaEventType], hou.EnumValue[hou.hdaEventType], hou.EnumValue[hou.hdaEventType]]
+HIPFILE_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.hipFileEventType], hou.EnumValue[hou.hipFileEventType], hou.EnumValue[hou.hipFileEventType]]
 
 def recipeStorage() -> PresetStore: ...
 def initStorage() -> None: ...

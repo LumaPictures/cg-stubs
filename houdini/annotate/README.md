@@ -3,7 +3,9 @@
 Most of the python modules Houdini ships are unannotated, so stubs generated from them alone are
 mostly untyped. Their types are kept as **annotation overlays** in `../annotations/`: one partial
 stub per source file, at the same relative path (`annotations/pdg/node.pyi` annotates
-`$HFS/houdini/python3.13libs/pdg/node.py`). `hou` and the compiled modules (`_pdg`, `hapi`, ...)
+`$HFS/houdini/python3.13libs/pdg/node.py`; `annotations/pdg/types/schedulers/local.pyi` annotates
+`$HFS/houdini/pdg/types/schedulers/local.py`, which PDG loads as `pdg.types.schedulers.local`, see
+`EXTRA_SOURCES` in `../annotation_overlays.py`, which also has the `$HFS/packages` libs). `hou` and the compiled modules (`_pdg`, `hapi`, ...)
 have overlays too (`annotations/hou.pyi`, `annotations/_pdg.pyi`), merged into their generated
 stubs. For `hou`, whose stub is generated from SideFX's docs, the overlay is where every fix to
 one member goes (see [The `hou` overlay](#the-hou-overlay)).
@@ -134,12 +136,26 @@ for a new version is the code that is new or changed.
 
    ```bash
    rez env houdini-23 -- .venv/bin/python check_annotations.py --all > .annotate/check_all.txt
-   for m in hou _pdg _pdgd _pdgutils hapi _houqt husd.UsdHoudini; do
-       .venv/bin/python check_compiled_overlay.py $m
+   for m in hou _pdg _pdgd _pdgutils hapi _houqt _apex _apexscene _kinefx _shotbuilder husd.UsdHoudini; do
+       rez env houdini-23 -- .venv/bin/python check_compiled_overlay.py $m
    done
    ```
 
    Compare the new errors with a run on the previous version to find what changed.
+   (`check_compiled_overlay.py` needs no Houdini, but with `$HFS` set it gives mypy Houdini's
+   PySide6 stubs; without them, Qt types are `Any` and overloads that differ by them clash.)
+
+   Most methods of `_houqt`'s classes have no signature at runtime: Shiboken embedded none.
+   The generator types their parameters from the C++ methods they wrap (the module's dynamic
+   symbols, read with `nm`), and their results, and the parameters of the C++ methods with no
+   symbol (inlined, or only called virtually), from the machine code of their Shiboken
+   wrappers (read with `objdump`): the converters each wrapper converts its arguments and
+   results with, whose types it reads from the loaded module's type tables
+   (`shiboken_wrappers`). It declares their signals too. An overlay entry types a method
+   before that, with the `(self, *args, **kwargs)` parameters the stub has then, e.g.
+   `def nodePath(self, *args: Never, **kwargs: Never) -> str: ...`; one that needs a
+   `# type: ignore[...]` (a C++ method that hides its base class's) is a `@type_check_only`
+   declaration, which keeps the comment.
 
    Then check that no bare generics crept in. The generator gives the containers pybind11 and
    Boost.Python leave bare their element types (enum `__entries` and `allValues`, bound

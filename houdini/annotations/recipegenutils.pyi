@@ -1,5 +1,5 @@
 from collections.abc import Callable, Collection, Container, Iterable, Mapping, Sequence
-from typing import Any, ClassVar, Literal, TypeAlias, TypedDict, TypeVar, overload
+from typing import ClassVar, Literal, NotRequired, TypeAlias, TypedDict, TypeVar, Unpack, overload
 
 import hou
 import hrecipes.api.parmtemplatetree
@@ -8,7 +8,7 @@ import hrecipes.rtypes
 import PySide6.QtCore
 import PySide6.QtGui
 import PySide6.QtWidgets
-from houtypes import JSONValue
+from houtypes import JSONLike, JSONValue
 
 _LineEditT = TypeVar("_LineEditT", bound=PySide6.QtWidgets.QLineEdit)
 _RecipeOptions: TypeAlias = (
@@ -18,7 +18,18 @@ _RecipeOptions: TypeAlias = (
     | hrecipes.rtypes.ToolRecipeOptions
     | hrecipes.rtypes.DataRecipeOptions
 )
-_CatalogData: TypeAlias = dict[str, Any] | list[Any] | str
+_CatalogData: TypeAlias = Mapping[str, JSONLike] | Sequence[JSONLike] | str
+
+# What the dialogs' node event callbacks get besides event_type, for the events they register.
+class _ParmEventKwargs(TypedDict):
+    node: hou.OpNode
+    parm_tuple: NotRequired[hou.ParmTuple | None]
+
+class _ChildEventKwargs(TypedDict):
+    node: hou.OpNode
+    child_node: NotRequired[hou.OpNode]
+    old_name: NotRequired[str]
+    input_index: NotRequired[int]
 _ParentIndex: TypeAlias = PySide6.QtCore.QModelIndex | PySide6.QtCore.QPersistentModelIndex
 
 def saveRecipeFromSubnet(subnet: hou.OpNode) -> None: ...
@@ -530,7 +541,7 @@ class BaseDialog(PySide6.QtWidgets.QDialog):
     def accept(self) -> None: ...
     def reject(self) -> None: ...
 
-NODEPARMS_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], ...]
+NODEPARMS_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType]]
 
 def patternFilter(name: str, patterns: Iterable[str]) -> bool: ...
 
@@ -555,7 +566,7 @@ class SelectParmsFromNodeDialog(BaseDialog):
         parm_to_set: hou.Parm,
         initial_selections: Sequence[hou.ParmTuple] | None = ...,
     ) -> None: ...
-    def _nodeCallback(self, event_type: hou.EnumValue[hou.nodeEventType], **kwargs: Any) -> None: ...
+    def _nodeCallback(self, event_type: hou.EnumValue[hou.nodeEventType], **kwargs: Unpack[_ParmEventKwargs]) -> None: ...
     def populateMenuButton(
         self,
         parent: PySide6.QtWidgets.QWidget | None,
@@ -579,8 +590,8 @@ class SelectParmsFromNodeDialog(BaseDialog):
     def accept(self) -> None: ...
     def reject(self) -> None: ...
 
-NODE_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], ...]
-CHILD_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], ...]
+NODE_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType]]
+CHILD_CALLBACK_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType]]
 
 def IOItems(
     items: Sequence[hou.NetworkMovableItem],
@@ -642,7 +653,7 @@ class SelectItemsFromNodeDialog(BaseDialog):
         initial_selections: Sequence[hou.NetworkMovableItem] | None = ...,
         single_selection: bool = ...,
     ) -> None: ...
-    def _nodeCallback(self, event_type: hou.EnumValue[hou.nodeEventType], **kwargs: Any) -> None: ...
+    def _nodeCallback(self, event_type: hou.EnumValue[hou.nodeEventType], **kwargs: Unpack[_ChildEventKwargs]) -> None: ...
     def eventFilter(self, source: PySide6.QtCore.QObject, event: PySide6.QtCore.QEvent) -> bool: ...
     def openContextMenu(self, position: PySide6.QtCore.QPoint | PySide6.QtCore.QPointF) -> None: ...
     def handle_dClicked(self) -> None: ...

@@ -4,7 +4,11 @@ from PySide6 import QtGui as QtGui
 from hutil.PySide import QtCore, QtWidgets
 from poselib.posebrowser import PoseBrowser as PoseBrowser
 from poselib.settings import Settings as Settings
-from typing import Any
+from typing import TypedDict
+from typing_extensions import Unpack
+
+class _AssetSavedKwargs(TypedDict):
+    asset_definition: hou.HDADefinition
 
 class PoseLibrary(QtWidgets.QWidget):
     """Main pose library widget."""
@@ -18,7 +22,7 @@ class PoseLibrary(QtWidgets.QWidget):
     importFileAction: QtGui.QAction
     importClipAction: QtGui.QAction
     quickSaveAction: QtGui.QAction
-    menuBar: QtWidgets.QMenuBar
+    menuBar: hou.qt.MenuBar
     editModeButton: QtWidgets.QToolButton
     libraryHistory: list[tuple[str, str]]
     noHistoryAction: QtGui.QAction
@@ -50,6 +54,6 @@ class PoseLibrary(QtWidgets.QWidget):
     def showHelp(self) -> None: ...
     def handleHipFileEvent(self, event_type: hou.EnumValue[hou.hipFileEventType]) -> None:
         """Callback handler for .hip file events."""
-    def handleHDAEvent(self, event_type: hou.EnumValue[hou.hdaEventType], **kwargs: Any) -> None:
+    def handleHDAEvent(self, event_type: hou.EnumValue[hou.hdaEventType], **kwargs: Unpack[_AssetSavedKwargs]) -> None:
         """Callback handler for HDA events."""
     def keyPressEvent(self, event: QtGui.QKeyEvent) -> None: ...

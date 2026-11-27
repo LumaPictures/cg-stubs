@@ -54,7 +54,7 @@ class SpinBoxDelegate(QtWidgets.QStyledItemDelegate):
     def __init__(self) -> None: ...
     def createEditor(
         self,
-        parent: QtWidgets.QWidget,
+        parent: QtWidgets.QWidget | None,
         option: QtWidgets.QStyleOptionViewItem,
         index: QtCore.QModelIndex | QtCore.QPersistentModelIndex,
     ) -> CustomDoubleSpinBox: ...

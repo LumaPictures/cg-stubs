@@ -2,11 +2,11 @@ import curveutils as cu
 import hou
 from collections.abc import Sequence
 from curvestate import constants as constants, referencegeo as referencegeo
-from curvestate.baseoperation import BaseSelectPointOperation as BaseSelectPointOperation, BaseSubTool as BaseSubTool, _CurveState
+from curvestate.baseoperation import BaseSelectPointOperation as BaseSelectPointOperation, BaseSubTool as BaseSubTool, _CurveState, _NodeParmEventKwargs
 from curvestate.editops import BaseMoveOperation as BaseMoveOperation
 from curvestate.undos import getUndoBlock as getUndoBlock
 from houtypes import ViewerStateDrawKwargs, ViewerStateEnterKwargs, ViewerStateEventKwargs, ViewerStateKwargs, ViewerStateMenuActionKwargs, ViewerStateStateToHandleKwargs, ViewerStateVolatileClientKwargs
-from typing import Any, Self
+from typing import Self, Unpack
 
 class DrawModeMoveOperation(BaseMoveOperation):
     """ Class to handle moving points while in draw mode. """
@@ -104,7 +104,7 @@ class PointAddOperation(BaseSelectPointOperation):
             """Get prompt for this mode. """
         def getPseudoHandlePoints(self) -> list[int | cu.PseudoHandleTuple]:
             """ Get the points/positions to place inactive handles. """
-        def _getHighlightParams(self) -> cu._DrawableParams:
+        def _getHighlightParams(self) -> hou._DrawableParams:
             """ Get parameters for the highlight guide pts. """
         def pickPosition(self, kwargs: ViewerStateEventKwargs) -> hou.Vector3:
             """ Pick a position in 3D space. """
@@ -637,7 +637,7 @@ class PointAddOperation(BaseSelectPointOperation):
         """ Called when the state interrupts. """
     def onActivate(self) -> None:
         """ Called when we enter the draw operation. """
-    def reactNodeParmsUpdate(self, event_type: hou.EnumValue[hou.nodeEventType], node: hou.SopNode, **kwargs: Any) -> None:
+    def reactNodeParmsUpdate(self, event_type: hou.EnumValue[hou.nodeEventType], node: hou.SopNode, **kwargs: Unpack[_NodeParmEventKwargs]) -> None:
         """ Called whenever a parm on the node changes. """
     def clearCurParms(self) -> None:
         """ Clear the add pts data parm. """
@@ -799,12 +799,12 @@ class PointAddOperation(BaseSelectPointOperation):
 
         :tag: The hotkey name, symbol, or menu code.
         """
-    def getHighlightSmoothPtParams(self) -> cu._DrawableParams:
+    def getHighlightSmoothPtParams(self) -> hou._DrawableParams:
         """
         The parameters for the highlight points under the mouse cursor
         when treated as smooth.
         """
-    def getHighlightBrokenPtParams(self) -> cu._DrawableParams:
+    def getHighlightBrokenPtParams(self) -> hou._DrawableParams:
         """
         The parameters for the highlight points under the mouse cursor
         when treated as broken.

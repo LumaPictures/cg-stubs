@@ -23,6 +23,6 @@ def feedbackConfigure(node: PyProcessor, node_options: _pdg.NodeOptions) -> None
 def feedbackBegin(
     node: PyProcessor,
     item_holder: _pdg.WorkItemHolder,
-    upstream_items: Sequence[_pdg.WorkItem],
+    upstream_items: Sequence[_pdg.WorkItem] | _pdg.WorkItemList,
     generation_type: _pdg.generationType,
 ) -> None: ...

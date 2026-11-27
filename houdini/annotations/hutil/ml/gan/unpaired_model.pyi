@@ -27,8 +27,8 @@ class UnpairedGANModel(BaseGANModel):
     score_plotters: list[CSVPlotter | MatPlotLibPlotter | None]
     def __init__(
         self,
-        input_config: DataConfig | None = ...,
+        input_config: DataConfig = ...,
         test_config: DataConfig | None = ...,
-        training_config: TrainingConfig | None = ...,
+        training_config: TrainingConfig = ...,
     ) -> None: ...
     def train(self) -> None: ...

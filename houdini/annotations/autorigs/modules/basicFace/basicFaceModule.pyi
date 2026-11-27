@@ -28,6 +28,8 @@ class BasicFaceModule(
         None,
         BasicFaceGuideModel,
         BasicFaceGuideController,
+        "BasicFaceGuideTab",
+        AutoRigsAsset,
     ]
 ):
     MODULE_TYPE: str
@@ -37,7 +39,7 @@ class BasicFaceModule(
 
     autorigs_asset: AutoRigsAsset
     assetnode: hou.ObjNode
-    guidetab: "BasicFaceGuideTab"
+    guidetab: "BasicFaceGuideTab | None"
     autorigsbuilder: AutoRigsBasicFaceBuilder
 
     def __init__(self, autorigs_asset: AutoRigsAsset) -> None: ...
@@ -56,6 +58,7 @@ class BasicFaceGuideTab(
         basicFaceGuideOptions.ModuleOptionsWidget,
         basicFaceGuideParams.ModuleParamsWidget,
         BasicFaceGuide,
+        moduleTabsWidget.ModuleTabsWidget,
     ]
 ):
     tabswidget: moduleTabsWidget.ModuleTabsWidget

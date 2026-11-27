@@ -68,7 +68,7 @@ def setNetworkItemFromData(item: hou.NetworkMovableItem, data: rtypes.NetworkIte
 
 
     """
-def networkItemsAsData(items: list[hou.NetworkMovableItem], **opts: Any) -> rtypes.NetworkItemDataDict | None:
+def networkItemsAsData(items: MutableSequence[hou.NetworkMovableItem], **opts: Any) -> rtypes.NetworkItemDataDict | None:
     """
     Retrieves the network items data for all input items.
     """

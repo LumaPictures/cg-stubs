@@ -2,18 +2,13 @@ import hou
 from . import constants as constants, dragger2ddelegate as dragger2ddelegate, drawable2dgroup as drawable2dgroup, spaceadaptor as spaceadaptor, utils as utils
 from .spaceadaptor import PIVOT_POS as PIVOT_POS, POS as POS, ROT as ROT, SCALE as SCALE, USCALE as USCALE
 from drawable2d.drawable2dgroup import Drawable2DGroup as Drawable2DGroup
-from drawable2d.spaceadaptor import SpaceAdaptor as SpaceAdaptor, SpaceAdaptorImage as SpaceAdaptorImage
+from drawable2d.spaceadaptor import SpaceAdaptor as SpaceAdaptor, SpaceAdaptorImage as SpaceAdaptorImage, _BoundParm
 from enum import Enum as Enum, auto as auto
 from houtypes import ViewerHandleEventKwargs, ViewerStateEventKwargs
 from typing import Callable as Callable
 
-from typing import TypeAlias
 from typing import TypeVar
-from collections.abc import MutableMapping
-from typing import Any
-from typing import TypeAlias
 from typing import TypeVar
-_BoundParm: TypeAlias = MutableMapping[str, Any] | hou.Parm
 _EventT = TypeVar('_EventT', bound=hou.UIEvent)
 class Dragger2D:
     """ Helper class for interactive mouse-based manipulation 

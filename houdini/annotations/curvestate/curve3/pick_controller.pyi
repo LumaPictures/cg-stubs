@@ -1,7 +1,8 @@
 from collections.abc import Callable, Mapping, Sequence
-from typing import Any, Protocol, TypeAlias, TypedDict
+from typing import Literal, Protocol, TypeAlias, TypedDict
 
 import curveutils as cu
+from apex import xformgadget as xg
 import hou
 from houtypes import ViewerStateEventKwargs
 import resourceutils as ru
@@ -22,6 +23,8 @@ class _CurvePickEvent(TypedDict):
     result: cu.PickCurveResultType
 
 _PickEvent: TypeAlias = _HandlePointPickEvent | _HandleLinePickEvent | _CurvePickEvent
+# What the hovered point is: an anchor or a tangent handle point.
+_HoverPointKind: TypeAlias = Literal["anchor", "handle_point"]
 
 class _SetLocateFromDrawableSelectionFn(Protocol):
     def __call__(
@@ -39,8 +42,8 @@ class PickController:
     def set_hover_pick(self, pick: cu.PickCurveResultType | None, *, log_label: str | None = ...) -> None: ...
     def clear_hover_pick(self, *, log_label: str | None = ...) -> None: ...
     def peek_hover_point(self) -> hou.Point | None: ...
-    def peek_hover_point_kind(self) -> str | None: ...
-    def set_hover_point(self, point: hou.Point | None, *, kind: str | None = ...) -> None: ...
+    def peek_hover_point_kind(self) -> _HoverPointKind | None: ...
+    def set_hover_point(self, point: hou.Point | None, *, kind: _HoverPointKind | None = ...) -> None: ...
     def clear_hover_point(self) -> None: ...
     def resolve_curve_pick(
         self,
@@ -75,7 +78,7 @@ class PickController:
         ui_event: hou.ViewerEvent,
         point_drawables: Sequence[hou.GeometryDrawable],
         line_drawables: Sequence[hou.GeometryDrawable],
-    ) -> tuple[str, _HandlePointPickEvent | _HandleLinePickEvent] | None: ...
+    ) -> tuple[str, _HandlePointPickEvent] | tuple[str, _HandleLinePickEvent] | None: ...
     def external_pick_payload(
         self,
         *,
@@ -84,7 +87,7 @@ class PickController:
         ui_event: hou.ViewerEvent,
         point_drawables: Sequence[hou.GeometryDrawable],
         line_drawables: Sequence[hou.GeometryDrawable],
-    ) -> dict[str, hou.Vector3 | str] | None: ...
+    ) -> xg._ExternalPick | None: ...
     def update_locate_line_from_result(
         self,
         *,

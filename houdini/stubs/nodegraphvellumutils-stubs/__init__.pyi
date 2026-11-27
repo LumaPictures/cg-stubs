@@ -40,7 +40,7 @@ def findVellumOutputInInputs(startnode: hou.NetworkMovableItem | None, outputind
 
         Returns (None, -1) when no vellum node was found.
     """
-def findVellumInputInOutputs(startnode: hou.NetworkMovableItem | None, inputindex: int = -1, includeme: bool = False) -> tuple[hou.Node | None, int]:
+def findVellumInputInOutputs(startnode: hou.NetworkMovableItem | None, inputindex: int = -1, includeme: bool = False) -> tuple[hou.OpNode | None, int]:
     """ Finds a vellum node input in the outputs of 'startnode' and returns
         (foundnode, inputindex), where 'foundnode' is the found vellum node and
         inputindex is the index of the input by which the search reached the
@@ -52,7 +52,7 @@ def findVellumInputInOutputs(startnode: hou.NetworkMovableItem | None, inputinde
 
         Returns (None, -1) when no vellum node was found.
     """
-def getSurroundingVellumNodesAndIndex(inputitem: hou.Node | hou.IndirectInput | None, outputindex: int | None, outputitem: hou.Node | hou.NetworkDot | None, inputindex: int | None) -> tuple[hou.OpNode | hou.SubnetIndirectInput | None, hou.Node | None, int]: ...
+def getSurroundingVellumNodesAndIndex(inputitem: hou.Node | hou.IndirectInput | None, outputindex: int | None, outputitem: hou.Node | hou.NetworkDot | None, inputindex: int | None) -> tuple[hou.OpNode | hou.SubnetIndirectInput | None, hou.OpNode | None, int]: ...
 def getVellumNodeConnections(inputitem: hou.Node | hou.IndirectInput | None, outputindex: int | None, outputitem: hou.Node | hou.NetworkDot | None, inputindex: int | None, editor: hou.NetworkEditor, nodecenter: hou.Vector2, branch: bool, inputs: bool = True, outputs: bool = True) -> _VellumConnections: ...
 def setSelectPosContextData(editor: hou.NetworkEditor, contextdata: _SelectPosContextData, locatedconn: NetworkComponent | hou.NodeConnection | None, locatedinput: NetworkComponent | None, locatedoutput: NetworkComponent | None) -> bool: ...
 def isPassThroughConnection(index: int) -> bool: ...

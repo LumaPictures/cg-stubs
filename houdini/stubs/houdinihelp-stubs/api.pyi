@@ -14,8 +14,11 @@ from typing_extensions import TypedDict, Unpack
 from urllib.parse import ParseResult as ParseResult, quote as quote
 
 from typing import TypeVar
+from typing import TypeVarTuple
 from typing import TypeVar
+from typing import TypeVarTuple
 _T = TypeVar('_T')
+_Ts = TypeVarTuple('_Ts')
 class _AssetIndexingKwargs(TypedDict, total=False):
     asset_definition: hou.HDADefinition
     asset_name: str
@@ -33,7 +36,7 @@ dir_to_table: dict[str, str]
 load_script_path: str
 tooltip_regex: re.Pattern[str]
 
-def memoize(func: Callable[..., _T]) -> Callable[..., _T]: ...
+def memoize(func: Callable[[Unpack[_Ts]], _T]) -> Callable[[Unpack[_Ts]], _T]: ...
 
 class FastExitException(Exception): ...
 

@@ -58,14 +58,21 @@ def file_work(libs: pathlib.Path) -> dict[str, dict[str, int]]:
         work[rel] = {
             "loose": len(items),
             "unmatched": len(staged.unmatched.get(rel, [])),
-            "lines": len((libs / rel).read_text(errors="replace").splitlines()),
+            "lines": len(
+                annotation_overlays.source_path(libs, rel)
+                .read_text(errors="replace")
+                .splitlines()
+            ),
         }
     return work
 
 
 def _added_init(rel: str, libs: pathlib.Path) -> bool:
     """Whether `rel` is an __init__.py that stage_tree added to a namespace package."""
-    return rel.endswith("__init__.py") and not (libs / rel).exists()
+    return (
+        rel.endswith("__init__.py")
+        and not annotation_overlays.source_path(libs, rel).exists()
+    )
 
 
 def pack(

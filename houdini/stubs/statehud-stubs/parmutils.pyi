@@ -13,6 +13,7 @@ from typing import Never
 from typing import TypeAlias
 from typing_extensions import TypeVar
 _HUDParmValue: TypeAlias = bool | int | float | str | list[int] | list[float] | list[str] | hou.Vector2 | hou.Vector3 | hou.Vector4 | None
+_HUDParmSetValue: TypeAlias = bool | int | float | str | Sequence[float] | hou.Vector2 | hou.Vector3 | hou.Vector4 | tuple[str | None, bool]
 _NumT = TypeVar('_NumT', int, float)
 _GetT_co = TypeVar('_GetT_co', covariant=True, default=_HUDParmValue)
 _SetT_contra = TypeVar('_SetT_contra', contravariant=True, default=Never)

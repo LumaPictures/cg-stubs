@@ -1,6 +1,6 @@
 import tokenize
 from collections.abc import Callable as Callable
-from typing import Any
+from typing import Any, Literal
 
 __cvsid__: str
 __revision__: str
@@ -32,7 +32,7 @@ def getTokens(command: str) -> list[tokenize.TokenInfo]:
     """Return list of token tuples for command."""
 def rtrimTerminus(command: str, terminator: str | None = None) -> str:
     """Return command minus anything that follows the final terminator."""
-def getBaseObject(object: object) -> tuple[Any, int]:
+def getBaseObject(object: object) -> tuple[Any, Literal[0, 1]]:
     """Return base object and dropSelf indicator for an object."""
 def getConstructor(object: type[object]) -> Callable[..., None] | None:
     """Return constructor for class object, or None if there isn't one."""

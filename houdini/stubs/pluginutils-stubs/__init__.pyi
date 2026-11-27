@@ -12,7 +12,7 @@ CHECK_MOD_TIMES: bool
 split_exp: re.Pattern[str]
 
 def invalidateCache() -> None: ...
-def loadModule(filepath: str, silent: bool = False, context: Mapping[str, Any] | None = None) -> types.ModuleType | None:
+def loadModule(filepath: str, silent: bool = False, context: Mapping[str, object] | None = None) -> types.ModuleType | None:
     """
     Loads the contents of a file and evaluates it as a Python module object.
     This does not import the module, so the file does not need to be in the
@@ -84,7 +84,7 @@ def findFunctions(dirname: str, fn_name: str, path_dirs: Sequence[str] | None = 
         at `None`, then all the modules\' order hints are assumed to be 1.
     :return:
     '''
-def runFunctions(dirname: str, fn_name: str, args: Iterable[Any] = ..., kwargs: Mapping[str, Any] | None = None, path_dirs: Sequence[str] | None = None, file_pattern: str = '*.py', include_shadowed: bool = False, reverse: bool = False, pathvar: str | None = None, order_key: str | None = None) -> list[Any]:
+def runFunctions(dirname: str, fn_name: str, args: Iterable[Any] = ..., kwargs: Mapping[str, object] | None = None, path_dirs: Sequence[str] | None = None, file_pattern: str = '*.py', include_shadowed: bool = False, reverse: bool = False, pathvar: str | None = None, order_key: str | None = None) -> list[Any]:
     '''
 
     :param dirname: Look for a directory with this name within each path
@@ -109,7 +109,7 @@ def runFunctions(dirname: str, fn_name: str, args: Iterable[Any] = ..., kwargs: 
         at `None`, then all the modules\' order hints are assumed to be 1.
     :return: A list of the return value from each found function.
     '''
-def pipelineFunctions(dirname: str, fn_name: str, main_arg: _T, args: Iterable[Any] = ..., kwargs: Mapping[str, Any] | None = None, path_dirs: Sequence[str] | None = None, file_pattern: str = '*.py', include_shadowed: bool = False, reverse: bool = False, pathvar: str | None = None, order_key: str | None = None) -> _T:
+def pipelineFunctions(dirname: str, fn_name: str, main_arg: _T, args: Iterable[Any] = ..., kwargs: Mapping[str, object] | None = None, path_dirs: Sequence[str] | None = None, file_pattern: str = '*.py', include_shadowed: bool = False, reverse: bool = False, pathvar: str | None = None, order_key: str | None = None) -> _T:
     '''
 
     :param dirname: Look for a directory with this name within each path
@@ -135,7 +135,7 @@ def pipelineFunctions(dirname: str, fn_name: str, main_arg: _T, args: Iterable[A
         at `None`, then all the modules\' order hints are assumed to be 1.
     :return: The value returned by the last found function.
     '''
-def typedPipeline(dirname: str, fn_name: str, main_arg: dict[str, Any], args: Iterable[Any] = ..., kwargs: Mapping[str, Any] | None = None, path_dirs: Sequence[str] | None = None, file_pattern: str = '*.py', include_shadowed: bool = False, reverse: bool = False, set_fields: Iterable[str] = ..., datetime_fields: Iterable[str] = ..., pathvar: str | None = None, order_key: str | None = None) -> dict[str, Any]:
+def typedPipeline(dirname: str, fn_name: str, main_arg: dict[str, Any], args: Iterable[Any] = ..., kwargs: Mapping[str, object] | None = None, path_dirs: Sequence[str] | None = None, file_pattern: str = '*.py', include_shadowed: bool = False, reverse: bool = False, set_fields: Iterable[str] = ..., datetime_fields: Iterable[str] = ..., pathvar: str | None = None, order_key: str | None = None) -> dict[str, Any]:
     '''
 
     :param dirname: Look for a directory with this name within each path
@@ -164,4 +164,4 @@ def typedPipeline(dirname: str, fn_name: str, main_arg: dict[str, Any], args: It
         at `None`, then all the modules\' order hints are assumed to be 1.
     :return: The value returned by the last found function.
     '''
-def runSnapshotMetadataPlugins(meta_dict: dict[str, Any], args: Iterable[Any] = ..., kwargs: Mapping[str, Any] | None = None, dirname: str = 'scripts/snapshot_metadata', fn_name: str = 'editSnapshotMetadata', set_fields: Iterable[str] = ('tags',), datetime_fields: Iterable[str] = ('taken',), pathvar: str | None = None) -> dict[str, Any]: ...
+def runSnapshotMetadataPlugins(meta_dict: dict[str, Any], args: Iterable[Any] = ..., kwargs: Mapping[str, object] | None = None, dirname: str = 'scripts/snapshot_metadata', fn_name: str = 'editSnapshotMetadata', set_fields: Iterable[str] = ('tags',), datetime_fields: Iterable[str] = ('taken',), pathvar: str | None = None) -> dict[str, Any]: ...

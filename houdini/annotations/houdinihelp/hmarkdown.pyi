@@ -1,6 +1,7 @@
 from collections.abc import Mapping
-from typing import Any, Protocol
+from typing import Protocol, Unpack
 
+from bookish.text.textify import _EmitKwargs
 from bookish.wiki.wikipages import _WikiBlock, _WikiNode, _WikiSpan, _WikiText
 from houdinihelp.htextify import HoudiniTextifier
 
@@ -13,16 +14,16 @@ class HoudiniMarkdownifier(HoudiniTextifier[_WikiBlock]):
     gap: int
     pagetype: str | None
     rel: _RelFn
-    config: Mapping[str, Any]
+    config: Mapping[str, object]
     def __init__(
         self,
         root: _WikiBlock,
         path: str = ...,
         rel: _RelFn | None = ...,
-        config: Mapping[str, Any] | None = ...,
+        config: Mapping[str, object] | None = ...,
     ) -> None: ...
     def transform(self) -> str: ...
-    def emit_block_text(self, block: _WikiBlock, **kwargs: Any) -> None: ...
+    def emit_block_text(self, block: _WikiBlock, **kwargs: Unpack[_EmitKwargs]) -> None: ...
     def render_span(self, span: _WikiText | _WikiSpan) -> str: ...
     def emit(
         self,

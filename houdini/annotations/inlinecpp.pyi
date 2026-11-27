@@ -24,7 +24,7 @@ _ExtendableClass: TypeAlias = (
     | type[hou.Geometry]
 )
 
-_hou_classes_to_cpp_class_names: dict[type[object], str]
+_hou_classes_to_cpp_class_names: dict[_ExtendableClass, str]
 
 class HcustomCompilerHook(hutil.cppinline.CompilerHook):
     def default_shared_library_directory(self) -> str: ...

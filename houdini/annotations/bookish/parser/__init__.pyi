@@ -6,7 +6,6 @@ from bookish import util
 class ParserError(Exception): ...
 
 class ParserContext(util.Context):
-    parent: "ParserContext | None"
     def __init__(
         self,
         m: MutableMapping[str, Any] | None = ...,

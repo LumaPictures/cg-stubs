@@ -50,7 +50,7 @@ class ConstraintFactoryObject:
         """attribsToBrowserParms():
             returns a dictionary of attribute names to parameter labels.
             Attributes not found in the returned dictionary will be labeled as-is."""
-    def attribsToEditNodeParms(self, group: str, attribdata: Mapping[str, Any]) -> dict[str, Any]:
+    def attribsToEditNodeParms(self, group: str, attribdata: Mapping[str, Any]) -> dict[str, hou.ParmArgType | hou.ParmTupleArgType]:
         """attribsToEditNodeParms(group, attribdata):
             returns a dictionary of parameter names and values to set on the edit node when editing from the constraint browser interface.
             attribdata is a dictionary of attribute names and values coming from the constraint browser parameter pane."""

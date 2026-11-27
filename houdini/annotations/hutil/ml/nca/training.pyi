@@ -29,7 +29,7 @@ def train(
     nca: NCA,
     lppn: LPPN | None = ...,
     style_loss_fn: StyleLoss | None = ...,
-    cfg: Config | None = ...,
+    cfg: Config = ...,
     log: Log | None = ...,
     training_monitor: NCATrainingMonitor | None = ...,
     checkpoint_path: str | os.PathLike[str] | None = ...,

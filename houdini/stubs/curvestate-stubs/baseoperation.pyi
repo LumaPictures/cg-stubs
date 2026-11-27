@@ -6,13 +6,14 @@ import curvestate.simpleselectionops as simpleselectionops
 import curveutils as cu
 import hou
 import resourceutils as ru
-from collections.abc import Mapping
+import viewerstate.utils as su
+from collections.abc import Iterable, Mapping
 from curvestate import constants as constants, referencegeo as referencegeo
 from curvestate.drawablemanager import DrawableInteractionManager as DrawableInteractionManager, _DrawableSelection
 from curvestate.referencegeo import ReferenceCurve as ReferenceCurve
 from curvestate.undos import getUndoBlock as getUndoBlock
 from houtypes import ViewerStateDrawKwargs, ViewerStateEnterKwargs, ViewerStateEventKwargs, ViewerStateHandleDragKwargs, ViewerStateHandleToStateKwargs, ViewerStateKwargs, ViewerStateMenuActionKwargs, ViewerStateParmChangeKwargs, ViewerStateStateToHandleKwargs, ViewerStateVolatileClientKwargs
-from typing import Any, Protocol, TypedDict
+from typing import Protocol, TypedDict, Unpack
 
 class _CurveState(Protocol):
     @property
@@ -101,7 +102,7 @@ class _CurveState(Protocol):
     def fuse_branch_op(self) -> simpleselectionops.FuseBranchOperation: ...
     @property
     def cut_branch_op(self) -> simpleselectionops.CutBranchOperation: ...
-    def log(self, *args: object, **kwargs: object) -> None: ...
+    def log(self, *args: object, **kwargs: Unpack[su._LogMessageOptions]) -> None: ...
     def onPickAnchorPoint(self, kwargs: ViewerStateEventKwargs, handle_event: cu.PickPointEventDict) -> None: ...
     def onPickCurve(self, kwargs: ViewerStateEventKwargs, handle_event: cu.PickCurveEventDict) -> None: ...
     def onPickRoundedCornerHandle(self, kwargs: ViewerStateEventKwargs, handle_event: cu.PickRoundCornerEventDict) -> None: ...
@@ -133,7 +134,7 @@ class _CurveState(Protocol):
     def clearCachedPtnums(self) -> None: ...
     def getSelectionPtNums(self) -> list[int]: ...
     def getSelectionString(self) -> str: ...
-    def addPointsSelection(self, ptnums: list[int], modifier: hou.EnumValue[hou.pickModifier] | None = ...) -> None: ...
+    def addPointsSelection(self, ptnums: Iterable[int], modifier: hou.EnumValue[hou.pickModifier] | None = ...) -> None: ...
     def resetSelection(self) -> None: ...
     def handleSelectionUndoOrRedo(self, new_sel: hou.Selection) -> None: ...
     def verifySelection(self) -> None: ...
@@ -151,6 +152,26 @@ class _SwitchHandleToolReply(TypedDict, total=False):
 
 class _SwitchHandleToolArgs(TypedDict):
     args: _SwitchHandleToolReply
+
+class _TriggerOperationKwargs(TypedDict, total=False):
+    check_needed: bool
+    surround_undo: bool
+    batch: Mapping[str, str | float] | None
+    pre_update_groups: bool
+    points: list[int]
+    needs_activate: bool
+    restore_optype: bool
+
+class _NodeParmEventKwargs(TypedDict):
+    parm_tuple: hou.ParmTuple | None
+
+class _OperationKwargs(TypedDict, total=False):
+    op_idx: str
+    interactive: bool
+    avoid_round_corners: bool
+
+class _SelectPointOperationKwargs(_OperationKwargs, total=False):
+    avoid_branched_points: bool
 
 class BaseOperation:
     """
@@ -229,7 +250,7 @@ class BaseOperation:
         """
     def onMyButtonPress(self) -> None:
         """ Called when an operation is triggered as if its button was pressed. """
-    def triggerOperation(self, **kwargs: Any) -> list[int] | None:
+    def triggerOperation(self, **kwargs: Unpack[_TriggerOperationKwargs]) -> list[int] | None:
         """
         Override to call getNewMultiparm with specific arguments
         if needed, or in other special ways. Can also return important
@@ -237,7 +258,17 @@ class BaseOperation:
 
         :kwargs: Optional arguments for the operation. See _getNewMultiparm.
         """
-    def reactNodeParmsUpdate(self, event_type: hou.EnumValue[hou.nodeEventType], node: hou.SopNode, **kwargs: Any) -> None:
+    def _requestNewMultiParm(self, other_op: BaseSelectPointOperation, **kwargs: Unpack[_TriggerOperationKwargs]) -> list[int] | None:
+        """
+        Function for performing an operation from another optype
+        and staying in the current optype.
+        NOTE: if you dont want to actually activate the other one
+        then this is not necessary, and can just use trigger operation
+        Returns the result of other_op.triggerOperation(**kwargs).
+
+        :other_op: The other operations BaseSelectPointOperation object.
+        """
+    def reactNodeParmsUpdate(self, event_type: hou.EnumValue[hou.nodeEventType], node: hou.SopNode, **kwargs: Unpack[_NodeParmEventKwargs]) -> None:
         """
         Called when a parameter changes on the node.
         Only sent ot the active operation.
@@ -380,7 +411,7 @@ class BaseSelectPointOperation(BaseOperation):
         """
     def onDeactivate(self) -> None:
         """ Clear parms on deactivate. """
-    def triggerOperation(self, **kwargs: Any) -> list[int] | None:
+    def triggerOperation(self, **kwargs: Unpack[_TriggerOperationKwargs]) -> list[int] | None:
         """
         Keep track of the points in this operation. Used to update
         groups, target orient points, and rounded corners.
@@ -432,7 +463,7 @@ class BaseSubTool(BaseSelectPointOperation):
         """ Delegate to the active operation to get inactive handles. """
     def getActiveHandlePoints(self) -> cu.PointNumberList:
         """ Delegate to the active operation to get active handles. """
-    def reactNodeParmsUpdate(self, event_type: hou.EnumValue[hou.nodeEventType], node: hou.SopNode, **kwargs: Any) -> None:
+    def reactNodeParmsUpdate(self, event_type: hou.EnumValue[hou.nodeEventType], node: hou.SopNode, **kwargs: Unpack[_NodeParmEventKwargs]) -> None:
         """
         React to node parms changing to respond specifically to
         the show round corner toggle, the order, and output type,

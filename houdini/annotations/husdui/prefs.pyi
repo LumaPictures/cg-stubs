@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import Any, Literal, TypedDict, overload
+from typing import Literal, TypedDict, overload
 
 from typing_extensions import TypeVar
 
@@ -22,7 +22,7 @@ class _AttrConfig(TypedDict, total=False):
     label: str
     component_labels: Sequence[str]
     # Keyword arguments for the hou.ParmTemplate.
-    kwargs: dict[str, Any]
+    kwargs: dict[str, JSONValue]
 
 class Prefs:
     def __init__(self, pref_filename: str) -> None: ...
@@ -70,7 +70,7 @@ class Prefs:
         self, attr_name: str, config_name: Literal["component_labels"], default: _D = ...
     ) -> Sequence[str] | _D: ...
     @overload
-    def attrConfig(self, attr_name: str, config_name: Literal["kwargs"], default: _D = ...) -> dict[str, Any] | _D: ...
+    def attrConfig(self, attr_name: str, config_name: Literal["kwargs"], default: _D = ...) -> dict[str, JSONValue] | _D: ...
     @overload
     def attrConfig(self, attr_name: str, config_name: str, default: _D = ...) -> JSONValue | tuple[JSONValue, ...] | _D: ...
 

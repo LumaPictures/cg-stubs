@@ -21,7 +21,7 @@ class ConstGU_DetailHandle(hutil.cppinline.ConverterHandle):
 class GU_DetailHandle(ConstGU_DetailHandle):
     def __init__(self, geometry: hou.Geometry) -> None: ...
 
-_hou_classes_to_cpp_class_names: dict[type[object], str]
+_hou_classes_to_cpp_class_names: dict[_ExtendableClass, str]
 
 def createLibrary(name: str, includes: str = '', function_sources: Sequence[str] = ..., debug: bool = False, catch_crashes: bool | None = None, acquire_hom_lock: bool = False, structs: Sequence[_StructDescription] = ..., include_dirs: Sequence[str] = ..., link_dirs: Sequence[str] = ..., link_libs: Sequence[str] = ..., config: hutil.cppinline.Config | None = None) -> hutil.cppinline._Library: ...
 def extendClass(cls: _ExtendableClass, library_name: str, includes: str = '', function_sources: Sequence[str] = ..., debug: bool = False, catch_crashes: bool | None = None, structs: Sequence[_StructDescription] = ..., auto_add_include: bool = True, include_dirs: Sequence[str] = ..., link_dirs: Sequence[str] = ..., link_libs: Sequence[str] = ..., config: hutil.cppinline.Config | None = None) -> None:

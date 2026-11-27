@@ -1,7 +1,8 @@
 import hou
 from . import utils as su
 from houtypes import ViewerStateCommandKwargs, ViewerStateDragDropKwargs, ViewerStateDrawKwargs, ViewerStateEnterKwargs, ViewerStateEventKwargs, ViewerStateHandleDragKwargs, ViewerStateHandleToStateKwargs, ViewerStateKwargs, ViewerStateMenuActionKwargs, ViewerStateMenuPreOpenKwargs, ViewerStateNodeChangeKwargs, ViewerStateParmChangeKwargs, ViewerStatePlaybackChangeKwargs, ViewerStateSelectionKwargs, ViewerStateStateToHandleKwargs, ViewerStateVolatileClientKwargs
-from typing import Any, Generic, TypedDict, Unpack
+from typing import Any, Generic
+from typing_extensions import TypedDict, Unpack
 
 from typing import TypeAlias
 from typing import TypeVar
@@ -22,10 +23,14 @@ class _StateHandlerKwargs(TypedDict, Generic[_A]):
     state: Any
     args: _A
 
+class _ResourceEventKwargs(TypedDict, extra_items=hou._ResourceEventValue):  # type: ignore[call-arg]
+    event_type: hou.EnumValue[hou.resourceEventMessage]
+    resource_type: hou.EnumValue[hou.resourceType]
+
 class _HasAttrArgs(TypedDict):
     attr: str
 
-def onViewerStateEvent(self: Any, **kwargs: Any) -> None:
+def onViewerStateEvent(self: Any, **kwargs: Unpack[_ResourceEventKwargs]) -> None:
     """ This handler listens to viewer state events and implements 
         some of the Viewer state browser actions.
 

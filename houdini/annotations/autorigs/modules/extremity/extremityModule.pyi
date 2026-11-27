@@ -27,6 +27,9 @@ _ExtremityModuleJson: TypeAlias = _ModuleJson[_ExtremityOptionsJson, _ExtremityP
 _ExtremityOptions = TypeVar("_ExtremityOptions", bound=ModuleOptionsWidget, default=Any)
 _ExtremityParams = TypeVar("_ExtremityParams", bound=ModuleParamsWidget, default=Any)
 _ExtremityGuideT = TypeVar("_ExtremityGuideT", bound=HandGuide | FootGuide | QuadFootGuide, default=Any)
+_ExtremityGuideTab = TypeVar("_ExtremityGuideTab", bound="ExtremityGuideTab[Any, Any, Any]", default=Any)
+# The hand and foot modules set their asset; ExtremityModule and the quadfoot module do not.
+_ExtremityAsset = TypeVar("_ExtremityAsset", bound=AutoRigsAsset | None, default=Any)
 _Guide_co = TypeVar("_Guide_co", bound=ExtremityGuide, covariant=True, default=ExtremityGuide)
 
 class _GuidesFactory(Protocol[_Guide_co]):
@@ -63,14 +66,19 @@ class ExtremityModule(
         None,
         ModuleOptionModel,
         ModuleOptionController,
+        _ExtremityGuideTab,
+        _ExtremityAsset,
     ],
-    Generic[_ExtremityOptions, _ExtremityParams, _ExtremityGuideT],
+    Generic[_ExtremityOptions, _ExtremityParams, _ExtremityGuideT, _ExtremityGuideTab, _ExtremityAsset],
 ):
     limbmodules: Sequence[LimbModule]
     guidesfactory: _GuidesFactory[_ExtremityGuideT]
     assetnode: hou.ObjNode
     mastermodule: MasterModule
     spinemodules: Sequence[SpineModule]
+    model: ModuleOptionModel
+    controller: ModuleOptionController
+    buildguides: _ExtremityGuideT
     def __init__(
         self,
         autorigs_asset: AutoRigsAsset,
@@ -95,6 +103,7 @@ class ExtremityGuideTab(
         _ExtremityOptions,
         _ExtremityParams,
         _ExtremityGuideT,
+        ModuleTabsWidget,
     ],
     Generic[_ExtremityOptions, _ExtremityParams, _ExtremityGuideT],
 ):
@@ -102,6 +111,9 @@ class ExtremityGuideTab(
     GUIDE_OPTIONS: type[_ExtremityOptions]
     GUIDE_PARAMS: type[_ExtremityParams]
     tabswidget: ModuleTabsWidget
+    buildguides: _ExtremityGuideT
+    optionswidget: _ExtremityOptions
+    paramswidget: _ExtremityParams
     def __init__(
         self,
         buildguides: _ExtremityGuideT,

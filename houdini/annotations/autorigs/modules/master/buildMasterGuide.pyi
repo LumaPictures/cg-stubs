@@ -1,6 +1,4 @@
 import collections
-from typing import Any
-
 import hou
 
 from autorigs.modules.base import buildBaseGuide
@@ -14,7 +12,7 @@ class MasterGuide(buildBaseGuide.BaseGuide[collections.OrderedDict[str, collecti
     module_master: hou.ObjNode
     modulenode: hou.ObjNode | None
     master_null: hou.ObjNode | None
-    guidenodesdata: dict[str, list[Any]]
+    guidenodesdata: dict[str, list[hou.ObjNode | bool | None]]
 
     def __init__(self, assetnode: hou.ObjNode) -> None: ...
     def createFromJson(self, json: _MasterModuleJson) -> None: ...

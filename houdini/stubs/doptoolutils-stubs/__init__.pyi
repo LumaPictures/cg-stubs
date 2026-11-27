@@ -9,11 +9,11 @@ from typing import TypeAlias
 from typing import TypeVar
 from collections.abc import Mapping
 from typing import Any
+from typing import Literal
 from typing import TypeAlias
 from typing import TypeVar
 _OpNodeT = TypeVar('_OpNodeT', bound=hou.OpNode)
-_ControlDefault: TypeAlias = bool | Sequence[str] | Sequence[float]
-_ControlParmSpec: TypeAlias = tuple[str, str, str, int, _ControlDefault] | tuple[str, str, str, int, _ControlDefault, Mapping[str, Any]]
+_ControlParmSpec: TypeAlias = tuple[Literal['toggle'], str, str, int, bool] | tuple[Literal['toggle'], str, str, int, bool, Mapping[str, Any]] | tuple[Literal['string'], str, str, int, Sequence[str]] | tuple[Literal['string'], str, str, int, Sequence[str], Mapping[str, Any]] | tuple[Literal['int'], str, str, int, Sequence[int]] | tuple[Literal['int'], str, str, int, Sequence[int], Mapping[str, Any]] | tuple[Literal['float'], str, str, int, Sequence[float]] | tuple[Literal['float'], str, str, int, Sequence[float], Mapping[str, Any]]
 _RemovalChange: TypeAlias = tuple[hou.OpNode, bool, str, str]
 class _InitObjectFunc(Protocol):
     def __call__(self, info: ObjectTypeInfo, dopobjectnode: hou.DopNode, solvernode: hou.DopNode, objectnode: hou.ObjNode, sopnode: hou.SopNode, subtype: str | None = ...) -> object: ...

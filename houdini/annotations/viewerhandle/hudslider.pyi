@@ -2,7 +2,7 @@ import PySide6.QtCore
 import PySide6.QtGui
 import PySide6.QtWidgets
 from collections.abc import Callable, Generator
-from typing import Any, TypedDict, Unpack
+from typing import Required, TypedDict, Unpack
 
 
 import hou
@@ -48,12 +48,15 @@ class ContextMenuHandler:
     def onSetKeyFrameAction(self) -> None: ...
     def onRemoveKeyFrameAction(self) -> None: ...
 
+class _HUDSliderOptions(hudw._HUDWidgetOptions, total=False):
+    slider_type: Required[type[rui.FloatSlider] | type[rui.IntSlider]]
+
 class HUDSlider(hud.HUDWidgetBase):
     BG_STYLE_SHEET: str
     SLIDER_FIXED_HEIGHT: int
     HIDE_SLIDER_WIDTH_THRESHOLD: int
     def __init__(
-        self, handle: _HUDHandle, target_parm: hou.Parm | None, hud_widget_key: str, window_key: str, **kwargs: Any
+        self, handle: _HUDHandle, target_parm: hou.Parm | None, hud_widget_key: str, window_key: str, **kwargs: Unpack[_HUDSliderOptions]
     ) -> None: ...
     def computeDistance(self, x: float, y: float) -> list[float]: ...
     def setPreviousMousePos(self, x: float, y: float) -> None: ...

@@ -1,6 +1,8 @@
 from collections.abc import KeysView
+from typing import TypeAlias
 
 from houtypes import JSONValue
+from statehud import baseconfig
 
 
 def getBoolPref(pref: str, default_value: bool = ...) -> bool: ...
@@ -9,6 +11,10 @@ def getFloatPref(pref: str, default_value: float = ...) -> float: ...
 def setFloatPref(pref: str, val: float) -> bool: ...
 def getIntPref(pref: str, default_value: int = ...) -> int: ...
 def setIntPref(pref: str, val: int) -> bool: ...
+
+AbstractConfig: TypeAlias = baseconfig.AbstractConfig
+BaseNodeConfig: TypeAlias = baseconfig.BaseNodeConfig
+ConfigWrapper: TypeAlias = baseconfig.ConfigWrapper
 
 class UserDataConfig(BaseNodeConfig):
     def keys(self) -> KeysView[str] | list[str]: ...

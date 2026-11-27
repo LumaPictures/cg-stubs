@@ -148,7 +148,7 @@ class _NCACheckpoint(TypedDict):
     lppn_scheduler_state_dict: NotRequired[dict[str, Any]]
     torch_rng_state: NotRequired[torch.Tensor]
     numpy_rng_state: NotRequired[tuple[str, npt.NDArray[np.uint32], int, int, float]]
-    python_rng_state: NotRequired[tuple[Any, ...]]
+    python_rng_state: NotRequired[tuple[int, tuple[int, ...], float | None]]
     cuda_rng_state: NotRequired[torch.Tensor]
 
 class _NCAArchitecture(TypedDict):

@@ -11,11 +11,17 @@ pip install types-houdini
 The version of the package corresponds to the version of Houdini that it is generated from,
 plus a version suffix for the revision of the stubs
 
+The stubs use the types of USD (`pxr`) and PySide6 where Houdini's API does, but don't depend on
+their stubs: install `types-usd` (and PySide6, which ships its own) to have them checked, or
+they are `Any`.
+
 ## Contents
 
 Alongside `hou`, the package has stubs for the other Python modules that Houdini ships in
 `$HFS/houdini/pythonX.Ylibs`, one `<module>-stubs` package each: `pdg`, `pdgutils`, `pdgjob`,
 `hapi`, `husd`, `toolutils`, `soputils`, `hdefereval`, `viewerstate`, `nodegraph*`, and the rest.
+PDG's built-in node types, which it loads from `$HFS/houdini/pdg/types` as `pdg.types.<name>`
+(`pdg.types.schedulers.local`, `pdg.types.utils.wedge`, ...), are in the `pdg` stubs.
 
 - Compiled extensions (`_pdg`, `_pdgd`, `_pdgutils`, `hapi`, `_houqt`, `husd.UsdHoudini`, ...) are
   stubbed by inspecting them, so their signatures are typed.

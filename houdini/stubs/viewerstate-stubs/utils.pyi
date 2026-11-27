@@ -4,10 +4,10 @@ import io
 import resourceutils as ru
 import typing
 from collections.abc import Callable as Callable, Iterable, Mapping
-from houtypes import ShelfToolKwargs, ViewerStateEventKwargs, ViewerStateMenuActionKwargs, ViewerStateMenuPreOpenKwargs
+from houtypes import ParmActionButtonKwargs, ParmCallbackKwargs, ShelfToolKwargs, ViewerStateEventKwargs, ViewerStateMenuActionKwargs, ViewerStateMenuPreOpenKwargs
 from resourceutils import CursorLabel as CursorLabel, HUD as HUD, Line as Line, Tracer as Tracer
 from toolutils import sceneViewer as sceneViewer
-from typing import Any, Self, Sequence, TypedDict, Unpack
+from typing import Any, Protocol, Self, Sequence, TypedDict, Unpack
 
 from typing import ParamSpec
 from typing import TypeAlias
@@ -28,9 +28,17 @@ class _LogMessageOptions(TypedDict, total=False):
     richtext: str
     severity: hou.EnumValue[hou.severityType]
 
+class _DebugAidState(Protocol):
+    @property
+    def state_name(self) -> str: ...
+
+class _DebugHandlerState(Protocol):
+    @property
+    def scene_viewer(self) -> hou.SceneViewer: ...
+
 class _DebugHandlerKwargs(TypedDict):
     logger: Logger
-    obj: Any
+    obj: _DebugHandlerState
 
 class _SnapOptions(TypedDict, total=False):
     snap_mode: hou.EnumValue[hou.snappingMode]
@@ -200,7 +208,7 @@ class GeometryIntersector:
         """
     def intersect(self, ray_origin: hou.Vector3, ray_dir: hou.Vector3, snapping: bool = True, min_hit: float = 0.0, max_hit: float = 1e+18) -> bool: ...
 
-def activePane(kwargs: Mapping[str, Any] | None = None) -> hou.PaneTab: ...
+def activePane(kwargs: ShelfToolKwargs | ParmActionButtonKwargs | ParmCallbackKwargs | None = None) -> hou.PaneTab: ...
 @typing.overload
 def activeSceneViewer(pane: hou.SceneViewer | None) -> hou.SceneViewer: ...
 @typing.overload
@@ -221,7 +229,7 @@ def findSceneViewer(can_switch_tabs: bool = True, must_be_current: bool = True) 
 @typing.overload
 def findCompositorViewer(scriptargs: None = ...) -> hou.CompositorViewer: ...
 @typing.overload
-def findCompositorViewer(scriptargs: Mapping[str, Any]) -> hou.PaneTab: ...
+def findCompositorViewer(scriptargs: ShelfToolKwargs | ParmActionButtonKwargs | ParmCallbackKwargs) -> hou.PaneTab: ...
 def findViewer(node_type_category: hou.NodeTypeCategory | None = None) -> hou.SceneViewer | hou.CompositorViewer:
     """ Return a viewer matching the node type category.
     """
@@ -374,7 +382,7 @@ def hudModeHotkeyRefs(hotkey_symbols: Iterable[str]) -> str:
     """
 
 class DebugAid(ru.DebugAidBase):
-    def __init__(self, obj: Any) -> None: ...
+    def __init__(self, obj: _DebugAidState) -> None: ...
     def browserName(self) -> str: ...
     def makeCommandArgs(self, cmd: str) -> dict[str, str]: ...
 
@@ -399,7 +407,7 @@ def addDebugEntriesToMenu(hotkey_definitions: hou.PluginHotkeyDefinitions, state
     """
     Add debug entries to a menu, ending up with a flat list of menu items.
     """
-def onDebugMenuAction(obj: Any, kwargs: ViewerStateMenuActionKwargs) -> None:
+def onDebugMenuAction(obj: _DebugAidState, kwargs: ViewerStateMenuActionKwargs) -> None:
     """ The menu handler associated to the menu built with createDebugMenu.
         The handler just delegates to the Viewer Handle Browser.
 
@@ -434,7 +442,7 @@ class Menu:
         Do some cleanup
         """
 
-def run_override(override_func: str, module_folder: str, module_name: str, kwargs: Mapping[str, Any]) -> Any:
+def run_override(override_func: str, module_folder: str, module_name: str, kwargs: Mapping[str, object]) -> Any:
     """
     Internal function for executing a state override
     """
@@ -470,27 +478,22 @@ def getPickModifier(device: hou.UIEventDevice | None) -> hou.EnumValue[hou.pickM
     """
     Gets the pick modifier which corresponds to the state of the device.
     """
-def getPrimHighlightColor(scene_viewer: hou.SceneViewer | None = None, alpha_override: float | None = None) -> tuple[float, float, float, float | None]:
-    """
-    Get the KineFX primitive highlight(selected) color.
-
-    :param scene_viewer: active scene viewer
-    :type scene_viewer: hou.SceneViewer
-    :return: prim highlight color
-    :rtype: tuple of rgba
-    """
-def getPrimPreHighlightColor(scene_viewer: hou.SceneViewer | None = None, pick_mod: hou.EnumValue[hou.pickModifier] = ..., alpha_override: float | None = None) -> tuple[float, float, float, float | None]:
-    """
-    Get the KineFX primitive pre-highlight(located) color corresponding to the
-    pick modifier.
-
-    :param scene_viewer: active scene viewer
-    :type scene_viewer: hou.SceneViewer
-    :param pick_mod: The pick modifier
-    :type pick_mod: hou.pickModifier 
-    :return: prim pre-highlight color
-    :rtype: tuple of rgba
-    """
+@typing.overload
+def getPrimHighlightColor(scene_viewer: hou.SceneViewer, alpha_override: float | None = ...) -> _RGBA: ...
+@typing.overload
+def getPrimHighlightColor(scene_viewer: hou.SceneViewer | None, alpha_override: float) -> _RGBA: ...
+@typing.overload
+def getPrimHighlightColor(scene_viewer: hou.SceneViewer | None = ..., *, alpha_override: float) -> _RGBA: ...
+@typing.overload
+def getPrimHighlightColor(scene_viewer: None = ..., alpha_override: None = ...) -> tuple[float, float, float, None]: ...
+@typing.overload
+def getPrimPreHighlightColor(scene_viewer: hou.SceneViewer, pick_mod: hou.EnumValue[hou.pickModifier] = ..., alpha_override: float | None = ...) -> _RGBA: ...
+@typing.overload
+def getPrimPreHighlightColor(scene_viewer: hou.SceneViewer | None, pick_mod: hou.EnumValue[hou.pickModifier], alpha_override: float) -> _RGBA: ...
+@typing.overload
+def getPrimPreHighlightColor(scene_viewer: hou.SceneViewer | None = ..., pick_mod: hou.EnumValue[hou.pickModifier] = ..., *, alpha_override: float) -> _RGBA: ...
+@typing.overload
+def getPrimPreHighlightColor(scene_viewer: None = ..., pick_mod: hou.EnumValue[hou.pickModifier] = ..., alpha_override: None = ...) -> tuple[float, float, float, None]: ...
 def getPointHighlightColor(scene_viewer: hou.SceneViewer) -> _RGBA:
     """
     Get the KineFX point highlight(selected) color.

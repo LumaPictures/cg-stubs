@@ -4,20 +4,9 @@ from typing import Any, ClassVar, Literal, Protocol, TypeAlias, TypedDict
 
 import hou
 from houtypes import HDALibraryEventKwargs, NodeEventKwargs
-from husd.assetutils import _AssetDataSourceInfo, _AssetInfo
+from layout.utils import AssetGeneratorSig as _AssetGenerator
 
 from . import brush as lb
-
-class _AssetGenerator(Protocol):
-    def __call__(
-        self,
-        container: hou.Node,
-        asset_info: _AssetInfo | _AssetDataSourceInfo,
-        primpath: str,
-        prev_item: hou.NetworkMovableItem | None,
-        next_node: hou.Node | None,
-        force_gen: bool = ...,
-    ) -> hou.Node | None: ...
 
 class _AssetGenerateKwargs(TypedDict):
     container: hou.OpNode | None

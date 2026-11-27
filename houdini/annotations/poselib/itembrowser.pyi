@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import Any
+from typing import Any, Generic, TypeVar
 
 import PySide6.QtCore
 import PySide6.QtGui
@@ -8,12 +8,15 @@ from PySide6 import QtCore, QtWidgets
 
 from poselib import capturewidget, infowindow, itemgrid, itemlibrary, itemnavigator
 
+_ItemModelT_co = TypeVar("_ItemModelT_co", bound=itemlibrary.ItemModel, covariant=True, default=itemlibrary.ItemModel)
+_GridViewT_co = TypeVar("_GridViewT_co", bound=itemgrid.GridView, covariant=True, default=itemgrid.GridView)
+
 DELETE_POSE: str
 ADD_POSE: str
 DELETE_FOLDER: str
 ADD_FOLDER: str
 
-class ItemBrowser(PySide6.QtWidgets.QWidget):
+class ItemBrowser(PySide6.QtWidgets.QWidget, Generic[_ItemModelT_co, _GridViewT_co]):
     libraryStateChanged: QtCore.Signal
     newLibraryCreated: QtCore.Signal
     librarySourceChanged: QtCore.Signal
@@ -21,9 +24,9 @@ class ItemBrowser(PySide6.QtWidgets.QWidget):
     changeThumbnailViewportRequested: QtCore.Signal
     newLibraryDialog: "NewLibraryDialog"
     infoWindow: infowindow.InfoWindow
-    itemModel: itemlibrary.ItemModel
+    itemModel: _ItemModelT_co
     treeView: itemnavigator.TreeView
-    gridView: itemgrid.GridView
+    gridView: _GridViewT_co
     libraryPathLabel: QtWidgets.QLabel
     toolTip: "ToolTip"
     contextMenu: QtWidgets.QMenu

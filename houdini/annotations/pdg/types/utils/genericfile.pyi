@@ -1,0 +1,116 @@
+import ssl
+from collections.abc import Callable
+
+import _pdg
+from pdg import PyProcessor
+
+def indexed_str(s: str, index: int) -> str: ...
+
+class FilePattern(PyProcessor):
+    def __init__(self, node: _pdg.Node) -> None: ...
+    @classmethod
+    def templateName(cls) -> str: ...
+    @classmethod
+    def templateBody(cls) -> str: ...
+    def onConfigureNode(self, node_options: _pdg.NodeOptions) -> _pdg.result: ...
+    def onGenerate(
+        self,
+        item_holder: _pdg.WorkItemHolder,
+        upstream_items: _pdg.WorkItemList,
+        generation_type: _pdg.generationType,
+    ) -> _pdg.result: ...
+
+class FileCopy(PyProcessor):
+    SourceUpstream: int
+    SourceCustom: int
+    DestDir: int
+    DestFile: int
+    def __init__(self, node: _pdg.Node) -> None: ...
+    @classmethod
+    def templateName(cls) -> str: ...
+    @classmethod
+    def templateBody(cls) -> str: ...
+    def onConfigureNode(self, node_options: _pdg.NodeOptions) -> _pdg.result: ...
+    def onGenerate(
+        self,
+        item_holder: _pdg.WorkItemHolder,
+        upstream_items: _pdg.WorkItemList,
+        generation_type: _pdg.generationType,
+    ) -> _pdg.result: ...
+    def onPrepareTask(self, work_item: _pdg.WorkItem) -> None: ...
+
+class FileRemove(PyProcessor):
+    ALL_INPUTS: int
+    DELETED_FILES: int
+    EXTANT_INPUTS: int
+    NO_FILES: int
+    FILEPATH: int
+    RESULTDATA: int
+    @classmethod
+    def templateName(cls) -> str: ...
+    @classmethod
+    def templateBody(cls) -> str: ...
+    def onConfigureNode(self, node_options: _pdg.NodeOptions) -> _pdg.result: ...
+    def onGenerate(
+        self,
+        item_holder: _pdg.WorkItemHolder,
+        upstream_items: _pdg.WorkItemList,
+        generation_type: _pdg.generationType,
+    ) -> _pdg.result: ...
+    def onCookTask(self, work_item: _pdg.WorkItem) -> _pdg.result: ...
+
+class MakeDir(PyProcessor):
+    OutputsKeep: int
+    OutputsAppend: int
+    OutputsReplace: int
+    @classmethod
+    def templateName(cls) -> str: ...
+    @classmethod
+    def templateBody(cls) -> str: ...
+    def onGenerate(
+        self,
+        item_holder: _pdg.WorkItemHolder,
+        upstream_items: _pdg.WorkItemList,
+        generation_type: _pdg.generationType,
+    ) -> _pdg.result: ...
+
+class ScopedSSLVerify:
+    saved_cdc: Callable[..., ssl.SSLContext]
+    verifysslcerts: int | None
+    def __init__(self, work_item: _pdg.WorkItem) -> None: ...
+
+class DownloadFile(PyProcessor):
+    verifysslcerts: bool
+    def __init__(self, node: _pdg.Node) -> None: ...
+    @classmethod
+    def templateName(cls) -> str: ...
+    @classmethod
+    def templateBody(cls) -> str: ...
+    def onConfigureNode(self, node_options: _pdg.NodeOptions) -> _pdg.result: ...
+    def onGenerate(
+        self,
+        item_holder: _pdg.WorkItemHolder,
+        upstream_items: _pdg.WorkItemList,
+        generation_type: _pdg.generationType,
+    ) -> _pdg.result: ...
+    def onCookTask(self, work_item: _pdg.WorkItem) -> None: ...
+    def addUrl(self, url: str, filename: str = ..., _data_tag: str | None = ...) -> None: ...
+
+class FileRename(PyProcessor):
+    SourceUpstream: int
+    SourceCustom: int
+    def __init__(self, node: _pdg.Node) -> None: ...
+    @classmethod
+    def templateName(cls) -> str: ...
+    @classmethod
+    def templateBody(cls) -> str: ...
+    def onConfigureNode(self, node_options: _pdg.NodeOptions) -> _pdg.result: ...
+    def onGenerate(
+        self,
+        item_holder: _pdg.WorkItemHolder,
+        upstream_items: _pdg.WorkItemList,
+        generation_type: _pdg.generationType,
+    ) -> _pdg.result: ...
+    def onPrepareTask(self, work_item: _pdg.WorkItem) -> None: ...
+
+def registerTypes(type_registry: _pdg.TypeRegistry) -> None: ...

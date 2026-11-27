@@ -1,13 +1,13 @@
 import hou
 from curvestate import constants as constants, referencegeo as referencegeo
-from curvestate.baseoperation import BaseSelectPointOperation as BaseSelectPointOperation, _CurveState
+from curvestate.baseoperation import BaseSelectPointOperation as BaseSelectPointOperation, _CurveState, _NodeParmEventKwargs, _OperationKwargs, _TriggerOperationKwargs
 from curvestate.undos import getUndoBlock as getUndoBlock
 from houtypes import ViewerStateEventKwargs
-from typing import Any
+from typing import Unpack
 
 class RoundCornerBaseOperation(BaseSelectPointOperation):
     """ Encapsulate some common logic for round corner operations. """
-    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
+    def __init__(self, *args: Unpack[tuple[str, hou.SceneViewer, _CurveState]], **kwargs: Unpack[_OperationKwargs]) -> None: ...
     def hasSelectedNonRoundedCorners(self) -> bool:
         """ Whether any of the selected point numbers is NOT a rounded corner. """
 
@@ -19,7 +19,7 @@ class RoundCornerSplitOperation(RoundCornerBaseOperation):
     def __init__(self, name: str, scene_viewer: hou.SceneViewer, main_state: _CurveState) -> None: ...
     def onMyButtonPress(self) -> None:
         """ Override to handle button presses. """
-    def triggerOperation(self, **kwargs: Any) -> list[int]:
+    def triggerOperation(self, **kwargs: Unpack[_TriggerOperationKwargs]) -> list[int]:
         """ Override to return the desired points to select after splitting. """
 
 class RoundCornerFuseOperation(RoundCornerBaseOperation):
@@ -30,7 +30,7 @@ class RoundCornerFuseOperation(RoundCornerBaseOperation):
     def __init__(self, name: str, scene_viewer: hou.SceneViewer, main_state: _CurveState) -> None: ...
     def onMyButtonPress(self) -> None:
         """ Override to handle button press and update selection. """
-    def triggerOperation(self, **kwargs: Any) -> list[int]:
+    def triggerOperation(self, **kwargs: Unpack[_TriggerOperationKwargs]) -> list[int]:
         """ Override to return the new select points after the update. """
 
 class RoundCornerChangeRadiusOperation(RoundCornerBaseOperation):
@@ -50,7 +50,7 @@ class RoundCornerChangeRadiusOperation(RoundCornerBaseOperation):
         def redo(self) -> None:
             """ Called when redo is triggered. """
     def __init__(self, name: str, scene_viewer: hou.SceneViewer, main_state: _CurveState) -> None: ...
-    def reactNodeParmsUpdate(self, event_type: hou.EnumValue[hou.nodeEventType], node: hou.SopNode, **kwargs: Any) -> None:
+    def reactNodeParmsUpdate(self, event_type: hou.EnumValue[hou.nodeEventType], node: hou.SopNode, **kwargs: Unpack[_NodeParmEventKwargs]) -> None:
         """
         React to changing the radius slider.
 

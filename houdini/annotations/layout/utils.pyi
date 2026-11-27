@@ -7,13 +7,13 @@ from husd.assetutils import _AssetDataSourceInfo, _AssetInfo
 class _AssetGeneratorSig(Protocol):
     def __call__(
         self,
-        container: hou.Node,
+        container: hou.LopNetwork | hou.LopNode,
         asset_info: _AssetInfo | _AssetDataSourceInfo,
         primpath: str,
-        prev_item: hou.NetworkMovableItem | None,
-        next_node: hou.Node | None,
+        prev_item: hou.LopNode | None,
+        next_node: hou.LopNode | None,
         force_gen: bool = ...,
-    ) -> hou.Node | None: ...
+    ) -> hou.LopNode | None: ...
 
 AssetGeneratorSig: TypeAlias = _AssetGeneratorSig
 

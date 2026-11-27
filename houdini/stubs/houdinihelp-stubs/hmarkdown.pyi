@@ -1,7 +1,8 @@
+from bookish.text.textify import _EmitKwargs
 from bookish.wiki.wikipages import _WikiBlock, _WikiNode, _WikiSpan, _WikiText
 from collections.abc import Mapping
 from houdinihelp.htextify import HoudiniTextifier as HoudiniTextifier
-from typing import Any, Protocol
+from typing import Protocol, Unpack
 
 class _RelFn(Protocol):
     def __call__(self, path: str, /, default_ext: str | None = ...) -> str: ...
@@ -13,11 +14,11 @@ class HoudiniMarkdownifier(HoudiniTextifier[_WikiBlock]):
     gap: int
     pagetype: str | None
     rel: _RelFn
-    config: Mapping[str, Any]
-    def __init__(self, root: _WikiBlock, path: str = '', rel: _RelFn | None = None, config: Mapping[str, Any] | None = None) -> None: ...
+    config: Mapping[str, object]
+    def __init__(self, root: _WikiBlock, path: str = '', rel: _RelFn | None = None, config: Mapping[str, object] | None = None) -> None: ...
     def transform(self) -> str: ...
     eat_top: bool
-    def emit_block_text(self, block: _WikiBlock, **kwargs: Any) -> None: ...
+    def emit_block_text(self, block: _WikiBlock, **kwargs: Unpack[_EmitKwargs]) -> None: ...
     def render_span(self, span: _WikiText | _WikiSpan) -> str: ...
     def emit(self, text: str, indent: int = 0, wrap: bool = False, top: int = 0, bottom: int = 0, first: str = '', rest: str = '', upper: bool = False, lower: bool = False, before: str = '', after: str = '') -> None:
         """Write a Markdown block without text wrapping or character mapping."""

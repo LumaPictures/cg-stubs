@@ -10,7 +10,7 @@ class _XmlElement(Protocol):
     def find(self, path: str, /) -> "_XmlElement | None": ...
     def iterfind(self, path: str, /) -> Iterator["_XmlElement"]: ...
 
-_Page: TypeAlias = tuple[list["RslParm | str"], dict[str, Any]]
+_Page: TypeAlias = tuple[list["RslParm | str"], dict[str, "_Page | tuple[_Page, str]"]]
 _RampParmTags: TypeAlias = tuple[list["RslParm | str"], dict[str, dict[str, str]]]
 _Default: TypeAlias = list[str] | list[float] | str
 _ParmGroup: TypeAlias = tuple[list["RslParm"], dict[str, "_ParmGroup"]]

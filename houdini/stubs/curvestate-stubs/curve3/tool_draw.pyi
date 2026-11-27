@@ -153,7 +153,7 @@ class Curve3DrawTool(Curve3ToolBase):
     tool_name: str
     tool_label: str
     default_optype: str | None
-    hud_hints: list[dict[str, str]]
+    hud_hints: list[hou._HudRow]
     prompt_message: str
     draw_on_view_plane: bool
     def __init__(self, controller: Curve3Controller) -> None:
@@ -200,7 +200,7 @@ class Curve3DrawTool(Curve3ToolBase):
         """Finish the active draw curve for the shared accept hotkey."""
     def hotkey_delete_mode_action_command(self) -> str | None:
         """Delete selected points for the shared delete-mode hotkey."""
-    def hud_tool_hints(self, *, hint_fn: Callable[[str, str], dict[str, str]], selection_hints: list[dict[str, str]], hotkey_refs: Mapping[str, str]) -> list[dict[str, str]]:
+    def hud_tool_hints(self, *, hint_fn: Callable[[str, str], hou._HudRow], selection_hints: list[hou._HudRow], hotkey_refs: Mapping[str, str]) -> list[hou._HudRow]:
         """Return draw HUD hints in the established order."""
     def update_menu_item_states(self, menu_item_states: dict[str, ViewerMenuItemState], *, active: bool, set_visible_fn: Callable[[dict[str, ViewerMenuItemState], str, bool], object]) -> None:
         """Show draw-only context-menu actions only while draw mode is active."""

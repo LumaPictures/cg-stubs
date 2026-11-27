@@ -1,10 +1,16 @@
 import hou
 from hutil.qt.data.panels import _HudTemplate, _HudUpdates
-from typing import Any
+from typing import TypedDict, Unpack
+
+class _HudInfoDeprecatedKwargs(TypedDict, total=False):
+    hud_state: hou.EnumValue[hou.hudInfoState]
+    hud_template: _HudTemplate | None
+    hud_values: _HudUpdates | None
+    hud_panel: hou.EnumValue[hou.hudPanel] | int
 
 PANEL_TO_ENUM: dict[int, hou.EnumValue[hou.hudPanel]]
 
-def hudInfo(self: hou.SceneViewer, show: bool | int = True, terminate: bool = False, state: hou.EnumValue[hou.hudInfoState] = ..., template: _HudTemplate | None = None, values: _HudUpdates | None = None, panel: hou.EnumValue[hou.hudPanel] | int = ..., update_hotkey_bindings: bool = False, **kwargs: Any) -> None:
+def hudInfo(self: hou.SceneViewer, show: bool | int = True, terminate: bool = False, state: hou.EnumValue[hou.hudInfoState] = ..., template: _HudTemplate | None = None, values: _HudUpdates | None = None, panel: hou.EnumValue[hou.hudPanel] | int = ..., update_hotkey_bindings: bool = False, **kwargs: Unpack[_HudInfoDeprecatedKwargs]) -> None:
     """
 hudInfo(self, show=-1, state=None, template=None, values=None,
 panel=hou.hudPanel.ToolInfo, terminate=False,

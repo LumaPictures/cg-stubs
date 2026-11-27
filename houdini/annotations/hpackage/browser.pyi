@@ -1,6 +1,8 @@
 from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Literal
+from typing import Literal
+
+from typing_extensions import TypedDict, Unpack
 
 import hou
 import modelview
@@ -9,8 +11,13 @@ import PySide6.QtGui
 import PySide6.QtWidgets
 from hpackage import model
 
+# What hou.ui.addResourceEventCallback passes (see hou._ResourceEvent).
+class _ResourceEventKwargs(TypedDict, extra_items=hou._ResourceEventValue):  # type: ignore[call-arg]
+    event_type: hou.EnumValue[hou.resourceEventMessage]
+    resource_type: hou.EnumValue[hou.resourceType]
+
 DIALOG_WIDTH: int
-DROP_FILE_TYPES: tuple[str, ...]
+DROP_FILE_TYPES: tuple[str, str]
 
 class PackageBrowser(PySide6.QtWidgets.QFrame):
     marker_count: int
@@ -47,7 +54,7 @@ class PackageBrowser(PySide6.QtWidgets.QFrame):
     def onSceneLoaded(self, event_type: hou.EnumValue[hou.hipFileEventType]) -> None: ...
     def onSelectionChanged(self, selected: PySide6.QtCore.QItemSelection, deselected: PySide6.QtCore.QItemSelection) -> None: ...
     def onClearMessages(self) -> None: ...
-    def onResourceEvent(self, **kwargs: Any) -> None: ...
+    def onResourceEvent(self, **kwargs: Unpack[_ResourceEventKwargs]) -> None: ...
 
 class PackageProxyModel(PySide6.QtCore.QSortFilterProxyModel):
     def __init__(self, parent: PySide6.QtCore.QObject | None = ...) -> None: ...

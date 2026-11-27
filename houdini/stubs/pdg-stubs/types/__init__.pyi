@@ -4,7 +4,7 @@ from importlib.machinery import ModuleSpec
 from types import ModuleType, TracebackType
 from typing import Any
 
-__getattr__: Callable[[str], Any]
+__getattr__: Callable[[str], ModuleType]
 
 class SearchPathManager:
     search_paths: list[str]

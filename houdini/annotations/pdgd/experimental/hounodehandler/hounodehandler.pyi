@@ -1,14 +1,15 @@
 from collections.abc import Callable
-from typing import ClassVar, TypeVar
+from typing import ClassVar, Concatenate, TypeVar
 
 import _pdgd
 import hou
 from _pdgd import _PythonValue
 
-_F = TypeVar("_F", bound=Callable[..., object])
+# eventCallback calls a handler with the HouNodeHandler and the event's keywords.
+_F = TypeVar("_F", bound=Callable[Concatenate["HouNodeHandler", ...], object])
 
 class EventHandlerBase:
-    event_handlers: ClassVar[dict[hou.EnumValue[hou.nodeEventType], Callable[..., object]]]
+    event_handlers: ClassVar[dict[hou.EnumValue[hou.nodeEventType], Callable[Concatenate["HouNodeHandler", ...], object]]]
     def __init__(self, handler: _pdgd.SubscriptionHandler) -> None: ...
     # The decorated name is replaced by a no-argument function returning the
     # original; only the event_handlers entry keeps the real handler.

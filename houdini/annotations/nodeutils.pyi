@@ -1,6 +1,7 @@
 import re
 from collections import defaultdict
 from collections.abc import Generator, Iterable, Mapping, Sequence
+from typing import Generic, TypeVar
 
 import hou
 
@@ -9,25 +10,27 @@ neg_pattern: str
 part_exp: re.Pattern[str]
 valid_name: re.Pattern[str]
 
+_PosT_co = TypeVar("_PosT_co", bound=int | None, covariant=True, default=int | None)
+
 class NodeMissingError(Exception): ...
 
-class Part:
+class Part(Generic[_PosT_co]):
     is_glob: bool
-    pos: int | None
+    pos: _PosT_co
     def __init__(self) -> None: ...
     def as_regex(self) -> str: ...
     def replacement(self, context: RenameContext) -> str: ...
     def is_star(self) -> bool: ...
     def is_negation(self) -> bool: ...
 
-class Literal(Part):
+class Literal(Part[int | None]):
     text: str
     def __init__(self, text: str) -> None: ...
     def __repr__(self) -> str: ...
     def as_regex(self) -> str: ...
     def replacement(self, context: RenameContext) -> str: ...
 
-class Glob(Part):
+class Glob(Part[int]):
     is_glob: bool
     pattern: str
     pos: int
@@ -40,7 +43,7 @@ class Glob(Part):
     def as_regex(self) -> str: ...
     def replacement(self, context: RenameContext) -> str: ...
 
-class Negation(Part):
+class Negation(Part[int | None]):
     glob: Glob
     def __init__(self, pattern: str) -> None: ...
     def __repr__(self) -> str: ...
@@ -48,7 +51,7 @@ class Negation(Part):
     def as_regex(self) -> str: ...
     def replacement(self, context: RenameContext) -> str: ...
 
-class GroupRef(Part):
+class GroupRef(Part[int | None]):
     text: str
     num: int
     def __init__(self, text: str, num: int) -> None: ...
@@ -60,7 +63,7 @@ class RenameContext:
     pattern_map: dict[str, int]
     counters: defaultdict[str, int]
     groups: tuple[str, ...]
-    def __init__(self, find_parts: Iterable[Part]) -> None: ...
+    def __init__(self, find_parts: Iterable[Part[int | None]]) -> None: ...
     def __repr__(self) -> str: ...
 
 def find_and_replace(

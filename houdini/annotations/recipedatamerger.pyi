@@ -8,7 +8,7 @@ _T = TypeVar("_T")
 _V = TypeVar("_V", bound=JSONValue)
 
 class MergeRule:
-    type: builtins.type[object]
+    type: builtins.type[JSONValue]
     name: str
     keys: list[str]
     def matches(self, key: str) -> bool: ...

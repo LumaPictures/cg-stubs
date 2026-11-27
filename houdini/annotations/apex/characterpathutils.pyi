@@ -1,0 +1,109 @@
+from collections.abc import Callable, Mapping
+from enum import Enum
+from typing import ClassVar, Generic, ParamSpec, Protocol, TypeAlias
+
+import _apex
+import apex
+import hou
+import apex.stateutils_2 as asu
+from apex.animstack import _ActiveLayerChangedKwargs
+from apex.autorigtool import _ToolActivateKwargs
+from statehud.parmutils import _HUDParmValue
+from statehud.parmwidgetset import _HUDParmInput, _HUDParmTemplate
+from typing_extensions import TypeVar
+
+_T = TypeVar("_T")
+_P = ParamSpec("_P")
+_R = TypeVar("_R")
+_V = TypeVar("_V", bound=_apex._ValueArg)
+
+class _AnimateState(asu._AnimateState, Protocol):
+    """The members of the Animate viewer state (`viewer_states/apexanimate.py`) this module uses."""
+
+    def bindBakeConfigParm(self, name: str, value: _HUDParmInput, parm_dict: _HUDParmTemplate) -> None: ...
+
+# The state of a subclass's tool: its own module's `_AnimateState`, which extends this one.
+_StateT_co = TypeVar("_StateT_co", bound=_AnimateState, covariant=True, default=_AnimateState)
+
+# (graph parm name, (node name, port name)) pairs, as apex.utils.wireNewInputMapping takes them.
+_InputMapping: TypeAlias = tuple[tuple[str, tuple[str, str]], ...]
+# ((node name, port name), (node name, port name)) pairs, as apex.utils.wirePorts takes them.
+_PortMap: TypeAlias = tuple[tuple[tuple[str, str], tuple[str, str]], ...]
+
+class Undo:
+    module_name: str
+    def __init__(self, tool: CharacterPathToolBase) -> None: ...
+    @property
+    def state(self) -> _AnimateState | None: ...
+
+class EndpointUndo(Undo):
+    def execute(self, tool: CharacterPathToolBase) -> None: ...
+
+_U_co = TypeVar("_U_co", bound=Undo, covariant=True)
+
+class WrapperUndo(Generic[_U_co]):
+    start_undo: _U_co
+    end_undo: _U_co
+
+class ParmsUndo(WrapperUndo[EndpointParmsUndo]): ...
+
+PATHARRAY_INPUT_NODES: set[str]
+
+class GraphIdCache:
+    # Annotated list[int] in the source, but only ever its -1 default (__init__ fills patharray_input_ports).
+    patharray_inputs: int
+    patharray_input_ports: list[int]
+
+class GraphHolder:
+    ROOT_GRAPH_NEW_INPUT_MAPPING: ClassVar[_InputMapping]
+    ROOT_GRAPH_IN_PORT_MAP: ClassVar[_PortMap]
+    ROOT_GRAPH_ROTATION_INPUT_MAPPING: ClassVar[_InputMapping]
+    ROOT_GRAPH_ROTATION_IN_PORT_MAP: ClassVar[_PortMap]
+    # Python values the tool set, or the apex values of the graph's "config" property once loaded.
+    def config(self) -> dict[str, _apex._ValueArg | None]: ...
+    def setConfig(self, config: dict[str, _apex._ValueArg | None]) -> None: ...
+    def configOption(self, key: str) -> _apex._ValueArg | None: ...
+    def setConfigOption(self, key: str, value: _apex._ValueArg) -> None: ...
+    def layerNameProp(self) -> str | None: ...
+    def replaceRootPaths(self, num: int) -> None: ...
+
+class ActivateResult(Enum):
+    Failed = 0
+    Created = 1
+    Loaded = 2
+
+class _EventBlocker(Protocol):
+    """What eventutils.eventBlocker() returns: a decorator that keeps the signature."""
+
+    def __call__(self, f: Callable[_P, _R], /) -> Callable[_P, _R]: ...
+
+class CharacterPathToolBase(Generic[_StateT_co]):
+    selectionEventBlocker: _EventBlocker
+    # Set on the tool by the state when it loads the tool's module.
+    module_name: str
+    hud_rows: list[hou._HudRow]
+    def __init__(self, name: str, state: _StateT_co, folder_path: str, rig_name: str) -> None: ...
+    @property
+    def state(self) -> _StateT_co | None: ...
+    def hudTemplate(self) -> list[hou._HudRow]: ...
+    def rig(self) -> apex.SceneGraph | None: ...
+    def graph_parms(self) -> apex.Dict | None: ...
+    def onActivate(self, kwargs: _ToolActivateKwargs) -> ActivateResult: ...
+    def setGraphParms(self, parms: Mapping[str, _apex._ValueArg] | apex.Dict) -> None: ...
+    # apex.Dict() converts only a dict.
+    def setControlParms(self, parms: dict[str, _V] | apex.Dict) -> None: ...
+    def getGraphParm(self, parm: str, default: _T | None = ..., graph_parms: apex.Dict | None = ...) -> _apex._Value | _T | None: ...
+    def duplicateLayer(self, set_op_layer: bool = ...) -> tuple[bool, str]: ...
+    # A hou.ui.postEventCallback() callback.
+    def onVerifyActiveLayerEvent(self, **kwargs: object) -> None: ...
+    def onActiveLayerChanged(self, kwargs: _ActiveLayerChangedKwargs) -> None: ...
+    def getOrigTimeFromTime(self, time: float, eval_graph: apex.Graph | None = ...) -> float: ...
+    def getTimeFromSourceTime(self, sourcetime: float, eval_graph: apex.Graph | None = ...) -> float: ...
+    def getSourceTimeFromTime(self, time: float, eval_graph: apex.Graph | None = ...) -> float: ...
+    def evaluatePositionAtTime(self, time: float, eval_graph: apex.Graph | None = ...) -> hou.Vector3: ...
+    def evaluatePositionAtSourceTime(self, time: float, eval_graph: apex.Graph | None = ...) -> hou.Vector3: ...
+    def evaluateOutputAtTime(self, output: str, time: float, eval_graph: apex.Graph | None = ...) -> _apex._Value | None: ...
+    # The bake parameters of the Animate state's settings HUD.
+    def onBakeEvent(self, kwargs: Mapping[str, _HUDParmValue]) -> bool: ...
+    def bakePath(self, kwargs: Mapping[str, _HUDParmValue]) -> bool: ...
+    def getPathEvaluator(self) -> CharacterPathEvaluator | None: ...

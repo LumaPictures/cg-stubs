@@ -15,7 +15,7 @@ COL_NUM: int
 COL_TO_NAME: dict[int, str]
 active_flag_holder: str | None
 COL_TIP: dict[int, str | Callable[[], str]]
-ITEMS_TO_HIDE: tuple[str, ...]
+ITEMS_TO_HIDE: tuple[str, str, str, str]
 
 def colToName(col_index: int) -> str: ...
 def colTooltip(tip_index: int) -> str | Callable[[], str]: ...

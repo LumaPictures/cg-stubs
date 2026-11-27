@@ -5,10 +5,17 @@ from collections.abc import KeysView, Mapping, Sequence
 from dataclasses import dataclass
 from enum import IntEnum
 from hutil.PySide import QtCore, QtGui, QtWidgets
-from typing import Any, ClassVar
+from typing import ClassVar, TypedDict, Unpack
 from viewerhandle import hudapi as hudapi
 from viewerhandle.hudapi import _HUDHandle, _HUDParmChangeKwargs, _HUDParmTemplateChangeKwargs, _HUDSettings
 from viewerhandle.hudwindow import HUDWindow as HUDWindow
+
+class _TrackpadLabelKwargs(TypedDict, total=False):
+    parent: QtWidgets.QWidget | None
+    text: str | None
+    tooltip: str | None
+    alignment: QtCore.Qt.AlignmentFlag
+    width: int | None
 
 HANDLE_PARMS: list[str]
 TRACKPAD_SCENE_SIZE: int
@@ -92,13 +99,13 @@ class TrackpadLabel(rui.LabelEdit):
     Trackpad label subclass. Provides a shadow
     effect that can be toggled.
     """
-    def __init__(self, **kwargs: Any) -> None: ...
+    def __init__(self, **kwargs: Unpack[_TrackpadLabelKwargs]) -> None: ...
     def hasShadowEffect(self) -> bool: ...
     def setShadowEffectState(self, value: bool) -> None: ...
 
 class HUDTrackPad(hudapi.HUDWidgetBase):
     """HUD handle widget to interface with the HUD manager."""
-    def __init__(self, handle: _HUDHandle, target_parm: hou.Parm | None, hud_widget_key: str, window_key: str, **kwargs: Any) -> None: ...
+    def __init__(self, handle: _HUDHandle, target_parm: hou.Parm | None, hud_widget_key: str, window_key: str, **kwargs: Unpack[hudw._HUDWidgetOptions]) -> None: ...
     def computeDistance(self, x: float, y: float) -> list[float]:
         """Compute the distance between the slider(s) and x,y, returns
         the closest distance along with the slider index.

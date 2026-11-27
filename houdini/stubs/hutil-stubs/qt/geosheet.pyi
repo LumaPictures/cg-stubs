@@ -9,7 +9,7 @@ from hutil.qt.common import config as config, core as core, qmlviews as qmlviews
 from hutil.qt.common.qmlviews import SST as SST
 from hutil.qt.info import nodeinfo as nodeinfo
 from hutil.qt.pluto import colors as colors
-from typing import Any, ClassVar, NamedTuple, Self, Sequence
+from typing import ClassVar, NamedTuple, Self, Sequence
 
 from typing import TypeAlias
 from typing import TypeAlias
@@ -20,7 +20,7 @@ IDENTITY4: list[list[int]]
 IDENTITY3: list[list[int]]
 NULL4: list[list[int]]
 NULL3: list[list[int]]
-NODE_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], ...]
+NODE_EVENTS: tuple[hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType], hou.EnumValue[hou.nodeEventType]]
 suffixes: dict[str, str]
 attrib_types: list[hou.EnumValue[hou.attribType]]
 data_types: list[hou.EnumValue[hou.attribData]]
@@ -143,7 +143,7 @@ class AttribTableModel(QtCore.QAbstractTableModel):
     def proxies(self) -> Iterator[AttribProxy]: ...
     def nameRoles(self) -> dict[str, int]: ...
     def dataString(self, column: int, role: str) -> str: ...
-    def data(self, index: PySide6.QtCore.QModelIndex | PySide6.QtCore.QPersistentModelIndex, role: int = 0) -> _AttribRoleValue | hou.AttribReturnType | list[float] | Matrix | PySide6.QtGui.QColor | dict[str, hou.AttribReturnType | dict[str, Any]] | AttribTableModel: ...
+    def data(self, index: PySide6.QtCore.QModelIndex | PySide6.QtCore.QPersistentModelIndex, role: int = 0) -> _AttribRoleValue | hou.AttribReturnType | list[float] | Matrix | PySide6.QtGui.QColor | dict[str, hou.AttribReturnType | hou._OptionDict] | AttribTableModel: ...
     def setData(self, index: PySide6.QtCore.QModelIndex | PySide6.QtCore.QPersistentModelIndex, value: object, role: int = ...) -> bool: ...
     def glob(self, pattern: str) -> Generator[int, None, None] | tuple[()]: ...
     def sortBy(self, column: int, reverse: bool) -> None: ...

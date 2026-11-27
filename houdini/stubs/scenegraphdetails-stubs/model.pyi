@@ -116,8 +116,8 @@ class PrimItem(ObjectItem):
     COMPUTED_VISIBILITY_LABEL: str
     API_SCHEMAS_LABEL: str
     STAGE_VARS_LABEL: str
-    IMAGEABLE_NAMES: tuple[str, ...]
-    XFORMABLE_NAMES: tuple[str, ...]
+    IMAGEABLE_NAMES: tuple[str, str, str, str]
+    XFORMABLE_NAMES: tuple[str, str]
     def __init__(self, model: SceneGraphDetailsBaseModel, node: hou.LopNode, parent: DetailsItem, row: int, path: Sdf.Path) -> None: ...
     def getColumnNames(self) -> Iterator[str] | None: ...
     def getHasChildren(self) -> bool: ...
@@ -164,7 +164,7 @@ class ComputedItem(DetailsItem):
 
 class MetadataOwnerItem(DetailsItem):
     owneritem: ObjectItem | SpecItem
-    metadata: dict[str, Any]
+    metadata: dict[str, object]
     theCompositionKeys: ClassVar[set[str]]
     def __init__(self, owneritem: ObjectItem | SpecItem, parent: DetailsItem | None, row: int) -> None: ...
     def getOwnerItem(self) -> ObjectItem | SpecItem: ...
@@ -173,8 +173,8 @@ class MetadataOwnerItem(DetailsItem):
 
 class MetadataDictItem(DetailsItem):
     key: str
-    valuemap: Mapping[str, Any]
-    def __init__(self, key: str, valuemap: Mapping[str, Any], parent: DetailsItem, row: int) -> None: ...
+    valuemap: Mapping[str, object]
+    def __init__(self, key: str, valuemap: Mapping[str, object], parent: DetailsItem, row: int) -> None: ...
     def getLabel(self) -> str: ...
 
 class MetadataItem(DetailsItem):

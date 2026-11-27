@@ -4,7 +4,7 @@ from typing import Any, Callable, Never, Protocol
 from typing import TypeVar
 from typing import TypeVar
 _C = TypeVar('_C', bound=type)
-_F = TypeVar('_F', bound=Callable[..., Any])
+_F = TypeVar('_F', bound=Callable[..., object])
 class _ClassDecorator(Protocol):
     def __call__(self, cls: _C, /) -> _C: ...
 

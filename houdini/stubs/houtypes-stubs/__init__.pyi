@@ -45,7 +45,7 @@ class ViewerParmProperties(TypedDict):
     label: NotRequired[str]
 
 class ViewerMenuState(TypedDict, total=False):
-    """A menu's entry in `menu_states`, for `onMenuPreOpen` to update."""
+    """`menu_states`: the state of the menu being opened, for `onMenuPreOpen` to update."""
 
     enable: bool | int
     value: str
@@ -322,7 +322,7 @@ class ViewerStateMenuPreOpenKwargs(ViewerStateKwargs, total=False):
     """The `kwargs` of a viewer state's `onMenuPreOpen`: set the states of the menu and its items."""
 
     menu: Required[str]
-    menu_states: Required[dict[str, ViewerMenuState]]
+    menu_states: Required[ViewerMenuState]
     menu_item_states: Required[dict[str, ViewerMenuItemState]]
 
 class ViewerStateParmChangeKwargs(ViewerStateKwargs, Generic[_EventT], total=False):
@@ -476,7 +476,7 @@ class ViewerHandleMenuPreOpenKwargs(ViewerHandleKwargs, total=False):
     """The `kwargs` of a viewer handle's `onMenuPreOpen`."""
 
     menu: Required[str]
-    menu_states: Required[dict[str, ViewerMenuState]]
+    menu_states: Required[ViewerMenuState]
     menu_item_states: Required[dict[str, ViewerMenuItemState]]
 
 class ViewerHandleParmChangeKwargs(ViewerHandleKwargs, Generic[_EventT], total=False):

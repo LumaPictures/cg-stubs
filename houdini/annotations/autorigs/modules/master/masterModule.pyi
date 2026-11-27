@@ -4,7 +4,7 @@ import hou
 
 from autorigs.asset.autoRigsAsset import AutoRigsAsset
 from autorigs.asset.geometry.buildGeometryGuide import GeometryGuide
-from autorigs.modules.base import moduleTabsWidget, rootModule
+from autorigs.modules.base import moduleTabsWidget, rootModule as Mod
 from autorigs.modules.base.buildBaseGuide import _GuideNamesJson
 from autorigs.modules.master import masterGuideOptions, masterGuideParams
 from autorigs.modules.master.autoRigsMasterBuilder import AutoRigsMasterBuilder
@@ -16,7 +16,7 @@ from autorigs.modules.base.rootModule import _ModuleJson, _ModuleJsonWithNode
 _MasterModuleJson: TypeAlias = _ModuleJson[_MasterOptionsJson, _MasterParamsJson, _GuideNamesJson]
 
 class MasterModule(
-    rootModule.Module[
+    Mod.Module[
         _MasterOptionsJson,
         _MasterParamsJson,
         _GuideNamesJson,
@@ -26,6 +26,7 @@ class MasterModule(
         dict[str, hou.ObjNode] | None,
         None,
         None,
+        "MasterGuideTab",
     ]
 ):
     MODULE_TYPE: str
@@ -36,9 +37,11 @@ class MasterModule(
     autorigs_asset: AutoRigsAsset | None
     hookrigmapping: dict[str, hou.ObjNode | None]
     geoguide: GeometryGuide | hou.ObjNode
-    guidetab: "MasterGuideTab"
+    guidetab: "MasterGuideTab | None"
     geoskin: hou.ObjNode | None
     autorigsbuilder: AutoRigsMasterBuilder
+    builtrig: dict[str, hou.ObjNode] | None
+    buildguides: MasterGuide
 
     def __init__(self, autorigs_asset: AutoRigsAsset) -> None: ...
     def initialize(self, autorigs_asset: AutoRigsAsset) -> None: ...
@@ -56,16 +59,20 @@ class MasterModule(
     def toJSON(self) -> _ModuleJsonWithNode[_MasterOptionsJson, _MasterParamsJson, _GuideNamesJson]: ...
 
 class MasterGuideTab(
-    rootModule.ModuleGuideTab[
+    Mod.ModuleGuideTab[
         _MasterOptionsJson,
         _MasterParamsJson,
         _GuideNamesJson,
         masterGuideOptions.ModuleOptionsWidget,
         masterGuideParams.ModuleParamsWidget,
         MasterGuide,
+        moduleTabsWidget.ModuleTabsWidget,
     ]
 ):
     PREFIX: str
     tabswidget: moduleTabsWidget.ModuleTabsWidget
+    buildguides: MasterGuide
+    optionswidget: masterGuideOptions.ModuleOptionsWidget
+    paramswidget: masterGuideParams.ModuleParamsWidget
 
     def __init__(self, autorigs_asset: AutoRigsAsset, buildguides: MasterGuide) -> None: ...

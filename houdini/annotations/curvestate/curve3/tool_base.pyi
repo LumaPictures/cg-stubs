@@ -1,5 +1,5 @@
 from collections.abc import Callable, Iterable, Mapping
-from typing import Any, Generic, Literal, TypeGuard, TypeVar, overload
+from typing import Generic, Literal, TypeGuard, TypeVar, overload
 
 import hou
 from houtypes import (
@@ -14,17 +14,18 @@ from houtypes import (
 from curveutils import PickCurveResultType
 from curvestate.curve3.adapters import SceneViewerAdapter
 from curvestate.curve3.controller import Curve3Controller, _DebugCommandResult
+from curvestate.curve3.controller_backend import _VerbParmArg
 from curvestate.curve3.handle_manager import Curve3HandleProviderBase
 from curvestate.curve3.move_points import PointMoveSession
 from curvestate.curve3.pick_controller import _CurvePickEvent, _HandlePointPickEvent
 
 # The value type of the parm overrides a tool gives its curve3core operations.
-_OverrideT_co = TypeVar("_OverrideT_co", covariant=True, default=object)
+_OverrideT_co = TypeVar("_OverrideT_co", bound=_VerbParmArg, covariant=True, default=_VerbParmArg)
 
 class Curve3ToolBase(Generic[_OverrideT_co]):
     tool_name: str
     tool_label: str
-    hud_hints: list[dict[str, str]]
+    hud_hints: list[hou._HudRow]
     default_optype: str | None
     prompt_message: str
     controller: Curve3Controller
@@ -45,7 +46,7 @@ class Curve3ToolBase(Generic[_OverrideT_co]):
     def label(self) -> str: ...
     def category(self) -> str: ...
     def icon(self) -> str: ...
-    def hudTemplate(self) -> list[dict[str, str]]: ...
+    def hudTemplate(self) -> list[hou._HudRow]: ...
     def onActivate(self, kwargs: Mapping[str, object] | None = ...) -> None: ...
     def onDeactivate(self) -> None: ...
     def onMouseEvent(self, kwargs: ViewerStateEventKwargs) -> bool: ...
@@ -62,10 +63,10 @@ class Curve3ToolBase(Generic[_OverrideT_co]):
     def hud_tool_hints(
         self,
         *,
-        hint_fn: Callable[[str, str], dict[str, str]],
-        selection_hints: list[dict[str, str]],
+        hint_fn: Callable[[str, str], hou._HudRow],
+        selection_hints: list[hou._HudRow],
         hotkey_refs: Mapping[str, str],
-    ) -> list[dict[str, str]]: ...
+    ) -> list[hou._HudRow]: ...
     def update_menu_item_states(
         self,
         menu_item_states: dict[str, ViewerMenuItemState],
@@ -127,7 +128,7 @@ class Curve3ToolBase(Generic[_OverrideT_co]):
         picked_ptnums: Iterable[int] | None = ...,
     ) -> bool: ...
     def mmb_use_view_plane(self) -> bool: ...
-    def draw_insert_preview(self, draw_handle: hou.Handle) -> None: ...
+    def draw_insert_preview(self, draw_handle: int) -> None: ...
     def clear_insert_preview(self) -> None: ...
     def is_valid_insert_pick(self, pick: PickCurveResultType | None) -> TypeGuard[PickCurveResultType]: ...
     def update_insert_preview_from_hover(self, kwargs: ViewerStateEventKwargs, *, enabled: bool) -> PickCurveResultType | None: ...

@@ -13,14 +13,15 @@ from houtypes import ViewerMenuItemState, ViewerStateCommandKwargs, ViewerStateD
 from typing import Generic, Literal, TypeGuard
 
 from typing import TypeVar
+from curvestate.curve3.controller_backend import _VerbParmArg
 from typing import TypeVar
-_OverrideT_co = TypeVar('_OverrideT_co', covariant=True, default=object)
+_OverrideT_co = TypeVar('_OverrideT_co', bound=_VerbParmArg, covariant=True, default=_VerbParmArg)
 class Curve3ToolBase(Generic[_OverrideT_co]):
     controller: Curve3Controller
     adapter: SceneViewerAdapter
     tool_name: str
     tool_label: str
-    hud_hints: list[dict[str, str]]
+    hud_hints: list[hou._HudRow]
     default_optype: str | None
     prompt_message: str
     def __init__(self, controller: Curve3Controller) -> None: ...
@@ -42,7 +43,7 @@ class Curve3ToolBase(Generic[_OverrideT_co]):
         """Return the framework HUD category for all Curve3 tools."""
     def icon(self) -> str:
         """Return the icon used by the framework HUD for Curve3 tools."""
-    def hudTemplate(self) -> list[dict[str, str]]:
+    def hudTemplate(self) -> list[hou._HudRow]:
         """Return this tool's HUD rows through the owning CurveState."""
     def onActivate(self, kwargs: Mapping[str, object] | None = None) -> None:
         """Framework activation entrypoint; sync the controller to this tool."""
@@ -69,7 +70,7 @@ class Curve3ToolBase(Generic[_OverrideT_co]):
         """Return the command for the shared delete-mode-action hotkey."""
     def hotkey_accept_command(self) -> str | None:
         """Return the command for the shared accept hotkey."""
-    def hud_tool_hints(self, *, hint_fn: Callable[[str, str], dict[str, str]], selection_hints: list[dict[str, str]], hotkey_refs: Mapping[str, str]) -> list[dict[str, str]]:
+    def hud_tool_hints(self, *, hint_fn: Callable[[str, str], hou._HudRow], selection_hints: list[hou._HudRow], hotkey_refs: Mapping[str, str]) -> list[hou._HudRow]:
         """Return this tool's HUD hints in the exact tool-specific order."""
     def update_menu_item_states(self, menu_item_states: dict[str, ViewerMenuItemState], *, active: bool, set_visible_fn: Callable[[dict[str, ViewerMenuItemState], str, bool], object]) -> None:
         """Update context-menu state for items owned by this tool."""
@@ -134,7 +135,7 @@ class Curve3ToolBase(Generic[_OverrideT_co]):
         picked/selected points are current for this event.
         """
     def mmb_use_view_plane(self) -> bool: ...
-    def draw_insert_preview(self, draw_handle: hou.Handle) -> None: ...
+    def draw_insert_preview(self, draw_handle: int) -> None: ...
     def clear_insert_preview(self) -> None: ...
     def is_valid_insert_pick(self, pick: PickCurveResultType | None) -> TypeGuard[PickCurveResultType]: ...
     def update_insert_preview_from_hover(self, kwargs: ViewerStateEventKwargs, *, enabled: bool) -> PickCurveResultType | None: ...

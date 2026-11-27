@@ -1,5 +1,6 @@
 from collections.abc import Callable as Callable, Iterable, Mapping
 from hutil import py23 as py23
+from typing import Concatenate
 
 def read_url_contents(url: str, post_data: bytes | None = None, extra_headers: Iterable[tuple[str, str]] = ..., require_content_length: bool = False, disable_proxy: bool = False) -> bytes | None:
     """Read the data at a URL.  Return None if the URL could not be read."""
@@ -8,7 +9,7 @@ def read_url(url: str, post_data: bytes | None = None, extra_headers: Iterable[t
     content_type, content) tuple.  If the connection generated a socket error
     then it raises urllib2.URLError.
     """
-def save_url_to_file(url: str, file_name: str, post_data: bytes | None = None, extra_headers: Iterable[tuple[str, str]] = ..., progress_callback: Callable[..., object] | None = None, callback_additional_kwargs: Mapping[str, object] = ..., disable_proxy: bool = False) -> None:
+def save_url_to_file(url: str, file_name: str, post_data: bytes | None = None, extra_headers: Iterable[tuple[str, str]] = ..., progress_callback: Callable[Concatenate[int, int, ...], object] | None = None, callback_additional_kwargs: Mapping[str, object] = ..., disable_proxy: bool = False) -> None:
     """This helper function reads the contents of a URL and saves it to a file.
 
     On an error, it raises an urllib2.URLError exception.  Possible errors

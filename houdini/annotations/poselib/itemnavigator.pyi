@@ -53,7 +53,7 @@ class RowDelegate(PySide6.QtWidgets.QStyledItemDelegate):
     indexRenamed: PySide6.QtCore.Signal
     def createEditor(
         self,
-        parent: PySide6.QtWidgets.QWidget,
+        parent: PySide6.QtWidgets.QWidget | None,
         option: PySide6.QtWidgets.QStyleOptionViewItem,
         index: PySide6.QtCore.QModelIndex | PySide6.QtCore.QPersistentModelIndex,
     ) -> PySide6.QtWidgets.QWidget: ...

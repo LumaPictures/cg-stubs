@@ -5,8 +5,11 @@ from collections.abc import Generator, Iterable, Mapping, Sequence
 from hrecipes import rtypes
 
 from typing import TypeAlias
+from typing import TypeVar
 from typing import Literal
 from typing import TypeAlias
+from typing import TypeVar
+_OpNodeT = TypeVar('_OpNodeT', bound=hou.OpNode)
 _ParmOption: TypeAlias = bool | list[hou.ParmTuple] | list[str] | set[str] | tuple[str, ...]
 _ParmTemplateOption: TypeAlias = Literal['none', 'spare_only', 'all']
 _ParmValue: TypeAlias = hou.ParmArgType | hou.ParmTupleArgType | Sequence[Mapping[str, '_ParmValue']]
@@ -360,7 +363,7 @@ Python 2, bytes for Python 3
     use_blosc_compression = True.
 
 """
-def copyTo(self: hou.OpNode, destination_node: hou.Node) -> hou.OpNode:
+def copyTo(self: _OpNodeT, destination_node: hou.OpNode) -> _OpNodeT:
     """
 copyTo(destination_node) -> hou.Node
 

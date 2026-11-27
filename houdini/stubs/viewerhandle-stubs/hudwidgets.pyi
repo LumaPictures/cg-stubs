@@ -11,6 +11,10 @@ from viewerhandle.hudwindow import HUDWindow as HUDWindow
 from typing import TypeVar
 from typing import TypeVar
 _KwargsT = TypeVar('_KwargsT', bound=Mapping[str, object])
+class _HUDWidgetOptions(TypedDict, total=False):
+    parent: HUDWindow | None
+    scene_loading: bool
+
 class _KeyFrameEventKwargs(TypedDict, total=False):
     frame: float | None
     color: QtGui.QColor | None

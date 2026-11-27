@@ -1,6 +1,6 @@
 import hou
 
-def intrinsicValueDict(self: hou.Prim) -> dict[str, hou.AttribReturnType]:
+def intrinsicValueDict(self: hou.Prim) -> dict[str, hou.AttribReturnType | hou._OptionDict]:
     """
 intrinsicValueDict(self) -> dict of str to value
 
