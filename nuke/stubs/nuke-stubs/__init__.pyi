@@ -6,4 +6,7 @@ from .executeInMain import *
 from .overrides import *
 from .scripts import scriptSaveAndClear as scriptSaveAndClear
 
+# FIXME: Missing nuke.math, nukescripts,
+# FIXME: Include docstrings
+
 def import_module(name, filterRule) -> None: ...
